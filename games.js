@@ -27,7 +27,7 @@ window.GAMES = [
     mode: "Cá nhân",
     thumb: "bb",
     icon: "island",
-    desc: "4 hòn đảo, 40 màn tư duy. Giải toán Kangaroo lớp 1–2 và 3–4 để có xu và năng lượng, chăm vườn của Jenny. Cần mã CLB.",
+    desc: "4 hòn đảo, 40 màn tư duy. Giải toán tư duy lớp 1–2 và 3–4 để có xu và năng lượng, chăm vườn của Jenny. Cần mã CLB.",
     puzzles: 40,
     unit: "màn",
     url: "games/hanh-trinh-jenny/tieu-hoc/",

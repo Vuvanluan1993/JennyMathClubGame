@@ -1,6 +1,6 @@
-"""Tạo kho bài cho "Hành trình của Jenny – Tiểu học" từ file JSON bài Kangaroo đã dịch và vẽ lại hình.
+"""Tạo kho bài cho "Hành trình của Jenny – Tiểu học" từ file JSON bài toán tư duy đã dịch và vẽ lại hình.
 
-    python tools/build_bank_th.py <kangaroo_tieu_hoc.json> games/hanh-trinh-jenny/tieu-hoc/bank.enc <MÃ CLB>
+    python tools/build_bank_th.py <toan_tu_duy_tieu_hoc.json> games/hanh-trinh-jenny/tieu-hoc/bank.enc <MÃ CLB>
 
 Mỗi bài trong file nguồn: id, g ("12"/"34"), d (0/1/2), q, fig (SVG), kind ("num"/"pick"), a, opts, ans, s, src.
 Kho được mã hoá bằng mã CLB giống bản Lớp 6.

@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
 <style>
 /* Hành trình của Jenny – Tiểu học (lớp 1–2 và lớp 3–4).
-   Bản đồ đi màn (4 đảo × 10 màn Bebras mức tiểu học) + Trạm toán (bài Kangaroo → xu và năng lượng) + Vườn của Jenny.
+   Bản đồ đi màn (4 đảo × 10 màn Bebras mức tiểu học) + Trạm toán (bài toán tư duy → xu và năng lượng) + Vườn của Jenny.
    Mọi màn hình vừa 1 khung nhìn, không kéo lên xuống. */
 :root{
   --sky:#CFEAFB; --ink:#1D2B53; --ink-soft:#4A5878; --paper:#fff;
@@ -295,7 +295,7 @@ textarea.code{width:100%;height:64px;border:2.5px solid var(--ink);border-radius
 <div class="app" id="app">
   <header class="bar">
     <a href="../../../" title="Về trang chủ" style="display:contents"><img class="logo" src="../../../assets/jenny-logo.png" alt="Học Toán cùng Jenny"></a>
-    <div class="ttl">Hành trình của Jenny<small id="gradeSub">Tiểu học · Toán Kangaroo</small></div>
+    <div class="ttl">Hành trình của Jenny<small id="gradeSub">Tiểu học · Toán tư duy</small></div>
     <div class="spacer"></div>
     <div class="pill" id="pEn" title="Năng lượng: mỗi màn chơi tốn 1"><span data-i="bolt"></span><b id="vEn">0</b><small>/10</small></div>
     <div class="pill" id="pXu" title="Xu: dùng mua đồ cho vườn"><span data-i="coin"></span><b id="vXu">0</b></div>
@@ -760,13 +760,13 @@ $('#bRead').onclick = () => {
 /* grade choice */
 function askGrade(first) {
   openOv(`<h2>${first ? 'Em học lớp mấy?' : 'Đổi lớp'}</h2><p>Trạm toán sẽ ra bài đúng với lớp của em. Bản đồ và vườn vẫn giữ nguyên.</p>
-    <div class="grades">${Object.entries(GRADES).map(([g, n]) => `<button data-g="${g}" aria-pressed="${S.g === g}">${n}<small>${g === '12' ? 'Kangaroo Pre-Ecolier' : 'Kangaroo Ecolier'}</small></button>`).join('')}</div>`, pn => {
+    <div class="grades">${Object.entries(GRADES).map(([g, n]) => `<button data-g="${g}" aria-pressed="${S.g === g}">${n}<small>${g === '12' ? 'Toán tư duy lớp 1–2' : 'Toán tư duy lớp 3–4'}</small></button>`).join('')}</div>`, pn => {
     pn.querySelectorAll('.grades button').forEach(b => b.onclick = () => {
       sfx.tap(); const changed = S.g !== b.dataset.g; S.g = b.dataset.g; if (changed) { S.cur = null; resetAnswer(); } save(); closeOv(); gradeSub(); if (view === 'math') drawMath();
     });
   });
 }
-function gradeSub() { $('#gradeSub').textContent = (S.g ? GRADES[S.g] : 'Tiểu học') + ' · Toán Kangaroo'; }
+function gradeSub() { $('#gradeSub').textContent = (S.g ? GRADES[S.g] : 'Tiểu học') + ' · Toán tư duy'; }
 
 /* ================= garden ================= */
 function petMood(p) { if (!p.fed) return 'sad'; const gap = dayNum(today()) - dayNum(p.fed); return gap === 0 ? 'happy' : gap === 1 ? 'hungry' : 'sad'; }

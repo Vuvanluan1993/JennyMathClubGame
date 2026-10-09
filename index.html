@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
 <style>
+[hidden]{display:none!important}
 /* Same look as the games: sky board, thick ink outlines, sunny yellow buttons. */
 :root{
   --sky:#CFEAFB; --ink:#1D2B53; --ink-soft:#4A5878; --paper:#FFFFFF;
@@ -120,7 +121,7 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
   <section class="hero">
     <div>
       <h1>Chơi mà học Toán!</h1>
-      <p>Các trò chơi toán của CLB Học Toán cùng Jenny. Chọn lớp, bấm vào một game và bắt đầu. Game có nhãn <b>Cả lớp</b> dành cho cả lớp chơi chung trên máy chiếu. Game tự lưu tiến độ trên máy, lần sau có thể chơi tiếp.</p>
+      <p>Trò chơi toán tư duy của CLB Học Toán cùng Jenny. Bấm vào game để bắt đầu. Game tự lưu tiến độ trên máy, lần sau có thể chơi tiếp.</p>
       <div class="stats" id="stats"></div>
     </div>
     <svg class="jenny" viewBox="0 0 120 140" aria-hidden="true" stroke="#1D2B53" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -245,11 +246,14 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
     shown.forEach(g => (bySeries[g.series] ||= []).push(g));
     $('#list').innerHTML = Object.entries(bySeries).map(([s, list]) => {
       const n = list.filter(g=>g.status==='live').length;
-      return `<section class="series"><h2>${esc(s)} <small>${n} game</small></h2><div class="grid">${list.map(card).join('')}</div></section>`;
+      return `<section class="series">${GAMES.length <= 1 ? '' : `<h2>${esc(s)} <small>${n} game</small></h2>`}<div class="grid">${list.map(card).join('')}</div></section>`;
     }).join('');
   }
 
-  drawFilters(); drawList();
+  if (GAMES.length <= 1) {   // chỉ còn 1 game: ẩn bộ lọc, số liệu và tiêu đề bộ game
+    $('#filters').hidden = true; $('#stats').hidden = true;
+    drawList();
+  } else { drawFilters(); drawList(); }
   // refresh progress flags when returning from a game
   addEventListener('pageshow', drawList);
 })();
