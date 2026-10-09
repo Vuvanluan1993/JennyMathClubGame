@@ -14,10 +14,29 @@
   - mode:   "Cá nhân" (mỗi em tự chơi) hoặc "Cả lớp" (chơi chung trên máy chiếu)
   - thumb:  (tuỳ chọn) kiểu hình đại diện: "grid" (lưới số, mặc định) "pieces" (mảnh ghép) hoặc "code" (ổ khóa mật mã) hoặc "bb" (hình biểu tượng, chọn bằng icon)
   - icon:   (khi thumb là "bb") robot | rotate | tubes | wheel | map | layers | island
+  - hidden: true → tạm ẩn khỏi trang chủ (game vẫn còn, bỏ dòng này để hiện lại)
   - saveKey: (tuỳ chọn) khoá lưu tiến độ của game, để trang chủ hiện "Đang chơi dở"
 */
 window.GAMES = [
   {
+    id: "hanh-trinh-jenny-tieu-hoc",
+    series: "Hành Trình Của Jenny",
+    title: "Hành Trình Của Jenny Tiểu Học",
+    grade: "Tiểu học",
+    topic: "Đi màn + Toán",
+    mode: "Cá nhân",
+    thumb: "bb",
+    icon: "island",
+    desc: "4 hòn đảo, 40 màn tư duy. Giải toán Kangaroo lớp 1–2 và 3–4 để có xu và năng lượng, chăm vườn của Jenny. Cần mã CLB.",
+    puzzles: 40,
+    unit: "màn",
+    url: "games/hanh-trinh-jenny/tieu-hoc/",
+    saveKey: "jenny-saga-th",
+    status: "live",
+    added: "2026-10-10"
+  },
+  {
+    hidden: true,
     id: "hanh-trinh-jenny-lop-6",
     series: "Hành Trình Của Jenny",
     title: "Hành Trình Của Jenny Lớp 6",
@@ -35,6 +54,7 @@ window.GAMES = [
     added: "2026-10-09"
   },
   {
+    hidden: true,
     id: "o-so-bi-an-lop-6",
     series: "Ô Số Bí Ẩn",
     title: "Ô Số Bí Ẩn Lớp 6",
@@ -50,6 +70,7 @@ window.GAMES = [
     added: "2026-10-08"
   },
   {
+    hidden: true,
     id: "o-so-bi-an-lop-7",
     series: "Ô Số Bí Ẩn",
     title: "Ô Số Bí Ẩn Lớp 7",
@@ -65,6 +86,7 @@ window.GAMES = [
     added: "2026-10-08"
   },
   {
+    hidden: true,
     id: "mat-ma-bi-an",
     series: "Mật Mã Bí Ẩn",
     title: "Mật Mã Bí Ẩn",
@@ -81,6 +103,7 @@ window.GAMES = [
     added: "2026-10-09"
   },
   {
+    hidden: true,
     id: "manh-ghep-bi-mat-lop-6",
     series: "Mảnh Ghép Bí Mật",
     title: "Mảnh Ghép Bí Mật Lớp 6",
@@ -95,6 +118,7 @@ window.GAMES = [
     added: "2026-10-09"
   },
   {
+    hidden: true,
     id: "robot-tim-duong",
     series: "Tư Duy Bebras",
     title: "Robot Tìm Đường",
@@ -112,6 +136,7 @@ window.GAMES = [
     added: "2026-10-09"
   },
   {
+    hidden: true,
     id: "xoay-lat-hinh",
     series: "Tư Duy Bebras",
     title: "Xoay Lật Hình",
@@ -129,6 +154,7 @@ window.GAMES = [
     added: "2026-10-09"
   },
   {
+    hidden: true,
     id: "xep-ong-bi",
     series: "Tư Duy Bebras",
     title: "Xếp Ống Bi",
@@ -146,6 +172,7 @@ window.GAMES = [
     added: "2026-10-09"
   },
   {
+    hidden: true,
     id: "giai-ma-thu",
     series: "Tư Duy Bebras",
     title: "Giải Mã Thư",
@@ -163,6 +190,7 @@ window.GAMES = [
     added: "2026-10-09"
   },
   {
+    hidden: true,
     id: "duong-di-re-nhat",
     series: "Tư Duy Bebras",
     title: "Đường Đi Rẻ Nhất",
@@ -180,6 +208,7 @@ window.GAMES = [
     added: "2026-10-09"
   },
   {
+    hidden: true,
     id: "chong-hinh",
     series: "Tư Duy Bebras",
     title: "Chồng Hình",
@@ -197,6 +226,7 @@ window.GAMES = [
     added: "2026-10-09"
   },
   {
+    hidden: true,
     id: "o-so-bi-an-lop-8",
     series: "Ô Số Bí Ẩn",
     title: "Ô Số Bí Ẩn Lớp 8",
@@ -207,6 +237,7 @@ window.GAMES = [
     status: "soon"
   },
   {
+    hidden: true,
     id: "o-so-bi-an-lop-9",
     series: "Ô Số Bí Ẩn",
     title: "Ô Số Bí Ẩn Lớp 9",

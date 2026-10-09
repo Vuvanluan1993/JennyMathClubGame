@@ -67,7 +67,12 @@ const ARROW = {
 const DIRS = { U:[-1,0], D:[1,0], L:[0,-1], R:[0,1] };
 const NAME = { U:'Lên', D:'Xuống', L:'Trái', R:'Phải' };
 const BLOCK_NAME = { tree:'cây', pine:'cây thông', rock:'tảng đá', water:'hồ nước' };
-const LEVELS = [
+const KID = new URLSearchParams(location.search).get('kid') === '1';   // bản Tiểu học (Hành trình Tiểu học)
+const LEVELS = KID ? [
+  { name:'Dễ',  desc:'Bản đồ 4×4', n:4, blocks:[2,3], traps:0, gems:0, minLen:3, maxLen:6,  repeat:false },
+  { name:'Vừa', desc:'Bản đồ 5×5', n:5, blocks:[4,6], traps:0, gems:0, minLen:4, maxLen:9,  repeat:false },
+  { name:'Khó', desc:'Bản đồ 6×6', n:6, blocks:[6,8], traps:0, gems:1, minLen:5, maxLen:12, repeat:false }
+] : [
   { name:'Dễ',  desc:'Bản đồ 5×5', n:5, blocks:[4,6], traps:0, gems:0, minLen:4,  maxLen:8,  repeat:false },
   { name:'Vừa', desc:'Bản đồ 7×7', n:7, blocks:[9,12], traps:3, gems:2, minLen:7,  maxLen:18, repeat:false },
   { name:'Khó', desc:'Bản đồ 9×9', n:9, blocks:[16,20], traps:6, gems:3, minLen:10, maxLen:28, repeat:true }

@@ -21,6 +21,10 @@ Trang chơi: https://vuvanluan1993.github.io/JennyMathClubGame/
 
 | Hành Trình Của Jenny (đi màn + toán, cần mã CLB) | Lớp 6 | 30 màn + 673 bài | `games/hanh-trinh-jenny/lop-6/` |
 
+| Hành Trình Của Jenny Tiểu học (cần mã CLB) | Lớp 1–4 | 40 màn + 120 bài Kangaroo | `games/hanh-trinh-jenny/tieu-hoc/` |
+
+Hiện trang chủ chỉ hiện bản Tiểu học; các game khác có `hidden: true` trong `games.js` (bỏ dòng đó để hiện lại).
+
 Game Tư Duy Bebras tạo đề ngẫu nhiên mỗi lần chơi, có 3 mức Dễ / Vừa / Khó.
 
 ## Cấu trúc thư mục
@@ -75,3 +79,8 @@ Thêm game mới thì thêm vài dòng vào `CASES` cuối file đó.
 pip install cryptography
 python tools/build_bank.py <_pool_lop6.json> games/hanh-trinh-jenny/lop-6/bank.enc <MÃ CLB>
 ```
+
+### Bản Tiểu học
+- 4 đảo × 10 màn: Rô bốt, Ống bi, Chồng hình, Mật thư. Các game Bebras mở với `?kid=1` dùng mức tiểu học.
+- Trạm toán: 120 bài Kangaroo (60 lớp 1–2, 60 lớp 3–4) đã dịch và vẽ lại hình; bài đáp số là số thì điền số, còn lại chọn 1 trong 3. Có nút "Đọc đề" nếu máy có giọng tiếng Việt.
+- Tạo lại kho: `python tools/build_bank_th.py <kangaroo_tieu_hoc.json> games/hanh-trinh-jenny/tieu-hoc/bank.enc <MÃ CLB>`

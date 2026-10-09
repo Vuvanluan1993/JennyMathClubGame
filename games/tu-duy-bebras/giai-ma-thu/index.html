@@ -82,7 +82,14 @@ const TYPES = {
   num:    { name: 'Số thành chữ' },
   mirror: { name: 'Gương' }
 };
-const LEVELS = [
+const KID = new URLSearchParams(location.search).get('kid') === '1';   // bản Tiểu học (Hành trình Tiểu học)
+const KIDBANK = ['MEO', 'GA', 'CA', 'HOA', 'SAO', 'BONG', 'TOAN', 'VUI', 'BAN', 'NHA', 'CAY', 'MUA', 'NANG', 'TRANG', 'BUT', 'SACH', 'THO', 'VIT', 'KEO', 'BANH',
+  'CON MEO', 'CON GA', 'QUA TAO', 'BONG HOA', 'MAT TROI', 'HOC TOAN', 'EM VUI', 'CHU THO', 'CAI BUT', 'NGOI SAO', 'CON CA', 'QUA CAM'];
+const LEVELS = KID ? [
+  { name: 'Dễ',  desc: 'Dịch 1 nấc', words: [1, 1], types: ['caesar'], k: 1 },
+  { name: 'Vừa', desc: 'Dịch 2 nấc', words: [1, 2], types: ['caesar'], k: 2 },
+  { name: 'Khó', desc: 'Dịch 3 nấc', words: [1, 2], types: ['caesar'], k: 3 }
+] : [
   { name: 'Dễ',  desc: 'Cho sẵn số nấc', words: [2, 3], types: ['caesar', 'num'] },
   { name: 'Vừa', desc: 'Có 1 chữ mồi',   words: [2, 4], types: ['caesar', 'num', 'mirror'] },
   { name: 'Khó', desc: 'Không mồi',      words: [3, 5], types: ['caesar', 'num', 'mirror'] }
@@ -98,24 +105,26 @@ let used = new Set();
 function make(lv, round) {
   if (round === 0) used = new Set();
   const L = LEVELS[lv];
-  const pool = BANK.filter(m => { const w = m.split(' ').length; return w >= L.words[0] && w <= L.words[1] && !used.has(m); });
-  const msg = (pool.length ? pool : BANK)[rnd(pool.length || BANK.length)];
+  const SRC = KID ? KIDBANK : BANK;
+  const pool = SRC.filter(m => { const w = m.split(' ').length; return w >= L.words[0] && w <= L.words[1] && !used.has(m); });
+  const msg = (pool.length ? pool : SRC)[rnd(pool.length || SRC.length)];
   used.add(msg);
-  const type = lv === 0 ? L.types[round % 2] : L.types[rnd(L.types.length)];
+  const type = KID ? 'caesar' : lv === 0 ? L.types[round % 2] : L.types[rnd(L.types.length)];
   let k;
-  if (lv === 0) k = type === 'num' ? 0 : 1 + rnd(9);
+  if (KID) k = L.k;
+  else if (lv === 0) k = type === 'num' ? 0 : 1 + rnd(9);
   else if (type === 'mirror') k = rnd(N);
   else k = 1 + rnd(N - 1);
   const words = msg.split(' ');
   const enc = p => type === 'mirror' ? mod(k - p) : mod(p + k);
   const code = words.map(w => [...w].map(ch => enc(AZ.indexOf(ch))));
   let seed = null;
-  if (lv === 1) {
+  if (lv === 1 && !KID) {
     const letters = [...msg.replace(/ /g, '')];
     const p = AZ.indexOf(letters[rnd(letters.length)]);
     seed = { c: enc(p), p };
   }
-  return { type, k, answer: msg, words, code, seed };
+  return { type, k, answer: msg, words, code, seed, show: KID };
 }
 const symText = (P, c) => P.type === 'num' ? String(c + 1) : AZ[c];
 /* which real letter sits next to outer symbol c when the wheel is at offset off */
@@ -185,7 +194,7 @@ function mount(ctx) {
   ctx.tag(`Kiểu: <b>${T}</b>`);
   const outerWhat = P.type === 'num' ? 'số' : 'chữ';
   let m;
-  if (ctx.level === 0) {
+  if (ctx.level === 0 || P.show) {
     m = P.type === 'num'
       ? `Thư viết bằng <b>số</b>: 1 là A, 2 là B, 3 là C... Để vòng ở <b>LỆCH 0 NẤC</b>, đọc chữ ở vòng trong.`
       : `Mỗi chữ trong thư bị dịch đi <b>${P.k} nấc</b>. Xoay vòng trong tới <b>LỆCH ${P.k} NẤC</b>, rồi đọc chữ ở vòng trong.`;
@@ -212,7 +221,7 @@ function mount(ctx) {
   G.hinted.forEach(w => revealWord(w));
   if (st.text != null && st.text !== '') { inp.value = st.text; boxesFromText(st.text); }
   draw(G.vis);
-  if (ctx.round === 0 && !ctx.state) ctx.say(ctx.level === 0 ? 'Bấm Xoay hoặc kéo vòng trong để giải mã nhé!' : 'Tìm đúng số nấc là đọc được thư!');
+  if (ctx.round === 0 && !ctx.state) ctx.say(ctx.level === 0 || P.show ? 'Bấm Xoay hoặc kéo vòng trong để giải mã nhé!' : 'Tìm đúng số nấc là đọc được thư!');
 }
 
 function wheelSvg(P) {

@@ -156,6 +156,34 @@ def sg_garden(pg, shop=False):
 
 
 SG = "games/hanh-trinh-jenny/lop-6/"
+TH = "games/hanh-trinh-jenny/tieu-hoc/"
+
+
+def th_open(pg, grade=None):
+    sg_open(pg)
+    if grade:
+        pg.click(f'.grades button[data-g="{grade}"]')
+        wait(pg, 300)
+
+
+def th_math(kind, longest=False, answer=False):
+    def step(pg):
+        th_open(pg, "34")
+        pg.evaluate("""([k,L])=>{const b=__saga.bank.filter(x=>x.g==='34'&&x.k===k);
+          const p=L?b.reduce((a,x)=>x.q.length+x.s.length+(x.f?200:0)>a.q.length+a.s.length+(a.f?200:0)?x:a):b[0];
+          __saga.S.diff=p.d;__saga.S.cur={id:p.i};__saga.show('math')}""", [kind, longest])
+        wait(pg, 300)
+        if answer:
+            if kind == "num":
+                pg.keyboard.press("1"); pg.keyboard.press("Enter"); wait(pg, 150)
+                pg.keyboard.press("2"); pg.keyboard.press("Enter")
+            else:
+                for i in range(3):
+                    if pg.locator(".opt").count() == 0: break
+                    pg.locator(".opt:not([disabled])").first.click(); wait(pg, 600)
+            wait(pg, 400)
+    return step
+
 BB = ".play,.card,.key,.bar .ib,.pill"
 OSO = ".cell,.key,.card,.ctext,.slots,.chip,.jenny"
 CASES = [
@@ -180,6 +208,14 @@ CASES = [
     ("Hành trình · bài dài nhất + lời giải", SG, sg_math_long, ".mcard,.key,.ans,.btn,.tab,.bubble"),
     ("Hành trình · vườn", SG, sg_garden, ".scene,.plot,.pen,.btn,.tab"),
     ("Hành trình · cửa hàng", SG, lambda pg: sg_garden(pg, True), ".panel"),
+    ("Tiểu học · chọn lớp", TH, th_open, ".panel"),
+    ("Tiểu học · bản đồ", TH, lambda pg: th_open(pg, "12"), ".node,.tab,.pill,.isle-head"),
+    ("Tiểu học · bài chọn hình", TH, th_math("pick"), ".mcard,.opt,.btn,.tab"),
+    ("Tiểu học · bài điền số dài nhất + lời giải", TH, th_math("num", True, True), ".mcard,.key,.ans,.btn,.tab"),
+    ("Tiểu học · bài chọn dài nhất + lời giải", TH, th_math("pick", True, True), ".mcard,.key,.btn,.tab"),
+] + [
+    (f"Tiểu học · {name}", f"games/tu-duy-bebras/{slug}/?kid=1&saga=../../hanh-trinh-jenny/tieu-hoc/&id=x1&lv=2&r=0&seed=5&n=9", nothing, BB)
+    for name, slug in [("Rô bốt", "robot-tim-duong"), ("Ống bi", "xep-ong-bi"), ("Chồng hình", "chong-hinh"), ("Mật thư", "giai-ma-thu")]
 ] + [
     case
     for name, slug in [("Xoay Lật", "xoay-lat-hinh"), ("Ống Bi", "xep-ong-bi"), ("Giải Mã", "giai-ma-thu"),

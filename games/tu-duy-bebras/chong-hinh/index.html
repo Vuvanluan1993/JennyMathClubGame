@@ -75,7 +75,12 @@ const RULES = {
   xor: { name:'KHÁC NHAU', f:(a, b) => a ^ b, txt:'Đen khi 2 ô khác màu' }
 };
 const ORDER = ['or', 'and', 'xor'];
-const LEVELS = [
+const KID = new URLSearchParams(location.search).get('kid') === '1';   // bản Tiểu học (Hành trình Tiểu học)
+const LEVELS = KID ? [
+  { name:'Dễ',  desc:'3×3 · chọn tấm' },
+  { name:'Vừa', desc:'4×4 · chọn tấm' },
+  { name:'Khó', desc:'4×4 · chọn tấm' }
+] : [
   { name:'Dễ',  desc:'3×3 · chọn tấm' },
   { name:'Vừa', desc:'4×4 · tô' },
   { name:'Khó', desc:'5×5 · tô' }
@@ -129,10 +134,9 @@ function genXOR(n) {
     if (k >= Math.round(.32 * N) && k <= Math.round(.6 * N)) return { A, T, sol };
   }
 }
-function makePick() {
-  const n = 3, N = 9;
+function makePick(n = 3, minBlack = 2) {
   for (;;) {
-    const { A, T, sol } = genOR(n, 2);
+    const { A, T, sol } = genOR(n, minBlack);
     const good = sol.slice();
     const inA = idxWhere(A, v => v), need = idxWhere(sol, v => v), out = idxWhere(T, v => !v);
     if (Math.random() < .35 && inA.length) good[pickOne(inA)] = 1;   // extra black inside A changes nothing
@@ -162,6 +166,7 @@ function makeGuess(n) {
   }
 }
 function make(lv, round) {
+  if (KID) return lv === 0 ? makePick(3, 2) : makePick(4, lv === 1 ? 3 : 5);
   if (lv === 0) return makePick();
   if (lv === 1) {
     const rule = round % 2 ? 'and' : 'or', n = 4;

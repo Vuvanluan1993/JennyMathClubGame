@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hành trình của Jenny Tiểu học – Học Toán cùng Jenny</title>
+<link rel="icon" href="../../../assets/jenny-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<style>
+/* Hành trình của Jenny – Tiểu học (lớp 1–2 và lớp 3–4).
+   Bản đồ đi màn (4 đảo × 10 màn Bebras mức tiểu học) + Trạm toán (bài Kangaroo → xu và năng lượng) + Vườn của Jenny.
+   Mọi màn hình vừa 1 khung nhìn, không kéo lên xuống. */
+:root{
+  --sky:#CFEAFB; --ink:#1D2B53; --ink-soft:#4A5878; --paper:#fff;
+  --sun:#FFC93C; --sun-soft:#FFF0C2; --coral:#FF6B57; --mint:#2DBE8C; --mint-soft:#D5F6E8;
+  --sel:#2F7DE1; --sel-soft:#DCEBFF; --hatch:#B8C6DD; --purple:#8E6BD8; --grass:#B7E08F;
+  --display:'Baloo 2','Trebuchet MS',system-ui,sans-serif;
+  --body:'Nunito','Segoe UI',system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden}
+body{background:var(--sky);color:var(--ink);font-family:var(--body);
+  background-image:radial-gradient(circle at 1px 1px,rgba(29,43,83,.10) 1px,transparent 1.4px);background-size:22px 22px;
+  -webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+button{font-family:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:disabled{cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+.app{height:100vh;height:100dvh;padding:8px 14px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px;max-width:1400px;margin:0 auto}
+
+/* top bar */
+.bar{display:flex;align-items:center;gap:8px;min-width:0}
+.bar .logo{height:42px;width:auto;flex:none}
+.ttl{font-family:var(--display);font-weight:800;font-size:24px;line-height:1;white-space:nowrap}
+.ttl small{display:block;font-family:var(--body);font-size:11.5px;letter-spacing:.08em;color:var(--ink-soft);margin-top:3px;text-transform:uppercase}
+.spacer{flex:1;min-width:0}
+.pill{display:flex;align-items:center;gap:5px;background:#fff;border:2.5px solid var(--ink);border-radius:999px;padding:3px 11px 3px 6px;box-shadow:0 3px 0 var(--ink);flex:none}
+.pill svg{width:22px;height:22px;flex:none}
+.pill b{font-family:var(--display);font-size:19px;line-height:1}
+.pill small{font-size:12px;font-weight:800;color:var(--ink-soft)}
+.pill.flash{animation:flash .6s}
+@keyframes flash{30%{transform:scale(1.18);background:var(--sun-soft)}}
+.ib{width:42px;height:42px;border-radius:12px;border:2.5px solid var(--ink);background:#fff;box-shadow:0 3px 0 var(--ink);display:grid;place-items:center;padding:0;flex:none;color:var(--ink);text-decoration:none}
+.ib svg{width:22px;height:22px}
+.ib:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.ib.off{opacity:.45}
+
+/* bottom tabs */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tab{height:54px;border:2.5px solid var(--ink);border-radius:16px;background:#fff;box-shadow:0 4px 0 var(--ink);display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--display);font-weight:800;font-size:19px;padding:0 8px}
+.tab svg{width:26px;height:26px;flex:none}
+.tab[aria-selected="true"]{background:var(--sun)}
+.tab:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
+.tab .dot{min-width:20px;height:20px;border-radius:10px;background:var(--coral);color:#fff;font-family:var(--body);font-size:12px;font-weight:900;display:grid;place-items:center;padding:0 5px;border:2px solid var(--ink)}
+
+main{min-height:0;position:relative}
+.view{position:absolute;inset:0;display:none}
+.view.on{display:grid}
+.card{background:#fff;border:3px solid var(--ink);border-radius:20px;box-shadow:0 5px 0 var(--ink)}
+
+/* ---------- map ---------- */
+#vMap{grid-template-rows:auto minmax(0,1fr);gap:8px}
+.isle-head{display:flex;align-items:center;gap:8px}
+.isle-head .nm{flex:1;min-width:0;text-align:center;font-family:var(--display);font-weight:800;font-size:22px;line-height:1.05}
+.isle-head .nm small{display:block;font-family:var(--body);font-size:12.5px;font-weight:800;color:var(--ink-soft)}
+.mapbox{min-height:0;position:relative;container-type:size}
+.mapbox svg{position:absolute;inset:0;width:100%;height:100%}
+.node{cursor:pointer}
+.node .ring{animation:pulse 1.3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pulse{50%{transform:scale(1.18);opacity:.35}}
+.node:focus{outline:none}
+.node:focus-visible circle.face{stroke:var(--sel);stroke-width:5}
+
+/* ---------- math station ---------- */
+#vMath{grid-template-columns:minmax(0,1fr) 330px;gap:12px}
+#vMath.answered{grid-template-columns:minmax(0,1fr) 230px}
+@media (max-height:520px){ #vMath.answered{grid-template-columns:minmax(0,1fr) 170px} #vMath.answered .mrow,#vMath.answered .mhead{display:none} #vMath.answered .mcard{grid-template-rows:minmax(0,1fr)} }
+.mcard{display:grid;grid-template-rows:auto minmax(0,1fr);gap:8px;padding:12px 14px;min-height:0}
+.mhead{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.seg{display:flex;gap:6px}
+.seg button{border:2.5px solid var(--ink);border-radius:12px;background:#fff;padding:4px 10px;font-weight:900;font-size:14px;display:flex;align-items:center;gap:4px;box-shadow:0 2px 0 var(--ink)}
+.seg button svg{width:16px;height:16px}
+.seg button[aria-pressed="true"]{background:var(--sun)}
+.today{margin-left:auto;font-size:13px;font-weight:800;color:var(--ink-soft);display:flex;align-items:center;gap:4px}
+.today svg{width:16px;height:16px}
+.mtext{min-height:0;overflow:hidden;font-size:22px;line-height:1.5;font-weight:700;display:flex;flex-direction:column;gap:10px}
+.mtext .qn{font-family:var(--display);font-size:.8em;color:var(--ink-soft);letter-spacing:.04em}
+.mtext .q{white-space:pre-line}
+.mtext .sol{white-space:pre-line;background:var(--mint-soft);border:2.5px solid var(--mint);border-radius:14px;padding:8px 12px;font-weight:700}
+.mtext .sol.bad{background:var(--sun-soft);border-color:var(--sun)}
+.mtext .sol b.h{display:block;font-family:var(--display);font-size:1.05em}
+.mtext.solved .q{color:var(--ink-soft)}
+.mtext .qbtn{display:none;align-self:flex-start;border:2px solid var(--ink);border-radius:10px;background:#fff;font-weight:900;font-size:13px;padding:3px 10px}
+.mtext.fold .qbtn{display:block}
+.mtext.scroll{overflow-y:auto}
+.mtext.fold .qn{display:none}
+.mtext.fold{gap:6px}
+.mtext.fold .sol{padding:6px 10px}
+.mtext.fold:not(.showq) .q,.mtext.fold:not(.showq) .fig{display:none}
+.mtext.fold.showq .sol{display:none}
+.mtext .fig{flex:1 1 0;min-height:110px;position:relative}
+.mtext .fig svg{position:absolute;inset:0;width:100%;height:100%}
+.mtext .q{flex:none}
+.mtext .sol{flex:none}
+.mhead .read{border:2.5px solid var(--ink);border-radius:12px;background:var(--sel-soft);padding:4px 10px;font-weight:900;font-size:14px;display:flex;align-items:center;gap:5px;box-shadow:0 2px 0 var(--ink)}
+.mhead .read svg{width:18px;height:18px}
+.opts{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:8px;min-height:0}
+.opt{border:2.5px solid var(--ink);border-radius:16px;background:#fff;box-shadow:0 3px 0 var(--ink);display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:6px;padding:6px 10px;min-height:0;font-weight:900;font-size:19px;text-align:left}
+.opt .no{width:30px;height:30px;border-radius:50%;background:var(--sun);border:2.5px solid var(--ink);display:grid;place-items:center;font-family:var(--display);font-size:17px}
+.opt .ob{height:100%;min-height:0;position:relative;display:flex;align-items:center}
+.opt .ob svg{position:absolute;inset:0;width:100%;height:100%}
+.opt:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.opt.no-go{opacity:.35;background:#EEF1F6}
+.opt.right{background:var(--mint-soft);border-color:var(--mint)}
+.opt.wrong{background:#FFE1DC;border-color:var(--coral)}
+.mpad.pick .ans,.mpad.pick #bClr{display:none}
+.mpad.pick{grid-template-rows:auto minmax(0,1fr) auto}
+@media (max-aspect-ratio:1/1){ .mtext .fig{min-height:150px} }
+@media (max-height:520px){ .mtext .fig{min-height:80px} }
+.grades{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grades button{border:3px solid var(--ink);border-radius:18px;background:#fff;box-shadow:0 4px 0 var(--ink);padding:14px 8px;font-family:var(--display);font-weight:800;font-size:24px;line-height:1.1}
+.grades button small{display:block;font-family:var(--body);font-size:13px;color:var(--ink-soft)}
+.grades button[aria-pressed="true"]{background:var(--sun)}
+.mpad{display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;gap:8px;min-height:0}
+.ans{height:64px;border:3px solid var(--ink);border-radius:16px;background:#fff;display:flex;align-items:center;justify-content:flex-end;padding:0 16px;font-family:var(--display);font-weight:800;font-size:36px;letter-spacing:.04em;box-shadow:inset 0 3px 0 rgba(29,43,83,.08)}
+.ans.empty{color:var(--hatch)}
+.ans.ok{background:var(--mint-soft);border-color:var(--mint)}
+.ans.no{background:#FFE1DC;border-color:var(--coral);animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(0,1fr);gap:7px;min-height:0}
+.key{border:2.5px solid var(--ink);border-radius:14px;background:#fff;box-shadow:0 3px 0 var(--ink);font-family:var(--display);font-weight:800;font-size:26px;display:grid;place-items:center;padding:0;min-height:0}
+.key:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.key.go{background:var(--mint);color:#fff}
+.key.go.next{background:var(--sun);color:var(--ink);font-size:22px;display:flex;align-items:center;justify-content:center;gap:8px}
+.keys.done{grid-template-rows:minmax(54px,1fr);grid-auto-rows:auto}
+.key svg{width:28px;height:28px}
+.jrow{display:flex;align-items:flex-end;gap:8px;min-height:0}
+.jrow .bubble{flex:1;background:#fff;border:2.5px solid var(--ink);border-radius:14px;padding:7px 10px;font-weight:800;font-size:14.5px;line-height:1.35;position:relative}
+.jrow .bubble:after{content:"";position:absolute;right:-9px;bottom:14px;border:7px solid transparent;border-left-color:var(--ink)}
+.jsvg{width:58px;height:68px;flex:none}
+.jsvg .m-happy,.jsvg .m-oops{display:none}
+.jsvg.happy .m-norm,.jsvg.oops .m-norm{display:none}
+.jsvg.happy .m-happy,.jsvg.oops .m-oops{display:inline}
+.jsvg.bounce{animation:bounce .5s}
+@keyframes bounce{40%{transform:translateY(-8px)}}
+.mrow{display:flex;gap:7px}
+.btn{height:44px;border:2.5px solid var(--ink);border-radius:13px;background:#fff;box-shadow:0 3px 0 var(--ink);font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;flex:1;text-decoration:none;color:var(--ink)}
+.btn svg{width:20px;height:20px}
+.btn.y{background:var(--sun)}
+.btn.g{background:var(--mint);color:#fff}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.btn:disabled{opacity:.45}
+
+/* ---------- garden ---------- */
+#vGarden{grid-template-rows:minmax(0,1fr) auto;gap:8px}
+.gbox{min-height:0;container-type:size;display:grid;place-items:center}
+.scene{width:min(100cqw,100cqh*1.75);height:min(100cqh,100cqw/1.75);border:3px solid var(--ink);border-radius:20px;box-shadow:0 5px 0 var(--ink);overflow:hidden;position:relative;
+  background:linear-gradient(#BDE6FF 0 22%,var(--grass) 22%);display:grid;grid-template-columns:62% 38%;grid-template-rows:22% 78%;container-type:size}
+.deco{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,1fr);align-items:end;padding:0 2%}
+.deco > div{height:100%;display:grid;place-items:end center;position:relative}
+.deco svg{height:92%;width:auto;max-width:100%}
+.deco .slot{opacity:.28;display:grid;place-items:end center;height:100%;width:100%}
+.plots{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:3%;padding:4% 3% 5% 4%}
+.plot,.pen{border:2.5px solid var(--ink);border-radius:14%;background:#A9764E;position:relative;display:grid;place-items:center;padding:0;min-height:0;box-shadow:0 3px 0 rgba(29,43,83,.55)}
+.plot{background:repeating-linear-gradient(0deg,#9A6A43 0 12%,#A9764E 12% 24%)}
+.plot svg,.pen svg{width:82%;height:82%}
+.plot .bar2,.pen .bar2{position:absolute;left:10%;right:10%;bottom:7%;height:9%;border-radius:9px;background:rgba(255,255,255,.55);border:1.5px solid var(--ink);overflow:hidden}
+.plot .bar2 i,.pen .bar2 i{display:block;height:100%;background:var(--mint)}
+.plot.ripe svg,.pen.ripe .prod{animation:bounce 1s infinite}
+.plot .plus,.pen .plus{font-family:var(--display);font-weight:800;font-size:min(9cqh,6cqw);color:#fff;opacity:.85}
+.pens{display:grid;grid-template-rows:repeat(3,1fr);gap:4%;padding:4% 5% 5% 3%}
+.pen{background:#F5E3B5;border-radius:12%;grid-template-columns:1fr auto;padding:0 4%}
+.pen .ani{height:88%;display:grid;place-items:center}
+.pen .ani svg{height:100%;width:auto}
+.pen .side{display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:900;font-size:min(4.2cqh,3cqw);line-height:1.1}
+.pen .side svg{width:min(9cqh,6cqw);height:min(9cqh,6cqw)}
+.pen .prod svg{width:min(10cqh,7cqw);height:min(10cqh,7cqw)}
+.pen .hungry{background:var(--coral);color:#fff;border-radius:999px;padding:2px 7px;border:2px solid var(--ink)}
+@container (orientation: portrait){
+  .scene{width:min(100cqw,100cqh*.8);height:min(100cqh,100cqw/.8);grid-template-columns:1fr;grid-template-rows:16% 50% 34%}
+  .pens{grid-template-rows:1fr;grid-template-columns:repeat(3,1fr);padding:2% 4% 4%}
+  .pen{grid-template-columns:1fr;grid-template-rows:1fr auto;padding:4% 2%}
+  .pen .side{font-size:min(3cqh,4.2cqw);flex-direction:row}
+  .plots{padding:4%}
+}
+.gbar{display:flex;gap:8px;align-items:center}
+.gbar .btn{flex:0 1 auto}
+.gbar .info{flex:1;font-weight:800;font-size:14px;color:var(--ink-soft);line-height:1.3}
+
+/* ---------- lock ---------- */
+#vLock{place-items:center}
+.lock{max-width:520px;width:100%;padding:18px 20px;display:grid;gap:10px;text-align:center;justify-items:center}
+.lock h2{font-family:var(--display);font-weight:800;font-size:28px;margin:0;line-height:1.1}
+.lock p{margin:0;font-weight:700;color:var(--ink-soft);line-height:1.45}
+.lock input{width:100%;max-width:300px;height:54px;border:3px solid var(--ink);border-radius:14px;font-family:var(--display);font-weight:800;font-size:26px;text-align:center;letter-spacing:.12em;text-transform:uppercase}
+.lock .err{color:#B3261E;font-weight:900;min-height:1.3em}
+.lock .jsvg{width:84px;height:98px}
+
+/* ---------- overlays ---------- */
+.ov{position:fixed;inset:0;background:rgba(29,43,83,.45);display:grid;place-items:center;padding:10px;z-index:20}
+.panel{background:#fff;border:3px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);padding:16px 18px;width:min(560px,100%);display:grid;gap:10px;text-align:center}
+.panel h2{font-family:var(--display);font-weight:800;font-size:26px;margin:0;line-height:1.1}
+.panel p{margin:0;font-weight:700;line-height:1.45;color:var(--ink-soft)}
+.panel .stars{display:flex;justify-content:center;gap:6px;color:var(--sun)}
+.panel .stars svg{width:40px;height:40px}
+.panel .stars svg.dim{color:#E3E8F1}
+.panel .row{display:flex;gap:8px;flex-wrap:wrap}
+.panel .row > *{flex:1 1 140px}
+.shopgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.item{border:2.5px solid var(--ink);border-radius:14px;background:#fff;padding:6px;display:grid;justify-items:center;gap:2px;box-shadow:0 3px 0 var(--ink);font-weight:800;font-size:13px;line-height:1.2}
+.item svg.pic{width:54px;height:54px}
+.item b{font-family:var(--display);font-size:16px}
+.item .price{display:flex;align-items:center;gap:3px;font-weight:900}
+.item .price svg{width:16px;height:16px}
+.item[disabled]{opacity:.5}
+.item.own{background:var(--mint-soft)}
+.stabs{display:flex;gap:6px;justify-content:center}
+.stabs button{border:2.5px solid var(--ink);border-radius:12px;background:#fff;padding:5px 12px;font-weight:900;box-shadow:0 2px 0 var(--ink)}
+.stabs button[aria-pressed="true"]{background:var(--sun)}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kv div{border:2.5px solid var(--ink);border-radius:14px;padding:6px}
+.kv b{display:block;font-family:var(--display);font-size:24px;line-height:1.1}
+.kv span{font-size:12px;font-weight:800;color:var(--ink-soft)}
+textarea.code{width:100%;height:64px;border:2.5px solid var(--ink);border-radius:12px;font:700 12px/1.35 ui-monospace,Menlo,monospace;padding:6px;resize:none}
+.toast{position:fixed;left:50%;top:64px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:14px;padding:8px 16px;font-weight:900;z-index:40;box-shadow:0 4px 0 rgba(0,0,0,.25);pointer-events:none;max-width:92vw;text-align:center;animation:tin .25s}
+@keyframes tin{from{opacity:0;transform:translate(-50%,-8px)}}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+
+/* ---------- small screens ---------- */
+@media (max-aspect-ratio:1/1){
+  #vMath.answered{grid-template-columns:1fr}
+  #vMath.answered .mhead{display:none}
+  #vMath.answered .mcard{grid-template-rows:minmax(0,1fr)}
+  .seg button{padding:3px 7px;font-size:13px}
+  #vMath{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;gap:8px}
+  .mpad{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;gap:7px}
+  .ans{height:50px;font-size:30px}
+  .mpad .mrow .btn{height:50px;padding:0 10px}
+  .keys{grid-column:1/-1;grid-template-columns:repeat(6,1fr);grid-auto-rows:46px;gap:6px}
+  .keys .key[data-k="-"]{order:5}
+  .keys .key[data-k="6"],.keys .key[data-k="7"],.keys .key[data-k="8"],.keys .key[data-k="9"]{order:6}
+  .keys .key[data-k="0"]{order:7}
+  .keys .key.go{order:8}
+  .keys.done{grid-template-rows:50px}
+  .opts{grid-column:1/-1;grid-template-rows:none;grid-template-columns:repeat(3,minmax(0,1fr));height:100px}
+  .opt{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);justify-items:center;text-align:center;font-size:15px;padding:4px}
+  .opt .no{width:24px;height:24px;font-size:14px}
+  .opt .ob{width:100%;justify-content:center}
+  .mpad.pick{grid-template-columns:1fr}
+  .jrow{display:none}
+}
+@media (max-aspect-ratio:1/1) and (max-width:420px){ .mpad .mrow .btn{font-size:0;gap:0;width:50px;flex:none} .mpad .mrow .btn svg{width:24px;height:24px} }
+@media (max-width:620px){
+  .ttl{font-size:18px}
+  .ttl small{display:none}
+  .bar .logo{height:34px}
+  .pill{padding:2px 8px 2px 4px;gap:3px}
+  .pill b{font-size:16px}
+  .pill small{display:none}
+  .pill svg{width:18px;height:18px}
+  .ib{width:36px;height:36px;border-radius:10px}
+  .ib svg{width:19px;height:19px}
+  .tab{height:48px;font-size:16px;gap:5px}
+  .tab svg{width:22px;height:22px}
+  .bar .hide-s{display:none}
+}
+@media (max-width:400px){ .ttl{display:none} }
+@media (max-height:520px){
+  .app{padding:5px 10px;gap:5px}
+  .bar .logo{height:32px}
+  .ib{width:34px;height:34px}
+  .tab{height:40px;font-size:15px}
+  .mtext{font-size:17px}
+  .ans{height:46px;font-size:28px}
+  .key{font-size:20px}
+  .jrow{display:none}
+  .mpad,.mpad.pick{grid-template-rows:auto auto minmax(0,1fr)}
+  .mpad.pick{grid-template-rows:auto minmax(0,1fr)}
+  .isle-head .nm{font-size:18px}
+  .panel{padding:10px 14px;gap:7px}
+  .lock{padding:10px 16px;gap:6px}
+  .lock .jsvg{display:none}
+  .lock h2{font-size:22px}
+  .lock input{height:44px}
+  .lock .btn{height:40px}
+  .mcard{padding:8px 10px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="bar">
+    <a href="../../../" title="Về trang chủ" style="display:contents"><img class="logo" src="../../../assets/jenny-logo.png" alt="Học Toán cùng Jenny"></a>
+    <div class="ttl">Hành trình của Jenny<small id="gradeSub">Tiểu học · Toán Kangaroo</small></div>
+    <div class="spacer"></div>
+    <div class="pill" id="pEn" title="Năng lượng: mỗi màn chơi tốn 1"><span data-i="bolt"></span><b id="vEn">0</b><small>/10</small></div>
+    <div class="pill" id="pXu" title="Xu: dùng mua đồ cho vườn"><span data-i="coin"></span><b id="vXu">0</b></div>
+    <div class="pill hide-s" id="pSt" title="Tổng số sao"><span data-i="star"></span><b id="vSt">0</b></div>
+    <button class="ib" id="bSet" aria-label="Tiến độ và sao lưu" title="Tiến độ và sao lưu"><span data-i="gear"></span></button>
+    <button class="ib hide-s" id="bSnd" aria-label="Bật/tắt âm thanh" title="Âm thanh"><span data-i="snd"></span></button>
+    <a class="ib" href="../../../" aria-label="Về trang chủ" title="Về trang chủ"><span data-i="home"></span></a>
+  </header>
+
+  <main>
+    <section class="view" id="vLock" aria-label="Nhập mã CLB">
+      <div class="card lock">
+        <span data-i="jenny"></span>
+        <h2>Chào mừng em đến với Hành trình của Jenny!</h2>
+        <p>Nhập <b>mã CLB</b> thầy cô đã cho để mở trò chơi. Em chỉ cần nhập một lần trên máy này.</p>
+        <input id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="MÃ CLB" aria-label="Mã CLB">
+        <div class="err" id="codeErr" role="alert"></div>
+        <button class="btn y" id="codeGo" style="max-width:300px;width:100%">Mở trò chơi</button>
+      </div>
+    </section>
+
+    <section class="view" id="vMap" aria-label="Bản đồ">
+      <div class="isle-head">
+        <button class="ib" id="isPrev" aria-label="Đảo trước"><span data-i="left"></span></button>
+        <div class="nm" id="isName"></div>
+        <button class="ib" id="isNext" aria-label="Đảo sau"><span data-i="right"></span></button>
+      </div>
+      <div class="mapbox" id="mapbox"></div>
+    </section>
+
+    <section class="view" id="vMath" aria-label="Trạm toán">
+      <div class="card mcard">
+        <div class="mhead">
+          <div class="seg" id="seg" role="group" aria-label="Độ khó"></div>
+          <button class="read" id="bRead" hidden><span data-i="snd"></span>Đọc đề</button>
+          <div class="today" id="today"></div>
+        </div>
+        <div class="mtext" id="mtext"></div>
+      </div>
+      <div class="mpad">
+        <div class="ans empty" id="ans" aria-live="polite">?</div>
+        <div class="mrow"><button class="btn" id="bSkip"><span data-i="swap"></span>Đổi bài</button><button class="btn" id="bClr"><span data-i="back"></span>Xoá</button></div>
+        <div class="keys" id="keys"></div>
+        <div class="jrow"><div class="bubble" id="say"></div><span data-i="jenny"></span></div>
+      </div>
+    </section>
+
+    <section class="view" id="vGarden" aria-label="Vườn của Jenny">
+      <div class="gbox"><div class="scene" id="scene"></div></div>
+      <div class="gbar">
+        <button class="btn y" id="bShop"><span data-i="cart"></span>Cửa hàng</button>
+        <div class="info" id="ginfo"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs" id="tabs" role="tablist">
+    <button class="tab" role="tab" data-v="map"><span data-i="map"></span>Bản đồ</button>
+    <button class="tab" role="tab" data-v="math"><span data-i="calc"></span>Trạm toán</button>
+    <button class="tab" role="tab" data-v="garden"><span data-i="sprout"></span>Vườn<span class="dot" id="gdot" hidden></span></button>
+  </nav>
+</div>
+<div class="ov" id="ov" hidden><div class="panel" id="panel"></div></div>
+<canvas id="fx"></canvas>
+
+<script>
+(function () {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const KEY = 'jenny-saga-th', CODEKEY = 'jenny-club-code', BACK = '../../hanh-trinh-jenny/tieu-hoc/';
+const GRADES = { '12': 'Lớp 1–2', '34': 'Lớp 3–4' };
+const EN_MAX = 10, DAY_XU = 300, XU = [10, 20, 40], EN = [1, 1, 2], DIFF = ['Dễ', 'Vừa', 'Khó'];
+
+/* ================= art ================= */
+const K = 'stroke="#1D2B53" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"';
+const I = {
+  bolt: `<svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z" fill="#FFC93C" ${K}/></svg>`,
+  coin: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="#FFC93C" ${K}/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#C98A00" stroke-width="2"/></svg>`,
+  star: `<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z" fill="currentColor" stroke="#1D2B53" stroke-width="1.4" stroke-linejoin="round" style="color:#FFC93C"/></svg>`,
+  gear: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V14M4 10V4M12 20V12M12 8V4M20 20V16M20 12V4M2 14h4M10 8h4M18 16h4"/></svg>`,
+  snd: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.5a5 5 0 0 1 0 7"/></svg>`,
+  home: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>`,
+  left: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>`,
+  right: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>`,
+  map: `<svg viewBox="0 0 24 24"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z" fill="#DCEBFF" ${K}/><path d="M9 4v14M15 6v14" ${K} fill="none"/></svg>`,
+  calc: `<svg viewBox="0 0 24 24"><rect x="4" y="2.5" width="16" height="19" rx="3" fill="#D5F6E8" ${K}/><rect x="7" y="5.5" width="10" height="4" rx="1" fill="#fff" ${K} stroke-width="1.8"/><path d="M8 13.5h0M12 13.5h0M16 13.5h0M8 17.5h0M12 17.5h0M16 17.5h0" ${K} stroke-width="3"/></svg>`,
+  sprout: `<svg viewBox="0 0 24 24"><path d="M12 21v-9" ${K} fill="none"/><path d="M12 13C12 8 8 6 4 6c0 4 3 7 8 7zM12 11c0-4 3-7 8-7 0 5-3 7-8 7z" fill="#2DBE8C" ${K}/><path d="M5 21h14" ${K}/></svg>`,
+  cart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h3l2.4 11h10.2L21 7H7"/><circle cx="10" cy="19.5" r="1.6"/><circle cx="17" cy="19.5" r="1.6"/></svg>`,
+  swap: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>`,
+  back: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H20v14H9l-6-7z"/><path d="M12 9l5 6M17 9l-5 6"/></svg>`,
+  check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>`,
+  lock: `<svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="#B8C6DD" ${K}/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" ${K}/></svg>`,
+  jenny: `<svg class="jsvg" viewBox="0 0 120 140" aria-hidden="true" stroke="#1D2B53" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 70 Q14 28 60 18 Q106 28 98 70 Q101 90 93 101 L84 97 Q88 82 86 66 L34 66 Q32 82 36 97 L27 101 Q19 90 22 70 Z" fill="#2B1E1A"/><ellipse cx="60" cy="63" rx="26" ry="29" fill="#FFDCC2"/><path d="M34 58 Q38 32 64 31 Q86 33 87 56 Q78 45 66 46 Q60 38 50 47 Q42 47 34 58 Z" fill="#2B1E1A"/><ellipse cx="50" cy="65" rx="3.2" ry="4.2" fill="#1D2B53"/><ellipse cx="70" cy="65" rx="3.2" ry="4.2" fill="#1D2B53"/><circle cx="51" cy="63.5" r="1" fill="#fff" stroke="none"/><circle cx="71" cy="63.5" r="1" fill="#fff" stroke="none"/><ellipse cx="42" cy="75" rx="4.5" ry="2.6" fill="#FF9E8C" stroke="none"/><ellipse cx="78" cy="75" rx="4.5" ry="2.6" fill="#FF9E8C" stroke="none"/><path class="m-norm" d="M52 78 q8 7 16 0" fill="none"/><path class="m-happy" d="M50 77 q10 13 20 0 z" fill="#B3261E"/><ellipse class="m-oops" cx="60" cy="81" rx="3.4" ry="4" fill="#B3261E"/><path d="M54 91 v7 M66 91 v7" fill="none"/><path d="M22 124 L34 104 Q44 99 54 98 Q60 103 66 98 Q76 99 86 104 L98 124 L88 128 L86 121 L86 139 L34 139 L34 121 L32 128 Z" fill="#8E6BD8"/><path d="M40 103 L82 131" stroke="#7A4B2A" stroke-width="3.4" fill="none"/><rect x="78" y="127" width="15" height="11" rx="3" fill="#D9A066"/></svg>`
+};
+const starSvg = on => `<svg viewBox="0 0 24 24" class="${on ? '' : 'dim'}" fill="currentColor" stroke="#1D2B53" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg>`;
+function paintIcons(root = document) {
+  root.querySelectorAll('span[data-i]').forEach(e => {
+    const t = document.createElement('div'); t.innerHTML = I[e.dataset.i]; const svg = t.firstElementChild;
+    const st = e.getAttribute('style'); if (st) svg.setAttribute('style', st);
+    e.replaceWith(svg);
+  });
+}
+
+/* plants: stage 0 seed, 1 sprout, 2 growing, 3 ripe */
+const S2 = 'stroke="#1D2B53" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"';
+function leaves(c = '#2DBE8C') { return `<path d="M20 30V20" ${S2} fill="none"/><path d="M20 22c0-5-4-7-9-7 0 5 4 7 9 7zM20 21c0-5 4-8 9-8 0 6-4 8-9 8z" fill="${c}" ${S2}/>`; }
+const PLANTS = {
+  carrot: { name: 'Cà rốt', cost: 15, need: 3, sell: 25, ripe: `<path d="M20 36l-6-16h12z" fill="#FF8A3D" ${S2}/><path d="M16 24h4M17 28h3" ${S2}/><path d="M20 20c-3-5-7-6-9-5M20 20c0-6 2-9 5-10M20 20c3-4 7-5 9-3" fill="none" stroke="#2DBE8C" stroke-width="3" stroke-linecap="round"/>` },
+  sunflower: { name: 'Hướng dương', cost: 20, need: 4, sell: 35, ripe: `<path d="M20 38V20" ${S2} fill="none"/><path d="M20 30c-4-3-8-2-9 0 3 2 6 2 9 0z" fill="#2DBE8C" ${S2}/>${[0, 45, 90, 135, 180, 225, 270, 315].map(a => `<ellipse cx="20" cy="9" rx="3" ry="5" transform="rotate(${a} 20 15)" fill="#FFC93C" ${S2}/>`).join('')}<circle cx="20" cy="15" r="5" fill="#7A4B2A" ${S2}/>` },
+  tomato: { name: 'Cà chua', cost: 25, need: 5, sell: 45, ripe: `<path d="M20 38V14" ${S2} fill="none"/><path d="M20 26c-5-1-9-5-9-9 5 0 9 4 9 9zM20 20c5-1 9-5 9-9-5 0-9 4-9 9z" fill="#2DBE8C" ${S2}/><circle cx="12" cy="28" r="5" fill="#FF6B57" ${S2}/><circle cx="28" cy="25" r="5.5" fill="#FF6B57" ${S2}/><circle cx="21" cy="9" r="4.5" fill="#FF6B57" ${S2}/>` },
+  melon: { name: 'Dưa hấu', cost: 40, need: 8, sell: 75, ripe: `<path d="M6 16c4-6 10-6 14-2" fill="none" stroke="#2DBE8C" stroke-width="3" stroke-linecap="round"/><ellipse cx="20" cy="27" rx="15" ry="10" fill="#2DBE8C" ${S2}/><path d="M10 20c2 6 2 11 0 15M17 18c2 6 2 12 0 18M24 18c-2 6-2 12 0 18M31 20c-2 6-2 11 0 15" stroke="#1A8F68" stroke-width="2" fill="none"/>` },
+  pumpkin: { name: 'Bí ngô', cost: 60, need: 12, sell: 110, ripe: `<path d="M20 15c0-4 2-6 5-7" fill="none" ${S2}/><ellipse cx="13" cy="26" rx="8" ry="10" fill="#FF8A3D" ${S2}/><ellipse cx="27" cy="26" rx="8" ry="10" fill="#FF8A3D" ${S2}/><ellipse cx="20" cy="26" rx="7" ry="11" fill="#FFA45C" ${S2}/>` }
+};
+function plantSvg(k, stage) {
+  let b = '';
+  if (stage === 0) b = `<ellipse cx="20" cy="32" rx="9" ry="4" fill="#7A4B2A" ${S2}/><circle cx="17" cy="30" r="1.6" fill="#FFF0C2"/><circle cx="23" cy="31" r="1.6" fill="#FFF0C2"/>`;
+  else if (stage === 1) b = `<g transform="translate(0 6) scale(1)">${leaves()}</g>`;
+  else if (stage === 2) b = `<g transform="translate(-4 -2) scale(1.2)">${leaves('#43C78F')}</g><circle cx="20" cy="22" r="3" fill="${k === 'tomato' ? '#FFB3A6' : k === 'sunflower' ? '#FFE08A' : '#BFE7C9'}" ${S2}/>`;
+  else b = PLANTS[k].ripe;
+  return `<svg viewBox="0 0 40 40" aria-hidden="true">${b}</svg>`;
+}
+const ANIMALS = {
+  ga: { name: 'Gà mái', cost: 80, prod: 'Trứng', sell: 15, need: 3 },
+  tho: { name: 'Thỏ', cost: 120, prod: 'Cà rốt vàng', sell: 22, need: 3 },
+  bo: { name: 'Bò sữa', cost: 200, prod: 'Sữa', sell: 35, need: 3 }
+};
+function animalSvg(k, mood) {
+  const eye = mood === 'sad' ? `<path d="M-3 0h3" ${S2}/>` : `<circle r="1.8" fill="#1D2B53"/>`;
+  const mouth = mood === 'sad' ? 'M-3 3q3 -3 6 0' : 'M-3 1q3 3 6 0';
+  if (k === 'ga') return `<svg viewBox="0 0 48 44" aria-hidden="true"><path d="M8 26c0-10 8-14 16-12l4-6c4 0 6 3 5 7l6 2-5 3c2 10-6 18-16 18-6 0-10-5-10-12z" fill="#fff" ${S2}/><path d="M29 6c1-3 4-3 5 0 2-2 5 0 3 3" fill="#FF6B57" ${S2}/><path d="M38 17l5 1-5 2" fill="#FFC93C" ${S2}/><g transform="translate(33 13)">${eye}</g><path d="M14 26c4 4 10 4 13 0" fill="none" ${S2}/><path d="M18 38v5M24 38v5" ${S2}/></svg>`;
+  if (k === 'tho') return `<svg viewBox="0 0 48 44" aria-hidden="true"><ellipse cx="18" cy="8" rx="4" ry="9" fill="#F4F0FF" ${S2}/><ellipse cx="30" cy="8" rx="4" ry="9" fill="#F4F0FF" ${S2}/><ellipse cx="24" cy="31" rx="15" ry="11" fill="#F4F0FF" ${S2}/><circle cx="24" cy="20" r="9" fill="#F4F0FF" ${S2}/><g transform="translate(20 19)">${eye}</g><g transform="translate(28 19)">${eye}</g><circle cx="24" cy="23" r="1.6" fill="#FF9E8C"/><path d="${mouth}" transform="translate(24 24)" fill="none" ${S2}/></svg>`;
+  return `<svg viewBox="0 0 52 44" aria-hidden="true"><rect x="10" y="16" width="34" height="20" rx="9" fill="#fff" ${S2}/><path d="M20 18c3 4 0 8-4 8M34 30c4-2 6 2 4 5" fill="#1D2B53" stroke="none"/><path d="M14 36v6M22 36v6M32 36v6M40 36v6" ${S2}/><rect x="2" y="9" width="17" height="15" rx="7" fill="#fff" ${S2}/><path d="M3 9l-2-4M18 9l2-4" ${S2}/><ellipse cx="10.5" cy="21" rx="7" ry="4" fill="#FFB8A8" ${S2}/><g transform="translate(7 14)">${eye}</g><g transform="translate(14 14)">${eye}</g></svg>`;
+}
+const PROD = {
+  ga: `<svg viewBox="0 0 24 24"><ellipse cx="12" cy="13" rx="7" ry="9" fill="#FFF7DD" ${K}/></svg>`,
+  tho: `<svg viewBox="0 0 24 24"><path d="M12 22L7 9h10z" fill="#FFC93C" ${K}/><path d="M12 9c-2-4-4-5-6-4M12 9c1-4 3-6 5-6" fill="none" stroke="#2DBE8C" stroke-width="2.4" stroke-linecap="round"/></svg>`,
+  bo: `<svg viewBox="0 0 24 24"><path d="M8 3h8v3l2 4v11H6V10l2-4z" fill="#fff" ${K}/><path d="M6 13h12" ${K}/><rect x="8" y="3" width="8" height="3" fill="#2F7DE1" ${K}/></svg>`
+};
+const DECOS = {
+  fence: { name: 'Hàng rào', cost: 40, svg: `<svg viewBox="0 0 60 40"><path d="M4 18h52M4 30h52" ${S2} stroke-width="3"/>${[8, 20, 32, 44, 56].map(x => `<path d="M${x - 4} 38V10l4-5 4 5v28z" fill="#E9C38E" ${S2}/>`).join('')}</svg>` },
+  tree: { name: 'Cây táo', cost: 60, svg: `<svg viewBox="0 0 40 50"><path d="M17 48V30h6v18z" fill="#A9764E" ${S2}/><circle cx="20" cy="20" r="16" fill="#2DBE8C" ${S2}/><circle cx="13" cy="17" r="2.8" fill="#FF6B57" ${S2}/><circle cx="25" cy="12" r="2.8" fill="#FF6B57" ${S2}/><circle cx="26" cy="25" r="2.8" fill="#FF6B57" ${S2}/></svg>` },
+  bench: { name: 'Ghế đá', cost: 50, svg: `<svg viewBox="0 0 50 34"><rect x="3" y="12" width="44" height="8" rx="3" fill="#C9D3E2" ${S2}/><path d="M9 20v12M41 20v12" ${S2} stroke-width="4"/><rect x="5" y="3" width="40" height="6" rx="3" fill="#C9D3E2" ${S2}/></svg>` },
+  pond: { name: 'Hồ cá', cost: 120, svg: `<svg viewBox="0 0 60 30"><ellipse cx="30" cy="18" rx="27" ry="10" fill="#62B5F7" ${S2}/><path d="M22 18c4-4 8-4 10 0-2 4-6 4-10 0zM32 18l4-3v6z" fill="#FF8A3D" ${S2}/></svg>` },
+  mill: { name: 'Cối xay gió', cost: 200, svg: `<svg viewBox="0 0 40 60"><path d="M13 58l4-36h6l4 36z" fill="#FFF0C2" ${S2}/><rect x="17" y="46" width="6" height="12" fill="#A9764E" ${S2}/>${[0, 90, 180, 270].map(a => `<path d="M20 20l-3-17h6z" transform="rotate(${a + 20} 20 20)" fill="#fff" ${S2}/>`).join('')}<circle cx="20" cy="20" r="3" fill="#FF6B57" ${S2}/></svg>` }
+};
+const DECO_ORDER = ['tree', 'fence', 'mill', 'bench', 'pond'];
+
+/* ================= islands ================= */
+const ISLANDS = [
+  { id: 'r', name: 'Đảo Rô bốt', sub: 'Lập trình rô bốt', color: '#BFE7C9', edge: '#7CC79A', url: '../../tu-duy-bebras/robot-tim-duong/', need: 0,
+    lv: [[0, 0, 11], [0, 0, 10], [0, 0, 1], [0, 0, 23], [1, 0, 7], [1, 0, 19], [1, 0, 13], [1, 0, 8], [2, 0, 24], [2, 0, 18]] },
+  { id: 'b', name: 'Đảo Ống Bi', sub: 'Xếp bi cùng màu', color: '#DCEBFF', edge: '#8FBDF0', url: '../../tu-duy-bebras/xep-ong-bi/', need: 15,
+    lv: [[0, 0, 4], [0, 0, 18], [0, 0, 10], [0, 0, 8], [1, 0, 6], [1, 0, 3], [1, 0, 23], [1, 0, 20], [2, 0, 12], [2, 0, 16]] },
+  { id: 'c', name: 'Đảo Chồng Hình', sub: 'Chồng hai tấm hình', color: '#FFE3A8', edge: '#E8B85C', url: '../../tu-duy-bebras/chong-hinh/', need: 15,
+    lv: [[0, 0, 15], [0, 0, 3], [0, 0, 19], [0, 0, 13], [1, 0, 1], [1, 0, 18], [1, 0, 5], [1, 0, 10], [2, 0, 15], [2, 0, 22]] },
+  { id: 'g', name: 'Đảo Mật Thư', sub: 'Giải mã lá thư', color: '#EADCFB', edge: '#B79BE6', url: '../../tu-duy-bebras/giai-ma-thu/', need: 15,
+    lv: [[0, 0, 4], [0, 0, 14], [0, 0, 6], [0, 0, 5], [1, 0, 8], [1, 0, 16], [1, 0, 4], [1, 0, 15], [2, 0, 8], [2, 0, 20]] }
+];
+const NLV = 10, MAXST = ISLANDS.length * NLV * 3;
+
+/* ================= state ================= */
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const dayNum = s => Math.round(new Date(s + 'T00:00:00').getTime() / 864e5);
+function fresh() {
+  return { saga: 1, xu: 50, en: 5, stars: {}, solved: {}, miss: {}, day: today(), dayXu: 0, grow: 0, right: 0, wrong: 0,
+    plots: Array(8).fill(null), pens: [null, null, null], deco: {}, isle: 0, diff: 0, cur: null, pending: null, done: false, g: null };
+}
+let S = load();
+function load() { try { const v = JSON.parse(localStorage.getItem(KEY)); if (v && v.saga) return Object.assign(fresh(), v); } catch (e) {} return fresh(); }
+function save() { S.done = ISLANDS.every(is => is.lv.every((_, i) => (S.stars[is.id + (i + 1)] || 0) === 3)); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function rollDay() { const t = today(); if (S.day !== t) { S.day = t; S.dayXu = 0; } }
+const totalStars = (isle) => Object.entries(S.stars).reduce((a, [k, v]) => a + (!isle || k[0] === isle ? v : 0), 0);
+
+/* ================= sound ================= */
+let AC = null, sndOn = true;
+function tone(f, d = .12, type = 'triangle', vol = .14, when = 0) {
+  if (!sndOn) return; try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch (e) { return; }
+  const t = AC.currentTime + when, o = AC.createOscillator(), g = AC.createGain(); o.type = type; o.frequency.setValueAtTime(f, t);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+  o.connect(g).connect(AC.destination); o.start(t); o.stop(t + d + .02);
+}
+const sfx = {
+  tap() { tone(880, .05, 'sine', .07); },
+  good() { [523, 659, 784, 1047].forEach((f, i) => tone(f, .16, 'triangle', .14, i * .08)); },
+  bad() { tone(196, .16, 'sawtooth', .07); tone(147, .22, 'sawtooth', .07, .14); },
+  coin() { tone(988, .08, 'square', .06); tone(1319, .18, 'square', .06, .08); }
+};
+
+/* ================= confetti ================= */
+const fx = $('#fx'), fctx = fx.getContext('2d'); let parts = [], fxRun = false;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function sizeFx() { fx.width = innerWidth * devicePixelRatio; fx.height = innerHeight * devicePixelRatio; }
+sizeFx(); addEventListener('resize', sizeFx);
+function burst(el, n = 30) {
+  if (RM || !el) return; const r = el.getBoundingClientRect(), d = devicePixelRatio, cols = ['#FFC93C', '#FF6B57', '#2DBE8C', '#2F7DE1', '#8E6BD8'];
+  for (let i = 0; i < n; i++) { const a = Math.random() * 6.283, v = 2 + Math.random() * 5;
+    parts.push({ x: (r.left + r.width / 2) * d, y: (r.top + r.height / 2) * d, vx: Math.cos(a) * v * d, vy: (Math.sin(a) * v - 3) * d, s: (4 + Math.random() * 5) * d, c: cols[i % 5], r: 0, life: 70 }); }
+  if (!fxRun) { fxRun = true; requestAnimationFrame(step); }
+}
+function step() {
+  fctx.clearRect(0, 0, fx.width, fx.height); parts = parts.filter(p => p.life > 0);
+  for (const p of parts) { p.x += p.vx; p.y += p.vy; p.vy += .18 * devicePixelRatio; p.r += .15; p.life--;
+    fctx.save(); fctx.translate(p.x, p.y); fctx.rotate(p.r); fctx.fillStyle = p.c; fctx.globalAlpha = Math.min(1, p.life / 30); fctx.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * .66); fctx.restore(); }
+  if (parts.length) requestAnimationFrame(step); else { fxRun = false; fctx.clearRect(0, 0, fx.width, fx.height); }
+}
+
+/* ================= ui helpers ================= */
+let toastT;
+function toast(html) { document.querySelectorAll('.toast').forEach(t => t.remove()); const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = html; document.body.appendChild(t); clearTimeout(toastT); toastT = setTimeout(() => t.remove(), 2300); }
+function hud(flash) {
+  $('#vEn').textContent = S.en; $('#vXu').textContent = S.xu; $('#vSt').textContent = totalStars();
+  if (flash) flash.split(',').forEach(id => { const e = $(id); e.classList.remove('flash'); void e.offsetWidth; e.classList.add('flash'); });
+  const ready = gardenReady(); $('#gdot').hidden = !ready; $('#gdot').textContent = ready;
+}
+let moodT;
+function say(msg, mood) {
+  $('#say').innerHTML = msg;
+  if (view === 'math' && mood && !$('.jrow').offsetParent) toast(msg);
+  document.querySelectorAll('#vMath .jsvg').forEach(j => { j.classList.remove('happy', 'oops', 'bounce'); void j.offsetWidth; if (mood) j.classList.add(mood); if (mood === 'happy') j.classList.add('bounce'); });
+  clearTimeout(moodT); moodT = setTimeout(() => document.querySelectorAll('#vMath .jsvg').forEach(j => j.classList.remove('happy', 'oops', 'bounce')), 2200);
+}
+function openOv(html, onReady) { const p = $('#panel'); p.innerHTML = html; paintIcons(p); $('#ov').hidden = false; fitPanel(); onReady && onReady(p); const f = p.querySelector('[data-focus]') || p.querySelector('button'); f && f.focus(); }
+function closeOv() { $('#ov').hidden = true; $('#panel').style.transform = ''; }
+$('#ov').addEventListener('click', e => { if (e.target.id === 'ov') closeOv(); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#ov').hidden) closeOv(); });
+function fitPanel() {
+  const p = $('#panel'); p.style.transform = ''; if ($('#ov').hidden) return;
+  const r = p.getBoundingClientRect(), s = Math.min(1, (innerHeight - 20) / r.height, (innerWidth - 20) / r.width);
+  if (s < 1) { p.style.transform = `scale(${s.toFixed(3)})`; }
+}
+
+/* ================= views ================= */
+let view = 'map';
+function show(v) {
+  view = v;
+  document.querySelectorAll('.view').forEach(x => x.classList.toggle('on', x.id === 'v' + v[0].toUpperCase() + v.slice(1)));
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.v === v));
+  $('#tabs').style.visibility = v === 'lock' ? 'hidden' : '';
+  if (v !== 'math') stopRead();
+  if (v === 'map') drawMap(); if (v === 'math') drawMath(); if (v === 'garden') drawGarden();
+}
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => { sfx.tap(); if (t.dataset.v === 'math' && !S.g) { askGrade(true); return; } show(t.dataset.v); });
+
+/* ================= map ================= */
+function lvUnlocked(is, i) { return islandOpen(is) && (i === 0 || (S.stars[is.id + i] || 0) > 0); }
+function islandOpen(is) { return !is.need || totalStars(ISLANDS[ISLANDS.indexOf(is) - 1].id) >= is.need; }
+function drawMap() {
+  const is = ISLANDS[S.isle], open = islandOpen(is);
+  $('#isName').innerHTML = `${is.name}<small>${is.sub} · ${totalStars(is.id)}/${is.lv.length * 3} sao</small>`;
+  $('#isPrev').disabled = S.isle === 0; $('#isNext').disabled = S.isle === ISLANDS.length - 1;
+  $('#isPrev').style.opacity = S.isle === 0 ? .35 : 1; $('#isNext').style.opacity = S.isle === ISLANDS.length - 1 ? .35 : 1;
+  const box = $('#mapbox'), W = Math.max(box.clientWidth, 10), H = Math.max(box.clientHeight, 10);
+  const NN = is.lv.length, wide = W / H > 1.15, cols = wide ? 5 : 2, rows = Math.ceil(NN / cols);
+  const cw = W / cols, ch = H / rows, R = Math.max(12, Math.min(cw, ch) * .27);
+  const pts = [];
+  for (let i = 0; i < NN; i++) {
+    const row = Math.floor(i / cols), k = i % cols, col = row % 2 ? cols - 1 - k : k;
+    const wob = ((i * 37) % 7 - 3) / 3 * ch * .08;
+    pts.push([cw * (col + .5), H - ch * (row + .5) + wob]);
+  }
+  let path = `M${pts[0][0]} ${pts[0][1]}`;
+  for (let i = 1; i < NN; i++) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i]; const mx = (x0 + x1) / 2, my = (y0 + y1) / 2; path += ` Q${x0 === x1 ? x0 + (Math.floor(i / cols) % 2 ? -cw * .45 : cw * .45) : mx} ${y0 === y1 ? my : my} ${x1} ${y1}`; }
+  // decorations: trees and rocks scattered with fixed positions
+  let deco = '';
+  for (let k = 0; k < 14; k++) {
+    const x = ((k * 97 + 13) % 100) / 100 * W, y = ((k * 61 + 29) % 100) / 100 * H, s = Math.min(cw, ch) * .16;
+    if (pts.some(([px, py]) => Math.hypot(px - x, py - y) < R * 1.9)) continue;
+    deco += k % 3 ? `<g transform="translate(${x} ${y}) scale(${s / 10})"><path d="M-1.5 9v-6h3v6z" fill="#A9764E" ${S2} stroke-width=".8"/><circle cy="-1" r="6" fill="${['#2DBE8C', '#7BC96F', '#43C78F', '#8E6BD8'][S.isle % 4]}" ${S2} stroke-width=".8"/></g>`
+      : `<g transform="translate(${x} ${y}) scale(${s / 10})"><path d="M-7 5c0-6 4-9 7-9s7 3 7 9z" fill="#C9D3E2" ${S2} stroke-width=".8"/></g>`;
+  }
+  const next = is.lv.findIndex((_, i) => !(S.stars[is.id + (i + 1)] > 0));
+  let nodes = '';
+  pts.forEach(([x, y], i) => {
+    const id = is.id + (i + 1), st = S.stars[id] || 0, unl = lvUnlocked(is, i), lv = is.lv[i][0];
+    const face = !unl ? '#D6DEEA' : st ? '#FFC93C' : '#fff', ringC = ['#2DBE8C', '#2F7DE1', '#8E6BD8'][lv];
+    const sr = R * .34;
+    const stars = unl ? [0, 1, 2].map(k => `<path transform="translate(${x + (k - 1) * sr * 2.1} ${y + R + sr * 1.1}) scale(${sr / 10})" d="M0 -10l2.9 6.2 6.6.7-5 4.5 1.4 6.6L0 4.7l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z" fill="${k < st ? '#FFC93C' : '#fff'}" stroke="#1D2B53" stroke-width="1.6" stroke-linejoin="round"/>`).join('') : '';
+    nodes += `<g class="node" tabindex="0" role="button" data-n="${i}" aria-label="Màn ${i + 1}${unl ? ', ' + st + ' sao' : ', đang khoá'}">
+      ${i === next && unl ? `<circle class="ring" cx="${x}" cy="${y}" r="${R * 1.12}" fill="none" stroke="#FFC93C" stroke-width="${R * .22}"/>` : ''}
+      <circle cx="${x}" cy="${y + R * .12}" r="${R}" fill="#1D2B53"/>
+      <circle class="face" cx="${x}" cy="${y}" r="${R}" fill="${face}" stroke="#1D2B53" stroke-width="3"/>
+      <circle cx="${x}" cy="${y}" r="${R * .8}" fill="none" stroke="${ringC}" stroke-width="${R * .1}" opacity="${unl ? 1 : .3}"/>
+      ${unl ? `<text x="${x}" y="${y + R * .36}" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="${R * 1.05}" fill="#1D2B53">${i + 1}</text>`
+        : `<g transform="translate(${x - R * .5} ${y - R * .5}) scale(${R / 24})">${I.lock.replace('<svg viewBox="0 0 24 24">', '').replace('</svg>', '')}</g>`}
+      ${stars}</g>`;
+  });
+  const jx = next >= 0 && open ? pts[next] : null;
+  const jen = jx ? `<g transform="translate(${jx[0] - R * .95} ${jx[1] - R * 3.15}) scale(${R / 62})" pointer-events="none">${I.jenny.replace(/<svg[^>]*>/, '').replace('</svg>', '')}</g>` : '';
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" aria-label="Bản đồ ${is.name}">
+    <rect x="3" y="3" width="${W - 6}" height="${H - 6}" rx="26" fill="${is.color}" stroke="${is.edge}" stroke-width="4"/>
+    ${deco}
+    <path d="${path}" fill="none" stroke="#fff" stroke-width="${R * .55}" stroke-linecap="round" opacity=".85"/>
+    <path d="${path}" fill="none" stroke="#B8C6DD" stroke-width="${R * .12}" stroke-dasharray="${R * .3} ${R * .35}" stroke-linecap="round"/>
+    ${nodes}${jen}
+    ${open ? '' : `<rect x="3" y="3" width="${W - 6}" height="${H - 6}" rx="26" fill="rgba(29,43,83,.35)"/>
+      <g transform="translate(${W / 2} ${H / 2})"><rect x="${-Math.min(W * .45, 210)}" y="-46" width="${Math.min(W * .9, 420)}" height="92" rx="18" fill="#fff" stroke="#1D2B53" stroke-width="3"/>
+      <text text-anchor="middle" y="-8" font-family="Baloo 2, sans-serif" font-weight="800" font-size="22" fill="#1D2B53">Đảo đang khoá</text>
+      <text text-anchor="middle" y="22" font-family="Nunito, sans-serif" font-weight="800" font-size="15" fill="#4A5878">Cần ${is.need} sao ở ${esc(ISLANDS[S.isle - 1].name)} (có ${totalStars(ISLANDS[S.isle - 1].id)})</text></g>`}
+  </svg>`;
+  box.querySelectorAll('.node').forEach(n => { n.onclick = () => openLevel(+n.dataset.n); n.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLevel(+n.dataset.n); } }; });
+}
+$('#isPrev').onclick = () => { if (S.isle > 0) { S.isle--; save(); sfx.tap(); drawMap(); } };
+$('#isNext').onclick = () => { if (S.isle < ISLANDS.length - 1) { S.isle++; save(); sfx.tap(); drawMap(); } };
+
+function openLevel(i) {
+  const is = ISLANDS[S.isle], id = is.id + (i + 1), st = S.stars[id] || 0, [lv] = is.lv[i];
+  sfx.tap();
+  if (!islandOpen(is)) { toast(`Cần ${is.need} sao ở ${ISLANDS[S.isle - 1].name} để mở đảo này`); return; }
+  if (!lvUnlocked(is, i)) { toast('Qua màn trước để mở màn này nhé!'); return; }
+  const noEn = S.en < 1;
+  openOv(`<h2>${esc(is.name)} · Màn ${i + 1}</h2>
+    <div class="stars">${[0, 1, 2].map(k => starSvg(k < st)).join('')}</div>
+    <p>Mức <b>${DIFF[lv]}</b>. Vào màn tốn <b>1 năng lượng</b> <span data-i="bolt" style="width:18px;height:18px;vertical-align:-3px"></span>. Đạt 3 sao được trả lại năng lượng.</p>
+    ${noEn ? '<p style="color:#B3261E">Em hết năng lượng rồi! Giải vài bài ở Trạm toán để nạp thêm nhé.</p>' : ''}
+    <div class="row">${noEn ? '<button class="btn g" id="goMath" data-focus>Đến Trạm toán</button>' : '<button class="btn y" id="goPlay" data-focus>Chơi</button>'}<button class="btn" id="goClose">Đóng</button></div>`, p => {
+    p.querySelector('#goClose').onclick = closeOv;
+    if (noEn) p.querySelector('#goMath').onclick = () => { closeOv(); show('math'); };
+    else p.querySelector('#goPlay').onclick = () => play(is, i);
+  });
+}
+function play(is, i) {
+  if (S.en < 1) return;
+  S.en--; S.pending = is.id + (i + 1); save();
+  const [lv, r, seed] = is.lv[i];
+  location.href = `${is.url}?kid=1&saga=${encodeURIComponent(BACK)}&id=${is.id}${i + 1}&lv=${lv}&r=${r}&seed=${seed}&n=${i + 1}`;
+}
+function takeResult() {
+  let res = null; try { res = JSON.parse(localStorage.getItem('jenny-saga-result')); localStorage.removeItem('jenny-saga-result'); } catch (e) {}
+  const pend = S.pending; S.pending = null;
+  if (!res || !pend || res.id !== pend) { save(); return; }
+  const before = S.stars[res.id] || 0, st = Math.max(1, Math.min(3, res.stars | 0));
+  S.stars[res.id] = Math.max(before, st);
+  let msg = `Màn ${res.id.slice(1)}: ${'★'.repeat(st)}${'☆'.repeat(3 - st)}`;
+  if (st === 3) { S.en = Math.min(EN_MAX, S.en + 1); msg += ' · được trả lại 1 năng lượng'; }
+  S.isle = Math.max(0, ISLANDS.findIndex(x => x.id === res.id[0]));
+  save(); setTimeout(() => { toast(msg); hud('#pSt,#pEn'); }, 300);
+}
+
+/* ================= math station ================= */
+let BANK = null, typed = '', tries = 0, answered = false, gone = [];
+const mine = () => BANK.filter(p => p.g === S.g);
+function pick(d) {
+  const all = mine().filter(p => p.d === d), cur = S.cur && S.cur.id;
+  const pool = all.filter(p => !S.solved[p.i] && p.i !== cur);
+  const fresh2 = pool.filter(p => !S.miss[p.i]);
+  const from = fresh2.length ? fresh2 : pool.length ? pool : all.filter(p => p.i !== cur);
+  return (from.length ? from : all)[Math.floor(Math.random() * (from.length || all.length))].i;
+}
+function current() { let p = S.cur && BANK.find(x => x.i === S.cur.id); if (!p || p.d !== S.diff || p.g !== S.g) { S.cur = { id: pick(S.diff) }; save(); p = BANK.find(x => x.i === S.cur.id); } return p; }
+const optHtml = o => /^\s*<svg/.test(o) ? o : `<span>${esc(o)}</span>`;
+function drawMath() {
+  if (!BANK || !S.g) return; rollDay();
+  $('#seg').innerHTML = DIFF.map((n, d) => `<button aria-pressed="${S.diff === d}" data-d="${d}">${n} · ${XU[d]}${I.coin}</button>`).join('');
+  $('#seg').querySelectorAll('button').forEach(b => b.onclick = () => { if (+b.dataset.d === S.diff) return; sfx.tap(); S.diff = +b.dataset.d; S.cur = null; resetAnswer(); save(); drawMath(); });
+  $('#today').innerHTML = `Hôm nay ${S.dayXu}/${DAY_XU}${I.coin}`;
+  const p = current();
+  const right = p.k === 'pick' ? 'Đáp án đúng là số ' + (p.n + 1) : 'Đáp số là ' + p.a;
+  const solTxt = answered ? `<div class="sol${S.cur.ok ? '' : ' bad'}"><b class="h">${S.cur.ok ? 'Đúng rồi! ' : right + '. '}Cùng xem lời giải:</b>${esc(p.s)}</div>` : '';
+  $('#mtext').className = 'mtext' + (answered ? ' solved' : '');
+  $('#vMath').classList.toggle('answered', answered);
+  $('#mtext').innerHTML = `<div class="q">${esc(p.q)}</div>${p.f ? `<div class="fig">${p.f}</div>` : ''}${answered ? '<button class="qbtn" id="qbtn">Xem lại đề</button>' : ''}${solTxt}`;
+  const qb = $('#qbtn'); if (qb) qb.onclick = () => { const m = $('#mtext'), on = m.classList.toggle('showq'); qb.textContent = on ? 'Xem lời giải' : 'Xem lại đề'; fitText(true); };
+  $('.mpad').classList.toggle('pick', p.k === 'pick');
+  drawKeys(p); drawAns(); fitText();
+  if (!answered && !$('#say').innerHTML) say('Giải đúng để nhận <b>xu</b> và <b>năng lượng</b> nhé!');
+}
+function drawKeys(p) {
+  const k = $('#keys');
+  k.classList.toggle('done', answered);
+  k.className = answered ? 'keys done' : p.k === 'pick' ? 'opts' : 'keys';
+  if (answered) {
+    k.innerHTML = `<button class="key go next" id="kNext" style="grid-column:1/-1">Bài tiếp theo ${I.right}</button>`; k.querySelector('#kNext').onclick = nextProblem; return;
+  }
+  if (p.k === 'pick') {
+    k.innerHTML = p.o.map((o, i) => `<button class="opt${gone.includes(i) ? ' no-go' : ''}" data-o="${i}" ${gone.includes(i) ? 'disabled' : ''} aria-label="Lựa chọn ${i + 1}"><span class="no">${i + 1}</span><span class="ob">${optHtml(o)}</span></button>`).join('');
+    k.querySelectorAll('.opt').forEach(b => b.onclick = () => choose(+b.dataset.o, b));
+    return;
+  }
+  k.innerHTML = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => `<button class="key" data-k="${n}">${n}</button>`).join('')
+    + `<button class="key" data-k="del" aria-label="Xoá">${I.back}</button><button class="key" data-k="0">0</button><button class="key go" data-k="ok" aria-label="Kiểm tra">${I.check}</button>`;
+  k.querySelectorAll('.key').forEach(b => b.onclick = () => press(b.dataset.k));
+}
+function drawAns(cls) { const a = $('#ans'); a.textContent = typed || '?'; a.className = 'ans' + (typed ? '' : ' empty') + (cls ? ' ' + cls : ''); }
+function resetAnswer() { typed = ''; tries = 0; answered = false; gone = []; }
+function press(k) {
+  if (answered || current().k === 'pick') return;
+  if (k === 'ok') return check();
+  if (k === 'del') typed = typed.slice(0, -1);
+  else if (typed.length < 5) typed = (typed === '0' ? '' : typed) + k;
+  sfx.tap(); drawAns();
+}
+function win(p, el) {
+  answered = true; S.cur.ok = true;
+  const first = !S.solved[p.i]; S.solved[p.i] = 1; delete S.miss[p.i]; S.right++; S.grow++;
+  let gain = 0, en = 0;
+  if (first) { gain = Math.min(tries ? Math.round(XU[p.d] / 2) : XU[p.d], Math.max(0, DAY_XU - S.dayXu)); en = Math.min(EN[p.d], EN_MAX - S.en); }
+  S.xu += gain; S.dayXu += gain; S.en += en; save();
+  sfx.good(); burst(el);
+  const parts2 = []; if (gain) parts2.push(`+${gain} xu`); if (en) parts2.push(`+${en} năng lượng`);
+  say(first ? (parts2.length ? `Giỏi quá! Em được <b>${parts2.join(', ')}</b>.` : 'Đúng rồi! Hôm nay em đã nhận đủ xu rồi.') + ' Cây và thú trong vườn lớn thêm một chút!' : 'Đúng rồi! (Bài này em đã giải trước đây nên không nhận thêm xu.)', 'happy');
+  hud('#pXu,#pEn'); drawMath();
+}
+function lose(p) {
+  answered = true; S.cur.ok = false; S.miss[p.i] = (S.miss[p.i] || 0) + 1; save();
+  sfx.bad(); say('Không sao! Em đọc lời giải rồi làm bài khác nhé.', 'oops');
+  drawMath();
+}
+function choose(i, el) {
+  const p = current(); if (answered || gone.includes(i)) return;
+  rollDay();
+  if (i === p.n) { el.classList.add('right'); return win(p, el); }
+  tries++; S.wrong++; gone.push(i); el.classList.add('wrong');
+  if (tries < 2) { sfx.bad(); save(); say('Chưa đúng. Em xem lại và chọn <b>thêm 1 lần</b> nhé!', 'oops'); setTimeout(() => { if (!answered) drawKeys(p); }, 450); return; }
+  lose(p);
+}
+function check() {
+  if (!typed) { say('Em gõ đáp số trước rồi bấm ✓ nhé.'); return; }
+  const p = current(), v = parseInt(typed, 10);
+  rollDay();
+  if (v === p.a) { win(p, $('#ans')); drawAns('ok'); return; }
+  tries++; S.wrong++;
+  if (tries < 2) { sfx.bad(); save(); drawAns('no'); say('Chưa đúng. Em đọc lại đề và thử <b>thêm 1 lần</b> nhé!', 'oops'); typed = ''; setTimeout(() => drawAns(), 450); return; }
+  lose(p); drawAns('no');
+}
+function nextProblem() { sfx.tap(); stopRead(); resetAnswer(); S.cur = { id: pick(S.diff) }; save(); say('Bài mới đây! Cố lên em.'); drawMath(); }
+$('#bSkip').onclick = () => { if (!BANK) return; nextProblem(); };
+$('#bClr').onclick = () => press('del');
+addEventListener('keydown', e => {
+  if (view !== 'math' || !$('#ov').hidden || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || !BANK || !S.g) return;
+  const p = current();
+  if (p.k === 'pick' && !answered && /^[1-3]$/.test(e.key)) { const b = document.querySelector(`.opt[data-o="${+e.key - 1}"]`); if (b && !b.disabled) b.click(); e.preventDefault(); return; }
+  if (/^[0-9]$/.test(e.key)) { press(e.key); e.preventDefault(); }
+  else if (e.key === 'Backspace') { press('del'); e.preventDefault(); }
+  else if (e.key === 'Enter') { answered ? nextProblem() : p.k === 'pick' ? 0 : check(); e.preventDefault(); }
+});
+function fitText(keepFold) {
+  const m = $('#mtext'); if (!m || view !== 'math') return;
+  if (!keepFold) m.classList.remove('fold', 'showq'); m.classList.remove('scroll');
+  const over = () => m.scrollHeight > m.clientHeight + 1;
+  const shrink = min => { let fs = innerHeight < 520 ? 18 : 24; m.style.fontSize = fs + 'px'; while (over() && fs > min) { fs -= .5; m.style.fontSize = fs + 'px'; } };
+  shrink(m.classList.contains('fold') ? 11 : 14);
+  if (over() && answered && !m.classList.contains('fold')) { m.classList.add('fold'); shrink(11); }
+  else if (over()) shrink(11);
+  if (over()) m.classList.add('scroll');
+}
+
+/* read aloud (Vietnamese voice if the device has one) */
+let VOICE = null;
+function findVoice() { try { VOICE = speechSynthesis.getVoices().find(v => /^vi/i.test(v.lang)) || null; } catch (e) { VOICE = null; } $('#bRead').hidden = !VOICE; }
+if ('speechSynthesis' in window) { findVoice(); speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', findVoice); }
+function stopRead() { try { speechSynthesis.cancel(); } catch (e) {} }
+$('#bRead').onclick = () => {
+  if (!VOICE || !BANK) return; stopRead();
+  const p = current(); let t = p.q;
+  if (p.k === 'pick' && p.o.every(o => !/^\s*<svg/.test(o))) t += ' ' + p.o.map((o, i) => `Số ${i + 1}: ${o}.`).join(' ');
+  if (answered) t = p.s;
+  const u = new SpeechSynthesisUtterance(t.replace(/[×]/g, ' nhân ').replace(/[:]/g, ' chia ').replace(/−/g, ' trừ ')); u.voice = VOICE; u.lang = VOICE.lang; u.rate = .92;
+  speechSynthesis.speak(u);
+};
+
+/* grade choice */
+function askGrade(first) {
+  openOv(`<h2>${first ? 'Em học lớp mấy?' : 'Đổi lớp'}</h2><p>Trạm toán sẽ ra bài đúng với lớp của em. Bản đồ và vườn vẫn giữ nguyên.</p>
+    <div class="grades">${Object.entries(GRADES).map(([g, n]) => `<button data-g="${g}" aria-pressed="${S.g === g}">${n}<small>${g === '12' ? 'Kangaroo Pre-Ecolier' : 'Kangaroo Ecolier'}</small></button>`).join('')}</div>`, pn => {
+    pn.querySelectorAll('.grades button').forEach(b => b.onclick = () => {
+      sfx.tap(); const changed = S.g !== b.dataset.g; S.g = b.dataset.g; if (changed) { S.cur = null; resetAnswer(); } save(); closeOv(); gradeSub(); if (view === 'math') drawMath();
+    });
+  });
+}
+function gradeSub() { $('#gradeSub').textContent = (S.g ? GRADES[S.g] : 'Tiểu học') + ' · Toán Kangaroo'; }
+
+/* ================= garden ================= */
+function petMood(p) { if (!p.fed) return 'sad'; const gap = dayNum(today()) - dayNum(p.fed); return gap === 0 ? 'happy' : gap === 1 ? 'hungry' : 'sad'; }
+function gardenReady() {
+  let n = 0;
+  S.plots.forEach(p => { if (p && S.grow - p.at >= PLANTS[p.k].need) n++; });
+  S.pens.forEach(p => { if (p && p.fedAt != null && !p.got && S.grow - p.fedAt >= ANIMALS[p.k].need) n++; });
+  return n;
+}
+function drawGarden() {
+  const sc = $('#scene');
+  const deco = DECO_ORDER.map(k => `<div title="${DECOS[k].name}">${S.deco[k] ? DECOS[k].svg : `<span class="slot">${DECOS[k].svg}</span>`}</div>`).join('');
+  const plots = S.plots.map((p, i) => {
+    if (!p) return `<button class="plot" data-p="${i}" aria-label="Ô đất trống, bấm để trồng cây"><span class="plus">+</span></button>`;
+    const P = PLANTS[p.k], g = Math.min(P.need, S.grow - p.at), ripe = g >= P.need, stage = ripe ? 3 : g === 0 ? 0 : g / P.need < .5 ? 1 : 2;
+    return `<button class="plot${ripe ? ' ripe' : ''}" data-p="${i}" aria-label="${P.name}${ripe ? ' đã chín, bấm để thu hoạch' : ', còn ' + (P.need - g) + ' bài đúng nữa'}">${plantSvg(p.k, stage)}${ripe ? '' : `<span class="bar2"><i style="width:${g / P.need * 100}%"></i></span>`}</button>`;
+  }).join('');
+  const pens = S.pens.map((p, i) => {
+    if (!p) return `<button class="pen" data-n="${i}" aria-label="Chuồng trống, bấm để mua con vật" style="grid-template-columns:1fr"><span class="plus" style="color:#C9A86A">+</span></button>`;
+    const A = ANIMALS[p.k], mood = petMood(p), fedToday = p.fed === today();
+    const ready = p.fedAt != null && !p.got && S.grow - p.fedAt >= A.need;
+    let side;
+    if (ready) side = `<span class="prod">${PROD[p.k]}</span><span>Thu ${A.prod.toLowerCase()}</span>`;
+    else if (!fedToday) side = `<span class="hungry">Đói</span><span>Cho ăn 10${I.coin}</span>`;
+    else if (p.got) side = `<span>${I.check}</span><span>Mai cho ăn tiếp</span>`;
+    else { const g = Math.min(A.need, S.grow - p.fedAt); side = `<span>${PROD[p.k]}</span><span>${g}/${A.need} bài</span>`; }
+    return `<button class="pen${ready ? ' ripe' : ''}" data-n="${i}" aria-label="${A.name}"><span class="ani">${animalSvg(p.k, mood === 'happy' ? 'happy' : mood === 'sad' ? 'sad' : 'ok')}</span><span class="side">${side}</span></button>`;
+  }).join('');
+  sc.innerHTML = `<div class="deco">${deco}</div><div class="plots">${plots}</div><div class="pens">${pens}</div>`;
+  sc.querySelectorAll('.plot').forEach(b => b.onclick = () => tapPlot(+b.dataset.p, b));
+  sc.querySelectorAll('.pen').forEach(b => b.onclick = () => tapPen(+b.dataset.n, b));
+  const ready = gardenReady();
+  $('#ginfo').innerHTML = ready ? `Có <b>${ready}</b> thứ đã sẵn sàng để thu hoạch!` : 'Mỗi bài toán em giải đúng giúp cây và thú lớn thêm. Thú cần cho ăn mỗi ngày.';
+  hud();
+}
+function tapPlot(i, el) {
+  const p = S.plots[i];
+  if (!p) {
+    openOv(`<h2>Trồng cây</h2><p>Chọn hạt giống. Cây lớn lên khi em <b>giải đúng bài toán</b>. Chín rồi bán lấy xu.</p>
+      <div class="shopgrid">${Object.entries(PLANTS).map(([k, P]) => `<button class="item" data-k="${k}" ${S.xu < P.cost ? 'disabled' : ''}>${plantSvg(k, 3).replace('<svg', '<svg class="pic"')}<b>${P.name}</b><span class="price">${P.cost}${I.coin}</span><span>${P.need} bài · bán ${P.sell}</span></button>`).join('')}</div>
+      <div class="row"><button class="btn" id="cl">Đóng</button></div>`, pn => {
+      pn.querySelector('#cl').onclick = closeOv;
+      pn.querySelectorAll('.item').forEach(b => b.onclick = () => { const P = PLANTS[b.dataset.k]; if (S.xu < P.cost) return; S.xu -= P.cost; S.plots[i] = { k: b.dataset.k, at: S.grow }; save(); sfx.coin(); closeOv(); drawGarden(); toast(`Đã trồng ${P.name}. Giải đúng ${P.need} bài để cây chín!`); });
+    });
+    return;
+  }
+  const P = PLANTS[p.k], g = S.grow - p.at;
+  if (g >= P.need) { S.xu += P.sell; S.plots[i] = null; save(); sfx.coin(); burst(el, 24); drawGarden(); hud('#pXu'); toast(`Thu hoạch ${P.name}: +${P.sell} xu`); }
+  else toast(`${P.name} cần thêm ${P.need - g} bài đúng nữa`);
+}
+function tapPen(i, el) {
+  const p = S.pens[i];
+  if (!p) { openShop('ani'); return; }
+  const A = ANIMALS[p.k];
+  if (p.fedAt != null && !p.got && S.grow - p.fedAt >= A.need) { p.got = 1; S.xu += A.sell; save(); sfx.coin(); burst(el, 20); drawGarden(); hud('#pXu'); toast(`Thu ${A.prod.toLowerCase()}: +${A.sell} xu`); return; }
+  if (p.fed !== today()) {
+    if (S.xu < 10) { toast('Cần 10 xu để mua thức ăn. Ra Trạm toán kiếm xu nhé!'); return; }
+    S.xu -= 10; p.fed = today(); p.fedAt = S.grow; p.got = 0; save(); sfx.tap(); drawGarden(); hud('#pXu');
+    toast(`${A.name} no rồi! Giải đúng ${A.need} bài để thu ${A.prod.toLowerCase()}.`); return;
+  }
+  toast(p.got ? `${A.name} đã cho ${A.prod.toLowerCase()} hôm nay. Mai cho ăn tiếp nhé!` : `${A.name} cần thêm ${A.need - (S.grow - p.fedAt)} bài đúng nữa`);
+}
+let shopTab = 'ani';
+function openShop(tab) {
+  shopTab = tab || shopTab;
+  const items = shopTab === 'ani'
+    ? Object.entries(ANIMALS).map(([k, A]) => { const full = !S.pens.includes(null); return `<button class="item" data-k="${k}" ${S.xu < A.cost || full ? 'disabled' : ''}>${animalSvg(k, 'happy').replace('<svg', '<svg class="pic"')}<b>${A.name}</b><span class="price">${A.cost}${I.coin}</span><span>Cho ${A.prod.toLowerCase()}: ${A.sell} xu</span></button>`; }).join('')
+    : DECO_ORDER.map(k => { const D = DECOS[k], own = S.deco[k]; return `<button class="item${own ? ' own' : ''}" data-k="${k}" ${own || S.xu < D.cost ? 'disabled' : ''}>${D.svg.replace('<svg', '<svg class="pic"')}<b>${D.name}</b><span class="price">${own ? 'Đã có' : D.cost + I.coin}</span></button>`; }).join('');
+  openOv(`<h2>Cửa hàng của Jenny</h2>
+    <div class="stabs"><button aria-pressed="${shopTab === 'ani'}" data-t="ani">Con vật</button><button aria-pressed="${shopTab === 'deco'}" data-t="deco">Trang trí</button></div>
+    <div class="shopgrid">${items}</div>
+    <p style="font-size:13.5px">${shopTab === 'ani' ? 'Vườn có 3 chuồng. Thú cần ăn mỗi ngày (10 xu).' : 'Đồ trang trí làm vườn đẹp hơn.'} Em đang có <b>${S.xu} xu</b>.</p>
+    <div class="row"><button class="btn" id="cl">Đóng</button></div>`, pn => {
+    pn.querySelector('#cl').onclick = closeOv;
+    pn.querySelectorAll('.stabs button').forEach(b => b.onclick = () => { sfx.tap(); openShop(b.dataset.t); });
+    pn.querySelectorAll('.item').forEach(b => b.onclick = () => {
+      const k = b.dataset.k;
+      if (shopTab === 'ani') { const A = ANIMALS[k], slot = S.pens.indexOf(null); if (slot < 0 || S.xu < A.cost) return; S.xu -= A.cost; S.pens[slot] = { k, fed: null, fedAt: null, got: 0 }; toast(`Chào mừng ${A.name} về vườn! Nhớ cho ăn nhé.`); }
+      else { const D = DECOS[k]; if (S.deco[k] || S.xu < D.cost) return; S.xu -= D.cost; S.deco[k] = 1; toast(`Đã đặt ${D.name} vào vườn!`); }
+      save(); sfx.coin(); closeOv(); drawGarden(); hud('#pXu');
+    });
+  });
+}
+$('#bShop').onclick = () => { sfx.tap(); openShop(); };
+
+/* ================= settings / backup ================= */
+function backupCode() { return 'JNY1:' + btoa(unescape(encodeURIComponent(JSON.stringify(S)))); }
+$('#bSet').onclick = () => {
+  sfx.tap();
+  const acc = S.right + S.wrong ? Math.round(S.right / (S.right + S.wrong) * 100) : 0;
+  openOv(`<h2>Tiến độ của em</h2>
+    <div class="kv"><div><b>${Object.keys(S.solved).length}</b><span>Bài đã giải đúng</span></div><div><b>${acc}%</b><span>Lần trả lời đúng</span></div><div><b>${totalStars()}/${MAXST}</b><span>Sao trên bản đồ</span></div></div>
+    <div class="row"><button class="btn" id="chg">Đổi lớp (đang chọn: ${S.g ? GRADES[S.g] : 'chưa chọn'})</button></div>
+    <p style="font-size:13.5px"><b>Mã sao lưu:</b> chép mã này để chơi tiếp trên máy khác.</p>
+    <textarea class="code" id="bk" readonly>${backupCode()}</textarea>
+    <div class="row"><button class="btn" id="cp">Chép mã</button><button class="btn" id="rs">Dán mã khôi phục</button></div>
+    <div class="row"><button class="btn y" id="cl" data-focus>Đóng</button></div>`, pn => {
+    pn.querySelector('#cl').onclick = closeOv;
+    pn.querySelector('#chg').onclick = () => askGrade(false);
+    pn.querySelector('#cp').onclick = () => { const t = pn.querySelector('#bk'); t.select(); try { navigator.clipboard.writeText(t.value).then(() => toast('Đã chép mã sao lưu'), () => document.execCommand('copy')); } catch (e) { document.execCommand('copy'); toast('Đã chép mã sao lưu'); } };
+    pn.querySelector('#rs').onclick = () => {
+      const t = pn.querySelector('#bk'); t.readOnly = false; t.value = ''; t.placeholder = 'Dán mã sao lưu vào đây'; t.focus();
+      const b = pn.querySelector('#rs'); b.textContent = 'Khôi phục'; b.classList.add('y');
+      b.onclick = () => {
+        try { const v = t.value.trim(); if (!v.startsWith('JNY1:')) throw 0; const o = JSON.parse(decodeURIComponent(escape(atob(v.slice(5))))); if (!o.saga) throw 0;
+          S = Object.assign(fresh(), o); save(); closeOv(); hud(); show(view); toast('Đã khôi phục tiến độ!'); }
+        catch (e) { toast('Mã sao lưu không đúng'); }
+      };
+    };
+  });
+};
+$('#bSnd').onclick = () => { sndOn = !sndOn; $('#bSnd').classList.toggle('off', !sndOn); };
+
+/* ================= unlock bank ================= */
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+let ENC = null;
+async function getEnc() { if (!ENC) { const r = await fetch('bank.enc', { cache: 'no-cache' }); ENC = await r.json(); } return ENC; }
+async function unlock(code) {
+  const e = await getEnc();
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(code.trim().toUpperCase()), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(e.salt), iterations: e.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+  const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(e.iv) }, key, b64(e.data));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+async function tryCode(code, quiet) {
+  const err = $('#codeErr'); if (!quiet) { err.textContent = 'Đang mở…'; $('#codeGo').disabled = true; }
+  try { BANK = await unlock(code); try { localStorage.setItem(CODEKEY, code.trim().toUpperCase()); } catch (e) {} err.textContent = ''; start(); return true; }
+  catch (e) { if (!quiet) { err.textContent = navigator.onLine === false ? 'Không tải được dữ liệu. Em kiểm tra mạng nhé.' : 'Mã chưa đúng. Em hỏi lại thầy cô nhé!'; sfx.bad(); } return false; }
+  finally { $('#codeGo').disabled = false; }
+}
+$('#codeGo').onclick = () => tryCode($('#code').value);
+$('#code').addEventListener('keydown', e => { if (e.key === 'Enter') tryCode($('#code').value); });
+
+function start() { takeResult(); rollDay(); hud(); gradeSub(); show(new URLSearchParams(location.search).get('v') || 'map'); if (!S.g) askGrade(true); }
+
+/* ================= boot ================= */
+paintIcons();
+hud();
+addEventListener('resize', () => { if (view === 'map') drawMap(); if (view === 'math') fitText(); fitPanel(); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (view === 'map') drawMap(); if (view === 'math') fitText(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && BANK) { rollDay(); hud(); if (view === 'garden') drawGarden(); } });
+show('lock');
+const saved = (() => { try { return localStorage.getItem(CODEKEY); } catch (e) { return null; } })();
+if (saved) tryCode(saved, true).then(ok => { if (!ok) $('#code').focus(); });
+else $('#code').focus();
+window.__saga = { askGrade, get S() { return S; }, set S(v) { S = v; }, get bank() { return BANK; }, show, save, drawGarden };
+})();
+</script>
+</body>
+</html>
