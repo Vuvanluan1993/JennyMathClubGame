@@ -160,7 +160,7 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
     if (!g.saveKey) return null;
     try {
       const v = JSON.parse(localStorage.getItem(g.saveKey));
-      if (!v || !(v.digits || v.kit)) return null;
+      if (!v || !(v.digits || v.kit || v.saga)) return null;
       return v.done ? 'done' : 'playing';
     } catch(e){ return null; }
   }
@@ -200,6 +200,7 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
     tubes:`<path d="M18 14v48q0 10 10 10t10-10V14M44 14v48q0 10 10 10t10-10V14M70 14v48q0 10 10 10t10-10V14" fill="#fff" ${K}/><circle cx="28" cy="62" r="7" fill="#FF6B57" ${K}/><circle cx="28" cy="46" r="7" fill="#2DBE8C" ${K}/><circle cx="54" cy="62" r="7" fill="#2DBE8C" ${K}/><circle cx="54" cy="46" r="7" fill="#FF6B57" ${K}/><circle cx="80" cy="62" r="7" fill="#FFC93C" ${K}/>`,
     wheel:`<circle cx="50" cy="40" r="34" fill="#FFC93C" ${K}/><circle cx="50" cy="40" r="20" fill="#fff" ${K}/><circle cx="50" cy="40" r="5" fill="#1D2B53"/><text x="50" y="16" font-family="Baloo 2,sans-serif" font-weight="800" font-size="13" text-anchor="middle" fill="#1D2B53">A</text><text x="76" y="45" font-family="Baloo 2,sans-serif" font-weight="800" font-size="13" text-anchor="middle" fill="#1D2B53">B</text><text x="50" y="72" font-family="Baloo 2,sans-serif" font-weight="800" font-size="13" text-anchor="middle" fill="#1D2B53">C</text><text x="24" y="45" font-family="Baloo 2,sans-serif" font-weight="800" font-size="13" text-anchor="middle" fill="#1D2B53">D</text>`,
     map:`<path d="M16 60L38 24L64 52L86 18" fill="none" stroke="#1D2B53" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 60L38 24L64 52L86 18" fill="none" stroke="#FFC93C" stroke-width="3" stroke-dasharray="6 5" stroke-linecap="round"/><circle cx="16" cy="60" r="8" fill="#2DBE8C" ${K}/><circle cx="38" cy="24" r="8" fill="#fff" ${K}/><circle cx="64" cy="52" r="8" fill="#fff" ${K}/><circle cx="86" cy="18" r="8" fill="#FF6B57" ${K}/>`,
+    island:`<ellipse cx="50" cy="64" rx="44" ry="12" fill="#62B5F7" ${K}/><path d="M14 62c4-18 20-26 36-26s32 8 36 26z" fill="#B7E08F" ${K}/><path d="M24 56q14-14 26-4t26-6" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="5 5" stroke-linecap="round"/><circle cx="24" cy="56" r="6" fill="#FFC93C" ${K}/><circle cx="50" cy="50" r="6" fill="#FFC93C" ${K}/><circle cx="76" cy="46" r="6" fill="#fff" ${K}/><path d="M66 32V12l14 5-14 5" fill="#FF6B57" ${K}/>`,
     layers:`<rect x="12" y="12" width="44" height="44" rx="6" fill="#fff" ${K}/><rect x="12" y="12" width="15" height="15" fill="#2F7DE1"/><rect x="41" y="41" width="15" height="15" fill="#2F7DE1"/><rect x="40" y="26" width="44" height="44" rx="6" fill="rgba(255,107,87,.75)" ${K}/><path d="M64 14h18M73 5v18" fill="none" ${K}/>`
   };
   const bbIcon = n => `<svg viewBox="0 0 100 80" aria-hidden="true">${ICONS[n]||ICONS.robot}</svg>`;

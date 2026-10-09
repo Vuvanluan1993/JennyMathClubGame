@@ -13,10 +13,27 @@
   - added:  ngày thêm (YYYY-MM-DD)
   - mode:   "Cá nhân" (mỗi em tự chơi) hoặc "Cả lớp" (chơi chung trên máy chiếu)
   - thumb:  (tuỳ chọn) kiểu hình đại diện: "grid" (lưới số, mặc định) "pieces" (mảnh ghép) hoặc "code" (ổ khóa mật mã) hoặc "bb" (hình biểu tượng, chọn bằng icon)
-  - icon:   (khi thumb là "bb") robot | rotate | tubes | wheel | map | layers
+  - icon:   (khi thumb là "bb") robot | rotate | tubes | wheel | map | layers | island
   - saveKey: (tuỳ chọn) khoá lưu tiến độ của game, để trang chủ hiện "Đang chơi dở"
 */
 window.GAMES = [
+  {
+    id: "hanh-trinh-jenny-lop-6",
+    series: "Hành Trình Của Jenny",
+    title: "Hành Trình Của Jenny Lớp 6",
+    grade: "Lớp 6",
+    topic: "Đi màn + Toán",
+    mode: "Cá nhân",
+    thumb: "bb",
+    icon: "island",
+    desc: "Vượt 30 màn trên 2 hòn đảo. Giải toán MATHCOUNTS để có xu và năng lượng, chăm vườn của Jenny. Cần mã CLB.",
+    puzzles: 30,
+    unit: "màn",
+    url: "games/hanh-trinh-jenny/lop-6/",
+    saveKey: "jenny-saga-6",
+    status: "live",
+    added: "2026-10-09"
+  },
   {
     id: "o-so-bi-an-lop-6",
     series: "Ô Số Bí Ẩn",

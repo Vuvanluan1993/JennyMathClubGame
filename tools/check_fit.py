@@ -122,6 +122,40 @@ def bb_end(pg):
     wait(pg, 600)
 
 
+def sg_open(pg):
+    pg.fill("#code", "JENNY2026")
+    pg.click("#codeGo")
+    pg.wait_for_function("window.__saga && __saga.bank", timeout=15000)
+    wait(pg, 300)
+
+
+def sg_level(pg):
+    sg_open(pg)
+    pg.click('.node[data-n="0"] circle.face', force=True)
+    wait(pg, 300)
+
+
+def sg_math_long(pg):
+    sg_open(pg)
+    pg.evaluate("""(()=>{const b=__saga.bank,p=b.reduce((a,x)=>x.q.length+x.s.length>a.q.length+a.s.length?x:a);
+      __saga.S.diff=p.d;__saga.S.cur={id:p.i};__saga.show('math')})()""")
+    wait(pg, 200)
+    pg.keyboard.press("1"); pg.keyboard.press("Enter"); wait(pg, 150)
+    pg.keyboard.press("2"); pg.keyboard.press("Enter")
+    wait(pg, 400)
+
+
+def sg_garden(pg, shop=False):
+    sg_open(pg)
+    pg.evaluate("""(()=>{const S=__saga.S;S.xu=900;S.grow=20;S.deco={tree:1,fence:1,pond:1,mill:1,bench:1};
+      S.plots=[{k:'carrot',at:0},{k:'tomato',at:18},{k:'melon',at:15},null,{k:'pumpkin',at:10},{k:'sunflower',at:20},null,{k:'carrot',at:20}];
+      S.pens=[{k:'ga',fed:S.day,fedAt:15,got:0},{k:'tho',fed:'2026-01-01',fedAt:0,got:1},{k:'bo',fed:S.day,fedAt:19,got:0}];__saga.show('garden')})()""")
+    wait(pg, 300)
+    if shop:
+        pg.click("#bShop"); wait(pg, 300)
+
+
+SG = "games/hanh-trinh-jenny/lop-6/"
 BB = ".play,.card,.key,.bar .ib,.pill"
 OSO = ".cell,.key,.card,.ctext,.slots,.chip,.jenny"
 CASES = [
@@ -140,6 +174,12 @@ CASES = [
     ("Robot · màn mở đầu", "games/tu-duy-bebras/robot-tim-duong/", nothing, ".panel"),
     ("Robot · Khó, dãy lệnh dài", "games/tu-duy-bebras/robot-tim-duong/", bb_robot_long, BB + ",.slot,.prog"),
     ("Robot · kết thúc", "games/tu-duy-bebras/robot-tim-duong/", bb_end, ".panel"),
+    ("Hành trình · nhập mã", SG, nothing, ".lock,.tab,.pill"),
+    ("Hành trình · bản đồ", SG, sg_open, ".node,.tab,.pill,.isle-head"),
+    ("Hành trình · bảng màn", SG, sg_level, ".panel"),
+    ("Hành trình · bài dài nhất + lời giải", SG, sg_math_long, ".mcard,.key,.ans,.btn,.tab,.bubble"),
+    ("Hành trình · vườn", SG, sg_garden, ".scene,.plot,.pen,.btn,.tab"),
+    ("Hành trình · cửa hàng", SG, lambda pg: sg_garden(pg, True), ".panel"),
 ] + [
     case
     for name, slug in [("Xoay Lật", "xoay-lat-hinh"), ("Ống Bi", "xep-ong-bi"), ("Giải Mã", "giai-ma-thu"),

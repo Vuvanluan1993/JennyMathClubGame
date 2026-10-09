@@ -10,6 +10,9 @@
      mount(ctx)          -> vẽ đề vào ctx.play / ctx.controls, gọi ctx.win(sao, lời khen) khi xong
      hint(ctx)           -> (tuỳ chọn) đưa 1 gợi ý, trả về true nếu đã gợi ý
      onKey(e, ctx)       -> (tuỳ chọn) xử lý bàn phím
+   Chế độ "Hành trình" (saga): mở game với ?saga=<link bản đồ>&id=<mã màn>&lv=<mức>&r=<màn>&seed=<số>&n=<tên màn>
+   thì chỉ chơi đúng 1 đề cố định (sinh từ seed), thắng xong ghi kết quả vào localStorage
+   "jenny-saga-result" rồi quay về bản đồ.
    Bộ khung lo: thanh trên, màn mở đầu / tạm dừng / kết thúc, đếm màn và sao, đồng hồ, gợi ý,
    âm thanh, pháo giấy, lưu tiến độ, Jenny nói chuyện và co giãn vừa 1 màn hình. */
 (function () {
@@ -87,8 +90,22 @@
   function rain() { for (let i = 0; i < 8; i++) setTimeout(() => burst(Math.random() * innerWidth, -10, 30, 1.3), i * 170); }
 
   /* ---------- the game controller ---------- */
+  function sagaParams() {
+    const P = new URLSearchParams(location.search), back = P.get('saga');
+    if (!back || !/^[\w\-./]+$/.test(back) || back.includes('//')) return null;
+    return { back, id: (P.get('id') || '').slice(0, 40), lv: +P.get('lv') || 0, r: +P.get('r') || 0, seed: +P.get('seed') || 1, n: (P.get('n') || '').slice(0, 20) };
+  }
+  function seeded(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
   function run(cfg) {
-    const ROUNDS = cfg.rounds || 10;
+    const SAGA = sagaParams();
+    const ROUNDS = SAGA ? 1 : cfg.rounds || 10;
+    const HOMEURL = SAGA ? SAGA.back : HOME;
+    const make = (lv, r) => {
+      if (!SAGA) return cfg.make(lv, r);
+      const orig = Math.random; Math.random = seeded(SAGA.seed * 7919 + lv * 131 + SAGA.r);
+      try { return cfg.make(lv, SAGA.r); } finally { Math.random = orig; }
+    };
     let S = null, paused = true, timer = null, ctx = null;
 
     /* DOM */
@@ -96,14 +113,14 @@
     const app = h('div', 'app');
     app.innerHTML = `
       <header class="bar">
-        <a href="${HOME}" title="Về trang chủ" style="display:contents"><img class="logo" src="${LOGO}" alt="Học Toán cùng Jenny"></a>
-        <div class="ttl">${cfg.title}<small id="kSub">Tư duy Bebras</small></div>
+        <a href="${HOMEURL}" title="${SAGA ? 'Về bản đồ' : 'Về trang chủ'}" style="display:contents"><img class="logo" src="${LOGO}" alt="Học Toán cùng Jenny"></a>
+        <div class="ttl">${cfg.title}<small id="kSub">${SAGA ? 'Hành trình của Jenny' : 'Tư duy Bebras'}</small></div>
         <div class="spacer"></div>
-        <div class="pill pround" title="Màn"><span class="lab">Màn</span><span class="val" id="kRound">1/${ROUNDS}</span></div>
+        <div class="pill pround" title="Màn"${SAGA ? ' hidden' : ''}><span class="lab">Màn</span><span class="val" id="kRound">1/${ROUNDS}</span></div>
         <div class="pill" title="Số sao" style="color:#FFC93C">${ICON.star()}<span class="val" id="kStars" style="color:#1D2B53">0</span></div>
         <div class="pill" title="Thời gian"><span class="lab">Giờ</span><span class="val" id="kTime">00:00</span></div>
         <span id="kBulbs" style="display:flex;gap:4px"></span>
-        <a class="ib" href="${HOME}" aria-label="Về trang chủ" title="Về trang chủ">${ICON.home}</a>
+        <a class="ib" href="${HOMEURL}" aria-label="${SAGA ? 'Về bản đồ' : 'Về trang chủ'}" title="${SAGA ? 'Về bản đồ' : 'Về trang chủ'}">${ICON.home}</a>
         <button class="ib" id="kSnd" aria-label="Bật/tắt âm thanh">${ICON.snd}</button>
         <button class="ib mus off" id="kMus" aria-label="Bật/tắt nhạc nền">${ICON.mus}</button>
         <button class="ib" id="kPause" aria-label="Tạm dừng">${ICON.pause}</button>
@@ -130,7 +147,7 @@
       <div class="btnrow"><button class="big" id="kResume" hidden>Chơi tiếp ván cũ</button><a class="big alt" href="${HOME}">${ICON.home}Trang chủ</a></div></div>`;
     const ovPause = h('div', 'ov'); ovPause.id = 'kPauseOv'; ovPause.hidden = true;
     ovPause.innerHTML = `<div class="panel"><h2>Tạm dừng</h2><p>Đồng hồ đang dừng. Bấm tiếp tục khi em sẵn sàng.</p>
-      <div class="btnrow"><button class="big" id="kGo">Tiếp tục</button><button class="big alt" id="kNew">Ván mới</button><a class="big alt" href="${HOME}">${ICON.home}Trang chủ</a></div></div>`;
+      <div class="btnrow"><button class="big" id="kGo">Tiếp tục</button>${SAGA ? '' : '<button class="big alt" id="kNew">Ván mới</button>'}<a class="big alt" href="${HOMEURL}">${ICON.home}${SAGA ? 'Về bản đồ' : 'Trang chủ'}</a></div></div>`;
     const ovRound = h('div', 'ov'); ovRound.id = 'kRoundOv'; ovRound.hidden = true;
     ovRound.innerHTML = `<div class="panel" style="max-width:440px"><h2 id="kRT">Giỏi quá!</h2><div class="stars" id="kRS"></div><p id="kRM"></p>
       <div class="btnrow"><button class="big" id="kNext">Màn tiếp ${ICON.next}</button></div></div>`;
@@ -139,7 +156,7 @@
 
     /* state */
     function fresh(lv) { return { kit: 1, lv, r: 0, stars: [], sec: 0, hints: HINTS, hintRound: 0, puzzle: null, rs: null, done: false }; }
-    function save() { try { localStorage.setItem(cfg.key, JSON.stringify(S)); } catch (e) {} }
+    function save() { if (SAGA) return; try { localStorage.setItem(cfg.key, JSON.stringify(S)); } catch (e) {} }
     function load() { try { const v = JSON.parse(localStorage.getItem(cfg.key)); return v && v.kit && cfg.levels[v.lv] ? v : null; } catch (e) { return null; } }
     const total = () => S.stars.reduce((a, b) => a + (b || 0), 0);
     const fmt = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
@@ -158,7 +175,7 @@
       q('#kRound').textContent = Math.min(S.r + 1, ROUNDS) + '/' + ROUNDS;
       q('#kStars').textContent = total();
       q('#kTime').textContent = fmt(S.sec);
-      q('#kSub').textContent = 'Mức ' + cfg.levels[S.lv].name + ' · ' + cfg.levels[S.lv].desc;
+      q('#kSub').textContent = SAGA ? 'Hành trình của Jenny · Màn ' + SAGA.n : 'Mức ' + cfg.levels[S.lv].name + ' · ' + cfg.levels[S.lv].desc;
       const b = q('#kBulbs'); b.innerHTML = '';
       if (cfg.hint) {
         const btn = h('button', 'ib bulb' + (S.hints <= 0 ? ' used' : ''), ICON.bulb + `<i class="cnt">${S.hints}</i>`);
@@ -173,15 +190,15 @@
 
     /* rounds */
     function newRound() {
-      S.puzzle = cfg.make(S.lv, S.r); S.rs = null; S.hintRound = 0; save(); mountRound();
+      S.puzzle = make(S.lv, S.r); S.rs = null; S.hintRound = 0; save(); mountRound();
     }
     function mountRound() {
       const play = q('#play'), controls = q('#controls');
       play.innerHTML = ''; controls.innerHTML = ''; q('#kMission').innerHTML = '';
-      const tags = q('#kTags'); tags.innerHTML = `<span class="tag lv">Mức ${cfg.levels[S.lv].name}</span><span class="tag">Màn ${S.r + 1}/${ROUNDS}</span>`;
+      const tags = q('#kTags'); tags.innerHTML = SAGA ? `<span class="tag lv">Màn ${SAGA.n}</span>` : `<span class="tag lv">Mức ${cfg.levels[S.lv].name}</span><span class="tag">Màn ${S.r + 1}/${ROUNDS}</span>`;
       let solved = false;
       ctx = {
-        puzzle: S.puzzle, level: S.lv, round: S.r, state: S.rs, play, controls,
+        puzzle: S.puzzle, level: S.lv, round: SAGA ? SAGA.r : S.r, state: S.rs, play, controls,
         mission(html) { q('#kMission').innerHTML = html; fit(); },
         tag(html) { const t = h('span', 'tag', html); tags.appendChild(t); return t; },
         say, sfx, burst: burstAt, fit,
@@ -191,6 +208,7 @@
           if (solved) return; solved = true;
           const st = Math.max(1, Math.min(3, stars) - S.hintRound);
           S.stars[S.r] = st; S.rs = null; save(); bar();
+          if (SAGA) try { localStorage.setItem('jenny-saga-result', JSON.stringify({ id: SAGA.id, stars: st, sec: S.sec, t: Date.now() })); } catch (e) {}
           sfx.win(); burstAt(play, 40, 1.1); say(msg || 'Giỏi quá!', 'happy');
           setTimeout(() => showRound(st, msg), 750);
         }
@@ -202,11 +220,12 @@
       q('#kRT').textContent = st === 3 ? 'Tuyệt vời!' : st === 2 ? 'Giỏi lắm!' : 'Hoàn thành!';
       q('#kRS').innerHTML = [0, 1, 2].map(i => ICON.star(i < st)).join('');
       q('#kRM').textContent = msg || '';
-      q('#kNext').innerHTML = (S.r + 1 >= ROUNDS ? 'Xem kết quả ' : 'Màn tiếp ') + ICON.next;
+      q('#kNext').innerHTML = SAGA ? 'Về bản đồ ' + ICON.next : (S.r + 1 >= ROUNDS ? 'Xem kết quả ' : 'Màn tiếp ') + ICON.next;
       paused = true; ovRound.hidden = false; q('#kNext').focus();
     }
     q('#kNext').onclick = () => {
       ovRound.hidden = true; sfx.tap();
+      if (SAGA) { location.href = SAGA.back; return; }
       S.r++; if (S.r >= ROUNDS) { finish(); return; }
       paused = false; newRound();
     };
@@ -240,7 +259,7 @@
     q('#kResume').onclick = () => { const sv = load(); if (sv) begin(sv); };
     q('#kPause').onclick = () => { if (!S || S.done) return; paused = true; ovPause.hidden = false; save(); };
     q('#kGo').onclick = () => { ovPause.hidden = true; paused = false; };
-    q('#kNew').onclick = () => { ovPause.hidden = true; showStart(); };
+    if (q('#kNew')) q('#kNew').onclick = () => { ovPause.hidden = true; showStart(); };
     q('#kSnd').onclick = () => { sfxOn = !sfxOn; q('#kSnd').classList.toggle('off', !sfxOn); if (sfxOn) sfx.tap(); };
     q('#kMus').onclick = () => { ac(); music(!musOn); };
     addEventListener('keydown', e => {
@@ -283,10 +302,13 @@
     document.querySelectorAll('.ov').forEach(o => new MutationObserver(fit).observe(o, { attributes: true, attributeFilter: ['hidden'], childList: true, subtree: true }));
 
     /* first paint: an easy round behind the start panel */
-    S = fresh(0); S.puzzle = cfg.make(0, 0); mountRound(); S = null;
-    say(cfg.hello || 'Chọn mức độ để bắt đầu nhé!');
-    showStart(); fit();
-    window.__kit = { get state() { return S; }, get ctx() { return ctx; }, finish: () => finish() };
+    if (SAGA) { begin(fresh(Math.min(SAGA.lv, cfg.levels.length - 1))); fit(); }
+    else {
+      S = fresh(0); S.puzzle = cfg.make(0, 0); mountRound(); S = null;
+      say(cfg.hello || 'Chọn mức độ để bắt đầu nhé!');
+      showStart(); fit();
+    }
+    window.__kit = { get state() { return S; }, get ctx() { return ctx; }, finish: () => finish(), saga: SAGA, make: (lv, r, seed) => { const o = Math.random; Math.random = seeded(seed * 7919 + lv * 131 + r); try { return cfg.make(lv, r); } finally { Math.random = o; } } };
   }
 
   window.Kit = { run, sfx, burst: burstAt, JENNY, ICON };

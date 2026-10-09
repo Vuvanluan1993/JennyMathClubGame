@@ -19,6 +19,8 @@ Trang chơi: https://vuvanluan1993.github.io/JennyMathClubGame/
 | Tư Duy Bebras · Đường Đi Rẻ Nhất | Mọi lớp | 8 màn × 3 mức | `games/tu-duy-bebras/duong-di-re-nhat/` |
 | Tư Duy Bebras · Chồng Hình | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/chong-hinh/` |
 
+| Hành Trình Của Jenny (đi màn + toán, cần mã CLB) | Lớp 6 | 30 màn + 673 bài | `games/hanh-trinh-jenny/lop-6/` |
+
 Game Tư Duy Bebras tạo đề ngẫu nhiên mỗi lần chơi, có 3 mức Dễ / Vừa / Khó.
 
 ## Cấu trúc thư mục
@@ -61,3 +63,15 @@ python tools/check_fit.py         # cửa sổ 2
 ```
 
 Thêm game mới thì thêm vài dòng vào `CASES` cuối file đó.
+
+## Hành Trình Của Jenny
+
+- Bản đồ 2 đảo × 15 màn. Mỗi màn là 1 đề Bebras cố định (game Bebras mở ở chế độ `?saga=...&seed=...`).
+- Trạm toán: bài MATHCOUNTS (đã dịch). Giải đúng được xu (Dễ 10, Vừa 20, Khó 40; tối đa 300 xu/ngày) và năng lượng (mỗi màn tốn 1).
+- Vườn: cây và thú lớn lên theo số bài giải đúng. Tiến độ lưu trên máy, có mã sao lưu để chuyển máy.
+- Kho bài `bank.enc` được mã hoá bằng mã CLB. Tạo lại kho (hoặc đổi mã):
+
+```
+pip install cryptography
+python tools/build_bank.py <_pool_lop6.json> games/hanh-trinh-jenny/lop-6/bank.enc <MÃ CLB>
+```
