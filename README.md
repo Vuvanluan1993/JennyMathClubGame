@@ -10,6 +10,7 @@ Trang chơi: https://vuvanluan1993.github.io/JennyMathClubGame/
 |---|---|---|---|
 | Ô Số Bí Ẩn | Lớp 6 | 18 | `games/o-so-bi-an/lop-6/` |
 | Ô Số Bí Ẩn | Lớp 7 | 17 | `games/o-so-bi-an/lop-7/` |
+| Mảnh Ghép Bí Mật (cả lớp chơi chung) | Lớp 9 | 15 | `games/manh-ghep-bi-mat/lop-9/` |
 
 ## Cấu trúc thư mục
 
@@ -31,4 +32,6 @@ games/
 
 Quy ước:
 - Tên thư mục viết thường, không dấu, nối bằng dấu gạch (`o-so-bi-an`, `lop-8`).
+- Ảnh trong game nên nén (JPEG/WebP), mỗi game dưới 1 MB để mở nhanh trên máy chiếu và điện thoại.
+- Nút/logo "Về trang chủ" trong game trỏ về `../../../`.
 - Mỗi game dùng một khoá lưu riêng (`saveKey`) để không ghi đè tiến độ của game khác.

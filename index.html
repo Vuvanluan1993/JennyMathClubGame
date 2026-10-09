@@ -67,6 +67,14 @@ a.card:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
   font-family:var(--display);font-weight:800;font-style:normal;font-size:13px;line-height:1}
 .mini i.x{border-color:transparent;background:repeating-linear-gradient(45deg,var(--hatch) 0 2px,transparent 2px 6px)}
 .mini i.ok{background:var(--mint-soft);color:#0E6B4C}
+.thumb.pz{background:#2a1f52;padding-top:22px}
+.pzg{display:grid;grid-template-columns:repeat(5,24px);gap:3px}
+.pzg i{width:24px;height:24px;border-radius:6px;background:#7960af;border:2px solid #dfd3ee;display:grid;place-items:center;
+  font-family:var(--display);font-weight:800;font-style:normal;font-size:12px;color:#eae0ff}
+.pzg i:nth-child(3n){background:#8c6aba}.pzg i:nth-child(4n){background:#5f488e}
+.pzg i.on{background:var(--sun);color:var(--ink);border-color:#fff6cb}
+.pzg i.gone{background:transparent;border-color:transparent}
+.tag.class{background:var(--ink);color:#fff}
 .grade{position:absolute;top:10px;left:10px;background:var(--ink);color:#fff;border-radius:10px;padding:3px 10px;font-weight:900;font-size:13px}
 .flag{position:absolute;top:10px;right:10px;border:2px solid var(--ink);border-radius:999px;padding:2px 9px;font-weight:900;font-size:12px;background:var(--sun)}
 .flag.done{background:var(--mint);color:#fff;border-color:#0E6B4C}
@@ -103,7 +111,7 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
   <section class="hero">
     <div>
       <h1>Chơi mà học Toán!</h1>
-      <p>Các trò chơi toán của CLB Học Toán cùng Jenny. Chọn lớp của em, bấm vào một game và bắt đầu. Game tự lưu tiến độ trên máy, lần sau có thể chơi tiếp.</p>
+      <p>Các trò chơi toán của CLB Học Toán cùng Jenny. Chọn lớp, bấm vào một game và bắt đầu. Game có nhãn <b>Cả lớp</b> dành cho cả lớp chơi chung trên máy chiếu. Game tự lưu tiến độ trên máy, lần sau có thể chơi tiếp.</p>
       <div class="stats" id="stats"></div>
     </div>
     <svg class="jenny" viewBox="0 0 120 140" aria-hidden="true" stroke="#1D2B53" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -157,6 +165,17 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
     return `<div class="mini">${out}</div>`;
   }
 
+  function pieces(seed){
+    let h = 7; for (const c of seed) h = (h*31 + c.charCodeAt(0)) >>> 0;
+    let out = '';
+    for (let i=0;i<15;i++){
+      h = (h*1103515245 + 12345) >>> 0;
+      const r = h % 10;
+      out += r < 2 ? '<i class="gone"></i>' : r < 3 ? `<i class="on">${i+1}</i>` : `<i>${i+1}</i>`;
+    }
+    return `<div class="pzg">${out}</div>`;
+  }
+
   const ORDER = ['Tiểu học','Lớp 1','Lớp 2','Lớp 3','Lớp 4','Lớp 5','Lớp 6','Lớp 7','Lớp 8','Lớp 9'];
   const grades = [...new Set(GAMES.map(g=>g.grade))].sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
   let current = 'Tất cả';
@@ -177,11 +196,12 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
   function card(g){
     const p = g.status==='live' ? progress(g) : null;
     const flag = p==='done' ? '<span class="flag done">Đã hoàn thành</span>' : p==='playing' ? '<span class="flag">Đang chơi dở</span>' : '';
-    const tags = [g.topic && `<span class="tag">${esc(g.topic)}</span>`,
+    const tags = [g.mode && `<span class="tag${g.mode==='Cả lớp'?' class':''}">${esc(g.mode)}</span>`,
+                  g.topic && `<span class="tag">${esc(g.topic)}</span>`,
                   g.puzzles && `<span class="tag">${g.puzzles} câu</span>`,
                   g.minutes && `<span class="tag">${g.minutes} phút</span>`].filter(Boolean).join('');
     const inner = `
-      <div class="thumb">${mini(g.id)}<span class="grade">${esc(g.grade)}</span>${flag}</div>
+      <div class="thumb${g.thumb==='pieces'?' pz':''}">${g.thumb==='pieces' ? pieces(g.id) : mini(g.id)}<span class="grade">${esc(g.grade)}</span>${flag}</div>
       <div class="body"><h3>${esc(g.title)}</h3><p>${esc(g.desc)}</p></div>
       <div class="meta">${tags}<span class="play">${g.status==='live' ? (p==='playing'?'Chơi tiếp':'Chơi') : 'Sắp có'}</span></div>`;
     return g.status==='live'
