@@ -136,7 +136,10 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
   <footer>© CLB Học Toán cùng Jenny · Trò chơi dùng cho học tập trong câu lạc bộ</footer>
 </div>
 
-<script src="games.js"></script>
+<script>
+  // Always load the newest game list (GitHub Pages lets browsers keep old files ~10 minutes).
+  document.write('<script src="games.js?t=' + Date.now() + '"><\/script>');
+</script>
 <script>
 (function(){
   const GAMES = window.GAMES || [];
