@@ -36,3 +36,16 @@ Quy ước:
 - Ảnh trong game nên nén (JPEG/WebP), mỗi game dưới 1 MB để mở nhanh trên máy chiếu và điện thoại.
 - Nút/logo "Về trang chủ" trong game trỏ về `../../../`.
 - Mỗi game dùng một khoá lưu riêng (`saveKey`) để không ghi đè tiến độ của game khác.
+- **Vừa 1 màn hình:** mọi game phải chơi được mà không cần kéo lên xuống, trên mọi thiết bị.
+
+## Kiểm tra "vừa 1 màn hình"
+
+`tools/check_fit.py` mở từng game trên 8 cỡ màn hình (điện thoại dọc/ngang, máy tính bảng, laptop, máy chiếu, màn lớn) và báo chỗ phải kéo, bị cắt hoặc bị đè.
+
+```
+pip install playwright && python -m playwright install chromium
+python -m http.server 8765        # cửa sổ 1, ở thư mục gốc repo
+python tools/check_fit.py         # cửa sổ 2
+```
+
+Thêm game mới thì thêm vài dòng vào `CASES` cuối file đó.

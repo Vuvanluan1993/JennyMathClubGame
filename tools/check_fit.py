@@ -37,6 +37,10 @@ MEASURE = """(sel) => {
     if (!vis(e)) return;
     if (e.scrollHeight > e.clientHeight + 3 || e.scrollWidth > e.clientWidth + 3) cut.push((e.id || String(e.className).split(' ')[0]) + ' tràn');
   });
+  // clue text running into the answer boxes below it
+  const ct = document.querySelector('#cText'), sl = document.querySelector('#slots');
+  if (document.querySelector('#board.board') && ct && sl && vis(ct) && vis(sl)) { const a = ct.getBoundingClientRect(), b = sl.getBoundingClientRect();
+    if (ct.scrollHeight > ct.clientHeight + 2 || a.bottom > b.top + 1) cut.push('đề đè lên ô đáp án'); }
   document.querySelectorAll('.hist .row').forEach(e => { if (e.scrollWidth > e.clientWidth + 2) cut.push('dòng lịch sử bị cắt');
     const ds = e.querySelector('.ds'), fb = e.querySelector('.fb .dot');
     if (ds && fb && fb.getBoundingClientRect().left < ds.getBoundingClientRect().right - 1) cut.push('chấm đè lên số'); });

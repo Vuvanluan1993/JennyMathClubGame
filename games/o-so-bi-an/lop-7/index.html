@@ -131,7 +131,7 @@ button:focus-visible,.cell:focus-visible{outline:3px solid var(--sun);outline-of
 @keyframes rise{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-110%) scale(1)}}
 #fx{position:fixed;inset:0;pointer-events:none;z-index:14}
 /* portrait / phone */
-@media (orientation:portrait), (max-width:820px){
+@media (max-aspect-ratio:1/1){
   .app{gap:8px;padding-block:8px}
   .bar{gap:6px}
   .bar img{height:34px}
@@ -161,11 +161,46 @@ button:focus-visible,.cell:focus-visible{outline:3px solid var(--sun);outline-of
   .pill .val{font-size:16px}
 }
 @media (max-width:360px){ .bar img{display:none} }
-@media (max-height:760px) and ((orientation:portrait) or (max-width:820px)){ .card .mini-j{display:none} }
+@media (max-height:760px) and (max-aspect-ratio:1/1){ .card .mini-j{display:none} }
 .mini-j{display:none}
 .mini-j{grid-column:1 / -1;align-items:center;gap:8px;font-weight:800;font-size:13.5px;line-height:1.3;border-top:2px dashed var(--hatch);padding-top:6px;margin-top:4px}
 .mini-j .jsvg{width:38px;height:42px;flex:0 0 auto}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== Fit to one screen (no scrolling) =====
+   Tall screens (portrait) stack board / card / keypad. Wide screens put the board left.
+   The script below shrinks the clue text, then the board or the clue list, until all fits. */
+html,body{overflow:hidden}
+.ctext{max-height:clamp(84px,24dvh,190px);overflow:hidden}
+.chips{overflow:hidden}
+html[data-chips="sm"] .chip{min-width:34px;height:28px;font-size:13px;border-radius:8px}
+html[data-chips="sm"] .chips{padding:6px;gap:4px}
+html[data-chips="sm"] .chiprow{gap:4px}
+html[data-chips="hide"] .chips{visibility:hidden}
+/* phone held sideways or any very short wide screen */
+@media (max-height:500px) and (min-aspect-ratio:1/1){
+  .app{padding-block:6px;gap:6px}
+  .bar img{height:32px}.ttl small{display:none}.ttl{font-size:18px}
+  .pill{padding:2px 8px}.pill .lab{display:none}.pill .val{font-size:16px}
+  .icon-btn,.bulb{width:32px;height:32px;border-radius:9px}.icon-btn svg,.bulb svg{width:17px;height:17px}
+  .board{--bs:min(calc(100dvh - 62px),52vw)}
+  .side{gap:6px}
+  .card{padding:6px 8px;gap:2px 8px;border-radius:14px}
+  .badge{width:44px;height:42px;border-radius:10px}.badge b{font-size:18px}.badge span{font-size:8.5px;letter-spacing:.02em}
+  .nav button{width:30px;height:30px}
+  .slots{display:none}
+  .key{height:clamp(34px,10dvh,44px);border-radius:10px;font-size:20px}
+  .pad{gap:5px}
+  .lower{display:none}
+}
+/* start / end panels on short screens: drop the big Jenny, two-column rules */
+@media (max-height:560px){.panel .jsvg{display:none}}
+@media (max-height:560px) and (min-aspect-ratio:1/1){.panel{max-width:820px}.panel ul{columns:2;column-gap:28px}}
+/* solutions: one clue at a time */
+.solnav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:4px}
+.solnav button{width:46px;height:46px;border-radius:12px;border:2.5px solid var(--line);background:var(--paper);box-shadow:0 3px 0 var(--line);font-size:24px;font-weight:900}
+.solnav span{font-weight:900;min-width:90px}
+.panel.sol-open > .jsvg,.panel.sol-open > p,.panel.sol-open .resstars,.panel.sol-open .kpis{display:none}
 </style>
 
 <div class="app" id="app">
@@ -406,7 +441,7 @@ function render(){
   const tags=[]; if(q.star) tags.push('<span class="tag start">Bắt đầu ở đây</span>'); if(q.link) tags.push('<span class="tag link">Câu nối</span>'); if(q.lv===3) tags.push('<span class="tag boss">Câu khó</span>');
   tags.push(`<span class="tag">${q.len} chữ số</span>`);
   $('#cTags').innerHTML = tags.join('');
-  $('#cText').textContent = q.t;
+  $('#cText').textContent = q.t; if (window.__fitPlay) window.__fitPlay();
   $('#slots').innerHTML = e.cells.map((c,i)=>{ const k=c.join(','); return `<span class="s${S.locked[k]?' ok':''}${i===S.pos&&!solved?' now':''}">${S.digits[k]??''}</span>`; }).join('') + `<span class="msg">${solved?'Đã giải ✓':''}</span>`;
   document.querySelectorAll('.chip').forEach(b=>{ b.classList.toggle('on', b.dataset.k===S.cur); b.classList.toggle('done', !!S.solved[b.dataset.k]); });
   $('#bulbs').innerHTML = [0,1].map(i=>`<button class="bulb${i>=S.hints?' used':''}" aria-label="Dùng bóng đèn trợ giúp" ${i>=S.hints?'disabled':''}>${BULB}</button>`).join('');
@@ -513,7 +548,15 @@ function finish(win){
     <div id="solBox" hidden></div>`;
   $('#endOv').hidden=false;
   $('#againBtn').onclick=()=>{ S=fresh(); save(); $('#endOv').hidden=true; $('#time').textContent=fmt(S.left); select(entries[0].key,0); startTimer(); };
-  $('#solBtn').onclick=()=>{ const b=$('#solBox'); b.hidden=!b.hidden; if(!b.innerHTML) b.innerHTML = entries.map(e=>`<div class="sol"><h3>${e.no} ${e.d==='A'?'Ngang':'Dọc'} — ${e.clue.ans}</h3><ul>${e.clue.sol.map(s=>`<li>${s}</li>`).join('')}</ul></div>`).join(''); };
+  $('#solBtn').onclick=()=>{ const b=$('#solBox'), pnl=$('#endPanel');
+    b.hidden=!b.hidden; pnl.classList.toggle('sol-open', !b.hidden); $('#solBtn').textContent = b.hidden ? 'Xem lời giải' : 'Ẩn lời giải';
+    if(b.hidden) return;
+    let i=0; const show=()=>{ const e=entries[i];
+      b.innerHTML = `<div class="sol"><h3>${e.no} ${e.d==='A'?'Ngang':'Dọc'} — ${e.clue.ans}</h3><ul>${e.clue.sol.map(s=>`<li>${s}</li>`).join('')}</ul></div>`
+        + `<div class="solnav"><button id="solPrev" aria-label="Lời giải trước">‹</button><span>${i+1} / ${entries.length}</span><button id="solNext" aria-label="Lời giải sau">›</button></div>`;
+      $('#solPrev').onclick=()=>{ i=(i-1+entries.length)%entries.length; show(); };
+      $('#solNext').onclick=()=>{ i=(i+1)%entries.length; show(); }; };
+    show(); };
 }
 
 /* ---------- controls ---------- */
@@ -550,4 +593,74 @@ $('#resumeBtn').onclick=()=>begin(saved);
 S = fresh(); buildChips(); render();
 </script>
 
+<script>
+/* Start / pause / end panels: always fully visible without scrolling.
+   Short screens first hide the big Jenny picture (CSS), then the panel is scaled down to fit. */
+(() => {
+  'use strict';
+  function fitPanels(){
+    document.querySelectorAll('.ov:not([hidden]) .panel').forEach(p => {
+      p.style.transform = ''; p.style.maxHeight = 'none'; p.style.overflow = 'visible';
+      const r = p.getBoundingClientRect();
+      const s = Math.min(1, (innerHeight - 20) / r.height, (innerWidth - 20) / r.width);
+      if (s >= 1 && r.top >= 0) return;
+      // scale from the top edge, then move the panel so it sits in the middle of the screen
+      p.style.transformOrigin = 'top center';
+      const ty = (innerHeight - r.height * s) / 2 - r.top;
+      p.style.transform = `translateY(${ty.toFixed(1)}px) scale(${s.toFixed(3)})`;
+    });
+  }
+  const run = () => requestAnimationFrame(fitPanels);
+  window.__fitPanels = run;
+  addEventListener('resize', run); addEventListener('orientationchange', run);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(run);
+  document.querySelectorAll('.ov').forEach(o => new MutationObserver(run).observe(o, {attributes:true, attributeFilter:['hidden'], childList:true, subtree:true}));
+  run();
+})();
+</script>
+<script>
+/* Ô Số: fit the play screen. Order: shrink clue text -> (tall screens) shrink the board ->
+   (wide screens) let the clue card grow and make the clue list smaller, or hide it. */
+(() => {
+  'use strict';
+  const root = document.documentElement, q = s => document.querySelector(s);
+  const board = q('#board'), card = q('#card'), ct = q('#cText'), side = q('.side'), chips = q('#chips');
+  const fits = el => el.scrollHeight <= el.clientHeight + 1;
+  function fitText(min){
+    ct.style.fontSize = '';
+    const base = parseFloat(getComputedStyle(ct).fontSize);
+    for (let fs = base; fs >= min; fs -= 0.5){ ct.style.fontSize = fs + 'px'; if (fits(ct)) return true; }
+    return false;
+  }
+  function fitPlay(){
+    const tall = innerWidth <= innerHeight;
+    board.style.removeProperty('--bs'); ct.style.maxHeight = ''; root.dataset.chips = '';
+    if (!fitText(12.5) ) {
+      if (tall){
+        // give the card more room by making the board smaller (not below 55% of the width)
+        for (let bs = board.offsetWidth - 12; bs >= innerWidth * 0.55; bs -= 12){
+          board.style.setProperty('--bs', bs + 'px');
+          if (fitText(12.5)) break;
+        }
+      } else {
+        ct.style.maxHeight = 'none';
+        fitText(12);
+        while (!fits(ct) && parseFloat(ct.style.fontSize) > 11){ ct.style.fontSize = (parseFloat(ct.style.fontSize) - 0.5) + 'px'; }
+      }
+    }
+    if (!tall && chips && chips.offsetParent){
+      if (!fits(chips)) root.dataset.chips = 'sm';
+      if (!fits(chips)) root.dataset.chips = 'hide';
+    }
+    // last resort on any screen: smaller text until the side column fits
+    let fs = parseFloat(getComputedStyle(ct).fontSize);
+    while ((!fits(side) || !fits(card) || !fits(ct) || root.scrollHeight > innerHeight + 1) && fs > 10.5){ fs -= 0.5; ct.style.fontSize = fs + 'px'; }
+  }
+  const run = () => requestAnimationFrame(fitPlay);
+  window.__fitPlay = run;
+  addEventListener('resize', run); addEventListener('orientationchange', run);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(run);
+  run();
+})();
+</script>
 </body></html>
