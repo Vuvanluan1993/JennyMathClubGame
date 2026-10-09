@@ -7,11 +7,12 @@
   - topic:  chủ đề toán (vd "Số học", "Hình học", "Tổ hợp")
   - desc:   1 câu giới thiệu
   - puzzles, minutes: số câu đố, thời gian chơi
+  - unit:   (tuỳ chọn) đơn vị đếm thay cho "câu" (vd "mức độ")
   - url:    đường dẫn tới game
   - status: "live" (chơi được) hoặc "soon" (sắp ra mắt)
   - added:  ngày thêm (YYYY-MM-DD)
   - mode:   "Cá nhân" (mỗi em tự chơi) hoặc "Cả lớp" (chơi chung trên máy chiếu)
-  - thumb:  (tuỳ chọn) kiểu hình đại diện: "grid" (lưới số, mặc định) hoặc "pieces" (mảnh ghép)
+  - thumb:  (tuỳ chọn) kiểu hình đại diện: "grid" (lưới số, mặc định) "pieces" (mảnh ghép) hoặc "code" (ổ khóa mật mã)
   - saveKey: (tuỳ chọn) khoá lưu tiến độ của game, để trang chủ hiện "Đang chơi dở"
 */
 window.GAMES = [
@@ -46,16 +47,32 @@ window.GAMES = [
     added: "2026-10-08"
   },
   {
-    id: "manh-ghep-bi-mat-lop-9",
+    id: "mat-ma-bi-an",
+    series: "Mật Mã Bí Ẩn",
+    title: "Mật Mã Bí Ẩn",
+    grade: "Mọi lớp",
+    topic: "Suy luận logic",
+    mode: "Cá nhân",
+    thumb: "code",
+    desc: "Đoán mật mã trong 10 lượt. Chấm xanh, chấm vàng giúp em suy luận từng chữ số.",
+    puzzles: 3,
+    unit: "mức độ",
+    url: "games/mat-ma-bi-an/moi-lop/",
+    saveKey: "mmba",
+    status: "live",
+    added: "2026-10-09"
+  },
+  {
+    id: "manh-ghep-bi-mat-lop-6",
     series: "Mảnh Ghép Bí Mật",
-    title: "Mảnh Ghép Bí Mật Lớp 9",
-    grade: "Lớp 9",
+    title: "Mảnh Ghép Bí Mật Lớp 6",
+    grade: "Lớp 6",
     topic: "Tổng hợp",
     mode: "Cả lớp",
     thumb: "pieces",
     desc: "Cả lớp giải toán để mở 15 mảnh tranh và lật từng chữ cái của cụm từ bí mật.",
     puzzles: 15,
-    url: "games/manh-ghep-bi-mat/lop-9/",
+    url: "games/manh-ghep-bi-mat/lop-6/",
     status: "live",
     added: "2026-10-09"
   },

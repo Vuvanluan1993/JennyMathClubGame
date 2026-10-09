@@ -10,7 +10,8 @@ Trang chơi: https://vuvanluan1993.github.io/JennyMathClubGame/
 |---|---|---|---|
 | Ô Số Bí Ẩn | Lớp 6 | 18 | `games/o-so-bi-an/lop-6/` |
 | Ô Số Bí Ẩn | Lớp 7 | 17 | `games/o-so-bi-an/lop-7/` |
-| Mảnh Ghép Bí Mật (cả lớp chơi chung) | Lớp 9 | 15 | `games/manh-ghep-bi-mat/lop-9/` |
+| Mảnh Ghép Bí Mật (cả lớp chơi chung) | Lớp 6 | 15 | `games/manh-ghep-bi-mat/lop-6/` |
+| Mật Mã Bí Ẩn (3 mức độ) | Mọi lớp | – | `games/mat-ma-bi-an/moi-lop/` |
 
 ## Cấu trúc thư mục
 

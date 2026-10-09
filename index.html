@@ -74,6 +74,13 @@ a.card:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
 .pzg i:nth-child(3n){background:#8c6aba}.pzg i:nth-child(4n){background:#5f488e}
 .pzg i.on{background:var(--sun);color:var(--ink);border-color:#fff6cb}
 .pzg i.gone{background:transparent;border-color:transparent}
+.thumb.code{background:var(--ink);padding-top:22px}
+.codeg{display:grid;gap:8px;justify-items:center}
+.codeg .sl{display:flex;gap:6px}
+.codeg .sl i{width:30px;height:38px;border-radius:8px;border:2.5px solid #fff;background:#2C3D6E;color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-style:normal;font-size:20px}
+.codeg .sl i.q{background:var(--sel)}
+.codeg .pg{display:flex;gap:5px}
+.codeg .pg b{width:12px;height:12px;border-radius:50%;border:2px solid #fff}
 .tag.class{background:var(--ink);color:#fff}
 .grade{position:absolute;top:10px;left:10px;background:var(--ink);color:#fff;border-radius:10px;padding:3px 10px;font-weight:900;font-size:13px}
 .flag{position:absolute;top:10px;right:10px;border:2px solid var(--ink);border-radius:999px;padding:2px 9px;font-weight:900;font-size:12px;background:var(--sun)}
@@ -179,7 +186,11 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
     return `<div class="pzg">${out}</div>`;
   }
 
-  const ORDER = ['Tiểu học','Lớp 1','Lớp 2','Lớp 3','Lớp 4','Lớp 5','Lớp 6','Lớp 7','Lớp 8','Lớp 9'];
+  function code(){
+    return `<div class="codeg"><div class="sl"><i>4</i><i>0</i><i class="q">?</i><i>?</i></div><div class="pg"><b style="background:var(--mint)"></b><b style="background:var(--sun)"></b><b></b><b></b></div></div>`;
+  }
+
+  const ORDER = ['Mọi lớp','Tiểu học','Lớp 1','Lớp 2','Lớp 3','Lớp 4','Lớp 5','Lớp 6','Lớp 7','Lớp 8','Lớp 9'];
   const grades = [...new Set(GAMES.map(g=>g.grade))].sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
   let current = 'Tất cả';
   try { const q = new URLSearchParams(location.search).get('lop'); if (q && grades.includes('Lớp '+q)) current = 'Lớp '+q; } catch(e){}
@@ -188,7 +199,7 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
   $('#stats').innerHTML =
     `<span class="stat"><b>${live.length}</b> game</span>` +
     `<span class="stat"><b>${new Set(live.map(g=>g.series)).size}</b> bộ game</span>` +
-    `<span class="stat"><b>${live.reduce((s,g)=>s+(g.puzzles||0),0)}</b> câu đố</span>`;
+    `<span class="stat"><b>${live.reduce((s,g)=>s+(g.unit?0:(g.puzzles||0)),0)}</b> câu đố</span>`;
 
   function drawFilters(){
     $('#filters').innerHTML = ['Tất cả', ...grades].map(g =>
@@ -201,10 +212,10 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
     const flag = p==='done' ? '<span class="flag done">Đã hoàn thành</span>' : p==='playing' ? '<span class="flag">Đang chơi dở</span>' : '';
     const tags = [g.mode && `<span class="tag${g.mode==='Cả lớp'?' class':''}">${esc(g.mode)}</span>`,
                   g.topic && `<span class="tag">${esc(g.topic)}</span>`,
-                  g.puzzles && `<span class="tag">${g.puzzles} câu</span>`,
+                  g.puzzles && `<span class="tag">${g.puzzles} ${g.unit||'câu'}</span>`,
                   g.minutes && `<span class="tag">${g.minutes} phút</span>`].filter(Boolean).join('');
     const inner = `
-      <div class="thumb${g.thumb==='pieces'?' pz':''}">${g.thumb==='pieces' ? pieces(g.id) : mini(g.id)}<span class="grade">${esc(g.grade)}</span>${flag}</div>
+      <div class="thumb${g.thumb==='pieces'?' pz':g.thumb==='code'?' code':''}">${g.thumb==='pieces' ? pieces(g.id) : g.thumb==='code' ? code() : mini(g.id)}<span class="grade">${esc(g.grade)}</span>${flag}</div>
       <div class="body"><h3>${esc(g.title)}</h3><p>${esc(g.desc)}</p></div>
       <div class="meta">${tags}<span class="play">${g.status==='live' ? (p==='playing'?'Chơi tiếp':'Chơi') : 'Sắp có'}</span></div>`;
     return g.status==='live'
