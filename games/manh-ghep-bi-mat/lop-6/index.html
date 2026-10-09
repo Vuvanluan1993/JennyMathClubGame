@@ -160,6 +160,63 @@ dialog[open]{animation:modal-in .22s ease-out}
   .actions{width:100%;margin-top:0;gap:10px}.primary,.secondary{min-height:56px;font-size:1.25rem}.status{width:100%;margin-top:0;font-size:.92rem}.victory{width:100%;margin-top:0}
   .dialog-header{padding:12px 16px}.dialog-inner{padding:16px 18px 20px}.question-content{font-size:1.15rem}.question-content table{font-size:.94rem}.question-content td,.question-content th{padding:7px}.dialog-header h2{font-size:1.2rem}.dialog-footer{align-items:flex-start;flex-direction:column}.text-button{align-self:flex-end}.answer-submit{padding:10px 18px}.feedback strong{font-size:1.6rem}.answer-box input{font-size:1.4rem}.guess-input{font-size:1.25rem}.math-equation math{font-size:1.03em}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ===== Fit to one screen on every device (no page scrolling) =====
+   html.land = wide screen: picture left, play column right.
+   html.port = tall screen: picture on top, phrase + buttons below.
+   A small script picks the layout, shrinks the type step by step (root font-size) until everything fits,
+   then sizes the picture to the space left. Sizes below are in rem so they shrink together. */
+html,body{height:100%;overflow:hidden}
+html.land .shell,html.port .shell{height:100vh;height:100dvh;display:flex;flex-direction:column;max-width:1500px;padding:clamp(6px,1.4vh,16px) clamp(10px,2vw,28px)}
+.shell header{flex:0 0 auto;margin-bottom:clamp(6px,1.2vh,14px)}
+.game-layout{flex:1 1 auto;min-height:0}
+html.land .game-layout{display:flex;flex-direction:row;gap:clamp(12px,2.5vw,40px);align-items:stretch}
+html.land .board-section{flex:0 0 auto;display:flex;flex-direction:column;min-height:0;order:0;width:auto;align-self:stretch}
+html.land .play-side{display:flex;flex-direction:column;justify-content:center;gap:.9rem;flex:1 1 0;min-width:0;min-height:0;overflow:hidden;padding:2px 4px 8px}
+html.land .play-side>*{margin:0;flex:0 0 auto}
+html.port .game-layout{display:flex;flex-direction:column;gap:.65rem}
+html.port .play-side{display:contents}
+html.port .intro{order:-2;width:100%}
+html.port .board-section{order:-1;flex:1 1 0;min-height:0;display:flex;flex-direction:column;align-self:center;width:auto;max-width:100%}
+html.port .word-panel,html.port .actions,html.port .status,html.port .victory{width:100%;margin:0}
+html.port .actions{grid-template-columns:1fr 1fr}
+.board-section{overflow:hidden;padding:.6rem .7rem .75rem}
+.board-heading{padding:0 2px .5rem;font-size:.85rem}
+.board-frame{flex:0 0 auto;max-width:none;max-height:none;aspect-ratio:auto;margin:0 auto}
+.board-progress{margin:.6rem 2px 0;height:.7rem}
+html[data-hide="1"] .subtitle,html[data-hide="2"] .intro{display:none}
+.brand-logo{height:2.9rem}.brand-text{font-size:1.2rem}
+.tool{min-height:2.6rem;padding:.4rem .7rem;font-size:.9rem;border-radius:.75rem}
+h1{font-size:3.1rem;margin-bottom:.4rem}
+.subtitle{font-size:1.05rem}
+.word-panel{padding:.9rem 1rem;border-radius:1.3rem}
+.word-top{margin-bottom:.8rem}
+.words{gap:.8rem 1.1rem}.word{gap:.3rem}
+.letter{width:2.5rem;height:3.1rem;font-size:1.5rem;border-radius:.6rem}
+.word-help{margin-top:.7rem;font-size:.85rem}
+.actions{gap:.7rem}
+.primary,.secondary{min-height:3.5rem;font-size:1.4rem;padding:.35rem 1rem;border-radius:1rem}
+.status{min-height:0;padding:.5rem .8rem;font-size:1rem;border-radius:1rem}
+.status .jsvg{width:3rem;height:3.4rem}
+.victory{padding:.8rem 1rem}.victory strong{font-size:1.5rem}
+/* question dialog: never taller than the screen; the script shrinks text and pictures to fit */
+dialog{max-height:96vh;max-height:96dvh;overflow:hidden}
+#sr-status{top:0;left:0}
+/* short screens (phone held sideways, small laptop): slimmer dialog frame so the question keeps the space */
+dialog.tight .dialog-header{padding:.35rem 1rem}
+dialog.tight .question-kicker .badge{min-width:2rem;height:2rem;font-size:1.1rem;border-radius:.5rem}
+dialog.tight .dialog-header h2{font-size:1.05rem}
+dialog.tight .dialog-inner{padding:.5rem 1rem .6rem}
+dialog.tight .answer-label,dialog.tight .paper-note{display:none}
+dialog.tight #answer-form{margin-top:.4rem}
+dialog.tight .answer-box input{font-size:1.2rem;padding:.2rem .6rem}
+dialog.tight .answer-submit{min-height:2.6rem;padding:.2rem 1rem;font-size:1.1rem}
+dialog.tight .dialog-footer{margin-top:.4rem;padding-top:.4rem}
+dialog.tight .text-button{padding:.25rem .6rem}
+dialog.tight .feedback{padding:.5rem;margin-top:.5rem}dialog.tight .feedback strong{font-size:1.3rem}dialog.tight .feedback-icon{display:none}
+.question-content p{margin:0 0 .6em}
+.math-equation{margin:.4em 0 .7em}
+.math-image{margin:.4em auto .7em}
 </style>
 </head>
 <body>
@@ -467,7 +524,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports={MysteryGame,norma
       setStatus('Chúc mừng cả lớp! CHÚ CUỘI NGỒI GỐC CÂY ĐA.');mood('happy');sound.play('win');startConfetti();$('play-again-btn').focus({preventScroll:true});
     }
   }
-  game=new MysteryGame(data,{onChange:event=>render(event)});render('reset');
+  game=new MysteryGame(data,{onChange:event=>{render(event);if(window.__fitGame)window.__fitGame();}});render('reset');
 
   function showError(node,message) {node.textContent=message;node.hidden=false;}
   function openGuess() {
@@ -545,6 +602,63 @@ if(typeof module!=='undefined'&&module.exports)module.exports={MysteryGame,norma
     register({name:'submit_secret_guess',description:'Submit the full secret phrase. A correct guess ends the game immediately; an incorrect guess pauses guessing briefly.',inputSchema:{type:'object',properties:{phrase:{type:'string'}},required:['phrase'],additionalProperties:false},annotations:{readOnlyHint:false},execute:async input=>{if(typeof input?.phrase!=='string'||!input.phrase.trim())throw new Error('A phrase is required.');if(!guessDialog.open&&!openGuess())throw new Error('Guessing is unavailable now.');$('secret-answer').value=input.phrase;const result=await submitGuess(input.phrase);return {result,state:state()};}});
     window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});
   }
+})();
+</script>
+<script>
+/* Fit the whole game into one screen on every device. */
+(() => {
+  'use strict';
+  const root = document.documentElement;
+  const q = s => document.querySelector(s);
+  const shell = q('#app'), layout = q('.game-layout'), sect = q('.board-section'), frame = q('.board-frame'), side = q('.play-side');
+  const RATIO = 232 / 361;
+  // [type scale, what to hide: 0 nothing, 1 subtitle, 2 title block]
+  const LEVELS = [[1,0],[.94,0],[.88,1],[.82,2],[.77,2],[.72,2],[.67,2],[.62,2],[.57,2],[.52,2]];
+  let land = true;
+
+  function px(el, p){ return parseFloat(getComputedStyle(el)[p]) || 0; }
+  function sizeFrame(){
+    frame.style.width = '0px'; frame.style.height = '0px';
+    const head = sect.querySelector('.board-heading'), prog = sect.querySelector('.board-progress');
+    const availH = sect.clientHeight - px(sect,'paddingTop') - px(sect,'paddingBottom')
+                 - head.offsetHeight - prog.offsetHeight - px(prog,'marginTop');
+    const padX = px(sect,'paddingLeft') + px(sect,'paddingRight') + px(sect,'borderLeftWidth') + px(sect,'borderRightWidth');
+    const maxW = (land ? layout.clientWidth * 0.48 : layout.clientWidth) - padX;
+    let h = Math.max(60, availH), w = h * RATIO;
+    if (w > maxW){ w = maxW; h = w / RATIO; }
+    frame.style.width = Math.floor(w) + 'px'; frame.style.height = Math.floor(h) + 'px';
+    return h;
+  }
+  function fitPage(){
+    land = innerWidth > innerHeight * 1.05;
+    root.classList.toggle('land', land); root.classList.toggle('port', !land);
+    for (const [k, hide] of LEVELS){
+      root.style.fontSize = (16 * k) + 'px'; root.dataset.hide = String(hide);
+      const h = sizeFrame();
+      const ok = land
+        ? side.scrollHeight <= side.clientHeight + 1 && h >= innerHeight * 0.55
+        : shell.scrollHeight <= shell.clientHeight + 1 && h >= innerHeight * 0.30;
+      if (ok) break;
+    }
+  }
+  function fitDialog(){
+    const dlg = q('#question-dialog'); if (!dlg || !dlg.open) return;
+    const qc = q('#question-content'), imgs = qc.querySelectorAll('img');
+    dlg.classList.toggle('tight', innerHeight < 600);
+    const imgMax = Math.min(265, innerHeight * 0.34);
+    for (let fs = 23; fs >= 12; fs--){
+      qc.style.fontSize = fs + 'px';
+      imgs.forEach(im => { im.style.maxHeight = Math.round(imgMax * Math.max(.35, fs / 23)) + 'px'; });
+      if (dlg.scrollHeight <= dlg.clientHeight + 1) break;
+    }
+  }
+  function fitAll(){ fitPage(); fitDialog(); }
+  window.__fitGame = () => requestAnimationFrame(fitAll);
+  addEventListener('resize', window.__fitGame);
+  addEventListener('orientationchange', window.__fitGame);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(window.__fitGame);
+  document.querySelectorAll('dialog').forEach(d => new MutationObserver(window.__fitGame).observe(d, {attributes:true, attributeFilter:['open']}));
+  fitAll();
 })();
 </script>
 </body></html>
