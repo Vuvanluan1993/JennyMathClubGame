@@ -61,16 +61,21 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 .dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--line);display:inline-block;flex:0 0 auto}
 .dot.g{background:var(--mint)} .dot.y{background:var(--sun)} .dot.e{background:var(--paper)}
 /* history */
-.hist{min-height:0;overflow:auto;display:grid;gap:6px;align-content:start;padding-right:4px}
+.hist{--rh:40px;min-height:0;overflow:hidden;contain:size;display:grid;gap:6px;grid-auto-flow:column;grid-template-rows:repeat(var(--rows,10),minmax(0,1fr));grid-template-columns:repeat(var(--cols,1),minmax(0,1fr))}
 .hist .empty{color:var(--ink-soft);font-weight:800;text-align:center;padding:18px 8px;border:2.5px dashed var(--hatch);border-radius:14px}
-.row{display:grid;grid-template-columns:34px auto 1fr;align-items:center;gap:10px;border:2.5px solid var(--line);border-radius:14px;padding:6px 10px;background:var(--paper)}
+.row{display:grid;grid-template-columns:auto auto 1fr;align-items:center;gap:calc(var(--rh)*.22);border:2.5px solid var(--line);border-radius:12px;padding:0 calc(var(--rh)*.22);background:var(--paper);min-height:0;overflow:hidden}
+.row.ph{border-style:dashed;border-color:var(--hatch);background:transparent}
+.row.ph .ds i{border-style:dashed;border-color:var(--hatch);background:transparent;color:transparent}
 .row.new{animation:slide .35s}
 .row.win{background:var(--mint-soft)}
-.row .n{font-weight:900;color:var(--ink-soft);font-size:14px}
-.row .ds{display:flex;gap:5px}
-.row .ds i{width:30px;height:36px;border-radius:8px;border:2px solid var(--line);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-style:normal;font-size:22px;background:var(--sel-soft);font-variant-numeric:tabular-nums}
-.row .fb{display:flex;gap:4px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
-.row .fb .dot{width:16px;height:16px}
+.row .n{font-weight:900;color:var(--ink-soft);font-size:clamp(10px,calc(var(--rh)*.34),14px);min-width:2ch}
+.row .ds{display:flex;gap:calc(var(--rh)*.12)}
+.row .ds i{width:calc(var(--rh)*.72);height:calc(var(--rh)*.82);border-radius:calc(var(--rh)*.18);border:2px solid var(--line);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-style:normal;font-size:calc(var(--rh)*.56);background:var(--sel-soft);font-variant-numeric:tabular-nums}
+.row .fb{display:flex;gap:3px;justify-content:flex-end;align-items:center;flex-wrap:nowrap;min-width:0}
+.row .fb .dot{width:clamp(9px,calc(var(--rh)*.36),16px);height:clamp(9px,calc(var(--rh)*.36),16px)}
+.hist.noword .row .fb small{display:none}
+.hist.narrow .row .fb{display:grid;grid-template-columns:repeat(2,auto);justify-content:end;gap:2px}
+.hist.narrow .row .fb .dot{width:clamp(5px,calc((var(--rh) - 9px)*.45),14px);height:clamp(5px,calc((var(--rh) - 9px)*.45),14px);border-width:1.5px}
 .row .fb small{font-weight:800;font-size:12.5px;color:var(--ink-soft);margin-left:6px;white-space:nowrap}
 /* notepad */
 .note{border-top:2px dashed var(--hatch);padding-top:8px;display:grid;gap:6px}
@@ -143,9 +148,41 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 .reveal{display:flex;justify-content:center;gap:8px}
 .reveal i{width:46px;height:56px;border-radius:12px;border:3px solid var(--line);background:var(--mint-soft);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-style:normal;font-size:32px}
 .tip{text-align:left;border-top:2px dashed var(--hatch);padding-top:10px;font-size:14.5px}
+@media (max-height:560px){.panel .jsvg{display:none}}
+@media (max-height:560px) and (min-aspect-ratio:1/1){.panel{max-width:820px}.panel ul{columns:2;column-gap:28px}}
+/* boxes above and below the history keep their full height; only the history gives way */
+.board>.lock,.board>.legend,.board>.note{min-height:max-content}
+.board>.lock{grid-row:1}.board>.legend{grid-row:2}.board>.hist{grid-row:3}.board>.note{grid-row:4}
+/* phone held sideways: lock + notepad on the left, history on the right */
+@media (max-height:500px) and (min-aspect-ratio:1/1){
+  .stage{grid-template-columns:minmax(0,1.9fr) minmax(0,1fr)}
+  .board{grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);column-gap:10px;padding:8px}
+  .board>.lock{grid-column:1;grid-row:1}
+  .legend{display:none}
+  .board>.note{grid-column:1;grid-row:2;align-self:end}
+  .npad{grid-template-columns:repeat(5,1fr)}
+  .board>.hist{grid-column:2;grid-row:1 / span 2}
+  .slot{width:clamp(30px,5vw,40px)}
+  .lock{padding:8px 10px}
+  .lock-top span{display:none}
+  .note h4{display:none}
+  .card .tag:nth-child(2),.ctext{display:none}
+  .nd{height:30px;font-size:16px}
+  .lower{display:none}
+  .ttl small{display:none}
+  .bar img{height:34px}
+  .key{height:clamp(40px,12dvh,52px)}
+}
+/* compact steps used by sizeHist() on short screens */
+html[data-compact="1"] .legend,html[data-compact="2"] .legend,html[data-compact="3"] .legend,html[data-compact="4"] .legend{display:none}
+html[data-compact="2"] .ctext,html[data-compact="3"] .ctext,html[data-compact="4"] .ctext{display:none}
+html[data-compact="3"] .slot,html[data-compact="4"] .slot{width:clamp(36px,10vw,50px)}
+html[data-compact="3"] .lock,html[data-compact="4"] .lock{padding:6px 10px;gap:4px}
+html[data-compact="4"] .nd{height:26px;font-size:15px}
+html[data-compact="4"] .note h4{display:none}
 #fx{position:fixed;inset:0;pointer-events:none;z-index:14}
 /* portrait / phone */
-@media (orientation:portrait),(max-width:820px){
+@media (max-aspect-ratio:1/1){
   .app{gap:8px;padding-block:8px}
   .bar{gap:6px}
   .bar img{height:34px}
@@ -160,8 +197,6 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
   .lock{padding:8px 10px;gap:6px}
   .slot{width:clamp(46px,15vw,62px);font-size:clamp(30px,9vw,42px)}
   .legend{font-size:12px;gap:10px}
-  .row{padding:4px 8px;gap:8px;grid-template-columns:26px auto 1fr}
-  .row .ds i{width:26px;height:30px;font-size:19px}
   .nd{height:32px;font-size:17px;border-radius:8px}
   .side{grid-template-rows:auto auto;gap:8px}
   .lower{display:none}
@@ -173,7 +208,7 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
   .key{height:44px;border-radius:12px}
 }
 @media (max-width:360px){ .bar img{display:none} }
-@media (max-height:760px) and ((orientation:portrait) or (max-width:820px)){ .card .mini-j{display:none} .legend{display:none} }
+@media (max-height:760px) and (max-aspect-ratio:1/1){ .card .mini-j{display:none} .legend{display:none} }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -422,8 +457,10 @@ function rowHTML(g, idx, isNew){
 }
 function renderHist(newest=false){
   const h=$('#hist');
-  if(!S.guesses.length){ h.innerHTML='<div class="empty">Chưa có lượt đoán nào. Hãy thử một mật mã bất kì!</div>'; return; }
-  h.innerHTML = S.guesses.map((g,i)=>({g,i})).reverse().map(({g,i},k)=>rowHTML(g,i,newest&&k===0)).join('');
+  const n=md().len, last=S.guesses.length-1;
+  h.innerHTML = Array.from({length:MAXG},(_,i)=> i<=last ? rowHTML(S.guesses[i], i, newest && i===last)
+    : `<div class="row ph"><span class="n">#${i+1}</span><span class="ds">${'<i>0</i>'.repeat(n)}</span><span class="fb"></span></div>`).join('');
+  sizeHist();
 }
 function renderNote(){ npad.querySelectorAll('.nd').forEach((b,d)=>{ b.classList.toggle('yes',S.note[d]===1); b.classList.toggle('no',S.note[d]===2); }); }
 function renderTop(){
@@ -439,6 +476,32 @@ function renderTop(){
     ? 'Mật mã có thể có chữ số lặp lại, ví dụ 3 3 0 7. Một chấm chỉ tính cho một chữ số.'
     : `Mật mã gồm ${md().len} chữ số khác nhau, có thể bắt đầu bằng 0. Đoán thử, xem các chấm rồi suy luận!`;
 }
+/* Fit the board in one screen: compact step by step until the history has room,
+   then size the history rows by both the height and the width they get. */
+function sizeHist(){
+  const h=$('#hist'); if(!h) return;
+  const board=$('.board'), gap=6, root=document.documentElement;
+  for(let lv=0; lv<=4; lv++){
+    root.dataset.compact=lv;
+    const side=$('.side');
+    if(h.clientHeight >= 5*24+4*gap && board.scrollHeight <= board.clientHeight+1 && side.scrollHeight <= side.clientHeight+1 && root.scrollHeight <= innerHeight+1) break;
+  }
+  const H=h.clientHeight, W=h.clientWidth, n=(S||{cur:[0,0,0,0]}).cur.length;
+  // row width measured in "row heights" (+10% safety): number, digits, then dots in one line or in 2 lines
+  const base=0.44+0.7+0.44+n*0.84-0.12, unitLine=(base+n*0.45)*1.1, unitTwo=(base+Math.ceil(n/2)*0.45)*1.1;
+  // try 1 column x 10 rows and 2 columns x 5 rows; keep the one with bigger rows
+  const plan=(rows,cols)=>{ const rowW=(W-(cols-1)*gap)/cols, byH=(H-(rows-1)*gap)/rows;
+    // 'words': dots + explanation; 'line': dots in one line; 'two': dots in two lines
+    let mode='words', byW=(rowW-30-118)/unitLine;
+    if(byW<Math.min(byH,30)){ mode='line'; byW=(rowW-30)/unitLine; }
+    if(mode==='line' && byW<Math.min(byH,30)){ mode='two'; byW=(rowW-30)/unitTwo; }
+    return {rows,cols,mode,rh:Math.min(52,byH,byW)}; };
+  const a=plan(10,1), b=plan(5,2), pick=a.rh>=b.rh?a:b;
+  const rows=pick.rows, cols=pick.cols, mode=pick.mode, rh=Math.max(14,pick.rh);
+  h.style.setProperty('--rows',rows); h.style.setProperty('--cols',cols); h.style.setProperty('--rh',rh+'px');
+  h.classList.toggle('noword', mode!=='words'); h.classList.toggle('narrow', mode==='two');
+}
+addEventListener('resize', ()=>requestAnimationFrame(sizeHist));
 function render(newest=false){ renderTop(); renderSlots(); renderHist(newest); renderNote(); }
 
 /* ---------- interaction ---------- */
@@ -547,6 +610,31 @@ document.addEventListener('visibilitychange', ()=>{ if(document.hidden && S) sav
 // first paint: an empty mid-level board behind the start panel
 S = fresh('mid'); render(); S = null;
 showStart();
+</script>
+<script>
+/* Start / pause / end panels: always fully visible without scrolling.
+   Short screens first hide the big Jenny picture (CSS), then the panel is scaled down to fit. */
+(() => {
+  'use strict';
+  function fitPanels(){
+    document.querySelectorAll('.ov:not([hidden]) .panel').forEach(p => {
+      p.style.transform = ''; p.style.maxHeight = 'none'; p.style.overflow = 'visible';
+      const r = p.getBoundingClientRect();
+      const s = Math.min(1, (innerHeight - 20) / r.height, (innerWidth - 20) / r.width);
+      if (s >= 1 && r.top >= 0) return;
+      // scale from the top edge, then move the panel so it sits in the middle of the screen
+      p.style.transformOrigin = 'top center';
+      const ty = (innerHeight - r.height * s) / 2 - r.top;
+      p.style.transform = `translateY(${ty.toFixed(1)}px) scale(${s.toFixed(3)})`;
+    });
+  }
+  const run = () => requestAnimationFrame(fitPanels);
+  window.__fitPanels = run;
+  addEventListener('resize', run); addEventListener('orientationchange', run);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(run);
+  document.querySelectorAll('.ov').forEach(o => new MutationObserver(run).observe(o, {attributes:true, attributeFilter:['hidden'], childList:true, subtree:true}));
+  run();
+})();
 </script>
 </body>
 </html>
