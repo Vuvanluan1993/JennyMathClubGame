@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Giải mã thư bí mật</title>
+<link rel="icon" href="../../../assets/jenny-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<link rel="stylesheet" href="../_kit/kit.css">
+<style>
+/* play area: letter on top, wheel below (sizes set by layout()) */
+.gm{width:100cqw;height:100cqh;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:6px;--ts:32px}
+.letter{width:100%;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;column-gap:calc(var(--ts) * .55);row-gap:calc(var(--ts) * .28);
+  background:var(--sun-soft);border:2.5px dashed #E0B44A;border-radius:14px;padding:calc(var(--ts) * .22) calc(var(--ts) * .25)}
+.word{display:flex;gap:calc(var(--ts) * .1);border-radius:10px;padding:2px;transition:background .2s}
+.word.ok{background:var(--mint-soft)}
+.tile{width:var(--ts);padding:0;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:calc(var(--ts) * .08)}
+.tile .sym{width:100%;height:calc(var(--ts) * .82);display:grid;place-items:center;border-radius:calc(var(--ts) * .2);background:var(--ink);color:#fff;
+  font-family:var(--display);font-weight:800;font-size:calc(var(--ts) * .56);line-height:1}
+.tile .sym.num{font-size:calc(var(--ts) * .46)}
+.tile .box{width:100%;height:var(--ts);display:grid;place-items:center;border-radius:calc(var(--ts) * .2);background:#fff;border:2.5px solid var(--ink);
+  font-family:var(--display);font-weight:800;font-size:calc(var(--ts) * .62);line-height:1;color:var(--sel)}
+.tile .box:empty{border-style:dashed;border-color:var(--hatch)}
+.tile.same .sym{background:var(--sel)}
+.tile.sel .sym{background:var(--coral)}
+.tile.sel .box{border-color:var(--coral);border-style:solid;box-shadow:0 0 0 3px rgba(255,107,87,.3)}
+.tile .box.hint{color:var(--mint)}
+.word.ok .box{color:#178a63;border-color:var(--mint)}
+.letter.shake{animation:shake .45s}
+.wrow{display:flex;align-items:center;justify-content:center;gap:var(--g,12px);flex:none}
+.wrow.below{flex-wrap:wrap;width:var(--ws)}
+.wrow.below .wheel{order:-1;flex-basis:100%}
+.wheel{width:var(--ws,240px);height:var(--ws,240px);flex:none;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.wheel.drag{cursor:grabbing}
+.wheel svg{width:100%;height:100%;display:block;overflow:visible}
+.wheel text{font-family:var(--display);font-weight:800;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.rot{width:var(--bs,60px);height:var(--bs,60px);border-radius:50%;border:3px solid var(--ink);background:var(--sun);box-shadow:0 4px 0 var(--ink);
+  display:grid;place-items:center;padding:0;flex:none;position:relative}
+.rot:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.rot svg{width:52%;height:52%}
+.rot span{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:6px;font-size:12px;font-weight:900;white-space:nowrap;color:var(--ink-soft)}
+.wrow.below .rot span{display:none}
+/* controls */
+.ansbox{display:flex;flex-direction:column;gap:4px}
+.ansbox label{font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--ink-soft);text-transform:uppercase}
+.ans{width:100%;min-height:50px;border-radius:14px;border:3px solid var(--ink);background:#fff;box-shadow:inset 0 3px 0 rgba(29,43,83,.08);
+  font-family:var(--display);font-weight:800;font-size:22px;padding:4px 12px;color:var(--ink);text-transform:uppercase;letter-spacing:.04em}
+.ans::placeholder{text-transform:none;letter-spacing:0;color:#9AA6BC;font-weight:700}
+.ans.shake{animation:shake .45s}
+.keys.two{grid-template-columns:2fr 1fr}
+@media (max-aspect-ratio:1/1){.ans{min-height:44px;font-size:19px}.ansbox label{display:none}}
+@media (max-height:520px) and (min-aspect-ratio:1/1){.ans{min-height:38px;font-size:17px}.ansbox label{display:none}}
+html.tight .ans{min-height:40px}
+html.tight .ansbox label{display:none}
+</style>
+</head>
+<body>
+<script src="../_kit/kit.js"></script>
+<script>
+(() => {
+'use strict';
+/* ---------- messages: uppercase, no diacritics, A-Z and spaces ---------- */
+const BANK = [
+  'SO CHAN', 'SO LE', 'HINH TRON', 'HINH VUONG', 'PHAN SO', 'GOC VUONG', 'TAM GIAC', 'DIEN TICH', 'CHU VI', 'THE TICH',
+  'DUONG THANG', 'DUONG CHEO', 'LUY THUA', 'TY LE', 'PHEP CONG', 'PHEP NHAN', 'PHEP CHIA', 'HINH THOI', 'DOAN THANG', 'DAI SO',
+  'HINH HOC', 'BOI CHUNG', 'UOC CHUNG', 'CO LEN', 'GIOI QUA', 'THAT TUYET', 'SO HOC', 'HINH THANG',
+  'HOC TOAN VUI', 'SO NGUYEN TO', 'JENNY YEU TOAN', 'HINH TAM GIAC', 'BANG CUU CHUONG', 'HINH CHU NHAT', 'SO THAP PHAN', 'TAM GIAC DEU',
+  'DINH LY PITAGO', 'HAI CONG HAI', 'MOT TRAM DIEM', 'GIAI MA THU', 'DI TIM KHO BAU', 'HINH LAP PHUONG', 'SO CHINH PHUONG', 'TRUC SO NGANG',
+  'GOC NHON NHO', 'BAN RAT GIOI', 'MAT MA BI AN', 'CON SO MAY MAN', 'DAU CONG DAU TRU',
+  'HOC TOAN THAT VUI', 'CHIA HET CHO BA', 'CHIA HET CHO HAI', 'CHIA HET CHO NAM', 'BON CANH BANG NHAU', 'KHONG CHIA CHO KHONG',
+  'EM YEU MON TOAN', 'JENNY GIAI DO VUI', 'BAN THAT LA GIOI', 'CHUC MUNG EM NHE', 'DUONG TRON CO TAM', 'HAI GOC KE BU', 'BA NHAN BA LA CHIN',
+  'NAM NHAN NAM HAI LAM', 'BAY CONG BA BANG MUOI', 'TOAN HOC LA NIEM VUI', 'MUOI CHIA HAI BANG NAM', 'TAM GIAC CO BA CANH',
+  'HINH VUONG CO BON GOC', 'SO KHONG LA SO CHAN', 'MOT TUAN CO BAY NGAY', 'MOT GIO SAU MUOI PHUT', 'THU BI MAT CUA JENNY',
+  'KHO BAU O DUOI CAY', 'HAI LAN HAI LA BON', 'SO MOT KHONG CHIA HET', 'NAM NAY EM HOC GIOI', 'CLB TOAN CUA JENNY',
+  'HAY DEM TU MOT DEN MUOI', 'MOT NAM CO MUOI HAI THANG', 'TONG HAI SO CHAN'
+];
+const AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const N = 26, STEP = 360 / N;
+const TYPES = {
+  caesar: { name: 'Dịch chữ' },
+  num:    { name: 'Số thành chữ' },
+  mirror: { name: 'Gương' }
+};
+const LEVELS = [
+  { name: 'Dễ',  desc: 'Cho sẵn số nấc', words: [2, 3], types: ['caesar', 'num'] },
+  { name: 'Vừa', desc: 'Có 1 chữ mồi',   words: [2, 4], types: ['caesar', 'num', 'mirror'] },
+  { name: 'Khó', desc: 'Không mồi',      words: [3, 5], types: ['caesar', 'num', 'mirror'] }
+];
+const rnd = n => Math.floor(Math.random() * n);
+const mod = (a, n = N) => ((a % n) + n) % n;
+/* normalize what the child types: no diacritics, đ -> d, uppercase, single spaces */
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[đĐ]/g, 'd').toUpperCase()
+  .replace(/[^A-Z? ]+/g, ' ').replace(/\s+/g, ' ').trim();
+
+/* ---------- making a puzzle ---------- */
+let used = new Set();
+function make(lv, round) {
+  if (round === 0) used = new Set();
+  const L = LEVELS[lv];
+  const pool = BANK.filter(m => { const w = m.split(' ').length; return w >= L.words[0] && w <= L.words[1] && !used.has(m); });
+  const msg = (pool.length ? pool : BANK)[rnd(pool.length || BANK.length)];
+  used.add(msg);
+  const type = lv === 0 ? L.types[round % 2] : L.types[rnd(L.types.length)];
+  let k;
+  if (lv === 0) k = type === 'num' ? 0 : 1 + rnd(9);
+  else if (type === 'mirror') k = rnd(N);
+  else k = 1 + rnd(N - 1);
+  const words = msg.split(' ');
+  const enc = p => type === 'mirror' ? mod(k - p) : mod(p + k);
+  const code = words.map(w => [...w].map(ch => enc(AZ.indexOf(ch))));
+  let seed = null;
+  if (lv === 1) {
+    const letters = [...msg.replace(/ /g, '')];
+    const p = AZ.indexOf(letters[rnd(letters.length)]);
+    seed = { c: enc(p), p };
+  }
+  return { type, k, answer: msg, words, code, seed };
+}
+const symText = (P, c) => P.type === 'num' ? String(c + 1) : AZ[c];
+/* which real letter sits next to outer symbol c when the wheel is at offset off */
+const dir = P => P.type === 'mirror' ? -1 : 1;
+const innerAt = (P, c, off) => P.type === 'mirror' ? mod(off - c) : mod(c - off);
+
+/* ---------- pictures ---------- */
+const ROT = {
+  L: '<svg viewBox="0 0 24 24" fill="none" stroke="#1D2B53" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12a7 7 0 1 0 2.1-5"/><path d="M4 3v5h5"/></svg>',
+  R: '<svg viewBox="0 0 24 24" fill="none" stroke="#1D2B53" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12a7 7 0 1 1-2.1-5"/><path d="M20 3v5h-5"/></svg>'
+};
+const R_OUT = 99, R_MID = 73, R_IN = 47, R_SYM = 86, R_LET = 60;
+const pt = (r, a) => [r * Math.sin(a * Math.PI / 180), -r * Math.cos(a * Math.PI / 180)];
+function wedge(r1, r2, a1, a2) {
+  const [x1, y1] = pt(r2, a1), [x2, y2] = pt(r2, a2), [x3, y3] = pt(r1, a2), [x4, y4] = pt(r1, a1);
+  return `M${x1.toFixed(2)} ${y1.toFixed(2)}A${r2} ${r2} 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}L${x3.toFixed(2)} ${y3.toFixed(2)}A${r1} ${r1} 0 0 0 ${x4.toFixed(2)} ${y4.toFixed(2)}Z`;
+}
+
+/* ---------- one round ---------- */
+let G = null;
+const $ = id => document.getElementById(id);
+function mount(ctx) {
+  const P = ctx.puzzle, st = ctx.state || {};
+  G = { ctx, P, rot: st.rot || 0, vis: st.rot || 0, wrong: st.wrong || 0, hinted: (st.hinted || []).slice(), sel: -1, anim: 0, solved: false };
+  const flat = []; P.code.forEach((w, wi) => w.forEach((c, li) => flat.push({ c, wi, li })));
+  G.flat = flat; G.boxes = flat.map(() => '');
+
+  /* the letter */
+  const gm = document.createElement('div'); gm.className = 'gm';
+  const letter = document.createElement('div'); letter.className = 'letter'; letter.id = 'gmLetter';
+  let idx = 0;
+  P.code.forEach((w, wi) => {
+    const wd = document.createElement('div'); wd.className = 'word'; wd.dataset.w = wi;
+    w.forEach(c => {
+      const i = idx++;
+      const t = document.createElement('button'); t.className = 'tile'; t.dataset.i = i;
+      t.setAttribute('aria-label', 'Ký hiệu ' + symText(P, c));
+      t.innerHTML = `<span class="sym${P.type === 'num' ? ' num' : ''}">${symText(P, c)}</span><span class="box"></span>`;
+      t.onclick = () => { select(i === G.sel ? -1 : i); ctx.sfx.tap(); };
+      wd.appendChild(t);
+    });
+    letter.appendChild(wd);
+  });
+  G.tiles = [...letter.querySelectorAll('.tile')];
+
+  /* the wheel */
+  const wrow = document.createElement('div'); wrow.className = 'wrow'; wrow.id = 'gmRow';
+  const bL = document.createElement('button'); bL.className = 'rot'; bL.id = 'gmLeft'; bL.innerHTML = ROT.L + '<span>Xoay trái</span>';
+  bL.setAttribute('aria-label', 'Xoay trái'); bL.onclick = () => turn(-1);
+  const bR = document.createElement('button'); bR.className = 'rot'; bR.id = 'gmRight'; bR.innerHTML = ROT.R + '<span>Xoay phải</span>';
+  bR.setAttribute('aria-label', 'Xoay phải'); bR.onclick = () => turn(1);
+  const wheel = document.createElement('div'); wheel.className = 'wheel'; wheel.id = 'gmWheel';
+  wheel.setAttribute('aria-label', 'Vòng giải mã');
+  wheel.innerHTML = wheelSvg(P);
+  wrow.append(bL, wheel, bR);
+  gm.append(letter, wrow);
+  ctx.play.appendChild(gm);
+  G.gm = gm; G.letter = letter; G.wrow = wrow; G.wheel = wheel;
+  G.innerG = wheel.querySelector('#wInner'); G.inTxt = [...wheel.querySelectorAll('.inl')];
+  G.outTxt = [...wheel.querySelectorAll('.outl')];
+  G.selW = wheel.querySelector('#wSel'); G.selIn = wheel.querySelector('#wSelIn'); G.off = wheel.querySelector('#wOff');
+  G.winIn = wheel.querySelector('#wWinIn');
+  dragSetup(wheel);
+
+  /* mission */
+  const T = TYPES[P.type].name;
+  ctx.tag(`Kiểu: <b>${T}</b>`);
+  const outerWhat = P.type === 'num' ? 'số' : 'chữ';
+  let m;
+  if (ctx.level === 0) {
+    m = P.type === 'num'
+      ? `Thư viết bằng <b>số</b>: 1 là A, 2 là B, 3 là C... Để vòng ở <b>LỆCH 0 NẤC</b>, đọc chữ ở vòng trong.`
+      : `Mỗi chữ trong thư bị dịch đi <b>${P.k} nấc</b>. Xoay vòng trong tới <b>LỆCH ${P.k} NẤC</b>, rồi đọc chữ ở vòng trong.`;
+  } else {
+    const how = P.type === 'mirror' ? ' Vòng trong chạy <b>ngược</b> như soi gương.' : '';
+    m = P.seed
+      ? `Kiểu <b>${T}</b>.${how} Mồi của Jenny: ${outerWhat} <b>${symText(P, P.seed.c)}</b> trong thư là chữ <b>${AZ[P.seed.p]}</b>. Xoay vòng trong cho khớp rồi giải cả thư.`
+      : `Kiểu <b>${T}</b>.${how} Không có mồi! Xoay vòng trong tới khi đọc ra từ có nghĩa.`;
+  }
+  ctx.mission(m + ' Gõ câu vào ô dưới rồi bấm <b>Kiểm tra</b>.');
+
+  /* controls */
+  const box = document.createElement('div'); box.className = 'ansbox';
+  box.innerHTML = `<label for="gmAns">Câu đã giải</label><input class="ans" id="gmAns" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Gõ câu đã giải" enterkeyhint="done">`;
+  ctx.controls.appendChild(box);
+  const keys = document.createElement('div'); keys.className = 'keys two';
+  const bChk = document.createElement('button'); bChk.className = 'key go'; bChk.id = 'gmCheck'; bChk.textContent = 'Kiểm tra'; bChk.onclick = check;
+  const bClr = document.createElement('button'); bClr.className = 'key fn'; bClr.id = 'gmClear'; bClr.textContent = 'Xoá'; bClr.onclick = clearAll;
+  keys.append(bChk, bClr); ctx.controls.appendChild(keys);
+  const inp = box.querySelector('input'); G.inp = inp;
+  inp.addEventListener('input', () => { boxesFromText(inp.value); persist(); });
+  inp.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') { e.preventDefault(); check(); } });
+
+  G.hinted.forEach(w => revealWord(w));
+  if (st.text != null && st.text !== '') { inp.value = st.text; boxesFromText(st.text); }
+  draw(G.vis);
+  if (ctx.round === 0 && !ctx.state) ctx.say(ctx.level === 0 ? 'Bấm Xoay hoặc kéo vòng trong để giải mã nhé!' : 'Tìm đúng số nấc là đọc được thư!');
+}
+
+function wheelSvg(P) {
+  let s = `<svg viewBox="-104 -104 208 208" aria-hidden="true">`;
+  s += `<circle r="${R_OUT}" fill="#fff" stroke="#1D2B53" stroke-width="3"/>`;
+  s += `<path id="wSel" d="" fill="#DCEBFF"/>`;
+  s += `<path d="${wedge(R_IN, R_OUT, -STEP / 2, STEP / 2)}" fill="#FFC93C"/>`;
+  for (let i = 0; i < N; i++) { const [x1, y1] = pt(R_MID, (i + .5) * STEP), [x2, y2] = pt(R_OUT, (i + .5) * STEP);
+    s += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="#B8C6DD" stroke-width="1"/>`; }
+  for (let i = 0; i < N; i++) { const [x, y] = pt(R_SYM, i * STEP);
+    s += `<text class="outl" x="${x.toFixed(2)}" y="${y.toFixed(2)}" font-size="${P.type === 'num' ? 12.5 : 15}" fill="#1D2B53">${symText(P, i)}</text>`; }
+  /* inner ring (rotates) */
+  s += `<g id="wInner"><circle r="${R_MID}" fill="#FFF0C2" fill-opacity=".72" stroke="#1D2B53" stroke-width="2.5"/>`;
+  for (let i = 0; i < N; i++) { const [x1, y1] = pt(R_IN, (i + .5) * STEP), [x2, y2] = pt(R_MID, (i + .5) * STEP);
+    s += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="#E0B44A" stroke-width="1"/>`; }
+  s += `<path d="M0 ${-R_MID + 3} l-3.5 5 h7 z" fill="#FF6B57"/></g>`;
+  s += `<path d="${wedge(R_IN, R_MID, -STEP / 2, STEP / 2)}" fill="#FFC93C" fill-opacity=".55"/>`;
+  s += `<path id="wSelIn" d="" fill="#2F7DE1" fill-opacity=".22"/>`;
+  for (let j = 0; j < N; j++) s += `<text class="inl" font-size="14.5" fill="#1D2B53">${AZ[j]}</text>`;
+  /* window frame at the top */
+  s += `<path d="${wedge(R_IN, R_OUT, -STEP / 2, STEP / 2)}" fill="none" stroke="#1D2B53" stroke-width="3" stroke-linejoin="round"/>`;
+  s += `<circle r="${R_IN}" fill="#2F7DE1" stroke="#1D2B53" stroke-width="3"/>`;
+  s += `<text y="-11" font-size="13" fill="#fff" letter-spacing=".5">LỆCH</text>`;
+  s += `<text id="wOff" y="10" font-size="27" fill="#fff">0</text>`;
+  s += `<text y="29" font-size="11.5" fill="#fff" letter-spacing=".5">NẤC</text>`;
+  s += `<circle r="${R_OUT}" fill="none" stroke="#1D2B53" stroke-width="3"/>`;
+  return s + '</svg>';
+}
+
+/* draw the wheel at a (possibly fractional) rotation, in steps */
+function draw(v) {
+  const P = G.P, d = dir(P);
+  G.innerG.setAttribute('transform', `rotate(${(v * STEP).toFixed(2)})`);
+  G.inTxt.forEach((t, j) => { const [x, y] = pt(R_LET, (d * j + v) * STEP); t.setAttribute('x', x.toFixed(2)); t.setAttribute('y', y.toFixed(2)); });
+  const off = mod(Math.round(v));
+  G.off.textContent = off;
+  const c = G.sel >= 0 ? G.flat[G.sel].c : -1;
+  G.outTxt.forEach((t, i) => t.setAttribute('fill', i === c ? '#fff' : '#1D2B53'));
+  const inHi = c >= 0 ? innerAt(P, c, off) : -1, inTop = innerAt(P, 0, off);
+  G.inTxt.forEach((t, j) => t.setAttribute('fill', j === inHi ? '#2F7DE1' : '#1D2B53'));
+  G.inTxt.forEach((t, j) => t.setAttribute('font-size', j === inHi || j === inTop ? '17' : '14.5'));
+  if (c >= 0) {
+    G.selW.setAttribute('d', wedge(R_MID, R_OUT, (c - .5) * STEP, (c + .5) * STEP)); G.selW.setAttribute('fill', '#FF6B57');
+    G.selIn.setAttribute('d', wedge(R_IN, R_MID, (c - .5) * STEP, (c + .5) * STEP));
+  } else { G.selW.setAttribute('d', ''); G.selIn.setAttribute('d', ''); }
+}
+function animateTo(target) {
+  const from = G.vis, t0 = performance.now(), dur = 230, tok = ++G.anim;
+  const f = now => {
+    if (tok !== G.anim) return;
+    const t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3);
+    G.vis = from + (target - from) * e; draw(G.vis);
+    if (t < 1) requestAnimationFrame(f); else { G.vis = target; draw(target); }
+  };
+  requestAnimationFrame(f);
+}
+function turn(d) {
+  if (G.solved) return;
+  G.rot += d; G.ctx.sfx.move(mod(G.rot)); animateTo(G.rot); persist();
+}
+function setRot(off) { let r = G.rot; const dlt = mod(off - r); r += dlt > 13 ? dlt - 26 : dlt; G.rot = r; animateTo(r); }
+function dragSetup(el) {
+  let drag = null;
+  const ang = e => { const r = el.getBoundingClientRect(); return Math.atan2(e.clientX - (r.left + r.width / 2), -(e.clientY - (r.top + r.height / 2))) * 180 / Math.PI; };
+  el.addEventListener('pointerdown', e => {
+    if (G.solved) return;
+    const r = el.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    if (Math.hypot(dx, dy) < r.width * R_IN / 208 * .6) return; // centre: ignore
+    G.anim++; drag = { a: ang(e), v0: G.vis, last: Math.round(G.vis) }; el.setPointerCapture(e.pointerId); el.classList.add('drag'); e.preventDefault();
+  });
+  el.addEventListener('pointermove', e => {
+    if (!drag) return;
+    let da = ang(e) - drag.a; da = ((da + 540) % 360) - 180;
+    if (Math.abs(da) > 90) { drag.a = ang(e); drag.v0 = G.vis; da = 0; }
+    G.vis = drag.v0 + da / STEP; draw(G.vis);
+    const s = Math.round(G.vis); if (s !== drag.last) { drag.last = s; G.ctx.sfx.move(mod(s)); }
+  });
+  const up = () => { if (!drag) return; drag = null; el.classList.remove('drag'); G.rot = Math.round(G.vis); animateTo(G.rot); persist(); };
+  el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+}
+
+/* tiles and boxes */
+function select(i) {
+  G.sel = i;
+  const c = i >= 0 ? G.flat[i].c : -1;
+  G.tiles.forEach((t, j) => { t.classList.toggle('sel', j === i); t.classList.toggle('same', j !== i && c >= 0 && G.flat[j].c === c); });
+  draw(G.vis);
+}
+function paintBoxes() {
+  G.tiles.forEach((t, i) => { const b = t.lastChild; b.textContent = G.boxes[i] || ''; b.classList.toggle('hint', !!G.hintBox && G.hintBox[i] && G.boxes[i] === G.P.answer.replace(/ /g, '')[i]); });
+}
+function boxesFromText(txt) {
+  const s = norm(txt).replace(/ /g, '');
+  G.boxes = G.flat.map((_, i) => (s[i] && s[i] !== '?') ? s[i] : '');
+  G.letter.querySelectorAll('.word.ok').forEach(w => w.classList.remove('ok'));
+  paintBoxes();
+}
+function textFromBoxes() {
+  let i = 0;
+  const t = G.P.words.map(w => [...w].map(() => G.boxes[i++] || '?').join('')).join(' ');
+  return t.replace(/[? ]+$/, '');
+}
+function syncInput() { G.inp.value = textFromBoxes(); G.letter.querySelectorAll('.word.ok').forEach(w => w.classList.remove('ok')); paintBoxes(); persist(); }
+function revealWord(w) {
+  const ans = G.P.answer.replace(/ /g, '');
+  G.hintBox = G.hintBox || {};
+  G.flat.forEach((f, i) => { if (f.wi === w) { G.boxes[i] = ans[i]; G.hintBox[i] = 1; } });
+  G.inp.value = textFromBoxes(); paintBoxes();
+}
+function clearAll() {
+  if (G.solved) return;
+  G.boxes = G.flat.map(() => ''); G.hinted.forEach(w => G.flat.forEach((f, i) => { if (f.wi === w) G.boxes[i] = G.P.answer.replace(/ /g, '')[i]; }));
+  syncInput(); G.ctx.sfx.tap(); G.inp.focus({ preventScroll: true });
+}
+function persist() { if (!G.solved) G.ctx.save({ rot: mod(G.rot), text: G.inp ? G.inp.value : '', wrong: G.wrong, hinted: G.hinted }); }
+
+/* checking */
+function wordsRight(txt) {
+  const words = G.P.words, typed = norm(txt).split(' ').filter(Boolean);
+  if (typed.length === words.length) return words.map((w, i) => typed[i] === w);
+  const s = typed.join(''); let p = 0;
+  return words.map(w => { const ok = s.slice(p, p + w.length) === w; p += w.length; return ok; });
+}
+function check() {
+  if (G.solved) return;
+  const txt = G.inp.value, letters = norm(txt).replace(/[ ?]/g, ''), ans = G.P.answer.replace(/ /g, '');
+  if (!letters) { G.ctx.say('Em gõ câu đã giải vào ô trước nhé.', 'oops'); G.inp.focus({ preventScroll: true }); return; }
+  if (letters === ans) {
+    G.solved = true; G.letter.querySelectorAll('.word').forEach(w => w.classList.add('ok'));
+    G.boxes = [...ans]; paintBoxes();
+    const stars = G.wrong === 0 ? 3 : G.wrong === 1 ? 2 : 1;
+    G.ctx.win(stars, `Thư viết: "${G.P.answer}". ` + (stars === 3 ? 'Giải đúng ngay lần đầu!' : `Em đã thử ${G.wrong + 1} lần.`));
+    return;
+  }
+  const ok = wordsRight(txt), n = ok.filter(Boolean).length;
+  if (letters.length < ans.length) {
+    G.ctx.say(`Còn thiếu ${ans.length - letters.length} chữ. Giải nốt rồi kiểm tra nhé!`, 'oops'); return;
+  }
+  G.wrong++; persist();
+  G.ctx.sfx.bad();
+  [G.letter, G.inp].forEach(e => { e.classList.remove('shake'); void e.offsetWidth; e.classList.add('shake'); });
+  G.letter.querySelectorAll('.word').forEach((w, i) => w.classList.toggle('ok', ok[i]));
+  G.ctx.say(n ? `Em đúng ${n}/${G.P.words.length} từ rồi. Sửa các từ còn lại nhé!` : `Chưa đúng từ nào. Thử xoay số nấc khác nhé!`, 'oops');
+}
+
+/* hint: right offset the first time, and one more word */
+function hint(ctx) {
+  if (G.solved) return false;
+  const ans = G.P.answer.replace(/ /g, '');
+  const correctOff = G.P.k;
+  const turnFirst = mod(G.rot) !== correctOff && !G.hinted.length;
+  const w = G.P.words.findIndex((_, wi) => !G.hinted.includes(wi) && G.flat.some((f, i) => f.wi === wi && G.boxes[i] !== ans[i]));
+  if (w < 0 && !turnFirst) { ctx.say('Các chữ trong ô đều đúng rồi. Bấm Kiểm tra đi!', 'happy'); return false; }
+  if (turnFirst || mod(G.rot) !== correctOff) setRot(correctOff);
+  if (w >= 0) { G.hinted.push(w); revealWord(w); }
+  persist();
+  ctx.say(`Vòng đúng là LỆCH ${correctOff} NẤC.` + (w >= 0 ? ` Jenny điền giúp từ "${G.P.words[w]}".` : ''), 'happy');
+  return true;
+}
+
+/* keyboard (ignored while typing in the answer box) */
+function onKey(e) {
+  const t = e.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === 'ArrowLeft') { turn(-1); e.preventDefault(); }
+  else if (e.key === 'ArrowRight') { turn(1); e.preventDefault(); }
+  else if (e.key === 'Enter') { check(); e.preventDefault(); }
+  else if (G.sel >= 0 && /^[a-zA-Z]$/.test(e.key)) {
+    G.boxes[G.sel] = e.key.toUpperCase(); G.ctx.sfx.tap(); syncInput();
+    select(G.sel + 1 < G.flat.length ? G.sel + 1 : -1); e.preventDefault();
+  } else if (G.sel >= 0 && (e.key === 'Backspace' || e.key === 'Delete')) {
+    G.boxes[G.sel] = ''; syncInput(); if (e.key === 'Backspace' && G.sel > 0) select(G.sel - 1); e.preventDefault();
+  } else if (e.key === 'Escape') select(-1);
+}
+
+/* fit the letter and the wheel into the play area */
+function layout() {
+  if (!G || !G.gm.isConnected) return;
+  const W = G.gm.clientWidth, H = G.gm.clientHeight;
+  if (!W || !H) return;
+  const gap = Math.max(6, Math.min(14, H * .025));
+  const bs = Math.round(Math.max(44, Math.min(66, Math.min(W, H) * .15)));
+  G.wrow.style.setProperty('--bs', bs + 'px'); G.wrow.style.setProperty('--g', gap + 'px');
+  let best = null;
+  for (let s = 52; s >= 16; s -= 2) {
+    G.gm.style.setProperty('--ts', s + 'px');
+    const lw = G.letter.scrollWidth, lh = G.letter.offsetHeight;
+    if (lw > W + 1) continue;
+    const rest = H - lh - gap * 2;
+    const side = Math.min(rest - 4, W - 2 * bs - 2 * gap - 4);   // buttons beside
+    const below = Math.min(rest - bs - gap - 4, W - 4);             // buttons under
+    const ws = Math.floor(Math.max(side, below));
+    if (ws < 60) continue;
+    const score = Math.min(ws, s * 9.5) + s * .01;
+    if (!best || score > best.score) best = { s, ws, score, below: below > side };
+  }
+  if (!best) best = { s: 16, ws: 60, below: false };
+  G.gm.style.setProperty('--ts', best.s + 'px');
+  G.wrow.style.setProperty('--ws', best.ws + 'px');
+  G.wrow.classList.toggle('below', best.below);
+}
+
+Kit.run({
+  key: 'bb-giaima',
+  title: 'Giải mã thư bí mật',
+  intro: 'Jenny nhận được những bức thư viết bằng mật mã. Em hãy dùng vòng giải mã để đọc thư nhé!',
+  rules: [
+    'Vòng <b>ngoài</b> là ký hiệu trong thư, vòng <b>trong</b> là chữ thật.',
+    'Bấm <b>Xoay trái / Xoay phải</b> hoặc kéo vòng trong cho đúng số nấc.',
+    'Chạm một ô trong thư để thấy ký hiệu đó trên vòng.',
+    'Gõ câu đã giải rồi bấm <b>Kiểm tra</b>. Đúng ngay lần đầu được <b>3 sao</b>.'
+  ],
+  levels: LEVELS.map(l => ({ name: l.name, desc: l.desc })),
+  rounds: 8,
+  hello: 'Chào em! Cùng Jenny giải mã thư bí mật nhé.',
+  make: (lv, r) => make(lv, r),
+  mount, hint, onKey, layout
+});
+})();
+</script>
+</body>
+</html>

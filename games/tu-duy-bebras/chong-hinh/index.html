@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Chồng hình trong suốt</title>
+<link rel="icon" href="../../../assets/jenny-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<link rel="stylesheet" href="../_kit/kit.css">
+<style>
+/* the whole picture inside #play is sized by --s (one small sheet), set by layout() to fill the play area */
+.eq{--s:22cqmin;width:max-content;display:flex;flex-direction:column;align-items:center;gap:calc(var(--s)*.12)}
+.eq .row{display:flex;align-items:center;justify-content:center;gap:calc(var(--s)*.07)}
+.eq .col{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--s)*.12)}
+.pc{display:flex;flex-direction:column;align-items:center;gap:calc(var(--s)*.05)}
+.lb{font-weight:900;font-size:clamp(11px,calc(var(--s)*.14),17px);line-height:1.15;white-space:nowrap;color:var(--ink-soft);padding:1px 8px;border-radius:999px}
+.pc.ed .lb{background:var(--sel);color:#fff}
+.pc.goal .lb{background:var(--mint);color:#fff}
+.op{font-family:var(--display);font-weight:800;font-size:clamp(18px,calc(var(--s)*.36),60px);line-height:1;width:calc(var(--s)*.28);min-width:18px;text-align:center;align-self:center}
+.sep{width:0;height:calc(var(--s)*1.05);border-left:3px dashed var(--hatch);margin:0 calc(var(--s)*.08)}
+/* a transparent sheet */
+.sheet{--f:1;width:calc(var(--s)*var(--f));height:calc(var(--s)*var(--f));border:3px solid var(--ink);border-radius:clamp(7px,calc(var(--s)*.1),14px);background:#fff;
+  padding:clamp(2px,calc(var(--s)*.04),5px);position:relative;flex:none;box-shadow:0 3px 0 var(--ink)}
+.sheet .g{display:grid;width:100%;height:100%;grid-template-columns:repeat(var(--n),minmax(0,1fr));grid-template-rows:repeat(var(--n),minmax(0,1fr));gap:clamp(1px,calc(var(--s)*.025),3px)}
+.sheet .c{background:#fff;border:1.5px solid #D5DDEA;border-radius:18%;padding:0;margin:0;min-width:0;min-height:0;position:relative}
+.sheet .c.on{background:var(--ink);border-color:var(--ink)}
+.sheet.goal{border-color:#1F9E72;border-width:5px;background:var(--mint-soft);box-shadow:0 3px 0 #1F9E72}
+.sheet.goal .c{border-color:#A9DCC6}
+.sheet.goal .c.on{border-color:var(--ink)}
+.sheet.ed{border-color:var(--sel);box-shadow:0 0 0 4px var(--sel-soft),0 0 18px 6px rgba(47,125,225,.45)}
+.sheet.ed .c{cursor:pointer}
+.sheet.ed .c:hover{border-color:var(--sel)}
+.sheet.ed .c.cur{outline:3px solid var(--sun);outline-offset:1px;z-index:1}
+.sheet .c.bad{box-shadow:inset 0 0 0 3px var(--coral);border-color:var(--coral)}
+.sheet .c.dot::after{content:"";position:absolute;right:12%;top:12%;width:22%;height:22%;border-radius:50%;background:var(--coral)}
+.sheet .c.flash{animation:flash .9s}
+@keyframes flash{0%,100%{box-shadow:none}30%,70%{box-shadow:0 0 0 4px var(--sun)}}
+.sheet.wrong{border-color:var(--coral);box-shadow:0 3px 0 var(--coral)}
+.sheet .qm{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:calc(var(--s)*var(--f)*.55);color:var(--hatch);background:#fff;border-radius:inherit}
+.sheet:not(.blank) .qm{display:none}
+/* choice buttons (pick a sheet / pick a rule) */
+.cands{display:flex;gap:calc(var(--s)*.18);justify-content:center}
+.choice{border:3px solid var(--ink);border-radius:16px;box-shadow:0 5px 0 var(--ink);background:var(--sun-soft);padding:calc(var(--s)*.09);display:flex;flex-direction:column;align-items:center;gap:calc(var(--s)*.06);position:relative}
+.choice .sheet{box-shadow:none}
+.choice .num{position:absolute;left:-9px;top:-9px;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-weight:900;font-size:14px;display:grid;place-items:center}
+.choice:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
+.choice:hover:not(:disabled){background:var(--sun)}
+.choice.gone{opacity:.35;box-shadow:0 3px 0 var(--hatch);border-color:var(--hatch)}
+.choice.gone::after{content:"";position:absolute;inset:18%;background:linear-gradient(45deg,transparent 46%,var(--coral) 46%,var(--coral) 54%,transparent 54%),linear-gradient(-45deg,transparent 46%,var(--coral) 46%,var(--coral) 54%,transparent 54%)}
+.choice.right{background:var(--mint-soft);border-color:#1F9E72}
+.choice.rule{padding-top:calc(var(--s)*.06 + 6px);gap:calc(var(--s)*.05)}
+.choice.rule small{font-weight:900;font-size:clamp(11px,calc(var(--s)*.13),16px);color:var(--ink-soft);line-height:1}
+.choice.rule b{font-family:var(--display);font-size:clamp(15px,calc(var(--s)*.28),30px);line-height:1;white-space:nowrap}
+.choice.rule svg{width:calc(var(--s)*1.3);height:auto;min-width:78px}
+.ex{display:flex;flex-direction:column;align-items:flex-start;gap:calc(var(--s)*.05)}
+.ex .row{gap:calc(var(--s)*.06)}
+/* rule legend in the mission card */
+.rl{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.rl svg{height:46px;width:auto;flex:none}
+.rl small{font-weight:800;color:var(--ink-soft)}
+html.tight .rl svg{height:34px}
+@media (max-height:520px) and (min-aspect-ratio:1/1){.rl svg{height:32px}.rl{margin-bottom:0}}
+</style>
+</head>
+<body>
+<script src="../_kit/kit.js"></script>
+<script>
+(() => {
+'use strict';
+/* ---------- rules ---------- */
+const RULES = {
+  or:  { name:'HOẶC',      f:(a, b) => a | b, txt:'Đen nếu có ít nhất 1 ô đen' },
+  and: { name:'VÀ',        f:(a, b) => a & b, txt:'Đen chỉ khi cả 2 ô đều đen' },
+  xor: { name:'KHÁC NHAU', f:(a, b) => a ^ b, txt:'Đen khi 2 ô khác màu' }
+};
+const ORDER = ['or', 'and', 'xor'];
+const LEVELS = [
+  { name:'Dễ',  desc:'3×3 · chọn tấm' },
+  { name:'Vừa', desc:'4×4 · tô' },
+  { name:'Khó', desc:'5×5 · tô' }
+];
+const stack = (A, B, r) => A.map((a, i) => RULES[r].f(a, B[i]));
+const same = (X, Y) => X.length === Y.length && X.every((v, i) => v === Y[i]);
+const cnt = X => X.reduce((s, v) => s + v, 0);
+const rnd = n => Math.floor(Math.random() * n);
+const ri = (a, b) => a + rnd(b - a + 1);
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function rndCells(N, k) { const X = Array(N).fill(0); shuffle([...Array(N).keys()]).slice(0, k).forEach(i => X[i] = 1); return X; }
+const pickOne = a => a[rnd(a.length)];
+const idxWhere = (X, fn) => X.map((v, i) => fn(v, i) ? i : -1).filter(i => i >= 0);
+
+/* legend picture: the 4 cases of a rule */
+function legend(r) {
+  const sq = (x, y, on) => `<rect x="${x}" y="${y}" width="26" height="26" rx="4" fill="${on ? '#1D2B53' : '#fff'}" stroke="#1D2B53" stroke-width="2.5"/>`;
+  const tx = (x, y, t) => `<text x="${x}" y="${y}" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="24" fill="#1D2B53">${t}</text>`;
+  let s = '';
+  [[1, 1], [1, 0], [0, 1], [0, 0]].forEach(([a, b], i) => {
+    const x = (i % 2) * 126 + 2, y = Math.floor(i / 2) * 36 + 2;
+    s += sq(x, y, a) + tx(x + 35, y + 21, '+') + sq(x + 44, y, b) + tx(x + 80, y + 21, '=') + sq(x + 90, y, RULES[r].f(a, b));
+  });
+  return `<svg viewBox="0 0 246 66" role="img" aria-label="Luật ${RULES[r].name}: ${RULES[r].txt}">${s}</svg>`;
+}
+
+/* ---------- puzzle making ---------- */
+function genOR(n, need) {
+  const N = n * n;
+  for (;;) {
+    const T = rndCells(N, ri(Math.round(.4 * N), Math.round(.6 * N)));
+    const A = T.map(v => v && Math.random() < .5 ? 1 : 0);
+    const sol = T.map((v, i) => v && !A[i] ? 1 : 0);
+    if (cnt(A) >= Math.max(1, need - 1) && cnt(sol) >= need) return { A, T, sol };
+  }
+}
+function genAND(n) {
+  const N = n * n;
+  for (;;) {
+    const A = rndCells(N, ri(Math.round(.55 * N), Math.round(.7 * N)));
+    const T = A.map(v => v && Math.random() < .55 ? 1 : 0);
+    if (cnt(T) >= Math.max(3, Math.round(.25 * N)) && cnt(A) - cnt(T) >= 2) return { A, T, sol: T.slice() };
+  }
+}
+function genXOR(n) {
+  const N = n * n;
+  for (;;) {
+    const A = rndCells(N, ri(Math.round(.4 * N), Math.round(.6 * N)));
+    const T = rndCells(N, ri(Math.round(.4 * N), Math.round(.6 * N)));
+    const sol = A.map((a, i) => a ^ T[i]), k = cnt(sol);
+    if (k >= Math.round(.32 * N) && k <= Math.round(.6 * N)) return { A, T, sol };
+  }
+}
+function makePick() {
+  const n = 3, N = 9;
+  for (;;) {
+    const { A, T, sol } = genOR(n, 2);
+    const good = sol.slice();
+    const inA = idxWhere(A, v => v), need = idxWhere(sol, v => v), out = idxWhere(T, v => !v);
+    if (Math.random() < .35 && inA.length) good[pickOne(inA)] = 1;   // extra black inside A changes nothing
+    const pool = [];
+    { const d = good.slice(); d[pickOne(need)] = 0; pool.push(d); }                       // one missing
+    if (out.length) { const d = good.slice(); d[pickOne(out)] = 1; pool.push(d); }        // one too many
+    if (out.length) { const d = good.slice(); d[pickOne(need)] = 0; d[pickOne(out)] = 1; pool.push(d); } // one moved
+    pool.push(A.slice());                                                                  // copy of A
+    pool.push(T.map(v => 1 - v));                                                          // the "negative"
+    const ok = d => cnt(d) > 0 && !same(stack(A, d, 'or'), T) && !same(d, good);
+    const bad = [];
+    for (const d of shuffle(pool)) if (ok(d) && !bad.some(x => same(x, d))) bad.push(d);
+    if (bad.length < 2) continue;
+    const cands = shuffle([good, bad[0], bad[1]]);
+    const ans = cands.indexOf(good);
+    return { kind:'pick', rule:'or', n, A, T, sol: good, cands, ans };
+  }
+}
+function makeGuess(n) {
+  const rule = pickOne(ORDER), N = n * n;
+  for (;;) {
+    const ex = [0, 1].map(() => { const A = rndCells(N, ri(Math.round(.4 * N), Math.round(.6 * N))), B = rndCells(N, ri(Math.round(.4 * N), Math.round(.6 * N))); return { A, B, T: stack(A, B, rule) }; });
+    const seen = new Set(); ex.forEach(e => e.A.forEach((a, i) => seen.add(a * 2 + e.B[i])));
+    if (seen.size < 4) continue;
+    if (ORDER.filter(r => ex.every(e => same(stack(e.A, e.B, r), e.T))).length !== 1) continue;
+    return { kind:'guess', rule, n, ex, opts: ORDER.slice(), ans: ORDER.indexOf(rule) };
+  }
+}
+function make(lv, round) {
+  if (lv === 0) return makePick();
+  if (lv === 1) {
+    const rule = round % 2 ? 'and' : 'or', n = 4;
+    const g = rule === 'or' ? genOR(n, 3) : genAND(n);
+    return { kind:'paint', rule, n, A: g.A, T: g.T, sol: g.sol, min: cnt(g.sol) };
+  }
+  if (round % 3 === 2) return makeGuess(round < 4 ? 3 : 4);
+  const g = genXOR(5);
+  return { kind:'paint', rule:'xor', n:5, A: g.A, T: g.T, sol: g.sol, min: cnt(g.sol) };
+}
+
+/* ---------- drawing helpers ---------- */
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+function sheet(n, cells, cls, edit) {
+  const s = el('div', 'sheet' + (cls ? ' ' + cls : ''));
+  s.style.setProperty('--n', n);
+  const g = el('div', 'g'); s.appendChild(g);
+  s._c = [];
+  for (let i = 0; i < n * n; i++) {
+    const c = el(edit ? 'button' : 'div', 'c');
+    if (edit) { c.type = 'button'; c.setAttribute('aria-label', `Ô hàng ${Math.floor(i / n) + 1}, cột ${i % n + 1}`); }
+    g.appendChild(c); s._c.push(c);
+  }
+  s.appendChild(el('div', 'qm', '?'));
+  draw(s, cells);
+  return s;
+}
+function draw(s, cells) {
+  s.classList.toggle('blank', !cells);
+  s._c.forEach((c, i) => { c.classList.toggle('on', !!(cells && cells[i])); if (c.tagName === 'BUTTON') c.setAttribute('aria-pressed', cells && cells[i] ? 'true' : 'false'); });
+}
+function piece(label, sh, cls) { const p = el('div', 'pc' + (cls ? ' ' + cls : '')); p.appendChild(el('div', 'lb', label)); p.appendChild(sh); return p; }
+const op = t => el('div', 'op', t);
+
+/* ---------- one round ---------- */
+let G = null;
+function mount(ctx) {
+  const P = ctx.puzzle;
+  G = { ctx, P, eq: el('div', 'eq'), modes: {}, mode: null };
+  ctx.play.appendChild(G.eq);
+  if (P.kind === 'paint') mountPaint(ctx, P);
+  else if (P.kind === 'pick') mountPick(ctx, P);
+  else mountGuess(ctx, P);
+  arrange(Object.keys(G.modes)[0]);
+}
+function ruleMission(r, text) {
+  return `<div class="rl">${legend(r)}<div><b>Luật ${RULES[r].name}</b><br><small>${RULES[r].txt}</small></div></div>${text}`;
+}
+
+function mountPaint(ctx, P) {
+  const st = ctx.state || {};
+  G.B = Array.isArray(st.B) && st.B.length === P.n * P.n ? st.B.slice() : Array(P.n * P.n).fill(0);
+  G.taps = st.taps || 0; G.undo = []; G.cur = -1;
+  const sA = sheet(P.n, P.A), sB = sheet(P.n, G.B, 'ed', true), sR = sheet(P.n, null), sT = sheet(P.n, P.T, 'goal');
+  G.sB = sB; G.sR = sR;
+  const pA = piece('Tấm A', sA), pB = piece('Tấm B · em tô', sB, 'ed'), pR = piece('Kết quả bây giờ', sR), pT = piece('Hình đích', sT, 'goal');
+  sB._c.forEach((c, i) => c.onclick = () => tap(i));
+  G.modes = {
+    row:  () => ({ items: [{ row: [pA, op('+'), pB, op('='), pR, el('div', 'sep'), pT] }], fB: 1.5 }),
+    two:  () => ({ items: [{ row: [pA, op('+'), pB, op('='), pR] }, { row: [pT] }], fB: 1.5 }),
+    tall: () => ({ items: [{ row: [pA, op('+'), pB] }, { row: [op('='), pR, el('div', 'sep'), pT] }], fB: 1.8 })
+  };
+  ctx.mission(ruleMission(P.rule, `Chạm ô để tô <b>tấm B</b> sao cho <b>A + B</b> giống <b>hình đích</b>.`));
+  G.tagTaps = ctx.tag(`Lượt tô: <b id="chTaps">${G.taps}</b>`);
+  const keys = el('div', 'keys'); keys.style.gridTemplateColumns = 'repeat(3,minmax(0,1fr))';
+  const btn = (html, cls, fn) => { const b = el('button', 'key ' + cls, html); b.onclick = fn; keys.appendChild(b); return b; };
+  btn('↶ Hoàn tác', 'fn', undo);
+  btn('Xoá tấm B', 'fn', clearB);
+  btn('Kiểm tra', 'go', check);
+  ctx.controls.appendChild(keys);
+  refresh();
+  if (ctx.round === 0 && !G.taps) ctx.say(P.rule === 'xor' ? 'Luật mới: hai ô khác màu mới ra ô đen!' : 'Chạm ô ở tấm B để tô đen hoặc xoá nhé!');
+  else if (ctx.level === 1 && ctx.round === 1 && !G.taps) ctx.say('Chú ý: màn này là luật VÀ!');
+}
+function result() { return stack(G.P.A, G.B, G.P.rule); }
+function diffs() { const R = result(); return idxWhere(R, (v, i) => v !== G.P.T[i]); }
+function clearMarks() { G.sR._c.forEach(c => c.classList.remove('bad')); G.sB._c.forEach(c => c.classList.remove('dot')); }
+function refresh() {
+  draw(G.sB, G.B); draw(G.sR, result());
+  G.sB._c.forEach((c, i) => c.classList.toggle('cur', i === G.cur));
+  const t = document.getElementById('chTaps'); if (t) t.textContent = G.taps;
+}
+function changed() {
+  clearMarks(); refresh();
+  G.ctx.save({ B: G.B, taps: G.taps });
+  if (!diffs().length) winPaint();
+}
+function tap(i) {
+  if (G.won) return;
+  G.B[i] ^= 1; G.taps++; G.undo.push(i); G.ctx.sfx.move(i);
+  changed();
+}
+function undo() {
+  if (G.won || G.P.kind !== 'paint') return;
+  const u = G.undo.pop();
+  if (u === undefined) { G.ctx.say('Chưa có gì để hoàn tác.', 'oops'); return; }
+  if (Array.isArray(u)) G.B = u; else G.B[u] ^= 1;
+  G.ctx.sfx.tap(); changed();
+}
+function clearB() {
+  if (G.won || !cnt(G.B)) return;
+  G.undo.push(G.B.slice()); G.B = G.B.map(() => 0); G.ctx.sfx.tap(); changed();
+}
+function check() {
+  if (G.won) return;
+  const d = diffs();
+  if (!d.length) { winPaint(); return; }
+  clearMarks();
+  d.forEach(i => { G.sR._c[i].classList.add('bad'); G.sB._c[i].classList.add('dot'); });
+  G.ctx.sfx.bad(); G.sR.classList.remove('shake'); void G.sR.offsetWidth; G.sR.classList.add('shake');
+  G.ctx.say(`Còn ${d.length} ô chưa giống hình đích. Jenny đánh dấu đỏ rồi đó!`, 'oops');
+}
+function winPaint() {
+  if (G.won) return; G.won = true;
+  const { taps } = G, min = G.P.min;
+  const stars = taps <= min + 2 ? 3 : taps <= min + 6 ? 2 : 1;
+  G.ctx.win(stars, stars === 3 ? `Tuyệt! Em chỉ cần ${taps} lượt tô.` : `Em tô ${taps} lượt. Ít nhất chỉ cần ${min} lượt.`);
+}
+
+function mountPick(ctx, P) {
+  const st = ctx.state || {};
+  G.gone = st.gone ? st.gone.slice() : []; G.wrong = st.wrong || 0;
+  const sA = sheet(P.n, P.A), sB = sheet(P.n, null), sR = sheet(P.n, null), sT = sheet(P.n, P.T, 'goal');
+  G.sB = sB; G.sR = sR;
+  const pA = piece('Tấm A', sA), pB = piece('Tấm B', sB, 'ed'), pR = piece('Kết quả', sR), pT = piece('Hình đích', sT, 'goal');
+  const cands = el('div', 'cands');
+  G.btns = P.cands.map((c, i) => {
+    const b = el('button', 'choice'); b.type = 'button';
+    b.setAttribute('aria-label', 'Tấm số ' + (i + 1));
+    b.appendChild(el('span', 'num', String(i + 1)));
+    const s = sheet(P.n, c); s.style.setProperty('--f', 1.15); b.appendChild(s);
+    b.onclick = () => choosePick(i);
+    cands.appendChild(b); return b;
+  });
+  G.modes = {
+    row:   () => ({ items: [{ row: [pA, op('+'), pB, op('='), pR, el('div', 'sep'), pT] }, { row: [cands] }], fB: 1 }),
+    stack: () => ({ items: [{ row: [pA, op('+'), pB, op('='), pR] }, { row: [pT] }, { row: [cands] }], fB: 1 }),
+    side:  () => ({ items: [{ row: [{ col: [{ row: [pA, op('+'), pB, op('='), pR] }, { row: [pT] }] }, el('div', 'sep'), { col: [cands] }] }], fB: 1 })
+  };
+  cands.style.flexDirection = '';
+  ctx.mission(ruleMission(P.rule, `Chọn <b>tấm B</b> (1, 2 hoặc 3) để <b>A + B</b> ra đúng <b>hình đích</b>.`));
+  markGone();
+  if (ctx.round === 0 && !G.wrong) ctx.say('Tấm nào chồng lên A ra đúng hình đích?');
+}
+function markGone() { G.btns.forEach((b, i) => { const g = G.gone.includes(i); b.classList.toggle('gone', g); b.disabled = g; }); }
+function choosePick(i) {
+  const P = G.P;
+  if (G.won || G.busy || G.gone.includes(i)) return;
+  G.ctx.sfx.tap();
+  const R = stack(P.A, P.cands[i], P.rule);
+  draw(G.sB, P.cands[i]); draw(G.sR, R);
+  if (i === P.ans) {
+    G.won = true; G.btns[i].classList.add('right');
+    G.ctx.win(3 - Math.min(2, G.wrong), 'Đúng rồi! Tấm này chồng lên A ra đúng hình đích.');
+    return;
+  }
+  G.wrong++; G.gone.push(i); G.busy = true;
+  G.sR._c.forEach((c, k) => c.classList.toggle('bad', R[k] !== P.T[k]));
+  G.sR.classList.add('wrong');
+  const b = G.btns[i]; b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+  G.ctx.sfx.bad(); G.ctx.say('Chưa đúng! Chồng lên ra hình khác hình đích (ô đỏ). Thử tấm khác nhé.', 'oops');
+  G.ctx.save({ gone: G.gone, wrong: G.wrong });
+  const me = G;
+  setTimeout(() => {
+    if (G !== me || me.won) return;
+    me.busy = false; markGone(); draw(me.sB, null); draw(me.sR, null);
+    me.sR.classList.remove('wrong'); me.sR._c.forEach(c => c.classList.remove('bad'));
+  }, 1600);
+}
+
+function mountGuess(ctx, P) {
+  const st = ctx.state || {};
+  G.gone = st.gone ? st.gone.slice() : []; G.wrong = st.wrong || 0;
+  const exs = P.ex.map((e, k) => {
+    const box = el('div', 'ex'); box.appendChild(el('div', 'lb', 'Ví dụ ' + (k + 1)));
+    const row = el('div', 'row');
+    row.append(sheet(P.n, e.A), op('+'), sheet(P.n, e.B), op('='), sheet(P.n, e.T, 'goal'));
+    box.appendChild(row); return box;
+  });
+  const opts = el('div', 'cands');
+  G.btns = P.opts.map((r, i) => {
+    const b = el('button', 'choice rule'); b.type = 'button';
+    b.setAttribute('aria-label', 'Luật ' + RULES[r].name);
+    b.appendChild(el('span', 'num', String(i + 1)));
+    b.appendChild(el('small', '', 'Luật')); b.appendChild(el('b', '', RULES[r].name));
+    b.insertAdjacentHTML('beforeend', legend(r));
+    b.onclick = () => chooseRule(i);
+    opts.appendChild(b); return b;
+  });
+  const optsCol = el('div', 'cands'); optsCol.style.flexDirection = 'column';
+  G.modes = {
+    stack: () => { G.btns.forEach(b => opts.appendChild(b)); return { items: [{ row: [exs[0]] }, { row: [exs[1]] }, { row: [opts] }], fB: 1 }; },
+    wide:  () => { G.btns.forEach(b => opts.appendChild(b)); return { items: [{ row: [exs[0], el('div', 'sep'), exs[1]] }, { row: [opts] }], fB: 1 }; },
+    side:  () => { G.btns.forEach(b => optsCol.appendChild(b)); return { items: [{ row: [{ col: [exs[0], exs[1]] }, el('div', 'sep'), optsCol] }], fB: 1 }; }
+  };
+  ctx.mission(`<b>Đoán luật!</b> Xem 2 ví dụ: tấm A chồng lên tấm B ra hình bên phải. Hai tấm được chồng theo <b>luật nào</b>?`);
+  markGone();
+  if (!G.wrong) ctx.say('Nhìn kỹ chỗ hai ô đen chồng lên nhau nhé!');
+}
+function chooseRule(i) {
+  const P = G.P;
+  if (G.won || G.gone.includes(i)) return;
+  G.ctx.sfx.tap();
+  if (i === P.ans) {
+    G.won = true; G.btns[i].classList.add('right');
+    G.ctx.win(3 - Math.min(2, G.wrong), `Đúng! Đó là luật ${RULES[P.rule].name}.`);
+    return;
+  }
+  G.wrong++; G.gone.push(i); markGone();
+  const b = G.btns[i]; b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+  G.ctx.sfx.bad(); G.ctx.say(`Không phải luật ${RULES[P.opts[i]].name}. So từng ô của ví dụ với hình nhỏ nhé!`, 'oops');
+  G.ctx.save({ gone: G.gone, wrong: G.wrong });
+}
+
+/* ---------- hint, keys ---------- */
+function hint(ctx) {
+  if (!G || G.won) return false;
+  if (G.P.kind === 'paint') {
+    const d = diffs(); if (!d.length) return false;
+    const k = pickOne(d);
+    G.B[k] ^= 1;
+    const c = G.sB._c[k]; c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash');
+    clearMarks(); refresh(); ctx.save({ B: G.B, taps: G.taps });
+    ctx.say('Jenny sửa giúp em 1 ô của tấm B (ô nhấp nháy vàng).', 'happy');
+    if (d.length === 1) { const me = G; setTimeout(() => { if (G === me && !diffs().length) winPaint(); }, 400); }
+    return true;
+  }
+  if (G.busy) return false;
+  const bad = G.P[G.P.kind === 'pick' ? 'cands' : 'opts'].map((_, i) => i).filter(i => i !== G.P.ans && !G.gone.includes(i));
+  if (!bad.length) return false;
+  G.gone.push(pickOne(bad)); markGone();
+  ctx.save({ gone: G.gone, wrong: G.wrong });
+  ctx.say('Jenny bỏ bớt 1 lựa chọn sai rồi đó!', 'happy');
+  return true;
+}
+function onKey(e) {
+  if (!G || G.won) return;
+  const P = G.P;
+  if (P.kind !== 'paint') {
+    const k = +e.key; if (k >= 1 && k <= 3) { (P.kind === 'pick' ? choosePick : chooseRule)(k - 1); e.preventDefault(); }
+    return;
+  }
+  const n = P.n, mv = { ArrowUp:[-1, 0], ArrowDown:[1, 0], ArrowLeft:[0, -1], ArrowRight:[0, 1] }[e.key];
+  if (mv) {
+    if (G.cur < 0) G.cur = 0;
+    else { const r = Math.min(n - 1, Math.max(0, Math.floor(G.cur / n) + mv[0])), c = Math.min(n - 1, Math.max(0, G.cur % n + mv[1])); G.cur = r * n + c; }
+    refresh(); e.preventDefault();
+  } else if (e.key === ' ' && G.cur >= 0) {
+    tap(G.cur); e.preventDefault();
+  } else if (e.key === 'Backspace' || e.key === 'Delete') { undo(); e.preventDefault(); }
+}
+
+/* ---------- fit the picture into #play ---------- */
+function build(spec) {
+  const make = it => {
+    if (it instanceof Element) return it;
+    const box = el('div', it.row ? 'row' : 'col');
+    (it.row || it.col).forEach(x => box.appendChild(make(x)));
+    return box;
+  };
+  G.eq.innerHTML = '';
+  spec.items.forEach(it => G.eq.appendChild(make(it)));
+  if (G.sB && G.P.kind === 'paint') G.sB.style.setProperty('--f', spec.fB);
+}
+function arrange(mode) { const spec = G.modes[mode](); build(spec); G.mode = mode; return spec; }
+function layout(ctx) {
+  if (!G || G.ctx !== ctx || !G.eq.isConnected) return;
+  const play = ctx.play, cs = getComputedStyle(play);
+  const W = play.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 6;
+  const H = play.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - 10;
+  if (W <= 0 || H <= 0) return;
+  const fits = s => { G.eq.style.setProperty('--s', s + 'px'); const r = G.eq.getBoundingClientRect(); return r.width <= W && r.height <= H; };
+  let best = null;
+  for (const m of Object.keys(G.modes)) {
+    const spec = arrange(m);
+    let lo = 8, hi = 420;
+    for (let k = 0; k < 14; k++) { const mid = (lo + hi) / 2; if (fits(mid)) lo = mid; else hi = mid; }
+    const score = lo * spec.fB * (m === Object.keys(G.modes)[0] ? 1.02 : 1);
+    if (!best || score > best.score) best = { m, s: lo, score };
+  }
+  arrange(best.m);
+  fits(Math.floor(best.s * 10) / 10);
+}
+
+window.__chong = { make, stack };   // dùng để kiểm thử
+Kit.run({
+  key: 'bb-chonghinh',
+  title: 'Chồng hình trong suốt',
+  intro: 'Hai tấm kính trong suốt có ô đen, ô trắng. Chồng tấm B lên tấm A để ra đúng hình đích!',
+  rules: [
+    'Mỗi màn có một <b>luật chồng hình</b>. Xem hình nhỏ: ô đen + ô trắng = ô gì?',
+    '<b>Dễ</b>: chọn đúng tấm B trong 3 tấm. Đúng ngay lần đầu được <b>3 sao</b>.',
+    '<b>Vừa, Khó</b>: chạm ô để tô tấm B. Tô càng ít lượt càng nhiều sao.',
+    '<b>Khó</b>: có màn <b>đoán luật</b> từ 2 ví dụ.'
+  ],
+  levels: LEVELS,
+  rounds: 10,
+  hello: 'Chào em! Cùng chồng hình với Jenny nhé.',
+  make, mount, hint, onKey, layout
+});
+})();
+</script>
+</body>
+</html>

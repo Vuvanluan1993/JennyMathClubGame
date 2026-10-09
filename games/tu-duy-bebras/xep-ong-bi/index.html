@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Xếp ống bi</title>
+<link rel="icon" href="../../../assets/jenny-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<link rel="stylesheet" href="../_kit/kit.css">
+<style>
+/* rack of tubes: --b (one ball slot, px) is set by layout() from the play area size */
+.rack{--b:48px;--nh:calc(var(--b)*.4 + 10px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--b)*.2);width:100%;height:100%}
+.trow{display:flex;justify-content:center;align-items:flex-end;gap:calc(var(--b)*.4);position:relative}
+.trow::after{content:"";position:absolute;left:calc(var(--b)*-.3);right:calc(var(--b)*-.3);bottom:calc(var(--nh) + var(--b)*.12 - 3px);height:calc(var(--b)*.16 + 4px);
+  background:#D9A066;border:2.5px solid var(--ink);border-radius:999px;z-index:0}
+.tube{position:relative;z-index:1;background:none;border:0;padding:calc(var(--b)*1.3) 0 0;margin:0;display:flex;flex-direction:column;align-items:center;gap:calc(var(--b)*.12)}
+.tube:focus-visible{outline:none}
+.tube:focus-visible .glass{outline:3px solid var(--sun);outline-offset:3px}
+.glass{position:relative;width:calc(var(--b)*1.22 + 6px);height:calc(var(--b)*(var(--cap) + .22) + 3px);
+  border:3px solid var(--ink);border-top:0;border-radius:0 0 calc(var(--b)*.62) calc(var(--b)*.62);
+  background:linear-gradient(90deg,rgba(207,234,251,.55),rgba(255,255,255,.95) 35%,rgba(207,234,251,.6));
+  transition:transform .18s ease,box-shadow .18s ease}
+.glass::before{content:"";position:absolute;left:-7px;right:-7px;top:-3px;height:7px;border:3px solid var(--ink);border-radius:999px;background:var(--paper);z-index:2}
+.tube.sel .glass{transform:translateY(calc(var(--b)*-.18))}
+.tube.done .glass{background:linear-gradient(90deg,#BDEFD9,#F2FFF9 35%,#BDEFD9)}
+.tube.hint .glass{box-shadow:0 0 0 4px var(--sun),0 0 calc(var(--b)*.45) calc(var(--b)*.12) rgba(255,201,60,.9);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px var(--sun),0 0 calc(var(--b)*.6) calc(var(--b)*.2) rgba(255,201,60,.6)}}
+.tube.bad .glass{animation:shake .4s}
+.num{font-family:var(--display);font-weight:800;font-size:calc(var(--b)*.3 + 6px);line-height:1;min-width:var(--nh);padding:0 4px;
+  height:var(--nh);display:grid;place-items:center;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:999px;position:relative;z-index:1}
+.tube.sel .num{background:var(--sel);color:#fff}
+.tube.hint .num{background:var(--sun)}
+.ball{position:absolute;left:50%;width:calc(var(--b)*.92);height:calc(var(--b)*.92);margin-left:calc(var(--b)*-.46);
+  bottom:calc(var(--b)*(.08 + var(--k)));border-radius:50%;border:2.5px solid var(--ink);display:grid;place-items:center;
+  font-family:var(--display);font-weight:800;font-size:calc(var(--b)*.46);line-height:1;color:var(--ink);
+  background:radial-gradient(circle at 26% 22%,rgba(255,255,255,.8) 0 8%,transparent 9%),var(--c);
+  transition:bottom .2s cubic-bezier(.3,1.4,.5,1);z-index:3}
+.ball.lift{bottom:calc(var(--b)*(var(--cap) + .55));filter:drop-shadow(0 4px 0 rgba(29,43,83,.3))}
+.ball.lt{color:#fff}
+.ball span{position:relative;top:.04em}
+.c1{--c:#FF6B57}.c2{--c:#FFC93C}.c3{--c:#2DBE8C}.c4{--c:#2F7DE1}.c5{--c:#8E6BD8}.c6{--c:#F28DC1}.c7{--c:#B9844F}
+.ukey small{font-family:var(--body);font-weight:900;font-size:12px;background:var(--ink);color:#fff;border-radius:999px;padding:1px 7px}
+</style>
+</head>
+<body>
+<script src="../_kit/kit.js"></script>
+<script>
+(() => {
+'use strict';
+const LEVELS = [
+  { name:'Dễ',  desc:'3 màu · 5 ống', colors:3, cap:3, tubes:5, minPar:[5, 6] },
+  { name:'Vừa', desc:'5 màu · 7 ống', colors:5, cap:4, tubes:7, minPar:[14, 16] },
+  { name:'Khó', desc:'7 màu · 8 ống', colors:7, cap:4, tubes:8, minPar:[24, 27] }
+];
+const UNDOS = 3;
+const LIGHT = { 4:1, 5:1 };   // white number on blue and purple
+
+/* ---------- solver ---------- */
+const canon = T => T.map(t => t.join('')).sort().join('|');
+const full1 = (t, cap) => t.length === cap && t.every(b => b === t[0]);
+const isWon = (T, cap) => T.every(t => !t.length || full1(t, cap));
+function legal(T, cap, i, j) {
+  const a = T[i], b = T[j];
+  return i !== j && a.length && b.length < cap && (!b.length || b[b.length - 1] === a[a.length - 1]);
+}
+function movesOf(T, cap) {   // pruned: no moves out of finished tubes, no splitting a one-colour tube into an empty tube, one empty tube only
+  const out = [], empty = T.findIndex(t => !t.length);
+  for (let i = 0; i < T.length; i++) {
+    const a = T[i]; if (!a.length || full1(a, cap)) continue;
+    const c = a[a.length - 1], uni = a.every(b => b === c);
+    for (let j = 0; j < T.length; j++) {
+      if (i === j) continue; const b = T[j];
+      if (b.length >= cap) continue;
+      if (!b.length) { if (j === empty && !uni) out.push([i, j]); }
+      else if (b[b.length - 1] === c) out.push([i, j]);
+    }
+  }
+  return out;
+}
+function apply(T, m) { const N = T.map(t => t.slice()); N[m[1]].push(N[m[0]].pop()); return N; }
+/* BFS: shortest solution. returns array of moves, false = no solution, null = gave up (node limit) */
+function bfs(T0, cap, limit = 300000) {
+  if (isWon(T0, cap)) return [];
+  const seen = new Set([canon(T0)]); let front = [{ T: T0, p: null }], n = 0;
+  while (front.length) {
+    const next = [];
+    for (const node of front) for (const m of movesOf(node.T, cap)) {
+      const N = apply(node.T, m), k = canon(N);
+      if (seen.has(k)) continue; seen.add(k);
+      const p = { m, prev: node.p };
+      if (isWon(N, cap)) { const out = []; for (let q = p; q; q = q.prev) out.unshift(q.m); return out; }
+      if (++n > limit) return null;
+      next.push({ T: N, p });
+    }
+    front = next;
+  }
+  return false;
+}
+/* DFS, greedy order (fewest colour breaks first) + visited set + node limit */
+function breaks(T) { let s = 0; for (const t of T) for (let k = 1; k < t.length; k++) if (t[k] !== t[k - 1]) s++; return s; }
+function dfs(T0, cap, limit = 80000) {
+  const seen = new Set([canon(T0)]), path = []; let n = 0;
+  const go = T => {
+    if (isWon(T, cap)) return true;
+    if (++n > limit) return false;
+    const ms = movesOf(T, cap).map(m => { const N = apply(T, m), d = N[m[1]]; return { m, N, s: breaks(N) * 10 - d.length - (d.every(b => b === d[0]) ? 5 : 0) }; });
+    ms.sort((a, b) => a.s - b.s);
+    for (const { m, N } of ms) {
+      const k = canon(N); if (seen.has(k)) continue; seen.add(k);
+      path.push(m); if (go(N)) return true; path.pop();
+      if (n > limit) return false;
+    }
+    return false;
+  };
+  if (go(T0)) return path;
+  return n > limit ? null : false;
+}
+/* best solution we can find quickly from any state */
+function solve(T, cap) {
+  const b = bfs(T, cap, 120000); if (b !== null) return b;
+  const d = dfs(T, cap); return d;
+}
+
+/* ---------- puzzle making ---------- */
+function make(lv, round) {
+  const L = LEVELS[lv], minPar = L.minPar[round >= 5 ? 1 : 0];
+  const balls = []; for (let c = 1; c <= L.colors; c++) for (let k = 0; k < L.cap; k++) balls.push(c);
+  let best = null;
+  for (let tries = 0; tries < 4000; tries++) {
+    for (let i = balls.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [balls[i], balls[j]] = [balls[j], balls[i]]; }
+    const T = []; for (let t = 0; t < L.tubes; t++) T.push(t < L.colors ? balls.slice(t * L.cap, (t + 1) * L.cap) : []);
+    if (T.some(t => t.length && full1(t, L.cap))) continue;          // a tube already finished
+    if (breaks(T) < L.colors * (L.cap - 1) * .6) continue;            // almost sorted
+    let sol;
+    if (lv < 2) sol = bfs(T, L.cap);
+    else { const d = dfs(T, L.cap); if (!d) continue; const b = bfs(T, L.cap, 120000); sol = b || d; }
+    if (!sol) continue;
+    const P = { tubes: T, cap: L.cap, par: sol.length };
+    if (sol.length >= minPar) return P;
+    if (!best || sol.length > best.par) best = P;
+  }
+  if (best) return best;
+  throw new Error('không tạo được đề');
+}
+
+/* ---------- one round ---------- */
+let G = null;
+function mount(ctx) {
+  const P = ctx.puzzle, st = ctx.state;
+  G = { ctx, P, cap: P.cap,
+    T: st ? st.T.map(t => t.slice()) : P.tubes.map(t => t.slice()),
+    moves: st ? st.moves : 0, undos: st ? st.undos : UNDOS,
+    hist: st && st.hist ? st.hist : [], sel: -1, hintM: null, over: false };
+  const rack = document.createElement('div'); rack.className = 'rack'; rack.style.setProperty('--cap', P.cap);
+  ctx.play.appendChild(rack); G.rack = rack;
+
+  ctx.mission(`Chạm một ống để nhấc <b>bi trên cùng</b>, chạm ống khác để thả. Chỉ thả vào <b>ống trống</b> hoặc lên <b>bi cùng màu</b>. Xếp sao cho <b>mỗi ống một màu</b>!`);
+  G.tag = ctx.tag('');
+  const keys = document.createElement('div'); keys.className = 'keys'; keys.style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
+  const btn = (html, cls, fn, label) => { const b = document.createElement('button'); b.className = 'key ' + cls; b.innerHTML = html; b.setAttribute('aria-label', label); b.onclick = fn; keys.appendChild(b); return b; };
+  G.bUndo = btn('', 'fn ukey', undo, 'Hoàn tác');
+  btn('Chơi lại màn', 'fn', restart, 'Chơi lại màn từ đầu');
+  ctx.controls.appendChild(keys);
+  build(); draw();
+  if (ctx.round === 0 && !st) ctx.say('Chạm vào một ống để nhấc bi lên nhé!');
+}
+function build() {
+  const n = G.T.length, rows = G.rows || 1, per = Math.ceil(n / rows);
+  G.rack.innerHTML = ''; G.tubesEl = [];
+  for (let r = 0; r < rows; r++) {
+    const row = document.createElement('div'); row.className = 'trow';
+    for (let i = r * per; i < Math.min(n, (r + 1) * per); i++) {
+      const t = document.createElement('button'); t.className = 'tube'; t.dataset.i = i;
+      t.innerHTML = `<div class="glass"></div><span class="num">${i + 1}</span>`;
+      t.onclick = () => tap(i);
+      row.appendChild(t); G.tubesEl.push(t);
+    }
+    G.rack.appendChild(row);
+  }
+}
+function ballEl(c, k) {
+  const b = document.createElement('div'); b.className = 'ball c' + c + (LIGHT[c] ? ' lt' : '');
+  b.style.setProperty('--k', k); b.innerHTML = `<span>${c}</span>`; return b;
+}
+/* redraw everything; drop = tube index where a ball just landed (animate it) */
+function draw(drop = -1) {
+  G.T.forEach((t, i) => {
+    const el = G.tubesEl[i], gl = el.firstChild; gl.innerHTML = '';
+    t.forEach((c, k) => gl.appendChild(ballEl(c, k)));
+    el.classList.toggle('sel', i === G.sel);
+    el.classList.toggle('done', full1(t, G.cap));
+    el.classList.toggle('hint', !!G.hintM && G.hintM.includes(i));
+    el.setAttribute('aria-label', `Ống ${i + 1}: ` + (t.length ? t.join(', ') : 'trống') + (i === G.sel ? ' (đang nhấc bi)' : ''));
+    if (i === G.sel) { const top = gl.lastChild; if (top) top.classList.add('lift'); }
+    if (i === drop) { const top = gl.lastChild; if (top) { top.style.transition = 'none'; top.classList.add('lift'); void top.offsetWidth; top.style.transition = ''; top.classList.remove('lift'); } }
+  });
+  G.tag.innerHTML = `Lượt: <b>${G.moves}</b> · chuẩn: ${G.P.par}`;
+  G.bUndo.innerHTML = `↶ Hoàn tác <small>${G.undos}</small>`;
+  G.bUndo.disabled = !G.undos || !G.hist.length || G.over;
+}
+function liftAnim(i) {
+  const top = G.tubesEl[i].firstChild.lastChild; if (!top) return;
+  top.classList.remove('lift'); top.style.transition = 'none'; void top.offsetWidth; top.style.transition = ''; top.classList.add('lift');
+}
+function store() { G.ctx.save({ T: G.T, moves: G.moves, undos: G.undos, hist: G.hist.slice(-UNDOS) }); }
+function shake(i) { const el = G.tubesEl[i]; el.classList.remove('bad'); void el.offsetWidth; el.classList.add('bad'); }
+function tap(i) {
+  if (G.over) return;
+  const ctx = G.ctx;
+  if (G.sel < 0) {
+    if (!G.T[i].length) { ctx.sfx.bad(); shake(i); ctx.say('Ống này trống. Chọn ống có bi nhé!', 'oops'); return; }
+    G.sel = i; ctx.sfx.tap(); draw(); liftAnim(i); return;
+  }
+  if (i === G.sel) { G.sel = -1; ctx.sfx.tap(); draw(i); return; }
+  const from = G.sel;
+  if (G.T[i].length >= G.cap) { ctx.sfx.bad(); shake(i); ctx.say('Ống này đầy rồi! Chọn ống khác nhé.', 'oops'); return; }
+  if (!legal(G.T, G.cap, from, i)) { ctx.sfx.bad(); shake(i); ctx.say('Chỉ thả vào ống trống hoặc lên bi cùng màu nhé!', 'oops'); return; }
+  G.hist.push(G.T.map(t => t.slice())); if (G.hist.length > UNDOS) G.hist.shift();
+  G.T = apply(G.T, [from, i]); G.moves++; G.sel = -1; G.hintM = null;
+  ctx.sfx.move(G.moves);
+  draw(i);
+  if (full1(G.T[i], G.cap)) { ctx.sfx.good(); ctx.burst(G.tubesEl[i], 14, .6); }
+  if (isWon(G.T, G.cap)) { G.over = true; draw(); winNow(); return; }
+  store();
+}
+function winNow() {
+  const m = G.moves, p = G.P.par, stars = m <= p ? 3 : m <= p + 4 ? 2 : 1;
+  G.ctx.win(stars, stars === 3 ? `Xong trong ${m} lượt. Quá giỏi!` : `Em dùng ${m} lượt. Chuẩn là ${p} lượt.`);
+}
+function undo() {
+  if (G.over) return;
+  if (!G.hist.length) { G.ctx.say('Chưa có lượt nào để hoàn tác.', 'oops'); return; }
+  if (!G.undos) { G.ctx.say('Hết lượt hoàn tác rồi. Bấm Chơi lại màn nhé!', 'oops'); return; }
+  G.T = G.hist.pop(); G.undos--; G.sel = -1; G.hintM = null;
+  G.ctx.sfx.tap(); draw(); store();
+  G.ctx.say(G.undos ? `Đã lùi 1 lượt. Còn ${G.undos} lần hoàn tác.` : 'Đã lùi 1 lượt. Hết lần hoàn tác rồi.');
+}
+function restart() {
+  if (G.over) return;
+  G.T = G.P.tubes.map(t => t.slice()); G.moves = 0; G.hist = []; G.sel = -1; G.hintM = null;
+  G.ctx.sfx.tap(); draw(); store();
+  G.ctx.say('Bắt đầu lại từ đầu nhé!');
+}
+function hint(ctx) {
+  if (G.over) return false;
+  const sol = solve(G.T, G.cap);
+  if (!sol || !sol.length) {
+    ctx.say(G.undos && G.hist.length ? 'Từ đây không xếp xong được rồi. Bấm Hoàn tác hoặc Chơi lại màn nhé!' : 'Từ đây không xếp xong được rồi. Bấm Chơi lại màn nhé!', 'oops');
+    return false;
+  }
+  const [a, b] = sol[0];
+  G.sel = -1; G.hintM = [a, b]; draw();
+  ctx.say(`Chuyển bi từ ống ${a + 1} sang ống ${b + 1}.`, 'happy');
+  return true;
+}
+/* size balls from the play area; 1 or 2 rows, whichever gives bigger balls */
+function layout(ctx) {
+  if (!G) return;
+  const play = ctx.play, cs = getComputedStyle(play);
+  const W = play.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 4;
+  const H = play.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - 4;
+  const n = G.T.length, cap = G.cap;
+  let bestB = 0, bestR = 1;
+  for (const r of [1, 2]) {
+    const cols = Math.ceil(n / r);
+    const bw = (W - cols * 6 - 4) / (cols * 1.22 + (cols - 1) * .4 + .6);
+    const bh = (H - r * 22) / (r * (cap + 2.2) + (r - 1) * .2);
+    const b = Math.min(bw, bh, 92);
+    if (b > bestB * 1.08) { bestB = b; bestR = r; }
+  }
+  G.rack.style.setProperty('--b', Math.max(14, Math.floor(bestB)) + 'px');
+  if (bestR !== (G.rows || 1)) { G.rows = bestR; build(); draw(); }
+}
+function onKey(e) {
+  if (/^[1-9]$/.test(e.key) && +e.key <= G.T.length) { tap(+e.key - 1); e.preventDefault(); }
+  else if (e.key === 'Backspace') { undo(); e.preventDefault(); }
+  else if (e.key === 'Escape' && G.sel >= 0) { tap(G.sel); e.preventDefault(); }
+}
+
+/* read-only helper for automatic tests */
+window.__ongbi = { solve: (T, cap) => solve(T, cap), make: (lv, r) => make(lv, r), get tubes() { return G ? G.T.map(t => t.slice()) : null; } };
+
+Kit.run({
+  key: 'bb-ongbi',
+  title: 'Xếp ống bi',
+  intro: 'Xếp lại các viên bi để mỗi ống chỉ còn một màu.',
+  rules: [
+    'Chạm một ống để nhấc <b>bi trên cùng</b>, chạm ống khác để thả xuống.',
+    'Chỉ thả vào <b>ống trống</b> hoặc lên <b>bi cùng màu</b>, và ống chưa đầy.',
+    'Mỗi màu có một <b>con số</b> trên bi để dễ nhận ra.',
+    'Xếp xong với số lượt bằng <b>chuẩn</b> được <b>3 sao</b>. Được hoàn tác 3 lần mỗi màn.'
+  ],
+  levels: LEVELS.map(l => ({ name: l.name, desc: l.desc })),
+  rounds: 10,
+  hello: 'Chào em! Cùng xếp bi cho gọn nhé.',
+  make, mount, hint, onKey, layout
+});
+})();
+</script>
+</body>
+</html>

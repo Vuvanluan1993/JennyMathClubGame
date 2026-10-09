@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Xoay – lật hình</title>
+<link rel="icon" href="../../../assets/jenny-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<link rel="stylesheet" href="../_kit/kit.css">
+<style>
+/* ---------- normal round: current -> target, step strip below ---------- */
+.xl{width:100%;height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:2cqh;min-height:0}
+.xl-pair{display:flex;align-items:center;justify-content:center;gap:2.2cqw;min-height:0}
+.xl-fig{display:flex;flex-direction:column;align-items:center;gap:1.2cqh}
+.xl-lab{font-weight:900;font-size:clamp(11px,3.4cqmin,18px);line-height:1.1;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap}
+.xl-lab.goal{color:#1F9E72}
+.xl-pic{--s:min(39cqw,58cqh);width:var(--s);height:var(--s);border:3px solid var(--ink);border-radius:14px;background:#fff;box-shadow:0 4px 0 var(--ink);padding:calc(var(--s)*.04);flex:none}
+.xl-pic.goal{border-color:#1F9E72;background:var(--mint-soft);box-shadow:0 4px 0 #1F9E72;border-width:3.5px}
+.xl-pic.win{border-color:#1F9E72;background:var(--mint-soft)}
+.xl-pic > div{width:100%;height:100%;transform-origin:50% 50%}
+.xl-pic svg,.xl-th svg,.xl-choice .pc svg{display:block;width:100%;height:100%}
+.xl-pic > div.anim{transition:transform .25s ease-in-out}
+.xl-arrow{flex:none;color:var(--ink)}
+.xl-arrow svg{display:block;width:min(7cqw,9cqh);height:min(7cqw,9cqh)}
+.xl-strip{--t:min(12cqh,9cqw);border:2.5px dashed var(--hatch);border-radius:12px;padding:.8cqh 1.4cqw;display:flex;align-items:center;gap:1cqw;min-width:0;overflow:hidden;white-space:nowrap}
+.xl-strip .sl{font-weight:900;font-size:clamp(10px,2.6cqmin,14px);color:var(--ink-soft);letter-spacing:.05em;text-transform:uppercase;flex:none;margin-right:.6cqw}
+.xl-th{width:var(--t);height:var(--t);border:2px solid var(--ink);border-radius:6px;background:#fff;padding:calc(var(--t)*.07);flex:none}
+.xl-th.first{border-style:dashed}
+.xl-th.last{background:var(--sun-soft);border-color:var(--ink);box-shadow:0 2px 0 var(--ink)}
+.xl-op{width:calc(var(--t)*.62);height:calc(var(--t)*.62);border-radius:7px;background:var(--sel-soft);border:2px solid var(--ink);display:grid;place-items:center;flex:none;color:var(--ink)}
+.xl-op svg{width:78%;height:78%}
+.xl-more{font-weight:900;color:var(--ink-soft);flex:none}
+.xl-empty{font-size:clamp(11px,2.6cqmin,14px);font-weight:700;color:var(--ink-soft)}
+@container (max-aspect-ratio:4/5){
+  .xl-pair{flex-direction:column;gap:1cqh}
+  .xl-pic{--s:min(62cqw,30cqh)}
+  .xl-arrow{transform:rotate(90deg)}
+  .xl-strip{--t:min(8cqh,10cqw)}
+}
+
+/* ---------- reverse round: start + op sequence, choose the result ---------- */
+.xr{width:100%;height:100%;display:grid;grid-template-rows:auto auto;align-content:center;gap:5cqh;min-height:0}
+.xr-top{display:flex;align-items:center;justify-content:center;gap:3cqw;min-width:0}
+.xr-top .xl-pic{--s:min(28cqw,36cqh)}
+.xr-seq{max-width:58cqw}
+.xr-seq{display:flex;flex-direction:column;gap:1cqh;min-width:0}
+.xr-chips{display:flex;flex-wrap:wrap;align-items:center;gap:.8cqmin}
+.xr-chip{display:flex;align-items:center;gap:.6cqmin;background:var(--sel-soft);border:2.5px solid var(--ink);border-radius:10px;padding:.6cqmin 1.2cqmin;font-weight:900;font-size:clamp(11px,3cqmin,17px);white-space:nowrap;box-shadow:0 2px 0 var(--ink)}
+.xr-chip svg{width:clamp(14px,4.2cqmin,26px);height:clamp(14px,4.2cqmin,26px);flex:none}
+.xr-chip i{font-style:normal;background:var(--ink);color:#fff;border-radius:6px;padding:0 .8cqmin;font-size:.8em}
+.xr-then{color:var(--ink-soft);font-weight:900;font-size:clamp(11px,3cqmin,17px)}
+.xr-ch{display:grid;grid-template-columns:repeat(4,auto);justify-content:center;align-content:center;gap:2.5cqw;min-height:0}
+.xl-choice{--c:min(20.5cqw,40cqh);position:relative;border:3px solid var(--ink);border-radius:14px;background:#fff;box-shadow:0 4px 0 var(--ink);padding:0;display:flex;flex-direction:column;align-items:center}
+.xl-choice .pc{width:var(--c);height:var(--c);padding:calc(var(--c)*.08)}
+.xl-choice b{position:absolute;left:-3px;top:-3px;background:var(--sun);border:2.5px solid var(--ink);border-radius:12px 0 10px 0;font-family:var(--display);font-size:clamp(12px,3.2cqmin,18px);line-height:1;padding:3px 7px}
+.xl-choice:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.xl-choice.wrong{opacity:.4;border-color:var(--coral);box-shadow:0 4px 0 var(--coral)}
+.xl-choice.wrong::after{content:"";position:absolute;inset:18%;background:linear-gradient(45deg,transparent 45%,var(--coral) 45% 55%,transparent 55%),linear-gradient(-45deg,transparent 45%,var(--coral) 45% 55%,transparent 55%)}
+.xl-choice.right{border-color:#1F9E72;background:var(--mint-soft);box-shadow:0 4px 0 #1F9E72}
+@container (max-aspect-ratio:1/1){
+  .xr-ch{grid-template-columns:repeat(2,auto);gap:2cqh 4cqw}
+  .xl-choice{--c:min(30cqw,21cqh)}
+  .xr-top .xl-pic{--s:min(28cqw,22cqh)}
+}
+
+/* ---------- operation buttons ---------- */
+.xl-keys{grid-template-columns:repeat(6,minmax(0,1fr))}
+.xl-keys .op{grid-column:span 2;flex-direction:column;gap:2px;min-height:76px;font-size:clamp(15px,1.5vw,19px)}
+.xl-keys .op svg{width:34px;height:34px}
+.xl-keys .fn{grid-column:span 3}
+.xl-keys .fn svg{width:20px;height:20px}
+.key.glow{background:var(--sun);animation:glow 1s ease-in-out infinite}
+@keyframes glow{0%,100%{box-shadow:0 4px 0 var(--ink),0 0 0 0 rgba(255,201,60,.9)}50%{box-shadow:0 4px 0 var(--ink),0 0 0 8px rgba(255,201,60,.35)}}
+.xl-note{font-size:13px;font-weight:800;color:var(--ink-soft);text-align:center}
+@media (max-aspect-ratio:1/1){.xl-keys .op{min-height:58px}.xl-keys .op svg{width:28px;height:28px}}
+.xl-keys .op span{white-space:nowrap}
+@media (max-height:520px) and (min-aspect-ratio:1/1){.xl-keys .op{min-height:46px;gap:0;font-size:13.5px}.xl-keys .op svg{width:20px;height:20px}}
+html.tight .xl-keys .op{min-height:46px;flex-direction:row;gap:5px}
+html.tight .xl-keys .op svg{width:24px;height:24px}
+html.tight .xl-note{display:none}
+</style>
+</head>
+<body>
+<script src="../_kit/kit.js"></script>
+<script>
+(() => {
+'use strict';
+/* ---------- icons ---------- */
+const S = 'fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+const IC = {
+  R: `<svg viewBox="0 0 32 32" ${S}><rect x="10" y="10" width="12" height="12" rx="2.5" fill="#FFC93C"/><path d="M6 13 A11 11 0 0 1 25 8"/><path d="M25 3v5h-5"/><path d="M26 19 A11 11 0 0 1 7 24"/><path d="M7 29v-5h5"/></svg>`,
+  H: `<svg viewBox="0 0 32 32" ${S}><path d="M16 3v26" stroke-dasharray="3 3"/><path d="M12 8 L3 22 H12 Z" fill="#2F7DE1"/><path d="M20 8 L29 22 H20 Z" fill="#fff"/><path d="M9 27h14M20 25l3 2-3 2M12 25l-3 2 3 2" stroke-width="1.8"/></svg>`,
+  V: `<svg viewBox="0 0 32 32" ${S}><path d="M3 16h26" stroke-dasharray="3 3"/><path d="M8 12 L22 3 V12 Z" fill="#2F7DE1"/><path d="M8 20 L22 29 V20 Z" fill="#fff"/><path d="M27 9v14M25 12l2-3 2 3M25 20l2 3 2-3" stroke-width="1.8"/></svg>`,
+  undo: `<svg viewBox="0 0 24 24" ${S}><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>`,
+  reset: `<svg viewBox="0 0 24 24" ${S}><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>`,
+  arrow: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>`
+};
+const OPS = ['R', 'H', 'V'];
+const NAME = { R: 'Xoay 90°', H: 'Lật ngang', V: 'Lật dọc' };
+const LEVELS = [
+  { name: 'Dễ', desc: 'Lưới 4×4', n: 4, d: 1 },
+  { name: 'Vừa', desc: 'Lưới 5×5', n: 5, d: 2 },
+  { name: 'Khó', desc: 'Lưới 6×6 · câu ngược', n: 6, d: 3 }
+];
+const isRev = (lv, r) => lv === 2 && (r === 2 || r === 5 || r === 8);
+
+/* ---------- picture maths: a picture is a string of '0'/'1', row by row ---------- */
+const rnd = k => Math.floor(Math.random() * k);
+function apply(p, op, n) {
+  let o = '';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+    if (op === 'R') o += p[(n - 1 - c) * n + r];          // xoay 90° theo chiều kim đồng hồ
+    else if (op === 'H') o += p[r * n + (n - 1 - c)];     // lật trái ↔ phải
+    else o += p[(n - 1 - r) * n + c];                     // lật trên ↔ dưới
+  }
+  return o;
+}
+const applyAll = (p, ops, n) => ops.reduce((a, op) => apply(a, op, n), p);
+/* BFS over the (at most 8) pictures reachable from p: dist + first op of a shortest path */
+function bfs(p, n) {
+  const dist = new Map([[p, 0]]), first = new Map([[p, null]]), qu = [p];
+  while (qu.length) {
+    const cur = qu.shift();
+    for (const op of OPS) {
+      const nx = apply(cur, op, n); if (dist.has(nx)) continue;
+      dist.set(nx, dist.get(cur) + 1); first.set(nx, first.get(cur) || op); qu.push(nx);
+    }
+  }
+  return { dist, first };
+}
+function nextOp(cur, target, n) { // first op of a shortest way cur -> target
+  for (const op of OPS) {
+    const nx = apply(cur, op, n);
+    if (bfs(nx, n).dist.get(target) === bfs(cur, n).dist.get(target) - 1) return op;
+  }
+  return null;
+}
+function blob(n) {
+  const want = Math.round(n * n * (.36 + Math.random() * .13));
+  const on = new Set([rnd(n * n)]);
+  while (on.size < want) {
+    const arr = [...on], c = arr[rnd(arr.length)], r0 = Math.floor(c / n), c0 = c % n;
+    const [dr, dc] = [[1, 0], [-1, 0], [0, 1], [0, -1]][rnd(4)], r = r0 + dr, cc = c0 + dc;
+    if (r < 0 || cc < 0 || r >= n || cc >= n) continue;
+    on.add(r * n + cc);
+  }
+  let s = ''; for (let i = 0; i < n * n; i++) s += on.has(i) ? '1' : '0';
+  return s;
+}
+function asymPicture(n) {
+  for (let t = 0; t < 2000; t++) {
+    const p = blob(n);
+    if (bfs(p, n).dist.size === 8) return p;   // all 8 images distinct = no symmetry at all
+  }
+  throw new Error('không tạo được hình');
+}
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function make(lv, r) {
+  const L = LEVELS[lv], n = L.n, pic = asymPicture(n), { dist } = bfs(pic, n);
+  if (isRev(lv, r)) {
+    let seq, res;
+    do {
+      const len = 3 + rnd(3); seq = [];
+      while (seq.length < len) { const op = OPS[rnd(3)]; if (op !== 'R' && seq[seq.length - 1] === op) continue; seq.push(op); }
+      res = applyAll(pic, seq, n);
+    } while (res === pic);
+    const others = shuffle([...dist.keys()].filter(x => x !== res)).slice(0, 3);
+    const choices = shuffle([res, ...others]);
+    return { rev: true, n, pic, seq, choices, answer: choices.indexOf(res) };
+  }
+  /* Chỉ có ĐÚNG MỘT hình cần 3 bước (xoay 270° = Xoay 3 lần), nên mức Khó trộn hình cần 3 bước
+     (khoảng 1/3 số màn) với các hình cần 2 bước, để không màn nào cũng là "bấm Xoay 3 lần". */
+  const need = L.d === 3 && Math.random() < .6 ? 2 : L.d;
+  const cand = [...dist.keys()].filter(x => dist.get(x) === need);
+  const target = cand[rnd(cand.length)];
+  return { rev: false, n, pic, target, best: need };
+}
+
+/* ---------- drawing ---------- */
+function svg(p, n, grid = true) {
+  let s = `<svg viewBox="-.04 -.04 ${n + .08} ${n + .08}" aria-hidden="true" shape-rendering="crispEdges">`;
+  if (grid) { s += '<path d="'; for (let i = 1; i < n; i++) s += `M${i} 0V${n}M0 ${i}H${n}`; s += '" stroke="#D3DCEA" stroke-width=".05" fill="none"/>'; }
+  for (let i = 0; i < n * n; i++) if (p[i] === '1') s += `<rect x="${i % n}" y="${Math.floor(i / n)}" width="1.02" height="1.02" fill="#1D2B53"/>`;
+  s += `<rect x="0" y="0" width="${n}" height="${n}" fill="none" stroke="#1D2B53" stroke-width=".06"/></svg>`;
+  return s;
+}
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+
+/* ---------- one round ---------- */
+let G = null;
+function mount(ctx) {
+  const P = ctx.puzzle;
+  G = { ctx, P, solved: false };
+  if (P.rev) mountRev(ctx); else mountNormal(ctx);
+}
+
+function mountNormal(ctx) {
+  const P = ctx.puzzle, n = P.n;
+  G.ops = (ctx.state && ctx.state.ops) ? ctx.state.ops.slice() : [];
+  G.cur = applyAll(P.pic, G.ops, n);
+  const wrap = el('div', 'xl');
+  wrap.innerHTML = `<div class="xl-pair">
+      <div class="xl-fig"><div class="xl-lab">Hình đang có</div><div class="xl-pic" id="xlCur"><div></div></div></div>
+      <div class="xl-arrow">${IC.arrow}</div>
+      <div class="xl-fig"><div class="xl-lab goal">Hình đích</div><div class="xl-pic goal" id="xlGoal"><div>${svg(P.target, n)}</div></div></div>
+    </div>
+    <div class="xl-strip" id="xlStrip"></div>`;
+  ctx.play.appendChild(wrap);
+  G.curBox = wrap.querySelector('#xlCur > div');
+  G.strip = wrap.querySelector('#xlStrip');
+  drawCur();
+
+  ctx.mission(`Bấm các nút để biến <b>hình đang có</b> thành <b>hình đích</b> (khung xanh). Ít nhất cần <b>${P.best} bước</b>.`);
+  ctx.tag(`Bước: <b id="xlCnt">0</b>/${P.best}`);
+
+  const keys = el('div', 'keys xl-keys');
+  G.btn = {};
+  const btn = (html, cls, fn, label) => { const b = el('button', 'key ' + cls, html); b.setAttribute('aria-label', label); b.onclick = fn; keys.appendChild(b); return b; };
+  for (const op of OPS) G.btn[op] = btn(`${IC[op]}<span>${NAME[op]}</span>`, 'op', () => doOp(op), NAME[op] + ' (phím ' + op + ')');
+  btn(`${IC.undo}Hoàn tác`, 'fn', undo, 'Hoàn tác');
+  btn(`${IC.reset}Làm lại`, 'fn', reset, 'Làm lại');
+  ctx.controls.appendChild(keys);
+  ctx.controls.appendChild(el('div', 'xl-note', 'Phím tắt: R xoay · H lật ngang · V lật dọc'));
+  drawStrip();
+  if (ctx.round === 0 && !G.ops.length) ctx.say(ctx.level === 0 ? 'Chỉ cần 1 bước thôi. Nhìn kỹ rồi chọn nút nhé!' : `Tìm cách ngắn nhất: ${P.best} bước nhé!`);
+  if (G.cur === P.target) setTimeout(winNormal, 300);
+}
+function drawCur() {
+  G.curBox.classList.remove('anim'); G.curBox.style.transform = '';
+  G.curBox.innerHTML = svg(G.cur, G.P.n);
+  const c = document.getElementById('xlCnt'); if (c) c.textContent = G.ops.length;
+}
+function drawStrip() {
+  const P = G.P, n = P.n, s = G.strip; if (!s) return;
+  const states = [P.pic]; G.ops.forEach(op => states.push(apply(states[states.length - 1], op, n)));
+  const build = skip => {
+    let h = `<span class="sl">Các bước</span><div class="xl-th first" title="Hình lúc đầu">${svg(P.pic, n, false)}</div>`;
+    if (!G.ops.length) return h + '<span class="xl-empty">Chưa có bước nào</span>';
+    if (skip) h += '<span class="xl-more">…</span>';
+    for (let i = skip; i < G.ops.length; i++) {
+      h += `<span class="xl-op" title="${NAME[G.ops[i]]}">${IC[G.ops[i]]}</span><div class="xl-th${i === G.ops.length - 1 ? ' last' : ''}">${svg(states[i + 1], n, false)}</div>`;
+    }
+    return h;
+  };
+  let skip = 0;
+  s.innerHTML = build(0);
+  while (skip < G.ops.length - 1 && s.scrollWidth > s.clientWidth + 1) { skip++; s.innerHTML = build(skip); }
+}
+function clearGlow() { if (G.btn) Object.values(G.btn).forEach(b => b.classList.remove('glow')); }
+function doOp(op) {
+  if (G.solved || G.P.rev) return;
+  const ctx = G.ctx, n = G.P.n;
+  if (G.ops.length >= 40) { ctx.say('Nhiều bước quá rồi! Bấm Làm lại nhé.', 'oops'); return; }
+  clearTimeout(G.animT); drawCur();                 // finish any running animation
+  G.ops.push(op); G.cur = apply(G.cur, op, n);
+  clearGlow(); ctx.sfx.move(G.ops.length);
+  const b = G.btn[op]; b.classList.remove('hit'); void b.offsetWidth; b.classList.add('hit'); setTimeout(() => b.classList.remove('hit'), 120);
+  const box = G.curBox; void box.offsetWidth; box.classList.add('anim');
+  box.style.transform = op === 'R' ? 'rotate(90deg)' : op === 'H' ? 'scaleX(-1)' : 'scaleY(-1)';
+  const c = document.getElementById('xlCnt'); if (c) c.textContent = G.ops.length;
+  drawStrip();
+  ctx.save({ ops: G.ops });
+  G.animT = setTimeout(() => {
+    drawCur();
+    if (G.cur === G.P.target) winNormal();
+    else if (G.ops.length === G.P.best) ctx.say(`Đã ${G.ops.length} bước mà chưa giống. Thử Hoàn tác nhé!`, 'oops');
+  }, 270);
+}
+function winNormal() {
+  if (G.solved) return; G.solved = true; clearGlow();
+  document.getElementById('xlCur').classList.add('win');
+  const c = G.ops.length, b = G.P.best, stars = c <= b ? 3 : c <= b + 2 ? 2 : 1;
+  G.ctx.win(stars, stars === 3 ? `Đúng ${c} bước, ngắn nhất rồi!` : `Em dùng ${c} bước. Cách ngắn nhất cần ${b} bước.`);
+}
+function undo() {
+  if (G.solved || G.P.rev || !G.ops.length) return;
+  clearTimeout(G.animT); G.ops.pop(); G.cur = applyAll(G.P.pic, G.ops, G.P.n);
+  clearGlow(); G.ctx.sfx.tap(); drawCur(); drawStrip(); G.ctx.save({ ops: G.ops });
+}
+function reset() {
+  if (G.solved || G.P.rev || !G.ops.length) return;
+  clearTimeout(G.animT); G.ops = []; G.cur = G.P.pic;
+  clearGlow(); G.ctx.sfx.tap(); drawCur(); drawStrip(); G.ctx.save({ ops: G.ops });
+  G.ctx.say('Bắt đầu lại từ hình ban đầu nhé!');
+}
+
+function mountRev(ctx) {
+  const P = ctx.puzzle, n = P.n;
+  G.wrong = (ctx.state && ctx.state.wrong) ? ctx.state.wrong.slice() : [];
+  const wrap = el('div', 'xr');
+  const chips = P.seq.map((op, i) => `<span class="xr-chip"><i>${i + 1}</i>${IC[op]}${NAME[op]}</span>`).join('<span class="xr-then">›</span>');
+  wrap.innerHTML = `<div class="xr-top">
+      <div class="xl-fig"><div class="xl-lab">Hình ban đầu</div><div class="xl-pic"><div>${svg(P.pic, n)}</div></div></div>
+      <div class="xr-seq"><div class="xl-lab">Làm lần lượt</div><div class="xr-chips">${chips}</div></div>
+    </div>
+    <div class="xr-ch" id="xrCh"></div>`;
+  ctx.play.appendChild(wrap);
+  const ch = wrap.querySelector('#xrCh');
+  G.choices = P.choices.map((p, i) => {
+    const b = el('button', 'xl-choice' + (G.wrong.includes(i) ? ' wrong' : ''), `<b>${'ABCD'[i]}</b><div class="pc">${svg(p, n)}</div>`);
+    b.dataset.i = i; b.setAttribute('aria-label', 'Hình ' + 'ABCD'[i]); b.disabled = G.wrong.includes(i);
+    b.onclick = () => pick(i); ch.appendChild(b); return b;
+  });
+  ctx.mission(`<b>Câu ngược!</b> Bắt đầu từ hình ban đầu, làm lần lượt <b>${P.seq.length} bước</b>. Hình nào là kết quả? Bấm chọn A, B, C hoặc D.`);
+  ctx.tag('Câu ngược');
+  ctx.controls.appendChild(el('div', 'xl-note', 'Mẹo: tưởng tượng từng bước, theo dõi một ô đen ở góc. Phím A–D để chọn.'));
+  ctx.say('Câu ngược! Tưởng tượng từng bước rồi chọn hình đúng nhé.');
+}
+function pick(i) {
+  if (G.solved || !G.P.rev || G.wrong.includes(i)) return;
+  const ctx = G.ctx, b = G.choices[i];
+  if (i === G.P.answer) {
+    G.solved = true; b.classList.add('right');
+    const t = G.wrong.length, stars = t === 0 ? 3 : t === 1 ? 2 : 1;
+    ctx.win(stars, t === 0 ? 'Đúng ngay lần đầu, tưởng tượng giỏi quá!' : `Đúng rồi! Em chọn đúng ở lần thứ ${t + 1}.`);
+  } else {
+    G.wrong.push(i); b.classList.add('wrong'); b.disabled = true;
+    b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+    ctx.sfx.bad(); ctx.say('Chưa đúng. Làm lại từng bước thật chậm nhé!', 'oops');
+    ctx.save({ wrong: G.wrong });
+  }
+}
+
+function hint(ctx) {
+  if (G.solved) return false;
+  const P = G.P, n = P.n;
+  if (P.rev) {
+    const left = P.choices.map((_, i) => i).filter(i => i !== P.answer && !G.wrong.includes(i));
+    if (!left.length) return false;
+    const i = left[rnd(left.length)];
+    G.wrong.push(i); G.choices[i].classList.add('wrong'); G.choices[i].disabled = true;
+    ctx.save({ wrong: G.wrong });
+    ctx.say(`Jenny gạch giúp hình ${'ABCD'[i]}: hình đó không đúng.`, 'happy');
+    return true;
+  }
+  if (G.cur === P.target) return false;
+  const op = nextOp(G.cur, P.target, n); if (!op) return false;
+  clearGlow(); G.btn[op].classList.add('glow');
+  ctx.say(`Bước tiếp theo: bấm nút "${NAME[op]}" đang sáng nhé!`, 'happy');
+  return true;
+}
+function layout() { if (G && !G.P.rev) drawStrip(); }
+function onKey(e) {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (G.P.rev) {
+    const i = 'abcd'.indexOf(k); if (i >= 0 && k.length === 1) { pick(i); e.preventDefault(); }
+    return;
+  }
+  if (k === 'r') { doOp('R'); e.preventDefault(); }
+  else if (k === 'h') { doOp('H'); e.preventDefault(); }
+  else if (k === 'v') { doOp('V'); e.preventDefault(); }
+  else if (e.key === 'Backspace' || e.key === 'Delete') { undo(); e.preventDefault(); }
+}
+
+Kit.run({
+  key: 'bb-xoaylat',
+  title: 'Xoay – lật hình',
+  intro: 'Biến hình đang có thành hình đích bằng cách xoay và lật, càng ít bước càng giỏi.',
+  rules: [
+    '<b>Xoay 90°</b>: quay hình theo chiều kim đồng hồ.',
+    '<b>Lật ngang</b>: trái thành phải. <b>Lật dọc</b>: trên thành dưới.',
+    'Dùng <b>ít bước nhất</b> để được <b>3 sao</b>. Bấm <b>Hoàn tác</b> nếu lỡ tay.',
+    'Mức Khó có <b>câu ngược</b>: cho trước các bước, em đoán hình kết quả.'
+  ],
+  levels: LEVELS.map(l => ({ name: l.name, desc: l.desc })),
+  rounds: 10,
+  hello: 'Chào em! Cùng xoay và lật hình nhé.',
+  make, mount, hint, onKey, layout
+});
+})();
+</script>
+</body>
+</html>

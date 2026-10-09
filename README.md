@@ -12,6 +12,14 @@ Trang chơi: https://vuvanluan1993.github.io/JennyMathClubGame/
 | Ô Số Bí Ẩn | Lớp 7 | 17 | `games/o-so-bi-an/lop-7/` |
 | Mảnh Ghép Bí Mật (cả lớp chơi chung) | Lớp 6 | 15 | `games/manh-ghep-bi-mat/lop-6/` |
 | Mật Mã Bí Ẩn (3 mức độ) | Mọi lớp | – | `games/mat-ma-bi-an/moi-lop/` |
+| Tư Duy Bebras · Robot Tìm Đường | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/robot-tim-duong/` |
+| Tư Duy Bebras · Xoay Lật Hình | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/xoay-lat-hinh/` |
+| Tư Duy Bebras · Xếp Ống Bi | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/xep-ong-bi/` |
+| Tư Duy Bebras · Giải Mã Thư | Mọi lớp | 8 màn × 3 mức | `games/tu-duy-bebras/giai-ma-thu/` |
+| Tư Duy Bebras · Đường Đi Rẻ Nhất | Mọi lớp | 8 màn × 3 mức | `games/tu-duy-bebras/duong-di-re-nhat/` |
+| Tư Duy Bebras · Chồng Hình | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/chong-hinh/` |
+
+Game Tư Duy Bebras tạo đề ngẫu nhiên mỗi lần chơi, có 3 mức Dễ / Vừa / Khó.
 
 ## Cấu trúc thư mục
 
@@ -23,6 +31,10 @@ games/
   <bo-game>/            Mỗi bộ game một thư mục
     lop-6/index.html    Mỗi game là 1 file HTML chạy độc lập
     lop-7/index.html
+  tu-duy-bebras/
+    _kit/               Khung dùng chung cho game Bebras (thanh trên, màn, sao,
+                        bóng đèn gợi ý, đồng hồ, lưu tiến độ, Jenny, âm thanh)
+    <ten-game>/index.html   Chỉ viết phần đề và cách chơi, gọi Kit.run({...})
 ```
 
 ## Thêm game mới

@@ -81,6 +81,8 @@ a.card:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
 .codeg .sl i.q{background:var(--sel)}
 .codeg .pg{display:flex;gap:5px}
 .codeg .pg b{width:12px;height:12px;border-radius:50%;border:2px solid #fff}
+.thumb.bb{background:#CFEAFB;background-image:radial-gradient(circle at 1px 1px,rgba(29,43,83,.12) 1px,transparent 1.4px);background-size:16px 16px;padding-top:18px}
+.thumb.bb svg{width:96px;height:80px}
 .tag.class{background:var(--ink);color:#fff}
 .grade{position:absolute;top:10px;left:10px;background:var(--ink);color:#fff;border-radius:10px;padding:3px 10px;font-weight:900;font-size:13px}
 .flag{position:absolute;top:10px;right:10px;border:2px solid var(--ink);border-radius:999px;padding:2px 9px;font-weight:900;font-size:12px;background:var(--sun)}
@@ -158,7 +160,7 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
     if (!g.saveKey) return null;
     try {
       const v = JSON.parse(localStorage.getItem(g.saveKey));
-      if (!v || !v.digits) return null;
+      if (!v || !(v.digits || v.kit)) return null;
       return v.done ? 'done' : 'playing';
     } catch(e){ return null; }
   }
@@ -190,6 +192,18 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
     return `<div class="codeg"><div class="sl"><i>4</i><i>0</i><i class="q">?</i><i>?</i></div><div class="pg"><b style="background:var(--mint)"></b><b style="background:var(--sun)"></b><b></b><b></b></div></div>`;
   }
 
+  // Bebras icons (thumb: "bb", icon: name)
+  const K='stroke="#1D2B53" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"';
+  const ICONS = {
+    robot:`<rect x="26" y="22" width="48" height="38" rx="10" fill="#FFC93C" ${K}/><circle cx="40" cy="40" r="5" fill="#fff" ${K}/><circle cx="60" cy="40" r="5" fill="#fff" ${K}/><path d="M50 22v-9M38 60v10M62 60v10" fill="none" ${K}/><circle cx="50" cy="11" r="4" fill="#FF6B57" ${K}/><path d="M80 30l12 10-12 10" fill="none" ${K}/>`,
+    rotate:`<rect x="14" y="20" width="34" height="34" rx="6" fill="#2F7DE1" ${K}/><rect x="14" y="20" width="17" height="17" fill="#FFC93C" ${K}/><path d="M56 30q14-12 26 2M82 22v10H72" fill="none" ${K}/><rect x="58" y="40" width="30" height="30" rx="6" fill="#2F7DE1" ${K}/><rect x="73" y="40" width="15" height="15" fill="#FFC93C" ${K}/>`,
+    tubes:`<path d="M18 14v48q0 10 10 10t10-10V14M44 14v48q0 10 10 10t10-10V14M70 14v48q0 10 10 10t10-10V14" fill="#fff" ${K}/><circle cx="28" cy="62" r="7" fill="#FF6B57" ${K}/><circle cx="28" cy="46" r="7" fill="#2DBE8C" ${K}/><circle cx="54" cy="62" r="7" fill="#2DBE8C" ${K}/><circle cx="54" cy="46" r="7" fill="#FF6B57" ${K}/><circle cx="80" cy="62" r="7" fill="#FFC93C" ${K}/>`,
+    wheel:`<circle cx="50" cy="40" r="34" fill="#FFC93C" ${K}/><circle cx="50" cy="40" r="20" fill="#fff" ${K}/><circle cx="50" cy="40" r="5" fill="#1D2B53"/><text x="50" y="16" font-family="Baloo 2,sans-serif" font-weight="800" font-size="13" text-anchor="middle" fill="#1D2B53">A</text><text x="76" y="45" font-family="Baloo 2,sans-serif" font-weight="800" font-size="13" text-anchor="middle" fill="#1D2B53">B</text><text x="50" y="72" font-family="Baloo 2,sans-serif" font-weight="800" font-size="13" text-anchor="middle" fill="#1D2B53">C</text><text x="24" y="45" font-family="Baloo 2,sans-serif" font-weight="800" font-size="13" text-anchor="middle" fill="#1D2B53">D</text>`,
+    map:`<path d="M16 60L38 24L64 52L86 18" fill="none" stroke="#1D2B53" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 60L38 24L64 52L86 18" fill="none" stroke="#FFC93C" stroke-width="3" stroke-dasharray="6 5" stroke-linecap="round"/><circle cx="16" cy="60" r="8" fill="#2DBE8C" ${K}/><circle cx="38" cy="24" r="8" fill="#fff" ${K}/><circle cx="64" cy="52" r="8" fill="#fff" ${K}/><circle cx="86" cy="18" r="8" fill="#FF6B57" ${K}/>`,
+    layers:`<rect x="12" y="12" width="44" height="44" rx="6" fill="#fff" ${K}/><rect x="12" y="12" width="15" height="15" fill="#2F7DE1"/><rect x="41" y="41" width="15" height="15" fill="#2F7DE1"/><rect x="40" y="26" width="44" height="44" rx="6" fill="rgba(255,107,87,.75)" ${K}/><path d="M64 14h18M73 5v18" fill="none" ${K}/>`
+  };
+  const bbIcon = n => `<svg viewBox="0 0 100 80" aria-hidden="true">${ICONS[n]||ICONS.robot}</svg>`;
+
   const ORDER = ['Mọi lớp','Tiểu học','Lớp 1','Lớp 2','Lớp 3','Lớp 4','Lớp 5','Lớp 6','Lớp 7','Lớp 8','Lớp 9'];
   const grades = [...new Set(GAMES.map(g=>g.grade))].sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
   let current = 'Tất cả';
@@ -215,7 +229,7 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
                   g.puzzles && `<span class="tag">${g.puzzles} ${g.unit||'câu'}</span>`,
                   g.minutes && `<span class="tag">${g.minutes} phút</span>`].filter(Boolean).join('');
     const inner = `
-      <div class="thumb${g.thumb==='pieces'?' pz':g.thumb==='code'?' code':''}">${g.thumb==='pieces' ? pieces(g.id) : g.thumb==='code' ? code() : mini(g.id)}<span class="grade">${esc(g.grade)}</span>${flag}</div>
+      <div class="thumb${g.thumb==='pieces'?' pz':g.thumb==='code'?' code':g.thumb==='bb'?' bb':''}">${g.thumb==='pieces' ? pieces(g.id) : g.thumb==='code' ? code() : g.thumb==='bb' ? bbIcon(g.icon) : mini(g.id)}<span class="grade">${esc(g.grade)}</span>${flag}</div>
       <div class="body"><h3>${esc(g.title)}</h3><p>${esc(g.desc)}</p></div>
       <div class="meta">${tags}<span class="play">${g.status==='live' ? (p==='playing'?'Chơi tiếp':'Chơi') : 'Sắp có'}</span></div>`;
     return g.status==='live'

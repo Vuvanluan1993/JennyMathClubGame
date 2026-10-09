@@ -102,6 +102,27 @@ def mg_question(pg):
       window.__fitGame&&window.__fitGame()})()""")
 
 
+def bb_level(lv):
+    def step(pg):
+        pg.click(f'.lvbtn[data-lv="{lv}"]')
+        wait(pg, 400)
+    return step
+
+
+def bb_robot_long(pg):
+    bb_level(2)(pg)
+    for i in range(28):
+        pg.keyboard.press(["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"][i % 4])
+    wait(pg, 300)
+
+
+def bb_end(pg):
+    bb_level(0)(pg)
+    pg.evaluate("__kit.finish()")
+    wait(pg, 600)
+
+
+BB = ".play,.card,.key,.bar .ib,.pill"
 OSO = ".cell,.key,.card,.ctext,.slots,.chip,.jenny"
 CASES = [
     ("Ô Số 6 · màn mở đầu", "games/o-so-bi-an/lop-6/", nothing, ".panel"),
@@ -116,6 +137,18 @@ CASES = [
     ("Mật Mã · kết thúc", "games/mat-ma-bi-an/moi-lop/", mm_end, ".panel"),
     ("Mảnh Ghép · màn chính", "games/manh-ghep-bi-mat/lop-6/", nothing, ".board-section,.letter,.primary,.secondary,.status,.tool"),
     ("Mảnh Ghép · câu hỏi có hình", "games/manh-ghep-bi-mat/lop-6/", mg_question, "#answer-submit,#math-answer,.math-image,.question-content"),
+    ("Robot · màn mở đầu", "games/tu-duy-bebras/robot-tim-duong/", nothing, ".panel"),
+    ("Robot · Khó, dãy lệnh dài", "games/tu-duy-bebras/robot-tim-duong/", bb_robot_long, BB + ",.slot,.prog"),
+    ("Robot · kết thúc", "games/tu-duy-bebras/robot-tim-duong/", bb_end, ".panel"),
+] + [
+    case
+    for name, slug in [("Xoay Lật", "xoay-lat-hinh"), ("Ống Bi", "xep-ong-bi"), ("Giải Mã", "giai-ma-thu"),
+                       ("Đường Đi", "duong-di-re-nhat"), ("Chồng Hình", "chong-hinh")]
+    for case in [
+        (f"{name} · màn mở đầu", f"games/tu-duy-bebras/{slug}/", nothing, ".panel"),
+        (f"{name} · Khó", f"games/tu-duy-bebras/{slug}/", bb_level(2), BB),
+        (f"{name} · kết thúc", f"games/tu-duy-bebras/{slug}/", bb_end, ".panel"),
+    ]
 ]
 
 

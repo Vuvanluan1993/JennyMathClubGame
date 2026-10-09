@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Robot tìm đường</title>
+<link rel="icon" href="../../../assets/jenny-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<link rel="stylesheet" href="../_kit/kit.css">
+<style>
+/* map: square, sized by the play area (container units) */
+.map{width:min(100cqw,100cqh);height:min(100cqw,100cqh);position:relative;background:#B7E08F;border-radius:14px;border:3px solid var(--ink);overflow:hidden}
+.map .cell{position:absolute;padding:2px}
+.map .cell > div{width:100%;height:100%;border-radius:18%;background:#DDF3C6;border:2px solid #BFE3A1;display:grid;place-items:center;box-sizing:border-box}
+.map .cell.trap > div{background:#F3D9C8;border-color:#D9A88A}
+.map .cell.water > div{background:#9FD3F5;border-color:#62B5F7}
+.map .cell.goal > div{background:#FFF0C2;border-color:#FFC93C}
+.map .cell.start > div{background:#FFF7DD;border-color:#FFC93C;border-style:dashed}
+.map .cell.trail > div{background:#CFE6FF;border-color:#8FBDF0}
+.map .cell.ghost > div{box-shadow:inset 0 0 0 4px rgba(255,201,60,.9)}
+.map .cell svg{width:82%;height:82%}
+.bot{position:absolute;z-index:3;transition:left .22s ease,top .22s ease;padding:2px;pointer-events:none}
+.bot > div{width:100%;height:100%;display:grid;place-items:center}
+.bot svg{width:92%;height:92%;filter:drop-shadow(0 3px 0 rgba(29,43,83,.35))}
+.bot.bump > div{animation:shake .4s}
+.bot.fall > div{animation:fall .7s forwards}
+@keyframes fall{to{transform:scale(.2) rotate(200deg);opacity:0}}
+/* program strip */
+.prog{background:var(--paper);border:3px solid var(--ink);border-radius:18px;box-shadow:0 5px 0 var(--ink);padding:8px 10px;display:flex;flex-direction:column;gap:6px}
+.prog .lab{font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--ink-soft);display:flex;justify-content:space-between}
+.slots{display:flex;flex-wrap:wrap;gap:4px;min-height:var(--sl,40px)}
+.slot{width:var(--sl,40px);height:var(--sl,40px);border-radius:10px;border:2.5px solid var(--ink);background:var(--sel-soft);display:grid;place-items:center;padding:0;position:relative}
+.slot svg{width:60%;height:60%}
+.slot b{position:absolute;right:-6px;bottom:-7px;background:var(--ink);color:#fff;border-radius:8px;font-size:11px;font-weight:900;padding:1px 4px;line-height:1.2}
+.slot.now{background:var(--sun)}
+.slot.empty{background:#fff;border-style:dashed;border-color:var(--hatch)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;font-weight:800}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+.legend svg{width:20px;height:20px}
+@media (max-height:520px) and (min-aspect-ratio:1/1){.legend{display:none}}
+html.tight .legend{display:none}
+</style>
+</head>
+<body>
+<script src="../_kit/kit.js"></script>
+<script>
+(() => {
+'use strict';
+/* ---------- pictures ---------- */
+const SV = {
+  tree:'<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="17" y="24" width="6" height="11" rx="2" fill="#8A5A2B" stroke="#1D2B53" stroke-width="2"/><circle cx="20" cy="17" r="12" fill="#2DBE8C" stroke="#1D2B53" stroke-width="2.2"/><circle cx="15" cy="13" r="3" fill="#8FE6C2"/></svg>',
+  pine:'<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="17" y="25" width="6" height="10" rx="2" fill="#8A5A2B" stroke="#1D2B53" stroke-width="2"/><path d="M20 4 L32 26 H8 Z" fill="#1F9E72" stroke="#1D2B53" stroke-width="2.2" stroke-linejoin="round"/></svg>',
+  rock:'<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 31 L10 17 L21 9 L33 16 L35 31 Z" fill="#AEB8C9" stroke="#1D2B53" stroke-width="2.2" stroke-linejoin="round"/><path d="M14 19 L20 15 M24 14 L29 18" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+  water:'<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 18 q4 -4 8 0 t8 0 t8 0 t6 0 M6 27 q4 -4 8 0 t8 0 t8 0 t6 0" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>',
+  trap:'<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="27" width="30" height="7" rx="2" fill="#7D6B5A" stroke="#1D2B53" stroke-width="2"/><path d="M7 27 L11 13 L15 27 Z M16 27 L20 10 L24 27 Z M25 27 L29 13 L33 27 Z" fill="#E9ECF2" stroke="#1D2B53" stroke-width="2" stroke-linejoin="round"/></svg>',
+  gem:'<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M10 8h20l6 9-16 17L4 17z" fill="#62B5F7" stroke="#1D2B53" stroke-width="2.2" stroke-linejoin="round"/><path d="M4 17h32M14 8l-2 9 8 17M26 8l2 9-8 17" stroke="#1D2B53" stroke-width="1.4" fill="none"/></svg>',
+  flag:'<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M11 35V6" stroke="#1D2B53" stroke-width="2.6" stroke-linecap="round"/><path d="M11 6h18l-4 6 4 6H11z" fill="#FF6B57" stroke="#1D2B53" stroke-width="2.2" stroke-linejoin="round"/></svg>',
+  bot:'<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="8" y="11" width="24" height="19" rx="6" fill="#2F7DE1" stroke="#1D2B53" stroke-width="2.2"/><rect x="12" y="15" width="16" height="9" rx="4" fill="#fff" stroke="#1D2B53" stroke-width="1.6"/><circle cx="17" cy="19.5" r="2.2" fill="#1D2B53"/><circle cx="23" cy="19.5" r="2.2" fill="#1D2B53"/><path d="M20 11V6" stroke="#1D2B53" stroke-width="2.2"/><circle cx="20" cy="5" r="2.4" fill="#FFC93C" stroke="#1D2B53" stroke-width="1.6"/><path d="M13 30v4M27 30v4" stroke="#1D2B53" stroke-width="2.6" stroke-linecap="round"/></svg>'
+};
+const ARROW = {
+  U:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>',
+  D:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>',
+  L:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
+  R:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
+};
+const DIRS = { U:[-1,0], D:[1,0], L:[0,-1], R:[0,1] };
+const NAME = { U:'Lên', D:'Xuống', L:'Trái', R:'Phải' };
+const BLOCK_NAME = { tree:'cây', pine:'cây thông', rock:'tảng đá', water:'hồ nước' };
+const LEVELS = [
+  { name:'Dễ',  desc:'Bản đồ 5×5', n:5, blocks:[4,6], traps:0, gems:0, minLen:4,  maxLen:8,  repeat:false },
+  { name:'Vừa', desc:'Bản đồ 7×7', n:7, blocks:[9,12], traps:3, gems:2, minLen:7,  maxLen:18, repeat:false },
+  { name:'Khó', desc:'Bản đồ 9×9', n:9, blocks:[16,20], traps:6, gems:3, minLen:10, maxLen:28, repeat:true }
+];
+
+/* ---------- puzzle making and solving ---------- */
+const rnd = n => Math.floor(Math.random() * n);
+const key = (r, c) => r * 100 + c;
+function bfs(P, from, avoidTraps = true) {
+  const n = P.n, dist = new Map([[key(...from), 0]]), prev = new Map(), qu = [from];
+  while (qu.length) {
+    const [r, c] = qu.shift();
+    for (const d of 'URDL') {
+      const [dr, dc] = DIRS[d], nr = r + dr, nc = c + dc;
+      if (nr < 0 || nc < 0 || nr >= n || nc >= n) continue;
+      const t = P.grid[nr][nc];
+      if (t === 'tree' || t === 'pine' || t === 'rock' || t === 'water' || (avoidTraps && t === 'trap')) continue;
+      const k = key(nr, nc); if (dist.has(k)) continue;
+      dist.set(k, dist.get(key(r, c)) + 1); prev.set(k, [r, c, d]); qu.push([nr, nc]);
+    }
+  }
+  return { dist, prev };
+}
+function pathDirs(prev, from, to) {
+  const out = []; let cur = to;
+  while (key(...cur) !== key(...from)) { const p = prev.get(key(...cur)); out.unshift(p[2]); cur = [p[0], p[1]]; }
+  return out;
+}
+function permutations(a) { if (a.length <= 1) return [a]; return a.flatMap((x, i) => permutations([...a.slice(0, i), ...a.slice(i + 1)]).map(p => [x, ...p])); }
+function cost(dirs, repeat) {
+  if (!repeat) return dirs.length;
+  let c = 0, i = 0;
+  while (i < dirs.length) { let j = i; while (j < dirs.length && dirs[j] === dirs[i]) j++; c += Math.ceil((j - i) / 3); i = j; }
+  return c;
+}
+function solve(P) {
+  let best = null;
+  for (const order of permutations(P.gems.map(g => g))) {
+    let cur = P.start, dirs = [], ok = true;
+    for (const tgt of [...order, P.goal]) {
+      const { prev } = bfs(P, cur);
+      if (!prev.has(key(...tgt)) && key(...tgt) !== key(...cur)) { ok = false; break; }
+      dirs = dirs.concat(pathDirs(prev, cur, tgt)); cur = tgt;
+    }
+    if (!ok) continue;
+    const cst = cost(dirs, P.repeat);
+    if (!best || cst < best.cost) best = { cost: cst, dirs };
+  }
+  return best;
+}
+function make(lv) {
+  const L = LEVELS[lv];
+  for (let tries = 0; tries < 500; tries++) {
+    const n = L.n, grid = Array.from({ length: n }, () => Array(n).fill(''));
+    const free = []; for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) free.push([r, c]);
+    free.sort(() => Math.random() - .5);
+    const take = () => free.pop();
+    const start = take(), goal = take();
+    const nb = L.blocks[0] + rnd(L.blocks[1] - L.blocks[0] + 1);
+    const kinds = ['tree', 'tree', 'pine', 'rock', 'rock', 'water'];
+    for (let i = 0; i < nb; i++) { const [r, c] = take(); grid[r][c] = kinds[rnd(kinds.length)]; }
+    for (let i = 0; i < L.traps; i++) { const [r, c] = take(); grid[r][c] = 'trap'; }
+    const gems = []; for (let i = 0; i < L.gems; i++) gems.push(take());
+    const P = { n, grid, start, goal, gems, repeat: L.repeat };
+    const { dist } = bfs(P, start);
+    if (!dist.has(key(...goal)) || gems.some(g => !dist.has(key(...g)))) continue;
+    if (dist.get(key(...goal)) < L.minLen) continue;
+    const sol = solve(P); if (!sol) continue;
+    if (lv > 0 && sol.dirs.length < L.minLen + 2) continue;
+    if (sol.dirs.length > L.maxLen) continue;
+    P.best = sol.cost; P.sol = sol.dirs;
+    return P;
+  }
+  throw new Error('không tạo được bản đồ');
+}
+
+/* ---------- one round ---------- */
+let G = null;   // live round
+function mount(ctx) {
+  const P = ctx.puzzle, n = P.n, L = LEVELS[ctx.level];
+  const prog = (ctx.state && ctx.state.prog) ? ctx.state.prog.slice() : [];
+  G = { ctx, P, prog, running: 0, step: null, ghost: [] };
+  const map = document.createElement('div'); map.className = 'map';
+  const cells = [];
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+    const t = P.grid[r][c];
+    const cell = document.createElement('div');
+    cell.className = 'cell' + (t === 'trap' ? ' trap' : t === 'water' ? ' water' : '');
+    cell.style.cssText = `left:${c * 100 / n}%;top:${r * 100 / n}%;width:${100 / n}%;height:${100 / n}%`;
+    cell.innerHTML = `<div>${t ? SV[t] : ''}</div>`;
+    map.appendChild(cell); cells.push(cell);
+  }
+  const at = (r, c) => cells[r * n + c];
+  at(...P.goal).classList.add('goal'); at(...P.goal).firstChild.innerHTML = SV.flag;
+  at(...P.start).classList.add('start');
+  P.gems.forEach(g => { at(...g).firstChild.innerHTML = SV.gem; at(...g).dataset.gem = 1; });
+  const bot = document.createElement('div'); bot.className = 'bot';
+  bot.style.width = bot.style.height = (100 / n) + '%';
+  bot.innerHTML = `<div>${SV.bot}</div>`;
+  map.appendChild(bot);
+  ctx.play.appendChild(map);
+  G.at = at; G.bot = bot; G.cells = cells;
+  place(P.start);
+
+  const gemsTxt = P.gems.length ? `, nhặt đủ <b>${P.gems.length} kim cương</b>` : '';
+  ctx.mission(`Xếp các lệnh mũi tên cho robot <b>Bin</b> đi tới lá cờ${gemsTxt}. Đường tốt nhất cần <b>${P.best} lệnh</b>.`
+    + (P.repeat ? ' Dùng <b>×2</b>, <b>×3</b> để lặp lệnh vừa chọn.' : '')
+    + `<div class="legend"><span>${SV.tree}${SV.rock}${SV.water.replace('stroke="#fff"','stroke="#62B5F7"')} Không đi qua</span>${L.traps ? `<span>${SV.trap} Bẫy: đi vào là ngã!</span>` : ''}</div>`);
+  G.tagLen = ctx.tag(`Lệnh: <b id="rbLen">0</b>/${P.best}`);
+
+  const box = document.createElement('div'); box.className = 'prog';
+  box.innerHTML = `<div class="lab"><span>DÃY LỆNH CỦA EM</span><span>chạm một ô để xoá</span></div><div class="slots" id="rbSlots"></div>`;
+  ctx.controls.appendChild(box);
+  const keys = document.createElement('div'); keys.className = 'keys';
+  keys.style.gridTemplateColumns = `repeat(${P.repeat ? 6 : 4},minmax(0,1fr))`;
+  const btn = (html, cls, fn, label) => { const b = document.createElement('button'); b.className = 'key ' + (cls || ''); b.innerHTML = html; if (label) b.setAttribute('aria-label', label); b.onclick = fn; keys.appendChild(b); return b; };
+  for (const d of 'ULDR'.split('')) btn(ARROW[d], '', () => add(d), NAME[d]);
+  if (P.repeat) { btn('×2', 'fn', () => rep(2), 'Lặp 2 lần'); btn('×3', 'fn', () => rep(3), 'Lặp 3 lần'); }
+  const span = P.repeat ? 2 : 1;
+  const bDel = btn('Xoá', 'fn', del); bDel.style.gridColumn = `span ${span}`;
+  const bStep = btn('Từng bước', 'fn', stepOnce); bStep.style.gridColumn = `span ${span}`;
+  const bRun = btn('Chạy ▶', 'go', runAll); bRun.style.gridColumn = `span ${P.repeat ? 2 : 2}`;
+  ctx.controls.appendChild(keys);
+  drawProg();
+  if (ctx.round === 0 && !prog.length) ctx.say('Bấm mũi tên để xếp lệnh, rồi bấm Chạy nhé!');
+}
+function place(p) { const n = G.P.n; G.bot.style.left = (p[1] * 100 / n) + '%'; G.bot.style.top = (p[0] * 100 / n) + '%'; G.pos = p.slice(); }
+function drawProg(now = -1) {
+  const el = document.getElementById('rbSlots'); if (!el) return;
+  el.innerHTML = '';
+  G.prog.forEach((cmd, i) => {
+    const s = document.createElement('button'); s.className = 'slot' + (i === now ? ' now' : '');
+    s.innerHTML = ARROW[cmd.d] + (cmd.k > 1 ? `<b>×${cmd.k}</b>` : '');
+    s.setAttribute('aria-label', `Lệnh ${i + 1}: ${NAME[cmd.d]}${cmd.k > 1 ? ' ' + cmd.k + ' lần' : ''} (chạm để xoá)`);
+    s.onclick = () => { if (G.running) return; G.prog.splice(i, 1); edited(); };
+    el.appendChild(s);
+  });
+  if (!G.prog.length) { const e = document.createElement('div'); e.className = 'slot empty'; el.appendChild(e); }
+  const len = document.getElementById('rbLen'); if (len) len.textContent = G.prog.length;
+  G.ctx.fit();
+}
+function edited() { G.step = null; resetBot(); G.ctx.sfx.tap(); drawProg(); G.ctx.save({ prog: G.prog }); }
+function add(d) { if (G.running) return; if (G.prog.length >= 30) { G.ctx.say('Dãy lệnh dài quá rồi!', 'oops'); return; } G.prog.push({ d, k: 1 }); edited(); }
+function rep(k) {
+  if (G.running) return;
+  const last = G.prog[G.prog.length - 1];
+  if (!last) { G.ctx.say('Chọn một mũi tên trước, rồi mới bấm ×' + k + ' nhé.', 'oops'); return; }
+  last.k = k; edited();
+}
+function del() { if (G.running || !G.prog.length) return; G.prog.pop(); edited(); }
+function resetBot() {
+  G.bot.classList.remove('bump', 'fall'); place(G.P.start);
+  G.cells.forEach(c => c.classList.remove('trail'));
+  G.P.gems.forEach(g => { G.at(...g).firstChild.innerHTML = SV.gem; });
+  G.got = 0;
+}
+function moves() { const out = []; G.prog.forEach((cmd, i) => { for (let j = 0; j < cmd.k; j++) out.push({ d: cmd.d, i }); }); return out; }
+/* one move; returns 'ok' | 'win' | 'fail' */
+function doMove(m, idx) {
+  const P = G.P, n = P.n, [dr, dc] = DIRS[m.d], nr = G.pos[0] + dr, nc = G.pos[1] + dc;
+  drawProg(m.i);
+  if (nr < 0 || nc < 0 || nr >= n || nc >= n) { bump(); G.ctx.say('Ối! Bin đi ra ngoài bản đồ rồi.', 'oops'); return 'fail'; }
+  const t = P.grid[nr][nc];
+  if (BLOCK_NAME[t]) { bump(); G.ctx.say(`Ối! Bin đụng phải ${BLOCK_NAME[t]}. Sửa lệnh thứ ${m.i + 1} nhé.`, 'oops'); return 'fail'; }
+  G.at(...G.pos).classList.add('trail');
+  place([nr, nc]); G.ctx.sfx.move(idx);
+  if (t === 'trap') { setTimeout(() => G.bot.classList.add('fall'), 200); G.ctx.sfx.bad(); G.ctx.say(`Ôi không! Bin rơi vào bẫy gai ở lệnh thứ ${m.i + 1}.`, 'oops'); return 'fail'; }
+  const cell = G.at(nr, nc);
+  if (cell.dataset.gem && cell.firstChild.innerHTML) { cell.firstChild.innerHTML = ''; G.got++; G.ctx.sfx.good(); G.ctx.burst(cell, 14, .6); }
+  if (nr === P.goal[0] && nc === P.goal[1] && G.got === P.gems.length) return 'win';
+  return 'ok';
+}
+function bump() { G.ctx.sfx.bad(); G.bot.classList.remove('bump'); void G.bot.offsetWidth; G.bot.classList.add('bump'); }
+function winNow() {
+  const c = G.prog.length, b = G.P.best;
+  const stars = c <= b ? 3 : c <= b + 2 ? 2 : 1;
+  drawProg();
+  G.ctx.win(stars, stars === 3 ? `Đúng ${c} lệnh, ngắn nhất rồi!` : `Em dùng ${c} lệnh. Đường tốt nhất cần ${b} lệnh.`);
+}
+function endWithoutWin() {
+  const P = G.P;
+  if (G.got < P.gems.length) G.ctx.say(`Bin còn thiếu ${P.gems.length - G.got} kim cương. Thử lại nhé!`, 'oops');
+  else G.ctx.say('Bin chưa tới lá cờ. Thêm lệnh nữa nhé!', 'oops');
+}
+function runAll() {
+  if (G.running) return;
+  if (!G.prog.length) { G.ctx.say('Chưa có lệnh nào! Bấm mũi tên trước nhé.', 'oops'); return; }
+  G.step = null; resetBot();
+  const ms = moves(), token = ++G.running;
+  let i = 0;
+  const tick = () => {
+    if (G.running !== token) return;
+    if (i >= ms.length) { G.running = 0; drawProg(); endWithoutWin(); setTimeout(() => { if (!G.running) resetBot(); }, 1100); return; }
+    const res = doMove(ms[i], i); i++;
+    if (res === 'win') { G.running = 0; winNow(); return; }
+    if (res === 'fail') { G.running = 0; setTimeout(() => { if (!G.running) { resetBot(); drawProg(); } }, 1000); return; }
+    setTimeout(tick, 260);
+  };
+  G.ctx.say('Bin xuất phát!');
+  setTimeout(tick, 150);
+}
+function stepOnce() {
+  if (G.running) return;
+  if (!G.prog.length) { G.ctx.say('Chưa có lệnh nào! Bấm mũi tên trước nhé.', 'oops'); return; }
+  if (!G.step) { resetBot(); G.step = { ms: moves(), i: 0 }; }
+  const st = G.step;
+  if (st.i >= st.ms.length) { endWithoutWin(); G.step = null; setTimeout(resetBot, 900); drawProg(); return; }
+  const res = doMove(st.ms[st.i], st.i); st.i++;
+  if (res === 'win') { G.step = null; winNow(); return; }
+  if (res === 'fail') { G.step = null; setTimeout(() => { resetBot(); drawProg(); }, 1000); }
+  else G.ctx.say(`Bước ${st.i}/${st.ms.length}. Bấm Từng bước để đi tiếp.`);
+}
+function hint(ctx) {
+  if (G.running) return false;
+  const P = G.P;
+  // show the first part of the best route on the map
+  G.cells.forEach(c => c.classList.remove('ghost'));
+  let cur = P.start.slice(); const show = Math.min(P.sol.length, Math.max(3, Math.ceil(P.sol.length / 3)));
+  for (let i = 0; i < show; i++) { const [dr, dc] = DIRS[P.sol[i]]; cur = [cur[0] + dr, cur[1] + dc]; G.at(...cur).classList.add('ghost'); }
+  ctx.say(`Jenny tô vàng ${show} ô đầu của đường tốt nhất. Em đi theo nhé!`, 'happy');
+  return true;
+}
+function layout() {
+  const el = document.getElementById('rbSlots'); if (!el || !G) return;
+  const W = el.clientWidth, N = Math.max(1, G.prog.length), gap = 4;
+  const short = innerHeight < 560 || innerWidth <= innerHeight;
+  let s = short ? 34 : 40;
+  for (; s > 16; s--) { const per = Math.max(1, Math.floor((W + gap) / (s + gap))); if (Math.ceil(N / per) <= (short ? 2 : 3)) break; }
+  el.style.setProperty('--sl', s + 'px');
+}
+function onKey(e) {
+  const map = { ArrowUp:'U', ArrowDown:'D', ArrowLeft:'L', ArrowRight:'R' };
+  if (map[e.key]) { add(map[e.key]); e.preventDefault(); }
+  else if (e.key === 'Backspace' || e.key === 'Delete') { del(); e.preventDefault(); }
+  else if (e.key === 'Enter') { runAll(); e.preventDefault(); }
+  else if (G.P.repeat && (e.key === '2' || e.key === '3')) { rep(+e.key); e.preventDefault(); }
+}
+
+Kit.run({
+  key: 'bb-robot',
+  title: 'Robot tìm đường',
+  intro: 'Giúp robot Bin vượt qua cây, đá, hồ nước và bẫy gai để tới lá cờ.',
+  rules: [
+    'Bấm các mũi tên để xếp <b>dãy lệnh</b>, rồi bấm <b>Chạy</b>.',
+    'Cây, đá, hồ nước chặn đường. <b>Bẫy gai</b>: đi vào là ngã!',
+    'Nhặt đủ <b>kim cương</b> rồi mới về cờ. Ít lệnh nhất được <b>3 sao</b>.',
+    'Bấm <b>Từng bước</b> để xem robot đi từng lệnh và tìm chỗ sai.'
+  ],
+  levels: LEVELS.map(l => ({ name: l.name, desc: l.desc })),
+  rounds: 10,
+  hello: 'Chào em! Xếp lệnh cho Bin tới lá cờ nhé.',
+  make: (lv) => make(lv),
+  mount, hint, onKey, layout
+});
+})();
+</script>
+</body>
+</html>

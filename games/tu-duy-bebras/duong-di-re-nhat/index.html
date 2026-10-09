@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Đường đi rẻ nhất</title>
+<link rel="icon" href="../../../assets/jenny-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<link rel="stylesheet" href="../_kit/kit.css">
+<style>
+/* map: one SVG that fills the play area; drawn in real pixels so text keeps its size */
+.ddmap{width:100cqw;height:100cqh;display:block;user-select:none;-webkit-user-select:none}
+.ddmap text{font-family:var(--display);font-weight:800;pointer-events:none}
+.ddmap .hit{fill:transparent;cursor:pointer}
+.ddmap .place:hover .glow{fill-opacity:.75}
+.ddmap .coin,.ddmap .lbl,.ddmap .deco,.ddmap #ddBus,.ddmap .bridge,.ddmap .river,.ddmap .road{pointer-events:none}
+.ddmap .hintring{animation:ddpulse 1s ease-in-out infinite}
+@keyframes ddpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.25}}
+.ddmap .place.bump{animation:shake .4s}
+/* trip box */
+.trip{background:var(--paper);border:3px solid var(--ink);border-radius:18px;box-shadow:0 5px 0 var(--ink);padding:8px 12px;display:flex;flex-direction:column;gap:6px}
+.wallet{display:flex;align-items:center;gap:7px;font-weight:900;font-size:16px;line-height:1.1}
+.wallet svg{width:24px;height:24px;flex:none}
+.wallet b{font-family:var(--display);font-size:24px;line-height:1}
+.wallet .lab{font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--ink-soft);margin-left:auto}
+.chips{display:flex;gap:3px;flex-wrap:nowrap;overflow:hidden;align-items:center;min-height:24px}
+.chip{flex:none;font-size:12.5px;font-weight:900;border:2px solid var(--ink);border-radius:999px;padding:1px 8px;background:var(--sel-soft);white-space:nowrap;line-height:1.35}
+.chip.home{background:#FFE1DC}
+.chip.goal{background:var(--mint-soft)}
+.chip.more{background:#fff;border-style:dashed}
+.chips i{flex:none;font-style:normal;font-weight:900;color:var(--ink-soft);font-size:12px}
+@media (max-height:520px) and (min-aspect-ratio:1/1){.trip{padding:5px 10px;gap:4px}.wallet b{font-size:20px}}
+@media (max-aspect-ratio:1/1){.trip{flex-direction:row;align-items:center;gap:8px;padding:6px 10px;border-radius:14px;box-shadow:0 4px 0 var(--ink)}
+  .wallet{flex:none;font-size:14px}.wallet b{font-size:20px}.wallet .lab{display:none}.chips{flex:1 1 auto;min-width:0}}
+</style>
+</head>
+<body>
+<script src="../_kit/kit.js"></script>
+<script>
+(() => {
+'use strict';
+const INK = '#1D2B53';
+/* ---------- places: name + picture (drawn in a 40x40 box around 0,0) ---------- */
+const WIN = c => `fill="${c || '#9FD3F5'}"`;
+const PLACES = {
+  nha: { name: 'Nhà', svg:
+    `<rect x="8" y="-16" width="5" height="10" fill="#B3261E"/><path d="M-13 -2V16H13V-2" fill="#FFF7E6"/>
+     <path d="M-17 0L0-15L17 0Z" fill="#FF6B57"/><rect x="-4" y="6" width="8" height="10" rx="1.5" fill="#B87333"/>
+     <rect x="-10.5" y="2" width="5" height="5" ${WIN()}/><rect x="5.5" y="2" width="5" height="5" ${WIN()}/>` },
+  truong: { name: 'Trường', svg:
+    `<path d="M0-13V-26" fill="none"/><path d="M0-26h10l-3 3.2 3 3.2H0z" fill="#FF6B57"/>
+     <rect x="-17" y="-3" width="34" height="19" fill="#FFF7E6"/><path d="M-20-2L0-14L20-2Z" fill="#2DBE8C"/>
+     <circle cx="0" cy="-6" r="2.6" fill="#FFC93C" stroke-width="1.5"/>
+     <rect x="-14" y="1" width="5" height="5" ${WIN()}/><rect x="9" y="1" width="5" height="5" ${WIN()}/>
+     <rect x="-14" y="9" width="5" height="4" ${WIN()}/><rect x="9" y="9" width="5" height="4" ${WIN()}/>
+     <rect x="-4" y="6" width="8" height="10" rx="1.5" fill="#B87333"/>` },
+  cho: { name: 'Chợ', svg:
+    `<rect x="-15" y="-2" width="30" height="18" fill="#FFF7E6"/><rect x="-17" y="-16" width="34" height="4" rx="1" fill="#B87333"/>
+     <path d="M-17-12h6.8l-1.2 10h-5.6z M-3.4-12h6.8l.4 10h-7.6z M10.2-12h6.8l-2 10h-6z" fill="#FF6B57" stroke="none"/>
+     <path d="M-17-12H17L15-2H-15Z" fill="none"/>
+     <path d="M-15-2a3 3 0 0 0 6 0a3 3 0 0 0 6 0a3 3 0 0 0 6 0a3 3 0 0 0 6 0a3 3 0 0 0 6 0" fill="#fff" stroke-width="1.6"/>
+     <rect x="-15" y="8" width="30" height="3.5" fill="#B87333"/>
+     <circle cx="-8" cy="5.6" r="2.6" fill="#FF6B57" stroke-width="1.4"/><circle cx="-1.5" cy="5.6" r="2.6" fill="#FFC93C" stroke-width="1.4"/><circle cx="5" cy="5.6" r="2.6" fill="#2DBE8C" stroke-width="1.4"/><circle cx="11" cy="5.6" r="2.2" fill="#8E6BD8" stroke-width="1.4"/>` },
+  thuvien: { name: 'Thư viện', svg:
+    `<rect x="-16" y="-4" width="32" height="17" fill="#EFE8FF"/>
+     <rect x="-14" y="-2" width="4.5" height="14" fill="#fff" stroke-width="1.6"/><rect x="-6.5" y="-2" width="4.5" height="14" fill="#fff" stroke-width="1.6"/>
+     <rect x="2" y="-2" width="4.5" height="14" fill="#fff" stroke-width="1.6"/><rect x="9.5" y="-2" width="4.5" height="14" fill="#fff" stroke-width="1.6"/>
+     <path d="M-19-3L0-16L19-3Z" fill="#8E6BD8"/><rect x="-19" y="12" width="38" height="4.5" rx="1" fill="#D9CCF7"/>
+     <path d="M-4-7.5h8M-4-7.5v-3h3.5q.5 1 .5 3M4-7.5v-3h-3.5" fill="#fff" stroke-width="1.3"/>` },
+  buudien: { name: 'Bưu điện', svg:
+    `<rect x="-14" y="-3" width="28" height="19" fill="#FFF7E6"/><path d="M-17-2L-12-14H12L17-2Z" fill="#2F7DE1"/>
+     <rect x="-8" y="1" width="16" height="10" rx="1" fill="#fff"/><path d="M-8 1L0 7L8 1" fill="none" stroke-width="1.6"/>
+     <rect x="-12.5" y="12" width="25" height="4" fill="#CFEAFB" stroke-width="1.4"/>` },
+  congvien: { name: 'Công viên', svg:
+    `<ellipse cx="0" cy="13" rx="19" ry="5" fill="#7CCB5B"/><rect x="-10" y="-2" width="5" height="15" rx="1.5" fill="#8A5A2B"/>
+     <circle cx="-7.5" cy="-7" r="10.5" fill="#2DBE8C"/><circle cx="-11" cy="-10" r="3" fill="#8FE6C2" stroke="none"/>
+     <rect x="3" y="-1" width="14" height="3" rx="1" fill="#B87333" stroke-width="1.6"/><rect x="3" y="5" width="14" height="3" rx="1" fill="#B87333" stroke-width="1.6"/>
+     <path d="M5 8v6M15 8v6" fill="none"/><circle cx="14" cy="-8" r="2.6" fill="#FF9EC4" stroke-width="1.4"/><circle cx="8" cy="-12" r="2.2" fill="#FFC93C" stroke-width="1.4"/>` },
+  benhvien: { name: 'Bệnh viện', svg:
+    `<rect x="-15" y="-9" width="30" height="25" fill="#fff"/><rect x="-17" y="-14" width="34" height="5.5" rx="1.5" fill="#9FD3F5"/>
+     <path d="M-2.6-6.5h5.2v3.9h3.9v5.2h-3.9v3.9h-5.2v-3.9h-3.9v-5.2h3.9z" fill="#FF6B57" stroke-width="1.5"/>
+     <rect x="-4" y="9" width="8" height="7" fill="#9FD3F5"/><rect x="-12.5" y="-5" width="4" height="4" ${WIN()} stroke-width="1.4"/><rect x="8.5" y="-5" width="4" height="4" ${WIN()} stroke-width="1.4"/>
+     <rect x="-12.5" y="4" width="4" height="4" ${WIN()} stroke-width="1.4"/><rect x="8.5" y="4" width="4" height="4" ${WIN()} stroke-width="1.4"/>` },
+  sanbong: { name: 'Sân bóng', svg:
+    `<rect x="-19" y="-12" width="38" height="26" rx="3" fill="#3DBB6B"/>
+     <path d="M-12-12v26M-5-12v26M2-12v26M9-12v26M16-12v26" stroke="#4FCB7A" stroke-width="3.5"/>
+     <rect x="-16" y="-9" width="32" height="20" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M0-9v20" stroke="#fff" stroke-width="1.5"/>
+     <circle cx="0" cy="1" r="4" fill="none" stroke="#fff" stroke-width="1.5"/><rect x="-19" y="-3" width="4" height="8" fill="#fff" stroke-width="1.4"/><rect x="15" y="-3" width="4" height="8" fill="#fff" stroke-width="1.4"/>
+     <circle cx="7" cy="5" r="2.6" fill="#fff" stroke-width="1.4"/>
+     <rect x="-19" y="-12" width="38" height="26" rx="3" fill="none"/>` },
+  tiembanh: { name: 'Tiệm bánh', svg:
+    `<rect x="-14" y="-2" width="28" height="18" fill="#FFF7E6"/><path d="M-17-1L0-14L17-1Z" fill="#FF9EC4"/>
+     <rect x="-9" y="5" width="18" height="8" rx="1.5" fill="#FFC93C"/><path d="M-9 5q1.5 3 3 0t3 0t3 0t3 0t3 0t3 0" fill="#fff" stroke-width="1.5"/>
+     <circle cx="0" cy="2" r="2.2" fill="#FF6B57" stroke-width="1.4"/><path d="M-6-6h12" stroke="#FF6B57" stroke-width="2"/>` },
+  benxe: { name: 'Bến xe', svg:
+    `<rect x="-12" y="-6" width="24" height="12" fill="#CFEAFB"/><rect x="-15" y="-6" width="3.5" height="22" fill="#AEB8C9"/><rect x="11.5" y="-6" width="3.5" height="22" fill="#AEB8C9"/>
+     <path d="M-19-11H19L16-5H-16Z" fill="#FF8A3D"/><rect x="-10" y="9" width="20" height="3" rx="1" fill="#B87333" stroke-width="1.5"/>
+     <circle cx="0" cy="-16" r="5.5" fill="#fff" stroke-width="1.8"/><text x="0" y="-13.6" font-size="7.5" text-anchor="middle" fill="${INK}" stroke="none">B</text>` },
+  nhahat: { name: 'Nhà hát', svg:
+    `<path d="M0-14V-21" fill="none"/><circle cx="0" cy="-22" r="2" fill="#FF6B57" stroke-width="1.4"/>
+     <rect x="-15" y="-3" width="30" height="19" fill="#FFF7E6"/><path d="M-12-3A12 11 0 0 1 12-3Z" fill="#FFC93C"/>
+     <rect x="-8" y="2" width="16" height="14" fill="#3A2A6B"/><path d="M-8 2h7q-3 7-7 14zM8 2h-7q3 7 7 14z" fill="#FF6B57" stroke-width="1.4"/>
+     <path d="M-13 2v14M13 2v14" fill="none" stroke-width="1.6"/>` },
+  vuonthu: { name: 'Vườn thú', svg:
+    `<path d="M-19 8h38M-19 14h38M-16 6v10M-11 6v10M11 6v10M16 6v10" fill="none" stroke-width="1.8"/>
+     <rect x="-15" y="-10" width="5" height="26" fill="#B87333"/><rect x="10" y="-10" width="5" height="26" fill="#B87333"/>
+     <rect x="-18" y="-17" width="36" height="9" rx="3" fill="#2DBE8C"/>
+     <ellipse cx="0" cy="-11.5" rx="2.4" ry="2" fill="#fff" stroke="none"/><circle cx="-3.2" cy="-14.6" r="1.1" fill="#fff" stroke="none"/><circle cx="0" cy="-15.6" r="1.1" fill="#fff" stroke="none"/><circle cx="3.2" cy="-14.6" r="1.1" fill="#fff" stroke="none"/>
+     <path d="M-4 15v-11q0-4 4-6l1-3h2l-1 4q3 2 3 6v10z" fill="#FFC93C" stroke-width="1.6"/><circle cx="1.5" cy="6" r="1" fill="#B87333" stroke="none"/><circle cx="-1.5" cy="10" r="1.2" fill="#B87333" stroke="none"/>` }
+};
+const OTHERS = ['buudien', 'congvien', 'benhvien', 'sanbong', 'tiembanh', 'benxe', 'nhahat', 'vuonthu', 'cho', 'thuvien'];
+const BUS = `<rect x="-17" y="-11" width="34" height="20" rx="5" fill="#FFC93C"/>
+  <rect x="-13" y="-7" width="7" height="6" rx="1.5" fill="#CFEAFB" stroke-width="1.6"/><rect x="-4" y="-7" width="7" height="6" rx="1.5" fill="#CFEAFB" stroke-width="1.6"/>
+  <rect x="5" y="-7" width="5" height="6" rx="1.5" fill="#CFEAFB" stroke-width="1.6"/><path d="M12-7h3.5q1.5 0 1.5 2v4h-5z" fill="#CFEAFB" stroke-width="1.6"/>
+  <rect x="-16.6" y="2" width="33.2" height="2.6" fill="#FF6B57" stroke="none"/><circle cx="15" cy="5.5" r="1.4" fill="#fff" stroke="none"/>
+  <circle cx="-9" cy="9.5" r="4.2" fill="${INK}"/><circle cx="9" cy="9.5" r="4.2" fill="${INK}"/><circle cx="-9" cy="9.5" r="1.4" fill="#fff" stroke="none"/><circle cx="9" cy="9.5" r="1.4" fill="#fff" stroke="none"/>`;
+const COIN_UI = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#FFC93C" stroke="#1D2B53" stroke-width="2.2"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#E0A21C" stroke-width="1.6"/></svg>';
+
+const LEVELS = [
+  { name: 'Dễ',  desc: '5–6 điểm',               n: [5, 6],   pmax: 5, req: [],                 oneway: [0, 0], dmin: .27 },
+  { name: 'Vừa', desc: '8–9 điểm + ghé Chợ',      n: [8, 9],   pmax: 9, req: ['cho'],            oneway: [0, 0], dmin: .23 },
+  { name: 'Khó', desc: '11–12 điểm, cầu 1 chiều', n: [11, 12], pmax: 9, req: ['cho', 'thuvien'], oneway: [2, 3], dmin: .215 }
+];
+
+/* ---------- helpers ---------- */
+const rnd = n => Math.floor(Math.random() * n);
+const between = (a, b) => a + Math.random() * (b - a);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const r3 = v => Math.round(v * 1000) / 1000;
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function mulberry(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function segX(a, b, c, d) {  // proper intersection of segments ab and cd -> {t,u} or null
+  const rx = b[0] - a[0], ry = b[1] - a[1], sx = d[0] - c[0], sy = d[1] - c[1];
+  const den = rx * sy - ry * sx; if (Math.abs(den) < 1e-12) return null;
+  const qx = c[0] - a[0], qy = c[1] - a[1];
+  const t = (qx * sy - qy * sx) / den, u = (qx * ry - qy * rx) / den;
+  return (t >= 0 && t <= 1 && u >= 0 && u <= 1) ? { t, u, sin: Math.abs(den) / (Math.hypot(rx, ry) * Math.hypot(sx, sy)) } : null;
+}
+function segDist(p, a, b) {
+  const dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy;
+  const t = L ? clamp(((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L, 0, 1) : 0;
+  return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy);
+}
+const polyDist = (p, pl) => { let m = Infinity; for (let i = 1; i < pl.length; i++) m = Math.min(m, segDist(p, pl[i - 1], pl[i])); return m; };
+function riverHits(a, b, pl) { const out = []; for (let i = 1; i < pl.length; i++) { const x = segX(a, b, pl[i - 1], pl[i]); if (x && x.u < 1) out.push(x); } return out; }
+function perms(a) { if (a.length <= 1) return [a.slice()]; return a.flatMap((x, i) => perms([...a.slice(0, i), ...a.slice(i + 1)]).map(p => [x, ...p])); }
+
+/* ---------- graph solving ---------- */
+function adj(P) { const A = Array.from({ length: P.n }, () => []); P.edges.forEach(e => { A[e.a].push([e.b, e.c]); if (!e.one) A[e.b].push([e.a, e.c]); }); return A; }
+function dijkstra(P, src, w = c => c) {
+  const A = adj(P), d = Array(P.n).fill(Infinity), pv = Array(P.n).fill(-1), done = Array(P.n).fill(false); d[src] = 0;
+  for (;;) {
+    let u = -1; for (let i = 0; i < P.n; i++) if (!done[i] && d[i] < Infinity && (u < 0 || d[i] < d[u])) u = i;
+    if (u < 0) break; done[u] = true;
+    for (const [v, c] of A[u]) { const nd = d[u] + w(c); if (nd < d[v]) { d[v] = nd; pv[v] = u; } }
+  }
+  return { d, pv };
+}
+function pathTo(pv, src, t) { const out = [t]; while (out[0] !== src) { const p = pv[out[0]]; if (p < 0) return null; out.unshift(p); } return out; }
+function edgeFor(P, u, v) { return P.edges.find(e => (e.a === u && e.b === v) || (!e.one && e.a === v && e.b === u)); }
+function costOf(P, path) { let s = 0; for (let i = 1; i < path.length; i++) s += edgeFor(P, path[i - 1], path[i]).c; return s; }
+/* cheapest walk from `from` that visits every stop in `req` and ends at the goal */
+function solve(P, from, req, w) {
+  let best = null;
+  for (const order of perms(req)) {
+    let cur = from, path = [from], tot = 0, ok = true;
+    for (const t of [...order, P.goal]) {
+      const { d, pv } = dijkstra(P, cur, w);
+      if (d[t] === Infinity) { ok = false; break; }
+      tot += d[t]; path = path.concat(pathTo(pv, cur, t).slice(1)); cur = t;
+    }
+    if (ok && (!best || tot < best.w)) best = { w: tot, path };
+  }
+  if (best) best.cost = costOf(P, best.path);
+  return best;
+}
+function reachAll(P, src, rev) {
+  const seen = new Set([src]), st = [src];
+  while (st.length) { const u = st.pop(); for (const e of P.edges) {
+    const fw = [[e.a, e.b]]; if (!e.one) fw.push([e.b, e.a]);
+    for (const [x, y] of fw) { const [f, t] = rev ? [y, x] : [x, y]; if (f === u && !seen.has(t)) { seen.add(t); st.push(t); } } } }
+  return seen.size === P.n;
+}
+
+/* ---------- making a map ---------- */
+function makeRiver() {
+  const cx = between(.44, .56), a1 = between(.05, .09), f1 = between(.55, 1.1), p1 = Math.random() * 6.28,
+    a2 = between(.015, .03), f2 = between(1.6, 2.4), p2 = Math.random() * 6.28, tilt = between(-.12, .12);
+  const pl = [];
+  for (let i = 0; i <= 44; i++) { const y = -.12 + 1.24 * i / 44;
+    pl.push([r3(cx + tilt * (y - .5) + a1 * Math.sin(6.283 * f1 * y + p1) + a2 * Math.sin(6.283 * f2 * y + p2)), r3(y)]); }
+  return pl;
+}
+function placePts(n, dmin, river) {
+  const pts = [];
+  const ok = p => polyDist(p, river) >= .105 && pts.every(q => Math.hypot(p[0] - q[0], (p[1] - q[1]) * .9) >= dmin);
+  const put = (x0, x1, y0, y1, tries) => { for (let t = 0; t < tries; t++) { const p = [r3(between(x0, x1)), r3(between(y0, y1))]; if (ok(p)) { pts.push(p); return true; } } return false; };
+  if (!put(0, .1, .18, .82, 200) || !put(.9, 1, .18, .82, 200)) return null;
+  for (let i = 2; i < n; i++) if (!put(0, 1, 0, 1, 1500)) return null;
+  return pts;
+}
+function buildEdges(pts, river) {
+  const n = pts.length, cand = new Map();
+  const good = (i, j) => {
+    const a = pts[i], b = pts[j];
+    for (let k = 0; k < n; k++) if (k !== i && k !== j && segDist(pts[k], a, b) < .075) return false;
+    const h = riverHits(a, b, river);
+    return h.length <= 1 && h.every(x => x.sin > .45);
+  };
+  for (let i = 0; i < n; i++) {
+    const near = [...Array(n).keys()].filter(j => j !== i).sort((x, y) => Math.hypot(pts[i][0] - pts[x][0], pts[i][1] - pts[x][1]) - Math.hypot(pts[i][0] - pts[y][0], pts[i][1] - pts[y][1]));
+    const k = 2 + rnd(2);
+    near.slice(0, k + 1).forEach((j, idx) => { if (idx < k || Math.random() < .35) { const key = Math.min(i, j) + '-' + Math.max(i, j); if (!cand.has(key)) cand.set(key, [Math.min(i, j), Math.max(i, j)]); } });
+  }
+  const len = ([i, j]) => Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]);
+  const edges = [];
+  const crosses = (i, j) => edges.some(([a, b]) => a !== i && a !== j && b !== i && b !== j && segX(pts[i], pts[j], pts[a], pts[b]));
+  for (const [i, j] of [...cand.values()].sort((x, y) => len(x) - len(y))) if (good(i, j) && !crosses(i, j)) edges.push([i, j]);
+  // join the pieces if the map is split
+  const comp = () => { const c = [...Array(n).keys()]; const f = x => c[x] === x ? x : (c[x] = f(c[x])); edges.forEach(([a, b]) => { c[f(a)] = f(b); }); return [...Array(n).keys()].map(f); };
+  for (let guard = 0; guard < n; guard++) {
+    const c = comp(); if (new Set(c).size === 1) return edges;
+    let best = null;
+    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (c[i] !== c[j] && good(i, j) && !crosses(i, j) && (!best || len([i, j]) < len(best))) best = [i, j];
+    if (!best || len(best) > .55) return null;
+    edges.push(best);
+  }
+  return null;
+}
+function make(lv) {
+  const L = LEVELS[lv];
+  let fallback = null;
+  for (let attempt = 0; attempt < 400; attempt++) {
+    const n = L.n[0] + rnd(L.n[1] - L.n[0] + 1), river = makeRiver();
+    const pts = placePts(n, L.dmin, river); if (!pts) continue;
+    const pairs = buildEdges(pts, river); if (!pairs) continue;
+    const pool = shuffle(OTHERS.filter(k => !L.req.includes(k)));
+    const names = ['nha', 'truong', ...L.req, ...pool].slice(0, n);
+    const P = { n, pts, river, names, start: 0, goal: 1, req: L.req.map((_, i) => 2 + i), seed: rnd(1e9),
+      edges: pairs.map(([a, b]) => ({ a, b, c: 1 + rnd(L.pmax) })) };
+    // one-way roads: one goes against the easy best route, the others at random (bridges first)
+    const k = L.oneway[0] + rnd(L.oneway[1] - L.oneway[0] + 1);
+    if (k) {
+      const plain = solve(P, 0, P.req); if (!plain) continue;
+      let ok = false;
+      for (let t = 0; t < 30 && !ok; t++) {
+        P.edges.forEach(e => { delete e.one; });
+        const i = 1 + rnd(plain.path.length - 1), u = plain.path[i - 1], v = plain.path[i];
+        const e0 = P.edges.find(e => (e.a === u && e.b === v) || (e.a === v && e.b === u));
+        Object.assign(e0, { a: v, b: u, one: 1 });
+        const rest = shuffle(P.edges.filter(e => !e.one)).sort((x, y) => riverHits(pts[y.a], pts[y.b], river).length - riverHits(pts[x.a], pts[x.b], river).length);
+        rest.slice(0, k - 1).forEach(e => { if (Math.random() < .5) [e.a, e.b] = [e.b, e.a]; e.one = 1; });
+        ok = reachAll(P, 0, false) && reachAll(P, 0, true);
+      }
+      if (!ok) continue;
+    }
+    const best = solve(P, 0, P.req); if (!best) continue;
+    const fewest = solve(P, 0, P.req, c => 1000 + c);
+    P.best = best.cost; P.route = best.path;
+    // interesting: the route with fewest roads is not the cheapest one; stops really need a detour
+    let interesting = fewest.cost > best.cost && best.path.length >= 3;
+    if (P.req.length) { const direct = solve(P, 0, []); if (P.req.every(r => direct.path.includes(r))) interesting = false; }
+    if (interesting) return P;
+    if (!fallback) fallback = P;
+  }
+  if (fallback) return fallback;
+  throw new Error('không tạo được bản đồ');
+}
+
+/* ---------- one round ---------- */
+let G = null;
+function mount(ctx) {
+  const P = ctx.puzzle;
+  const route = (ctx.state && Array.isArray(ctx.state.route) && ctx.state.route.length) ? ctx.state.route.slice() : [P.start];
+  G = { ctx, P, route, hintId: -1, anim: 0, face: 1, won: false, W: 0, H: 0 };
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'ddmap'); svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', 'Bản đồ làng');
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  ctx.play.appendChild(svg); G.svg = svg;
+
+  const reqTxt = P.req.map(r => `<b>${PLACES[P.names[r]].name}</b>`).join(' và ');
+  ctx.mission(`Lái xe buýt từ <b>Nhà</b> tới <b>Trường</b>`
+    + (P.req.length ? `, ghé ${reqTxt}` : '') + ', tốn <b>ít xu</b> nhất!'
+    + (P.edges.some(e => e.one) ? ' <b>Mũi tên</b>: đi 1 chiều.' : '')
+    + (ctx.level === 0 ? ` Đường rẻ nhất tốn <b>${P.best} xu</b>.` : ''));
+  if (ctx.level === 0) ctx.tag(`Rẻ nhất: <b>${P.best} xu</b>`);
+
+  const trip = document.createElement('div'); trip.className = 'trip';
+  trip.innerHTML = `<div class="wallet">${COIN_UI}<span>Đã tiêu: <b id="ddCost">0</b> xu</span><span class="lab">HÀNH TRÌNH</span></div><div class="chips" id="ddChips"></div>`;
+  ctx.controls.appendChild(trip);
+  const keys = document.createElement('div'); keys.className = 'keys'; keys.style.gridTemplateColumns = 'repeat(2,minmax(0,1fr))';
+  keys.innerHTML = '<button class="key fn" id="ddUndo">↶ Lùi 1 điểm</button><button class="key fn" id="ddReset">Đi lại</button>';
+  ctx.controls.appendChild(keys);
+  keys.querySelector('#ddUndo').onclick = undo;
+  keys.querySelector('#ddReset').onclick = restart;
+  render(true); updateTrip();
+  if (ctx.round === 0 && route.length === 1) ctx.say('Chạm vào một điểm có đường nối với Nhà để lái xe nhé!');
+}
+const cur = () => G.route[G.route.length - 1];
+const spent = () => costOf(G.P, G.route);
+const visited = () => new Set(G.route);
+
+function updateTrip() {
+  const c = document.getElementById('ddCost'); if (c) c.textContent = spent();
+  const box = document.getElementById('ddChips'); if (!box) return;
+  const P = G.P;
+  const chip = (id, i) => (i ? '<i>›</i>' : '') + `<span class="chip${id === P.start ? ' home' : id === P.goal ? ' goal' : ''}">${PLACES[P.names[id]].name}</span>`;
+  const R = G.route;
+  box.innerHTML = R.map(chip).join('');
+  // keep the newest stops when the line is too long
+  for (let k = 1; box.scrollWidth > box.clientWidth + 1 && k < R.length - 1; k++)
+    box.innerHTML = '<span class="chip more">…</span>' + R.slice(k).map((id, i) => chip(id, i + 1)).join('');
+}
+
+/* drawing: viewBox = real pixel size of the play area */
+function render(force) {
+  const svg = G.svg, rc = svg.getBoundingClientRect();
+  const W = Math.round(rc.width), H = Math.round(rc.height);
+  if (W < 60 || H < 60) return;
+  if (!force && W === G.W && H === G.H) return;
+  G.W = W; G.H = H;
+  const P = G.P, n = P.n, U = Math.min(W, H);
+  const s = clamp(U * (n <= 6 ? .16 : n <= 9 ? .132 : .112), 30, 62);
+  const fs = clamp(s * .34, 12, 17.5), cr = clamp(s * .3, 11, 17), rw = clamp(s * .25, 8, 15), rvw = clamp(U * .075, 16, 46);
+  const mx = s * .56 + 8, mt = s * .62 + 6, mb = s * .5 + fs * 1.25 + 8;
+  const X = p => [mx + p[0] * (W - 2 * mx), mt + p[1] * (H - mt - mb)];
+  const pos = P.pts.map(X), river = P.river.map(X);
+  G.pos = pos; G.s = s;
+  const rng = mulberry(P.seed);
+  const out = [];
+  const vis = visited(), here = cur();
+  const travelled = new Set(); for (let i = 1; i < G.route.length; i++) travelled.add(P.edges.indexOf(edgeFor(P, G.route[i - 1], G.route[i])));
+  const next = new Set(P.edges.flatMap(e => e.a === here ? [e.b] : (!e.one && e.b === here) ? [e.a] : []));
+
+  /* ground: two greens */
+  out.push(`<defs><clipPath id="ddClip"><rect x="1.5" y="1.5" width="${W - 3}" height="${H - 3}" rx="14"/></clipPath></defs><g clip-path="url(#ddClip)">`);
+  out.push(`<rect width="${W}" height="${H}" fill="#9BD176"/>`);
+  for (let i = 0; i < 7; i++) {
+    const fx = rng() * W, fy = rng() * H, fw = U * (.22 + rng() * .25), fh = U * (.12 + rng() * .14), ang = (rng() - .5) * 40;
+    out.push(`<g transform="translate(${fx.toFixed(1)},${fy.toFixed(1)}) rotate(${ang.toFixed(1)})"><rect x="${(-fw / 2).toFixed(1)}" y="${(-fh / 2).toFixed(1)}" width="${fw.toFixed(1)}" height="${fh.toFixed(1)}" rx="${(fh * .3).toFixed(1)}" fill="#B4E08F"/>`
+      + [1, 2, 3].map(k => `<path d="M${(-fw / 2 + 8).toFixed(1)} ${(-fh / 2 + k * fh / 4).toFixed(1)}H${(fw / 2 - 8).toFixed(1)}" stroke="#A3D47E" stroke-width="2" stroke-linecap="round"/>`).join('') + '</g>');
+  }
+  /* river */
+  const rd = 'M' + river.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L');
+  out.push(`<g class="river"><path d="${rd}" fill="none" stroke="${INK}" stroke-width="${rvw + 6}" stroke-linejoin="round" stroke-linecap="round"/>`
+    + `<path d="${rd}" fill="none" stroke="#62B5F7" stroke-width="${rvw}" stroke-linejoin="round" stroke-linecap="round"/>`
+    + `<path d="${rd}" fill="none" stroke="#8ECDF8" stroke-width="${rvw * .45}" stroke-linejoin="round" stroke-linecap="round"/>`);
+  // bridges (computed first so waves can avoid them)
+  const bridges = [];
+  P.edges.forEach((e, ei) => { const a = pos[e.a], b = pos[e.b];
+    for (let i = 1; i < river.length; i++) { const x = segX(a, b, river[i - 1], river[i]); if (x && x.u < 1) bridges.push({ ei, x: a[0] + x.t * (b[0] - a[0]), y: a[1] + x.t * (b[1] - a[1]), ang: Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI, L: rvw / Math.max(.4, x.sin) + 14 }); } });
+  let acc = 0, side = 1;
+  for (let i = 1; i < river.length; i++) {
+    const a = river[i - 1], b = river[i], L = Math.hypot(b[0] - a[0], b[1] - a[1]); acc += L;
+    if (acc < Math.max(38, rvw * 1.6)) continue; acc = 0; side = -side;
+    const ang = Math.atan2(b[1] - a[1], b[0] - a[0]), nx = -Math.sin(ang) * rvw * .2 * side, ny = Math.cos(ang) * rvw * .2 * side;
+    const wx = b[0] + nx, wy = b[1] + ny;
+    if (wx < 0 || wy < 0 || wx > W || wy > H || bridges.some(br => Math.hypot(br.x - wx, br.y - wy) < br.L * .7 + 8)) continue;
+    const ww = clamp(rvw * .3, 5, 10);
+    out.push(`<path d="M${-ww} 0q${ww / 2} ${-ww / 2} ${ww} 0t${ww} 0" transform="translate(${wx.toFixed(1)},${wy.toFixed(1)}) rotate(${(ang * 180 / Math.PI).toFixed(1)})" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>`);
+  }
+  out.push('</g>');
+
+  /* labels and coins: place them where they do not cover other things */
+  const boxes = [];   // {x0,y0,x1,y1}
+  const iconBox = i => ({ x0: pos[i][0] - s * .52, y0: pos[i][1] - s * .55, x1: pos[i][0] + s * .52, y1: pos[i][1] + s * .5 });
+  const ov = (a, b) => Math.max(0, Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0)) * Math.max(0, Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0));
+  const icons = pos.map((_, i) => iconBox(i));
+  const segHits = (bx) => { let k = 0; P.edges.forEach(e => { const a = pos[e.a], b = pos[e.b]; for (let t = .1; t < .95; t += .1) { const x = a[0] + t * (b[0] - a[0]), y = a[1] + t * (b[1] - a[1]); if (x > bx.x0 - rw / 2 && x < bx.x1 + rw / 2 && y > bx.y0 - rw / 2 && y < bx.y1 + rw / 2) k++; } }); return k; };
+  const labels = [];
+  const placeLabel = (p, i) => {
+    const name = PLACES[P.names[i]].name, req = P.req.includes(i);
+    const lw = Math.max(name.length * fs * .56, req ? 9 * fs * .5 : 0) + 8, lh = fs * 1.15 + (req ? fs * .95 : 0);
+    const hs = s * .52, cands = [[0, hs + lh / 2 + 1], [0, -hs - lh / 2 - 3], [hs + lw / 2 + 2, 0], [-hs - lw / 2 - 2, 0],
+      [hs * .8 + lw / 2, hs + lh / 2 - 2], [-hs * .8 - lw / 2, hs + lh / 2 - 2], [hs * .8 + lw / 2, -hs - lh / 2], [-hs * .8 - lw / 2, -hs - lh / 2],
+      [0, hs + lh / 2 + cr * 1.6], [0, -hs - lh / 2 - cr * 1.6]];
+    let best = null;
+    cands.forEach(([dx, dy], ci) => {
+      const cx = p[0] + dx, cy = p[1] + dy, bx = { x0: cx - lw / 2, y0: cy - lh / 2, x1: cx + lw / 2, y1: cy + lh / 2 };
+      let sc = ci * 3 + (ci >= 4 ? 25 : 0) + (ci >= 8 ? 40 : 0);
+      icons.forEach((ib, j) => { sc += ov(bx, ib) * (j === i ? 2 : 5); });
+      boxes.forEach(ob => { sc += ov(bx, ob) * 10; });
+      sc += segHits(bx) * 40;
+      sc += (Math.max(0, 5 - bx.x0) + Math.max(0, bx.x1 - W + 5) + Math.max(0, 5 - bx.y0) + Math.max(0, bx.y1 - H + 5)) * 2000;
+      if (!best || sc < best.sc) best = { sc, cx, cy, bx };
+    });
+    return best;
+  };
+  pos.forEach((p, i) => { labels[i] = placeLabel(p, i); boxes.push(labels[i].bx); });
+  pos.forEach((p, i) => { const k = boxes.indexOf(labels[i].bx); boxes.splice(k, 1); labels[i] = placeLabel(p, i); boxes.push(labels[i].bx); });
+  const coins = P.edges.map((e, ei) => {
+    const a = pos[e.a], b = pos[e.b], L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    let best = null;
+    for (const t of [.5, .44, .56, .38, .62, .32, .68, .26, .74, .2, .8]) {
+      const x = a[0] + t * (b[0] - a[0]), y = a[1] + t * (b[1] - a[1]);
+      const bx = { x0: x - cr - 2, y0: y - cr - 2, x1: x + cr + 2, y1: y + cr + 2 };
+      let sc = Math.abs(t - .5) * 30;
+      icons.forEach(ib => { sc += ov(bx, ib) * 4; });
+      boxes.forEach(ob => { sc += ov(bx, ob) * 12; });
+      bridges.forEach(br => { if (Math.hypot(br.x - x, br.y - y) < br.L / 2 + cr) sc += 400; });
+      if (polyDist([x, y], river) < rvw / 2 + cr) sc += 150;
+      if (e.one && (t * L < s * .55 + cr * 3.3 || (1 - t) * L < s * .55 + cr * 3.3)) sc += 300;
+      if (!best || sc < best.sc) best = { sc, x, y, t, bx };
+    }
+    boxes.push(best.bx);
+    return best;
+  });
+
+  /* decoration: hills and trees in empty spots */
+  const decos = [], want = Math.round(W * H / 16000);
+  for (let t = 0; t < 260 && decos.length < want; t++) {
+    const kind = rng() < .22 ? 'hill' : rng() < .5 ? 'pine' : 'tree';
+    const r = kind === 'hill' ? s * (.7 + rng() * .3) : s * (.28 + rng() * .14);
+    const x = rng() * W, y = rng() * H;
+    const bx = { x0: x - r, y0: y - r, x1: x + r, y1: y + r * (kind === 'hill' ? .2 : 1) };
+    if (x < r * .3 || x > W - r * .3 || y < r || y > H) continue;
+    if (pos.some(p => Math.hypot(p[0] - x, p[1] - y) < s * .8 + r)) continue;
+    if (P.edges.some(e => segDist([x, y], pos[e.a], pos[e.b]) < rw + r * .9)) continue;
+    if (polyDist([x, y], river) < rvw / 2 + r + 3) continue;
+    if (boxes.some(b => ov(bx, b) > 0) || decos.some(d => Math.hypot(d.x - x, d.y - y) < d.r + r + 4)) continue;
+    decos.push({ kind, x, y, r });
+  }
+  decos.sort((a, b) => (a.kind === 'hill' ? 0 : 1) - (b.kind === 'hill' ? 0 : 1) || a.y - b.y);
+  out.push('<g class="deco">');
+  decos.forEach(d => {
+    const { x, y, r } = d;
+    if (d.kind === 'hill') out.push(`<path d="M${(x - r).toFixed(1)} ${y.toFixed(1)}Q${x.toFixed(1)} ${(y - r * 1.5).toFixed(1)} ${(x + r).toFixed(1)} ${y.toFixed(1)}Z" fill="#7FC25E" stroke="${INK}" stroke-width="2.2" stroke-linejoin="round"/><path d="M${(x - r * .45).toFixed(1)} ${(y - r * .38).toFixed(1)}Q${(x - r * .1).toFixed(1)} ${(y - r * .66).toFixed(1)} ${(x + r * .15).toFixed(1)} ${(y - r * .62).toFixed(1)}" fill="none" stroke="#B4E08F" stroke-width="3" stroke-linecap="round"/>`);
+    else if (d.kind === 'pine') out.push(`<g transform="translate(${x.toFixed(1)},${y.toFixed(1)}) scale(${(r / 20).toFixed(3)})" stroke="${INK}" stroke-width="2.2" stroke-linejoin="round"><rect x="-3" y="10" width="6" height="9" rx="2" fill="#8A5A2B"/><path d="M0-20L13 11H-13Z" fill="#1F9E72"/></g>`);
+    else out.push(`<g transform="translate(${x.toFixed(1)},${y.toFixed(1)}) scale(${(r / 20).toFixed(3)})" stroke="${INK}" stroke-width="2.2"><rect x="-3" y="6" width="6" height="13" rx="2" fill="#8A5A2B"/><circle cx="0" cy="-3" r="14" fill="#2DBE8C"/><circle cx="-5" cy="-8" r="4" fill="#8FE6C2" stroke="none"/></g>`);
+  });
+  out.push('</g>');
+
+  /* roads */
+  out.push('<g class="road">');
+  P.edges.forEach((e, ei) => { const a = pos[e.a], b = pos[e.b], d = `M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}`, tr = travelled.has(ei);
+    out.push(`<path d="${d}" stroke="${tr ? '#1F5FB8' : '#B98D4E'}" stroke-width="${rw + 5}" stroke-linecap="round"/>`
+      + `<path d="${d}" stroke="${tr ? '#4F9BF0' : '#E9C98F'}" stroke-width="${rw}" stroke-linecap="round"/>`
+      + `<path d="${d}" stroke="#fff" stroke-width="${clamp(rw * .16, 1.4, 2.4)}" stroke-dasharray="${(rw * .7).toFixed(1)} ${(rw * .7).toFixed(1)}" stroke-linecap="round" opacity=".9"/>`); });
+  out.push('</g>');
+  /* bridges */
+  bridges.forEach(br => { const L = br.L, w = rw + 9, tr = travelled.has(br.ei);
+    let planks = ''; for (let x = -L / 2 + 4; x < L / 2 - 2; x += 5) planks += `M${x.toFixed(1)} ${(-w / 2 + 2).toFixed(1)}v${(w - 4).toFixed(1)}`;
+    out.push(`<g class="bridge" transform="translate(${br.x.toFixed(1)},${br.y.toFixed(1)}) rotate(${br.ang.toFixed(1)})">`
+      + `<rect x="${(-L / 2).toFixed(1)}" y="${(-w / 2).toFixed(1)}" width="${L.toFixed(1)}" height="${w}" rx="3" fill="${tr ? '#7FB6F2' : '#C98A4B'}" stroke="${INK}" stroke-width="2.2"/>`
+      + `<path d="${planks}" stroke="${tr ? '#3C7DD0' : '#8F5A2A'}" stroke-width="1.4"/>`
+      + `<path d="M${(-L / 2 - 3).toFixed(1)} ${(-w / 2).toFixed(1)}H${(L / 2 + 3).toFixed(1)}M${(-L / 2 - 3).toFixed(1)} ${(w / 2).toFixed(1)}H${(L / 2 + 3).toFixed(1)}" stroke="${INK}" stroke-width="3.2" stroke-linecap="round"/></g>`); });
+  /* one-way arrows and coins */
+  P.edges.forEach((e, ei) => {
+    const a = pos[e.a], b = pos[e.b], c = coins[ei], ang = Math.atan2(b[1] - a[1], b[0] - a[0]), ux = Math.cos(ang), uy = Math.sin(ang);
+    if (e.one) { const q = rw * .8 + 2;
+      [-1, 1].forEach(sg => { const d = cr + q + 4, x = c.x + ux * d * sg, y = c.y + uy * d * sg;
+        out.push(`<path class="coin" d="M${-q} ${-q * .85}L${q} 0L${-q} ${q * .85}Z" transform="translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${(ang * 180 / Math.PI).toFixed(1)})" fill="#FF6B57" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>`); }); }
+    out.push(`<g class="coin" transform="translate(${c.x.toFixed(1)},${c.y.toFixed(1)})"><circle r="${cr}" fill="#FFC93C" stroke="${INK}" stroke-width="2.2"/><circle r="${(cr * .74).toFixed(1)}" fill="none" stroke="#E0A21C" stroke-width="1.5"/>`
+      + `<text y="${(cr * .06).toFixed(1)}" font-size="${(cr * 1.2).toFixed(1)}" text-anchor="middle" dominant-baseline="central" fill="${INK}">${e.c}</text></g>`);
+  });
+  /* places */
+  pos.forEach((p, i) => {
+    const key = P.names[i], req = P.req.includes(i);
+    let g = `<g class="place" data-id="${i}" role="button" aria-label="${PLACES[key].name}" transform="translate(${p[0].toFixed(1)},${p[1].toFixed(1)})">`;
+    g += `<ellipse cx="0" cy="${(s * .45).toFixed(1)}" rx="${(s * .5).toFixed(1)}" ry="${(s * .12).toFixed(1)}" fill="rgba(29,43,83,.22)"/>`;
+    if (next.has(i) && !G.won) g += `<circle class="glow" r="${(s * .64).toFixed(1)}" fill="#fff" fill-opacity=".5" stroke="#fff" stroke-width="2"/>`;
+    if (req) g += `<circle r="${(s * .7).toFixed(1)}" fill="none" stroke="${vis.has(i) ? '#138A63' : '#FF6B57'}" stroke-width="3" stroke-dasharray="7 5"/>`;
+    if (G.hintId === i) g += `<circle class="hintring" r="${(s * .78).toFixed(1)}" fill="none" stroke="#FFC93C" stroke-width="6"/><circle r="${(s * .78 + 3).toFixed(1)}" fill="none" stroke="${INK}" stroke-width="1.5"/>`;
+    g += `<g transform="scale(${(s / 40).toFixed(3)})" stroke="${INK}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">${PLACES[key].svg}</g>`;
+    g += `<circle class="hit" r="${(s * .66).toFixed(1)}"/></g>`;
+    out.push(g);
+  });
+  labels.forEach((l, i) => {
+    const req = P.req.includes(i), name = PLACES[P.names[i]].name, lh2 = fs * .95;
+    const y1 = req ? l.cy - lh2 / 2 : l.cy;
+    out.push(`<g class="lbl"><text x="${l.cx.toFixed(1)}" y="${y1.toFixed(1)}" font-size="${fs.toFixed(1)}" text-anchor="middle" dominant-baseline="central" fill="${INK}" stroke="#fff" stroke-width="${(fs * .3).toFixed(1)}" stroke-linejoin="round" paint-order="stroke">${name}</text>`
+      + (req ? `<text x="${l.cx.toFixed(1)}" y="${(y1 + fs * .5 + lh2 / 2 + 1).toFixed(1)}" font-size="${(fs * .78).toFixed(1)}" text-anchor="middle" dominant-baseline="central" fill="${vis.has(i) ? '#138A63' : '#E2412C'}" stroke="#fff" stroke-width="${(fs * .28).toFixed(1)}" stroke-linejoin="round" paint-order="stroke">${vis.has(i) ? '✓ đã ghé' : '★ phải ghé'}</text>` : '') + '</g>');
+  });
+  out.push(`<g id="ddBus"><g id="ddBusIn" stroke="${INK}" stroke-width="2" stroke-linejoin="round">${BUS}</g></g>`);
+  out.push(`</g><rect x="1.5" y="1.5" width="${W - 3}" height="${H - 3}" rx="14" fill="none" stroke="${INK}" stroke-width="3"/>`);
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = out.join('');
+  svg.querySelectorAll('.place').forEach(el => el.addEventListener('click', () => go(+el.dataset.id)));
+  G.anim++; placeBus(pos[here]);
+}
+function busXY(p) { return [p[0] + G.s * .18, p[1] + G.s * .36]; }
+function placeBus(p, face) {
+  const bus = document.getElementById('ddBus'); if (!bus) return;
+  if (face) G.face = face;
+  const [x, y] = busXY(p), k = G.s * .66 / 40;
+  bus.setAttribute('transform', `translate(${x.toFixed(1)},${y.toFixed(1)}) scale(${(k * G.face).toFixed(3)},${k.toFixed(3)})`);
+}
+function driveBus(from, to, done) {
+  const a = G.pos[from], b = G.pos[to], tok = ++G.anim, t0 = performance.now(), dur = 520;
+  const face = b[0] < a[0] - 1 ? -1 : b[0] > a[0] + 1 ? 1 : G.face;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const step = now => {
+    if (tok !== G.anim) return;
+    let t = reduce ? 1 : Math.min(1, (now - t0) / dur); const e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    placeBus([a[0] + (b[0] - a[0]) * e, a[1] + (b[1] - a[1]) * e - Math.sin(Math.PI * t) * 3], face);
+    if (t < 1) requestAnimationFrame(step); else if (done) done();
+  };
+  requestAnimationFrame(step);
+}
+function bump(i) { const el = G.svg.querySelector(`.place[data-id="${i}"]`); if (!el) return; el.classList.remove('bump'); void el.getBBox(); el.classList.add('bump'); }
+
+function go(id) {
+  if (G.won) return;
+  const P = G.P, from = cur(), nm = i => PLACES[P.names[i]].name;
+  if (id === from) { G.ctx.say(`Xe buýt đang ở ${nm(id)} rồi. Chạm vào điểm bên cạnh nhé.`); return; }
+  const e = edgeFor(P, from, id);
+  if (!e) {
+    G.ctx.sfx.bad(); bump(id);
+    if (P.edges.some(x => x.one && x.a === id && x.b === from)) G.ctx.say(`Đường này chỉ đi 1 chiều, từ ${nm(id)} sang ${nm(from)} thôi!`, 'oops');
+    else G.ctx.say(`Không có đường nối thẳng từ ${nm(from)} tới ${nm(id)}.`, 'oops');
+    return;
+  }
+  G.route.push(id); G.hintId = -1; G.ctx.sfx.move(G.route.length);
+  G.ctx.save({ route: G.route });
+  const need = P.req.filter(r => !G.route.includes(r));
+  const win = id === P.goal && !need.length;
+  if (win) G.won = true;
+  render(true); placeBus(G.pos[from]); driveBus(from, id);
+  updateTrip();
+  if (win) {
+    const c = spent(), b = P.best, stars = c <= b ? 3 : c <= b + 2 ? 2 : 1;
+    setTimeout(() => G.ctx.win(stars, stars === 3 ? `Hết ${c} xu – đúng là đường rẻ nhất!` : `Em tiêu ${c} xu. Đường rẻ nhất chỉ tốn ${b} xu.`), 560);
+  } else if (id === P.goal) G.ctx.say(`Tới Trường rồi, nhưng còn phải ghé ${need.map(nm).join(' và ')}!`, 'oops');
+  else if (P.req.includes(id) && G.route.indexOf(id) === G.route.length - 1) { G.ctx.sfx.good(); G.ctx.say(`Đã ghé ${nm(id)}! Đã tiêu ${spent()} xu.`, 'happy'); }
+  else G.ctx.say(`Tới ${nm(id)}: thêm ${e.c} xu. Đã tiêu ${spent()} xu.`);
+}
+function undo() {
+  if (G.won) return;
+  if (G.route.length <= 1) { G.ctx.say('Xe buýt đang ở Nhà, chưa đi đâu cả.'); return; }
+  const from = G.route.pop(), to = cur(); G.hintId = -1; G.ctx.sfx.tap();
+  G.ctx.save({ route: G.route }); render(true); placeBus(G.pos[from]); driveBus(from, to); updateTrip();
+  G.ctx.say(`Lùi về ${PLACES[G.P.names[to]].name}. Đã tiêu ${spent()} xu.`);
+}
+function restart() {
+  if (G.won) return;
+  G.route = [G.P.start]; G.hintId = -1; G.face = 1; G.ctx.sfx.tap();
+  G.ctx.save({ route: G.route }); render(true); updateTrip();
+  G.ctx.say('Xe buýt về lại Nhà. Đi lại từ đầu nhé!');
+}
+function hint(ctx) {
+  if (G.won) return false;
+  const P = G.P, need = P.req.filter(r => !G.route.includes(r));
+  const sol = solve(P, cur(), need); if (!sol || sol.path.length < 2) return false;
+  G.hintId = sol.path[1]; render(true);
+  ctx.say(`Jenny gợi ý: đi tới ${PLACES[P.names[G.hintId]].name} (điểm sáng vàng) nhé!`, 'happy');
+  return true;
+}
+function layout() { if (!G) return; render(false); updateTrip(); }
+function onKey(e) { if (e.key === 'Backspace' || e.key === 'Delete') { undo(); e.preventDefault(); } }
+
+window.__dd = { make, solve, dijkstra, pathTo, reachAll, costOf, edgeFor, LEVELS };
+Kit.run({
+  key: 'bb-duongdi',
+  title: 'Đường đi rẻ nhất',
+  intro: 'Lái xe buýt qua làng, từ Nhà tới Trường, mà tốn ít xu nhất.',
+  rules: [
+    'Chạm vào <b>điểm bên cạnh</b> (có đường nối) để lái xe buýt tới đó.',
+    'Mỗi con đường có <b>giá vé</b> ghi trên đồng xu. Cộng lại cho thật ít!',
+    'Điểm có vòng đỏ <b>★ phải ghé</b> thì nhất định phải đi qua.',
+    'Đường có <b>mũi tên</b> chỉ đi 1 chiều. Bấm <b>Lùi 1 điểm</b> nếu đi nhầm.'
+  ],
+  levels: LEVELS.map(l => ({ name: l.name, desc: l.desc })),
+  rounds: 8,
+  hello: 'Chào em! Lái xe buýt tới Trường thật rẻ nhé.',
+  make: lv => make(lv),
+  mount, hint, onKey, layout
+});
+})();
+</script>
+</body>
+</html>
