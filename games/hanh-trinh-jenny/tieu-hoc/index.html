@@ -105,8 +105,11 @@ main{min-height:0;position:relative}
 .mtext .fig svg{position:absolute;inset:0;width:100%;height:100%}
 .mtext .q{flex:none}
 .mtext .sol{flex:none}
-.mhead .read{border:2.5px solid var(--ink);border-radius:12px;background:var(--sel-soft);padding:4px 10px;font-weight:900;font-size:14px;display:flex;align-items:center;gap:5px;box-shadow:0 2px 0 var(--ink)}
-.mhead .read svg{width:18px;height:18px}
+.mhead .read{border:2.5px solid var(--ink);border-radius:999px;background:var(--sel);color:#fff;padding:4px 12px 4px 6px;font-weight:900;font-size:15px;display:flex;align-items:center;gap:6px;box-shadow:0 3px 0 var(--ink)}
+.mhead .read svg{width:24px;height:24px;background:#fff;border-radius:50%;padding:3px;color:var(--ink)}
+.mhead .read.on{background:var(--coral);animation:pulse2 1.2s ease-in-out infinite}
+@keyframes pulse2{50%{box-shadow:0 3px 0 var(--ink),0 0 0 6px rgba(255,107,87,.3)}}
+.mhead .read:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
 .opts{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:8px;min-height:0}
 .opt{border:2.5px solid var(--ink);border-radius:16px;background:#fff;box-shadow:0 3px 0 var(--ink);display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:6px;padding:6px 10px;min-height:0;font-weight:900;font-size:19px;text-align:left}
 .opt .no{width:30px;height:30px;border-radius:50%;background:var(--sun);border:2.5px solid var(--ink);display:grid;place-items:center;font-family:var(--display);font-size:17px}
@@ -330,7 +333,7 @@ textarea.code{width:100%;height:64px;border:2.5px solid var(--ink);border-radius
       <div class="card mcard">
         <div class="mhead">
           <div class="seg" id="seg" role="group" aria-label="Độ khó"></div>
-          <button class="read" id="bRead" hidden><span data-i="snd"></span>Đọc đề</button>
+          <button class="read" id="bRead" aria-label="Nghe đọc đề bài"><span data-i="snd"></span><span id="bReadT">Đọc đề</span></button>
           <div class="today" id="today"></div>
         </div>
         <div class="mtext" id="mtext"></div>
@@ -743,18 +746,78 @@ function fitText(keepFold) {
   if (over()) m.classList.add('scroll');
 }
 
-/* read aloud (Vietnamese voice if the device has one) */
-let VOICE = null;
-function findVoice() { try { VOICE = speechSynthesis.getVoices().find(v => /^vi/i.test(v.lang)) || null; } catch (e) { VOICE = null; } $('#bRead').hidden = !VOICE; }
-if ('speechSynthesis' in window) { findVoice(); speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', findVoice); }
-function stopRead() { try { speechSynthesis.cancel(); } catch (e) {} }
+/* read aloud: slow, child-friendly Vietnamese voice.
+   1) the device's own Vietnamese voice (iPhone/iPad/Mac "Linh", Android Google, Windows Edge "HoaiMy"...)
+   2) if the device has none: Google's online Vietnamese voice, played as audio. */
+let VOICE = null, AUD = null, readTok = 0;
+const RATE = .78;
+function findVoice() {
+  try {
+    const vs = speechSynthesis.getVoices().filter(v => /^vi/i.test(v.lang));
+    VOICE = vs.find(v => /HoaiMy|Hoai My|Linh|Google/i.test(v.name)) || vs[0] || null;
+  } catch (e) { VOICE = null; }
+}
+if ('speechSynthesis' in window) { findVoice(); try { speechSynthesis.addEventListener('voiceschanged', findVoice); } catch (e) { speechSynthesis.onvoiceschanged = findVoice; } }
+function readMark(on) { const b = $('#bRead'); b.classList.toggle('on', on); $('#bReadT').textContent = on ? 'Dừng đọc' : 'Đọc đề'; }
+function stopRead() {
+  readTok++;
+  try { speechSynthesis.cancel(); } catch (e) {}
+  if (AUD) { try { AUD.pause(); } catch (e) {} AUD = null; }
+  readMark(false);
+}
+/* turn maths symbols into words and split into short sentences */
+function speechText(t) {
+  return t.replace(/(\d)\s*[×x·]\s*(\d)/g, '$1 nhân $2').replace(/×/g, ' nhân ')
+    .replace(/(\d)\s*:\s*(\d)/g, '$1 chia $2')
+    .replace(/(\d)\s*[−-]\s*(\d)/g, '$1 trừ $2').replace(/−/g, ' trừ ')
+    .replace(/\+/g, ' cộng ').replace(/=/g, ' bằng ').replace(/</g, ' bé hơn ').replace(/>/g, ' lớn hơn ')
+    .replace(/(\d+)\s*cm\b/g, '$1 xăng-ti-mét').replace(/(\d+)\s*m\b/g, '$1 mét').replace(/(\d+)\s*kg\b/g, '$1 ki-lô-gam')
+    .replace(/[“”"«»]/g, '').replace(/\s+/g, ' ').trim();
+}
+function chunks(t, max) {
+  const out = []; let cur = '';
+  for (const part of t.split(/(?<=[.!?;:…])\s+|\n+/)) {
+    if (!part.trim()) continue;
+    if ((cur + ' ' + part).length > max && cur) { out.push(cur.trim()); cur = ''; }
+    if (part.length > max) { part.split(/(?<=,)\s+/).forEach(x => { if ((cur + ' ' + x).length > max && cur) { out.push(cur.trim()); cur = ''; } cur += ' ' + x; }); }
+    else cur += ' ' + part;
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out;
+}
+function speak(text) {
+  stopRead(); const tok = ++readTok; readMark(true);
+  const done = () => { if (tok === readTok) readMark(false); };
+  const t = speechText(text);
+  if (VOICE) {
+    const parts = chunks(t, 160);
+    parts.forEach((x, k) => {
+      const u = new SpeechSynthesisUtterance(x); u.voice = VOICE; u.lang = VOICE.lang; u.rate = RATE; u.pitch = 1.05;
+      if (k === parts.length - 1) { u.onend = done; u.onerror = done; }
+      speechSynthesis.speak(u);
+    });
+    return;
+  }
+  const parts = chunks(t, 180); let k = 0;
+  const next = () => {
+    if (tok !== readTok) return;
+    if (k >= parts.length) return done();
+    const a = new Audio('https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&ttsspeed=0.8&q=' + encodeURIComponent(parts[k++]));
+    AUD = a; a.playbackRate = .9; a.preservesPitch = true;
+    a.onended = () => setTimeout(next, 250);
+    a.onerror = () => { done(); toast('Máy chưa đọc được. Em kiểm tra loa hoặc mạng nhé!'); };
+    a.play().catch(() => { done(); toast('Máy chưa đọc được. Em kiểm tra loa hoặc mạng nhé!'); });
+  };
+  next();
+}
 $('#bRead').onclick = () => {
-  if (!VOICE || !BANK) return; stopRead();
+  if (!BANK || !S.g) return;
+  if ($('#bRead').classList.contains('on')) { stopRead(); return; }
   const p = current(); let t = p.q;
-  if (p.k === 'pick' && p.o.every(o => !/^\s*<svg/.test(o))) t += ' ' + p.o.map((o, i) => `Số ${i + 1}: ${o}.`).join(' ');
+  if (p.k === 'pick') t += p.o.every(o => !/^\s*<svg/.test(o)) ? ' ' + p.o.map((o, i) => `Số ${i + 1}: ${o}.`).join(' ') : ' Em hãy chọn hình số 1, số 2 hoặc số 3.';
+  else if (!answered) t += ' Em hãy điền số vào ô trả lời.';
   if (answered) t = p.s;
-  const u = new SpeechSynthesisUtterance(t.replace(/[×]/g, ' nhân ').replace(/[:]/g, ' chia ').replace(/−/g, ' trừ ')); u.voice = VOICE; u.lang = VOICE.lang; u.rate = .92;
-  speechSynthesis.speak(u);
+  speak(t);
 };
 
 /* grade choice */
