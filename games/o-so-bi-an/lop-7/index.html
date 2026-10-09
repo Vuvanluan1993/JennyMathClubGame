@@ -1,0 +1,553 @@
+<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ô Số Bí Ẩn Lớp 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<style>
+/* Layout: one screen, no page scroll. Landscape = board left + control column right; portrait = board top + clue card + keypad below. Single deliberate look (sky classroom board). */
+:root{
+  --sky:#CFEAFB; --sky-deep:#9FD3F5; --ink:#1D2B53; --ink-soft:#4A5878; --paper:#FFFFFF;
+  --sun:#FFC93C; --sun-soft:#FFF0C2; --coral:#FF6B57; --mint:#2DBE8C; --mint-soft:#D5F6E8;
+  --sel:#2F7DE1; --sel-soft:#DCEBFF; --line:#1D2B53; --hatch:#B8C6DD;
+  --display:'Baloo 2', 'Trebuchet MS', system-ui, sans-serif;
+  --body:'Nunito', 'Segoe UI', system-ui, sans-serif;
+  color-scheme: light;
+}
+html,body{height:100%}
+[hidden]{display:none!important}
+body{margin:0;background:var(--sky);color:var(--ink);font-family:var(--body);overflow:hidden;
+  background-image:radial-gradient(circle at 1px 1px, rgba(29,43,83,.10) 1px, transparent 1.4px);background-size:22px 22px}
+button{font-family:inherit;color:inherit;cursor:pointer}
+button:focus-visible,.cell:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.app{height:100%;box-sizing:border-box;padding-inline:16px;padding-block:10px;display:grid;grid-template-rows:auto 1fr;gap:10px;max-width:1280px;margin:0 auto}
+/* top bar */
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:nowrap;min-width:0}
+.bar img{height:44px;width:auto;flex:0 0 auto;filter:drop-shadow(0 2px 0 rgba(29,43,83,.15))}
+.ttl{font-family:var(--display);font-weight:800;font-size:clamp(18px,2.4vw,28px);line-height:1;white-space:nowrap}
+.ttl small{display:block;font-family:var(--body);font-weight:800;font-size:12px;letter-spacing:.08em;color:var(--ink-soft);text-transform:uppercase;margin-top:3px}
+.spacer{flex:1 1 auto}
+.pill{display:flex;align-items:center;gap:6px;background:var(--paper);border:2.5px solid var(--line);border-radius:999px;padding:4px 12px;font-weight:900;font-variant-numeric:tabular-nums;box-shadow:0 3px 0 var(--line);white-space:nowrap}
+.pill .lab{font-size:11px;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase}
+.pill .val{font-family:var(--display);font-size:20px;line-height:1}
+.pill.warn .val{color:var(--coral)}
+.icon-btn{width:42px;height:42px;border-radius:12px;border:2.5px solid var(--line);background:var(--paper);box-shadow:0 3px 0 var(--line);display:grid;place-items:center;flex:0 0 auto}
+.icon-btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.icon-btn svg{width:22px;height:22px}
+.icon-btn.off{opacity:.45}
+.bulbs{display:flex;gap:4px}
+.bulb{width:42px;height:42px;border-radius:12px;border:2.5px solid var(--line);background:var(--sun);box-shadow:0 3px 0 var(--line);display:grid;place-items:center}
+.bulb svg{width:22px;height:24px}
+.bulb.used{background:var(--paper);opacity:.5}
+.bulb:active:not(.used){transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+/* stage */
+.stage{min-height:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:stretch}
+.boardwrap{display:grid;place-items:center;min-height:0}
+.board{--bs:min(calc(100dvh - 104px), 56vw);width:var(--bs);height:var(--bs);background:var(--paper);border:3px solid var(--line);border-radius:22px;box-shadow:0 6px 0 var(--line);padding:calc(var(--bs)*.025);box-sizing:border-box;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(7,1fr);gap:calc(var(--bs)*.012);position:relative}
+.cell{position:relative;border-radius:calc(var(--bs)*.022);border:2.5px solid var(--line);background:var(--paper);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:calc(var(--bs)*.075);line-height:1;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .15s, transform .15s;padding:0;font-variant-numeric:tabular-nums}
+.cell.blk{border-color:transparent;background:repeating-linear-gradient(45deg,var(--hatch) 0 3px,transparent 3px 9px);cursor:default;border-radius:calc(var(--bs)*.022)}
+.cell .no{position:absolute;top:3%;left:7%;font-family:var(--body);font-weight:900;font-size:calc(var(--bs)*.026);color:var(--ink-soft)}
+.cell .st{position:absolute;top:5%;right:7%;width:calc(var(--bs)*.024);height:calc(var(--bs)*.024);color:var(--sun)}
+.cell .dg{padding-top:calc(var(--bs)*.012)}
+.cell.inword{background:var(--sel-soft)}
+.cell.cur{background:var(--sel);color:#fff;border-color:var(--ink);transform:scale(1.04)}
+.cell.cur .no{color:#E6F0FF}
+.cell.ok{background:var(--mint-soft);color:#0E6B4C}
+.cell.ok.inword{background:#BEEFD9}
+.cell.ok.cur{background:var(--mint);color:#fff}
+.cell.hint{background:var(--sun-soft)}
+.cell.bad{background:#FFD9D3;color:#B3261E;animation:shake .45s}
+.cell.pop{animation:pop .5s}
+@keyframes shake{0%,100%{translate:0}20%{translate:-5px}40%{translate:5px}60%{translate:-4px}80%{translate:3px}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+/* side */
+.side{min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:12px}
+.card{background:var(--paper);border:3px solid var(--line);border-radius:20px;box-shadow:0 5px 0 var(--line);padding:12px 14px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:start;min-height:0}
+.badge{grid-row:span 2;width:58px;height:58px;border-radius:16px;background:var(--ink);color:#fff;display:grid;place-items:center;text-align:center;line-height:1}
+.badge b{font-family:var(--display);font-size:26px;display:block}
+.badge span{font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.badge.solved{background:var(--mint)}
+.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0}
+.tag{font-size:12px;font-weight:900;border-radius:999px;padding:2px 9px;border:2px solid var(--line);white-space:nowrap}
+.tag.start{background:var(--sun)}
+.tag.link{border-style:dashed}
+.tag.boss{background:var(--coral);color:#fff;border-color:var(--coral)}
+.stars{display:flex;gap:2px;color:var(--sun)}
+.stars svg{width:16px;height:16px}
+.nav{grid-row:span 2;display:flex;gap:6px}
+.nav button{width:38px;height:38px;border-radius:11px;border:2.5px solid var(--line);background:var(--paper);box-shadow:0 3px 0 var(--line);display:grid;place-items:center;font-weight:900;font-size:18px}
+.nav button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.ctext{grid-column:2 / 3;font-size:clamp(14px,1.45vw,17px);line-height:1.45;max-height:7.4em;overflow:auto;min-width:0;padding-right:4px}
+.slots{grid-column:1 / -1;display:flex;gap:6px;align-items:center;margin-top:4px}
+.slots .s{width:36px;height:42px;border-radius:9px;border:2.5px solid var(--line);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:24px;background:var(--paper)}
+.slots .s.ok{background:var(--mint-soft)}
+.slots .s.now{background:var(--sel);color:#fff}
+.slots .msg{margin-left:auto;font-weight:900;font-size:14px}
+/* keypad */
+.pad{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.key{height:clamp(44px,7dvh,58px);border-radius:14px;border:2.5px solid var(--line);background:var(--paper);box-shadow:0 4px 0 var(--line);font-family:var(--display);font-weight:800;font-size:clamp(20px,2.4vw,28px);display:grid;place-items:center;transition:transform .05s}
+.key:active,.key.hit{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+.key.fn{background:var(--sun-soft);font-family:var(--body);font-size:14px;font-weight:900}
+.key svg{width:24px;height:24px}
+/* lower area: chips + jenny */
+.lower{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end}
+.chips{align-self:stretch;min-height:0;overflow:auto;background:rgba(255,255,255,.55);border:2.5px solid var(--line);border-radius:18px;padding:10px;display:grid;gap:8px;align-content:start}
+.chips h4{margin:0;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.chiprow{display:flex;flex-wrap:wrap;gap:6px}
+.chip{min-width:44px;height:36px;border-radius:10px;border:2.5px solid var(--line);background:var(--paper);font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center;gap:3px;padding:0 6px}
+.chip.on{background:var(--sel);color:#fff}
+.chip.done{background:var(--mint);color:#fff;border-color:#0E6B4C}
+.chip .dots{display:flex;gap:1px}
+.chip .dots i{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.75}
+.jenny{display:grid;grid-template-columns:auto;justify-items:center;gap:4px;width:150px}
+.bubble{background:var(--paper);border:2.5px solid var(--line);border-radius:16px;padding:8px 10px;font-weight:800;font-size:13.5px;line-height:1.3;text-align:center;position:relative;min-height:2.6em;width:100%;box-sizing:border-box}
+.bubble::after{content:"";position:absolute;bottom:-10px;left:50%;width:14px;height:14px;background:var(--paper);border-right:2.5px solid var(--line);border-bottom:2.5px solid var(--line);transform:translateX(-50%) rotate(45deg)}
+.jsvg{width:110px;height:120px}
+.jsvg.bounce{animation:bounce .6s}
+@keyframes bounce{0%,100%{transform:translateY(0)}35%{transform:translateY(-14px)}65%{transform:translateY(0)}80%{transform:translateY(-5px)}}
+.jsvg .m-happy,.jsvg .m-oops{display:none}
+.jsvg.happy .m-norm,.jsvg.oops .m-norm{display:none}
+.jsvg.happy .m-happy{display:inline}
+.jsvg.oops .m-oops{display:inline}
+/* overlays */
+.ov{position:fixed;inset:0;background:rgba(29,43,83,.55);display:grid;place-items:center;z-index:20;padding:16px}
+.panel{background:var(--paper);border:3px solid var(--line);border-radius:26px;box-shadow:0 8px 0 var(--line);padding:22px 24px;max-width:560px;width:100%;box-sizing:border-box;max-height:calc(100dvh - 32px);overflow:auto;display:grid;gap:14px;text-align:center}
+.panel h2{font-family:var(--display);font-weight:800;font-size:clamp(30px,5vw,46px);line-height:1;margin:0}
+.panel p{margin:0;line-height:1.5}
+.panel ul{text-align:left;margin:0;padding-left:20px;line-height:1.55}
+.big{height:58px;border-radius:16px;border:3px solid var(--line);background:var(--sun);box-shadow:0 5px 0 var(--line);font-family:var(--display);font-weight:800;font-size:24px;padding:0 26px}
+.big:active{transform:translateY(3px);box-shadow:0 2px 0 var(--line)}
+.big.alt{background:var(--paper)}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.resstars{display:flex;justify-content:center;gap:8px;color:var(--sun)}
+.resstars svg{width:54px;height:54px}
+.resstars svg.dim{color:#D8DFEA}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpis div{border:2.5px solid var(--line);border-radius:14px;padding:8px}
+.kpis b{display:block;font-family:var(--display);font-size:28px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpis span{font-size:12px;font-weight:800;color:var(--ink-soft)}
+.sol{text-align:left;border-top:2px dashed var(--hatch);padding-top:10px}
+.sol h3{margin:0 0 4px;font-family:var(--display);font-size:20px}
+.sol ul{font-size:14px}
+.combo{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-family:var(--display);font-weight:800;font-size:clamp(34px,6vw,64px);color:var(--sun);-webkit-text-stroke:2px var(--ink);pointer-events:none;z-index:15;animation:rise 1.1s forwards}
+@keyframes rise{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-110%) scale(1)}}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:14}
+/* portrait / phone */
+@media (orientation:portrait), (max-width:820px){
+  .app{gap:8px;padding-block:8px}
+  .bar{gap:6px}
+  .bar img{height:34px}
+  .ttl small{display:none}
+  .ttl{font-size:18px}
+  .pill{padding:3px 9px}.pill .lab{display:none}.pill .val{font-size:18px}
+  .icon-btn,.bulb{width:36px;height:36px;border-radius:10px}
+  .icon-btn svg,.bulb svg{width:18px;height:18px}
+  .stage{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:10px}
+  .board{--bs:min(calc(100vw - 32px), calc(100dvh - 380px));border-radius:16px}
+  .side{grid-template-rows:minmax(0,1fr) auto;gap:8px}
+  .lower{display:none}
+  .card{padding:8px 10px;gap:2px 8px;border-radius:16px}
+  .badge{width:46px;height:46px;border-radius:12px}.badge b{font-size:20px}
+  .ctext{font-size:14px;max-height:none}
+  .card{grid-template-rows:auto minmax(0,1fr) auto auto;align-items:center}
+  .badge,.nav{grid-row:auto}
+  .ctext{grid-column:1 / -1;align-self:start;height:100%;overflow:auto}
+  .slots .s{width:28px;height:32px;font-size:19px}
+  .pad{gap:6px}
+  .key{height:44px;border-radius:12px}
+  .nav button{width:34px;height:34px}
+  .card .mini-j{display:flex}
+  .ttl,#musBtn{display:none}
+  .icon-btn,.bulb{width:34px;height:34px}
+  .bulbs{gap:3px}
+  .pill .val{font-size:16px}
+}
+@media (max-width:360px){ .bar img{display:none} }
+@media (max-height:760px) and ((orientation:portrait) or (max-width:820px)){ .card .mini-j{display:none} }
+.mini-j{display:none}
+.mini-j{grid-column:1 / -1;align-items:center;gap:8px;font-weight:800;font-size:13.5px;line-height:1.3;border-top:2px dashed var(--hatch);padding-top:6px;margin-top:4px}
+.mini-j .jsvg{width:38px;height:42px;flex:0 0 auto}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="app" id="app">
+  <header class="bar">
+    <a href="../../" title="Về trang chủ" style="display:contents"><img alt="Học Toán cùng Jenny" src="data:image/png;base64,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"></a>
+    <div class="ttl">Ô Số Bí Ẩn<small>Lớp 7 · 17 câu đố</small></div>
+    <div class="spacer"></div>
+    <div class="pill" id="timePill" title="Thời gian còn lại"><span class="lab">Giờ</span><span class="val" id="time">60:00</span></div>
+    <div class="pill" title="Điểm"><span class="lab">Điểm</span><span class="val" id="score">0</span></div>
+    <div class="bulbs" id="bulbs"></div>
+    <button class="icon-btn" id="sndBtn" aria-label="Bật/tắt âm thanh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path id="sndWave" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg></button>
+    <button class="icon-btn" id="musBtn" aria-label="Bật/tắt nhạc nền"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></button>
+    <button class="icon-btn" id="pauseBtn" aria-label="Tạm dừng"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
+  </header>
+  <main class="stage">
+    <div class="boardwrap"><div class="board" id="board" role="grid" aria-label="Lưới ô số"></div></div>
+    <section class="side">
+      <div class="card" id="card">
+        <div class="badge" id="badge"><b id="cNum">1</b><span id="cDir">Ngang</span></div>
+        <div class="meta"><div class="stars" id="cStars"></div><div id="cTags" class="meta"></div></div>
+        <div class="nav"><button id="prevBtn" aria-label="Câu trước">‹</button><button id="nextBtn" aria-label="Câu sau">›</button></div>
+        <div class="ctext" id="cText"></div>
+        <div class="slots" id="slots"></div>
+        <div class="mini-j" id="miniJ"><svg class="jsvg" viewBox="0 0 120 140" aria-hidden="true" stroke="#1D2B53" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M22 70 Q14 28 60 18 Q106 28 98 70 Q101 90 93 101 L84 97 Q88 82 86 66 L34 66 Q32 82 36 97 L27 101 Q19 90 22 70 Z" fill="#2B1E1A"/>
+<ellipse cx="60" cy="63" rx="26" ry="29" fill="#FFDCC2"/>
+<path d="M34 58 Q38 32 64 31 Q86 33 87 56 Q78 45 66 46 Q60 38 50 47 Q42 47 34 58 Z" fill="#2B1E1A"/>
+<ellipse cx="50" cy="65" rx="3.2" ry="4.2" fill="#1D2B53"/><ellipse cx="70" cy="65" rx="3.2" ry="4.2" fill="#1D2B53"/>
+<circle cx="51" cy="63.5" r="1" fill="#fff" stroke="none"/><circle cx="71" cy="63.5" r="1" fill="#fff" stroke="none"/>
+<path d="M45 58 q5 -3 9 0 M66 58 q5 -3 9 0" stroke-width="1.6" fill="none"/>
+<ellipse cx="42" cy="75" rx="4.5" ry="2.6" fill="#FF9E8C" stroke="none"/><ellipse cx="78" cy="75" rx="4.5" ry="2.6" fill="#FF9E8C" stroke="none"/>
+<path class="m-norm" d="M52 78 q8 7 16 0" fill="none"/>
+<path class="m-happy" d="M50 77 q10 13 20 0 z" fill="#B3261E"/>
+<ellipse class="m-oops" cx="60" cy="81" rx="3.4" ry="4" fill="#B3261E"/>
+<path d="M54 91 v7 M66 91 v7" fill="none"/>
+<path d="M22 124 L34 104 Q44 99 54 98 Q60 103 66 98 Q76 99 86 104 L98 124 L88 128 L86 121 L86 139 L34 139 L34 121 L32 128 Z" fill="#8E6BD8"/>
+<path d="M40 103 L82 131" stroke="#7A4B2A" stroke-width="3.4" fill="none"/>
+<rect x="78" y="127" width="15" height="11" rx="3" fill="#D9A066"/>
+<path d="M44 128.5 h6 M47 125.5 v6 M54 130 l5 5 M59 130 l-5 5" stroke="#fff" stroke-width="1.8" fill="none"/>
+</svg><span id="miniBubble">Chạm vào một ô để bắt đầu!</span></div>
+      </div>
+      <div class="pad" id="pad"></div>
+      <div class="lower">
+        <div class="chips" id="chips"></div>
+        <div class="jenny"><div class="bubble" id="bubble">Chạm vào một ô để bắt đầu!</div><svg class="jsvg" viewBox="0 0 120 140" aria-hidden="true" stroke="#1D2B53" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M22 70 Q14 28 60 18 Q106 28 98 70 Q101 90 93 101 L84 97 Q88 82 86 66 L34 66 Q32 82 36 97 L27 101 Q19 90 22 70 Z" fill="#2B1E1A"/>
+<ellipse cx="60" cy="63" rx="26" ry="29" fill="#FFDCC2"/>
+<path d="M34 58 Q38 32 64 31 Q86 33 87 56 Q78 45 66 46 Q60 38 50 47 Q42 47 34 58 Z" fill="#2B1E1A"/>
+<ellipse cx="50" cy="65" rx="3.2" ry="4.2" fill="#1D2B53"/><ellipse cx="70" cy="65" rx="3.2" ry="4.2" fill="#1D2B53"/>
+<circle cx="51" cy="63.5" r="1" fill="#fff" stroke="none"/><circle cx="71" cy="63.5" r="1" fill="#fff" stroke="none"/>
+<path d="M45 58 q5 -3 9 0 M66 58 q5 -3 9 0" stroke-width="1.6" fill="none"/>
+<ellipse cx="42" cy="75" rx="4.5" ry="2.6" fill="#FF9E8C" stroke="none"/><ellipse cx="78" cy="75" rx="4.5" ry="2.6" fill="#FF9E8C" stroke="none"/>
+<path class="m-norm" d="M52 78 q8 7 16 0" fill="none"/>
+<path class="m-happy" d="M50 77 q10 13 20 0 z" fill="#B3261E"/>
+<ellipse class="m-oops" cx="60" cy="81" rx="3.4" ry="4" fill="#B3261E"/>
+<path d="M54 91 v7 M66 91 v7" fill="none"/>
+<path d="M22 124 L34 104 Q44 99 54 98 Q60 103 66 98 Q76 99 86 104 L98 124 L88 128 L86 121 L86 139 L34 139 L34 121 L32 128 Z" fill="#8E6BD8"/>
+<path d="M40 103 L82 131" stroke="#7A4B2A" stroke-width="3.4" fill="none"/>
+<rect x="78" y="127" width="15" height="11" rx="3" fill="#D9A066"/>
+<path d="M44 128.5 h6 M47 125.5 v6 M54 130 l5 5 M59 130 l-5 5" stroke="#fff" stroke-width="1.8" fill="none"/>
+</svg></div>
+      </div>
+    </section>
+  </main>
+</div>
+<canvas id="fx"></canvas>
+
+<div class="ov" id="startOv">
+  <div class="panel">
+    <svg class="jsvg" style="margin:0 auto;width:120px;height:132px" viewBox="0 0 120 140" aria-hidden="true" stroke="#1D2B53" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M22 70 Q14 28 60 18 Q106 28 98 70 Q101 90 93 101 L84 97 Q88 82 86 66 L34 66 Q32 82 36 97 L27 101 Q19 90 22 70 Z" fill="#2B1E1A"/>
+<ellipse cx="60" cy="63" rx="26" ry="29" fill="#FFDCC2"/>
+<path d="M34 58 Q38 32 64 31 Q86 33 87 56 Q78 45 66 46 Q60 38 50 47 Q42 47 34 58 Z" fill="#2B1E1A"/>
+<ellipse cx="50" cy="65" rx="3.2" ry="4.2" fill="#1D2B53"/><ellipse cx="70" cy="65" rx="3.2" ry="4.2" fill="#1D2B53"/>
+<circle cx="51" cy="63.5" r="1" fill="#fff" stroke="none"/><circle cx="71" cy="63.5" r="1" fill="#fff" stroke="none"/>
+<path d="M45 58 q5 -3 9 0 M66 58 q5 -3 9 0" stroke-width="1.6" fill="none"/>
+<ellipse cx="42" cy="75" rx="4.5" ry="2.6" fill="#FF9E8C" stroke="none"/><ellipse cx="78" cy="75" rx="4.5" ry="2.6" fill="#FF9E8C" stroke="none"/>
+<path class="m-norm" d="M52 78 q8 7 16 0" fill="none"/>
+<path class="m-happy" d="M50 77 q10 13 20 0 z" fill="#B3261E"/>
+<ellipse class="m-oops" cx="60" cy="81" rx="3.4" ry="4" fill="#B3261E"/>
+<path d="M54 91 v7 M66 91 v7" fill="none"/>
+<path d="M22 124 L34 104 Q44 99 54 98 Q60 103 66 98 Q76 99 86 104 L98 124 L88 128 L86 121 L86 139 L34 139 L34 121 L32 128 Z" fill="#8E6BD8"/>
+<path d="M40 103 L82 131" stroke="#7A4B2A" stroke-width="3.4" fill="none"/>
+<rect x="78" y="127" width="15" height="11" rx="3" fill="#D9A066"/>
+<path d="M44 128.5 h6 M47 125.5 v6 M54 130 l5 5 M59 130 l-5 5" stroke="#fff" stroke-width="1.8" fill="none"/>
+</svg>
+    <h2>Ô Số Bí Ẩn</h2>
+    <p>Jenny rủ em giải 17 câu đố để lấp đầy lưới số. Mỗi ô trắng là một chữ số.</p>
+    <ul>
+      <li>Chạm một ô hoặc chọn câu đố, rồi bấm số trên bàn phím.</li>
+      <li>Điền đủ một câu là Jenny chấm ngay. Ô giao nhau phải khớp cả Ngang lẫn Dọc.</li>
+      <li>Câu có nhãn <b>Bắt đầu ở đây</b> là câu dễ nhất. Ba ngôi sao là câu khó.</li>
+      <li>Có 2 bóng đèn: mỗi bóng mở 1 chữ số đúng, trừ 1 điểm.</li>
+    </ul>
+    <div class="row"><button class="big" id="startBtn">Bắt đầu chơi</button><button class="big alt" id="resumeBtn" hidden>Chơi tiếp</button></div>
+  </div>
+</div>
+<div class="ov" id="pauseOv" hidden><div class="panel"><h2>Tạm dừng</h2><p>Đồng hồ đang dừng. Bấm tiếp tục khi em sẵn sàng.</p><div class="row"><button class="big" id="resBtn">Tiếp tục</button><button class="big alt" id="restartBtn">Chơi lại từ đầu</button><button class="big alt" id="musBtn2">Nhạc nền: tắt</button></div></div></div>
+<div class="ov" id="endOv" hidden><div class="panel" id="endPanel"></div></div>
+
+<script>
+const DATA = {"g": [[0, 0, 0, 0, 1, 1, 0], [1, 1, 1, 0, 0, 1, 0], [1, 1, 1, 0, 1, 1, 0], [1, 0, 1, 1, 1, 0, 1], [0, 1, 1, 0, 1, 1, 1], [0, 1, 0, 0, 1, 1, 1], [0, 1, 1, 0, 0, 0, 0]], "grid": {"1,2": "2", "2,2": "0", "3,2": "1", "4,2": "6", "1,0": "1", "1,1": "3", "4,1": "1", "2,0": "7", "2,1": "5", "3,0": "6", "2,4": "2", "3,4": "0", "4,4": "1", "5,4": "5", "5,5": "5", "5,6": "0", "3,3": "6", "3,6": "2", "4,6": "4", "4,5": "4", "2,5": "0", "0,5": "3", "1,5": "5", "0,4": "7", "6,1": "2", "6,2": "4", "5,1": "1"}, "starts": {"0,4": "1", "1,0": "3", "2,0": "6", "2,4": "7", "3,2": "8", "4,1": "10", "4,4": "11", "5,4": "13", "6,1": "14", "1,1": "4", "1,2": "5", "0,5": "2", "4,5": "12", "3,6": "9"}, "stars": ["1,1", "0,4", "3,6"], "clues": [{"n": 1, "d": "A", "len": 2, "star": true, "link": false, "lv": 1, "t": "Tìm số đo (độ) của góc phụ với góc bù của góc 163°.", "ans": "73", "sol": ["Góc bù của 163° là 180° − 163° = 17°.", "Góc phụ của 17° là 90° − 17° = 73°."]}, {"n": 3, "d": "A", "len": 3, "star": false, "link": false, "lv": 2, "t": "Sáu bạn Nam, Mai, Thu, Sơn, Lan, Hùng cao 60; 64; 58; 68; 63; 69 inch (chưa biết ai cao bao nhiêu). Thu thấp hơn Nam 4 inch. Ba bạn nữ Mai, Thu, Lan thấp nhất, trong đó Mai thấp nhất. Sơn thấp hơn Hùng 1 inch. Tổng chiều cao của Hùng và Lan là bao nhiêu inch?", "ans": "132", "sol": ["Thu thấp hơn Nam 4 inch: cặp (Thu; Nam) là (60; 64) hoặc (64; 68).", "Ba bạn nữ là ba bạn thấp nhất (58; 60; 63) nên Thu = 60, Nam = 64. Mai thấp nhất nên Mai = 58, Lan = 63.", "Sơn thấp hơn Hùng 1 inch: Sơn = 68, Hùng = 69.", "Hùng + Lan = 69 + 63 = 132."]}, {"n": 6, "d": "A", "len": 3, "star": false, "link": false, "lv": 2, "t": "Ông Giang và ông Minh bán cùng loại quạt, cùng giá. Ông Giang được hoa hồng 3%, ông Minh được 5% giá bán mỗi chiếc. Ông Minh bán ít hơn ông Giang 500 chiếc nhưng hai người nhận tiền hoa hồng bằng nhau. Ông Minh bán bao nhiêu chiếc quạt?", "ans": "750", "sol": ["Gọi số quạt ông Giang bán là n. Hoa hồng bằng nhau: 3% × n = 5% × (n − 500).", "3n = 5n − 2500 nên n = 1250.", "Ông Minh bán 1250 − 500 = 750 chiếc."]}, {"n": 7, "d": "A", "len": 2, "star": false, "link": false, "lv": 1, "t": "Bốn anh em của Dũng đều có tên bắt đầu bằng chữ D; ngoài ra trong gia đình không ai có tên bắt đầu bằng chữ D. Chọn ngẫu nhiên một người trong gia đình thì xác suất người đó có tên bắt đầu bằng D là 25%. Gia đình Dũng có bao nhiêu người?", "ans": "20", "sol": ["Tính cả Dũng, có 5 người tên bắt đầu bằng chữ D.", "5 người chiếm 25% = 1/4 gia đình, nên gia đình có 5 × 4 = 20 người."]}, {"n": 8, "d": "A", "len": 3, "star": false, "link": false, "lv": 1, "t": "Tiên nặn một người tuyết hết 2 500 đồng tiền đất nặn. Lan nặn người tuyết có mọi kích thước gấp 4 lần của Tiên (khi mọi kích thước gấp x lần thì thể tích gấp x³ lần). Lan dùng hết bao nhiêu nghìn đồng tiền đất nặn?", "ans": "160", "sol": ["Mọi kích thước gấp 4 lần nên thể tích gấp 4³ = 64 lần.", "Tiền đất: 64 × 2 500 = 160 000 đồng = 160 nghìn đồng."]}, {"n": 10, "d": "A", "len": 2, "star": false, "link": false, "lv": 2, "t": "Mười hai người tỉa xong 1/3 một khu rừng thông trong 7 ngày. Cần bổ sung thêm bao nhiêu người (cùng năng suất) để tỉa nốt phần còn lại trong 6 ngày?", "ans": "16", "sol": ["12 người làm 1/3 khu rừng trong 7 ngày, nên làm 2/3 còn lại cần 14 ngày.", "Số người và số ngày tỉ lệ nghịch: muốn xong trong 6 ngày cần 12 × 14 : 6 = 28 người.", "Cần bổ sung 28 − 12 = 16 người."]}, {"n": 11, "d": "A", "len": 3, "star": false, "link": false, "lv": 3, "t": "Phép toán & được cho bởi A & B = k × Aᵐ × Bⁿ, trong đó k, m, n là các hằng số. Biết 5 & 3 = 18; 10 & 3 = 72 và 5 & 6 = 36. Tính 10 & 6.", "ans": "144", "sol": ["Từ 5 & 3 sang 10 & 3: A gấp đôi, kết quả gấp 72 : 18 = 4 = 2², nên m = 2.", "Từ 5 & 3 sang 5 & 6: B gấp đôi, kết quả gấp 36 : 18 = 2, nên n = 1.", "Từ 5 & 3 sang 10 & 6: kết quả gấp 4 × 2 = 8 lần: 18 × 8 = 144."]}, {"n": 13, "d": "A", "len": 3, "star": false, "link": false, "lv": 3, "t": "Tốc độ chạy của Khải lớn hơn tốc độ đi bộ của bạn ấy 60%. Đi bộ hết một quãng đường mất nhiều hơn chạy hết quãng đường đó 5 phút 30 giây. Khải chạy hết quãng đường đó trong bao nhiêu giây?", "ans": "550", "sol": ["Tốc độ chạy gấp 1,6 = 8/5 tốc độ đi, nên thời gian chạy bằng 5/8 thời gian đi (tỉ lệ nghịch).", "Chênh lệch 5 phút 30 giây = 330 giây ứng với 8 − 5 = 3 phần, mỗi phần 110 giây.", "Thời gian chạy: 5 × 110 = 550 giây."]}, {"n": 14, "d": "A", "len": 2, "star": false, "link": false, "lv": 1, "t": "Biết 2x + 3 = 4. Tính giá trị của biểu thức 12x + 18.", "ans": "24", "sol": ["12x + 18 = 6 × (2x + 3) = 6 × 4 = 24."]}, {"n": 2, "d": "D", "len": 3, "star": false, "link": false, "lv": 3, "t": "Sau 8 trận đầu mùa giải, Danh chuyền bóng thành công 70% số đường chuyền. Ở trận thứ 9, Danh chuyền thành công 49 trong 50 đường chuyền, nâng tỉ lệ thành công cả mùa lên 74%. Trong 9 trận, Danh đã thực hiện tất cả bao nhiêu đường chuyền?", "ans": "350", "sol": ["Gọi p là số đường chuyền trong 8 trận đầu: thành công 0,7p.", "(0,7p + 49) = 0,74 × (p + 50) nên 0,04p = 12, p = 300.", "Tổng 9 trận: 300 + 50 = 350 đường chuyền."]}, {"n": 3, "d": "D", "len": 3, "star": false, "link": false, "lv": 2, "t": "Tính số đo (độ) mỗi góc trong của một đa giác đều có 90 cạnh.", "ans": "176", "sol": ["Tổng các góc ngoài của đa giác bằng 360°, mỗi góc ngoài là 360° : 90 = 4°.", "Mỗi góc trong là 180° − 4° = 176°."]}, {"n": 4, "d": "D", "len": 2, "star": true, "link": false, "lv": 1, "t": "Một đa giác đều có 72 cạnh. Từ tâm của đa giác kẻ hai đoạn thẳng tới hai đỉnh sao cho góc nhỏ tạo bởi hai đoạn thẳng chắn đúng 7 cạnh của đa giác. Tính số đo (độ) của góc đó.", "ans": "35", "sol": ["Mỗi cạnh nhìn từ tâm dưới góc 360° : 72 = 5°.", "Góc chắn 7 cạnh: 7 × 5° = 35°."]}, {"n": 5, "d": "D", "len": 4, "star": false, "link": false, "lv": 2, "t": "Gọi nₖ là chữ số thứ k sau dấu phẩy của số 2240/1111 viết dưới dạng số thập phân. Tính 1000 × n₁₆ + 100 × n₁₃ + 10 × n₁₀ + n₇.", "ans": "2016", "sol": ["2240/1111 = 2 + 18/1111 = 2,(0162): chu kì 4 chữ số 0; 1; 6; 2.", "k chia 4 dư 1 → 0; dư 2 → 1; dư 3 → 6; chia hết → 2.", "n₁₆ = 2, n₁₃ = 0, n₁₀ = 1, n₇ = 6 nên kết quả là 2016."]}, {"n": 7, "d": "D", "len": 4, "star": false, "link": false, "lv": 2, "t": "Tính 5 lần tổng tất cả các ước nguyên dương của 144.", "ans": "2015", "sol": ["144 = 2⁴ × 3². Tổng các ước: (1 + 2 + 4 + 8 + 16) × (1 + 3 + 9) = 31 × 13 = 403.", "5 × 403 = 2015."]}, {"n": 9, "d": "D", "len": 3, "star": true, "link": false, "lv": 1, "t": "Hết ngày thứ 10 của cuộc thi đọc sách, Sa đã đọc 200 trang, Vy đã đọc 120 trang. Từ ngày tiếp theo, mỗi ngày Sa đọc 10 trang, Vy đọc 30 trang. Đến khi số trang đã đọc của hai bạn bằng nhau thì mỗi bạn đã đọc bao nhiêu trang?", "ans": "240", "sol": ["Ban đầu Sa hơn Vy 80 trang, mỗi ngày Vy rút ngắn 30 − 10 = 20 trang.", "Sau 80 : 20 = 4 ngày hai bạn bằng nhau: 200 + 4 × 10 = 240 trang."]}, {"n": 10, "d": "D", "len": 3, "star": false, "link": true, "lv": 1, "t": "Lấy đáp số câu 3 Ngang trừ đi đáp số câu 7 Ngang.", "ans": "112", "sol": ["3 Ngang − 7 Ngang = 132 − 20 = 112."]}, {"n": 12, "d": "D", "len": 2, "star": false, "link": false, "lv": 1, "t": "Tìm số đo (độ) của một góc, biết góc bù của nó gấp 3 lần góc phụ của nó.", "ans": "45", "sol": ["Gọi góc là x: 180° − x = 3 × (90° − x).", "180 − x = 270 − 3x nên 2x = 90, x = 45°."]}]};
+const N = 7, TOTAL_TIME = 60*60;
+const $ = s => document.querySelector(s);
+const STAR = f => `<svg viewBox="0 0 24 24" fill="${f?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg>`;
+const BULB = `<svg viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a8 8 0 0 0-5 14c1 1 1.5 2 1.5 3.5h7c0-1.5.5-2.5 1.5-3.5a8 8 0 0 0-5-14z"/><path d="M9 23h6M10 26h4"/></svg>`;
+
+/* ---------- build entries from grid ---------- */
+const white = (r,c) => r>=0&&c>=0&&r<N&&c<N&&DATA.g[r][c]===1;
+const entries = [];
+for (let r=0;r<N;r++) for (let c=0;c<N;c++){
+  if (!white(r,c)) continue;
+  const no = DATA.starts[r+','+c];
+  if (!white(r,c-1) && white(r,c+1)) { const cells=[]; for(let k=c;white(r,k);k++) cells.push([r,k]); entries.push({d:'A',no:+no,cells}); }
+  if (!white(r-1,c) && white(r+1,c)) { const cells=[]; for(let k=r;white(k,c);k++) cells.push([k,c]); entries.push({d:'D',no:+no,cells}); }
+}
+entries.forEach(e => { e.clue = DATA.clues.find(q => q.n===e.no && q.d===e.d); e.key = e.no+e.d; });
+entries.sort((a,b)=> (a.d===b.d ? a.no-b.no : (a.d==='A'?-1:1)));
+const solution = {}; for (const k in DATA.grid) solution[k] = DATA.grid[k];
+const WCELLS = Object.keys(solution).length, MAXSCORE = WCELLS + 5;
+
+/* ---------- state ---------- */
+let S;
+function fresh(){ return {digits:{}, locked:{}, hinted:{}, solved:{}, hints:2, left:TOTAL_TIME, mistakes:0, combo:0, cur:entries[0].key, pos:0, done:false}; }
+function save(){ try{ localStorage.setItem('osba7', JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const v = JSON.parse(localStorage.getItem('osba7')); return v && v.digits ? v : null; }catch(e){ return null; } }
+
+/* ---------- audio ---------- */
+let AC=null, sfxOn=true, musOn=false, musTimer=null;
+function ac(){ if(!AC){ try{ AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(AC&&AC.state==='suspended') AC.resume(); return AC; }
+function tone(f, dur=.12, type='triangle', vol=.18, when=0, glide=0){
+  const a = ac(); if(!a) return; const t = a.currentTime + when;
+  const o = a.createOscillator(), g = a.createGain(); o.type = type; o.frequency.setValueAtTime(f, t);
+  if (glide) o.frequency.exponentialRampToValueAtTime(glide, t+dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t+0.012); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t+dur+0.02);
+}
+const SFX = {
+  tap(){ sfxOn && tone(880,.05,'sine',.08); },
+  digit(d){ sfxOn && tone(520+d*38,.07,'square',.05); },
+  erase(){ sfxOn && tone(300,.06,'sine',.07,0,220); },
+  ok(){ if(!sfxOn) return; [523,659,784,1047].forEach((f,i)=>tone(f,.16,'triangle',.16,i*.07)); },
+  combo(){ if(!sfxOn) return; [784,988,1175,1568].forEach((f,i)=>tone(f,.12,'square',.07,i*.06)); },
+  bad(){ if(!sfxOn) return; tone(196,.16,'sawtooth',.09); tone(147,.22,'sawtooth',.09,.14); },
+  hint(){ if(!sfxOn) return; tone(660,.35,'sine',.12,0,1760); tone(1320,.2,'triangle',.06,.12); },
+  win(){ if(!sfxOn) return; const m=[523,523,659,784,659,784,1047]; m.forEach((f,i)=>tone(f,.22,'triangle',.18,i*.13)); [262,330,392].forEach(f=>tone(f,1.1,'sine',.07,.9)); },
+  tick(){ sfxOn && tone(1200,.03,'square',.04); }
+};
+const MEL = [392,440,523,587,659,587,523,440, 392,523,659,784,659,523,440,392];
+function music(on){
+  musOn = on; $('#musBtn').classList.toggle('off', !on);
+  clearInterval(musTimer); if(!on) return;
+  let i=0; musTimer = setInterval(()=>{ if(document.hidden) return; tone(MEL[i%MEL.length],.32,'sine',.035); if(i%4===0) tone(MEL[i%MEL.length]/2,.6,'triangle',.03); i++; }, 360);
+}
+
+/* ---------- fx (confetti) ---------- */
+const fx = $('#fx'), fctx = fx.getContext('2d'); let parts=[], fxRun=false;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function sizeFx(){ fx.width = innerWidth*devicePixelRatio; fx.height = innerHeight*devicePixelRatio; }
+addEventListener('resize', sizeFx); sizeFx();
+function burst(x,y,n=26,spread=1){
+  if (RM) return; const cols=['#FFC93C','#FF6B57','#2DBE8C','#2F7DE1','#8E6BD8'];
+  for(let i=0;i<n;i++){ const a=Math.random()*Math.PI*2, v=(2+Math.random()*5)*spread;
+    parts.push({x:x*devicePixelRatio,y:y*devicePixelRatio,vx:Math.cos(a)*v*devicePixelRatio,vy:(Math.sin(a)*v-3)*devicePixelRatio,s:(4+Math.random()*5)*devicePixelRatio,c:cols[i%5],r:Math.random()*6,life:60+Math.random()*40}); }
+  if(!fxRun){ fxRun=true; requestAnimationFrame(stepFx); }
+}
+function stepFx(){
+  fctx.clearRect(0,0,fx.width,fx.height);
+  parts = parts.filter(p=>p.life>0);
+  for(const p of parts){ p.x+=p.vx; p.y+=p.vy; p.vy+=0.18*devicePixelRatio; p.vx*=.99; p.r+=.15; p.life--;
+    fctx.save(); fctx.translate(p.x,p.y); fctx.rotate(p.r); fctx.fillStyle=p.c; fctx.globalAlpha=Math.min(1,p.life/30); fctx.fillRect(-p.s/2,-p.s/3,p.s,p.s*.66); fctx.restore(); }
+  if(parts.length) requestAnimationFrame(stepFx); else { fxRun=false; fctx.clearRect(0,0,fx.width,fx.height); }
+}
+function rain(){ for(let i=0;i<8;i++) setTimeout(()=>burst(Math.random()*innerWidth, -10, 30, 1.3), i*180); }
+
+/* ---------- board ---------- */
+const board = $('#board'); const cellEl = {};
+for (let r=0;r<N;r++) for (let c=0;c<N;c++){
+  const k=r+','+c;
+  if (!white(r,c)) { const d=document.createElement('div'); d.className='cell blk'; d.setAttribute('aria-hidden','true'); board.appendChild(d); continue; }
+  const b=document.createElement('button'); b.className='cell'; b.dataset.k=k; b.setAttribute('aria-label','Ô hàng '+(r+1)+' cột '+(c+1));
+  const no = DATA.starts[k]; b.innerHTML = (no?`<span class="no">${no}</span>`:'') + (DATA.stars.includes(k)?`<span class="st">${STAR(1)}</span>`:'') + '<span class="dg"></span>';
+  b.addEventListener('click', ()=>tapCell(k)); board.appendChild(b); cellEl[k]=b;
+}
+const E = k => entries.find(e=>e.key===k);
+const entriesAt = k => entries.filter(e=>e.cells.some(([r,c])=>r+','+c===k));
+
+/* ---------- keypad ---------- */
+const pad = $('#pad');
+['1','2','3','4','5','6','7','8','9','0','del','dir'].forEach(v=>{
+  const b=document.createElement('button'); b.className='key'+(v.length>1?' fn':''); b.dataset.v=v;
+  b.innerHTML = v==='del' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5H9l-6 7 6 7h12z"/><path d="M17 9l-6 6M11 9l6 6"/></svg>' : v==='dir' ? 'Ngang ⇄ Dọc' : v;
+  if (v==='del') b.setAttribute('aria-label','Xóa');
+  b.addEventListener('click', ()=>press(v)); pad.appendChild(b);
+});
+
+/* ---------- chips ---------- */
+function buildChips(){
+  const ch=$('#chips'); ch.innerHTML='';
+  [['A','Câu Ngang'],['D','Câu Dọc']].forEach(([d,lab])=>{
+    const h=document.createElement('h4'); h.textContent=lab; ch.appendChild(h);
+    const row=document.createElement('div'); row.className='chiprow';
+    entries.filter(e=>e.d===d).forEach(e=>{
+      const b=document.createElement('button'); b.className='chip'; b.dataset.k=e.key;
+      b.innerHTML = `${e.no}<span class="dots">${'<i></i>'.repeat(e.clue.lv)}</span>`;
+      b.setAttribute('aria-label', `Câu ${e.no} ${d==='A'?'Ngang':'Dọc'}`);
+      b.addEventListener('click', ()=>{ SFX.tap(); select(e.key,0); });
+      row.appendChild(b);
+    });
+    ch.appendChild(row);
+  });
+}
+
+/* ---------- jenny ---------- */
+const jEls = () => document.querySelectorAll('.jsvg');
+let moodT;
+function say(msg, mood='norm'){
+  $('#bubble').textContent = msg; const mb=$('#miniBubble'); if(mb) mb.textContent = msg;
+  jEls().forEach(j=>{ j.classList.remove('happy','oops','bounce'); void j.offsetWidth; if(mood!=='norm') j.classList.add(mood); if(mood==='happy') j.classList.add('bounce'); });
+  clearTimeout(moodT); moodT=setTimeout(()=>jEls().forEach(j=>j.classList.remove('happy','oops','bounce')), 2200);
+}
+const CHEER = ['Giỏi quá!','Chính xác!','Tuyệt vời!','Đúng rồi, tiếp nào!','Em làm tốt lắm!'];
+const OOPS = ['Chưa đúng, thử lại nhé!','Gần rồi! Kiểm tra lại phép tính nhé.','Ôi, sai mất rồi. Đọc lại đề xem!'];
+
+/* ---------- render ---------- */
+function render(){
+  const e = E(S.cur); const curCell = e.cells[S.pos].join(',');
+  const inword = new Set(e.cells.map(c=>c.join(',')));
+  for (const k in cellEl){
+    const el=cellEl[k]; el.classList.toggle('inword', inword.has(k)); el.classList.toggle('cur', k===curCell);
+    el.classList.toggle('ok', !!S.locked[k]); el.classList.toggle('hint', !!S.hinted[k]);
+    el.querySelector('.dg').textContent = S.digits[k] ?? '';
+  }
+  const q=e.clue, solved=!!S.solved[e.key];
+  $('#cNum').textContent=e.no; $('#cDir').textContent = e.d==='A'?'Ngang':'Dọc';
+  $('#badge').classList.toggle('solved', solved);
+  $('#cStars').innerHTML = [0,1,2].map(i=>STAR(i<q.lv)).join('');
+  const tags=[]; if(q.star) tags.push('<span class="tag start">Bắt đầu ở đây</span>'); if(q.link) tags.push('<span class="tag link">Câu nối</span>'); if(q.lv===3) tags.push('<span class="tag boss">Câu khó</span>');
+  tags.push(`<span class="tag">${q.len} chữ số</span>`);
+  $('#cTags').innerHTML = tags.join('');
+  $('#cText').textContent = q.t;
+  $('#slots').innerHTML = e.cells.map((c,i)=>{ const k=c.join(','); return `<span class="s${S.locked[k]?' ok':''}${i===S.pos&&!solved?' now':''}">${S.digits[k]??''}</span>`; }).join('') + `<span class="msg">${solved?'Đã giải ✓':''}</span>`;
+  document.querySelectorAll('.chip').forEach(b=>{ b.classList.toggle('on', b.dataset.k===S.cur); b.classList.toggle('done', !!S.solved[b.dataset.k]); });
+  $('#bulbs').innerHTML = [0,1].map(i=>`<button class="bulb${i>=S.hints?' used':''}" aria-label="Dùng bóng đèn trợ giúp" ${i>=S.hints?'disabled':''}>${BULB}</button>`).join('');
+  document.querySelectorAll('.bulb').forEach(b=>b.addEventListener('click', useHint));
+  $('#score').textContent = score() + '/' + MAXSCORE;
+}
+function score(){ const c = Object.keys(S.locked).filter(k=>!S.hinted[k]).length; return Math.max(0, c + (allDone()?5:0) - (2-S.hints)); }
+function allDone(){ return Object.keys(solution).every(k=>S.locked[k]); }
+function fmt(s){ const m=Math.floor(s/60), x=s%60; return String(m).padStart(2,'0')+':'+String(x).padStart(2,'0'); }
+
+/* ---------- interaction ---------- */
+function select(key,pos){
+  S.cur=key; const e=E(key);
+  if (pos===undefined){ pos = e.cells.findIndex(c=>!S.locked[c.join(',')] && S.digits[c.join(',')]===undefined); if(pos<0) pos=0; }
+  S.pos=pos; render();
+  const q=e.clue; if(!S.solved[key]) say(q.lv===3?'Câu khó đây! Điền trước các câu cắt ngang nó nhé.': q.star?'Câu này dễ, bắt đầu từ đây nhé!': q.link?'Câu nối: dùng đáp số của câu khác.':'Đọc kĩ đề rồi bấm số nhé!');
+}
+function tapCell(k){
+  SFX.tap();
+  const es = entriesAt(k); let e = E(S.cur);
+  const inCur = e.cells.some(c=>c.join(',')===k);
+  if (inCur && e.cells[S.pos].join(',')===k && es.length>1){ e = es.find(x=>x.key!==S.cur); }
+  else if (!inCur){ e = es.find(x=>x.d===e.d) || es[0]; }
+  select(e.key, e.cells.findIndex(c=>c.join(',')===k));
+}
+function press(v){
+  if (S.done) return;
+  const kb = pad.querySelector(`[data-v="${v}"]`); if(kb){ kb.classList.add('hit'); setTimeout(()=>kb.classList.remove('hit'),90); }
+  const e=E(S.cur);
+  if (v==='dir'){ SFX.tap(); const k=e.cells[S.pos].join(','); const o=entriesAt(k).find(x=>x.key!==S.cur); if(o) select(o.key, o.cells.findIndex(c=>c.join(',')===k)); return; }
+  if (v==='del'){
+    let k=e.cells[S.pos].join(',');
+    if ((S.digits[k]===undefined || S.locked[k]) && S.pos>0){ S.pos--; k=e.cells[S.pos].join(','); }
+    if (!S.locked[k]) { delete S.digits[k]; SFX.erase(); }
+    render(); save(); return;
+  }
+  if (S.locked[e.cells[S.pos].join(',')]){ const i=e.cells.findIndex((c,j)=>j>S.pos && !S.locked[c.join(',')]); const i2 = i>=0 ? i : e.cells.findIndex(c=>!S.locked[c.join(',')]); if(i2<0){ say('Câu này đã giải xong. Chọn câu khác nhé!'); return; } S.pos=i2; }
+  const k=e.cells[S.pos].join(',');
+  if (S.pos===0 && v==='0'){ say('Đáp số không bắt đầu bằng chữ số 0 đâu!','oops'); SFX.bad(); return; }
+  S.digits[k]=v; SFX.digit(+v);
+  const el=cellEl[k]; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+  advance(e); render(); checkAll(); save();
+}
+function advance(e){ for(let i=S.pos+1;i<e.cells.length;i++){ if(!S.locked[e.cells[i].join(',')]){ S.pos=i; return; } } }
+function full(e){ return e.cells.every(c=>S.digits[c.join(',')]!==undefined); }
+function entryCenter(e){ const a=cellEl[e.cells[0].join(',')].getBoundingClientRect(), b=cellEl[e.cells[e.cells.length-1].join(',')].getBoundingClientRect(); return [(a.left+b.right)/2,(a.top+b.bottom)/2]; }
+function checkAll(){
+  const e=E(S.cur); if (S.solved[e.key] || !full(e)) return;
+  const ok = e.cells.every(c=>S.digits[c.join(',')]===solution[c.join(',')]);
+  if (ok){ solve(e,true); }
+  else {
+    S.mistakes++; S.combo=0; SFX.bad(); say(OOPS[S.mistakes%OOPS.length],'oops');
+    const wrong = e.cells.map(c=>c.join(',')).filter(k=>!S.locked[k]);
+    wrong.forEach(k=>{ const el=cellEl[k]; el.classList.remove('bad'); void el.offsetWidth; el.classList.add('bad'); });
+    setTimeout(()=>{ wrong.forEach(k=>{ cellEl[k].classList.remove('bad'); delete S.digits[k]; }); S.pos = e.cells.findIndex(c=>!S.locked[c.join(',')]); if(S.pos<0) S.pos=0; render(); save(); }, 650);
+  }
+}
+function solve(e, byPlayer){
+  S.solved[e.key]=true; e.cells.forEach(c=>{ const k=c.join(','); S.locked[k]=true; S.digits[k]=solution[k]; });
+  if (byPlayer){ S.combo++; SFX.ok(); const [x,y]=entryCenter(e); burst(x,y,30);
+    if (S.combo>=2){ setTimeout(()=>SFX.combo(),260); comboText('Combo x'+S.combo+'!'); }
+    say(CHEER[Math.floor(Math.random()*CHEER.length)],'happy'); }
+  // crossing entries now fully locked count as solved too
+  entries.forEach(o=>{ if(!S.solved[o.key] && o.cells.every(c=>S.locked[c.join(',')])){ S.solved[o.key]=true; } });
+  render(); save();
+  if (allDone()) setTimeout(()=>finish(true), 700);
+  else if (byPlayer) setTimeout(()=>{ const nx = nextOpen(e.key); if(nx) select(nx); }, 650);
+}
+function nextOpen(from){ const i=entries.findIndex(e=>e.key===from); for(let j=1;j<=entries.length;j++){ const e=entries[(i+j)%entries.length]; if(!S.solved[e.key]) return e.key; } return null; }
+function comboText(t){ if(RM) return; const d=document.createElement('div'); d.className='combo'; d.textContent=t; document.body.appendChild(d); setTimeout(()=>d.remove(),1150); }
+function useHint(){
+  if (S.hints<=0 || S.done) return;
+  const e=E(S.cur); let k=e.cells[S.pos].join(',');
+  if (S.locked[k]){ const c=e.cells.find(c=>!S.locked[c.join(',')]); if(!c){ say('Câu này đã giải xong rồi. Chọn câu khác nhé!'); return; } k=c.join(','); }
+  S.hints--; S.locked[k]=true; S.hinted[k]=true; S.digits[k]=solution[k]; SFX.hint();
+  const r=cellEl[k].getBoundingClientRect(); burst(r.left+r.width/2, r.top+r.height/2, 16, .6);
+  say('Jenny mở giúp em một chữ số rồi đó!','happy');
+  entries.forEach(o=>{ if(!S.solved[o.key] && o.cells.every(c=>S.locked[c.join(',')])) S.solved[o.key]=true; });
+  advance(e); render(); save(); if(allDone()) setTimeout(()=>finish(true),700);
+}
+
+/* ---------- timer ---------- */
+let timer=null, paused=true;
+function startTimer(){ paused=false; clearInterval(timer); timer=setInterval(()=>{ if(paused||S.done) return; S.left--;
+  $('#time').textContent=fmt(Math.max(0,S.left)); $('#timePill').classList.toggle('warn', S.left<=300);
+  if (S.left<=10 && S.left>0) SFX.tick();
+  if (S.left%15===0) save();
+  if (S.left<=0) finish(false); }, 1000); }
+
+/* ---------- end ---------- */
+function finish(win){
+  if (S.done) return; S.done=true; save(); paused=true;
+  const sc=score(), solvedN = entries.filter(e=>S.solved[e.key]).length;
+  const starsN = win ? (S.hints===2 && S.mistakes<=3 ? 3 : S.hints>=1 ? 2 : 1) : (sc>=20?2: sc>=10?1:0);
+  if (win){ SFX.win(); rain(); } else { SFX.bad(); }
+  const used = TOTAL_TIME - Math.max(0,S.left);
+  $('#endPanel').innerHTML = `
+    ${JENNY_BIG}
+    <h2>${win?'Hoàn thành lưới!':'Hết giờ rồi!'}</h2>
+    <p>${win?'Jenny rất tự hào về em. Cả 17 câu đố đều đã được giải.':'Không sao! Xem lời giải rồi thử lại nhé.'}</p>
+    <div class="resstars">${[0,1,2].map(i=>`<svg class="${i<starsN?'':'dim'}" viewBox="0 0 24 24" fill="currentColor" stroke="#1D2B53" stroke-width="1.4" stroke-linejoin="round"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z"/></svg>`).join('')}</div>
+    <div class="kpis"><div><b>${sc}/${MAXSCORE}</b><span>Điểm</span></div><div><b>${solvedN}/${entries.length}</b><span>Câu đã giải</span></div><div><b>${fmt(used)}</b><span>Thời gian</span></div></div>
+    <div class="row"><button class="big" id="againBtn">Chơi lại</button><button class="big alt" id="solBtn">Xem lời giải</button></div>
+    <div id="solBox" hidden></div>`;
+  $('#endOv').hidden=false;
+  $('#againBtn').onclick=()=>{ S=fresh(); save(); $('#endOv').hidden=true; $('#time').textContent=fmt(S.left); select(entries[0].key,0); startTimer(); };
+  $('#solBtn').onclick=()=>{ const b=$('#solBox'); b.hidden=!b.hidden; if(!b.innerHTML) b.innerHTML = entries.map(e=>`<div class="sol"><h3>${e.no} ${e.d==='A'?'Ngang':'Dọc'} — ${e.clue.ans}</h3><ul>${e.clue.sol.map(s=>`<li>${s}</li>`).join('')}</ul></div>`).join(''); };
+}
+
+/* ---------- controls ---------- */
+$('#prevBtn').onclick=()=>{ SFX.tap(); const i=entries.findIndex(e=>e.key===S.cur); select(entries[(i-1+entries.length)%entries.length].key); };
+$('#nextBtn').onclick=()=>{ SFX.tap(); const i=entries.findIndex(e=>e.key===S.cur); select(entries[(i+1)%entries.length].key); };
+$('#sndBtn').onclick=()=>{ sfxOn=!sfxOn; $('#sndBtn').classList.toggle('off',!sfxOn); if(sfxOn) SFX.tap(); };
+$('#musBtn').onclick=()=>{ ac(); music(!musOn); };
+$('#musBtn2').onclick=()=>{ ac(); music(!musOn); $('#musBtn2').textContent='Nhạc nền: '+(musOn?'bật':'tắt'); };
+$('#pauseBtn').onclick=()=>{ if(S.done) return; paused=true; $('#pauseOv').hidden=false; save(); };
+$('#resBtn').onclick=()=>{ $('#pauseOv').hidden=true; paused=false; };
+$('#restartBtn').onclick=()=>{ S=fresh(); save(); $('#pauseOv').hidden=true; $('#time').textContent=fmt(S.left); select(entries[0].key,0); paused=false; };
+addEventListener('keydown', ev=>{
+  if (!$('#startOv').hidden || !$('#pauseOv').hidden || !$('#endOv').hidden) return;
+  if (/^[0-9]$/.test(ev.key)){ press(ev.key); ev.preventDefault(); }
+  else if (ev.key==='Backspace'||ev.key==='Delete'){ press('del'); ev.preventDefault(); }
+  else if (ev.key===' '){ press('dir'); ev.preventDefault(); }
+  else if (ev.key==='Enter'||ev.key==='Tab'){ const nx=nextOpen(S.cur); if(nx) select(nx); ev.preventDefault(); }
+  else if (ev.key.startsWith('Arrow')){
+    const [r,c]=E(S.cur).cells[S.pos]; const dr={ArrowUp:-1,ArrowDown:1}[ev.key]||0, dc={ArrowLeft:-1,ArrowRight:1}[ev.key]||0;
+    let rr=r+dr, cc=c+dc; while(rr>=0&&cc>=0&&rr<N&&cc<N&&!white(rr,cc)){ rr+=dr; cc+=dc; }
+    if (white(rr,cc)){ const k=rr+','+cc; const es=entriesAt(k); const e=es.find(x=>x.d===(dr?'D':'A'))||es[0]; select(e.key, e.cells.findIndex(x=>x.join(',')===k)); }
+    ev.preventDefault();
+  }
+});
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden) save(); });
+
+/* ---------- start ---------- */
+const JENNY_BIG = document.querySelector('#startOv .jsvg').outerHTML;
+const saved = load();
+if (saved && !saved.done){ $('#resumeBtn').hidden=false; }
+function begin(st){ S=st; $('#startOv').hidden=true; ac(); SFX.ok(); $('#time').textContent=fmt(S.left); select(S.cur,S.pos); say('Chào em! Chạm vào câu có ngôi sao để bắt đầu nhé.','happy'); startTimer(); }
+$('#startBtn').onclick=()=>begin(fresh());
+$('#resumeBtn').onclick=()=>begin(saved);
+S = fresh(); buildChips(); render();
+</script>
+
+</body></html>

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Game Toán – Học Toán cùng Jenny</title>
+<meta name="description" content="Kho trò chơi toán của CLB Học Toán cùng Jenny, dành cho học sinh tiểu học và THCS.">
+<link rel="icon" href="assets/jenny-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<style>
+/* Same look as the games: sky board, thick ink outlines, sunny yellow buttons. */
+:root{
+  --sky:#CFEAFB; --ink:#1D2B53; --ink-soft:#4A5878; --paper:#FFFFFF;
+  --sun:#FFC93C; --sun-soft:#FFF0C2; --coral:#FF6B57; --mint:#2DBE8C; --mint-soft:#D5F6E8;
+  --sel:#2F7DE1; --sel-soft:#DCEBFF; --hatch:#B8C6DD; --purple:#8E6BD8;
+  --display:'Baloo 2','Trebuchet MS',system-ui,sans-serif;
+  --body:'Nunito','Segoe UI',system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--sky);color:var(--ink);font-family:var(--body);min-height:100vh;
+  background-image:radial-gradient(circle at 1px 1px,rgba(29,43,83,.10) 1px,transparent 1.4px);background-size:22px 22px}
+a{color:inherit}
+button{font-family:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:16px 16px 48px}
+
+/* header */
+header{display:flex;align-items:center;gap:12px;padding:6px 0 18px}
+header img{height:56px;width:auto;filter:drop-shadow(0 2px 0 rgba(29,43,83,.15))}
+.brand b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(20px,3vw,28px);line-height:1}
+.brand span{font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+
+/* hero */
+.hero{background:var(--paper);border:3px solid var(--ink);border-radius:26px;box-shadow:0 6px 0 var(--ink);
+  padding:22px 24px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,5vw,48px);line-height:1;margin:0 0 8px}
+.hero p{margin:0;font-size:clamp(15px,1.8vw,18px);line-height:1.5;max-width:52ch}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.stat{border:2.5px solid var(--ink);border-radius:999px;padding:4px 12px;font-weight:900;background:var(--sun-soft);font-size:14px}
+.stat b{font-family:var(--display);font-size:18px}
+.jenny{width:120px;height:140px}
+
+/* filter */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 8px}
+.chip{height:40px;padding:0 16px;border-radius:12px;border:2.5px solid var(--ink);background:var(--paper);
+  box-shadow:0 3px 0 var(--ink);font-weight:900;font-size:15px}
+.chip:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.chip[aria-pressed="true"]{background:var(--sel);color:#fff}
+
+/* series */
+.series{margin-top:22px}
+.series h2{font-family:var(--display);font-weight:800;font-size:26px;margin:0 0 10px;display:flex;align-items:center;gap:10px}
+.series h2 small{font-family:var(--body);font-size:13px;font-weight:900;color:var(--ink-soft);letter-spacing:.04em}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+
+/* card */
+.card{background:var(--paper);border:3px solid var(--ink);border-radius:20px;box-shadow:0 5px 0 var(--ink);
+  display:grid;grid-template-rows:auto 1fr auto;overflow:hidden;text-decoration:none;transition:transform .12s, box-shadow .12s}
+a.card:hover{transform:translateY(-3px);box-shadow:0 8px 0 var(--ink)}
+a.card:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
+.thumb{height:118px;background:var(--sel-soft);border-bottom:3px solid var(--ink);position:relative;display:grid;place-items:center}
+.mini{display:grid;grid-template-columns:repeat(5,22px);gap:3px}
+.mini i{width:22px;height:22px;border-radius:5px;border:2px solid var(--ink);background:var(--paper);display:grid;place-items:center;
+  font-family:var(--display);font-weight:800;font-style:normal;font-size:13px;line-height:1}
+.mini i.x{border-color:transparent;background:repeating-linear-gradient(45deg,var(--hatch) 0 2px,transparent 2px 6px)}
+.mini i.ok{background:var(--mint-soft);color:#0E6B4C}
+.grade{position:absolute;top:10px;left:10px;background:var(--ink);color:#fff;border-radius:10px;padding:3px 10px;font-weight:900;font-size:13px}
+.flag{position:absolute;top:10px;right:10px;border:2px solid var(--ink);border-radius:999px;padding:2px 9px;font-weight:900;font-size:12px;background:var(--sun)}
+.flag.done{background:var(--mint);color:#fff;border-color:#0E6B4C}
+.body{padding:12px 14px 4px}
+.body h3{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.1;margin:0 0 6px}
+.body p{margin:0;font-size:14.5px;line-height:1.45;color:var(--ink-soft)}
+.meta{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px 14px;align-items:center}
+.tag{font-size:12px;font-weight:900;border:2px solid var(--ink);border-radius:999px;padding:2px 9px;white-space:nowrap}
+.play{margin-left:auto;background:var(--sun);border:2.5px solid var(--ink);border-radius:12px;padding:5px 14px;
+  font-family:var(--display);font-weight:800;font-size:17px;box-shadow:0 3px 0 var(--ink)}
+.card.soon{opacity:.7;box-shadow:0 5px 0 var(--hatch);border-style:dashed}
+.card.soon .thumb{background:var(--paper)}
+.card.soon .play{background:var(--paper);box-shadow:none;border-style:dashed}
+.empty{padding:28px;text-align:center;font-weight:800;color:var(--ink-soft)}
+
+footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);font-weight:700}
+
+@media (max-width:640px){
+  header img{height:44px}
+  .hero{grid-template-columns:1fr;padding:18px}
+  .jenny{display:none}
+  .grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="assets/jenny-logo.png" alt="Học Toán cùng Jenny">
+    <div class="brand"><b>Học Toán cùng Jenny</b><span>Góc trò chơi toán</span></div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1>Chơi mà học Toán!</h1>
+      <p>Các trò chơi toán của CLB Học Toán cùng Jenny. Chọn lớp của em, bấm vào một game và bắt đầu. Game tự lưu tiến độ trên máy, lần sau có thể chơi tiếp.</p>
+      <div class="stats" id="stats"></div>
+    </div>
+    <svg class="jenny" viewBox="0 0 120 140" aria-hidden="true" stroke="#1D2B53" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 70 Q14 28 60 18 Q106 28 98 70 Q101 90 93 101 L84 97 Q88 82 86 66 L34 66 Q32 82 36 97 L27 101 Q19 90 22 70 Z" fill="#2B1E1A"/>
+      <ellipse cx="60" cy="63" rx="26" ry="29" fill="#FFDCC2"/>
+      <path d="M34 58 Q38 32 64 31 Q86 33 87 56 Q78 45 66 46 Q60 38 50 47 Q42 47 34 58 Z" fill="#2B1E1A"/>
+      <ellipse cx="50" cy="65" rx="3.2" ry="4.2" fill="#1D2B53"/><ellipse cx="70" cy="65" rx="3.2" ry="4.2" fill="#1D2B53"/>
+      <circle cx="51" cy="63.5" r="1" fill="#fff" stroke="none"/><circle cx="71" cy="63.5" r="1" fill="#fff" stroke="none"/>
+      <path d="M45 58 q5 -3 9 0 M66 58 q5 -3 9 0" stroke-width="1.6" fill="none"/>
+      <ellipse cx="42" cy="75" rx="4.5" ry="2.6" fill="#FF9E8C" stroke="none"/><ellipse cx="78" cy="75" rx="4.5" ry="2.6" fill="#FF9E8C" stroke="none"/>
+      <path d="M50 77 q10 13 20 0 z" fill="#B3261E"/>
+      <path d="M54 91 v7 M66 91 v7" fill="none"/>
+      <path d="M22 124 L34 104 Q44 99 54 98 Q60 103 66 98 Q76 99 86 104 L98 124 L88 128 L86 121 L86 139 L34 139 L34 121 L32 128 Z" fill="#8E6BD8"/>
+      <path d="M40 103 L82 131" stroke="#7A4B2A" stroke-width="3.4" fill="none"/>
+      <rect x="78" y="127" width="15" height="11" rx="3" fill="#D9A066"/>
+    </svg>
+  </section>
+
+  <nav class="filters" id="filters" aria-label="Lọc theo lớp"></nav>
+  <main id="list"></main>
+
+  <footer>© CLB Học Toán cùng Jenny · Trò chơi dùng cho học tập trong câu lạc bộ</footer>
+</div>
+
+<script src="games.js"></script>
+<script>
+(function(){
+  const GAMES = window.GAMES || [];
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  // progress saved by each game in this browser
+  function progress(g){
+    if (!g.saveKey) return null;
+    try {
+      const v = JSON.parse(localStorage.getItem(g.saveKey));
+      if (!v || !v.digits) return null;
+      return v.done ? 'done' : 'playing';
+    } catch(e){ return null; }
+  }
+
+  // decorative mini board, different per game
+  function mini(seed){
+    let h = 0; for (const c of seed) h = (h*31 + c.charCodeAt(0)) >>> 0;
+    let out = '';
+    for (let i=0;i<15;i++){
+      h = (h*1103515245 + 12345) >>> 0;
+      const r = h % 10;
+      out += r < 3 ? '<i class="x"></i>' : r < 6 ? `<i class="ok">${h % 9 + 1}</i>` : '<i></i>';
+    }
+    return `<div class="mini">${out}</div>`;
+  }
+
+  const ORDER = ['Tiểu học','Lớp 1','Lớp 2','Lớp 3','Lớp 4','Lớp 5','Lớp 6','Lớp 7','Lớp 8','Lớp 9'];
+  const grades = [...new Set(GAMES.map(g=>g.grade))].sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
+  let current = 'Tất cả';
+  try { const q = new URLSearchParams(location.search).get('lop'); if (q && grades.includes('Lớp '+q)) current = 'Lớp '+q; } catch(e){}
+
+  const live = GAMES.filter(g=>g.status==='live');
+  $('#stats').innerHTML =
+    `<span class="stat"><b>${live.length}</b> game</span>` +
+    `<span class="stat"><b>${new Set(live.map(g=>g.series)).size}</b> bộ game</span>` +
+    `<span class="stat"><b>${live.reduce((s,g)=>s+(g.puzzles||0),0)}</b> câu đố</span>`;
+
+  function drawFilters(){
+    $('#filters').innerHTML = ['Tất cả', ...grades].map(g =>
+      `<button class="chip" aria-pressed="${g===current}" data-g="${esc(g)}">${esc(g)}</button>`).join('');
+    document.querySelectorAll('#filters .chip').forEach(b => b.onclick = () => { current = b.dataset.g; drawFilters(); drawList(); });
+  }
+
+  function card(g){
+    const p = g.status==='live' ? progress(g) : null;
+    const flag = p==='done' ? '<span class="flag done">Đã hoàn thành</span>' : p==='playing' ? '<span class="flag">Đang chơi dở</span>' : '';
+    const tags = [g.topic && `<span class="tag">${esc(g.topic)}</span>`,
+                  g.puzzles && `<span class="tag">${g.puzzles} câu</span>`,
+                  g.minutes && `<span class="tag">${g.minutes} phút</span>`].filter(Boolean).join('');
+    const inner = `
+      <div class="thumb">${mini(g.id)}<span class="grade">${esc(g.grade)}</span>${flag}</div>
+      <div class="body"><h3>${esc(g.title)}</h3><p>${esc(g.desc)}</p></div>
+      <div class="meta">${tags}<span class="play">${g.status==='live' ? (p==='playing'?'Chơi tiếp':'Chơi') : 'Sắp có'}</span></div>`;
+    return g.status==='live'
+      ? `<a class="card" href="${esc(g.url)}">${inner}</a>`
+      : `<div class="card soon" aria-disabled="true">${inner}</div>`;
+  }
+
+  function drawList(){
+    const shown = GAMES.filter(g => current==='Tất cả' || g.grade===current);
+    if (!shown.length){ $('#list').innerHTML = '<div class="empty">Chưa có game cho lớp này. Jenny đang làm thêm!</div>'; return; }
+    const bySeries = {};
+    shown.forEach(g => (bySeries[g.series] ||= []).push(g));
+    $('#list').innerHTML = Object.entries(bySeries).map(([s, list]) => {
+      const n = list.filter(g=>g.status==='live').length;
+      return `<section class="series"><h2>${esc(s)} <small>${n} game</small></h2><div class="grid">${list.map(card).join('')}</div></section>`;
+    }).join('');
+  }
+
+  drawFilters(); drawList();
+  // refresh progress flags when returning from a game
+  addEventListener('pageshow', drawList);
+})();
+</script>
+</body>
+</html>
