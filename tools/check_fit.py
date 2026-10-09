@@ -123,7 +123,7 @@ def bb_end(pg):
 
 
 def sg_open(pg):
-    pg.fill("#code", "JENNY2026")
+    pg.fill("#code", "JENNY123")
     pg.click("#codeGo")
     pg.wait_for_function("window.__saga && __saga.bank", timeout=15000)
     wait(pg, 300)
