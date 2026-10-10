@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vào lớp – Jenny LMS</title>
+<link rel="stylesheet" href="lms.css">
+<style>
+html,body{height:100%;overflow:hidden}
+body{font-size:17px}
+#app{height:100dvh;display:flex;flex-direction:column;max-width:760px;margin:0 auto;padding:12px 14px calc(12px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;gap:10px;flex:none;margin-bottom:10px}
+.top .logo{flex:1}
+.view{display:none;flex:1;min-height:0;flex-direction:column}
+.view.on{display:flex}
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;min-height:0}
+.big{font-size:24px;font-weight:900}
+#code{font-size:28px;text-align:center;letter-spacing:2px;text-transform:uppercase;max-width:320px;font-weight:800}
+.names{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;width:100%;overflow:auto;padding:4px;min-height:0;flex:1;align-content:start}
+.names button{min-height:64px;border:3px solid var(--line);background:#fff;border-radius:16px;font-size:19px;font-weight:800;padding:8px}
+.names button:hover,.names button:focus-visible{border-color:var(--y2);outline:0}
+.dots{display:flex;gap:10px;justify-content:center;min-height:56px;align-items:center}
+.dots i{width:52px;height:52px;border-radius:14px;border:3px dashed var(--line);display:flex;align-items:center;justify-content:center;background:#fff}
+.dots i.f{border-style:solid;border-color:var(--y2)}
+.pad{display:grid;grid-template-columns:repeat(3,minmax(64px,92px));gap:10px;justify-content:center}
+.pad button{min-height:68px;border:3px solid var(--line);background:#fff;border-radius:18px;font-size:28px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.pad button:active{transform:scale(.96)}
+.pad button.sp{background:#F1E9D6;font-size:16px}
+.home{flex:1;min-height:0;overflow:auto;padding-bottom:8px}
+.sec{font-weight:900;margin:12px 0 6px;font-size:16px;color:var(--mut)}
+.task{display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;box-shadow:var(--sh);padding:12px;margin-bottom:10px}
+.task .ic{width:52px;height:52px;flex:none;border-radius:14px;background:#FFE3A8;display:flex;align-items:center;justify-content:center;font-size:28px}
+.task .tx{flex:1;min-width:0}
+.task .tx b{display:block;font-size:16px;line-height:1.25}
+.task .tx span{font-size:13px;color:var(--mut)}
+.stars{color:var(--y2);letter-spacing:1px;font-size:18px;white-space:nowrap}
+.task.done .ic{background:#D5F6E8}
+.notice{background:#fff;border-left:5px solid var(--y);border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:15px}
+.me{display:flex;align-items:center;gap:10px}
+.me .av{width:44px;height:44px;border-radius:50%;background:var(--y);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top"><div class="logo"><i>J</i> Jenny LMS</div><button class="btn sm" id="bOut" hidden>Đổi bạn</button><a class="btn sm" id="bBack" href="index.html">←</a></div>
+
+  <section class="view" id="vCode"><div class="center">
+    <div class="big">Mã lớp của con là gì?</div>
+    <p class="mut" style="margin:0">Mã lớp có trên thẻ cô phát, ví dụ <b>MN-7Y63</b></p>
+    <input class="inp" id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" aria-label="Mã lớp">
+    <button class="btn y" id="bCode" style="min-width:200px;font-size:19px">Tiếp tục</button>
+    <div id="mCode"></div>
+  </div></section>
+
+  <section class="view" id="vName">
+    <div class="big" style="text-align:center;margin-bottom:4px">Con là bạn nào?</div>
+    <p class="mut" style="text-align:center;margin:0 0 10px" id="nClass"></p>
+    <div class="names" id="names"></div>
+    <div class="row" style="justify-content:center;margin-top:8px"><button class="btn sm" id="bNameBack">Nhập mã lớp khác</button></div>
+  </section>
+
+  <section class="view" id="vPin"><div class="center">
+    <div class="big" id="pHi"></div>
+    <p class="mut" style="margin:0" id="pHelp"></p>
+    <div class="dots" id="dots"></div>
+    <div class="pad" id="pad"></div>
+    <div id="mPin"></div>
+  </div></section>
+
+  <section class="view" id="vHome">
+    <div class="me"><div class="av" id="hAv"></div><div><b id="hName" style="font-size:19px"></b><br><span class="mut small" id="hClass"></span></div></div>
+    <div class="home" id="home"></div>
+  </section>
+</div>
+<script type="module">
+import { rpc, token, setToken, GAMES, gameLabel, shapeSvg, esc } from './sdk.js';
+const $ = s => document.querySelector(s);
+let K = null, ST = null, PIN = '', PINLEN = 3;
+
+function show(v) { document.querySelectorAll('.view').forEach(x => x.classList.toggle('on', x.id === v)); $('#bOut').hidden = v !== 'vHome'; }
+function say(t) { try { if (!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); const v = speechSynthesis.getVoices().find(v => /^vi/i.test(v.lang)); if (!v) return; u.voice = v; u.lang = v.lang; u.rate = .8; speechSynthesis.speak(u); } catch (e) {} }
+function msg(id, t, err) { $(id).innerHTML = t ? `<div class="msg${err ? ' err' : ''}">${esc(t)}</div>` : ''; }
+
+/* 1. mã lớp */
+async function goCode(code) {
+  code = (code || '').trim().toUpperCase(); if (!code) return;
+  msg('#mCode', 'Đang tìm lớp…');
+  try {
+    K = await rpc('s_class', { p_code: code });
+    if (!K) return msg('#mCode', 'Không có lớp nào mang mã này. Con kiểm tra lại nhé.', true);
+    try { localStorage.setItem('jl-class', code); } catch (e) {}
+    msg('#mCode', ''); pickName();
+  } catch (e) { msg('#mCode', e.message, true); }
+}
+$('#bCode').onclick = () => goCode($('#code').value);
+$('#code').onkeydown = e => { if (e.key === 'Enter') goCode($('#code').value); };
+
+/* 2. chọn tên */
+function pickName() {
+  $('#nClass').textContent = 'Lớp ' + K.name;
+  const box = $('#names'); box.innerHTML = '';
+  if (!K.students.length) box.innerHTML = '<div class="empty">Lớp chưa có học sinh.</div>';
+  K.students.forEach(s => { const b = document.createElement('button'); b.textContent = s.name; b.onclick = () => askPin(s); box.appendChild(b); });
+  show('vName'); if (K.level === 'mn') say('Con là bạn nào? Con chạm vào tên của mình nhé.');
+}
+$('#bNameBack').onclick = () => { try { localStorage.removeItem('jl-class'); } catch (e) {} show('vCode'); };
+
+/* 3. mã bí mật */
+function askPin(s) {
+  ST = s; PIN = ''; const mn = K.level === 'mn'; PINLEN = mn ? 3 : 4;
+  $('#pHi').textContent = 'Chào ' + s.name + '!';
+  $('#pHelp').textContent = mn ? 'Con chạm 3 hình bí mật theo đúng thứ tự trên thẻ nhé.' : 'Em nhập 4 số bí mật trên thẻ nhé.';
+  const pad = $('#pad'); pad.innerHTML = '';
+  const keys = mn ? ['a', 'b', 'c', 'd', 'e', 'f'] : ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'x', '0', ''];
+  keys.forEach(k => {
+    const b = document.createElement('button');
+    if (k === 'x') { b.className = 'sp'; b.textContent = 'Xoá'; b.onclick = () => { PIN = PIN.slice(0, -1); dots(); }; }
+    else if (!k) { b.className = 'sp'; b.textContent = 'Đổi tên'; b.onclick = () => show('vName'); }
+    else { b.innerHTML = mn ? shapeSvg(k, 46) : k; b.setAttribute('aria-label', mn ? '' : k); b.onclick = () => tap(k); }
+    pad.appendChild(b);
+  });
+  if (mn) { const row = document.createElement('div'); row.className = 'row'; row.style.justifyContent = 'center'; row.style.gridColumn = '1/-1';
+    row.innerHTML = '<button class="btn sm" id="pX">Xoá</button><button class="btn sm" id="pN">Đổi tên</button>'; pad.appendChild(row);
+    row.querySelector('#pX').onclick = () => { PIN = PIN.slice(0, -1); dots(); }; row.querySelector('#pN').onclick = () => show('vName'); }
+  dots(); msg('#mPin', ''); show('vPin');
+  if (mn) say('Chào ' + s.name + '. Con chạm ba hình bí mật nhé.');
+}
+function dots() { $('#dots').innerHTML = Array.from({ length: PINLEN }, (_, i) => `<i class="${i < PIN.length ? 'f' : ''}">${i < PIN.length ? (K.level === 'mn' ? shapeSvg(PIN[i], 34) : '•') : ''}</i>`).join(''); }
+async function tap(k) {
+  if (PIN.length >= PINLEN) return; PIN += k; dots();
+  if (PIN.length < PINLEN) return;
+  try {
+    const r = await rpc('s_login', { p_code: K.code, p_student: ST.id, p_pin: PIN });
+    if (!r) { PIN = ''; dots(); msg('#mPin', K.level === 'mn' ? 'Chưa đúng rồi, con thử lại nhé!' : 'Chưa đúng, em thử lại nhé!', true); if (K.level === 'mn') say('Chưa đúng rồi, con thử lại nhé.'); return; }
+    setToken(r.token); home();
+  } catch (e) { PIN = ''; dots(); msg('#mPin', e.message, true); }
+}
+
+/* 4. trang nhiệm vụ */
+const fmtT = s => new Date(s).toLocaleString('vi-VN', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+async function home() {
+  const t = token(); if (!t) return start();
+  let d;
+  try { d = await rpc('s_home', { p_token: t }); }
+  catch (e) { if (e.code === '28000') { setToken(null); return start(e.message); } $('#home').innerHTML = `<div class="msg err">${esc(e.message)}</div>`; show('vHome'); return; }
+  const mn = d.me.level === 'mn';
+  $('#hAv').textContent = (d.me.name || '?').trim().slice(0, 1).toUpperCase();
+  $('#hName').textContent = d.me.name; $('#hClass').textContent = 'Lớp ' + d.me.class + ' · mã HS ' + d.me.code;
+  let h = '';
+  if (d.sessions.length) {
+    h += `<div class="sec">Buổi học trực tuyến</div>`;
+    d.sessions.forEach(x => {
+      const st = new Date(x.starts_at).getTime(), now = Date.now(), open = now >= st - 15 * 60e3 && now <= st + x.minutes * 60e3;
+      h += `<div class="task"><div class="ic" style="background:#DCEBFF">🎥</div><div class="tx"><b>${esc(x.title)}</b><span>${fmtT(x.starts_at)} · ${x.minutes} phút</span></div>
+        ${x.has_link ? `<button class="btn ${open ? 'b' : ''}" data-join="${x.id}" ${open ? '' : 'disabled'}>${open ? 'Vào lớp' : 'Chưa đến giờ'}</button>` : '<span class="mut small">Học tại lớp</span>'}</div>`;
+    });
+  }
+  h += `<div class="sec">Bài cô giao</div>`;
+  if (!d.tasks.length) h += `<div class="empty">Chưa có bài nào. ${mn ? 'Con' : 'Em'} quay lại sau nhé!</div>`;
+  d.tasks.forEach(a => {
+    const done = a.plays > 0, isGame = a.kind === 'game' && GAMES[a.game];
+    const stars = isGame && done ? `<span class="stars">${'★'.repeat(a.stars || 0)}${'☆'.repeat(3 - (a.stars || 0))}</span>` : done ? '<span class="tag teacher">Đã xong</span>' : '';
+    const due = a.due ? ' · hạn ' + new Date(a.due + 'T00:00').toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }) : '';
+    h += `<div class="task ${done ? 'done' : ''}"><div class="ic">${isGame ? '🎮' : '🔗'}</div><div class="tx"><b>${esc(a.title)}</b><span>${isGame ? esc(gameLabel(a.game, a.config)) : 'Đường link'}${due}${a.note ? ' · ' + esc(a.note) : ''}</span>${stars ? '<div>' + stars + '</div>' : ''}</div>
+      <button class="btn ${done ? '' : 'y'}" data-go="${a.id}">${done ? 'Làm lại' : 'Làm bài'}</button></div>`;
+  });
+  if (d.notices.length) { h += `<div class="sec">Thông báo của cô</div>`; d.notices.forEach(n => h += `<div class="notice">${esc(n.body)}<div class="mut small">${fmtT(n.at)}</div></div>`); }
+  $('#home').innerHTML = h; show('vHome');
+  $('#home').querySelectorAll('[data-go]').forEach(b => b.onclick = () => openTask(d.tasks.find(a => a.id === b.dataset.go), t));
+  $('#home').querySelectorAll('[data-join]').forEach(b => b.onclick = async () => {
+    const w = window.open('', '_blank');   // mở tab trước để không bị chặn cửa sổ
+    try { const link = await rpc('s_join', { p_token: t, p_session: b.dataset.join }); if (w) w.location = link; else location.href = link; }
+    catch (e) { if (w) w.close(); alertMsg(e.message); }
+  });
+}
+function alertMsg(t) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 3500); }
+async function openTask(a, t) {
+  if (a.kind === 'game' && GAMES[a.game]) { location.href = GAMES[a.game].url(a); return; }
+  window.open(a.url, '_blank', 'noopener');
+  // bài dạng link: ghi nhận đã mở bài
+  try { await rpc('s_submit', { p_token: t, p_assignment: a.id, p_stars: 0, p_correct: 0, p_total: 0, p_seconds: 0, p_answers: [] }); home(); } catch (e) {}
+}
+$('#bOut').onclick = () => { setToken(null); start(); };
+
+function start(err) {
+  const u = new URLSearchParams(location.search).get('c'); let saved = null;
+  try { saved = localStorage.getItem('jl-class'); } catch (e) {}
+  const c = u || saved;
+  show('vCode'); if (err) msg('#mCode', err, true);
+  if (c) { $('#code').value = c; goCode(c); }
+}
+if (token()) home(); else start();
+</script>
+</body>
+</html>

@@ -1131,12 +1131,16 @@ document.querySelectorAll('.tab').forEach(t => t.onclick = () => { sfx.tap(); sh
 const PRAISE = ['Giỏi quá!', 'Đúng rồi!', 'Tuyệt vời!', 'Con giỏi lắm!', 'Chính xác!'];
 const RETRY = ['Chưa đúng rồi. Con thử lại nhé!', 'Con xem lại một chút nhé!', 'Gần đúng rồi, thử lại nào!'];
 let P = null;   // current level
+/* giao bài từ lớp học (Jenny LMS): ?lms=<mã bài>&isle=&lv= — không có tham số thì game chạy như cũ */
+const LMS = (() => { const u = new URLSearchParams(location.search), id = u.get('lms'); if (!id || !/^[0-9a-f-]{36}$/i.test(id)) return null;
+  return { id, isle: Math.max(0, Math.min(5, +u.get('isle') || 0)), lv: Math.max(0, Math.min(7, +u.get('lv') || 0)), back: '../../../lms-thu/hs.html', t0: Date.now() }; })();
+const SKILL = { count: 'Đếm', match: 'Đếm', compare: 'So sánh', add: 'Thêm bớt', sub: 'Thêm bớt', split: 'Tách gộp', word: 'Bài toán có lời', odd: 'Hình khác biệt', spot: 'Quan sát', color: 'Hình và màu', pattern: 'Quy luật', ordinal: 'Số thứ tự', clock: 'Xem giờ', space: 'Phương hướng' };
 let playMs = 0, playT0 = 0, restShown = false;
 function playClock(on) { if (on) playT0 = Date.now(); else if (playT0) { playMs += Date.now() - playT0; playT0 = 0; } }
 function startLevel(isle, i) {
   const is = ISLANDS[isle];
   const order = shuf(Array(QN).fill(0).map((_, k) => is.types[k % is.types.length]));
-  P = { isle, i, is, order, q: 0, miss: 0, missQ: 0, busy: false };
+  P = { isle, i, is, order, q: 0, miss: 0, missQ: 0, busy: false, log: [], t0: Date.now() };
   show('play'); $('#pTitle').textContent = `${is.name} · Màn ${i + 1}`;
   nextQ();
 }
@@ -1145,11 +1149,12 @@ function nextQ() {
   if (P.q >= QN) return endLevel();
   P.missQ = 0; P.busy = false; dots(); document.querySelectorAll('.toast').forEach(t => t.remove());
   const type = P.order[P.q], A = ACTS[type], q = A.gen(P.ease ? Math.max(0, P.i - 3) : P.i);   // câu trước sai nhiều → câu này dễ hơn
-  P.ease = false; P.lock = 0;
+  P.ease = false; P.lock = 0; P.qT0 = Date.now(); P.type = type;
   const st = $('#pStage'); st.innerHTML = '';
   const api = P.api = {
     ok(node, why) {
       if (P.busy || Date.now() < P.lock) return; P.busy = true;
+      P.log.push({ skill: SKILL[P.type] || P.type, correct: P.missQ === 0, tries: P.missQ + 1, seconds: Math.round((Date.now() - P.qT0) / 1000) });
       node && node.classList.add('right'); sfx.good(); burst(node || st, 34);
       const msg = (P.missQ ? 'Con đã cố gắng và làm đúng rồi!' : pick1(PRAISE)) + (why ? ' ' + why : '');
       toast(msg); speak(msg, { quiet: true });
@@ -1194,6 +1199,7 @@ function endLevel() {
   const gain = st * 5 + (st > before ? (st - before) * 5 : 0);
   S.xu += gain; S.grow++; S.plays++; save(); hud('#pXu,#pSt');
   sfx.good(); burst($('#pStage'), 60);
+  if (LMS) return lmsEnd(st);
   const hasNext = P.i < 7;
   if (restCheck()) return;
   const msg = st === 3 ? 'Tuyệt vời! Con được 3 ngôi sao!' : st === 2 ? 'Giỏi lắm! Con được 2 ngôi sao!' : 'Con đã hoàn thành màn chơi!';
@@ -1207,7 +1213,23 @@ function endLevel() {
     pn.querySelector('#eMap').onclick = go(() => show('map'));
   });
 }
-$('#pBack').onclick = () => { sfx.tap(); show('map'); };
+$('#pBack').onclick = () => { sfx.tap(); if (LMS) location.href = LMS.back; else show('map'); };
+function lmsSend(st) {
+  const right = P.log.filter(x => x.correct).length;
+  return import('../../../lms-thu/sdk.js').then(m => m.submit(LMS.id, { stars: st, correct: right, total: QN, seconds: Math.round((Date.now() - P.t0) / 1000), answers: P.log }));
+}
+function lmsEnd(st) {
+  const msg = st === 3 ? 'Tuyệt vời! Con được 3 ngôi sao!' : st === 2 ? 'Giỏi lắm! Con được 2 ngôi sao!' : 'Con đã hoàn thành bài cô giao!';
+  speak(msg, { quiet: true });
+  openOv(`<h2>${msg}</h2><div class="stars">${[0, 1, 2].map(k => starSvg(k < st)).join('')}</div>
+    <p id="lmsMsg">Đang gửi kết quả cho cô…</p>
+    <div class="row"><button class="btn y" id="eBack" data-focus>Về lớp</button><button class="btn" id="eAgain">Làm lại</button></div>`, pn => {
+    pn.querySelector('#eBack').onclick = () => { location.href = LMS.back; };
+    pn.querySelector('#eAgain').onclick = () => { closeOv(); startLevel(LMS.isle, LMS.lv); };
+  });
+  lmsSend(st).then(() => { const m = document.getElementById('lmsMsg'); if (m) m.textContent = 'Đã gửi kết quả cho cô. Con giỏi lắm!'; },
+    e => { const m = document.getElementById('lmsMsg'); if (m) m.textContent = 'Chưa gửi được kết quả (' + (e && e.message || 'lỗi mạng') + '). Con bấm "Làm lại" hoặc báo cô nhé.'; });
+}
 $('#pSpk').onclick = () => { if ($('#pSpk').classList.contains('on')) stopRead(); else if (P) speak(P.say); };
 
 /* size items inside each group so they fill the box without overflow */
@@ -1426,7 +1448,13 @@ paintIcons();
 hud();
 addEventListener('resize', () => { if (view === 'map') drawMap(); if (view === 'play') { fitGroups(); fitAsk(); } fitPanel(); });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (view === 'map') drawMap(); if (view === 'play') { fitGroups(); fitAsk(); } });
-show('map');
+if (LMS) {
+  show('map');
+  openOv(`${I.jenny}<h2>Bài cô giao</h2><p>${esc(ISLANDS[LMS.isle].name)} · Màn ${LMS.lv + 1}</p><div class="row"><button class="btn y" id="lGo" data-focus>Bắt đầu</button><button class="btn" id="lBack">Quay lại</button></div>`, pn => {
+    pn.querySelector('#lGo').onclick = () => { closeOv(); startLevel(LMS.isle, LMS.lv); };
+    pn.querySelector('#lBack').onclick = () => { location.href = LMS.back; };
+  });
+} else show('map');
 window.__mn = { test(type, lv) { startLevel(0, lv || 0); P.order = Array(QN).fill(type); P.q = 0; nextQ(); }, get S() { return S; }, set S(v) { S = v; }, show, save, startLevel, ACTS, get P() { return P; }, drawGarden, fitGroups };
 })();
 </script>

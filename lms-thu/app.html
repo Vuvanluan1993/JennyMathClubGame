@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Giáo viên · Quản trị – Jenny LMS</title>
+<link rel="stylesheet" href="lms.css">
+<style>
+html,body{height:100%;overflow:hidden}
+#auth{height:100dvh;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+#auth .card{width:min(420px,100%)}
+.tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.tabs button{border:0;background:#F1E9D6;border-radius:10px;padding:8px 12px;font-weight:800;min-height:38px}
+.tabs button[aria-selected=true]{background:var(--y)}
+#appv{height:100dvh;display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fff;box-shadow:var(--sh);flex:none;z-index:2}
+.bar .logo{flex:none}
+.bar select{max-width:240px;min-height:38px;padding:6px 10px}
+.bar .sp{flex:1}
+.who{font-weight:700;font-size:14px;text-align:right;line-height:1.2;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shell{flex:1;display:flex;min-height:0}
+.nav{width:210px;flex:none;padding:12px 8px;overflow:auto;border-right:1px solid var(--line);background:#FFFCF3}
+.nav a{display:flex;gap:8px;align-items:center;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--ink);font-weight:700;margin-bottom:2px}
+.nav a.on{background:var(--y)}
+.nav a:hover:not(.on){background:#F7EED9}
+.nav .lb{font-size:11.5px;color:var(--mut);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin:12px 12px 4px}
+#main{flex:1;overflow:auto;padding:16px 18px 40px;min-width:0}
+.ph{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.ph h1{margin:0;flex:1;min-width:200px}
+.stat{background:#fff;border-radius:14px;box-shadow:var(--sh);padding:14px}
+.stat b{font-size:26px;display:block}
+.stat span{color:var(--mut);font-size:13px}
+.kcard{cursor:pointer;border:3px solid transparent}
+.kcard:hover{border-color:var(--y)}
+.kcard h3{margin:6px 0 4px}
+.code{font-family:ui-monospace,Menlo,monospace;font-weight:800;background:#FFF3CC;border-radius:8px;padding:2px 8px}
+.att button{border:2px solid var(--line);background:#fff;border-radius:8px;padding:4px 8px;font-size:12.5px;font-weight:800;min-height:32px}
+.att button.on.present{background:#D5F6E8;border-color:var(--gr)}
+.att button.on.late{background:#FFF0C2;border-color:var(--y2)}
+.att button.on.absent{background:#FFE1DE;border-color:var(--co)}
+.att button.on.excused{background:#DCEBFF;border-color:var(--bl)}
+.hm{text-align:center;font-weight:800;border-radius:8px;padding:6px 4px;min-width:54px}
+.hm.g{background:#D5F6E8}.hm.y{background:#FFF0C2}.hm.r{background:#FFE1DE}.hm.n{color:#bbb}
+.st3{color:var(--y2);white-space:nowrap}
+.item{border:2px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}
+#print{display:none}
+@media (max-width:760px){
+  .shell{flex-direction:column}
+  .nav{width:auto;display:flex;overflow-x:auto;padding:6px;border-right:0;border-bottom:1px solid var(--line);flex:none}
+  .nav a{white-space:nowrap;margin:0 2px;padding:8px 10px}
+  .nav .lb{display:none}
+  #main{padding:12px 12px 40px}
+  .bar{flex-wrap:wrap;padding:8px 10px}
+  .bar select{max-width:none;flex:1}
+  .who{display:none}
+  .bar .logo span{display:none}
+  .bar select{min-width:0}
+  h1{font-size:20px}
+}
+@media print{
+  html,body{height:auto;overflow:visible;background:#fff}
+  body>*:not(#print){display:none!important}
+  #print{display:grid!important;grid-template-columns:1fr 1fr;gap:10px}
+  .pc{border:2px dashed #999;border-radius:12px;padding:12px;break-inside:avoid;font-size:14px}
+  .pc b{font-size:20px}
+}
+</style>
+</head>
+<body>
+<section id="auth" hidden>
+  <div class="card">
+    <div class="logo" style="margin-bottom:10px"><i>J</i> Jenny LMS · Giáo viên</div>
+    <div class="tabs" role="tablist"><button id="tIn" aria-selected="true">Đăng nhập</button><button id="tUp" aria-selected="false">Tạo tài khoản</button></div>
+    <form id="fAuth">
+      <div id="fName" hidden><label class="f" for="aName">Họ tên</label><input class="inp" id="aName" autocomplete="name" maxlength="60"></div>
+      <label class="f" for="aEmail">Email</label><input class="inp" id="aEmail" type="email" autocomplete="email" required>
+      <label class="f" for="aPass">Mật khẩu</label><input class="inp" id="aPass" type="password" autocomplete="current-password" minlength="6" required>
+      <div style="margin-top:14px"><button class="btn y" style="width:100%" id="aGo">Đăng nhập</button></div>
+    </form>
+    <div id="aMsg"></div>
+    <p class="small mut">Giáo viên dùng đúng email mà quản trị trung tâm đã mời. <a href="index.html">← Trang đầu</a></p>
+  </div>
+</section>
+
+<section id="appv" hidden>
+  <header class="bar">
+    <div class="logo"><i>J</i> <span>Jenny LMS</span></div>
+    <select class="inp" id="cSel" aria-label="Chọn trung tâm"></select>
+    <div class="sp"></div>
+    <div class="who" id="who"></div>
+    <button class="btn sm" id="bOut">Đăng xuất</button>
+  </header>
+  <div class="shell"><nav class="nav" id="nav"></nav><main id="main"></main></div>
+</section>
+<div class="ov" id="ov" hidden><div class="panel" id="panel" role="dialog" aria-modal="true"></div></div>
+<div id="print"></div>
+
+<script src="vendor/supabase-2.116.0.js"></script>
+<script type="module">
+import { SUPA_URL, SUPA_KEY } from './config.js';
+import { GAMES, gameLabel, pinHtml, esc } from './sdk.js';
+
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY, { auth: { persistSession: true, storageKey: 'jl-staff' } });
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+let ME = null, CID = null, CEN = null, KD = null;
+const LV = { mn: 'Mầm non', th: 'Tiểu học', thcs: 'THCS' };
+const ROLE = { super: 'Quản trị hệ thống', admin: 'Quản trị trung tâm', teacher: 'Giáo viên' };
+const ATT = [['present', 'Có mặt'], ['late', 'Muộn'], ['absent', 'Vắng'], ['excused', 'Có phép']];
+
+async function call(fn, args) {
+  const { data, error } = await sb.rpc(fn, args || {});
+  if (error) throw new Error(error.message || 'Lỗi máy chủ');
+  return data;
+}
+function toast(t) { $$('.toast').forEach(x => x.remove()); const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 3200); }
+async function act(fn, ok) { try { const r = await fn(); if (ok) toast(ok); return r; } catch (e) { toast(e.message); throw e; } }
+const isAdmin = () => CEN && (CEN.role === 'admin' || CEN.role === 'super');
+const fmtT = s => new Date(s).toLocaleString('vi-VN', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+const fmtD = s => s ? new Date(s + 'T00:00').toLocaleDateString('vi-VN') : '';
+
+/* ---------- hộp thoại ---------- */
+function modal(html, ready) { const p = $('#panel'); p.innerHTML = html; $('#ov').hidden = false; ready && ready(p); const f = p.querySelector('[data-focus]') || p.querySelector('input,select,textarea,button'); f && f.focus(); return p; }
+function closeM() { $('#ov').hidden = true; $('#panel').innerHTML = ''; }
+$('#ov').addEventListener('click', e => { if (e.target.id === 'ov') closeM(); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#ov').hidden) closeM(); });
+function ask(title, label, value = '', type = 'text') {
+  return new Promise(res => modal(`<h2>${esc(title)}</h2><label class="f">${esc(label)}</label><input class="inp" id="mI" type="${type}" value="${esc(value)}" data-focus>
+    <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="mC">Huỷ</button><button class="btn y" id="mO">Lưu</button></div>`, p => {
+    const ok = () => { const v = $('#mI', p).value; closeM(); res(v); };
+    $('#mO', p).onclick = ok; $('#mI', p).onkeydown = e => { if (e.key === 'Enter') ok(); }; $('#mC', p).onclick = () => { closeM(); res(null); };
+  }));
+}
+function sure(text, yes = 'Đồng ý') {
+  return new Promise(res => modal(`<h2>Xác nhận</h2><p>${text}</p><div class="row" style="justify-content:flex-end"><button class="btn" id="mC" data-focus>Huỷ</button><button class="btn r" id="mO">${esc(yes)}</button></div>`, p => {
+    $('#mO', p).onclick = () => { closeM(); res(true); }; $('#mC', p).onclick = () => { closeM(); res(false); };
+  }));
+}
+
+/* ---------- đăng nhập ---------- */
+let signUp = false;
+function authTab(up) { signUp = up; $('#tIn').setAttribute('aria-selected', !up); $('#tUp').setAttribute('aria-selected', up); $('#fName').hidden = !up; $('#aGo').textContent = up ? 'Tạo tài khoản' : 'Đăng nhập'; $('#aPass').autocomplete = up ? 'new-password' : 'current-password'; $('#aMsg').innerHTML = ''; }
+$('#tIn').onclick = () => authTab(false); $('#tUp').onclick = () => authTab(true);
+function aMsg(t, err) { $('#aMsg').innerHTML = `<div class="msg${err ? ' err' : ''}">${esc(t)}</div>`; }
+$('#fAuth').onsubmit = async e => {
+  e.preventDefault(); const email = $('#aEmail').value.trim(), password = $('#aPass').value;
+  $('#aGo').disabled = true;
+  try {
+    if (signUp) {
+      const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: location.href.split('#')[0] } });
+      if (error) throw error;
+      try { localStorage.setItem('jl-name', $('#aName').value.trim()); } catch (x) {}
+      if (!data.session) aMsg('Đã tạo tài khoản. Anh/chị mở email để bấm xác nhận, rồi quay lại đăng nhập.');
+    } else {
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+    }
+  } catch (x) { aMsg(/Invalid login/i.test(x.message) ? 'Sai email hoặc mật khẩu.' : /already registered/i.test(x.message) ? 'Email này đã có tài khoản, anh/chị chọn Đăng nhập.' : x.message, true); }
+  $('#aGo').disabled = false;
+};
+$('#bOut').onclick = async () => { await sb.auth.signOut(); };
+
+let booted = false;
+sb.auth.onAuthStateChange((ev, session) => {
+  if (session && !booted) { booted = true; setTimeout(boot, 0); }
+  if (!session) { booted = false; ME = null; CEN = null; KD = null; history.replaceState(null, '', location.pathname + location.search); $('#appv').hidden = true; $('#auth').hidden = false; }
+});
+
+async function boot() {
+  try { ME = await call('me'); } catch (e) { $('#auth').hidden = false; aMsg(e.message, true); return; }
+  let nm = null; try { nm = localStorage.getItem('jl-name'); localStorage.removeItem('jl-name'); } catch (e) {}
+  if (nm && !ME.name) { try { await call('set_name', { p_name: nm }); ME.name = nm; } catch (e) {} }
+  $('#auth').hidden = true; $('#appv').hidden = false;
+  $('#who').innerHTML = `${esc(ME.name || ME.email)}<br><span class="mut small">${ME.super ? ROLE.super : esc(ME.email)}</span>`;
+  const sel = $('#cSel');
+  sel.innerHTML = ME.centers.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+  sel.hidden = !ME.centers.length;
+  let saved = null; try { saved = localStorage.getItem('jl-center'); } catch (e) {}
+  CID = ME.centers.find(c => c.id === saved) ? saved : ME.centers[0] && ME.centers[0].id;
+  if (CID) sel.value = CID;
+  sel.onchange = () => { CID = sel.value; try { localStorage.setItem('jl-center', CID); } catch (e) {} CEN = null; go(ME.super ? '#home' : '#home'); };
+  if (!location.hash || location.hash.includes('access_token')) history.replaceState(null, '', '#' + (CID ? 'home' : ME.super ? 'sys' : 'home'));
+  route();
+}
+addEventListener('hashchange', () => ME && route());
+function go(h) { if (location.hash === h) route(); else location.hash = h; }
+
+/* ---------- điều hướng ---------- */
+function nav(cur) {
+  const a = (h, t, ic) => `<a href="#${h}" class="${cur === h ? 'on' : ''}">${ic} ${t}</a>`;
+  let h = '';
+  if (ME.super) h += `<div class="lb">Hệ thống</div>` + a('sys', 'Trung tâm & gói', '🏢');
+  if (CID && CEN) {
+    h += `<div class="lb">${esc(CEN.center.name)}</div>` + a('home', 'Tổng quan', '🏠') + a('classes', 'Lớp học', '🏫');
+    if (isAdmin()) h += a('staff', 'Giáo viên', '🧑‍🏫') + a('students', 'Học sinh', '🎒');
+    h += a('lessons', 'Kho bài học', '📚');
+    if (isAdmin()) h += a('log', 'Nhật ký', '🧾');
+  }
+  if (KD && cur.startsWith('class/')) h += `<div class="lb">Lớp đang mở</div><a href="#${cur}" class="on">📘 ${esc(KD.class.name)}</a>`;
+  $('#nav').innerHTML = h;
+}
+async function loadCenter(force) {
+  if (!CID) { CEN = null; return; }
+  if (!CEN || force || CEN.center.id !== CID) CEN = await call('c_center', { p_center: CID });
+}
+async function route() {
+  const [page, id, tab] = location.hash.slice(1).split('/');
+  const m = $('#main'); m.innerHTML = '<div class="empty">Đang tải…</div>';
+  try {
+    if (page === 'sys' && ME.super) { await loadCenter(); nav('sys'); return await pSys(m); }
+    if (!CID) { nav(''); return pNone(m); }
+    await loadCenter(true);
+    if (page === 'class' && id) { await pClass(m, id, tab || 'hs'); nav(location.hash.slice(1)); return; }
+    KD = null; nav(page || 'home');
+    const P = { home: pHome, classes: pClasses, staff: pStaff, students: pStudents, lessons: pLessons, log: pLog }[page] || pHome;
+    await P(m);
+  } catch (e) { m.innerHTML = `<div class="msg err">${esc(e.message)}</div>`; }
+}
+
+/* ---------- chưa thuộc trung tâm ---------- */
+function pNone(m) {
+  m.innerHTML = `<div class="card" style="max-width:560px"><h1>Chào ${esc(ME.name || ME.email)}!</h1>
+    ${ME.super_claimable ? `<p>Hệ thống chưa có quản trị. Nếu anh/chị là chủ hệ thống, bấm nút dưới để nhận quyền <b>Quản trị hệ thống</b> (chỉ người đầu tiên được nhận).</p><button class="btn y" id="bClaim">Nhận quyền quản trị hệ thống</button>`
+      : ME.super ? `<p>Chưa có trung tâm nào. Vào <a href="#sys">Trung tâm & gói</a> để tạo trung tâm đầu tiên.</p>`
+      : `<p>Tài khoản <b>${esc(ME.email)}</b> chưa thuộc trung tâm nào.</p><p class="mut">Nhờ quản trị trung tâm mời đúng email này, rồi tải lại trang.</p><button class="btn" onclick="location.reload()">Tải lại</button>`}</div>`;
+  const b = $('#bClaim', m); if (b) b.onclick = async () => { const ok = await act(() => call('claim_super')); toast(ok ? 'Anh/chị đã là Quản trị hệ thống' : 'Hệ thống đã có quản trị'); ME = await call('me'); location.hash = '#sys'; boot(); };
+}
+
+/* ---------- QUẢN TRỊ HỆ THỐNG ---------- */
+async function pSys(m) {
+  const [cs, codes] = await Promise.all([call('a_centers'), call('a_codes')]);
+  m.innerHTML = `<div class="ph"><h1>Trung tâm & gói</h1></div>
+  <div class="card"><h2>Tạo trung tâm mới</h2>
+    <div class="row"><input class="inp grow" id="nName" placeholder="Tên trung tâm, ví dụ: Jenny Cầu Giấy"><input class="inp" id="nSeats" type="number" min="1" value="50" style="width:110px" aria-label="Số chỗ học sinh" title="Số chỗ học sinh"><input class="inp grow" id="nMail" type="email" placeholder="Email quản trị trung tâm (không bắt buộc)"><button class="btn y" id="bNew">Tạo</button></div>
+    <p class="small mut">Số chỗ = số học sinh tối đa theo gói. Quản trị trung tâm nhận lời mời khi đăng nhập bằng đúng email này.</p></div>
+  <div class="card"><h2>Các trung tâm (${cs.length})</h2>${cs.length ? `<div class="scroll-x"><table class="t"><tr><th>Trung tâm</th><th>Học sinh / chỗ</th><th>Lớp</th><th>Nhân sự</th><th></th></tr>
+    ${cs.map(c => `<tr><td><b>${esc(c.name)}</b></td><td>${c.students} / ${c.seats}</td><td>${c.classes}</td><td>${c.teachers}</td>
+      <td class="row"><button class="btn sm" data-open="${c.id}">Mở</button><button class="btn sm" data-ed="${c.id}">Sửa</button></td></tr>`).join('')}</table></div>` : '<div class="empty">Chưa có trung tâm.</div>'}</div>
+  <div class="card"><h2>Mã kích hoạt gói</h2><p class="small mut">Mỗi mã cộng thêm chỗ học sinh cho trung tâm nhập mã. Dùng khi trung tâm đóng phí gia hạn hoặc mua thêm chỗ.</p>
+    <div class="row"><label class="small">Số chỗ mỗi mã <input class="inp" id="kS" type="number" min="1" value="20" style="width:90px"></label><label class="small">Số mã <input class="inp" id="kN" type="number" min="1" max="50" value="1" style="width:80px"></label><button class="btn y" id="bCodes">Tạo mã</button></div>
+    ${codes.length ? `<div class="scroll-x" style="margin-top:10px"><table class="t"><tr><th>Mã</th><th>Số chỗ</th><th>Trạng thái</th></tr>${codes.map(k => `<tr><td><span class="code">${esc(k.code)}</span></td><td>${k.seats}</td><td>${k.used_at ? 'Đã dùng · ' + esc(k.center || '') : '<span class="tag teacher">Chưa dùng</span>'}</td></tr>`).join('')}</table></div>` : ''}</div>`;
+  $('#bNew', m).onclick = async () => { const n = $('#nName', m).value.trim(); if (!n) return toast('Cần tên trung tâm');
+    await act(() => call('a_create_center', { p_name: n, p_seats: +$('#nSeats', m).value || 50, p_admin_email: $('#nMail', m).value.trim() }), 'Đã tạo trung tâm'); ME = await call('me'); boot(); };
+  $('#bCodes', m).onclick = async () => { await act(() => call('a_make_codes', { p_seats: +$('#kS', m).value || 10, p_n: +$('#kN', m).value || 1 }), 'Đã tạo mã'); pSys(m); };
+  $$('[data-open]', m).forEach(b => b.onclick = () => { CID = b.dataset.open; $('#cSel').value = CID; try { localStorage.setItem('jl-center', CID); } catch (e) {} go('#home'); });
+  $$('[data-ed]', m).forEach(b => b.onclick = () => { const c = cs.find(x => x.id === b.dataset.ed);
+    modal(`<h2>Sửa trung tâm</h2><label class="f">Tên</label><input class="inp" id="eN" value="${esc(c.name)}"><label class="f">Số chỗ học sinh</label><input class="inp" id="eS" type="number" min="1" value="${c.seats}">
+      <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="mC">Huỷ</button><button class="btn y" id="mO">Lưu</button></div>`, p => {
+      $('#mC', p).onclick = closeM; $('#mO', p).onclick = async () => { await act(() => call('a_update_center', { p_center: c.id, p_name: $('#eN', p).value, p_seats: +$('#eS', p).value }), 'Đã lưu'); closeM(); ME = await call('me'); boot(); };
+    }); });
+}
+
+/* ---------- TỔNG QUAN ---------- */
+async function pHome(m) {
+  const c = CEN.center, mine = CEN.classes.filter(k => k.mine);
+  const pct = Math.min(100, Math.round(c.used / Math.max(1, c.seats) * 100));
+  m.innerHTML = `<div class="ph"><h1>${esc(c.name)}</h1><span class="tag ${CEN.role}">${ROLE[CEN.role]}</span></div>
+  <div class="grid" style="margin-bottom:14px">
+    <div class="stat"><b>${c.used}/${c.seats}</b><span>Học sinh / chỗ của gói (${pct}%)</span></div>
+    <div class="stat"><b>${CEN.classes.length}</b><span>${isAdmin() ? 'Lớp học' : 'Lớp của tôi'}</span></div>
+    ${isAdmin() ? `<div class="stat"><b>${CEN.members.length}</b><span>Giáo viên & quản trị</span></div><div class="stat"><b>${CEN.unassigned.length}</b><span>Học sinh chưa xếp lớp</span></div>` : ''}
+  </div>
+  ${pct >= 90 && isAdmin() ? `<div class="msg err">Gói sắp hết chỗ học sinh. Vào mục Học sinh để nhập mã kích hoạt thêm chỗ.</div>` : ''}
+  <div class="card"><div class="ph"><h2 style="flex:1;margin:0">${isAdmin() && !mine.length ? 'Các lớp' : 'Lớp của tôi'}</h2><a class="btn sm y" href="#classes">+ Lớp mới</a></div>
+    ${classCards(isAdmin() && !mine.length ? CEN.classes : mine)}</div>
+  <div class="card"><h2>Bắt đầu nhanh</h2><ol class="small" style="margin:0;padding-left:18px">
+    ${isAdmin() ? '<li>Mời giáo viên ở mục <a href="#staff">Giáo viên</a>.</li>' : ''}
+    <li>Tạo lớp, thêm tên học sinh, in thẻ đăng nhập (mã lớp + mã bí mật).</li>
+    <li>Giao bài: chọn game và màn, hoặc giao cả bài học trong <a href="#lessons">Kho bài học</a>.</li>
+    <li>Lên lịch buổi học online: dán link Google Meet / Zoom. Học sinh bấm "Vào lớp" là được điểm danh.</li>
+    <li>Xem kết quả theo kỹ năng để biết em nào cần kèm thêm.</li></ol></div>`;
+}
+function classCards(list) {
+  if (!list.length) return '<div class="empty">Chưa có lớp nào.</div>';
+  return `<div class="grid">${list.map(k => `<a class="card kcard" style="margin:0;text-decoration:none;color:inherit" href="#class/${k.id}/hs"><span class="tag ${k.level}">${LV[k.level]}</span>
+    <h3>${esc(k.name)}</h3><div class="small mut">Mã lớp <span class="code">${k.code}</span></div><div class="small">${k.students} học sinh · GV: ${esc(k.teacher || 'chưa có')}</div></a>`).join('')}</div>`;
+}
+
+/* ---------- LỚP HỌC ---------- */
+async function pClasses(m) {
+  const teachers = CEN.members;
+  m.innerHTML = `<div class="ph"><h1>Lớp học</h1></div>
+  <div class="card"><h2>Tạo lớp mới</h2><div class="row">
+    <input class="inp grow" id="kN" placeholder="Tên lớp, ví dụ: Lá 1 – Thứ 7">
+    <select class="inp" id="kL" style="width:auto"><option value="mn">Mầm non</option><option value="th">Tiểu học</option><option value="thcs">THCS</option></select>
+    ${isAdmin() ? `<select class="inp" id="kT" style="width:auto"><option value="">— Giáo viên —</option>${teachers.map(t => `<option value="${t.id}">${esc(t.name || t.email)}</option>`).join('')}</select>` : ''}
+    <button class="btn y" id="bK">Tạo lớp</button></div>
+    <p class="small mut">Mầm non: học sinh đăng nhập bằng 3 hình bí mật. Tiểu học, THCS: 4 số bí mật.</p></div>
+  <div class="card"><h2>${isAdmin() ? 'Tất cả lớp' : 'Lớp của tôi'} (${CEN.classes.length})</h2>${classCards(CEN.classes)}</div>`;
+  $('#bK', m).onclick = async () => {
+    const n = $('#kN', m).value.trim(); if (!n) return toast('Cần tên lớp');
+    const k = await act(() => call('c_create_class', { p_center: CID, p_name: n, p_level: $('#kL', m).value, p_teacher: isAdmin() ? ($('#kT', m).value || null) : null }), 'Đã tạo lớp');
+    go('#class/' + k.id + '/hs');
+  };
+}
+
+/* ---------- GIÁO VIÊN ---------- */
+async function pStaff(m) {
+  m.innerHTML = `<div class="ph"><h1>Giáo viên & quản trị</h1></div>
+  <div class="card"><h2>Mời người mới</h2><div class="row"><input class="inp grow" id="iE" type="email" placeholder="Email giáo viên"><select class="inp" id="iR" style="width:auto"><option value="teacher">Giáo viên</option><option value="admin">Quản trị trung tâm</option></select><button class="btn y" id="bI">Mời</button></div>
+    <p class="small mut">Người được mời tự tạo tài khoản bằng đúng email này ở trang Giáo viên. Nếu đã có tài khoản, họ được thêm ngay.</p></div>
+  <div class="card"><h2>Nhân sự (${CEN.members.length})</h2><div class="scroll-x"><table class="t"><tr><th>Tên</th><th>Email</th><th>Vai trò</th><th>Lớp phụ trách</th><th></th></tr>
+    ${CEN.members.map(u => `<tr><td><b>${esc(u.name || '—')}</b></td><td>${esc(u.email)}</td><td><span class="tag ${u.role}">${ROLE[u.role]}</span></td>
+      <td class="small">${CEN.classes.filter(k => k.teacher_id === u.id).map(k => esc(k.name)).join(', ') || '—'}</td>
+      <td>${u.id === ME.id ? '<span class="small mut">Bạn</span>' : `<div class="row"><button class="btn sm" data-role="${u.id}" data-r="${u.role === 'admin' ? 'teacher' : 'admin'}">${u.role === 'admin' ? 'Thành GV' : 'Thành quản trị'}</button><button class="btn sm r" data-rm="${u.id}">Xoá</button></div>`}</td></tr>`).join('')}</table></div></div>
+  ${CEN.invites.length ? `<div class="card"><h2>Lời mời đang chờ</h2><table class="t">${CEN.invites.map(i => `<tr><td>${esc(i.email)}</td><td><span class="tag ${i.role}">${ROLE[i.role]}</span></td><td><button class="btn sm" data-ci="${esc(i.email)}">Huỷ mời</button></td></tr>`).join('')}</table></div>` : ''}`;
+  $('#bI', m).onclick = async () => { const e = $('#iE', m).value.trim(); if (!e) return; const r = await act(() => call('c_invite', { p_center: CID, p_email: e, p_role: $('#iR', m).value })); toast(r === 'added' ? 'Đã thêm vào trung tâm' : 'Đã gửi lời mời (chờ người đó tạo tài khoản)'); route(); };
+  $$('[data-rm]', m).forEach(b => b.onclick = async () => { if (await sure('Xoá người này khỏi trung tâm? Các lớp họ phụ trách sẽ chưa có giáo viên.', 'Xoá')) { await act(() => call('c_remove_member', { p_center: CID, p_user: b.dataset.rm }), 'Đã xoá'); route(); } });
+  $$('[data-role]', m).forEach(b => b.onclick = async () => { const u = CEN.members.find(x => x.id === b.dataset.role); await act(() => call('c_invite', { p_center: CID, p_email: u.email, p_role: b.dataset.r }), 'Đã đổi vai trò'); route(); });
+  $$('[data-ci]', m).forEach(b => b.onclick = async () => { await act(() => call('c_cancel_invite', { p_center: CID, p_email: b.dataset.ci }), 'Đã huỷ'); route(); });
+}
+
+/* ---------- HỌC SINH (toàn trung tâm) ---------- */
+async function pStudents(m) {
+  const c = CEN.center;
+  m.innerHTML = `<div class="ph"><h1>Học sinh</h1></div>
+  <div class="grid" style="margin-bottom:14px"><div class="stat"><b>${c.used}/${c.seats}</b><span>Đang học / chỗ của gói</span></div>
+    <div class="stat"><span>Nhập mã kích hoạt để thêm chỗ</span><div class="row" style="margin-top:6px"><input class="inp grow" id="rC" placeholder="JENNY-XXXX-XXXX"><button class="btn y" id="bR">Nhập</button></div></div></div>
+  <div class="card"><h2>Theo lớp</h2>${CEN.classes.length ? `<table class="t"><tr><th>Lớp</th><th>Cấp</th><th>Học sinh</th><th>Giáo viên</th><th></th></tr>${CEN.classes.map(k => `<tr><td><b>${esc(k.name)}</b></td><td>${LV[k.level]}</td><td>${k.students}</td><td>${esc(k.teacher || '—')}</td><td><a class="btn sm" href="#class/${k.id}/hs">Quản lý</a></td></tr>`).join('')}</table>` : '<div class="empty">Chưa có lớp.</div>'}</div>
+  <div class="card"><h2>Chưa xếp lớp (${CEN.unassigned.length})</h2><p class="small mut">Học sinh bị bỏ khỏi lớp vẫn còn hồ sơ ở đây. Xếp lại lớp, hoặc xoá hẳn để trả chỗ cho gói.</p>
+    ${CEN.unassigned.length ? `<table class="t">${CEN.unassigned.map(s => `<tr><td><b>${esc(s.name)}</b><div class="small mut">${s.code}</div></td>
+      <td><select class="inp" data-mv="${s.id}" style="width:auto;min-height:36px"><option value="">Xếp vào lớp…</option>${CEN.classes.map(k => `<option value="${k.id}">${esc(k.name)}</option>`).join('')}</select></td>
+      <td><button class="btn sm r" data-del="${s.id}">Xoá hẳn</button></td></tr>`).join('')}</table>` : '<div class="empty">Không có.</div>'}</div>`;
+  $('#bR', m).onclick = async () => { const v = $('#rC', m).value.trim(); if (!v) return; const n = await act(() => call('c_redeem', { p_center: CID, p_code: v })); toast('Đã thêm ' + n + ' chỗ học sinh'); route(); };
+  $$('[data-mv]', m).forEach(s => s.onchange = async () => { if (!s.value) return; await act(() => call('c_move_student', { p_student: s.dataset.mv, p_class: s.value }), 'Đã xếp lớp (mã bí mật mới)'); route(); });
+  $$('[data-del]', m).forEach(b => b.onclick = async () => { if (await sure('Xoá hẳn học sinh này cùng toàn bộ kết quả học tập? Không khôi phục được.', 'Xoá hẳn')) { await act(() => call('c_delete_student', { p_student: b.dataset.del }), 'Đã xoá'); route(); } });
+}
+
+/* ---------- NHẬT KÝ ---------- */
+const ACTN = { create_center: 'Tạo trung tâm', add_member: 'Thêm nhân sự', invite: 'Mời', remove_member: 'Xoá nhân sự', create_class: 'Tạo lớp', update_class: 'Sửa lớp', delete_class: 'Xoá lớp', add_students: 'Thêm học sinh', remove_from_class: 'Bỏ khỏi lớp', move_student: 'Xếp/chuyển lớp', delete_student: 'Xoá học sinh', redeem_code: 'Nhập mã gói' };
+async function pLog(m) {
+  const L = await call('c_log', { p_center: CID });
+  m.innerHTML = `<div class="ph"><h1>Nhật ký thao tác</h1></div><div class="card"><p class="small mut">100 thao tác gần nhất. Dùng để kiểm tra ai đã thêm, xoá, chuyển học sinh.</p>
+    ${L.length ? `<div class="scroll-x"><table class="t"><tr><th>Lúc</th><th>Người làm</th><th>Việc</th><th>Chi tiết</th></tr>${L.map(x => `<tr><td class="small">${fmtT(x.at)}</td><td>${esc(x.who || '—')}</td><td>${esc(ACTN[x.action] || x.action)}</td><td class="small">${esc(Object.values(x.detail || {}).join(' · '))}</td></tr>`).join('')}</table></div>` : '<div class="empty">Chưa có.</div>'}</div>`;
+}
+
+/* ---------- KHO BÀI HỌC ---------- */
+let LESS = [];
+async function pLessons(m) {
+  LESS = await call('l_list', { p_center: CID });
+  const canAdd = isAdmin();
+  m.innerHTML = `<div class="ph"><h1>Kho bài học</h1>${canAdd ? '<button class="btn y" id="bL">+ Bài học mới</button>' : ''}</div>
+  <p class="small mut">Bài học = một gói các màn game hoặc đường link. Kho chung do quản trị hệ thống soạn, mọi trung tâm dùng được. Giáo viên giao cả bài học cho lớp trong một lần bấm.</p>
+  ${LESS.length ? `<div class="grid">${LESS.map(l => `<div class="card" style="margin:0"><div class="row"><span class="tag ${l.level}">${LV[l.level] || l.level}</span>${l.shared ? '<span class="tag">Kho chung</span>' : '<span class="tag admin">Của trung tâm</span>'}</div>
+    <h3 style="margin:8px 0 4px">${esc(l.title)}</h3><div class="small mut">${esc(l.description)}</div>
+    <ul class="small" style="padding-left:18px;margin:8px 0">${l.items.map(it => `<li>${esc(it.title || (it.kind === 'link' ? it.url : gameLabel(it.game, it.config)))}</li>`).join('')}</ul>
+    <div class="row"><button class="btn sm y" data-give="${l.id}">Giao cho lớp</button>${l.can_edit ? `<button class="btn sm" data-edit="${l.id}">Sửa</button><button class="btn sm r" data-ldel="${l.id}">Xoá</button>` : ''}</div></div>`).join('')}</div>` : '<div class="empty">Kho trống.</div>'}`;
+  const b = $('#bL', m); if (b) b.onclick = () => editLesson(null);
+  $$('[data-edit]', m).forEach(b => b.onclick = () => editLesson(LESS.find(l => l.id === b.dataset.edit)));
+  $$('[data-ldel]', m).forEach(b => b.onclick = async () => { if (await sure('Xoá bài học này khỏi kho? Bài đã giao cho lớp vẫn giữ nguyên.', 'Xoá')) { await act(() => call('l_delete', { p_id: b.dataset.ldel }), 'Đã xoá'); pLessons(m); } });
+  $$('[data-give]', m).forEach(b => b.onclick = () => giveLesson(LESS.find(l => l.id === b.dataset.give)));
+}
+function giveLesson(l, classId) {
+  const ks = CEN.classes;
+  if (!ks.length) return toast('Chưa có lớp nào');
+  modal(`<h2>Giao "${esc(l.title)}"</h2><label class="f">Lớp</label><select class="inp" id="gK">${ks.map(k => `<option value="${k.id}" ${k.id === classId ? 'selected' : ''}>${esc(k.name)}</option>`).join('')}</select>
+    <label class="f">Hạn làm</label><input class="inp" id="gD" type="date"><label class="f">Lời dặn</label><input class="inp" id="gN" maxlength="300" placeholder="Ví dụ: Con làm cùng bố mẹ nhé">
+    <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="mC">Huỷ</button><button class="btn y" id="mO">Giao bài</button></div>`, p => {
+    $('#mC', p).onclick = closeM;
+    $('#mO', p).onclick = async () => { const k = $('#gK', p).value; const r = await act(() => call('k_assign_lesson', { p_class: k, p_lesson: l.id, p_due: $('#gD', p).value || null, p_note: $('#gN', p).value })); closeM(); toast('Đã giao ' + r.added + ' bài'); go('#class/' + k + '/bai'); };
+  });
+}
+function gameFields(it, i) {
+  const g = GAMES['mam-non'], c = it.config || {};
+  return `<select class="inp" data-f="isle" data-i="${i}" style="width:auto">${g.isles.map((n, k) => `<option value="${k}" ${k === (c.isle | 0) ? 'selected' : ''}>${n}</option>`).join('')}</select>
+    <select class="inp" data-f="lv" data-i="${i}" style="width:auto">${Array.from({ length: g.levels }, (_, k) => `<option value="${k}" ${k === (c.lv | 0) ? 'selected' : ''}>Màn ${k + 1}</option>`).join('')}</select>`;
+}
+function editLesson(l) {
+  const shared = l ? l.shared : false;
+  let items = l ? JSON.parse(JSON.stringify(l.items)) : [{ kind: 'game', game: 'mam-non', config: { isle: 1, lv: 0 }, title: '' }];
+  const draw = p => {
+    $('#its', p).innerHTML = items.map((it, i) => `<div class="item"><div class="row"><select class="inp" data-f="kind" data-i="${i}" style="width:auto"><option value="game" ${it.kind !== 'link' ? 'selected' : ''}>Game</option><option value="link" ${it.kind === 'link' ? 'selected' : ''}>Đường link</option></select>
+      ${it.kind === 'link' ? `<input class="inp grow" data-f="url" data-i="${i}" placeholder="https://…" value="${esc(it.url || '')}">` : gameFields(it, i)}
+      <button class="btn sm r" data-x="${i}" aria-label="Xoá mục">✕</button></div>
+      <input class="inp" style="margin-top:6px" data-f="title" data-i="${i}" placeholder="Tên hiển thị (không bắt buộc)" value="${esc(it.title || '')}"></div>`).join('') || '<div class="empty">Chưa có mục nào.</div>';
+    $$('[data-f]', p).forEach(e => e.onchange = () => { const it = items[e.dataset.i], f = e.dataset.f;
+      if (f === 'kind') { items[e.dataset.i] = e.value === 'link' ? { kind: 'link', url: '', title: it.title } : { kind: 'game', game: 'mam-non', config: { isle: 0, lv: 0 }, title: it.title }; draw(p); }
+      else if (f === 'isle' || f === 'lv') { it.config = Object.assign({}, it.config, { [f]: +e.value }); }
+      else it[f] = e.value; });
+    $$('[data-x]', p).forEach(b => b.onclick = () => { items.splice(+b.dataset.x, 1); draw(p); });
+  };
+  modal(`<h2>${l ? 'Sửa bài học' : 'Bài học mới'}</h2>
+    ${ME.super ? `<label class="small"><input type="checkbox" id="lS" ${shared ? 'checked' : ''} ${l ? 'disabled' : ''}> Đưa vào kho chung (mọi trung tâm)</label>` : ''}
+    <label class="f">Tên bài học</label><input class="inp" id="lT" maxlength="100" value="${esc(l ? l.title : '')}">
+    <div class="row"><div class="grow"><label class="f">Cấp học</label><select class="inp" id="lL">${Object.entries(LV).map(([k, v]) => `<option value="${k}" ${l && l.level === k ? 'selected' : ''}>${v}</option>`).join('')}</select></div></div>
+    <label class="f">Mục tiêu / mô tả</label><textarea class="inp" id="lD" maxlength="1000">${esc(l ? l.description : '')}</textarea>
+    <label class="f">Nội dung (theo thứ tự)</label><div id="its"></div>
+    <div class="row"><button class="btn sm" id="aG">+ Màn game</button><button class="btn sm" id="aL">+ Đường link</button></div>
+    <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="mC">Huỷ</button><button class="btn y" id="mO">Lưu</button></div>`, p => {
+    draw(p);
+    $('#aG', p).onclick = () => { items.push({ kind: 'game', game: 'mam-non', config: { isle: 0, lv: 0 }, title: '' }); draw(p); };
+    $('#aL', p).onclick = () => { items.push({ kind: 'link', url: '', title: '' }); draw(p); };
+    $('#mC', p).onclick = closeM;
+    $('#mO', p).onclick = async () => {
+      const bad = items.find(it => it.kind === 'link' && !/^https?:\/\//.test(it.url || '')); if (bad) return toast('Đường link phải bắt đầu bằng http');
+      const center = l ? (l.shared ? null : CID) : (ME.super && $('#lS', p) && $('#lS', p).checked ? null : CID);
+      await act(() => call('l_save', { p_id: l ? l.id : null, p_center: center, p_title: $('#lT', p).value, p_level: $('#lL', p).value, p_description: $('#lD', p).value, p_items: items }), 'Đã lưu bài học');
+      closeM(); pLessons($('#main'));
+    };
+  });
+}
+
+/* ---------- MỘT LỚP ---------- */
+const KT = [['hs', 'Học sinh'], ['bai', 'Bài giao'], ['lich', 'Lịch học & điểm danh'], ['kq', 'Kết quả'], ['tb', 'Thông báo']];
+async function pClass(m, id, tab) {
+  KD = await call('k_class', { p_class: id });
+  const k = KD.class;
+  m.innerHTML = `<div class="ph"><h1>${esc(k.name)}</h1><span class="tag ${k.level}">${LV[k.level]}</span><span class="small">Mã lớp <span class="code">${k.code}</span></span>
+    ${isAdmin() ? '<button class="btn sm" id="kEd">Sửa lớp</button>' : ''}</div>
+    <div class="small mut" style="margin:-6px 0 10px">Giáo viên: ${esc(k.teacher || 'chưa có')} · ${KD.students.length} học sinh</div>
+    <div class="tabs" role="tablist">${KT.map(([t, n]) => `<button role="tab" aria-selected="${t === tab}" data-tab="${t}">${n}</button>`).join('')}</div><div id="kb"></div>`;
+  $$('[data-tab]', m).forEach(b => b.onclick = () => go(`#class/${id}/${b.dataset.tab}`));
+  const e = $('#kEd', m); if (e) e.onclick = () => editClass();
+  const box = $('#kb', m);
+  ({ hs: tStudents, bai: tTasks, lich: tSessions, kq: tResults, tb: tNotices }[tab] || tStudents)(box);
+}
+const reK = () => route();
+function editClass() {
+  const k = KD.class, cur = CEN.classes.find(x => x.id === k.id);
+  modal(`<h2>Sửa lớp</h2><label class="f">Tên lớp</label><input class="inp" id="eN" value="${esc(k.name)}">
+    <label class="f">Giáo viên</label><select class="inp" id="eT"><option value="">— Chưa có —</option>${CEN.members.map(t => `<option value="${t.id}" ${cur && cur.teacher_id === t.id ? 'selected' : ''}>${esc(t.name || t.email)}</option>`).join('')}</select>
+    <div class="row" style="margin-top:14px"><button class="btn r" id="eD">Xoá lớp</button><div style="flex:1"></div><button class="btn" id="mC">Huỷ</button><button class="btn y" id="mO">Lưu</button></div>`, p => {
+    $('#mC', p).onclick = closeM;
+    $('#mO', p).onclick = async () => { await act(() => call('c_update_class', { p_class: k.id, p_name: $('#eN', p).value, p_teacher: $('#eT', p).value || null }), 'Đã lưu'); closeM(); reK(); };
+    $('#eD', p).onclick = async () => { closeM(); if (await sure(`Xoá lớp <b>${esc(k.name)}</b>? Học sinh chuyển sang "chưa xếp lớp", bài giao và lịch học của lớp bị xoá.`, 'Xoá lớp')) { await act(() => call('c_delete_class', { p_class: k.id }), 'Đã xoá lớp'); go('#classes'); } };
+  });
+}
+function studentLink() { return new URL('hs.html?c=' + KD.class.code, location.href).href; }
+function tStudents(b) {
+  const S = KD.students, mn = KD.class.level === 'mn';
+  b.innerHTML = `<div class="card"><h2>Thêm học sinh</h2><textarea class="inp" id="sN" placeholder="Mỗi dòng một tên gọi, ví dụ:&#10;Bống&#10;Minh Anh"></textarea>
+    <div class="row" style="margin-top:8px"><button class="btn y" id="bAdd">Thêm vào lớp</button><span class="small mut">Chỉ cần tên gọi. Không nhập ngày sinh, địa chỉ, ảnh.</span></div></div>
+  <div class="card"><h2>Cách học sinh vào lớp</h2><p class="small">Mở <b>${esc(studentLink())}</b> → chọn tên → ${mn ? 'chạm 3 hình bí mật' : 'nhập 4 số bí mật'}.</p>
+    <div class="row"><button class="btn sm" id="bCp">Chép link vào lớp</button><button class="btn sm y" id="bPr" ${S.length ? '' : 'disabled'}>In thẻ đăng nhập</button></div></div>
+  <div class="card"><h2>Danh sách (${S.length})</h2>${S.length ? `<div class="scroll-x"><table class="t"><tr><th>#</th><th>Tên</th><th>Mã HS</th><th>Mã bí mật</th><th></th></tr>
+    ${S.map((s, i) => `<tr><td>${i + 1}</td><td><b>${esc(s.name)}</b></td><td class="small">${s.code}</td><td><span class="pin">${pinHtml(s.pin, 24)}</span></td>
+      <td><div class="row"><button class="btn sm" data-rn="${s.id}">Đổi tên</button><button class="btn sm" data-pin="${s.id}">Mã mới</button>
+      ${isAdmin() && KD.other_classes.length ? `<select class="inp" data-mv="${s.id}" style="width:auto;min-height:34px;padding:4px 8px"><option value="">Chuyển lớp…</option>${KD.other_classes.map(o => `<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select>` : ''}
+      <button class="btn sm r" data-rm="${s.id}">Bỏ khỏi lớp</button></div></td></tr>`).join('')}</table></div>` : '<div class="empty">Chưa có học sinh.</div>'}</div>`;
+  $('#bAdd', b).onclick = async () => { const names = $('#sN', b).value.split('\n').map(x => x.trim()).filter(Boolean); if (!names.length) return; const r = await act(() => call('k_add_students', { p_class: KD.class.id, p_names: names })); toast('Đã thêm ' + r.added + ' học sinh'); reK(); };
+  $('#bCp', b).onclick = () => { navigator.clipboard && navigator.clipboard.writeText(studentLink()).then(() => toast('Đã chép link'), () => toast(studentLink())); };
+  $('#bPr', b).onclick = () => printCards();
+  $$('[data-rn]', b).forEach(x => x.onclick = async () => { const s = S.find(y => y.id === x.dataset.rn); const v = await ask('Đổi tên học sinh', 'Tên gọi', s.name); if (v && v.trim()) { await act(() => call('k_rename_student', { p_student: s.id, p_name: v }), 'Đã đổi tên'); reK(); } });
+  $$('[data-pin]', b).forEach(x => x.onclick = async () => { if (await sure('Cấp mã bí mật mới? Mã cũ không dùng được nữa.', 'Cấp mã mới')) { await act(() => call('k_reset_pin', { p_student: x.dataset.pin }), 'Đã cấp mã mới'); reK(); } });
+  $$('[data-rm]', b).forEach(x => x.onclick = async () => { if (await sure('Bỏ học sinh này khỏi lớp? Hồ sơ vẫn còn ở trung tâm (mục Học sinh → Chưa xếp lớp).', 'Bỏ khỏi lớp')) { await act(() => call('k_remove_student', { p_student: x.dataset.rm }), 'Đã bỏ khỏi lớp'); reK(); } });
+  $$('[data-mv]', b).forEach(x => x.onchange = async () => { if (!x.value) return; await act(() => call('c_move_student', { p_student: x.dataset.mv, p_class: x.value }), 'Đã chuyển lớp (mã bí mật mới)'); reK(); });
+}
+function printCards() {
+  const k = KD.class, link = studentLink();
+  $('#print').innerHTML = KD.students.map(s => `<div class="pc"><div>Jenny LMS · Lớp <b style="font-size:15px">${esc(k.name)}</b></div><b>${esc(s.name)}</b>
+    <div>Mã lớp: <b style="font-size:17px">${k.code}</b></div><div>Mã bí mật: <span class="pin">${pinHtml(s.pin, 30)}</span></div><div style="font-size:11px;color:#555">${esc(link)}</div></div>`).join('');
+  setTimeout(() => print(), 50);
+}
+function tTasks(b) {
+  const A = KD.assignments, n = KD.students.length, g = GAMES['mam-non'];
+  b.innerHTML = `<div class="card"><h2>Giao bài mới</h2>
+    <div class="row"><select class="inp" id="aK" style="width:auto"><option value="game">Game</option><option value="link">Đường link</option></select><span id="aF" class="row"></span></div>
+    <div class="row" style="margin-top:8px"><input class="inp grow" id="aT" placeholder="Tên bài (để trống sẽ tự đặt)" maxlength="80"><label class="small">Hạn <input class="inp" type="date" id="aD" style="width:auto"></label></div>
+    <input class="inp" id="aN" style="margin-top:8px" maxlength="300" placeholder="Lời dặn (không bắt buộc)">
+    <div class="row" style="margin-top:8px"><button class="btn y" id="bA">Giao bài</button><a class="btn sm" href="#lessons">Hoặc giao từ kho bài học</a></div></div>
+  <div class="card"><h2>Đã giao (${A.length})</h2>${A.length ? `<div class="scroll-x"><table class="t"><tr><th>Bài</th><th>Hạn</th><th>Đã làm</th><th></th></tr>
+    ${A.map(a => `<tr><td><b>${esc(a.title)}</b><div class="small mut">${a.kind === 'game' ? esc(gameLabel(a.game, a.config)) : esc(a.url)}${a.note ? ' · ' + esc(a.note) : ''}</div></td><td class="small">${fmtD(a.due) || '—'}</td><td>${a.done}/${n}</td>
+      <td><div class="row"><a class="btn sm" target="_blank" href="${a.kind === 'game' ? esc(GAMES[a.game] ? GAMES[a.game].url(a).replace(/\?lms=[^&]+&/, '?') : '#') : esc(a.url)}">Xem thử</a><button class="btn sm r" data-ad="${a.id}">Xoá</button></div></td></tr>`).join('')}</table></div>` : '<div class="empty">Chưa giao bài nào.</div>'}</div>`;
+  const fields = () => { $('#aF', b).innerHTML = $('#aK', b).value === 'link' ? '<input class="inp" id="aU" placeholder="https://…" style="min-width:260px">' : `<span class="small mut">${g.name}</span>` + gameFields({ config: { isle: 1, lv: 0 } }, 0); };
+  $('#aK', b).onchange = fields; fields();
+  $('#bA', b).onclick = async () => {
+    const kind = $('#aK', b).value; let cfg = {}, url = '', title = $('#aT', b).value.trim();
+    if (kind === 'game') { cfg = { isle: +$('[data-f=isle]', b).value, lv: +$('[data-f=lv]', b).value }; if (!title) title = gameLabel('mam-non', cfg); }
+    else { url = $('#aU', b).value.trim(); if (!/^https?:\/\//.test(url)) return toast('Đường link phải bắt đầu bằng http'); if (!title) title = 'Bài đọc / xem'; }
+    await act(() => call('k_create_assignment', { p_class: KD.class.id, p_title: title, p_kind: kind, p_game: kind === 'game' ? 'mam-non' : '', p_config: cfg, p_url: url, p_note: $('#aN', b).value, p_due: $('#aD', b).value || null, p_lesson: null }), 'Đã giao bài');
+    reK();
+  };
+  $$('[data-ad]', b).forEach(x => x.onclick = async () => { if (await sure('Xoá bài này? Kết quả học sinh đã làm cũng bị xoá.', 'Xoá')) { await act(() => call('k_delete_assignment', { p_assignment: x.dataset.ad }), 'Đã xoá'); reK(); } });
+}
+function tSessions(b) {
+  const X = KD.sessions, S = KD.students;
+  const now = new Date(Date.now() + 60 * 60e3); now.setMinutes(0, 0, 0);
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60e3).toISOString().slice(0, 16);
+  b.innerHTML = `<div class="card"><h2>Lên lịch buổi học</h2>
+    <div class="row"><input class="inp grow" id="xT" placeholder="Tên buổi, ví dụ: Buổi 3 – Đếm đến 10" maxlength="80"><input class="inp" id="xS" type="datetime-local" value="${local}" style="width:auto"><label class="small">Phút <input class="inp" id="xM" type="number" min="10" max="300" value="60" style="width:80px"></label></div>
+    <input class="inp" id="xL" style="margin-top:8px" placeholder="Link phòng học: https://meet.google.com/… hoặc https://zoom.us/j/… (để trống nếu học tại lớp)">
+    <div class="row" style="margin-top:8px"><button class="btn y" id="bX">Thêm buổi học</button><span class="small mut">Tạo phòng trên Google Meet / Zoom rồi dán link. Học sinh bấm "Vào lớp" từ 15 phút trước giờ học; hệ thống tự ghi có mặt (sau 10 phút là muộn).</span></div></div>
+  ${X.length ? X.map(x => { const at = Object.fromEntries(x.att.map(a => [a.s, a])), cnt = st => x.att.filter(a => a.status === st).length;
+    return `<div class="card"><div class="ph" style="margin-bottom:6px"><h2 style="flex:1;margin:0">${esc(x.title)}</h2>${x.link ? `<a class="btn sm b" href="${esc(x.link)}" target="_blank" rel="noopener">Mở phòng</a>` : ''}<button class="btn sm r" data-xd="${x.id}">Xoá</button></div>
+    <div class="small mut">${fmtT(x.starts_at)} · ${x.minutes} phút · Có mặt ${cnt('present')} · Muộn ${cnt('late')} · Vắng ${cnt('absent')} · Có phép ${cnt('excused')}</div>
+    ${S.length ? `<div class="scroll-x"><table class="t" style="margin-top:6px">${S.map(s => { const a = at[s.id]; return `<tr><td><b>${esc(s.name)}</b>${a && a.joined_at ? `<div class="small mut">vào lúc ${new Date(a.joined_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</div>` : ''}</td>
+      <td class="att"><div class="row">${ATT.map(([k, n]) => `<button class="${a && a.status === k ? 'on ' + k : ''}" data-at="${x.id}|${s.id}|${k}" aria-pressed="${!!(a && a.status === k)}">${n}</button>`).join('')}</div></td></tr>`; }).join('')}</table></div>` : ''}</div>`; }).join('') : '<div class="card empty">Chưa có buổi học nào.</div>'}`;
+  $('#bX', b).onclick = async () => {
+    const s = $('#xS', b).value; if (!s) return toast('Chọn giờ bắt đầu');
+    const link = $('#xL', b).value.trim(); if (link && !/^https:\/\//.test(link)) return toast('Link phải bắt đầu bằng https://');
+    await act(() => call('k_create_session', { p_class: KD.class.id, p_title: $('#xT', b).value, p_starts: new Date(s).toISOString(), p_minutes: +$('#xM', b).value || 60, p_link: link, p_lesson: null }), 'Đã thêm buổi học');
+    reK();
+  };
+  $$('[data-xd]', b).forEach(x => x.onclick = async () => { if (await sure('Xoá buổi học này cùng dữ liệu điểm danh?', 'Xoá')) { await act(() => call('k_delete_session', { p_session: x.dataset.xd }), 'Đã xoá'); reK(); } });
+  $$('[data-at]', b).forEach(x => x.onclick = async () => { const [se, st, k] = x.dataset.at.split('|'); const on = x.classList.contains('on');
+    await act(() => call('k_set_attendance', { p_session: se, p_student: st, p_status: on ? null : k })); reK(); });
+}
+function tResults(b) {
+  const S = KD.students, A = KD.assignments.slice().reverse();
+  const best = {}; KD.best.forEach(x => best[x.s + '|' + x.a] = x);
+  const skills = [...new Set(KD.skills.map(x => x.skill))].sort();
+  const sk = {}; KD.skills.forEach(x => sk[x.s + '|' + x.skill] = x);
+  const cell = (s, a) => { const x = best[s.id + '|' + a.id]; if (!x) return '<span class="mut">—</span>'; if (a.kind === 'link') return '✓';
+    return `<span class="st3" title="${x.n} lần">${'★'.repeat(x.stars)}${'☆'.repeat(3 - x.stars)}</span>`; };
+  const hm = (ok, n) => { if (!n) return '<div class="hm n">—</div>'; const p = Math.round(ok / n * 100); return `<div class="hm ${p >= 80 ? 'g' : p >= 50 ? 'y' : 'r'}" title="${ok}/${n} câu đúng ngay lần đầu">${p}%</div>`; };
+  const tot = sk2 => { let ok = 0, n = 0; S.forEach(s => { const x = sk[s.id + '|' + sk2]; if (x) { ok += x.ok; n += x.n; } }); return hm(ok, n); };
+  b.innerHTML = `<div class="card"><div class="ph"><h2 style="flex:1;margin:0">Theo bài giao</h2><button class="btn sm" id="bCsv">Tải CSV</button></div>
+    ${S.length && A.length ? `<div class="scroll-x"><table class="t"><tr><th>Học sinh</th>${A.map(a => `<th title="${esc(a.title)}">${esc(a.title.length > 22 ? a.title.slice(0, 21) + '…' : a.title)}</th>`).join('')}</tr>
+      ${S.map(s => `<tr><td><b>${esc(s.name)}</b></td>${A.map(a => `<td>${cell(s, a)}</td>`).join('')}</tr>`).join('')}</table></div>` : '<div class="empty">Chưa có dữ liệu.</div>'}</div>
+  <div class="card"><h2>Theo kỹ năng</h2><p class="small mut">Tỉ lệ câu làm đúng ngay lần đầu. Xanh ≥ 80% (vững) · Vàng 50–79% (cần luyện thêm) · Đỏ &lt; 50% (cần cô kèm).</p>
+    ${skills.length ? `<div class="scroll-x"><table class="t"><tr><th>Học sinh</th>${skills.map(x => `<th>${esc(x)}</th>`).join('')}</tr>
+      ${S.map(s => `<tr><td><b>${esc(s.name)}</b></td>${skills.map(x => { const v = sk[s.id + '|' + x]; return `<td>${hm(v ? v.ok : 0, v ? v.n : 0)}</td>`; }).join('')}</tr>`).join('')}
+      <tr><td><b>Cả lớp</b></td>${skills.map(x => `<td>${tot(x)}</td>`).join('')}</tr></table></div>` : '<div class="empty">Học sinh làm bài game xong sẽ có số liệu ở đây.</div>'}</div>`;
+  $('#bCsv', b).onclick = () => {
+    const q = v => '"' + String(v).replace(/"/g, '""') + '"';
+    const rows = [['Học sinh', 'Mã HS', ...A.map(a => a.title), ...skills.map(x => 'Kỹ năng: ' + x)].map(q).join(',')];
+    S.forEach(s => rows.push([s.name, s.code, ...A.map(a => { const x = best[s.id + '|' + a.id]; return x ? (a.kind === 'link' ? 'xong' : x.stars + ' sao') : ''; }),
+      ...skills.map(x => { const v = sk[s.id + '|' + x]; return v ? Math.round(v.ok / v.n * 100) + '%' : ''; })].map(q).join(',')));
+    const url = URL.createObjectURL(new Blob(['﻿' + rows.join('\n')], { type: 'text/csv;charset=utf-8' }));
+    const a = document.createElement('a'); a.href = url; a.download = 'ket-qua-' + KD.class.name + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+}
+function tNotices(b) {
+  b.innerHTML = `<div class="card"><h2>Gửi thông báo</h2><textarea class="inp" id="nB" maxlength="500" placeholder="Ví dụ: Thứ 7 này lớp nghỉ, các con làm bài Đếm đến 5 ở nhà nhé."></textarea>
+    <div class="row" style="margin-top:8px"><button class="btn y" id="bN">Gửi cho cả lớp</button><span class="small mut">Học sinh và phụ huynh thấy ở trang nhiệm vụ của con.</span></div></div>
+  <div class="card"><h2>Đã gửi</h2>${KD.notices.length ? KD.notices.map(n => `<div class="item"><div>${esc(n.body)}</div><div class="row small mut" style="margin-top:4px"><span style="flex:1">${fmtT(n.at)}</span><button class="btn sm r" data-nd="${n.id}">Xoá</button></div></div>`).join('') : '<div class="empty">Chưa có thông báo.</div>'}</div>`;
+  $('#bN', b).onclick = async () => { const v = $('#nB', b).value.trim(); if (!v) return; await act(() => call('k_post_notice', { p_class: KD.class.id, p_body: v }), 'Đã gửi'); reK(); };
+  $$('[data-nd]', b).forEach(x => x.onclick = async () => { await act(() => call('k_delete_notice', { p_notice: x.dataset.nd }), 'Đã xoá'); reK(); });
+}
+
+/* ---------- khởi động ---------- */
+const { data: { session } } = await sb.auth.getSession();
+if (!session) { $('#auth').hidden = false; }
+</script>
+</body>
+</html>

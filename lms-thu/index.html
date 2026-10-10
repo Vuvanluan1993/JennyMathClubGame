@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Jenny LMS – bản thử</title>
+<link rel="stylesheet" href="lms.css">
+<style>
+body{display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:16px}
+.wrap{width:min(720px,100%)}
+.head{text-align:center;margin-bottom:18px}
+.head .logo{justify-content:center;font-size:26px}
+.head .logo i{width:44px;height:44px;font-size:24px}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pick a{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;color:var(--ink);background:#fff;border-radius:20px;box-shadow:var(--sh);padding:26px 14px;text-align:center;border:3px solid transparent}
+.pick a:hover,.pick a:focus-visible{border-color:var(--y2);outline:0}
+.pick .em{font-size:52px;line-height:1}
+.pick b{font-size:19px}
+.foot{text-align:center;margin-top:16px}
+@media (max-width:480px){.pick{grid-template-columns:1fr}.pick a{padding:18px 12px;flex-direction:row;text-align:left}.pick .em{font-size:40px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="head">
+    <div class="logo"><i>J</i> Jenny LMS</div>
+    <p class="mut">Lớp học trực tuyến của CLB Học Toán cùng Jenny · <b>bản thử</b></p>
+  </div>
+  <div class="pick">
+    <a href="hs.html"><span class="em">🎒</span><span><b>Học sinh vào lớp</b><br><span class="mut small">Nhập mã lớp, chọn tên, mã bí mật</span></span></a>
+    <a href="app.html"><span class="em">🧑‍🏫</span><span><b>Giáo viên · Quản trị</b><br><span class="mut small">Quản lý trung tâm, lớp, học sinh, bài giao</span></span></a>
+  </div>
+  <p class="foot small mut"><a href="../index.html">← Về trang trò chơi</a></p>
+</main>
+</body>
+</html>
