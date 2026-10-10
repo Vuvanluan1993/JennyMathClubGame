@@ -352,6 +352,16 @@ textarea.code{width:100%;height:64px;border:2.5px solid var(--ink);border-radius
 .slot2.filled{border-style:solid!important;background:var(--mint-soft)!important}
 .it.home{opacity:.95}
 .it.mark{outline:4px solid var(--sun);outline-offset:2px;border-radius:14px}
+.grp.aid .it{cursor:pointer}
+.cnum{position:absolute;right:-4px;top:-4px;min-width:26px;height:26px;border-radius:13px;background:var(--sel);color:#fff;border:2.5px solid var(--ink);font-family:var(--display);font-weight:800;font-size:16px;display:grid;place-items:center;padding:0 4px;line-height:1}
+.no-go{opacity:.35!important;filter:grayscale(1)}
+.grp.still .it{cursor:default}
+.obj.picked{outline:5px solid var(--sel);outline-offset:3px}
+.splitbox{display:grid;grid-template-rows:minmax(0,1fr) minmax(0,1.2fr);gap:10px;min-height:0}
+.baskets .bk{background:#FFF0C2;border-radius:10px 10px 40px 40px}
+.qbk{display:grid;place-items:center}
+.qmark{font-family:var(--display);font-weight:800;font-size:56px;color:var(--hatch)}
+#bSet.holding{background:var(--sun);transition:background 1.6s}
 /* match */
 .act.match{grid-template-columns:minmax(0,1.6fr) minmax(0,.7fr);position:relative;gap:18% }
 .mcol{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:10px;min-height:0}
@@ -553,7 +563,7 @@ const DECO_ORDER = ['tree', 'fence', 'mill', 'bench', 'pond'];
 const ISLANDS = [
   { id: 'h', name: 'Đảo Hình và Màu', sub: 'Khác biệt · tô màu · quy luật', color: '#FFE3A8', edge: '#E8B85C', types: ['odd', 'spot', 'color', 'pattern'] },
   { id: 'd', name: 'Đảo Đếm Số', sub: 'Đếm · nối · so sánh', color: '#BFE7C9', edge: '#7CC79A', types: ['count', 'match', 'compare'] },
-  { id: 'c', name: 'Đảo Cộng Trừ', sub: 'Thêm vào · bớt đi', color: '#DCEBFF', edge: '#8FBDF0', types: ['add', 'sub'] },
+  { id: 'c', name: 'Đảo Cộng Trừ', sub: 'Thêm · bớt · tách gộp', color: '#DCEBFF', edge: '#8FBDF0', types: ['add', 'sub', 'split'] },
   { id: 'b', name: 'Đảo Bài Toán', sub: 'Toán có lời văn', color: '#FFD9D2', edge: '#F2A193', types: ['word'] },
   { id: 'g', name: 'Đảo Thứ Tự và Giờ', sub: 'Số thứ tự · xem đồng hồ', color: '#EADCFB', edge: '#B79BE6', types: ['ordinal', 'clock'] },
   { id: 'p', name: 'Đảo Phương Hướng', sub: 'Trên · dưới · trái · phải', color: '#D5F6E8', edge: '#6FCFA8', types: ['space'] }
@@ -650,6 +660,14 @@ function group(k, n, opts = {}, cls = '') {
   for (let i = 0; i < n; i++) { const it = el('div', 'it' + (opts.crossFrom != null && i >= opts.crossFrom ? ' gone' : ''), art(k, opts.o)); g.appendChild(it); }
   return g;
 }
+/* chạm vào từng hình để đếm: hiện số 1, 2, 3… trên hình (đếm tương ứng 1–1) */
+function countAid(groups) {
+  let n = 0;
+  groups.forEach(g => { g.classList.add('aid'); g.addEventListener('click', e => {
+    const it = e.target.closest('.it'); if (!it || it.classList.contains('gone') || it.dataset.c) return;
+    it.dataset.c = ++n; it.appendChild(el('b', 'cnum', String(n))); sfx.tap(); speak(String(n), { quiet: true });
+  }); });
+}
 /* big answer buttons; values can be numbers or html */
 function choiceRow(vals, onPick, fmt = v => v) {
   const row = el('div', 'choices');
@@ -666,7 +684,10 @@ function makeDrag(node, onDrop) {
   const end = e => {
     if (!on) return; on = false; node.classList.remove('lift');
     node.style.visibility = 'hidden';
-    const z = document.elementsFromPoint(e.clientX, e.clientY).find(x => x.classList && x.classList.contains('dz'));
+    let z = document.elementsFromPoint(e.clientX, e.clientY).find(x => x.classList && x.classList.contains('dz'));
+    if (!z && (Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy)) > 20) {   // thả gần ô cũng được (trẻ nhỏ khó thả chính xác)
+      let best = 1e9; document.querySelectorAll('.dz').forEach(d => { const r = d.getBoundingClientRect(), dd = Math.hypot(r.left + r.width / 2 - e.clientX, r.top + r.height / 2 - e.clientY); if (dd < Math.max(90, r.width) && dd < best) { best = dd; z = d; } });
+    }
     node.style.visibility = '';
     const keep = z ? onDrop(z, node, e) : false;
     if (!keep) { node.style.transition = 'transform .25s'; node.style.transform = ''; setTimeout(() => node.style.transition = '', 260); }
@@ -694,11 +715,11 @@ const ACTS = {};
 
 /* ===== Đếm ===== */
 ACTS.count = {
-  gen(lv) { const k = pick1(COUNTABLE), n = ri(lv < 4 ? 1 : 4, MAXN(lv)); return { k, n, mode: lv >= 2 && R() < .5 ? 'drag' : 'tap', opts: nums(n, 1, MAXN(lv)),
+  gen(lv) { const k = pick1(COUNTABLE), n = ri(lv < 4 ? 1 : 4, MAXN(lv)); return { k, n, mode: lv >= 2 && R() < .5 ? 'drag' : 'tap', opts: nums(n, 1, MAXN(lv)), explain: `Mình đếm từng ${un(k)}: có ${n} ${nm(k)}.`,
     ask: `Có bao nhiêu ${nm(k)}?`, say: `Con hãy đếm xem có bao nhiêu ${nm(k)}?` }; },
   render(q, st, api) {
     const a = el('div', 'act col');
-    const g = group(q.k, q.n, { o: { color: pick1(COLS) } }, 'big'); a.appendChild(g);
+    const g = group(q.k, q.n, { o: { color: pick1(COLS) } }, 'big'); a.appendChild(g); countAid([g]);
     if (q.mode === 'tap') a.appendChild(choiceRow(q.opts, (v, b) => v === q.n ? api.ok(b) : api.bad(b)));
     else {
       const slot = el('div', 'slot dz', '?'); const wrap = el('div', 'row c'); wrap.append(el('span', 'eq', 'Có'), slot, el('span', 'eq', un(q.k)));
@@ -750,10 +771,10 @@ ACTS.match = {
 ACTS.compare = {
   gen(lv) {
     const m = MAXN(lv), [k1, k2] = pickN(COUNTABLE, 2);
-    if (lv >= 4 && R() < .4) { const a = ri(2, m), eq = R() < .5, b = eq ? a : pick1([a - 1, a + 1].filter(x => x >= 1 && x <= m)); return { k1, k2, a, b, mode: 'eq', ask: 'Hai nhóm có bằng nhau không?', say: `Số ${nm(k1)} và số ${nm(k2)} có bằng nhau không?` }; }
+    if (lv >= 4 && R() < .4) { const a = ri(2, m), eq = R() < .5, b = eq ? a : pick1([a - 1, a + 1].filter(x => x >= 1 && x <= m)); return { k1, k2, a, b, mode: 'eq', explain: a === b ? `Hai bên đều có ${a}, bằng nhau.` : `Một bên có ${a}, một bên có ${b}, không bằng nhau.`, ask: 'Hai nhóm có bằng nhau không?', say: `Số ${nm(k1)} và số ${nm(k2)} có bằng nhau không?` }; }
     let a = ri(1, m), b; do { b = ri(1, m); } while (b === a || Math.abs(a - b) > (lv < 2 ? 5 : 3));
     const more = R() < .6;
-    return { k1, k2, a, b, mode: more ? 'more' : 'less', ask: more ? 'Bên nào nhiều hơn?' : 'Bên nào ít hơn?', say: more ? 'Bên nào nhiều hơn? Con chạm vào nhóm đó nhé.' : 'Bên nào ít hơn? Con chạm vào nhóm đó nhé.' };
+    return { k1, k2, a, b, mode: more ? 'more' : 'less', explain: `Một bên có ${a}, một bên có ${b}. ${Math.max(a, b)} nhiều hơn ${Math.min(a, b)}.`, ask: more ? 'Bên nào nhiều hơn?' : 'Bên nào ít hơn?', say: more ? 'Bên nào nhiều hơn? Con chạm vào nhóm đó nhé.' : 'Bên nào ít hơn? Con chạm vào nhóm đó nhé.' };
   },
   render(q, st, api) {
     const a = el('div', 'act col');
@@ -776,7 +797,8 @@ ACTS.compare = {
 ACTS.add = {
   gen(lv) { const m = MAXN(lv), s = ri(2, m), x = ri(1, s - 1), k = pick1(COUNTABLE);
     return { k, x, y: s - x, s, mode: lv >= 2 && R() < .5 ? 'drag' : 'tap', opts: nums(s, 1, m),
-      ask: `${x} + ${s - x} = ?`, say: `Có ${x} ${nm(k)}. Thêm ${s - x} ${nm(k)} nữa. Có tất cả bao nhiêu ${nm(k)}?` }; },
+      sym: lv >= 4, explain: `${x} ${un(k)} thêm ${s - x} ${un(k)} là ${s} ${un(k)}.`,
+      ask: lv >= 4 ? `${x} + ${s - x} = ?` : `Có tất cả bao nhiêu ${nm(k)}?`, say: `Có ${x} ${nm(k)}. Thêm ${s - x} ${nm(k)} nữa. Có tất cả bao nhiêu ${nm(k)}?` }; },
   render(q, st, api) { opRender(q, st, api, '+'); }
 };
 /* ===== Trừ ===== */
@@ -784,23 +806,42 @@ ACTS.sub = {
   gen(lv) { const m = MAXN(lv), s = ri(2, m), y = ri(1, s - 1), k = pick1(COUNTABLE);
     const verb = ['balloon', 'bird', 'butterfly', 'bee', 'ladybug'].includes(k) ? 'bay đi mất' : ['duck', 'chicken', 'hedgehog', 'snail', 'frog', 'fish'].includes(k) ? 'đi chơi xa' : 'bị lấy đi';
     return { k, x: s, y, s: s - y, mode: lv >= 2 && R() < .5 ? 'drag' : 'tap', opts: nums(s - y, 0, m),
-      ask: `${s} − ${y} = ?`, say: `Có ${s} ${nm(k)}. ${y} ${un(k)} ${verb}. Còn lại bao nhiêu ${nm(k)}?` }; },
+      sym: lv >= 4, explain: `${s} ${un(k)} bớt ${y} ${un(k)} còn ${s - y} ${un(k)}.`,
+      ask: lv >= 4 ? `${s} − ${y} = ?` : `Còn lại bao nhiêu ${nm(k)}?`, say: `Có ${s} ${nm(k)}. ${y} ${un(k)} ${verb}. Còn lại bao nhiêu ${nm(k)}?` }; },
   render(q, st, api) { opRender(q, st, api, '−'); }
 };
 function opRender(q, st, api, op) {
   const a = el('div', 'act col');
   const row = el('div', 'row two op');
   const o = { color: pick1(COLS) };
-  if (op === '+') row.append(group(q.k, q.x, { o }), el('span', 'opsym', '+'), group(q.k, q.y, { o }));
-  else row.append(group(q.k, q.x, { o, crossFrom: q.x - q.y }, 'wide'));
+  if (op === '+') { const g1 = group(q.k, q.x, { o }), g2 = group(q.k, q.y, { o }); row.append(g1, el('span', 'opsym', '+'), g2); countAid([g1, g2]); }
+  else { const g = group(q.k, q.x, { o, crossFrom: q.x - q.y }, 'wide'); row.append(g); countAid([g]); }
   a.appendChild(row);
   const eq = el('div', 'row c'); const slot = el('div', 'slot dz', '?');
-  eq.append(el('span', 'eq', `${q.x} ${op} ${q.y} =`), slot); a.appendChild(eq);
+  eq.append(el('span', 'eq', q.sym ? `${q.x} ${op} ${q.y} =` : (op === '+' ? 'Tất cả:' : 'Còn lại:')), slot); a.appendChild(eq);
   if (q.mode === 'tap') a.appendChild(choiceRow(q.opts, (v, b) => { if (v === q.s) { slot.textContent = v; slot.classList.add('filled'); api.ok(b); } else api.bad(b); }));
   else { a.appendChild(numberCards(q.opts, slot, (v, c) => v === q.s ? (api.ok(slot), true) : (api.bad(c), false))); q.say += ' Con kéo số đúng vào ô trống nhé.'; }
   st.appendChild(a);
   api.hint = () => a.querySelector(`[data-v="${q.s}"]`);
 }
+
+/* ===== Tách – gộp ===== */
+ACTS.split = {
+  gen(lv) { const m = MAXN(lv), s = ri(2, m), a = ri(1, s - 1), k = pick1(['apple', 'pear', 'orange', 'carrot', 'mushroom', 'strawberry', 'candy', 'ball', 'flower', 'tomato']);
+    return { k, s, a, b: s - a, opts: nums(s - a, 0, m), explain: `${s} gồm ${a} và ${s - a}.`,
+      ask: `Có ${s} ${nm(k)} chia vào hai giỏ. Giỏ kia có mấy ${un(k)}?`, say: `Có ${s} ${nm(k)}, chia vào hai cái giỏ. Giỏ bên trái có ${a} ${un(k)}. Giỏ bên phải có mấy ${un(k)}?` }; },
+  render(q, st, api) {
+    const a = el('div', 'act col');
+    const top = group(q.k, q.s, {}, 'wide whole'); countAid([top]);
+    const row = el('div', 'row two baskets');
+    const b1 = group(q.k, q.a, {}, 'bk'), b2 = el('div', 'grp bk qbk', '<span class="qmark">?</span>');
+    row.append(b1, b2);
+    const box = el('div', 'splitbox'); box.append(top, row); a.appendChild(box);
+    a.appendChild(choiceRow(q.opts, (v, b) => { if (v === q.b) { b2.innerHTML = ''; for (let i = 0; i < q.b; i++) b2.appendChild(el('div', 'it', art(q.k))); fitGroups(); api.ok(b); } else api.bad(b); }));
+    st.appendChild(a);
+    api.hint = () => a.querySelector(`.cbtn[data-v="${q.b}"]`);
+  }
+};
 
 /* ===== Toán có lời văn ===== */
 const CHARS = [['rabbit', 'Thỏ'], ['bear', 'Gấu'], ['cat', 'Mèo'], ['hedgehog', 'Nhím'], ['frog', 'Ếch'], ['dog', 'Cún'], ['mouse', 'Chuột']];
@@ -826,7 +867,7 @@ ACTS.word = {
     const valid = v => { const mm = v.match(/^(\d+) − (\d+)$/); return !mm || +mm[1] >= +mm[2]; };
     const wrong = [...new Set(shuf([add ? (x >= y ? `${x} − ${y}` : `${y} − ${x}`) : `${x} + ${y}`, `${x} + ${x}`, `${y} + ${y}`, add ? `${x + 1} + ${y}` : `${x} − ${Math.max(0, y - 1)}`]))].filter(v => v !== right && valid(v));
     return { ck, ck2, g, x, y, add, ans, mode, opts: mode === 'num' ? nums(ans, 0, m) : shuf([right, ...wrong.slice(0, 2)]),
-      right: add ? `${x} + ${y}` : `${x} − ${y}`, ask: text, say: text + (mode === 'op' ? ' Con chọn phép tính đúng nhé.' : '') };
+      right: add ? `${x} + ${y}` : `${x} − ${y}`, ask: text, explain: add ? `${x} thêm ${y} là ${ans}.` : `${x} bớt ${y} còn ${ans}.`, say: text + (mode === 'op' ? ' Con chọn phép tính đúng nhé.' : '') };
   },
   render(q, st, api) {
     const a = el('div', 'act col');
@@ -835,7 +876,7 @@ ACTS.word = {
     const g = group(q.g, q.x, {}, q.add ? '' : 'wide');
     if (!q.add) [...g.children].slice(q.x - q.y).forEach(c => c.classList.add('gone'));
     sc.append(who, g);
-    if (q.add) { sc.append(el('span', 'opsym', '+'), group(q.g, q.y)); }
+    if (q.add) { const g2 = group(q.g, q.y); sc.append(el('span', 'opsym', '+'), g2); countAid([g, g2]); } else countAid([g]);
     a.appendChild(sc);
     const right = q.mode === 'num' ? q.ans : q.right;
     a.appendChild(choiceRow(q.opts, (v, b) => String(v) === String(right) ? api.ok(b) : api.bad(b), v => q.mode === 'op' ? `<span class="opx">${v}</span>` : v));
@@ -874,12 +915,12 @@ ACTS.spot = {
     if (newCol.length) rc[d] = pick1(newCol);
     else rk[d] = pick1(COUNTABLE.filter(k => k !== ks[d] && !ks.includes(k)));
     if (look(rk[d], rc[d]) === look(ks[d], cs[d])) rk[d] = pick1(COUNTABLE.filter(k => k !== ks[d]));   // an toàn: luôn khác
-    return { ks, cs, rk, rc, d, ask: 'Tranh bên phải khác tranh bên trái ở đâu?', say: 'Hai bức tranh có một chỗ khác nhau. Con tìm và chạm vào chỗ khác ở tranh bên phải nhé.' };
+    return { ks, cs, rk, rc, d, explain: 'Con so từng hình ở hai bên, hàng trên trước rồi đến hàng dưới.', ask: 'Tranh bên phải khác tranh bên trái ở đâu?', say: 'Hai bức tranh có một chỗ khác nhau. Con tìm và chạm vào chỗ khác ở tranh bên phải nhé.' };
   },
   render(q, st, api) {
     const a = el('div', 'act col');
     const row = el('div', 'row two');
-    const mk = (ks, cs, tap) => { const g = el('div', 'grp spot' + (tap ? ' pickable' : '')); ks.forEach((k, i) => { const it = el(tap ? 'button' : 'div', 'it', art(k, { color: cs[i] })); if (tap) it.onclick = () => i === q.d ? api.ok(it) : api.bad(it); g.appendChild(it); }); return g; };
+    const mk = (ks, cs, tap) => { const g = el('div', 'grp spot pickable' + (tap ? '' : ' still')); ks.forEach((k, i) => { const it = el(tap ? 'button' : 'div', 'it', art(k, { color: cs[i] })); if (tap) it.onclick = () => i === q.d ? api.ok(it) : api.bad(it); g.appendChild(it); }); return g; };
     const gr = mk(q.rk, q.rc, true);
     row.append(mk(q.ks, q.cs, false), gr); a.appendChild(row); st.appendChild(a);
     api.hint = () => gr.children[q.d];
@@ -894,7 +935,7 @@ ACTS.color = {
     const sh = shuf(items), rules = [{ kind: kinds[0], col: pick1(['red', 'yellow', 'green', 'blue']) }];
     if (lv >= 4) rules.push({ kind: kinds[1], col: pick1(['red', 'yellow', 'green', 'blue'].filter(c => c !== rules[0].col)) });
     const txt = rules.map(r => `tô màu ${COLNAME[r.col]} cho các ${SHAPENAME[r.kind]}`).join(', ');
-    return { items: sh, rules, ask: txt[0].toUpperCase() + txt.slice(1) + '.', say: 'Con hãy ' + txt + '. Chọn màu ở dưới, rồi chạm vào hình để tô. Tô xong bấm nút Xong nhé.' };
+    return { items: sh, rules, explain: 'Con chỉ tô đúng hình được nói tới, hình khác để trắng nhé.', ask: txt[0].toUpperCase() + txt.slice(1) + '.', say: 'Con hãy ' + txt + '. Chọn màu ở dưới, rồi chạm vào hình để tô. Tô xong bấm nút Xong nhé.' };
   },
   render(q, st, api) {
     const a = el('div', 'act col');
@@ -928,7 +969,7 @@ ACTS.pattern = {
     const map = { A, B, C }, L = unit.length, len = L === 2 ? 6 : L * 2 + 1;
     const seq = Array(len).fill(0).map((_, i) => unit[i % L]);
     const next = unit[len % L], opts = shuf([...new Set(['A', 'B', unit.includes('C') ? 'C' : 'C'])]);
-    return { seq: seq.map(x => map[x]), next: map[next], nextKey: next, opts: opts.map(x => ({ key: x, v: map[x] })), ask: 'Hình tiếp theo là hình nào?', say: 'Các hình được xếp theo quy luật. Hình tiếp theo là hình nào? Con chạm vào hình đúng nhé.' };
+    return { seq: seq.map(x => map[x]), next: map[next], nextKey: next, explain: L === 2 ? 'Các hình lặp lại từng cặp. Mình đọc lại từ đầu sẽ thấy hình tiếp theo.' : 'Các hình lặp lại theo từng nhóm. Mình đọc lại từ đầu sẽ thấy hình tiếp theo.', opts: opts.map(x => ({ key: x, v: map[x] })), ask: 'Hình tiếp theo là hình nào?', say: 'Các hình được xếp theo quy luật. Hình tiếp theo là hình nào? Con chạm vào hình đúng nhé.' };
   },
   render(q, st, api) {
     const a = el('div', 'act col');
@@ -949,7 +990,7 @@ const LINE_ANIMALS = ['cat', 'dog', 'rabbit', 'duck', 'chicken', 'bear', 'frog',
 ACTS.ordinal = {
   gen(lv) {
     const n = lv < 4 ? 5 : 6, ks = pickN(LINE_ANIMALS, n), k = ri(1, n), mode = R() < .5 ? 'who' : 'num';
-    return { ks, k, mode, opts: nums(k, 1, n), ask: mode === 'who' ? `Bạn nào đứng thứ ${k}, tính từ ngôi nhà?` : `${nm(ks[k - 1])[0].toUpperCase() + nm(ks[k - 1]).slice(1)} đứng thứ mấy, tính từ ngôi nhà?`,
+    return { ks, k, mode, opts: nums(k, 1, n), explain: `Mình đếm từ ngôi nhà: một, hai… đến bạn thứ ${k}.`, ask: mode === 'who' ? `Bạn nào đứng thứ ${k}, tính từ ngôi nhà?` : `${nm(ks[k - 1])[0].toUpperCase() + nm(ks[k - 1]).slice(1)} đứng thứ mấy, tính từ ngôi nhà?`,
       say: mode === 'who' ? `Các bạn xếp hàng về nhà. Bạn nào đứng thứ ${k}, tính từ ngôi nhà? Con chạm vào bạn đó nhé.` : `Các bạn xếp hàng về nhà. ${nm(ks[k - 1])} đứng thứ mấy, tính từ ngôi nhà?` };
   },
   render(q, st, api) {
@@ -976,7 +1017,7 @@ function clockSvg(h, tapNums) {
 ACTS.clock = {
   gen(lv) {
     const h = ri(1, 12), mode = lv < 3 ? pick1(['read', 'read', 'which']) : pick1(['read', 'which', 'set']);
-    return { h, mode, opts: nums(h, 1, 12),
+    return { h, mode, opts: nums(h, 1, 12), explain: `Kim ngắn chỉ số ${h}, kim dài chỉ số 12. Đó là ${h} giờ.`,
       ask: mode === 'read' ? 'Đồng hồ chỉ mấy giờ?' : mode === 'which' ? `Đồng hồ nào chỉ ${h} giờ?` : `Con hãy quay kim ngắn để đồng hồ chỉ ${h} giờ.`,
       say: mode === 'read' ? 'Kim dài chỉ số 12. Kim ngắn chỉ số mấy? Đồng hồ chỉ mấy giờ?' : mode === 'which' ? `Đồng hồ nào chỉ ${h} giờ? Con chạm vào đồng hồ đó nhé.` : `Con chạm vào một số trên mặt đồng hồ để quay kim ngắn màu đỏ, sao cho đồng hồ chỉ ${h} giờ. Rồi bấm Xong.` };
   },
@@ -1005,12 +1046,12 @@ ACTS.space = {
     const mode = pick1(lv < 2 ? ['drag', 'who'] : ['drag', 'who', 'box']);
     const base = pick1(['table', 'chair']), pos = pick1(lv < 2 ? ['top', 'under'] : ['top', 'under', 'left', 'right']);
     if (mode === 'drag') { const k = pick1(['ball', 'cat', 'teddy', 'duck', 'block', 'cake']);
-      return { mode, base, pos, k, ask: `Kéo ${nm(k)} đặt ${POS[pos]} ${nm(base)}.`, say: `Con hãy kéo ${nm(k)} đặt ${POS[pos].replace('ở ', '')} ${nm(base)} nhé.` }; }
+      return { mode, base, pos, k, explain: `Đặt ${POS[pos].replace('ở ', '')} ${nm(base)} nhé.`, ask: `Kéo ${nm(k)} đặt ${POS[pos]} ${nm(base)}.`, say: `Con hãy kéo ${nm(k)} đặt ${POS[pos].replace('ở ', '')} ${nm(base)} nhé.` }; }
     if (mode === 'who') { const ks = pickN(['cat', 'dog', 'rabbit', 'duck', 'teddy', 'ball', 'hedgehog', 'frog'], lv < 2 ? 2 : 4);
       const places = lv < 2 ? ['top', 'under'] : ['top', 'under', 'left', 'right'];
-      return { mode, base, places, ks, pos, ask: `Ai ${POS[pos]} ${nm(base)}?`, say: `Bạn nào ${POS[pos]} ${nm(base)}? Con chạm vào bạn đó nhé.` }; }
+      return { mode, base, places, ks, pos, explain: `Con nhìn kỹ: bạn ${POS[pos]} ${nm(base)} đó.`, ask: `Ai ${POS[pos]} ${nm(base)}?`, say: `Bạn nào ${POS[pos]} ${nm(base)}? Con chạm vào bạn đó nhé.` }; }
     const [k1, k2] = pickN(['cat', 'dog', 'rabbit', 'duck', 'teddy', 'ball'], 2), inside = R() < .5;
-    return { mode: 'box', k1, k2, inside, ask: inside ? 'Ai ở trong hộp?' : 'Ai ở ngoài hộp?', say: inside ? 'Bạn nào ở trong cái hộp? Con chạm vào bạn đó nhé.' : 'Bạn nào ở ngoài cái hộp? Con chạm vào bạn đó nhé.' };
+    return { mode: 'box', k1, k2, inside, explain: inside ? 'Bạn ở trong hộp là bạn nằm giữa thành hộp.' : 'Bạn ở ngoài hộp là bạn đứng bên cạnh cái hộp.', ask: inside ? 'Ai ở trong hộp?' : 'Ai ở ngoài hộp?', say: inside ? 'Bạn nào ở trong cái hộp? Con chạm vào bạn đó nhé.' : 'Bạn nào ở ngoài cái hộp? Con chạm vào bạn đó nhé.' };
   },
   render(q, st, api) {
     const a = el('div', 'act col');
@@ -1026,7 +1067,10 @@ ACTS.space = {
         api.hint = () => sc.querySelector('.z-' + q.pos + ' .obj');
       } else {
         const tray = el('div', 'tray'); const t = el('div', 'obj dragme', art(q.k)); tray.appendChild(t);
-        makeDrag(t, z => { if (z.dataset.p === q.pos) { t.style.transform = ''; z.appendChild(t); z.classList.remove('show'); api.ok(t); return true; } api.bad(z); return false; });
+        const put = z => { if (z.dataset.p === q.pos) { t.style.transform = ''; z.appendChild(t); z.classList.remove('show'); api.ok(t); return true; } api.bad(z); return false; };
+        makeDrag(t, put);
+        let picked = false; t.addEventListener('click', () => { if (!t.parentNode.classList.contains('tray')) return; picked = !picked; t.classList.toggle('picked', picked); if (picked) speak('Giờ con chạm vào chỗ muốn đặt nhé.', { quiet: true }); });
+        sc.querySelectorAll('.zone').forEach(z => z.addEventListener('click', () => { if (picked && t.parentNode.classList.contains('tray')) { picked = false; t.classList.remove('picked'); put(z); } }));
         a.appendChild(tray); api.hint = () => sc.querySelector('.z-' + q.pos);
       }
     }
@@ -1077,7 +1121,7 @@ function show(v) {
   view = v;
   document.querySelectorAll('.view').forEach(x => x.classList.toggle('on', x.id === 'v' + v[0].toUpperCase() + v.slice(1)));
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.v === v));
-  $('#app').classList.toggle('playing', v === 'play');
+  $('#app').classList.toggle('playing', v === 'play'); playClock(v === 'play');
   if (v !== 'play') stopRead();
   if (v === 'map') drawMap(); if (v === 'garden') drawGarden();
 }
@@ -1087,6 +1131,8 @@ document.querySelectorAll('.tab').forEach(t => t.onclick = () => { sfx.tap(); sh
 const PRAISE = ['Giỏi quá!', 'Đúng rồi!', 'Tuyệt vời!', 'Con giỏi lắm!', 'Chính xác!'];
 const RETRY = ['Chưa đúng rồi. Con thử lại nhé!', 'Con xem lại một chút nhé!', 'Gần đúng rồi, thử lại nào!'];
 let P = null;   // current level
+let playMs = 0, playT0 = 0, restShown = false;
+function playClock(on) { if (on) playT0 = Date.now(); else if (playT0) { playMs += Date.now() - playT0; playT0 = 0; } }
 function startLevel(isle, i) {
   const is = ISLANDS[isle];
   const order = shuf(Array(QN).fill(0).map((_, k) => is.types[k % is.types.length]));
@@ -1097,23 +1143,27 @@ function startLevel(isle, i) {
 function dots() { $('#pDots').innerHTML = P.order.map((_, k) => `<i class="${k < P.q ? 'ok' : k === P.q ? 'cur' : ''}"></i>`).join(''); }
 function nextQ() {
   if (P.q >= QN) return endLevel();
-  P.missQ = 0; P.busy = false; dots();
-  const type = P.order[P.q], A = ACTS[type], q = A.gen(P.i);
+  P.missQ = 0; P.busy = false; dots(); document.querySelectorAll('.toast').forEach(t => t.remove());
+  const type = P.order[P.q], A = ACTS[type], q = A.gen(P.ease ? Math.max(0, P.i - 3) : P.i);   // câu trước sai nhiều → câu này dễ hơn
+  P.ease = false; P.lock = 0;
   const st = $('#pStage'); st.innerHTML = '';
   const api = P.api = {
     ok(node, why) {
-      if (P.busy) return; P.busy = true;
+      if (P.busy || Date.now() < P.lock) return; P.busy = true;
       node && node.classList.add('right'); sfx.good(); burst(node || st, 34);
-      const msg = pick1(PRAISE) + (why ? ' ' + why : '');
+      const msg = (P.missQ ? 'Con đã cố gắng và làm đúng rồi!' : pick1(PRAISE)) + (why ? ' ' + why : '');
       toast(msg); speak(msg, { quiet: true });
       setTimeout(() => { P.q++; nextQ(); }, why ? 2600 : 1500);
     },
     good(node) { sfx.coin(); node && node.classList.add('right'); },
     bad(node) {
-      if (P.busy) return; P.miss++; P.missQ++; sfx.bad();
+      if (P.busy || Date.now() < P.lock) return; P.miss++; P.missQ++; sfx.bad();
+      P.lock = Date.now() + 600;   // tránh bấm loạn liên tục
       if (node) { node.classList.remove('shake'); void node.offsetWidth; node.classList.add('shake'); }
-      const msg = P.missQ >= 2 ? 'Jenny gợi ý cho con nè!' : pick1(RETRY);
-      toast(msg); speak(msg, { quiet: true });
+      if (node && node.matches('.cbtn:not(.ok):not(.pc), .pickable:not(.still) .it')) { node.disabled = true; node.classList.add('no-go'); }   // gạch lựa chọn sai
+      if (P.missQ >= 2) P.ease = true;
+      const msg = P.missQ >= 2 ? 'Jenny gợi ý cho con nè! ' + (q.explain || '') : pick1(RETRY);
+      toast(P.missQ >= 2 ? 'Jenny gợi ý cho con nè!' : msg); speak(msg, { quiet: true });
       if (P.missQ >= 2 && api.hint) { const h = api.hint(); if (h) { h.classList.remove('hintme'); void h.offsetWidth; h.classList.add('hintme'); } }
     },
     hint: null
@@ -1125,6 +1175,18 @@ function nextQ() {
   setTimeout(refit, 150);
   setTimeout(() => speak(q.say), 250);
 }
+function restCheck() {
+  playClock(false); playClock(true);
+  if (restShown || playMs < 15 * 60e3) return false;
+  restShown = true;
+  openOv(`${I.jenny}<h2>Con chơi giỏi lắm rồi!</h2><p>Mình nghỉ mắt một chút nhé: nhìn ra xa, uống nước, vươn vai. Lát nữa chơi tiếp!</p>
+    <div class="row"><button class="btn y" id="rOk" data-focus>Con nghỉ một chút</button><button class="btn" id="rGo">Chơi tiếp</button></div>`, pn => {
+    pn.querySelector('#rOk').onclick = () => { closeOv(); show('map'); };
+    pn.querySelector('#rGo').onclick = () => { closeOv(); };
+  });
+  speak('Con chơi giỏi lắm rồi! Mình nghỉ mắt một chút nhé.', { quiet: true });
+  return true;
+}
 function endLevel() {
   dots(); stopRead();
   const st = P.miss === 0 ? 3 : P.miss <= 2 ? 2 : 1, id = P.is.id + (P.i + 1), before = S.stars[id] || 0;
@@ -1133,6 +1195,7 @@ function endLevel() {
   S.xu += gain; S.grow++; S.plays++; save(); hud('#pXu,#pSt');
   sfx.good(); burst($('#pStage'), 60);
   const hasNext = P.i < 7;
+  if (restCheck()) return;
   const msg = st === 3 ? 'Tuyệt vời! Con được 3 ngôi sao!' : st === 2 ? 'Giỏi lắm! Con được 2 ngôi sao!' : 'Con đã hoàn thành màn chơi!';
   speak(msg + ` Con nhận được ${gain} xu.`, { quiet: true });
   openOv(`<h2>${msg}</h2><div class="stars">${[0, 1, 2].map(k => starSvg(k < st)).join('')}</div>
@@ -1327,7 +1390,15 @@ $('#bShop').onclick = () => { sfx.tap(); openShop(); };
 
 /* ================= settings / backup ================= */
 function backupCode() { return 'JNY1:' + btoa(unescape(encodeURIComponent(JSON.stringify(S)))); }
-$('#bSet').onclick = () => {
+/* khu vực người lớn: nhấn giữ khoảng 2 giây mới mở */
+(() => { const b = $('#bSet'); let t = 0;
+  const go = () => { clearTimeout(t); b.classList.remove('holding'); };
+  b.addEventListener('pointerdown', () => { b.classList.add('holding'); t = setTimeout(() => { go(); openSettings(); }, 1600); });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, go));
+  b.addEventListener('click', () => { if (!$('#ov').hidden) return; toast('Người lớn: nhấn giữ nút này để mở'); });
+  b.addEventListener('keydown', e => { if (e.key === 'Enter' && e.shiftKey) openSettings(); });
+})();
+function openSettings() {
   sfx.tap();
   openOv(`<h2>Tiến độ của bé</h2>
     <div class="kv"><div><b>${S.plays}</b><span>Màn đã chơi</span></div><div><b>${totalStars()}/${MAXST}</b><span>Sao trên bản đồ</span></div><div><b>${S.xu}</b><span>Xu</span></div></div>
@@ -1347,7 +1418,7 @@ $('#bSet').onclick = () => {
       };
     };
   });
-};
+}
 $('#bSnd').onclick = () => { sndOn = !sndOn; $('#bSnd').classList.toggle('off', !sndOn); if (!sndOn) stopRead(); };
 
 /* ================= boot ================= */

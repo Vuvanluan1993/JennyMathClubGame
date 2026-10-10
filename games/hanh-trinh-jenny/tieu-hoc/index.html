@@ -707,11 +707,12 @@ function lose(p) {
   sfx.bad(); say('Không sao! Em đọc lời giải rồi làm bài khác nhé.', 'oops');
   drawMath();
 }
+let lockUntil = 0;
 function choose(i, el) {
-  const p = current(); if (answered || gone.includes(i)) return;
+  const p = current(); if (answered || gone.includes(i) || Date.now() < lockUntil) return;
   rollDay();
   if (i === p.n) { el.classList.add('right'); return win(p, el); }
-  tries++; S.wrong++; gone.push(i); el.classList.add('wrong');
+  tries++; S.wrong++; gone.push(i); el.classList.add('wrong'); lockUntil = Date.now() + 600;
   if (tries < 2) { sfx.bad(); save(); say('Chưa đúng. Em xem lại và chọn <b>thêm 1 lần</b> nhé!', 'oops'); setTimeout(() => { if (!answered) drawKeys(p); }, 450); return; }
   lose(p);
 }
@@ -819,6 +820,14 @@ $('#bRead').onclick = () => {
   if (answered) t = p.s;
   speak(t);
 };
+
+/* nhắc nghỉ mắt sau 25 phút chơi liên tục (trang đang mở) */
+(() => { let used = 0, last = Date.now(), shown = false;
+  setInterval(() => { const now = Date.now(); if (!document.hidden) used += now - last; last = now;
+    if (!shown && used > 25 * 60e3 && $('#ov').hidden) { shown = true;
+      openOv(`${I.jenny}<h2>Em đã chơi 25 phút rồi!</h2><p>Nghỉ mắt một chút nhé: nhìn ra xa, uống nước, vươn vai rồi chơi tiếp.</p><div class="row"><button class="btn y" id="rOk" data-focus>Em nghỉ một chút</button></div>`, pn => { pn.querySelector('#rOk').onclick = closeOv; }); }
+  }, 10000);
+})();
 
 /* grade choice */
 function askGrade(first) {

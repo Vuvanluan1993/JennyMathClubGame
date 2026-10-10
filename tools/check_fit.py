@@ -225,7 +225,7 @@ CASES = [
     ("Mầm non · bản đồ", MN, nothing, ".node,.tab,.pill,.isle-head"),
 ] + [
     (f"Mầm non · {t}", MN, mn_type(t), ".grp,.cbtn,.slot,.mnum,.scene2,.clkbox,.pask,.spk")
-    for t in ["count", "match", "compare", "add", "sub", "word", "odd", "spot", "color", "pattern", "ordinal", "clock", "space"]
+    for t in ["count", "match", "compare", "add", "sub", "word", "odd", "spot", "color", "pattern", "ordinal", "clock", "space", "split"]
 ] + [
     (f"Tiểu học · {name}", f"games/tu-duy-bebras/{slug}/?kid=1&saga=../../hanh-trinh-jenny/tieu-hoc/&id=x1&lv=2&r=0&seed=5&n=9", nothing, BB)
     for name, slug in [("Rô bốt", "robot-tim-duong"), ("Ống bi", "xep-ong-bi"), ("Chồng hình", "chong-hinh"), ("Mật thư", "giai-ma-thu")]

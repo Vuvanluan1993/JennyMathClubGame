@@ -28,6 +28,10 @@ Hiện trang chủ chỉ hiện bản Mầm non và Tiểu học; các game khá
 
 Game Tư Duy Bebras tạo đề ngẫu nhiên mỗi lần chơi, có 3 mức Dễ / Vừa / Khó.
 
+## Tiêu chí chất lượng
+
+Mọi game kiểm tra theo `TIEU_CHI.md` (mục tiêu học tập, đề bài, hình ảnh, tương tác, phản hồi, động lực, an toàn).
+
 ## Cấu trúc thư mục
 
 ```
