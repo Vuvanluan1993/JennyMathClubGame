@@ -5,7 +5,12 @@ const TK = 'jl-token';
 export function token() { try { return localStorage.getItem(TK); } catch (e) { return null; } }
 export function setToken(t) { try { t ? localStorage.setItem(TK, t) : localStorage.removeItem(TK); } catch (e) {} }
 
+// bản xem thử: ?demo=1 bật, ?demo=0 tắt; dữ liệu chạy ngay trong trình duyệt (demo.js)
+try { const q = new URLSearchParams(location.search).get('demo'); if (q === '1') localStorage.setItem('jl-demo', '1'); if (q === '0') localStorage.removeItem('jl-demo'); } catch (e) {}
+export function isDemo() { try { return localStorage.getItem('jl-demo') === '1'; } catch (e) { return false; } }
+
 export async function rpc(fn, args) {
+  if (isDemo()) return (await import('./demo.js')).rpc(fn, args, null);
   let r;
   try {
     r = await fetch(`${SUPA_URL}/rest/v1/rpc/${fn}`, {

@@ -73,7 +73,7 @@ body{font-size:17px}
   </section>
 </div>
 <script type="module">
-import { rpc, token, setToken, GAMES, gameLabel, shapeSvg, esc } from './sdk.js';
+import { rpc, token, setToken, GAMES, gameLabel, shapeSvg, pinHtml, esc, isDemo } from './sdk.js';
 const $ = s => document.querySelector(s);
 let K = null, ST = null, PIN = '', PINLEN = 3;
 
@@ -123,6 +123,7 @@ function askPin(s) {
     row.innerHTML = '<button class="btn sm" id="pX">Xoá</button><button class="btn sm" id="pN">Đổi tên</button>'; pad.appendChild(row);
     row.querySelector('#pX').onclick = () => { PIN = PIN.slice(0, -1); dots(); }; row.querySelector('#pN').onclick = () => show('vName'); }
   dots(); msg('#mPin', ''); show('vPin');
+  if (isDemo()) import('./demo.js').then(m => m.demoPin(s.id)).then(p => { if (p) $('#mPin').innerHTML = `<div class="msg">Bản xem thử · mã của ${esc(s.name)}: <span class="pin">${pinHtml(p, 26)}</span></div>`; });
   if (mn) say('Chào ' + s.name + '. Con chạm ba hình bí mật nhé.');
 }
 function dots() { $('#dots').innerHTML = Array.from({ length: PINLEN }, (_, i) => `<i class="${i < PIN.length ? 'f' : ''}">${i < PIN.length ? (K.level === 'mn' ? shapeSvg(PIN[i], 34) : '•') : ''}</i>`).join(''); }
@@ -187,6 +188,7 @@ function start(err) {
   try { saved = localStorage.getItem('jl-class'); } catch (e) {}
   const c = u || saved;
   show('vCode'); if (err) msg('#mCode', err, true);
+  else if (isDemo()) $('#mCode').innerHTML = '<div class="msg">Bản xem thử · mã lớp: <b>MN-DEMO</b> (mầm non) hoặc <b>TH-DEMO</b> (tiểu học)</div>';
   if (c) { $('#code').value = c; goCode(c); }
 }
 if (token()) home(); else start();

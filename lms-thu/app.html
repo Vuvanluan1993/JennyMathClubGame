@@ -7,8 +7,10 @@
 <link rel="stylesheet" href="lms.css">
 <style>
 html,body{height:100%;overflow:hidden}
-#auth{height:100dvh;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
-#auth .card{width:min(420px,100%)}
+#auth{height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:16px;overflow:auto}
+#auth .card{width:min(460px,100%);flex:none}
+.demo-bar{background:#2B2D42;color:#fff;font-size:13px;padding:6px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;flex:none}
+.demo-bar a,.demo-bar button{color:#FFC93C;background:none;border:0;font-weight:800;padding:0;text-decoration:underline;font-size:13px}
 .tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
 .tabs button{border:0;background:#F1E9D6;border-radius:10px;padding:8px 12px;font-weight:800;min-height:38px}
 .tabs button[aria-selected=true]{background:var(--y)}
@@ -80,6 +82,12 @@ html,body{height:100%;overflow:hidden}
     <div id="aMsg"></div>
     <p class="small mut">Giáo viên dùng đúng email mà quản trị trung tâm đã mời. <a href="index.html">← Trang đầu</a></p>
   </div>
+  <div class="card" id="demoBox">
+    <h2 style="margin-bottom:4px">Xem thử nhanh</h2>
+    <p class="small mut" style="margin-top:0">Không cần tài khoản, không cần cài Supabase. Có sẵn trung tâm, lớp, học sinh mẫu. Dữ liệu chỉ lưu trên máy này.</p>
+    <div class="row"><button class="btn y" data-demo="super">Quản trị hệ thống</button><button class="btn y" data-demo="admin">Quản trị trung tâm</button><button class="btn y" data-demo="teacher">Giáo viên</button></div>
+    <div id="dMsg"></div>
+  </div>
 </section>
 
 <section id="appv" hidden>
@@ -90,6 +98,7 @@ html,body{height:100%;overflow:hidden}
     <div class="who" id="who"></div>
     <button class="btn sm" id="bOut">Đăng xuất</button>
   </header>
+  <div class="demo-bar" id="demoBar" hidden><span>🧪 <b>Bản xem thử</b>: dữ liệu chỉ lưu trên máy này.</span><a href="hs.html?demo=1&amp;c=MN-DEMO" target="_blank">Mở trang học sinh</a><button id="dRole">Đổi vai</button><button id="dReset">Làm lại dữ liệu mẫu</button></div>
   <div class="shell"><nav class="nav" id="nav"></nav><main id="main"></main></div>
 </section>
 <div class="ov" id="ov" hidden><div class="panel" id="panel" role="dialog" aria-modal="true"></div></div>
@@ -104,11 +113,14 @@ const sb = supabase.createClient(SUPA_URL, SUPA_KEY, { auth: { persistSession: t
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 let ME = null, CID = null, CEN = null, KD = null;
+// bản xem thử: dữ liệu chạy trong trình duyệt (demo.js), vai lưu ở jl-demo-user
+let DEMO = null; try { DEMO = localStorage.getItem('jl-demo-user'); } catch (e) {}
 const LV = { mn: 'Mầm non', th: 'Tiểu học', thcs: 'THCS' };
 const ROLE = { super: 'Quản trị hệ thống', admin: 'Quản trị trung tâm', teacher: 'Giáo viên' };
 const ATT = [['present', 'Có mặt'], ['late', 'Muộn'], ['absent', 'Vắng'], ['excused', 'Có phép']];
 
 async function call(fn, args) {
+  if (DEMO) { const m = await import('./demo.js'); return m.rpc(fn, args || {}, m.DEMO_USERS[DEMO].id); }
   const { data, error } = await sb.rpc(fn, args || {});
   if (error) throw new Error(error.message || 'Lỗi máy chủ');
   return data;
@@ -158,10 +170,20 @@ $('#fAuth').onsubmit = async e => {
   } catch (x) { aMsg(/Invalid login/i.test(x.message) ? 'Sai email hoặc mật khẩu.' : /already registered/i.test(x.message) ? 'Email này đã có tài khoản, anh/chị chọn Đăng nhập.' : x.message, true); }
   $('#aGo').disabled = false;
 };
-$('#bOut').onclick = async () => { await sb.auth.signOut(); };
+$('#bOut').onclick = async () => { if (DEMO) return demoOff(); await sb.auth.signOut(); };
+function demoOff() { DEMO = null; try { localStorage.removeItem('jl-demo-user'); localStorage.removeItem('jl-demo'); } catch (e) {} ME = CEN = KD = null; history.replaceState(null, '', location.pathname); $('#demoBar').hidden = true; $('#appv').hidden = true; $('#auth').hidden = false; }
+$$('[data-demo]').forEach(b => b.onclick = async () => {
+  $('#dMsg').innerHTML = '<div class="msg">Đang chuẩn bị dữ liệu mẫu (lần đầu khoảng 5–15 giây)…</div>'; $$('[data-demo]').forEach(x => x.disabled = true);
+  try { const m = await import('./demo.js'); await m.db(); DEMO = b.dataset.demo; localStorage.setItem('jl-demo-user', DEMO); localStorage.setItem('jl-demo', '1'); history.replaceState(null, '', location.pathname); $('#dMsg').innerHTML = ''; boot(); }
+  catch (e) { $('#dMsg').innerHTML = `<div class="msg err">Không mở được bản xem thử: ${esc(e.message)}</div>`; }
+  $$('[data-demo]').forEach(x => x.disabled = false);
+});
+$('#dRole').onclick = demoOff;
+$('#dReset').onclick = async () => { if (!await sure('Xoá mọi thay đổi và tạo lại dữ liệu mẫu?', 'Làm lại')) return; const m = await import('./demo.js'); await act(() => m.resetDemo(), 'Đã tạo lại dữ liệu mẫu'); CEN = KD = null; history.replaceState(null, '', location.pathname); boot(); };
 
 let booted = false;
 sb.auth.onAuthStateChange((ev, session) => {
+  if (DEMO) return;
   if (session && !booted) { booted = true; setTimeout(boot, 0); }
   if (!session) { booted = false; ME = null; CEN = null; KD = null; history.replaceState(null, '', location.pathname + location.search); $('#appv').hidden = true; $('#auth').hidden = false; }
 });
@@ -170,7 +192,7 @@ async function boot() {
   try { ME = await call('me'); } catch (e) { $('#auth').hidden = false; aMsg(e.message, true); return; }
   let nm = null; try { nm = localStorage.getItem('jl-name'); localStorage.removeItem('jl-name'); } catch (e) {}
   if (nm && !ME.name) { try { await call('set_name', { p_name: nm }); ME.name = nm; } catch (e) {} }
-  $('#auth').hidden = true; $('#appv').hidden = false;
+  $('#auth').hidden = true; $('#appv').hidden = false; $('#demoBar').hidden = !DEMO;
   $('#who').innerHTML = `${esc(ME.name || ME.email)}<br><span class="mut small">${ME.super ? ROLE.super : esc(ME.email)}</span>`;
   const sel = $('#cSel');
   sel.innerHTML = ME.centers.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
@@ -183,6 +205,7 @@ async function boot() {
   route();
 }
 addEventListener('hashchange', () => ME && route());
+document.addEventListener('visibilitychange', () => { if (DEMO && ME && document.visibilityState === 'visible') setTimeout(route, 50); });
 function go(h) { if (location.hash === h) route(); else location.hash = h; }
 
 /* ---------- điều hướng ---------- */
@@ -529,8 +552,8 @@ function tNotices(b) {
 }
 
 /* ---------- khởi động ---------- */
-const { data: { session } } = await sb.auth.getSession();
-if (!session) { $('#auth').hidden = false; }
+if (DEMO) boot();
+else { const { data: { session } } = await sb.auth.getSession(); if (!session) $('#auth').hidden = false; }
 </script>
 </body>
 </html>
