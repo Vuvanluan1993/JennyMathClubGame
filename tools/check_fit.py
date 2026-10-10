@@ -157,6 +157,15 @@ def sg_garden(pg, shop=False):
 
 SG = "games/hanh-trinh-jenny/lop-6/"
 TH = "games/hanh-trinh-jenny/tieu-hoc/"
+MN = "games/hanh-trinh-jenny/mam-non/"
+
+
+def mn_type(t, lv=6):
+    def step(pg):
+        pg.evaluate(f"__mn.test('{t}', {lv})")
+        wait(pg, 400)
+    return step
+
 
 
 def th_open(pg, grade=None):
@@ -213,6 +222,10 @@ CASES = [
     ("Tiểu học · bài chọn hình", TH, th_math("pick"), ".mcard,.opt,.btn,.tab"),
     ("Tiểu học · bài điền số dài nhất + lời giải", TH, th_math("num", True, True), ".mcard,.key,.ans,.btn,.tab"),
     ("Tiểu học · bài chọn dài nhất + lời giải", TH, th_math("pick", True, True), ".mcard,.key,.btn,.tab"),
+    ("Mầm non · bản đồ", MN, nothing, ".node,.tab,.pill,.isle-head"),
+] + [
+    (f"Mầm non · {t}", MN, mn_type(t), ".grp,.cbtn,.slot,.mnum,.scene2,.clkbox,.pask,.spk")
+    for t in ["count", "match", "compare", "add", "sub", "word", "odd", "spot", "color", "pattern", "ordinal", "clock", "space"]
 ] + [
     (f"Tiểu học · {name}", f"games/tu-duy-bebras/{slug}/?kid=1&saga=../../hanh-trinh-jenny/tieu-hoc/&id=x1&lv=2&r=0&seed=5&n=9", nothing, BB)
     for name, slug in [("Rô bốt", "robot-tim-duong"), ("Ống bi", "xep-ong-bi"), ("Chồng hình", "chong-hinh"), ("Mật thư", "giai-ma-thu")]

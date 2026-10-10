@@ -21,9 +21,10 @@ Trang chơi: https://vuvanluan1993.github.io/JennyMathClubGame/
 
 | Hành Trình Của Jenny (đi màn + toán, cần mã CLB) | Lớp 6 | 30 màn + 673 bài | `games/hanh-trinh-jenny/lop-6/` |
 
+| Hành Trình Của Jenny Mầm non | 5–6 tuổi | 48 màn tương tác | `games/hanh-trinh-jenny/mam-non/` |
 | Hành Trình Của Jenny Tiểu học (cần mã CLB) | Lớp 1–4 | 40 màn + 120 bài toán tư duy | `games/hanh-trinh-jenny/tieu-hoc/` |
 
-Hiện trang chủ chỉ hiện bản Tiểu học; các game khác có `hidden: true` trong `games.js` (bỏ dòng đó để hiện lại).
+Hiện trang chủ chỉ hiện bản Mầm non và Tiểu học; các game khác có `hidden: true` trong `games.js` (bỏ dòng đó để hiện lại).
 
 Game Tư Duy Bebras tạo đề ngẫu nhiên mỗi lần chơi, có 3 mức Dễ / Vừa / Khó.
 
@@ -84,3 +85,8 @@ python tools/build_bank.py <_pool_lop6.json> games/hanh-trinh-jenny/lop-6/bank.e
 - 4 đảo × 10 màn: Rô bốt, Ống bi, Chồng hình, Mật thư. Các game Bebras mở với `?kid=1` dùng mức tiểu học.
 - Trạm toán: 120 bài toán tư duy (60 lớp 1–2, 60 lớp 3–4) đã dịch và vẽ lại hình; bài đáp số là số thì điền số, còn lại chọn 1 trong 3. Có nút "Đọc đề" nếu máy có giọng tiếng Việt.
 - Tạo lại kho: `python tools/build_bank_th.py <toan_tu_duy_tieu_hoc.json> games/hanh-trinh-jenny/tieu-hoc/bank.enc <MÃ CLB>`
+
+### Bản Mầm non
+- 6 đảo theo chủ đề × 8 màn, mỗi màn 5 câu do máy tự tạo (không cần mã CLB): Hình và Màu (hình khác biệt, tìm chỗ khác nhau, tô màu, quy luật), Đếm Số (đếm, nối, so sánh), Cộng Trừ, Bài Toán (có lời văn), Thứ Tự và Giờ (số thứ tự, đồng hồ giờ đúng), Phương Hướng (trên, dưới, trái, phải, trong, ngoài).
+- Màn 1–4 dùng số đến 5, màn 5–8 đến 10. Mỗi câu máy tự đọc yêu cầu (chậm), sai 2 lần thì Jenny gợi ý.
+- Hình vẽ ở `art.js` (vẽ bằng SVG). Thêm dạng bài mới: thêm vào `ACTS` trong `index.html`.

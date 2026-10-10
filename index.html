@@ -206,7 +206,7 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
   };
   const bbIcon = n => `<svg viewBox="0 0 100 80" aria-hidden="true">${ICONS[n]||ICONS.robot}</svg>`;
 
-  const ORDER = ['Mọi lớp','Tiểu học','Lớp 1','Lớp 2','Lớp 3','Lớp 4','Lớp 5','Lớp 6','Lớp 7','Lớp 8','Lớp 9'];
+  const ORDER = ['Mầm non','Mọi lớp','Tiểu học','Lớp 1','Lớp 2','Lớp 3','Lớp 4','Lớp 5','Lớp 6','Lớp 7','Lớp 8','Lớp 9'];
   const grades = [...new Set(GAMES.map(g=>g.grade))].sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
   let current = 'Tất cả';
   try { const q = new URLSearchParams(location.search).get('lop'); if (q && grades.includes('Lớp '+q)) current = 'Lớp '+q; } catch(e){}
@@ -246,11 +246,11 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
     shown.forEach(g => (bySeries[g.series] ||= []).push(g));
     $('#list').innerHTML = Object.entries(bySeries).map(([s, list]) => {
       const n = list.filter(g=>g.status==='live').length;
-      return `<section class="series">${GAMES.length <= 1 ? '' : `<h2>${esc(s)} <small>${n} game</small></h2>`}<div class="grid">${list.map(card).join('')}</div></section>`;
+      return `<section class="series">${new Set(GAMES.map(g => g.series)).size <= 1 ? '' : `<h2>${esc(s)} <small>${n} game</small></h2>`}<div class="grid">${list.map(card).join('')}</div></section>`;
     }).join('');
   }
 
-  if (GAMES.length <= 1) {   // chỉ còn 1 game: ẩn bộ lọc, số liệu và tiêu đề bộ game
+  if (new Set(GAMES.map(g => g.series)).size <= 1) {   // chỉ còn 1 bộ game: ẩn bộ lọc, số liệu và tiêu đề bộ game
     $('#filters').hidden = true; $('#stats').hidden = true;
     drawList();
   } else { drawFilters(); drawList(); }

@@ -19,6 +19,23 @@
 */
 window.GAMES = [
   {
+    id: "hanh-trinh-jenny-mam-non",
+    series: "Hành Trình Của Jenny",
+    title: "Hành Trình Của Jenny Mầm Non",
+    grade: "Mầm non",
+    topic: "Toán tư duy 5–6 tuổi",
+    mode: "Cá nhân",
+    thumb: "bb",
+    icon: "island",
+    desc: "6 hòn đảo, 48 màn chơi: đếm, cộng trừ, bài toán có lời, hình khác biệt, số thứ tự, xem giờ, phương hướng. Kéo thả, nối, tô màu, có giọng đọc.",
+    puzzles: 48,
+    unit: "màn",
+    url: "games/hanh-trinh-jenny/mam-non/",
+    saveKey: "jenny-saga-mn",
+    status: "live",
+    added: "2026-10-10"
+  },
+  {
     id: "hanh-trinh-jenny-tieu-hoc",
     series: "Hành Trình Của Jenny",
     title: "Hành Trình Của Jenny Tiểu Học",
