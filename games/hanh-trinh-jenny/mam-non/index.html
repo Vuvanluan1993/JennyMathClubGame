@@ -270,7 +270,7 @@ textarea.code{width:100%;height:64px;border:2.5px solid var(--ink);border-radius
   .tab svg{width:22px;height:22px}
   .bar .hide-s{display:none}
 }
-@media (max-width:400px){ .ttl{display:none} }
+@media (max-width:460px){ .ttl{display:none} }
 @media (max-height:520px){
   .app{padding:5px 10px;gap:5px}
   .bar .logo{height:32px}
@@ -321,7 +321,7 @@ textarea.code{width:100%;height:64px;border:2.5px solid var(--ink);border-radius
 .row.two.op > .opsym{flex:0 0 auto;align-self:center}
 .opsym{font-family:var(--display);font-weight:800;font-size:44px}
 .eq{font-family:var(--display);font-weight:800;font-size:32px}
-.grp{background:#fff;border:3px solid var(--ink);border-radius:22px;box-shadow:0 5px 0 var(--ink);padding:10px;display:grid;place-content:center;min-height:0;min-width:0;--s:60px}
+.grp{background:#fff;border:3px solid var(--ink);border-radius:22px;box-shadow:0 5px 0 var(--ink);padding:10px;display:grid;place-content:center;min-height:0;min-width:0;--s:40px;overflow:hidden}
 .grp .it{width:var(--s);height:var(--s);display:grid;place-items:center;padding:0;border:0;background:none;position:relative;border-radius:16px}
 .grp .it svg{width:100%;height:100%}
 .grp .it.gone{opacity:.35}
@@ -395,6 +395,9 @@ textarea.code{width:100%;height:64px;border:2.5px solid var(--ink);border-radius
   .row.story > .opsym{align-self:center;font-size:30px;line-height:.6}
   .cbtn{height:64px;min-width:70px;font-size:28px;padding:0 10px}
   .choices{gap:8px;flex-wrap:nowrap}
+  .choices.pal{gap:6px}
+  .cbtn.pc{width:48px;min-width:48px;height:48px}
+  .cbtn.ok{min-width:84px;padding:0 10px;font-size:24px}
   .cbtn.pic{width:76px}
   .slot{width:70px;height:64px}
   .spk{width:50px;height:50px}
@@ -807,9 +810,12 @@ ACTS.word = {
     const m = MAXN(lv), [[ck, cn], [ck2, cn2]] = pickN(CHARS, 2), g = pick1(GIFTS), U = un(g), N = noun(g);
     const add = R() < .55; let x, y, ans, text;
     if (add) { const s = ri(2, m); x = ri(1, s - 1); y = s - x; ans = s;
-      text = pick1([
+      const canPick = ['apple', 'pear', 'carrot', 'mushroom', 'strawberry', 'flower', 'orange', 'banana'].includes(g);
+      text = pick1(canPick ? [
         `${cn} có ${x} ${nm(g)}. ${cn2} cho ${cn} thêm ${y} ${U} nữa. Hỏi ${cn} có tất cả mấy ${nm(g)}?`,
-        `${cn} hái được ${x} ${nm(g)}. Sau đó ${cn} hái thêm ${y} ${U}. Hỏi ${cn} hái được tất cả mấy ${U} ${N}?`]);
+        `${cn} hái được ${x} ${nm(g)}. Sau đó ${cn} hái thêm ${y} ${U}. Hỏi ${cn} hái được tất cả mấy ${U} ${N}?`] : [
+        `${cn} có ${x} ${nm(g)}. ${cn2} cho ${cn} thêm ${y} ${U} nữa. Hỏi ${cn} có tất cả mấy ${nm(g)}?`,
+        `${cn} có ${x} ${nm(g)}. Mẹ mua thêm cho ${cn} ${y} ${U}. Hỏi ${cn} có tất cả mấy ${nm(g)}?`]);
     } else { x = ri(2, m); y = ri(1, x - 1); ans = x - y;
       text = pick1([
         `${cn} có ${x} ${nm(g)}. ${cn} cho ${cn2} ${y} ${U}. Hỏi ${cn} còn lại mấy ${nm(g)}?`,
@@ -844,7 +850,7 @@ ACTS.odd = {
     const n = lv < 4 ? 4 : 5, kind = pick1(lv < 2 ? ['cat', 'color', 'shape'] : ['cat', 'color', 'shape', 'obj']);
     let items, odd = ri(0, n - 1), why;
     if (kind === 'cat') { const [c1, c2] = pickN(['fruit', 'animal', 'toy'], 2); const base = pickN(ART_LIST[c1], n - 1), o = pick1(ART_LIST[c2]); items = base.map(k => ({ k })); items.splice(odd, 0, { k: o }); why = `Vì ${nm(o)} không cùng loại với các hình kia.`; }
-    else if (kind === 'color') { const k = pick1(['balloon', 'ball', 'flower', 'car', 'hat', 'fish', 'cup', 'kite']); const [c1, c2] = pickN(COLS.slice(0, 5), 2); items = Array(n).fill(0).map(() => ({ k, o: { color: c1 } })); items[odd] = { k, o: { color: c2 } }; why = `Vì ${un(k)} này màu ${COLNAME[c2]}, các ${un(k)} kia màu ${COLNAME[c1]}.`; }
+    else if (kind === 'color') { const k = pick1(['balloon', 'ball', 'flower', 'car', 'hat', 'fish', 'cup', 'kite', 'umbrella', 'boat']); const [c1, c2] = pickN(COLS.slice(0, 5), 2); items = Array(n).fill(0).map(() => ({ k, o: { color: c1 } })); items[odd] = { k, o: { color: c2 } }; why = `Vì ${un(k)} này màu ${COLNAME[c2]}, các ${un(k)} kia màu ${COLNAME[c1]}.`; }
     else if (kind === 'shape') { const [s1, s2] = pickN(['circle', 'square', 'triangle', 'star', 'heart'], 2), c = pick1(COLS); items = Array(n).fill(0).map(() => ({ sh: s1, c })); items[odd] = { sh: s2, c }; why = `Vì đó là ${SHAPENAME[s2]}, các hình kia là ${SHAPENAME[s1]}.`; }
     else { const cat = pick1(['fruit', 'animal', 'toy']); const [k1, k2] = pickN(ART_LIST[cat], 2); items = Array(n).fill(0).map(() => ({ k: k1 })); items[odd] = { k: k2 }; why = `Vì đó là ${nm(k2)}.`; }
     return { items, odd, why, ask: 'Hình nào khác các hình còn lại?', say: 'Hình nào khác các hình còn lại? Con chạm vào hình đó nhé.' };
@@ -863,7 +869,11 @@ ACTS.spot = {
   gen(lv) {
     const n = lv < 4 ? 6 : 9, ks = Array(n).fill(0).map(() => pick1(COUNTABLE)), cs = ks.map(() => pick1(COLS));
     const d = ri(0, n - 1), rk = ks.slice(), rc = cs.slice();
-    if (R() < .5) rc[d] = pick1(COLS.filter(c => c !== cs[d])); else rk[d] = pick1(COUNTABLE.filter(k => k !== ks[d]));
+    const look = (k, c) => art(k, { color: c });
+    const newCol = R() < .5 ? COLS.filter(c => c !== cs[d] && look(ks[d], c) !== look(ks[d], cs[d])) : [];
+    if (newCol.length) rc[d] = pick1(newCol);
+    else rk[d] = pick1(COUNTABLE.filter(k => k !== ks[d] && !ks.includes(k)));
+    if (look(rk[d], rc[d]) === look(ks[d], cs[d])) rk[d] = pick1(COUNTABLE.filter(k => k !== ks[d]));   // an toàn: luôn khác
     return { ks, cs, rk, rc, d, ask: 'Tranh bên phải khác tranh bên trái ở đâu?', say: 'Hai bức tranh có một chỗ khác nhau. Con tìm và chạm vào chỗ khác ở tranh bên phải nhé.' };
   },
   render(q, st, api) {
@@ -1111,7 +1121,8 @@ function nextQ() {
   A.render(q, st, api);
   $('#pAsk').innerHTML = `<span>${esc(q.ask)}</span>`;
   P.say = q.say;
-  requestAnimationFrame(() => { fitGroups(); fitAsk(); });
+  requestAnimationFrame(() => { fitGroups(); fitAsk(); requestAnimationFrame(() => { fitGroups(); fitAsk(); }); });
+  setTimeout(refit, 150);
   setTimeout(() => speak(q.say), 250);
 }
 function endLevel() {
@@ -1137,6 +1148,9 @@ $('#pBack').onclick = () => { sfx.tap(); show('map'); };
 $('#pSpk').onclick = () => { if ($('#pSpk').classList.contains('on')) stopRead(); else if (P) speak(P.say); };
 
 /* size items inside each group so they fill the box without overflow */
+let fitT = 0;
+function refit() { cancelAnimationFrame(fitT); fitT = requestAnimationFrame(() => { fitGroups(); fitAsk(); }); }
+if ('ResizeObserver' in window) new ResizeObserver(refit).observe(document.getElementById('pStage'));
 function fitGroups() {
   document.querySelectorAll('#pStage .grp').forEach(g => {
     const n = g.children.length; if (!n) return;
