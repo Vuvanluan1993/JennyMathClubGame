@@ -384,8 +384,9 @@ function giveLesson(l, classId) {
   });
 }
 function gameFields(it, i) {
-  const g = GAMES['mam-non'], c = it.config || {};
-  return `<select class="inp" data-f="isle" data-i="${i}" style="width:auto">${g.isles.map((n, k) => `<option value="${k}" ${k === (c.isle | 0) ? 'selected' : ''}>${n}</option>`).join('')}</select>
+  const gk = GAMES[it.game] ? it.game : 'mam-non', g = GAMES[gk], c = it.config || {};
+  return `<select class="inp" data-f="game" data-i="${i}" style="width:auto">${Object.entries(GAMES).map(([k, x]) => `<option value="${k}" ${k === gk ? 'selected' : ''}>${x.name}</option>`).join('')}</select>
+    <select class="inp" data-f="isle" data-i="${i}" style="width:auto">${g.isles.map((n, k) => `<option value="${k}" ${k === (c.isle | 0) ? 'selected' : ''}>${n}</option>`).join('')}</select>
     <select class="inp" data-f="lv" data-i="${i}" style="width:auto">${Array.from({ length: g.levels }, (_, k) => `<option value="${k}" ${k === (c.lv | 0) ? 'selected' : ''}>Màn ${k + 1}</option>`).join('')}</select>`;
 }
 function editLesson(l) {
@@ -398,6 +399,7 @@ function editLesson(l) {
       <input class="inp" style="margin-top:6px" data-f="title" data-i="${i}" placeholder="Tên hiển thị (không bắt buộc)" value="${esc(it.title || '')}"></div>`).join('') || '<div class="empty">Chưa có mục nào.</div>';
     $$('[data-f]', p).forEach(e => e.onchange = () => { const it = items[e.dataset.i], f = e.dataset.f;
       if (f === 'kind') { items[e.dataset.i] = e.value === 'link' ? { kind: 'link', url: '', title: it.title } : { kind: 'game', game: 'mam-non', config: { isle: 0, lv: 0 }, title: it.title }; draw(p); }
+      else if (f === 'game') { items[e.dataset.i] = { kind: 'game', game: e.value, config: { isle: 0, lv: 0 }, title: it.title }; draw(p); }
       else if (f === 'isle' || f === 'lv') { it.config = Object.assign({}, it.config, { [f]: +e.value }); }
       else it[f] = e.value; });
     $$('[data-x]', p).forEach(b => b.onclick = () => { items.splice(+b.dataset.x, 1); draw(p); });
@@ -475,7 +477,7 @@ function printCards() {
   setTimeout(() => print(), 50);
 }
 function tTasks(b) {
-  const A = KD.assignments, n = KD.students.length, g = GAMES['mam-non'];
+  const A = KD.assignments, n = KD.students.length;
   b.innerHTML = `<div class="card"><h2>Giao bài mới</h2>
     <div class="row"><select class="inp" id="aK" style="width:auto"><option value="game">Game</option><option value="link">Đường link</option></select><span id="aF" class="row"></span></div>
     <div class="row" style="margin-top:8px"><input class="inp grow" id="aT" placeholder="Tên bài (để trống sẽ tự đặt)" maxlength="80"><label class="small">Hạn <input class="inp" type="date" id="aD" style="width:auto"></label></div>
@@ -484,13 +486,15 @@ function tTasks(b) {
   <div class="card"><h2>Đã giao (${A.length})</h2>${A.length ? `<div class="scroll-x"><table class="t"><tr><th>Bài</th><th>Hạn</th><th>Đã làm</th><th></th></tr>
     ${A.map(a => `<tr><td><b>${esc(a.title)}</b><div class="small mut">${a.kind === 'game' ? esc(gameLabel(a.game, a.config)) : esc(a.url)}${a.note ? ' · ' + esc(a.note) : ''}</div></td><td class="small">${fmtD(a.due) || '—'}</td><td>${a.done}/${n}</td>
       <td><div class="row"><a class="btn sm" target="_blank" href="${a.kind === 'game' ? esc(GAMES[a.game] ? GAMES[a.game].url(a).replace(/\?lms=[^&]+&/, '?') : '#') : esc(a.url)}">Xem thử</a><button class="btn sm r" data-ad="${a.id}">Xoá</button></div></td></tr>`).join('')}</table></div>` : '<div class="empty">Chưa giao bài nào.</div>'}</div>`;
-  const fields = () => { $('#aF', b).innerHTML = $('#aK', b).value === 'link' ? '<input class="inp" id="aU" placeholder="https://…" style="min-width:260px">' : `<span class="small mut">${g.name}</span>` + gameFields({ config: { isle: 1, lv: 0 } }, 0); };
-  $('#aK', b).onchange = fields; fields();
+  const fields = (gk = 'mam-non') => { $('#aF', b).innerHTML = $('#aK', b).value === 'link' ? '<input class="inp" id="aU" placeholder="https://…" style="min-width:260px">' : gameFields({ game: gk, config: { isle: 0, lv: 0 } }, 0);
+    const gs = $('[data-f=game]', b); if (gs) gs.onchange = () => fields(gs.value); };
+  $('#aK', b).onchange = () => fields(); fields();
   $('#bA', b).onclick = async () => {
     const kind = $('#aK', b).value; let cfg = {}, url = '', title = $('#aT', b).value.trim();
-    if (kind === 'game') { cfg = { isle: +$('[data-f=isle]', b).value, lv: +$('[data-f=lv]', b).value }; if (!title) title = gameLabel('mam-non', cfg); }
+    const gk = kind === 'game' ? $('[data-f=game]', b).value : '';
+    if (kind === 'game') { cfg = { isle: +$('[data-f=isle]', b).value, lv: +$('[data-f=lv]', b).value }; if (!title) title = gameLabel(gk, cfg); }
     else { url = $('#aU', b).value.trim(); if (!/^https?:\/\//.test(url)) return toast('Đường link phải bắt đầu bằng http'); if (!title) title = 'Bài đọc / xem'; }
-    await act(() => call('k_create_assignment', { p_class: KD.class.id, p_title: title, p_kind: kind, p_game: kind === 'game' ? 'mam-non' : '', p_config: cfg, p_url: url, p_note: $('#aN', b).value, p_due: $('#aD', b).value || null, p_lesson: null }), 'Đã giao bài');
+    await act(() => call('k_create_assignment', { p_class: KD.class.id, p_title: title, p_kind: kind, p_game: gk, p_config: cfg, p_url: url, p_note: $('#aN', b).value, p_due: $('#aD', b).value || null, p_lesson: null }), 'Đã giao bài');
     reK();
   };
   $$('[data-ad]', b).forEach(x => x.onclick = async () => { if (await sure('Xoá bài này? Kết quả học sinh đã làm cũng bị xoá.', 'Xoá')) { await act(() => call('k_delete_assignment', { p_assignment: x.dataset.ad }), 'Đã xoá'); reK(); } });

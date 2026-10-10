@@ -36,6 +36,23 @@ window.GAMES = [
     added: "2026-10-10"
   },
   {
+    id: "jenny-tham-tu-nhi",
+    series: "Hành Trình Của Jenny",
+    title: "Jenny Thám Tử Nhí",
+    grade: "Mầm non",
+    topic: "Quan sát và tư duy 5–6 tuổi",
+    mode: "Cá nhân",
+    thumb: "bb",
+    icon: "magnifier",
+    desc: "10 khu, 80 màn theo kiểu sách tô màu bút chì: mê cung, dây rối, mảnh ghép, cái bóng, chỗ sai, đếm hình chồng, quy luật, nối điểm, đồng hồ, toán vui.",
+    puzzles: 80,
+    unit: "màn",
+    url: "games/hanh-trinh-jenny/tham-tu/",
+    saveKey: "jenny-saga-tt",
+    status: "live",
+    added: "2026-10-10"
+  },
+  {
     id: "hanh-trinh-jenny-tieu-hoc",
     series: "Hành Trình Của Jenny",
     title: "Hành Trình Của Jenny Tiểu Học",

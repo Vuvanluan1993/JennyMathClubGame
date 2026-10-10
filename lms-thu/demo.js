@@ -92,6 +92,7 @@ async function seed(d) {
   const dem = L.find(l => /Đếm/.test(l.title)) || L[0];
   if (dem) await call('k_assign_lesson', { p_class: k1.id, p_lesson: dem.id, p_due: null, p_note: 'Con làm cùng bố mẹ nhé' }, U.teacher.id);
   await call('k_create_assignment', { p_class: k1.id, p_title: 'Đảo Cộng Trừ · Màn 1', p_kind: 'game', p_game: 'mam-non', p_config: { isle: 2, lv: 0 }, p_url: '', p_note: '', p_due: null, p_lesson: null }, U.teacher.id);
+  await call('k_create_assignment', { p_class: k1.id, p_title: 'Thám tử nhí · Khu Mê Cung · Màn 1', p_kind: 'game', p_game: 'tham-tu', p_config: { isle: 0, lv: 0 }, p_url: '', p_note: 'Con tìm đường giúp các bạn nhé', p_due: null, p_lesson: null }, U.teacher.id);
   const now = new Date(); now.setMinutes(now.getMinutes() + 5, 0, 0);
   await call('k_create_session', { p_class: k1.id, p_title: 'Buổi học thử – Đếm đến 5', p_starts: now.toISOString(), p_minutes: 60, p_link: 'https://meet.google.com/', p_lesson: null }, U.teacher.id);
   await call('k_post_notice', { p_class: k1.id, p_body: 'Chào các con! Đây là lớp xem thử. Các con bấm "Làm bài" để chơi nhé.' }, U.teacher.id);

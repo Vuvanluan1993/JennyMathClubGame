@@ -46,6 +46,12 @@ export const GAMES = {
     isles: ['Đảo Hình và Màu', 'Đảo Đếm Số', 'Đảo Cộng Trừ', 'Đảo Bài Toán', 'Đảo Thứ Tự và Giờ', 'Đảo Phương Hướng'],
     levels: 8,
     url: a => `../games/hanh-trinh-jenny/mam-non/index.html?lms=${a.id}&isle=${(a.config && a.config.isle) | 0}&lv=${(a.config && a.config.lv) | 0}`
+  },
+  'tham-tu': {
+    name: 'Jenny Thám Tử Nhí',
+    isles: ['Khu Mê Cung', 'Khu Dây Rối', 'Khu Mảnh Ghép', 'Khu Cái Bóng', 'Khu Chỗ Sai', 'Khu Đếm Hình', 'Khu Quy Luật', 'Khu Nối Điểm', 'Khu Đồng Hồ', 'Khu Toán Vui'],
+    levels: 8,
+    url: a => `../games/hanh-trinh-jenny/tham-tu/index.html?lms=${a.id}&isle=${(a.config && a.config.isle) | 0}&lv=${(a.config && a.config.lv) | 0}`
   }
 };
 export function gameLabel(game, config) {
