@@ -19,6 +19,7 @@
 */
 window.GAMES = [
   {
+    hidden: true,
     id: "hanh-trinh-jenny-mam-non",
     series: "Hành Trình Của Jenny",
     title: "Hành Trình Của Jenny Mầm Non",
@@ -36,6 +37,7 @@ window.GAMES = [
     added: "2026-10-10"
   },
   {
+    hidden: true,
     id: "jenny-tham-tu-nhi",
     series: "Hành Trình Của Jenny",
     title: "Jenny Thám Tử Nhí",
@@ -53,6 +55,7 @@ window.GAMES = [
     added: "2026-10-10"
   },
   {
+    hidden: true,
     id: "hanh-trinh-jenny-tieu-hoc",
     series: "Hành Trình Của Jenny",
     title: "Hành Trình Của Jenny Tiểu Học",
@@ -104,7 +107,6 @@ window.GAMES = [
     added: "2026-10-08"
   },
   {
-    hidden: true,
     id: "o-so-bi-an-lop-7",
     series: "Ô Số Bí Ẩn",
     title: "Ô Số Bí Ẩn Lớp 7",
