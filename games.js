@@ -19,6 +19,22 @@
 */
 window.GAMES = [
   {
+    id: "lop-hoc-ao-jenny",
+    series: "Lớp học ảo Jenny",
+    title: "Lớp Học Ảo Jenny",
+    grade: "Lớp 1–9",
+    topic: "Toán SGK Kết nối tri thức",
+    mode: "Cá nhân",
+    thumb: "bb",
+    icon: "island",
+    desc: "Mỗi tiết là một hòn đảo trên biển pixel: học theo màn, trùm lớp, câu cá, bóng bay, đua giờ, kho báu, sổ lỗi sai. Đăng nhập bằng tài khoản Clb (Jenny01 … Jenny09).",
+    puzzles: 19,
+    unit: "đảo mỗi chủ đề",
+    url: "games/lop-hoc-ao/",
+    status: "live",
+    added: "2026-10-18"
+  },
+  {
     hidden: true,
     id: "hanh-trinh-jenny-mam-non",
     series: "Hành Trình Của Jenny",
