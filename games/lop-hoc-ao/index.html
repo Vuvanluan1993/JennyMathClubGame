@@ -671,7 +671,7 @@ body.locked .appbar,body.locked main,body.locked .bnav{visibility:hidden}
   <div class="seg" id="tabs" role="group" aria-label="Chọn vai trò"></div><div class="hsme" id="hsme"></div>
   <div class="who" id="whoBox"><span class="av" id="whoAv"></span><select id="who" aria-label="Chọn học sinh"></select></div>
 </div></header>
-<div class="demo"><div class="wrap"><b>Chế độ demo</b><span class="pill warn" id="dayPill"></span><span>Dữ liệu chỉ lưu trên trình duyệt này.</span><span style="flex:1"></span><button class="btn sm" onclick="nextDay()">Sang ngày mới →</button><button class="btn sm" id="resetBtn" onclick="resetDemo()">Làm lại demo</button></div></div>
+<div class="demo"><div class="wrap"><b>Chế độ demo</b><span class="pill warn" id="dayPill"></span><span>Dữ liệu chỉ lưu trên trình duyệt này.</span><span style="flex:1"></span><button class="btn sm" id="unlBtn" onclick="toggleUnl()">🔓 Mở khóa tất cả</button><button class="btn sm" onclick="nextDay()">Sang ngày mới →</button><button class="btn sm" id="resetBtn" onclick="resetDemo()">Làm lại demo</button></div></div>
 <div id="login" class="login"><form id="lgForm" class="lgcard" autocomplete="off">
  <div class="lghead"><span class="lgjen" id="lgjen"></span><div><h1>Lớp học ảo Jenny</h1><p>Clb Học Toán cùng Jenny</p></div></div>
  <label for="lgU">Tên đăng nhập</label><input id="lgU" name="u" placeholder="Ví dụ: Jenny01" autocapitalize="off" spellcheck="false" required>
@@ -1048,7 +1048,7 @@ function stopPlayer(){if(player){player.stop();player=null}}
 function setRole(r){role=r;go({k:'home'})}
 document.getElementById('who').onchange=e=>{sid=e.target.value;go({k:'home'})};
 function go(s){stopPlayer();try{stopMini();clearInterval(raceTick)}catch(e){}scr=s;render();try{window.scrollTo(0,0)}catch(e){}}
-function render(){const g6=role==='hs'&&(S.st[sid].grade<=6);document.body.classList.toggle('gaming',g6&&(scr.k==='game'||scr.k==='mini'));document.body.classList.toggle('hasnav',g6&&scr.k==='home');header();document.body.classList.add('px');const app=document.getElementById('app');app.innerHTML=role==='hs'?viewHS():role==='gv'?viewGV():viewPH();pixelize(app);pixelize(document.querySelector('.appbar'));startSea();g1AfterRender();miniAfterRender();raceAfterRender();if(scr.k==='video'&&role==='hs')startPlayer();if(document.getElementById('sea')){centerMap();(window.requestAnimationFrame||setTimeout)(centerMap);setTimeout(centerMap,200);setTimeout(centerMap,800)}const i=document.getElementById('ans');if(i)i.focus()}
+function render(){{const ub=document.getElementById('unlBtn');if(ub){ub.textContent=UNL?'🔒 Khóa lại':'🔓 Mở khóa tất cả';ub.classList.toggle('pri',UNL)}}const g6=role==='hs'&&(S.st[sid].grade<=6);document.body.classList.toggle('gaming',g6&&(scr.k==='game'||scr.k==='mini'));document.body.classList.toggle('hasnav',g6&&scr.k==='home');header();document.body.classList.add('px');const app=document.getElementById('app');app.innerHTML=role==='hs'?viewHS():role==='gv'?viewGV():viewPH();pixelize(app);pixelize(document.querySelector('.appbar'));startSea();g1AfterRender();miniAfterRender();raceAfterRender();if(scr.k==='video'&&role==='hs')startPlayer();if(document.getElementById('sea')){centerMap();(window.requestAnimationFrame||setTimeout)(centerMap);setTimeout(centerMap,200);setTimeout(centerMap,800)}const i=document.getElementById('ans');if(i)i.focus()}
 function nextDay(){S.day++;Object.values(S.st).forEach(st=>st.energy=Math.max(0,st.energy-15));save();go({k:'home'});toast('Đã sang ngày '+S.day+'. Thú cưng đói hơn một chút.')}
 let resetArmed=0;function resetDemo(){const b=document.getElementById('resetBtn');if(!resetArmed){resetArmed=1;b.textContent='Bấm lần nữa để xóa';b.classList.add('danger');setTimeout(()=>{resetArmed=0;b.textContent='Làm lại demo';b.classList.remove('danger')},4000);return}resetArmed=0;b.textContent='Làm lại demo';b.classList.remove('danger');fresh();sid='an';go({k:'home'});toast('Đã làm lại demo từ đầu')}
 
@@ -1071,7 +1071,7 @@ function viewHS(){
   if(scr.k==='play')return viewPlay();
   const st=S.st[sid],tot=totalStars(st),P=L1(st),ck=curIsland(st),na=nextAction(st),ad=activeDays(sid);
   const maxP1=P.length*3,got1=p1Stars(st);
-  const isl=P.map((x,k)=>{const s=st.p1[x.id],n=s.m.filter(Boolean).length,open=islandOpen(st,k),state=!open?'lock':n===3?'done':'cur';
+  const isl=P.map((x,k)=>{const s=st.p1[x.id],n=s.m.filter(Boolean).length,open=UNL||islandOpen(st,k),state=!open?'lock':n===3?'done':'cur';
     if(!open)return`<div class="isl lock" aria-disabled="true"><div class="art">${islandArt('lock')}</div><span class="no">${k+1}</span><b>${esc(shortTitle(x.title))}</b><span class="muted">Cần ${NEED(k)} ★ · còn thiếu ${NEED(k)-tot}</span></div>`;
     return`<button class="isl ${state}${k===ck?' cur':''}" onclick="go({k:'island',part:1,id:'${x.id}'})"><div class="art">${islandArt(state)}</div><span class="no">${k+1}</span>${k===ck?'<span class="now pill acc">Đang học</span>':''}<b>${esc(shortTitle(x.title))}</b><span class="row" style="justify-content:space-between;gap:6px">${starsHtml(n,3)}<span class="muted">${n===3?'Đã xong':n?'Học tiếp':'Bắt đầu'}</span></span></button>`}).join('');
   let p2;
@@ -1079,7 +1079,7 @@ function viewHS(){
   else if(!st.active)p2=`<div class="locknote">${jenny(40)}<div><b>Toán Jenny chưa được kích hoạt cho em.</b><br>Trung tâm mua mã và kích hoạt cho từng bạn. Em vẫn học Phần I miễn phí bình thường.</div></div>`;
   else p2='<div class="map">'+P2.map((x,k)=>{const s=st.p2[x.id],n=s.m.reduce((a,v,i)=>a+(v?STAR2[i]:0),0),state=n===9?'done':'cur';
     if(x.draft)return`<div class="isl lock"><div class="art">${islandArt('lock')}</div><span class="no">${k+1}</span><b>${esc(x.title)}</b><span class="muted">Tuần ${x.week} · đang soạn</span></div>`;
-    if(!S.open[x.id])return`<div class="isl lock"><div class="art">${islandArt('lock')}</div><span class="no">${k+1}</span><b>${esc(x.title)}</b><span class="muted">Tuần ${x.week} · chờ cô mở buổi</span></div>`;
+    if(!UNL&&!S.open[x.id])return`<div class="isl lock"><div class="art">${islandArt('lock')}</div><span class="no">${k+1}</span><b>${esc(x.title)}</b><span class="muted">Tuần ${x.week} · chờ cô mở buổi</span></div>`;
     return`<button class="isl ${state}" onclick="go({k:'island',part:2,id:'${x.id}'})"><div class="art" style="background:var(--sun-soft)">${islandArt(state)}</div><span class="no">${k+1}</span><b>${esc(x.title)}</b><span class="row" style="justify-content:space-between;gap:6px"><span><span class="stars">★</span> <b>${n}</b>/9 sao</span><span class="muted">Tuần ${x.week}</span></span></button>`}).join('')+'</div>';
   const self=st.selfCoins[S.day]||0;
   return`<div class="grid">
@@ -1111,7 +1111,7 @@ function viewIsland(){
   const {part,id}=scr,u=unit(part,id),s=ustate(part,id);
   const steps=[];
   steps.push({done:s.intro,can:true,t:'Video tổng hợp kiến thức',d:`${u.slides.length} trang · Jenny thuyết minh`,act:`go({k:'video',part:${part},id:'${id}'})`,lbl:s.intro?'Xem lại':'Xem video'});
-  if(part===2)steps.push({done:s.ex,can:s.intro,t:u.example.title,d:'Jenny dẫn em giải từng bước',act:`go({k:'example',id:'${id}',i:0,got:{}})`,lbl:s.ex?'Xem lại':'Bắt đầu'});
+  if(part===2)steps.push({done:s.ex,can:UNL||s.intro,t:u.example.title,d:'Jenny dẫn em giải từng bước',act:`go({k:'example',id:'${id}',i:0,got:{}})`,lbl:s.ex?'Xem lại':'Bắt đầu'});
   const ready=part===1?s.intro:s.intro&&s.ex;
   [0,1,2].forEach(i=>{const can=ready&&(i===0||s.m[i-1]);
     const name=part===1?M1[i]:`Màn ${i+1} · ${'★'.repeat(i+1)}`,reward=part===1?'1 sao':`${STAR2[i]} sao`,n=part===1?P1_Q:u.levels[i].length;
@@ -1409,7 +1409,7 @@ function tabMap(st){
   const P=L1(st),tot=totalStars(st),ck=curIsland(st),qd=quest(st),done=QUESTS.filter(([k,n])=>qd[k]>=n).length,stk=streak(st);
   const W=150,Hh=280;const pts=P.map((_,k)=>[80+k*W,k%2?165:85]);
   const path=pts.map((p,k)=>k?`Q ${p[0]-W/2} ${pts[k-1][1]===85?55:200} ${p[0]} ${p[1]}`:`M ${p[0]} ${p[1]}`).join(' ');
-  const nodes=P.map((x,k)=>{const s=g6s(st,x.id),n=s.m.filter(Boolean).length,open=islandOpen(st,k),storm=stormDue(st,x.id),[cx,cy]=pts[k];
+  const nodes=P.map((x,k)=>{const s=g6s(st,x.id),n=s.m.filter(Boolean).length,open=UNL||islandOpen(st,k),storm=stormDue(st,x.id),[cx,cy]=pts[k];
     const state=!open?'lock':storm?'storm':n===3?'done':'cur';
     return`<button class="node ${state}${k===ck?' here':''}" style="left:${cx-55}px;top:${cy-50}px" ${open?`onclick="go({k:'island',part:1,id:'${x.id}'})"`:`onclick="toast('Cần ${NEED(k)} sao để mở đảo này. Em còn thiếu ${NEED(k)-tot} sao.')"`} aria-label="${esc(x.title)}${open?'':' (đang khóa)'}">
       <span class="ball">${spr(state==='lock'?'islandG':'island',60)}${state==='lock'?spr('lock',26,'bdg'):state==='storm'?spr('storm',26,'bdg'):k===ck?spr('jenny',34,'bdg jen'):state==='done'?spr('medG',24,'bdg'):''}</span>
@@ -1456,7 +1456,7 @@ function tabBag(st){
 function viewIsland6(){
   const st=S.st[sid],id=scr.id,u=unit(1,id),s=g6s(st,id),G=G6[id],storm=stormDue(st,id);
   const got=s.m.filter(Boolean).length;
-  const mk=(lv,t,d)=>{const can=s.intro&&(lv===0||s.m[lv-1]),done=s.m[lv],med=s.med[lv]||0,stuck=!done&&s.fails[lv]>=2;
+  const mk=(lv,t,d)=>{const can=UNL||s.intro&&(lv===0||s.m[lv-1]),done=s.m[lv],med=s.med[lv]||0,stuck=!done&&s.fails[lv]>=2;
     return{done,can,ic:lv===2?G.boss[0]:String(lv+1),t,d:d+(done?` · ${MEDAL[med]} ${MEDN[med]}`:s.fails[lv]?` · đã thử ${s.fails[lv]} lần`:''),act:`startGame('${id}',${lv})`,lbl:done?(med<3?'Lên Vàng':'Chơi lại'):lv===2?'Đánh trùm':'Chơi',stuck,lv,med}};
   const items=[{done:s.intro,can:true,ic:'▶',t:'Video tổng hợp kiến thức',d:`${u.slides.length} trang · Jenny thuyết minh`,act:`go({k:'video',part:1,id:'${id}'})`,lbl:s.intro?'Xem lại':'Xem'},
     mk(0,'Màn 1 · Xây cầu',`${P1_Q} câu · 3 tim`),mk(1,'Màn 2 · Vượt sóng',`${P1_Q} câu · 3 tim`),mk(2,`Màn 3 · Trùm: ${G.boss[1]}`,`${P1_Q} đòn · 3 tim · rương`)];
@@ -1812,7 +1812,9 @@ try{window.speechSynthesis&&window.speechSynthesis.addEventListener&&window.spee
 const isl1=id=>Object.values(PRIM).flatMap(p=>p.isl).find(x=>x.id===id);
 const s1=(st,id)=>{const x=isl1(id),s=st.p1[id]||(st.p1[id]={intro:false,m:[],fails:[]});while(s.m.length<x.nm){s.m.push(false);s.fails.push(0)}return s};
 const ISL=st=>PRIM[st.grade<=5?st.grade:1].isl;
-const open1=(st,k)=>{const L=ISL(st);if(k<=0)return true;const x=L[k],p=L[k-1];return x.ti!==p.ti?s1(st,p.id).m.every(Boolean):!!s1(st,p.id).m[0]};
+let UNL=(()=>{try{return localStorage.getItem('jennyLockOn')!=='1'}catch(e){return true}})();
+function toggleUnl(){UNL=!UNL;try{localStorage.setItem('jennyLockOn',UNL?'0':'1')}catch(e){}render();toast(UNL?'Đã mở khóa tất cả đảo để kiểm tra':'Đã khóa lại theo tiến độ')}
+const open1=(st,k)=>{const L=ISL(st);if(k<=0||UNL)return true;const x=L[k],p=L[k-1];return x.ti!==p.ti?s1(st,p.id).m.every(Boolean):!!s1(st,p.id).m[0]};
 const cur1=st=>{for(let k=0;k<ISL(st).length;k++){if(open1(st,k)&&s1(st,ISL(st)[k].id).m.some(v=>!v))return k}return ISL(st).length-1};
 /* ---- bản đồ ---- */
 const T1=[["Các số từ 0 đến 10", [[1, 1, "Các số 0, 1, 2, 3, 4, 5"], [1, 2, "Các số 0, 1, 2, 3, 4, 5"], [1, 3, "Các số 0, 1, 2, 3, 4, 5"], [2, 1, "Các số 6, 7, 8, 9, 10"], [2, 2, "Các số 6, 7, 8, 9, 10"], [2, 3, "Các số 6, 7, 8, 9, 10"], [3, 1, "Nhiều hơn, ít hơn, bằng nhau"], [3, 2, "Nhiều hơn, ít hơn, bằng nhau"], [4, 1, "So sánh số"], [4, 2, "So sánh số"], [4, 3, "So sánh số"], [4, 4, "So sánh số"], [5, 1, "Mấy và mấy"], [5, 2, "Mấy và mấy"], [5, 3, "Mấy và mấy"], [6, 1, "Luyện tập chung"], [6, 2, "Luyện tập chung"], [6, 3, "Luyện tập chung"], [6, 4, "Luyện tập chung"]]], ["Làm quen với một số hình phẳng", [[7, 1, "Hình vuông, hình tròn, hình tam giác, hình chữ nhật"], [7, 2, "Hình vuông, hình tròn, hình tam giác, hình chữ nhật"], [8, 1, "Thực hành lắp ghép, xếp hình"], [8, 2, "Thực hành lắp ghép, xếp hình"], [9, 1, "Luyện tập chung"]]], ["Phép cộng, phép trừ trong phạm vi 10", [[10, 1, "Phép cộng trong phạm vi 10"], [10, 2, "Phép cộng trong phạm vi 10"], [10, 3, "Phép cộng trong phạm vi 10"], [10, 4, "Phép cộng trong phạm vi 10"], [10, 5, "Phép cộng trong phạm vi 10"], [10, 6, "Phép cộng trong phạm vi 10"], [11, 1, "Phép trừ trong phạm vi 10"], [11, 2, "Phép trừ trong phạm vi 10"], [11, 3, "Phép trừ trong phạm vi 10"], [11, 4, "Phép trừ trong phạm vi 10"], [11, 5, "Phép trừ trong phạm vi 10"], [11, 6, "Phép trừ trong phạm vi 10"], [12, 1, "Bảng cộng, bảng trừ trong phạm vi 10"], [12, 2, "Bảng cộng, bảng trừ trong phạm vi 10"], [12, 3, "Bảng cộng, bảng trừ trong phạm vi 10"], [13, 1, "Luyện tập chung"], [13, 2, "Luyện tập chung"], [13, 3, "Luyện tập chung"]]], ["Làm quen với một số hình khối", [[14, 1, "Khối lập phương, khối hộp chữ nhật"], [14, 2, "Khối lập phương, khối hộp chữ nhật"], [15, 1, "Vị trí, định hướng trong không gian"], [15, 2, "Vị trí, định hướng trong không gian"], [16, 1, "Luyện tập chung"]]], ["Ôn tập học kì 1", [[17, 1, "Ôn tập các số trong phạm vi 10"], [17, 2, "Ôn tập các số trong phạm vi 10"], [18, 1, "Ôn tập phép cộng, phép trừ trong phạm vi 10"], [18, 2, "Ôn tập phép cộng, phép trừ trong phạm vi 10"], [19, 1, "Ôn tập hình học"], [20, 1, "Ôn tập chung"]]], ["Các số đến 100", [[21, 1, "Số có hai chữ số"], [21, 2, "Số có hai chữ số"], [21, 3, "Số có hai chữ số"], [21, 4, "Số có hai chữ số"], [21, 5, "Số có hai chữ số"], [21, 6, "Số có hai chữ số"], [22, 1, "So sánh số có hai chữ số"], [22, 2, "So sánh số có hai chữ số"], [22, 3, "So sánh số có hai chữ số"], [23, 1, "Bảng các số từ 1 đến 100"], [24, 1, "Luyện tập chung"], [24, 2, "Luyện tập chung"]]], ["Độ dài và đo độ dài", [[25, 1, "Dài hơn, ngắn hơn"], [25, 2, "Dài hơn, ngắn hơn"], [26, 1, "Đơn vị đo độ dài"], [26, 2, "Đơn vị đo độ dài"], [27, 1, "Thực hành ước lượng và đo độ dài"], [27, 2, "Thực hành ước lượng và đo độ dài"], [28, 1, "Luyện tập chung"], [28, 2, "Luyện tập chung"]]], ["Phép cộng, phép trừ (không nhớ) trong phạm vi 100", [[29, 1, "Phép cộng số có hai chữ số với số có một chữ số"], [29, 2, "Phép cộng số có hai chữ số với số có một chữ số"], [30, 1, "Phép cộng số có hai chữ số với số có hai chữ số"], [30, 2, "Phép cộng số có hai chữ số với số có hai chữ số"], [31, 1, "Phép trừ số có hai chữ số cho số có một chữ số"], [31, 2, "Phép trừ số có hai chữ số cho số có một chữ số"], [31, 3, "Phép trừ số có hai chữ số cho số có một chữ số"], [32, 1, "Phép trừ số có hai chữ số cho số có hai chữ số"], [32, 2, "Phép trừ số có hai chữ số cho số có hai chữ số"], [32, 3, "Phép trừ số có hai chữ số cho số có hai chữ số"], [33, 1, "Luyện tập chung"], [33, 2, "Luyện tập chung"], [33, 3, "Luyện tập chung"], [33, 4, "Luyện tập chung"]]], ["Thời gian. Giờ và lịch", [[34, 1, "Xem giờ đúng trên đồng hồ"], [34, 2, "Xem giờ đúng trên đồng hồ"], [35, 1, "Các ngày trong tuần"], [35, 2, "Các ngày trong tuần"], [36, 1, "Thực hành xem lịch và giờ"], [36, 2, "Thực hành xem lịch và giờ"], [37, 1, "Luyện tập chung"], [37, 2, "Luyện tập chung"]]], ["Ôn tập cuối năm", [[38, 1, "Ôn tập các số và phép tính trong phạm vi 10"], [38, 2, "Ôn tập các số và phép tính trong phạm vi 10"], [38, 3, "Ôn tập các số và phép tính trong phạm vi 10"], [39, 1, "Ôn tập các số và phép tính trong phạm vi 100"], [39, 2, "Ôn tập các số và phép tính trong phạm vi 100"], [39, 3, "Ôn tập các số và phép tính trong phạm vi 100"], [40, 1, "Ôn tập hình học và đo lường"], [40, 2, "Ôn tập hình học và đo lường"], [41, 1, "Ôn tập chung"]]]];
@@ -1847,7 +1849,7 @@ function jumpT1(ti,smooth){const el=document.getElementById('t1_'+ti);if(!el)ret
 /* ---- trang đảo ---- */
 function viewIsland1(){
   const st=S.st[sid],x=isl1(scr.id),s=s1(st,x.id);
-  const items=x.lv.map((_,L)=>{const boss=L===2,done=s.m[L],can=L===0||s.m[L-1];return{L,done,can,t:boss?`Trùm · ${bossOf(scr.id)[1]}`:`Màn ${L+1}`,d:(boss?`Khoảng ${QN()} đòn · 3 tim · rương`:`Khoảng ${QN()} câu · 3 tim`)+(curG()>=3?' · bài lời văn ít câu hơn':'')}});
+  const items=x.lv.map((_,L)=>{const boss=L===2,done=s.m[L],can=UNL||L===0||s.m[L-1];return{L,done,can,t:boss?`Trùm · ${bossOf(scr.id)[1]}`:`Màn ${L+1}`,d:(boss?`Khoảng ${QN()} đòn · 3 tim · rương`:`Khoảng ${QN()} câu · 3 tim`)+(curG()>=3?' · bài lời văn ít câu hơn':'')}});
   const nx=items.findIndex(i=>!i.done&&i.can);
   return`<div class="page"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home'})">← Bản đồ</button></div>
    <div class="card"><div class="lesson">${jenny(64)}<div class="grow"><h1>${esc(x.title)}</h1><div class="muted">${esc(x.lesson)} · Toán ${curG()} · Chủ đề ${(x.ti||0)+1}</div></div>${starsHtml(s.m.filter(Boolean).length,x.nm)}</div>
@@ -1976,12 +1978,12 @@ const j1s=(st,id)=>st.p2[id]||(st.p2[id]={intro:false,ex:false,m:[false,false,fa
 function viewJTab1(st){
   if(!st.active)return`<div class="grid"><section class="card paidbox"><div class="secthead"><h2>Toán Jenny</h2><span class="tag paid">Nâng cao</span></div><div class="row" style="flex-wrap:nowrap;gap:12px;margin-top:8px">${jenny(56)}<p class="muted" style="margin:0">Phần nâng cao của Clb Học Toán cùng Jenny: tìm quy luật, đếm khéo, suy luận. Trung tâm nhập mã kích hoạt, cô giáo mở 2 buổi mỗi tuần.</p></div></section></div>`;
   return`<div class="grid"><section class="card paidbox"><div class="secthead"><h2>Toán Jenny · Lớp ${st.grade}</h2><span class="tag paid">2 buổi/tuần</span></div><p class="muted" style="margin:4px 0 12px">Cô giáo mở buổi nào thì em học buổi đó. Mỗi buổi có video, ví dụ và 3 màn, được tới 9 sao.</p>
-   <div class="grid" style="gap:12px">${(P2_1.filter(x=>x.grade===st.grade).length?P2_1.filter(x=>x.grade===st.grade):[{id:"jdraft"+st.grade,week:1,title:"Buổi 1 · đang soạn",draft:true}]).map(x=>{const s=j1s(st,x.id),open=!!S.open[x.id]&&!x.draft,got=s.m.reduce((a,v,i)=>a+(v?STAR2[i]:0),0);
+   <div class="grid" style="gap:12px">${(P2_1.filter(x=>x.grade===st.grade).length?P2_1.filter(x=>x.grade===st.grade):[{id:"jdraft"+st.grade,week:1,title:"Buổi 1 · đang soạn",draft:true}]).map(x=>{const s=j1s(st,x.id),open=(UNL||!!S.open[x.id])&&!x.draft,got=s.m.reduce((a,v,i)=>a+(v?STAR2[i]:0),0);
     return`<button class="pxq ${open?'mist':''}" style="${open?'':'opacity:.7'}" ${open?`onclick="go({k:'jenny',id:'${x.id}'})"`:`onclick="toast('${x.draft?'Buổi này đang được soạn.':'Cô giáo chưa mở buổi này.'}')"`}><span class="pxq-ic">${open?spr('star',38):spr('lock',30)}</span><span class="pxq-tx"><b>${esc(x.title)}</b><span>Tuần ${x.week} · ${x.draft?'đang soạn':open?`${got}/9 sao`:'cô chưa mở'}</span></span><span class="pxq-go">${open?(got?'Học tiếp ▶':'Vào học ▶'):'Khóa'}</span></button>`}).join('')}</div></section></div>`;
 }
 function viewJenny1(){const st=S.st[sid],x=ju1(scr.id),s=j1s(st,x.id);
-  const items=[{done:s.intro,can:true,t:'Video · Jenny giảng',d:`${x.slides.length} trang · Jenny đọc`,act:`go({k:'jslide',id:'${x.id}',i:0})`,lbl:s.intro?'Xem lại':'Xem'},{done:s.ex,can:s.intro,t:'Ví dụ dẫn dắt',d:'Jenny giải mẫu một bài',act:`go({k:'jex',id:'${x.id}'})`,lbl:s.ex?'Xem lại':'Xem'}]
-   .concat([0,1,2].map(L=>({done:s.m[L],can:s.ex&&(L===0||s.m[L-1]),t:`Màn ${'★'.repeat(L+1)}`,d:`${QN()} câu · 3 tim · +${STAR2[L]} sao`,act:`startJ1('${x.id}',${L})`,lbl:s.m[L]?'Chơi lại':'Chơi'})));
+  const items=[{done:s.intro,can:true,t:'Video · Jenny giảng',d:`${x.slides.length} trang · Jenny đọc`,act:`go({k:'jslide',id:'${x.id}',i:0})`,lbl:s.intro?'Xem lại':'Xem'},{done:s.ex,can:UNL||s.intro,t:'Ví dụ dẫn dắt',d:'Jenny giải mẫu một bài',act:`go({k:'jex',id:'${x.id}'})`,lbl:s.ex?'Xem lại':'Xem'}]
+   .concat([0,1,2].map(L=>({done:s.m[L],can:UNL||s.ex&&(L===0||s.m[L-1]),t:`Màn ${'★'.repeat(L+1)}`,d:`${QN()} câu · 3 tim · +${STAR2[L]} sao`,act:`startJ1('${x.id}',${L})`,lbl:s.m[L]?'Chơi lại':'Chơi'})));
   const nx=items.findIndex(i=>!i.done&&i.can);
   return`<div class="page"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'jenny'})">← Toán Jenny</button></div>
    <div class="card"><div class="lesson">${jenny(64)}<div class="grow"><h1>${esc(x.title)}</h1><div class="muted">Toán Jenny · Lớp 1 · nội dung mẫu</div></div></div>
@@ -2369,8 +2371,8 @@ function islPool(x){const out=[];x.lv.slice(0,2).forEach((gs,L)=>gs.forEach((gn,
 function viewIsland1(){
   const st=S.st[sid],x=isl1(scr.id),s=s1(st,x.id),k=PI().indexOf(x),b=cbI(x.id),cr=islCreat(x.id),opts=islOpts(x);
   if(b.won&&!b.claimed[sid]){b.claimed[sid]=1;st.coins+=20;giveCard(st,cr[0]);save();setTimeout(()=>toast(`Cả lớp đã hạ ${b.name}! Em nhận 20 xu và thẻ ${cr[1]}.`),50)}
-  const items=x.lv.map((_,L)=>{const boss=L===2,done=s.m[L],can=L===0||s.m[L-1];return{L,done,can,t:boss?`Trùm đảo · ${bossOf(scr.id)[1]}`:`Màn ${L+1}`,d:(boss?`Khoảng ${QN()} đòn · 3 tim · rương`:`Khoảng ${QN()} câu · 3 tim`)+(curG()>=3?' · bài lời văn ít câu hơn':'')}});
-  const nx=items.findIndex(i=>!i.done&&i.can),cbOpen=s.m[0],mine=b.hits[sid]||0;
+  const items=x.lv.map((_,L)=>{const boss=L===2,done=s.m[L],can=UNL||L===0||s.m[L-1];return{L,done,can,t:boss?`Trùm đảo · ${bossOf(scr.id)[1]}`:`Màn ${L+1}`,d:(boss?`Khoảng ${QN()} đòn · 3 tim · rương`:`Khoảng ${QN()} câu · 3 tim`)+(curG()>=3?' · bài lời văn ít câu hơn':'')}});
+  const nx=items.findIndex(i=>!i.done&&i.can),cbOpen=UNL||s.m[0],mine=b.hits[sid]||0;
   const OPT={fish:['fish','Câu cá',`Câu cá theo luật của đảo trong 45 giây`,`startMini('fish','${x.id}')`,(st.mg||{})[`${x.id}:fish`]],balloon:['balloon','Bóng bay',`Bắn bóng theo luật của đảo trong 45 giây`,`startMini('balloon','${x.id}')`,(st.mg||{})[`${x.id}:balloon`]],race:['clock','Đua giờ 60 giây','Làm liên tục câu của đảo này, có bảng xếp hạng lớp',`startRace('${x.id}')`,(st.race||{})[x.id]]};
   return`<div class="page"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home'})">← Bản đồ</button></div>
    <div class="card"><div class="lesson">${jenny(64)}<div class="grow"><h1>${esc(x.title)}</h1><div class="muted">${esc(x.lesson)} · Toán ${curG()} · Chủ đề ${(x.ti||0)+1}</div></div>${starsHtml(s.m.filter(Boolean).length,x.nm)}</div>
