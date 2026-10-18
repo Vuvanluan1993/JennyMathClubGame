@@ -445,6 +445,8 @@ body.px .gend,body.px .gmid,body.px .gbot{padding-left:max(16px,env(safe-area-in
 /* ===== Căn chỉnh theo thiết bị ===== */
 .demo .btn{min-height:34px}
 body.px .bnav button{white-space:nowrap}
+.bnav{overflow:hidden}.bnav button{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis}body.px .bnav button{font-size:clamp(14px,4.3vw,18px)}@media (max-width:340px){.bnav{gap:0;padding-left:2px;padding-right:2px}}
+.mgrule{box-sizing:border-box;max-width:calc(100% - 32px)}
 body.px .node .lbl b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .gend{justify-content:flex-start}
 .gend>:first-child{margin-top:auto}
