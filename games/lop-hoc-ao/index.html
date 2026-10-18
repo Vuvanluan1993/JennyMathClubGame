@@ -538,7 +538,7 @@ body.px .node .lbl b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient
 .g1opts.c2{grid-template-columns:1fr 1fr}.g1opts.c3{grid-template-columns:repeat(3,1fr)}.g1opts.c4{grid-template-columns:repeat(4,1fr)}
 .g1opts button{min-height:64px;border:0;background:var(--surface);color:var(--ink);font:inherit;font-size:19px;font-weight:700;cursor:pointer;padding:8px;display:grid;place-items:center;box-shadow:var(--f3),0 6px 0 0 var(--pxk)}
 .g1opts.big button{font-family:var(--f-display);font-size:46px;font-weight:400;line-height:1}
-.g1opts>*{min-width:0}.g1opts button svg{max-width:100%;height:auto}.g1opts.big button.lg{font-size:clamp(24px,7vw,38px)}.g1opts.big button.xl{font-size:clamp(20px,5.5vw,30px)}
+.g1opts>*{min-width:0}.g1opts button svg{max-width:100%;height:auto}.g1opts.c1{grid-template-columns:1fr}.g1opts.c1 .g1grp.sm{max-width:none;gap:6px}.g1opts.c1 .g1grp.sm img{height:36px!important;width:auto!important}.g1opts.c2>:last-child:nth-child(odd){grid-column:1/-1}.g1opts.big button.lg{font-size:clamp(28px,8.5vw,40px)}.g1opts.big button.xl{font-size:clamp(22px,6.2vw,32px)}
 .g1opts button:active{transform:translateY(5px);box-shadow:var(--f3),0 1px 0 0 var(--pxk)}
 .g1opts button.on{background:var(--sea-soft);box-shadow:var(--f3),0 6px 0 0 var(--sea)}
 .g1opts button.used{opacity:.3}
@@ -1056,7 +1056,7 @@ function stopPlayer(){if(player){player.stop();player=null}}
 function setRole(r){role=r;go({k:'home'})}
 document.getElementById('who').onchange=e=>{sid=e.target.value;go({k:'home'})};
 function go(s){stopPlayer();try{stopMini();clearInterval(raceTick)}catch(e){}scr=s;render();try{window.scrollTo(0,0)}catch(e){}}
-function render(){healAll();{const ub=document.getElementById('unlBtn');if(ub){ub.textContent=UNL?'🔒 Khóa lại':'🔓 Mở khóa tất cả';ub.classList.toggle('pri',UNL)}}const g6=role==='hs'&&(S.st[sid].grade<=6);document.body.classList.toggle('gaming',g6&&(scr.k==='game'||scr.k==='mini'));document.body.classList.toggle('hasnav',g6&&scr.k==='home');header();document.body.classList.add('px');const app=document.getElementById('app');app.innerHTML=role==='hs'?viewHS():role==='gv'?viewGV():viewPH();pixelize(app);pixelize(document.querySelector('.appbar'));startSea();g1AfterRender();miniAfterRender();raceAfterRender();if(scr.k==='video'&&role==='hs')startPlayer();if(document.getElementById('sea')){centerMap();(window.requestAnimationFrame||setTimeout)(centerMap);setTimeout(centerMap,200);setTimeout(centerMap,800)}const i=document.getElementById('ans');if(i)i.focus()}
+function render(){setTimeout(fitOpts,0);healAll();{const ub=document.getElementById('unlBtn');if(ub){ub.textContent=UNL?'🔒 Khóa lại':'🔓 Mở khóa tất cả';ub.classList.toggle('pri',UNL)}}const g6=role==='hs'&&(S.st[sid].grade<=6);document.body.classList.toggle('gaming',g6&&(scr.k==='game'||scr.k==='mini'));document.body.classList.toggle('hasnav',g6&&scr.k==='home');header();document.body.classList.add('px');const app=document.getElementById('app');app.innerHTML=role==='hs'?viewHS():role==='gv'?viewGV():viewPH();pixelize(app);pixelize(document.querySelector('.appbar'));startSea();g1AfterRender();miniAfterRender();raceAfterRender();if(scr.k==='video'&&role==='hs')startPlayer();if(document.getElementById('sea')){centerMap();(window.requestAnimationFrame||setTimeout)(centerMap);setTimeout(centerMap,200);setTimeout(centerMap,800)}const i=document.getElementById('ans');if(i)i.focus()}
 function nextDay(){S.day++;Object.values(S.st).forEach(st=>st.energy=Math.max(0,st.energy-15));save();go({k:'home'});toast('Đã sang ngày '+S.day+'. Thú cưng đói hơn một chút.')}
 let resetArmed=0;function resetDemo(){const b=document.getElementById('resetBtn');if(!resetArmed){resetArmed=1;b.textContent='Bấm lần nữa để xóa';b.classList.add('danger');setTimeout(()=>{resetArmed=0;b.textContent='Làm lại demo';b.classList.remove('danger')},4000);return}resetArmed=0;b.textContent='Làm lại demo';b.classList.remove('danger');fresh();sid='an';go({k:'home'});toast('Đã làm lại demo từ đầu')}
 
@@ -1870,6 +1870,19 @@ function viewIsland1(){
 function startG1(id,L){const x=isl1(id),gens=x.lv[L],n=QN();const order=shuf(gens.map((_,i)=>i));const qs=[];let w=0,k=0;while(w<n-0.01&&qs.length<n){const gi=order[k%gens.length],q=gens[gi]();k++;qs.push({...q,src:[id,L,gi],key:`${id}:${L}:${gi}`,label:q.kind||'Câu hỏi'});w+=qW(q)}
   v1Said='';go({k:'game',g1:1,id,lv:L,qs,j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,hp:L===2?n:0,t0:Date.now()});}
 function q1(){return scr.qs[scr.j]}
+/* tự co chữ đồng đều cho vừa nút; nếu quá bé thì giảm số cột */
+function fitOpts(){document.querySelectorAll('.g1opts.big').forEach(box=>{const bs=[...box.querySelectorAll('button')].filter(b=>b.textContent.trim());if(!bs.length)return;
+  const bad=()=>bs.some(b=>{if(b.scrollWidth>b.clientWidth+1)return true;if(b.querySelector('.frac,svg,img'))return false;const rg=document.createRange();rg.selectNodeContents(b);return new Set([...rg.getClientRects()].map(r=>Math.round(r.top))).size>1});
+  const set=v=>bs.forEach(b=>b.style.fontSize=v?v+'px':'');set(46);if(!bad())return;
+  const base=46;const cols=['c4','c3','c2','c1'];
+  for(;;){let f=base;set(f);while(bad()&&f>22){f-=2;set(f)}if(!bad()&&f>=(bs.length<=4?32:26))return;const c=cols.find(k=>box.classList.contains(k));const i=cols.indexOf(c);if(i<0||i>=3){if(bad())set(Math.max(16,f));return}box.classList.remove(c);box.classList.add(cols[i+1]);set(0)}})}
+try{document.fonts&&document.fonts.ready.then(()=>fitOpts());addEventListener('resize',()=>fitOpts())}catch(e){}
+function optLay(hs,big,def){const T=hs.map(h=>String(h).replace(/<[^>]*>/g,'').trim()),M=Math.max(0,...T.map(t=>t.length));
+  const pic=hs.some(h=>/<svg|<img/.test(String(h))),wide=hs.some(h=>{const m=String(h).match(/<svg[^>]*width="([\d.]+)"/);return m&&Number(m[1])>64});
+  if(hs.some(h=>/g1grp sm/.test(String(h))))return[1,''];
+  if(pic&&!M)return[wide?Math.min(def,2):def,''];
+  if(big){if(M<=3)return[def,''];if(M<=5)return[Math.min(def,2),''];if(M<=8)return[Math.min(def,2),'lg'];if(M<=12)return[Math.min(def,2),'xl'];return[1,M<=20?'lg':'xl']}
+  if(M<=8)return[def,''];if(M<=24)return[Math.min(def,2),''];return[1,'']}
 function viewGame1(){
   const g=scr,x=g.race||g.tre||g.cbo?{title:g.race?'Đua giờ 60 giây':g.tre?TRE[g.tre][1]:'Trùm lớp'}:g.fix?{title:'Sổ lỗi sai'}:g.part===2?ju1(g.id):isl1(g.id),boss=!g.fix&&!(g.race||g.tre||g.cbo)&&g.part!==2&&g.lv===2,n=g.qs.length;
   if(g.end)return (g.race||g.tre||g.cbo)?viewEndExtra():viewEnd1();
@@ -1888,11 +1901,11 @@ function slotsView(q){const g=scr;let b=0;return`<div class="g1cells">${q.cells.
 function buildView(q){const g=scr;return`<div class="g1build"><div class="g1grp">${Array.from({length:g.cnt},(_,i)=>spr(q.obj,40,i>=q.start?'g1add':'')).join('')}</div><div class="g1cnt">Đang có: <b>${g.cnt}</b></div></div>`}
 function input1(q){const g=scr;
   if(q.type==='num')return`<div class="pad">${['1','2','3','4','5','6','7','8','9','⌫','0','✓'].map(k=>`<button type="button" class="${k==='✓'?'go':k==='⌫'?'del':''}" onclick="key1('${k}')" aria-label="${k==='⌫'?'Xóa':k==='✓'?'Nộp':k}">${k==='✓'?'Nộp':k}</button>`).join('')}</div>`;
-  if(q.type==='opt')return`<div class="g1opts c${q.cols||(q.opts.length===4?2:3)} ${q.big?'big':''}">${(()=>{const M=Math.max(...q.opts.map(o=>String(o.h).replace(/<[^>]*>/g,'').length)),c=q.big&&M>6?'xl':q.big&&M>3?'lg':'';return q.opts.map((o,i)=>`<button type="button" class="${c}" onclick="ans1(${i})">${o.h}</button>`).join('')})()}</div>`;
+  if(q.type==='opt'){const [cc,sz]=optLay(q.opts.map(o=>o.h),q.big,q.cols||(q.opts.length===4?2:3));return`<div class="g1opts c${cc} ${q.big?'big':''}">${q.opts.map((o,i)=>`<button type="button" class="${sz}" onclick="ans1(${i})">${o.h}</button>`).join('')}</div>`}
   if(q.type==='tf')return`<div class="g1opts c2 big"><button type="button" class="t" onclick="ans1(true)">Đúng</button><button type="button" class="f" onclick="ans1(false)">Sai</button></div>`;
-  const MX=q.opts?Math.max(...q.opts.map(o=>String(o).replace(/<[^>]*>/g,'').length)):0,SZ=()=>MX>5?'xl':MX>3?'lg':'';const LONG=q.opts&&q.opts.some(o=>String(o).replace(/<[^>]*>/g,'').length>5);
-  if(q.type==='pick')return`<div class="g1opts ${LONG?'c2':'c3'} big">${q.opts.map((o,i)=>`<button type="button" class="${g.picks.includes(i)?'on':''} ${SZ(o)}" aria-pressed="${g.picks.includes(i)}" onclick="pick1(${i})">${o}</button>`).join('')}</div><button class="gobtn" type="button" ${g.picks.length?'':'disabled'} onclick="ans1(scr.picks)">Kiểm tra</button>`;
-  if(q.type==='order')return`<div class="g1opts ${LONG?'c2':'c4'} big">${q.opts.map((o,i)=>`<button type="button" ${g.seq.includes(i)?`disabled class="used ${SZ(o)}"`:`class="${SZ(o)}"`} onclick="ord1(${i})">${o}</button>`).join('')}</div><button class="gobtn ghost" type="button" ${g.seq.length?'':'disabled'} onclick="scr.seq=[];render()">Xếp lại</button>`;
+  const LY=q.opts?optLay(q.opts,1,q.type==='order'?4:3):[3,''],SZ=()=>LY[1];
+  if(q.type==='pick')return`<div class="g1opts c${LY[0]} big">${q.opts.map((o,i)=>`<button type="button" class="${g.picks.includes(i)?'on':''} ${SZ(o)}" aria-pressed="${g.picks.includes(i)}" onclick="pick1(${i})">${o}</button>`).join('')}</div><button class="gobtn" type="button" ${g.picks.length?'':'disabled'} onclick="ans1(scr.picks)">Kiểm tra</button>`;
+  if(q.type==='order')return`<div class="g1opts c${LY[0]} big">${q.opts.map((o,i)=>`<button type="button" ${g.seq.includes(i)?`disabled class="used ${SZ(o)}"`:`class="${SZ(o)}"`} onclick="ord1(${i})">${o}</button>`).join('')}</div><button class="gobtn ghost" type="button" ${g.seq.length?'':'disabled'} onclick="scr.seq=[];render()">Xếp lại</button>`;
   if(q.type==='slots')return`<div class="g1tiles">${q.tiles.map((v,i)=>`<button type="button" class="g1tile" data-t="${i}" ${g.used.includes(i)?'disabled':''}>${v}</button>`).join('')}</div><p class="g1hint">Kéo số vào ô trống, hoặc chạm vào số.</p><button class="gobtn" type="button" ${g.fill.every(v=>v!==null)?'':'disabled'} onclick="ans1(scr.fill.map(i=>q1().tiles[i]))">Kiểm tra</button>`;
   if(q.type==='build')return`<div class="g1opts c2 big"><button type="button" onclick="cnt1(-1)" aria-label="Bớt 1">− Bớt</button><button type="button" onclick="cnt1(1)" aria-label="Thêm 1">+ Thêm</button></div><button class="gobtn" type="button" onclick="ans1(scr.cnt)">Kiểm tra</button>`;
   return'';
