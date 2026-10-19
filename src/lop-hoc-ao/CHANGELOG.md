@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Ếch nhảy: chuyển hàng rõ ràng
+- Trả lời đúng: hiện bảng "Hàng n/8 ✓", lá súng mang ếch trôi xuống thành chỗ đứng mới, các lá khác trôi đi, nước cuộn, rồi hàng lá mới trôi vào từ phía trên. Mỗi hàng có cảnh khác nhau (đá, khúc gỗ, rùa, vịt, chuồn chuồn, khóm sen; nước sâu dần ở giữa sông); hàng đầu đứng trên bãi cỏ, các hàng sau đứng trên lá súng; bờ đích có cờ chỉ hiện khi gần tới.
+
+## 2026-10-19 — Bối cảnh sống động cho mọi trò chơi thêm
+- Mỗi màn có thêm lớp trang trí pixel chuyển động (`core/39g-boi-canh-song-dong.js`), không che vật chơi, tự dừng khi rời màn: Câu cá (tia nắng, rong rêu đung đưa, bong bóng, cá xa bơi), Bóng bay (mặt trời toả tia, mây 2 lớp trôi, chim vỗ cánh, cỏ cây lay), Hứng sao (sao nhấp nháy, sao băng, đồi xa, đom đóm), Đập chuột (mây trôi, cỏ lay, hoa đung đưa, bướm bay), Ghép hình (mây, mặt trời, vạch đường chạy, cờ bay), Cân (tường có cửa sổ mây trôi, đèn trần đung đưa, chậu cây treo), Cửa hàng (mái hiên phấp phới, chim nhỏ chớp mắt, thẻ giá đung đưa), Tàu hoả (mây và hàng cây trôi, chim, khói tàu), Kéo co (bụi dưới chân, dây rung), Đua giờ, Lật thẻ, Đồng hồ (dải biển nhỏ có mây và sóng). Máy bật "giảm chuyển động" thì chỉ hiện khung tĩnh.
+- Sửa: bấm "Ghép hình pixel" có lúc chưa hiện màn chơi.
+
 ## 2026-10-19 — Ao ếch sống động
 - Ếch nhảy: mặt nước lấp lánh trôi, cá nhỏ bơi qua lại dưới nước, gợn sóng; lau sậy và cỏ hai bờ đung đưa; hoa sen, lá súng nhấp nhô; cờ đích bay. Câu hỏi đầu lớp 1 dùng bể cá ("Bể có mấy con cá?").
 

@@ -1058,6 +1058,22 @@ body.px .bnav:has(> button:nth-child(5)) button{font-size:16px}
 .xfpad:nth-of-type(2){animation-delay:-.5s}.xfpad:nth-of-type(3){animation-delay:-1.1s}
 .xfpad.sink,.xfpad.good{animation:none}
 @keyframes xfbob{0%,100%{margin-top:0}50%{margin-top:3px}}
+/* ---- Bối cảnh sống động (39g) ---- */
+.xlive{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;image-rendering:pixelated;image-rendering:crisp-edges}
+.xlov>.mgbg,.xlov>.xpcv{z-index:0}
+.xlov>.xlive{z-index:1}
+.xlov>*:not(.xlive):not(.mgbg):not(.xpcv){z-index:2}
+.xlun{position:relative;isolation:isolate}
+.xlun>.xlive{z-index:-1}
+.xlive.strip{position:relative;display:block;width:calc(100% - 32px);max-width:688px;margin:0 auto 6px;border:3px solid #1F2A5A;box-sizing:border-box}
+.xlive.xlshop{width:100%;max-width:none;margin:0;border:0;border-bottom:2px solid #1F2A5A}
+.xstag.xlswing{display:inline-block;transform-origin:50% -4px;animation:xlswing 1.8s steps(4) infinite}
+.xsitem:nth-child(2) .xstag.xlswing{animation-delay:-.6s}.xsitem:nth-child(3) .xstag.xlswing{animation-delay:-1.2s}
+@keyframes xlswing{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+.xgtr{animation:xlrope .5s steps(2) infinite}
+@keyframes xlrope{50%{transform:translateY(1px)}}
+@media (prefers-reduced-motion: reduce){.xstag.xlswing,.xgtr{animation:none}}
+.xtrack.xlov>.xtrain{position:relative}
 
 /* ===== bản học sinh ===== */
 [hidden]{display:none!important}
@@ -6505,7 +6521,7 @@ function frogTap(i){const g=scr;if(g.k!=='xg'||g.mode!=='frog'||g.end||g.lock||g
   /* nhảy vòng cung bờ → lá */
   const mid=[(B[0]+P[0])/2,Math.min(B[1],P[1])-70];
   frogAnim(el,[fpos(B),fpos(mid,0,{offset:.5}),fpos(P)],520,8).then(()=>{if(scr!==g)return;
-    if(ok){frogSprite(el,'frog');sfx('ok');if(pad)pad.classList.add('good');if(fb)fb.innerHTML='<span class="ok">Đúng rồi! Ếch đã lên lá súng.</span>';setTimeout(()=>frogDone(g,i,true),420);return}
+    if(ok){frogSprite(el,'frog');sfx('ok');if(pad)pad.classList.add('good');if(fb)fb.innerHTML='<span class="ok">Đúng rồi! Ếch đã lên lá súng.</span>';setTimeout(()=>frogAdvance(g,i,el,pad),320);return}
     /* sai: lá chìm, ếch rơi xuống nước */
     if(pad)pad.classList.add('sink');sfx('splash');setTimeout(()=>sfx('bad'),120);hurtFx(1);g.lives--;try{xgHearts()}catch(e){}
     if(fb)fb.innerHTML='<span class="bad">Ếch rơi xuống nước! Đang bơi về bờ…</span>';
@@ -6526,10 +6542,12 @@ let frogFx=null;
 function frogBg(){const x=xcv('xfcv');if(!x)return;const g=scr;if(!g||g.mode!=='frog')return;
   if(!frogFx||frogFx.cv!==x.canvas){frogFx={cv:x.canvas,f:0,fish:[{x:10,y:70,v:.6,c:'o'},{x:80,y:20,v:-.45,c:'y'},{x:50,y:77,v:-.35,c:'r'}],rip:[]}}
   frogDraw(x)}
-function frogDraw(x){const p=xpx(x),g=scr,F=frogFx,f=F.f,B=(typeof BIOME!=='undefined'&&BIOME.jung)?BIOME.jung.band:['#8DDFB9','#62CD9E','#3EB585','#26996C'],rn=xgRand(5+g.ri*7);
-  x.clearRect(0,0,114,100);
-  /* bờ xa + cỏ rung */ p('G',0,0,114,14);p('g',0,0,114,11);for(let X=0;X<114;X+=3){const h=2+((X+f)%6<3?1:0);p(rn()<.5?'l':'G',X,12-h+Math.floor(rn()*2),1,h)}
-  /* nước */ for(let y=14;y<84;y++)p(B[Math.min(3,Math.floor((y-14)/18))],0,y,114,1);
+function frogDraw(x){const p0=xpx(x),g=scr,F=frogFx,f=F.f,SC=Math.round(F.sc||0),p=(c,X,Y,w,h)=>p0(c,X,Y+SC,w,h),B=(typeof BIOME!=='undefined'&&BIOME.jung)?BIOME.jung.band:['#8DDFB9','#62CD9E','#3EB585','#26996C'],rn=xgRand(5+g.ri*7);
+  x.clearRect(0,0,114,100);p0(B[3],0,0,114,100);
+  const far=g.ri>=g.N-2;
+  /* bờ xa (chỉ hiện khi gần đích) + cỏ rung */ if(!far){for(let y=0;y<14;y++)p0(B[0],0,y,114,1);[8,40,74,100].forEach((X,i)=>{const X2=(X+g.ri*23)%104;p('#2F9A6A',X2,4+(i%2)*4,9,3)})}else p('G',0,0,114,14);if(far){p('g',0,0,114,11);for(let X=0;X<114;X+=3){const h=2+((X+f)%6<3?1:0);p(rn()<.5?'l':'G',X,12-h+Math.floor(rn()*2),1,h)}}
+  /* nước (sâu dần về giữa sông) */ {const dk=Math.min(1,Math.abs(g.ri-(g.N-1)/2)<2?1:0);for(let y=14;y<84;y++)p0(B[Math.min(3,Math.floor((y-14)/18)+dk)],0,y,114,1)}
+  frogDecor(p,g,f);
   /* lấp lánh trôi theo dòng */ for(let i=0;i<34;i++){const X=Math.floor(rn()*114+f*.5*(1+(i%3)))%114,Y=16+Math.floor(rn()*66);if((i+f)%5)p('#E6FFF2',X,Y,(i%3)+1,1)}
   /* cá bơi dưới nước (bóng mờ) */ F.fish.forEach(o=>{o.x+=o.v;if(o.x>118)o.x=-8;if(o.x<-8)o.x=118;const X=Math.round(o.x),Y=o.y+((f>>2)%2),d=o.v>0?1:-1,c=PXC[o.c];
     x.globalAlpha=.75;p(c,X,Y,4,2);p(c,X+(d>0?-2:4),Y-((f>>1)%2),2,1);p(c,X+(d>0?-2:4),Y+1+((f>>1)%2),2,1);p('k',X+(d>0?3:0),Y,1,1);x.globalAlpha=1;
@@ -6538,10 +6556,35 @@ function frogDraw(x){const p=xpx(x),g=scr,F=frogFx,f=F.f,B=(typeof BIOME!=='unde
   /* lá súng hàng sau nhấp nhô */ [14,52,90].forEach((X,i)=>{const b=((f>>2)+i)%2;p('#2F9A6A',X,24+b,12,4);p('#2F9A6A',X+2,23+b,8,1);p('#4FB884',X+3,24+b,3,1)});
   /* sen nhấp nhô */ xblit(x,'lotus',4,60+((f>>2)%2));xblit(x,'lotus',103,30+(((f>>2)+1)%2));
   /* lau sậy đung đưa */ [[2,4],[5,6],[108,2],[111,5]].forEach(([X,Y],i)=>{const s=Math.round(Math.sin((f+i*3)/4));for(let k=0;k<12;k++){const off=k<4?s:0;p('G',X+off,Y+k,1,1)}p('N',X+s,Y-2,1,3);p('n',X+s,Y-1,1,1)});
-  /* bờ gần + cỏ lay */ p('k',0,84,114,1);p('G',0,85,114,15);p('g',0,86,114,10);for(let X=1;X<114;X+=4){const w=((X>>2)+(f>>1))%4===0?1:0;p('l',X+w,85+(X%3),1,2);p('G',X+1,85,1,1)}
-  /* cờ đích bay phấp phới */ p('N',56,1,1,10);const fl=(f>>1)%2;p('r',57,1,6-fl,4);p('r',57,1,6,3-fl);p('y',58,2,2,1)}
+  /* bờ gần: hàng đầu là bãi cỏ; các hàng sau ếch đứng trên lá súng vừa nhảy tới */ if(g.ri>0){for(let y=84;y<100;y++)p0(B[3],0,y,114,1);const cx=57,cy=94;p0('k',cx-15,cy-5,30,11);p0('G',cx-14,cy-4,28,9);p0('g',cx-13,cy-4,24,7);p0('#26996C',cx-2,cy-4,3,4);p0('l',cx-11,cy-3,6,1)}else{ p('k',0,84,114,1);p('G',0,85,114,15);p('g',0,86,114,10);for(let X=1;X<114;X+=4){const w=((X>>2)+(f>>1))%4===0?1:0;p('l',X+w,85+(X%3),1,2);p('G',X+1,85,1,1)}}
+  /* cờ đích bay phấp phới */ if(far){p('N',56,1,1,10);const fl=(f>>1)%2;p('r',57,1,6-fl,4);p('r',57,1,6,3-fl);p('y',58,2,2,1)}}
 {let tid=0;const _r=render;render=function(){const v=_r.apply(this,arguments);try{clearInterval(tid);if(scr.k==='xg'&&scr.mode==='frog'&&!scr.end&&document.getElementById('xfcv')){frogFx=null;frogBg();
   tid=setInterval(()=>{const x=xcv('xfcv');if(!x||scr.k!=='xg'||scr.mode!=='frog'||scr.end){clearInterval(tid);return}frogFx.f++;frogDraw(x)},120)}}catch(e){}return v}}
+
+/* đồ vật khác nhau mỗi hàng: đá, khúc gỗ, rùa, vịt, chuồn chuồn, khóm sen */
+function frogDecor(p,g,f){const r=xgRand(101+g.ri*13),pick=['rock','log','turtle','duck','fly','lotus2'].sort(()=>r()-.5).slice(0,2);
+  pick.forEach((k,j)=>{const X=Math.floor(8+r()*92),Y=j?70+Math.floor(r()*8):18+Math.floor(r()*10),b=(f>>2)%2;
+    if(k==='rock'){p('k',X,Y,9,4);p('E',X+1,Y,7,3);p('m',X+2,Y,3,1);p('#FFFFFF',X-2+((f>>1)%3),Y+4,13,1)}
+    if(k==='log'){p('k',X,Y+b,16,4);p('N',X+1,Y+1+b,14,2);p('n',X+1,Y+1+b,14,1);p('t',X+14,Y+1+b,1,2)}
+    if(k==='turtle'){const dx=((f>>1)%40)-20;p('k',X+dx,Y,8,4);p('G',X+dx+1,Y,6,3);p('l',X+dx+2,Y+1,2,1);p('g',X+dx+8,Y+1,2,2)}
+    if(k==='duck'){const dx=((f>>2)%30)-15;p('w',X+dx,Y,7,3);p('w',X+dx+5,Y-3,3,3);p('a',X+dx+8,Y-2,2,1);p('k',X+dx+6,Y-2,1,1);p('#FFFFFF',X+dx-2,Y+3,11,1)}
+    if(k==='fly'){const dx=Math.round(Math.sin(f/5)*14),dy=Math.round(Math.cos(f/7)*3);p('b',X+dx,Y-6+dy,6,1);p('x',X+dx+1,Y-7+dy+((f%2)?0:2),2,1);p('x',X+dx+3,Y-7+dy+((f%2)?2:0),2,1)}
+    if(k==='lotus2'){p('#2F9A6A',X,Y+b,10,3);p('#2F9A6A',X+7,Y-3+b,8,3);p('#F4A0C0',X+3,Y-2+b,3,2);p('w',X+4,Y-2+b,1,1)}})}
+/* chuyển hàng: lá cũ cùng ếch trôi xuống, nước cuộn, hàng lá mới trôi vào từ phía trên, có bảng "Hàng n/8" */
+function frogAdvance(g,i,el,pad){if(scr!==g)return;const z=document.getElementById('xff');if(!z)return frogDone(g,i,true);
+  sfx('splash');const bn=document.createElement('span');bn.className='xfban';bn.textContent=`Hàng ${g.ri+1}/${g.N} ✓`;z.appendChild(bn);
+  z.classList.add('xfgo');if(pad)pad.classList.add('carry');
+  const P=FROG_PAD[i];frogAnim(el,[fpos(P),fpos([FROG_BANK[0],FROG_BANK[1]])],520,6);
+  if(pad)frogAnim(pad,[{transform:'translate(0,0)'},{transform:`translate(${FROG_BANK[0]-P[0]}px,${FROG_BANK[1]-P[1]+30}px)`}],520,6);
+  let k=0;const t=setInterval(()=>{k++;if(frogFx)frogFx.sc=Math.min(30,k*5);if(k>=6)clearInterval(t)},85);
+  setTimeout(()=>{if(frogFx)frogFx.sc=0;g.enter=1;frogDone(g,i,true)},600)}
+{const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='frog'&&scr.enter){scr.enter=0;document.querySelectorAll('.xfpad').forEach((b,j)=>{b.classList.add('xfin');b.style.animationDelay=(j*80)+'ms'})}}catch(e){}return v}}
+(function(){const st=document.createElement('style');st.textContent=`
+.xfgo .xfpad:not(.carry){transition:transform .45s steps(5),opacity .45s steps(5);transform:translateY(120px);opacity:0}
+.xfpad.xfin{animation:xfin .5s steps(5) backwards,xfbob 1.6s steps(2) .5s infinite}
+@keyframes xfin{from{transform:translateY(-130px);opacity:0}to{transform:translateY(0);opacity:1}}
+.xfban{position:absolute;left:50%;top:6px;transform:translateX(-50%);z-index:5;font-family:var(--f-display,'VT323',monospace);font-size:24px;line-height:1;color:#1E8A4A;background:#DFF6E8;border:3px solid #1E8A4A;padding:2px 10px;animation:xgpop .6s steps(3)}
+`;document.head.appendChild(st)})();
 /* ===================== CHƠI THÊM KHÔNG VƯỢT KIẾN THỨC ===================== */
 /* Thầy Luân: trò chơi ở đảo nào chỉ được dùng kiến thức đã học tới đảo đó (đảo này + các đảo trước, cùng lớp).
    1) Dòng kiến thức KT[lớp][k]: gộp dần các "dấu hiệu" lấy từ tên/mục tiêu đảo và câu hỏi thật của đảo
@@ -6740,6 +6783,85 @@ function ktSayFromRule(rule){const t=String(rule||'').replace(/<[^>]+>/g,'').rep
 
 /* Lật thẻ dùng bể cá: đổi lời hướng dẫn cho đúng */
 {const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='pair'&&scr.cards&&scr.cards.some(c=>/xtank/.test(c.t))){const sp=document.querySelector('.mgrule span');if(sp)sp.innerHTML='Lật 2 thẻ: ghép <b>bể cá</b> với <b>số con cá</b>';scr.say='Em lật hai thẻ, ghép bể cá với số con cá trong bể nhé.'}}catch(e){}return v}}
+/* ===================== BỐI CẢNH SỐNG ĐỘNG CHO TRÒ CHƠI THÊM ===================== */
+/* Mỗi màn chơi gắn thêm 1 lớp canvas pixel (độ phân giải thấp, phóng ×3) chỉ để trang trí: mây trôi, cỏ lay, cá bơi, sao nhấp nháy…
+   Lớp này không nhận chạm (pointer-events:none), nằm dưới các vật chơi. Một bộ đếm 120 ms cho cả màn; tự dừng khi rời màn hoặc hết lượt.
+   Máy bật "giảm chuyển động" thì chỉ vẽ 1 khung tĩnh. (Ếch nhảy đã có ao động riêng ở 39d.) */
+const LV={tid:0,f:0,layers:[],tok:null};
+const lvReduce=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
+function lvRand(s){return()=>(s=(s*9301+49297)%233280)/233280}
+/* tạo lớp canvas: mode 'over' = phủ trên nền canvas của trò (các vật chơi được nâng lên trên), 'under' = nằm dưới nội dung khung */
+function lvLayer(host,mode,draw,opt={}){if(!host)return null;const cv=document.createElement('canvas');cv.className='xlive '+mode+(opt.cls?' '+opt.cls:'');cv.setAttribute('aria-hidden','true');
+  const Z=3,w=Math.max(1,host.clientWidth),h=Math.max(1,opt.h||host.clientHeight);cv.width=Math.ceil(w/Z);cv.height=Math.ceil(h/Z);
+  if(opt.h)cv.style.height=opt.h+'px';
+  if(mode==='over'){host.classList.add('xlov');const base=host.querySelector(':scope>.mgbg,:scope>.xpcv');if(base&&base.nextSibling)host.insertBefore(cv,base.nextSibling);else host.prepend(cv)}
+  else if(mode==='under'){host.classList.add('xlun');host.prepend(cv)}
+  else{/* strip: dải trang trí đứng riêng */host.parentNode.insertBefore(cv,host)}
+  const x=cv.getContext('2d');x.imageSmoothingEnabled=false;const L={cv,x,W:cv.width,H:cv.height,draw,st:{}};L.p=(c,X,Y,ww=1,hh=1)=>{x.fillStyle=PXC[c]||c;x.fillRect(Math.round(X),Math.round(Y),ww,hh)};return L}
+function lvTick(){const f=LV.f;LV.layers=LV.layers.filter(L=>L.cv.isConnected);LV.layers.forEach(L=>{L.x.clearRect(0,0,L.W,L.H);try{L.draw(L,f)}catch(e){}})}
+function lvStop(){clearInterval(LV.tid);LV.tid=0;LV.layers=[]}
+/* ---------- vẽ từng bối cảnh ---------- */
+function lvCloud(L,X,Y,s){const p=L.p,c='#FFFFFF';p(c,X+2*s,Y,6*s,s);p(c,X,Y+s,10*s,2*s);p('#E3E7F0',X+s,Y+3*s,8*s,s)}
+function lvBird(L,X,Y,f,c='#1F2A5A'){const p=L.p,up=(f>>1)%2;p(c,X,Y+(up?0:1));p(c,X+1,Y+1);p(c,X+2,Y+1+(up?-1:0)*0);p(c,X+3,Y+1);p(c,X+4,Y+(up?0:1));if(up){p(c,X-1,Y-1);p(c,X+5,Y-1)}}
+const LVD={
+ fish(L,f){const {p,W,H}=L,r=lvRand(7);/* tia nắng */for(let i=0;i<4;i++){const X=Math.round((i*W/4+f*.3)%(W+20))-10;L.x.globalAlpha=.10;for(let y=0;y<H*.5;y++)p('#FFFFFF',X+y*.35,y,4,1);L.x.globalAlpha=1}
+  /* cá xa */ (L.st.bf=L.st.bf||[0,1,2].map(i=>({x:r()*W,y:10+i*(H*.22),v:(i%2?-1:1)*(.25+r()*.2)}))).forEach(o=>{o.x+=o.v;if(o.x>W+6)o.x=-6;if(o.x<-6)o.x=W+6;L.x.globalAlpha=.35;p('#0079C1',o.x,o.y,4,2);p('#0079C1',o.x+(o.v>0?-2:4),o.y+((f>>1)%2?0:1),2,1);L.x.globalAlpha=1});
+  /* rong rêu đung đưa */ for(let i=0;i<Math.ceil(W/16);i++){const X=Math.floor(r()*W),h=8+Math.floor(r()*10);for(let k=0;k<h;k++){const s=Math.round(Math.sin((f+i*5)/5+k/4)*(k/h)*2);p(k%3?'g':'G',X+s,H-6-k,1,1)}}
+  /* bong bóng nổi lên */ for(let i=0;i<6;i++){const X=Math.floor(r()*W),sp=.6+r()*.8,Y=H-((f*sp+r()*H)%H);p('#FFFFFF',X+((f>>2)+i)%2,Y,2,2);p('#7FD3F0',X+((f>>2)+i)%2,Y+2,2,1)}},
+ balloon(L,f){const {p,W,H}=L,r=lvRand(9);/* mặt trời + tia */const sx=W-14,sy=10;p('a',sx-4,sy-4,9,9);p('y',sx-3,sy-3,7,7);for(let k=0;k<8;k++){const a=k*Math.PI/4+f*.05,d=8+((f>>2)+k)%2;p('y',sx+Math.cos(a)*d,sy+Math.sin(a)*d,1,1)}
+  /* mây 2 lớp */ for(let i=0;i<3;i++)lvCloud(L,((i*W/3+f*.15)%(W+30))-20,8+i*14,1);for(let i=0;i<2;i++)lvCloud(L,((i*W/2+f*.4)%(W+40))-30,H*.35+i*18,2);
+  /* chim */ for(let i=0;i<3;i++){const X=((f*.6+i*40)%(W+20))-10,Y=20+i*7+Math.round(Math.sin((f+i*7)/6)*2);lvBird(L,X,Y,f+i)}
+  /* cỏ, cây dưới chân */ p('G',0,H-6,W,6);p('g',0,H-5,W,5);for(let X=0;X<W;X+=3){const w=((X>>1)+(f>>1))%4===0?1:0;p('l',X+w,H-8,1,2)}
+  for(let i=0;i<3;i++){const X=Math.floor(r()*(W-12))+4,s=Math.round(Math.sin((f+i*9)/7));p('N',X+3,H-14,2,8);p('G',X+s,H-20,8,6);p('g',X+1+s,H-21,6,2)}},
+ star(L,f){const {p,W,H}=L,r=lvRand(11);/* sao nhấp nháy */for(let i=0;i<40;i++){const X=Math.floor(r()*W),Y=Math.floor(r()*H*.8),ph=Math.floor(r()*8);const on=(f+ph)%8;if(on<2){p('#FFFFFF',X,Y,1,1);p('#FCD655',X-1,Y);p('#FCD655',X+1,Y);p('#FCD655',X,Y-1);p('#FCD655',X,Y+1)}else if(on<5)p('#FCD655',X,Y,1,1)}
+  /* sao băng */ const k=f%70;if(k<10){const X=W*.2+k*5,Y=6+k*2;for(let t=0;t<6;t++){L.x.globalAlpha=1-t/6;p('#FFFFFF',X-t*2,Y-t,2,1)}L.x.globalAlpha=1}
+  /* đồi xa */ for(let X=0;X<W;X++){const h=Math.round(8+Math.sin(X/9)*3+Math.sin(X/4)*1);p('#2E2457',X,H-h,1,h)}for(let X=0;X<W;X++){const h=Math.round(4+Math.sin(X/6+2)*2);p('#221A44',X,H-h,1,h)}
+  /* đom đóm */ for(let i=0;i<6;i++){const X=(r()*W+Math.sin((f+i*13)/9)*6+f*.1*(i%2?1:-1)+W)%W,Y=H*.55+r()*H*.3+Math.cos((f+i*5)/7)*3;if((f+i*3)%6<4){p('#FCD655',X,Y,1,1);L.x.globalAlpha=.4;p('#FCD655',X-1,Y-1,3,3);L.x.globalAlpha=1}}},
+ mole(L,f){const {p,W,H}=L,r=lvRand(13);/* mây trôi trên trời */for(let i=0;i<2;i++)lvCloud(L,((i*W/2+f*.25)%(W+30))-20,1,1);
+  /* cỏ lay */ for(let i=0;i<40;i++){const X=Math.floor(r()*W),Y=12+Math.floor(r()*(H-14)),w=((i+(f>>1))%4===0)?1:0;p('G',X+w,Y-2,1,2);p('l',X,Y,1,1)}
+  /* hoa đung đưa */ for(let i=0;i<7;i++){const X=Math.floor(r()*(W-4))+2,Y=14+Math.floor(r()*(H-18)),s=Math.round(Math.sin((f+i*4)/5));p('G',X,Y,1,3);const c=['c','y','w','p'][i%4];p(c,X-1+s,Y-2,3,1);p(c,X+s,Y-3,1,3);p('a',X+s,Y-2,1,1)}
+  /* bướm bay */ for(let i=0;i<2;i++){const X=((f*.7+i*W/2)%(W+10))-5,Y=20+i*30+Math.round(Math.sin((f+i*9)/4)*5),o=(f>>1)%2;const c=i?'#F26249':'#FCB40C';p('k',X+1,Y,1,3);p(c,X-1+(o?1:0),Y,2,2);p(c,X+2-(o?1:0)*0,Y,2,2);if(!o){p(c,X-2,Y-1,2,2);p(c,X+3,Y-1,2,2)}}},
+ shape(L,f){const {p,W,H}=L;/* mây + mặt trời nhịp đập trên trời, vạch đường chạy dưới tranh */const sx=8,sy=7,b=(f>>2)%2;L.x.globalAlpha=.5;p('y',sx-4-b,sy-4-b,9+2*b,9+2*b);L.x.globalAlpha=1;
+  for(let i=0;i<2;i++)lvCloud(L,((i*W/2+f*.3)%(W+30))-20,3+i*6,1);
+  const ry=Math.round(H*.86);for(let X=-8;X<W+8;X+=10)p('#FFFFFF',X+((f*1.5)%10),ry,5,1);
+  [[W*.1,ry-10],[W*.9,ry-10]].forEach(([X,Y],i)=>{p('N',X,Y,1,9);const w=(f>>1)%2;p(i?'r':'b',X+1,Y,4-w,3);p(i?'r':'b',X+1,Y,4,2-w)})},
+ scale(L,f){const {p,W,H}=L;/* tường + cửa sổ có mây + chậu cây treo + đèn trần đung đưa */p('#FFF6D6',0,0,W,H);for(let y=0;y<H;y+=6)p('#F6EBC4',0,y,W,1);
+  const wx=6,wy=6,ww=26,wh=18;p('k',wx-1,wy-1,ww+2,wh+2);p('#BFE9F8',wx,wy,ww,wh);L.x.save();L.x.beginPath();L.x.rect(wx,wy,ww,wh);L.x.clip();lvCloud(L,wx+((f*.2)%(ww+14))-12,wy+4,1);L.x.restore();p('k',wx+ww/2,wy,1,wh);p('k',wx,wy+wh/2,ww,1);
+  const lx=W/2,sw=Math.round(Math.sin(f/8)*3);p('k',lx,0,1,6);p('k',lx+sw*.5,6,1,3);p('a',lx-4+sw,9,9,4);p('y',lx-3+sw,13,7,1);L.x.globalAlpha=.15;p('y',lx-10+sw,14,21,8);L.x.globalAlpha=1;
+  const px=W-14,s2=Math.round(Math.sin(f/6)*1.5);p('k',px+3,0,1,7);p('u',px+s2,7,8,5);p('k',px+s2,7,8,1);for(let k=0;k<4;k++){p('g',px-2+s2+k*3,4-((f>>2)+k)%2,2,4);p('G',px-3+s2+k*3,10+k%2,1,4)}
+  /* sàn */ p('#E2B85E',0,H-4,W,4);for(let X=0;X<W;X+=8)p('#C8783A',X,H-4,1,4)},
+ shop(L,f){const {p,W,H}=L;/* mái hiên sọc đỏ trắng bay phấp phới + chim nhỏ đậu, chớp mắt */for(let X=0;X<W;X++){const c=Math.floor(X/6)%2?'#FFFFFF':'#F04A1B';p(c,X,0,1,5);const wv=Math.round(1+Math.sin(X/3+f/2));p(c,X,5,1,wv+1)}
+  p('k',0,0,W,1);const bx=W-16+((f>>4)%2),by=0;p('#12B5E8',bx,by+0,4,3);p('#0079C1',bx+3,by+1,2,1);p((f%20)<2?'#12B5E8':'k',bx+1,by+0,1,1);p('#F37A1F',bx+4,by+1,1,1)},
+ train(L,f){const {p,W,H}=L,r=lvRand(17);/* mây + cây xa trôi (thị sai), chim, khói từ ống khói đầu tàu */for(let i=0;i<2;i++)lvCloud(L,W-(((i*W/2)+f*.2)%(W+30))+10,2+i*4,1);
+  for(let i=0;i<8;i++){const X=W-((i*16+f*.5)%(W+16))+8,Y=H*.45;p('G',X,Y-6,6,6);p('g',X+1,Y-7,4,2);p('N',X+2,Y,2,3)}
+  lvBird(L,(f*.5)%(W+10)-5,6+Math.round(Math.sin(f/5)*2),f,'#5E6B8C');
+  const e=L.st.eng;if(e){for(let k=0;k<4;k++){const t=(f+k*5)%20,X=e.x+3-t*.6,Y=e.y-2-t*.8,s=1+Math.floor(t/7);L.x.globalAlpha=Math.max(0,1-t/20);p('#E3E7F0',X,Y,s+1,s+1);L.x.globalAlpha=1}}
+  /* tà vẹt ray */ for(let X=0;X<W;X+=4)p('#9A6234',X,H-3,2,2)},
+ strip(L,f){const {p,W,H}=L;/* dải biển nhỏ: mây, sóng chạy, lấp lánh */p('#BFE9F8',0,0,W,H);for(let i=0;i<3;i++)lvCloud(L,((i*W/3+f*.25)%(W+30))-20,0,1);
+  const sea=H-4;p('#3FC1EC',0,sea,W,4);for(let X=0;X<W;X++){if((X+f)%8<3)p('#FFFFFF',X,sea-((X+f)%8===1?1:0),1,1)}for(let i=0;i<5;i++){const X=(i*W/5+f*.9)%W;if((f+i)%4<2)p('#FFFFFF',X,sea+2,1,1)}
+  p('#F6D98B',0,H-1,W,1)},
+ tug(L,f){const {p,W,H}=L,st=L.st;/* bụi tung dưới chân Jenny và trùm khi kéo */if(!st.ft)return;[[st.ft[0],-1],[st.ft[1],1]].forEach(([X,d])=>{for(let k=0;k<3;k++){const t=(f+k*4)%12,s=t<6?1:2;L.x.globalAlpha=Math.max(0,1-t/12);p('#E2B85E',X+d*t*.7+k*2,H-3-t*.3,s,s);L.x.globalAlpha=1}})},
+};
+/* ---------- gắn lớp theo màn đang mở ---------- */
+function lvSetup(){lvStop();if(role!=='hs')return;const add=(L)=>{if(L)LV.layers.push(L)};const q=s=>document.querySelector(s);
+  let h;
+  if(h=q('#mgf.fish'))add(lvLayer(h,'over',LVD.fish));
+  else if(h=q('#mgf.balloon'))add(lvLayer(h,'over',LVD.balloon));
+  else if(h=q('#xgf.xgstar'))add(lvLayer(h,'over',LVD.star));
+  else if(h=q('.xmole'))add(lvLayer(h,'over',LVD.mole));
+  else if(h=q('.xspic'))add(lvLayer(h,'over',LVD.shape));
+  else if(h=q('.xsbox'))add(lvLayer(h,'under',LVD.scale));
+  else if(h=q('.xshop')){const s=lvLayer(q('.xshelf'),'strip',LVD.shop,{h:24,cls:'xlshop'});add(s);document.querySelectorAll('.xstag').forEach((t,i)=>t.classList.add('xlswing'))}
+  else if(h=q('.xtrack')){const L=lvLayer(h,'over',LVD.train);add(L);const eng=q('.xteng');if(L&&eng){const a=h.getBoundingClientRect(),b=eng.getBoundingClientRect();L.st.eng={x:(b.left-a.left+b.width*.25)/3,y:(b.top-a.top+4)/3}}}
+  else if(h=q('.xgtug')){const L=lvLayer(h,'under',LVD.tug);add(L);const j=q('.xgtj'),b=q('.xgtb');if(L&&j&&b){const a=h.getBoundingClientRect();L.st.ft=[(j.getBoundingClientRect().left-a.left+j.offsetWidth/2)/3,(b.getBoundingClientRect().left-a.left+b.offsetWidth/2)/3]}
+    add(lvLayer(h,'strip',LVD.strip,{h:24,cls:'xlstrip'}))}
+  else if(h=q('.xgpair')||q('.xgclock'))add(lvLayer(h,'strip',LVD.strip,{h:24,cls:'xlstrip'}));
+  else if(scr.k==='game'&&scr.race&&(h=q('#app .game .gmid')))add(lvLayer(h,'strip',LVD.strip,{h:24,cls:'xlstrip'}));
+  if(!LV.layers.length)return;LV.tok=scr;lvTick();if(lvReduce())return;
+  LV.tid=setInterval(()=>{if(scr!==LV.tok||scr.end||!LV.layers.some(L=>L.cv.isConnected)){lvStop();return}LV.f++;lvTick()},120)}
+{const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(role==='hs'&&(scr.k==='mini'||scr.k==='xg'||(scr.k==='game'&&scr.race))&&!scr.end)lvSetup();else lvStop()}catch(e){}return v}}
+/* Ghép hình: go() vẽ trước khi có khay hình nên màn chưa hiện — vẽ lại khi cần */
+{const _x=startXG;startXG=function(mode,id){const v=_x.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='shape'&&!document.querySelector('.xspic'))render()}catch(e){}return v}}
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 
