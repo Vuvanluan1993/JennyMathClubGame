@@ -14,7 +14,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 - ☐ **T-07 Trang giáo viên cho lớp 1–5** — báo cáo theo chủ đề, dạng lỗi hay sai, giao bài.
 - ☐ **T-08 Toán Jenny (nâng cao) lớp 2–5** — hiện mới có lớp 1 và lớp 6.
 - ☐ **T-09 Lớp 6–9 theo mô hình đảo** — làm các chương còn lại như tiểu học.
-- ☐ **T-10 Âm thanh, hiệu ứng** — nhạc nền nhẹ, tiếng đúng/sai pixel; nút tắt.
+- ☑ **T-10 Âm thanh, hiệu ứng** — nhạc nền 8-bit theo màn, hiệu ứng từng trò chơi, nút bật/tắt (19/10).
 - ☐ **T-11 Chế độ ngoại tuyến (PWA)** — cài lên màn hình điện thoại, chơi khi không có mạng.
 - ☐ **T-12 Tối ưu dung lượng** — file ~1,1 MB; tách nội dung theo lớp, chỉ tải lớp của học sinh.
 

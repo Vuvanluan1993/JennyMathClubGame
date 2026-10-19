@@ -77,7 +77,7 @@ function viewLes(){const x=isl1(scr.id),L=lesOf(x),i=scr.i,sl=L[i],last=i===L.le
   return`<div class="page"><div class="crumb"><button class="btn sm ghost" onclick="try{speechSynthesis.cancel()}catch(e){};go({k:'island',id:'${x.id}'})">← ${esc(x.title)}</button></div>
    <div class="card g1slide lslide"><div class="row" style="justify-content:space-between;gap:8px"><span class="pill">${scr.quick?'Nhắc lại nhanh':`Trang ${i+1}/${L.length}`}</span><span class="row" style="gap:6px">${scr.quick?`<button class="btn sm" type="button" onclick="startLes('${x.id}',1)">Xem đủ</button>`:''}<button class="btn sm" type="button" onclick="sayJ(sayFull(lesOf(isl1(scr.id))[scr.i].say,lesOf(isl1(scr.id))[scr.i].h))">🔊 Nghe</button></span></div>
    <div class="lshead">${jenny(48)}<h2>${esc(sl.t)}</h2></div><div class="g1slb">${sl.h}</div>
-   <div class="row" style="margin-top:16px;justify-content:space-between;gap:8px"><button class="btn" type="button" ${first?'disabled':''} onclick="scr.i--;try{speechSynthesis.cancel()}catch(e){};render()">← Trước</button>${last?`<button class="btn pri" type="button" onclick="${done}">Vào chơi ▶</button>`:`<button class="btn pri" type="button" onclick="scr.i++;try{speechSynthesis.cancel()}catch(e){};render()">Tiếp →</button>`}</div></div></div>`}
+   <div class="row" style="margin-top:16px;justify-content:space-between;gap:8px"><button class="btn" type="button" ${first?'disabled':''} onclick="sfx('page');scr.i--;try{speechSynthesis.cancel()}catch(e){};render()">← Trước</button>${last?`<button class="btn pri" type="button" onclick="${done}">Vào chơi ▶</button>`:`<button class="btn pri" type="button" onclick="sfx('page');scr.i++;try{speechSynthesis.cancel()}catch(e){};render()">Tiếp →</button>`}</div></div></div>`}
 
 
 

@@ -668,6 +668,17 @@ u.hl{text-decoration:none;background:var(--sun);padding:0 2px}
 .game.mini{display:flex!important;flex-direction:column}
 .game.mini>*{width:100%;max-width:720px!important;margin-left:auto!important;margin-right:auto!important;grid-column:auto!important}
 .game.mini>.mgrule{max-width:688px!important;width:calc(100% - 32px)}
+/* âm thanh + hiệu ứng mất tim */
+.sndbtn{margin-left:auto;min-width:40px;font-size:18px;line-height:1}
+.appbar .wrap{flex-wrap:wrap}
+.gtop .sndmini{margin-left:6px;font-size:16px}
+@keyframes hurtPulse{0%{transform:scale(1)}20%{transform:scale(1.35) rotate(-6deg);filter:drop-shadow(0 0 0 #F04A1B) brightness(1.3)}40%{transform:scale(.9) rotate(5deg)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+.hearts.hurt,#mgl.hurt{animation:hurtPulse .55s steps(6) 1;display:inline-block}
+@keyframes shakeX{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+.game.shake{animation:shakeX .4s steps(5) 1}
+.game.shake::after{content:"";position:fixed;inset:0;background:rgba(240,74,27,.18);pointer-events:none;animation:flashOut .45s steps(4) forwards;z-index:99}
+@keyframes flashOut{to{opacity:0}}
+@media (prefers-reduced-motion:reduce){.game.shake,.hearts.hurt,#mgl.hurt{animation:none}}
 
 /* ===== bản học sinh ===== */
 [hidden]{display:none!important}
@@ -1552,7 +1563,7 @@ function answer(v){
     g.sheet={kind:'ok',msg:(g.combo>=3?`Combo ×${g.combo}! +${c} xu`:c?`+${c} xu`:'Đúng rồi!')+extra};}
   else{g.combo=0;sfx('bad');buzz([40,40,40]);g.tries++;
     if(g.mode==='fix'){const e=mist(st)[q.key];if(e)e.streak=0}else if(g.tries===1)mistAdd(q);
-    if(!soft)g.hearts--;
+    if(!soft){g.hearts--;setTimeout(()=>hurtFx(1),30)}
     if(!soft&&g.hearts<=0){g.res[g.j]=false;g.sheet={kind:'dead'}}
     else if(g.tries===1&&q.type!=='tf'){g.sheet={kind:soft?'retrysoft':'retry'}}
     else{g.res[g.j]=false;g.sheet={kind:'bad'}}}
@@ -1971,7 +1982,7 @@ function ans1(v){if(scr.race){const q=q1(),ok=right1(q,v);log(sid,'answered',`Đ
   else if(!ok&&g.tries===0&&g.part!==2)mist1Add(q);
   log(sid,'answered',`Toán ${curG()} · ${x.title}`,0,{success:ok,duration:`PT${Math.round((Date.now()-g.t0)/1000)}S`});
   if(ok){if(g.cbo){const b=cbI(g.id);if(b&&!b.won){b.hp--;b.hits[sid]=(b.hits[sid]||0)+1;if(b.hp<=0){b.hp=0;b.won=true}}g.hit=true;sfx('hit')}g.ok++;qd.ok++;g.res[g.j]=g.res[g.j]===undefined?true:g.res[g.j];const c=addCoins(sid,5,'self');if(g.lv===2){g.hp--;g.hit=true;sfx('hit')}else sfx('ok');g.sheet={kind:'ok',msg:(c?`+${c} xu`:'')+extra};sayJ(pick(['Giỏi quá!','Đúng rồi!','Tuyệt vời!','Em làm đúng rồi!']))}
-  else{g.tries++;if(!g.fix)g.hearts--;sfx('bad');
+  else{g.tries++;if(!g.fix){g.hearts--;setTimeout(()=>hurtFx(1),30)}sfx('bad');
     if(g.hearts<=0){g.res[g.j]=false;g.sheet={kind:'dead'};sayJ('Hết tim rồi. Mình chơi lại nhé!')}
     else if(g.tries===1){g.sheet={kind:'retry'};sayJ('Chưa đúng rồi. Em thử lại nhé.')}
     else{g.res[g.j]=false;g.sheet={kind:'bad'};sayJ(q.sol.replace(/&gt;/g,' lớn hơn ').replace(/&lt;/g,' bé hơn ').replace(/=/g,' bằng '))}}
@@ -1988,8 +1999,8 @@ function end1(alive){if(scr.race||scr.tre||scr.cbo)return endExtra();if(scr.fix)
   if(g.pass){qd.pass++;if(!s.m[g.lv]){s.m[g.lv]=true;g.newStar=true;log(sid,'earned',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{score:{raw:1}})}st.coins+=g.lv===2?30:10;
     if(g.lv===0&&g.newStar&&PI()[k+1])g.unlock=PI()[k+1];
     if(g.lv===2)st.badges.push({t:`Huy hiệu Chủ đề ${(x.ti||0)+1} · Toán ${curG()}`,day:S.day,from:'máy'});
-    log(sid,'passed',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{success:true,score:{raw:g.ok,max:g.qs.length}});sfx('win');sayJ(g.lv===2?`Em đã hạ được ${bossOf(g.id)[1]}! Giỏi lắm!`:'Em qua màn rồi! Giỏi quá!')}
-  else{s.fails[g.lv]=(s.fails[g.lv]||0)+1;log(sid,'failed',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{success:false});sfx('bad');sayJ('Không sao cả. Mình chơi lại nhé!')}
+    log(sid,'passed',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{success:true,score:{raw:g.ok,max:g.qs.length}});sfx(g.lv===2?'bossdown':'win');sayJ(g.lv===2?`Em đã hạ được ${bossOf(g.id)[1]}! Giỏi lắm!`:'Em qua màn rồi! Giỏi quá!')}
+  else{s.fails[g.lv]=(s.fails[g.lv]||0)+1;log(sid,'failed',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{success:false});sfx('bad');sfx('lose');sayJ('Không sao cả. Mình chơi lại nhé!')}
   save();render()}
 function viewEnd1(){if(scr.fix||scr.part===2)return viewEnd1b();const g=scr,x=isl1(g.id),k=PI().indexOf(x),boss=g.lv===2,nextL=x.lv[g.lv+1]?g.lv+1:-1;
   return`<div class="game g1"><div class="gend">${g.pass?(boss?`<div class="bigicon">${spr('chest',90)}</div>`:`<div class="bigicon">${spr('star',84)}</div>`):jenny(84)}
@@ -2074,7 +2085,7 @@ function viewHome1t(){const st=S.st[sid],tab=scr.tab||'map',nm=Object.keys(mist(
 function endFix1(){const g=scr,st=S.st[sid];g.end=true;g.pass=true;st.coins+=g.fixed*5;log(sid,'passed',`Toán ${curG()} · Sổ lỗi sai`,0,{success:true,score:{raw:g.fixed}});sfx(g.fixed?'win':'ok');sayJ(g.fixed?`Em đã sửa xong ${NUMW[g.fixed]||g.fixed} lỗi. Giỏi quá!`:'Luyện tốt lắm!');save();render()}
 function endJ1(alive){const g=scr,st=S.st[sid],x=ju1(g.id),s=j1s(st,x.id),qd=quest(st);g.end=true;g.pass=alive&&g.hearts>0&&g.ok>=needOf(g.qs.length);g.newStar=0;
   if(g.pass){qd.pass++;if(!s.m[g.lv]){s.m[g.lv]=true;g.newStar=STAR2[g.lv]}st.coins+=15;log(sid,'passed',`${x.title} · màn ${g.lv+1}`,0,{success:true,score:{raw:g.ok,max:g.qs.length}});sfx('win');sayJ('Em qua màn rồi! Giỏi quá!')}
-  else{s.fails[g.lv]=(s.fails[g.lv]||0)+1;log(sid,'failed',`${x.title} · màn ${g.lv+1}`,0,{success:false});sfx('bad');sayJ('Không sao cả. Mình chơi lại nhé!')}save();render()}
+  else{s.fails[g.lv]=(s.fails[g.lv]||0)+1;log(sid,'failed',`${x.title} · màn ${g.lv+1}`,0,{success:false});sfx('bad');sfx('lose');sayJ('Không sao cả. Mình chơi lại nhé!')}save();render()}
 function viewEnd1b(){const g=scr,st=S.st[sid];
   if(g.fix){const left=Object.keys(mist(st)).length;return`<div class="game g1"><div class="gend"><div class="bigicon">${spr('book',84)}</div><h1>${g.fixed?`Sửa xong ${g.fixed} lỗi!`:'Luyện tốt lắm!'}</h1><p class="muted">${g.ok}/${g.qs.length} câu đúng${g.fixed?` · +${g.fixed*5} xu`:''}</p><p class="muted">Mỗi dạng cần đúng 2 lần liền mới ra khỏi sổ. Sổ còn ${left} dạng.</p><div class="gendbtn">${left?`<button class="gobtn" type="button" onclick="startFix1()">Luyện tiếp</button>`:''}<button class="gobtn ghost" type="button" onclick="go({k:'home',tab:'fix'})">Về sổ lỗi sai</button><button class="gobtn ghost" type="button" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`}
   const x=ju1(g.id),nx=g.lv<2?g.lv+1:-1;
@@ -4726,7 +4737,7 @@ function viewLes(){const x=isl1(scr.id),L=lesOf(x),i=scr.i,sl=L[i],last=i===L.le
   return`<div class="page"><div class="crumb"><button class="btn sm ghost" onclick="try{speechSynthesis.cancel()}catch(e){};go({k:'island',id:'${x.id}'})">← ${esc(x.title)}</button></div>
    <div class="card g1slide lslide"><div class="row" style="justify-content:space-between;gap:8px"><span class="pill">${scr.quick?'Nhắc lại nhanh':`Trang ${i+1}/${L.length}`}</span><span class="row" style="gap:6px">${scr.quick?`<button class="btn sm" type="button" onclick="startLes('${x.id}',1)">Xem đủ</button>`:''}<button class="btn sm" type="button" onclick="sayJ(sayFull(lesOf(isl1(scr.id))[scr.i].say,lesOf(isl1(scr.id))[scr.i].h))">🔊 Nghe</button></span></div>
    <div class="lshead">${jenny(48)}<h2>${esc(sl.t)}</h2></div><div class="g1slb">${sl.h}</div>
-   <div class="row" style="margin-top:16px;justify-content:space-between;gap:8px"><button class="btn" type="button" ${first?'disabled':''} onclick="scr.i--;try{speechSynthesis.cancel()}catch(e){};render()">← Trước</button>${last?`<button class="btn pri" type="button" onclick="${done}">Vào chơi ▶</button>`:`<button class="btn pri" type="button" onclick="scr.i++;try{speechSynthesis.cancel()}catch(e){};render()">Tiếp →</button>`}</div></div></div>`}
+   <div class="row" style="margin-top:16px;justify-content:space-between;gap:8px"><button class="btn" type="button" ${first?'disabled':''} onclick="sfx('page');scr.i--;try{speechSynthesis.cancel()}catch(e){};render()">← Trước</button>${last?`<button class="btn pri" type="button" onclick="${done}">Vào chơi ▶</button>`:`<button class="btn pri" type="button" onclick="sfx('page');scr.i++;try{speechSynthesis.cancel()}catch(e){};render()">Tiếp →</button>`}</div></div></div>`}
 
 
 
@@ -4770,7 +4781,7 @@ function mkQ([x,L,gi]){const q=x.lv[L][gi]();return{...q,src:[x.id,L,gi],key:`${
 /* ---- Đua giờ 60 giây ---- */
 let raceTick=null;
 function startRace(){const st=S.st[sid],pool=openGens(st);clearInterval(raceTick);v1Said='';go({k:'game',g1:1,race:1,pool,qs:[mkQ(pick(pool))],j:0,hearts:3,ok:0,bad:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,t:60,inp:'',t0:Date.now(),started:false})}
-function raceAfterRender(){if(scr.k!=='game'||!scr.race||scr.end||scr.started)return;scr.started=true;clearInterval(raceTick);raceTick=setInterval(()=>{scr.t--;const e=document.getElementById('rtime');if(e)e.textContent=scr.t;if(scr.t<=0){clearInterval(raceTick);endRace()}},1000)}
+function raceAfterRender(){if(scr.k!=='game'||!scr.race||scr.end||scr.started)return;scr.started=true;clearInterval(raceTick);raceTick=setInterval(()=>{scr.t--;const e=document.getElementById('rtime');if(e)e.textContent=scr.t;if(scr.t>0&&scr.t<=10)sfx(scr.t%2?'tick':'tock');if(scr.t<=0){clearInterval(raceTick);endRace()}},1000)}
 function raceAns(ok){const g=scr;if(ok){g.ok++;sfx('ok')}else{g.bad++;sfx('bad')}g.flash=ok?'ok':'bad';const q=mkQ(pick(g.pool));g.qs.push(q);g.j++;g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;g.inp='';render();if(curG()<=2)setTimeout(()=>{if(scr.race&&!scr.end)sayJ(sayFull(q1().say,q1().q))},150)}
 function endRace(){const g=scr,st=S.st[sid];if(!g.race||g.end)return;g.end=true;st.race=st.race||{};const key='g'+curG();g.prev=st.race[key]||0;st.race[key]=Math.max(g.prev,g.ok);g.coins=addCoins(sid,Math.min(20,g.ok*2),'self');log(sid,'passed',`Đua giờ 60 giây · lớp ${curG()}`,0,{success:true,score:{raw:g.ok}});sfx('win');sayJ(`Hết giờ! Em làm đúng ${g.ok} câu.`);save();render()}
 function raceBoard(){const g=curG();return STUDENTS.filter(s=>s[2]===g).map(([id,n])=>[n.split(' ').pop(),(S.st[id].race||{})['g'+g]||0,id]).sort((a,b)=>b[1]-a[1])}
@@ -4851,10 +4862,10 @@ function viewMini(){const g=scr,st=S.st[sid],key=`${g.id}:${g.mode}`,best=(st.mg
   return`<div class="game g1 mini"><div class="gtop"><button class="gx" onclick="stopMini();go({k:'island',id:'${g.id}'})" aria-label="Thoát">✕</button><span class="mgsc">${spr('star',22)} <b id="mgs">${g.score}</b></span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="mgt">${g.t}</b></span><span class="hearts" id="mgl">${[0,1,2].map(i=>spr(i<g.lives?'heart':'heartE',18)).join(' ')}</span></div>
    <div class="mgrule"><span>${g.rule}</span><button class="g1spk" type="button" onclick="sayJ(scr.say)" aria-label="Nghe lại">🔊</button></div>
    <div class="mgf ${g.mode}" id="mgf"></div></div>`}
-function endMini(){if(scr.k!=='mini'||scr.end)return;stopMini();const st=S.st[sid];st.mg=st.mg||{};const key=`${scr.id}:${scr.mode}`;scr.coins=addCoins(sid,Math.min(20,scr.score),'self');st.mg[key]=Math.max(st.mg[key]||0,scr.score);scr.end=true;log(sid,'passed',`${scr.mode==='fish'?'Câu cá':'Bóng bay'} · ${isl1(scr.id).title}`,0,{success:true,score:{raw:scr.score}});sfx('win');sayJ(`Em được ${scr.score} điểm!`);save();render()}
+function endMini(){if(scr.k!=='mini'||scr.end)return;stopMini();const st=S.st[sid];st.mg=st.mg||{};const key=`${scr.id}:${scr.mode}`;scr.coins=addCoins(sid,Math.min(20,scr.score),'self');st.mg[key]=Math.max(st.mg[key]||0,scr.score);scr.end=true;log(sid,'passed',`${scr.mode==='fish'?'Câu cá':'Bóng bay'} · ${isl1(scr.id).title}`,0,{success:true,score:{raw:scr.score}});sfx(scr.lives<=0?'lose':scr.t<=0?'timeup':'win');sayJ(`Em được ${scr.score} điểm!`);save();render()}
 /* ---- đua giờ theo đảo ---- */
 function startRace(id){const x=isl1(id),pool=islPool(x);clearInterval(raceTick);v1Said='';go({k:'game',g1:1,race:1,id,pool,qs:[mkQ(pick(pool))],j:0,hearts:3,ok:0,bad:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,t:60,inp:'',t0:Date.now(),started:false})}
-function endRace(){const g=scr,st=S.st[sid];if(!g.race||g.end)return;g.end=true;st.race=st.race||{};g.prev=st.race[g.id]||0;st.race[g.id]=Math.max(g.prev,g.ok);g.coins=addCoins(sid,Math.min(20,g.ok*2),'self');log(sid,'passed',`Đua giờ · ${isl1(g.id).title}`,0,{success:true,score:{raw:g.ok}});sfx('win');sayJ(`Hết giờ! Em làm đúng ${g.ok} câu.`);save();render()}
+function endRace(){const g=scr,st=S.st[sid];if(!g.race||g.end)return;g.end=true;st.race=st.race||{};g.prev=st.race[g.id]||0;st.race[g.id]=Math.max(g.prev,g.ok);g.coins=addCoins(sid,Math.min(20,g.ok*2),'self');log(sid,'passed',`Đua giờ · ${isl1(g.id).title}`,0,{success:true,score:{raw:g.ok}});sfx('timeup');setTimeout(()=>sfx('win'),900);sayJ(`Hết giờ! Em làm đúng ${g.ok} câu.`);save();render()}
 function raceBoard(id){const g=curG();return STUDENTS.filter(s=>s[2]===g).map(([sId,n])=>[n.split(' ').pop(),(S.st[sId].race||{})[id]||0,sId]).sort((a,b)=>b[1]-a[1])}
 /* ---- trùm lớp theo đảo ---- */
 function startCB(id){const x=isl1(id),b=cbI(id);if(b.won)return;const pool=islPool(x);v1Said='';go({k:'game',g1:1,cbo:1,id,qs:Array.from({length:5},()=>mkQ(pick(pool))),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,inp:'',t0:Date.now()})}
@@ -4865,7 +4876,7 @@ function gvCB(){if(gvGrade>5)return'';const isl=PRIM[gvGrade].isl,cls=STUDENTS.f
    <p class="muted" style="margin:4px 0 8px">Mỗi đảo có một trùm lớp. Trùm mở khi học sinh qua Màn 1 của đảo; mỗi câu đúng trừ 1 máu. Cả lớp hạ trùm thì mỗi em nhận thẻ sinh vật của đảo.</p>
    ${act.length?act.map(x=>{const b=S.cbi[x.id];return`<div class="task"><div class="row" style="justify-content:space-between"><b>${esc(x.short)} · ${esc(b.name)}</b><span class="pill ${b.won?'ok':'warn'}">${b.won?'Đã hạ':`${b.hp}/${b.max} máu`}</span></div><div class="cbbar"><i style="width:${b.hp/b.max*100}%"></i></div><div class="row" style="gap:6px;margin-top:6px">${cls.map(([id,n])=>`<span class="pill">${esc(n.split(' ').pop())}: ${b.hits[id]||0} đòn</span>`).join('')}</div></div>`}).join(''):'<p class="muted" style="margin:0">Chưa có đảo nào bắt đầu đánh trùm lớp.</p>'}</section>`}
 function endExtra(){const g=scr,st=S.st[sid];g.end=true;
-  if(g.tre){const ok=g.ok>0;g.reward='';if(ok){if(g.tre==='whale'){st.coins+=10;g.reward='+10 xu'}else if(g.tre==='chest'){const c=giveCard(st,Math.random()<.25?'star':randCommon());g.card=c;g.reward='Thẻ mới: '+c[1]}else{st.coins+=5;g.reward='+5 xu';if(Math.random()<.4){const c=giveCard(st,randCommon());g.card=c;g.reward+=' · thẻ '+c[1]}}sfx('win');sayJ('Em nhận được quà rồi!')}else{sfx('bad');sayJ('Tiếc quá! Mai em lại săn kho báu nhé.')}log(sid,ok?'passed':'failed',`Kho báu biển · lớp ${curG()}`,0,{success:ok})}
+  if(g.tre){const ok=g.ok>0;g.reward='';if(ok){if(g.tre==='whale'){st.coins+=10;g.reward='+10 xu'}else if(g.tre==='chest'){const c=giveCard(st,Math.random()<.25?'star':randCommon());g.card=c;g.reward='Thẻ mới: '+c[1]}else{st.coins+=5;g.reward='+5 xu';if(Math.random()<.4){const c=giveCard(st,randCommon());g.card=c;g.reward+=' · thẻ '+c[1]}}sfx('chest');sayJ('Em nhận được quà rồi!')}else{sfx('bad');sayJ('Tiếc quá! Mai em lại săn kho báu nhé.')}log(sid,ok?'passed':'failed',`Kho báu biển · lớp ${curG()}`,0,{success:ok})}
   if(g.cbo){const b=cbI(g.id);g.won=b.won;if(b.won&&!b.claimed[sid]){b.claimed[sid]=1;st.coins+=20;g.card=giveCard(st,islCreat(g.id)[0])}sfx('win');log(sid,'passed',`Trùm lớp · ${isl1(g.id).title}`,0,{success:true,score:{raw:g.ok}})}
   save();render()}
 function viewEndExtra(){const g=scr,st=S.st[sid];
@@ -4902,8 +4913,8 @@ function miniAfterRender(){if(scr.k!=='mini'||scr.end||scr.started)return;scr.st
     else{el.className='mgi balloi';el.innerHTML=`${spr(BS[n%BS.length],132,'mgsp')}<span class="mgt">${it.t}</span>`}
     const sp=(fish?55:45)+Math.random()*35+(45-scr.t)*1.3;const o={el,ok:it.ok,x:fish?-140:R(6,Math.max(10,W()-90)),y:fish?R(70,Math.max(80,H()-90)):H()+10,v:sp,dead:false,ph:Math.random()*6};
     el.addEventListener('pointerdown',e=>{e.preventDefault();if(o.dead)return;o.dead=true;
-      if(o.ok){scr.score++;sfx('ok');el.classList.add('pop');el.insertAdjacentHTML('beforeend',`<span class="mgfx">${spr('burst',56)}</span>`);document.getElementById('mgs').textContent=scr.score}
-      else{scr.lives--;sfx('bad');el.classList.add('wrong');el.insertAdjacentHTML('beforeend',`<span class="mgfx">${spr('puff',48)}</span>`);const l=document.getElementById('mgl');if(l)l.innerHTML=[0,1,2].map(i=>spr(i<scr.lives?'heart':'heartE',18)).join(' ');if(scr.lives<=0)setTimeout(endMini,350)}
+      if(o.ok){scr.score++;sfx(fish?'catch':'pop');el.classList.add('pop');el.insertAdjacentHTML('beforeend',`<span class="mgfx">${spr('burst',56)}</span>`);document.getElementById('mgs').textContent=scr.score}
+      else{scr.lives--;sfx(fish?'splash':'deflate');hurtFx(1);el.classList.add('wrong');el.insertAdjacentHTML('beforeend',`<span class="mgfx">${spr('puff',48)}</span>`);const l=document.getElementById('mgl');if(l)l.innerHTML=[0,1,2].map(i=>spr(i<scr.lives?'heart':'heartE',18)).join(' ');if(scr.lives<=0)setTimeout(endMini,350)}
       setTimeout(()=>el.remove(),380)});
     f.appendChild(el);items.push(o)};
   let prev=performance.now();
@@ -4911,8 +4922,100 @@ function miniAfterRender(){if(scr.k!=='mini'||scr.end||scr.started)return;scr.st
     items.forEach(o=>{if(!o.el.isConnected)return;if(!o.dead){if(fish)o.x+=o.v*dt;else o.y-=o.v*dt}const bob=fish?Math.round(Math.sin(ts/300+o.ph)*3):Math.round(Math.sin(ts/500+o.ph)*4);
       o.el.style.transform=`translate(${Math.round(fish?o.x:o.x+bob)}px,${Math.round(fish?o.y+bob:o.y)}px)`;if(!o.dead&&((fish&&o.x>W()+20)||(!fish&&o.y<-130))){o.dead=true;o.el.remove()}});
     mgLoop.raf=requestAnimationFrame(step)};
-  mgLoop={raf:requestAnimationFrame(step),tick:setInterval(()=>{scr.t--;const e=document.getElementById('mgt');if(e)e.textContent=scr.t;if(scr.t<=0)endMini()},1000)}}
+  mgLoop={raf:requestAnimationFrame(step),tick:setInterval(()=>{scr.t--;const e=document.getElementById('mgt');if(e)e.textContent=scr.t;if(scr.t>0&&scr.t<=5)sfx('tick');if(scr.t<=0)endMini()},1000)}}
 
+/* ===================== ÂM THANH: nhạc nền 8-bit + hiệu ứng từng trò chơi ===================== */
+/* Tự tổng hợp bằng Web Audio (không cần file nhạc). Cài đặt lưu ở localStorage 'jennySound': {m: nhạc, s: hiệu ứng}. */
+const SND=(()=>{let o={m:1,s:1};try{const v=JSON.parse(localStorage.getItem('jennySound')||'null');if(v)o=Object.assign(o,v)}catch(e){}try{if(localStorage.getItem('jennyMute')==='1')o={m:0,s:0}}catch(e){}return o})();
+muted=!SND.s;
+let AUD=null;
+function aud(){if(AUD)return AUD;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;const ac=new C();const master=ac.createGain();master.gain.value=.9;master.connect(ac.destination);
+  const fx=ac.createGain();fx.gain.value=.55;fx.connect(master);const mu=ac.createGain();mu.gain.value=0;mu.connect(master);AUD={ac,master,fx,mu};AC=ac}catch(e){AUD=null}return AUD}
+function sndSave(){try{localStorage.setItem('jennySound',JSON.stringify(SND));localStorage.setItem('jennyMute',(!SND.m&&!SND.s)?'1':'0')}catch(e){}muted=!SND.s}
+/* một nốt: tần số, bắt đầu (giây, tính từ bây giờ), dài, dạng sóng, âm lượng, trượt tần số */
+function tone(f,at,dur,type='square',vol=.22,slide=0,bus){const A=aud();if(!A)return;const t=A.ac.currentTime+at;const os=A.ac.createOscillator(),g=A.ac.createGain();os.type=type;os.frequency.setValueAtTime(f,t);if(slide)os.frequency.exponentialRampToValueAtTime(Math.max(30,f*slide),t+dur);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0008,t+dur);os.connect(g);g.connect(bus||A.fx);os.start(t);os.stop(t+dur+.03)}
+function noise(at,dur,vol=.2,hp=800,bus){const A=aud();if(!A)return;const t=A.ac.currentTime+at,n=Math.floor(A.ac.sampleRate*dur),buf=A.ac.createBuffer(1,n,A.ac.sampleRate),d=buf.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);
+  const s=A.ac.createBufferSource();s.buffer=buf;const f=A.ac.createBiquadFilter();f.type='highpass';f.frequency.value=hp;const g=A.ac.createGain();g.gain.value=vol;s.connect(f);f.connect(g);g.connect(bus||A.fx);s.start(t)}
+const mHz=(n)=>440*Math.pow(2,(n-69)/12); /* số MIDI → Hz */
+const SFX={
+ tap:()=>tone(mHz(84),0,.05,'square',.12),
+ ok:()=>{tone(mHz(76),0,.09);tone(mHz(84),.08,.14)},
+ bad:()=>{tone(mHz(52),0,.14,'sawtooth',.18,.7);tone(mHz(47),.12,.22,'sawtooth',.16,.7)},
+ combo:()=>[76,79,84,88].forEach((n,i)=>tone(mHz(n),i*.06,.1)),
+ win:()=>{[72,76,79,84].forEach((n,i)=>tone(mHz(n),i*.11,.16));tone(mHz(88),.46,.35,'square',.2);tone(mHz(48),0,.6,'triangle',.25)},
+ lose:()=>[67,63,60,55].forEach((n,i)=>tone(mHz(n),i*.16,.22,'triangle',.25)),
+ hit:()=>{noise(0,.12,.28,400);tone(mHz(45),0,.18,'square',.22,.5)},
+ bossdown:()=>{noise(0,.5,.3,200);[60,64,67,72,76].forEach((n,i)=>tone(mHz(n),.2+i*.09,.14))},
+ hurt:()=>{tone(mHz(60),0,.08,'square',.2);tone(mHz(55),.07,.18,'square',.2,.6)},
+ coin:()=>{tone(mHz(83),0,.06);tone(mHz(88),.06,.18)},
+ star:()=>[84,88,91,96].forEach((n,i)=>tone(mHz(n),i*.05,.09,'triangle',.18)),
+ card:()=>{[79,83,86,91].forEach((n,i)=>tone(mHz(n),i*.07,.12,'triangle',.2));noise(.28,.15,.08,3000)},
+ chest:()=>{noise(0,.2,.15,600);[67,71,74,79,83].forEach((n,i)=>tone(mHz(n),.15+i*.07,.12))},
+ page:()=>noise(0,.09,.12,2500),
+ unlock:()=>{tone(mHz(72),0,.08);tone(mHz(79),.08,.08);tone(mHz(84),.16,.2)},
+ /* Câu cá */
+ cast:()=>{noise(0,.18,.06,3000);tone(mHz(90),0,.18,'sine',.08,.4)},
+ catch:()=>{noise(0,.12,.18,1200);tone(mHz(72),.05,.08,'sine',.2,1.6);tone(mHz(84),.13,.12,'triangle',.18)},
+ splash:()=>{noise(0,.28,.22,500);tone(mHz(48),0,.2,'sine',.15,.6)},
+ bubble:()=>tone(mHz(R(80,92)),0,.07,'sine',.07,1.8),
+ /* Bóng bay */
+ pop:()=>{noise(0,.07,.35,1500);tone(mHz(88),0,.05,'square',.15,.5)},
+ deflate:()=>tone(mHz(70),0,.4,'sawtooth',.14,.35),
+ /* Đua giờ */
+ tick:()=>tone(mHz(96),0,.03,'square',.08),
+ tock:()=>tone(mHz(89),0,.03,'square',.08),
+ timeup:()=>{[0,.2,.4].forEach(t=>tone(mHz(84),t,.12,'square',.2));tone(mHz(72),.6,.4,'square',.2)},
+};
+/* thay hàm sfx cũ (bản sau thắng) */
+function sfx(kind){if(!SND.s)return;try{const A=aud();if(A&&A.ac.state==='suspended')A.ac.resume();(SFX[kind]||SFX.tap)()}catch(e){}}
+
+/* ---------- nhạc nền ---------- */
+/* mỗi bài: nhịp (bpm), giai điệu 16 phách (MIDI, 0 = nghỉ), bè trầm 8 nốt, dạng sóng */
+const THEMES={
+ map:{bpm:92,w:'triangle',v:.055,mel:[72,0,76,79,76,0,74,72,69,0,72,74,76,0,0,0, 72,0,76,79,81,79,76,0,74,0,72,69,72,0,0,0],bass:[48,48,45,45,43,43,48,48],
+      drum:0},
+ learn:{bpm:84,w:'sine',v:.05,mel:[76,0,79,0,81,79,76,0,74,0,76,0,72,0,0,0],bass:[48,45,41,43],drum:0},
+ game:{bpm:120,w:'square',v:.035,mel:[72,76,79,76,81,79,76,74,72,74,76,79,77,76,74,0, 72,76,79,84,83,79,76,74,72,74,76,74,72,0,72,0],bass:[48,48,53,53,55,55,48,48],drum:1},
+ boss:{bpm:138,w:'square',v:.035,mel:[69,0,69,72,71,0,69,67,69,0,64,0,65,64,62,64, 69,0,69,72,74,72,71,69,68,0,71,0,69,0,0,0],bass:[45,45,41,41,43,43,40,40],drum:2},
+ fish:{bpm:108,w:'triangle',v:.05,mel:[79,0,76,0,79,81,79,0,76,0,74,72,74,0,0,0, 79,0,76,0,79,84,83,0,81,0,79,76,79,0,0,0],bass:[48,43,45,41,48,43,45,43],drum:0,bub:1},
+ balloon:{bpm:100,w:'sine',v:.06,mel:[84,0,83,0,81,0,79,0,81,83,84,0,86,0,0,0, 84,0,88,0,86,0,84,0,83,81,79,0,81,0,0,0],bass:[48,52,53,55,48,52,53,43],drum:0},
+ race:{bpm:160,w:'square',v:.03,mel:[72,74,76,79,76,74,72,0,74,76,79,81,79,76,74,0],bass:[48,55,53,55],drum:1},
+};
+let muCur=null,muTimer=null,muStep=0,muNext=0;
+function musicTheme(){if(role!=='hs')return null;const k=scr.k;if(k==='mini')return scr.end?null:(scr.mode==='fish'?'fish':'balloon');
+  if(k==='game'){if(scr.end)return null;if(scr.race)return'race';if(scr.tre)return'game';if(scr.cbo||scr.lv===2)return'boss';return'game'}
+  if(k==='lslide'||k==='jslide'||k==='video'||k==='jex'||k==='example')return'learn';return'map'}
+function musicSync(){const want=SND.m?musicTheme():null;if(want===muCur)return;muCur=want;const A=aud();if(!A)return;
+  const t=A.ac.currentTime;A.mu.gain.cancelScheduledValues(t);A.mu.gain.setValueAtTime(A.mu.gain.value,t);A.mu.gain.linearRampToValueAtTime(want?1:0,t+.35);
+  if(want&&!muTimer){muNext=A.ac.currentTime+.1;muStep=0;muTimer=setInterval(muTick,60)}if(!want&&muTimer){setTimeout(()=>{if(!muCur&&muTimer){clearInterval(muTimer);muTimer=null}},500)}}
+function muTick(){const A=AUD;if(!A||!muCur)return;const T=THEMES[muCur],sp=60/T.bpm/2;while(muNext<A.ac.currentTime+.25){const i=muStep%T.mel.length,at=muNext-A.ac.currentTime;
+   const n=T.mel[i];if(n)tone(mHz(n),at,sp*.9,T.w,T.v,0,A.mu);
+   if(muStep%4===0){const b=T.bass[Math.floor(muStep/4)%T.bass.length];tone(mHz(b),at,sp*3.6,'triangle',T.v*1.6,0,A.mu)}
+   if(T.drum&&muStep%4===2)noise(at,.05,T.v*1.1,4000,A.mu);if(T.drum===2&&muStep%8===0)tone(mHz(36),at,.12,'sine',T.v*3,.5,A.mu);
+   if(T.bub&&muStep%6===3&&Math.random()<.5)tone(mHz(R(80,92)),at,.06,'sine',T.v*.7,1.8,A.mu);
+   muNext+=sp;muStep++}}
+/* trình duyệt chỉ cho phát âm thanh sau lần chạm/bấm đầu tiên */
+['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,()=>{const A=aud();if(A&&A.ac.state==='suspended')A.ac.resume();musicSync()},{passive:true}));
+document.addEventListener('visibilitychange',()=>{const A=AUD;if(!A)return;if(document.hidden)A.ac.suspend();else A.ac.resume()});
+
+/* ---------- nút bật/tắt: nhạc nền và hiệu ứng ---------- */
+function sndCycle(){/* cả hai → chỉ hiệu ứng → tắt hết → cả hai */if(SND.m&&SND.s){SND.m=0}else if(SND.s){SND.s=0}else{SND.m=1;SND.s=1}sndSave();musicSync();sndUI();if(SND.s)sfx('tap');toast(SND.m?'Bật nhạc nền và hiệu ứng':SND.s?'Tắt nhạc nền, giữ hiệu ứng':'Đã tắt âm thanh')}
+const sndIcon=()=>SND.m?'🎵':SND.s?'🔉':'🔇';
+function sndUI(){const lbl=SND.m?'Nhạc và hiệu ứng đang bật':SND.s?'Chỉ bật hiệu ứng':'Đang tắt âm thanh';
+  let b=document.getElementById('sndBtn');const bar=document.querySelector('.appbar .wrap');if(!b&&bar){b=document.createElement('button');b.id='sndBtn';b.type='button';b.className='btn sm sndbtn';b.onclick=sndCycle;bar.appendChild(b)}
+  if(b){b.innerHTML=`<span aria-hidden="true">${sndIcon()}</span>`;b.title=lbl;b.setAttribute('aria-label',lbl)}
+  const gt=document.querySelector('.game .gtop');if(gt&&!gt.querySelector('.sndmini')){const m=document.createElement('button');m.type='button';m.className='gx sndmini';m.onclick=sndCycle;gt.appendChild(m)}
+  document.querySelectorAll('.sndmini').forEach(m=>{m.innerHTML=`<span aria-hidden="true">${sndIcon()}</span>`;m.title=lbl;m.setAttribute('aria-label',lbl)})}
+
+/* ---------- hiệu ứng mất tim ---------- */
+function hurtFx(quiet){if(!quiet)sfx('hurt');const h=document.querySelector('.game .hearts, #mgl');if(h){h.classList.remove('hurt');void h.offsetWidth;h.classList.add('hurt')}
+  const g=document.querySelector('.game');if(g){g.classList.remove('shake');void g.offsetWidth;g.classList.add('shake');setTimeout(()=>g.classList.remove('shake'),450)}
+  try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}}
+
+function toggleMute(){if(SND.m||SND.s){SND.m=0;SND.s=0}else{SND.m=1;SND.s=1}sndSave();musicSync();render()}
+/* gắn vào vẽ màn hình: đổi nhạc theo màn, vẽ nút âm thanh */
+{const _r=render;render=function(){const a=_r.apply(this,arguments);try{sndUI();musicSync()}catch(e){}return a}}
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 

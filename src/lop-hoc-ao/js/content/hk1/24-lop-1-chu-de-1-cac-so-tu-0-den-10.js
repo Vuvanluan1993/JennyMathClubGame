@@ -222,7 +222,7 @@ function ans1(v){if(scr.race){const q=q1(),ok=right1(q,v);log(sid,'answered',`Đ
   else if(!ok&&g.tries===0&&g.part!==2)mist1Add(q);
   log(sid,'answered',`Toán ${curG()} · ${x.title}`,0,{success:ok,duration:`PT${Math.round((Date.now()-g.t0)/1000)}S`});
   if(ok){if(g.cbo){const b=cbI(g.id);if(b&&!b.won){b.hp--;b.hits[sid]=(b.hits[sid]||0)+1;if(b.hp<=0){b.hp=0;b.won=true}}g.hit=true;sfx('hit')}g.ok++;qd.ok++;g.res[g.j]=g.res[g.j]===undefined?true:g.res[g.j];const c=addCoins(sid,5,'self');if(g.lv===2){g.hp--;g.hit=true;sfx('hit')}else sfx('ok');g.sheet={kind:'ok',msg:(c?`+${c} xu`:'')+extra};sayJ(pick(['Giỏi quá!','Đúng rồi!','Tuyệt vời!','Em làm đúng rồi!']))}
-  else{g.tries++;if(!g.fix)g.hearts--;sfx('bad');
+  else{g.tries++;if(!g.fix){g.hearts--;setTimeout(()=>hurtFx(1),30)}sfx('bad');
     if(g.hearts<=0){g.res[g.j]=false;g.sheet={kind:'dead'};sayJ('Hết tim rồi. Mình chơi lại nhé!')}
     else if(g.tries===1){g.sheet={kind:'retry'};sayJ('Chưa đúng rồi. Em thử lại nhé.')}
     else{g.res[g.j]=false;g.sheet={kind:'bad'};sayJ(q.sol.replace(/&gt;/g,' lớn hơn ').replace(/&lt;/g,' bé hơn ').replace(/=/g,' bằng '))}}
@@ -239,8 +239,8 @@ function end1(alive){if(scr.race||scr.tre||scr.cbo)return endExtra();if(scr.fix)
   if(g.pass){qd.pass++;if(!s.m[g.lv]){s.m[g.lv]=true;g.newStar=true;log(sid,'earned',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{score:{raw:1}})}st.coins+=g.lv===2?30:10;
     if(g.lv===0&&g.newStar&&PI()[k+1])g.unlock=PI()[k+1];
     if(g.lv===2)st.badges.push({t:`Huy hiệu Chủ đề ${(x.ti||0)+1} · Toán ${curG()}`,day:S.day,from:'máy'});
-    log(sid,'passed',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{success:true,score:{raw:g.ok,max:g.qs.length}});sfx('win');sayJ(g.lv===2?`Em đã hạ được ${bossOf(g.id)[1]}! Giỏi lắm!`:'Em qua màn rồi! Giỏi quá!')}
-  else{s.fails[g.lv]=(s.fails[g.lv]||0)+1;log(sid,'failed',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{success:false});sfx('bad');sayJ('Không sao cả. Mình chơi lại nhé!')}
+    log(sid,'passed',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{success:true,score:{raw:g.ok,max:g.qs.length}});sfx(g.lv===2?'bossdown':'win');sayJ(g.lv===2?`Em đã hạ được ${bossOf(g.id)[1]}! Giỏi lắm!`:'Em qua màn rồi! Giỏi quá!')}
+  else{s.fails[g.lv]=(s.fails[g.lv]||0)+1;log(sid,'failed',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{success:false});sfx('bad');sfx('lose');sayJ('Không sao cả. Mình chơi lại nhé!')}
   save();render()}
 function viewEnd1(){if(scr.fix||scr.part===2)return viewEnd1b();const g=scr,x=isl1(g.id),k=PI().indexOf(x),boss=g.lv===2,nextL=x.lv[g.lv+1]?g.lv+1:-1;
   return`<div class="game g1"><div class="gend">${g.pass?(boss?`<div class="bigicon">${spr('chest',90)}</div>`:`<div class="bigicon">${spr('star',84)}</div>`):jenny(84)}

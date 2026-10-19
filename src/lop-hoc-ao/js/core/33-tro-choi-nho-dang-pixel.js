@@ -25,8 +25,8 @@ function miniAfterRender(){if(scr.k!=='mini'||scr.end||scr.started)return;scr.st
     else{el.className='mgi balloi';el.innerHTML=`${spr(BS[n%BS.length],132,'mgsp')}<span class="mgt">${it.t}</span>`}
     const sp=(fish?55:45)+Math.random()*35+(45-scr.t)*1.3;const o={el,ok:it.ok,x:fish?-140:R(6,Math.max(10,W()-90)),y:fish?R(70,Math.max(80,H()-90)):H()+10,v:sp,dead:false,ph:Math.random()*6};
     el.addEventListener('pointerdown',e=>{e.preventDefault();if(o.dead)return;o.dead=true;
-      if(o.ok){scr.score++;sfx('ok');el.classList.add('pop');el.insertAdjacentHTML('beforeend',`<span class="mgfx">${spr('burst',56)}</span>`);document.getElementById('mgs').textContent=scr.score}
-      else{scr.lives--;sfx('bad');el.classList.add('wrong');el.insertAdjacentHTML('beforeend',`<span class="mgfx">${spr('puff',48)}</span>`);const l=document.getElementById('mgl');if(l)l.innerHTML=[0,1,2].map(i=>spr(i<scr.lives?'heart':'heartE',18)).join(' ');if(scr.lives<=0)setTimeout(endMini,350)}
+      if(o.ok){scr.score++;sfx(fish?'catch':'pop');el.classList.add('pop');el.insertAdjacentHTML('beforeend',`<span class="mgfx">${spr('burst',56)}</span>`);document.getElementById('mgs').textContent=scr.score}
+      else{scr.lives--;sfx(fish?'splash':'deflate');hurtFx(1);el.classList.add('wrong');el.insertAdjacentHTML('beforeend',`<span class="mgfx">${spr('puff',48)}</span>`);const l=document.getElementById('mgl');if(l)l.innerHTML=[0,1,2].map(i=>spr(i<scr.lives?'heart':'heartE',18)).join(' ');if(scr.lives<=0)setTimeout(endMini,350)}
       setTimeout(()=>el.remove(),380)});
     f.appendChild(el);items.push(o)};
   let prev=performance.now();
@@ -34,5 +34,5 @@ function miniAfterRender(){if(scr.k!=='mini'||scr.end||scr.started)return;scr.st
     items.forEach(o=>{if(!o.el.isConnected)return;if(!o.dead){if(fish)o.x+=o.v*dt;else o.y-=o.v*dt}const bob=fish?Math.round(Math.sin(ts/300+o.ph)*3):Math.round(Math.sin(ts/500+o.ph)*4);
       o.el.style.transform=`translate(${Math.round(fish?o.x:o.x+bob)}px,${Math.round(fish?o.y+bob:o.y)}px)`;if(!o.dead&&((fish&&o.x>W()+20)||(!fish&&o.y<-130))){o.dead=true;o.el.remove()}});
     mgLoop.raf=requestAnimationFrame(step)};
-  mgLoop={raf:requestAnimationFrame(step),tick:setInterval(()=>{scr.t--;const e=document.getElementById('mgt');if(e)e.textContent=scr.t;if(scr.t<=0)endMini()},1000)}}
+  mgLoop={raf:requestAnimationFrame(step),tick:setInterval(()=>{scr.t--;const e=document.getElementById('mgt');if(e)e.textContent=scr.t;if(scr.t>0&&scr.t<=5)sfx('tick');if(scr.t<=0)endMini()},1000)}}
 

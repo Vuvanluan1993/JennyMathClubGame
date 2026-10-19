@@ -238,7 +238,7 @@ function answer(v){
     g.sheet={kind:'ok',msg:(g.combo>=3?`Combo ×${g.combo}! +${c} xu`:c?`+${c} xu`:'Đúng rồi!')+extra};}
   else{g.combo=0;sfx('bad');buzz([40,40,40]);g.tries++;
     if(g.mode==='fix'){const e=mist(st)[q.key];if(e)e.streak=0}else if(g.tries===1)mistAdd(q);
-    if(!soft)g.hearts--;
+    if(!soft){g.hearts--;setTimeout(()=>hurtFx(1),30)}
     if(!soft&&g.hearts<=0){g.res[g.j]=false;g.sheet={kind:'dead'}}
     else if(g.tries===1&&q.type!=='tf'){g.sheet={kind:soft?'retrysoft':'retry'}}
     else{g.res[g.j]=false;g.sheet={kind:'bad'}}}
