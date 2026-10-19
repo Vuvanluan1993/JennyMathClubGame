@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Sửa cá nhấp nháy
+- Câu cá: hai khung vẫy đuôi gộp thành một tấm ảnh, đổi khung bằng cách dịch nền theo bước nên cá không còn nhấp nháy.
+
 ## 2026-10-19 — Cá pixel mới, nhãn phép tính một dòng
 - Câu cá: vẽ lại cá pixel (6 màu) với 2 khung hình vẫy đuôi, nhấp nhô; nhãn (số, phép tính, tên đồ vật) luôn nằm trong khung trắng dưới bụng cá, không che cá.
 - Nhãn phép tính dài (ví dụ "50 cm + 50 cm") không còn bị xuống dòng: chữ tự thu nhỏ cho vừa một dòng trong biển chuột, bóng bay, sao, cá. Chỉ phép tính rất dài (ví dụ "85 000 + 15 000") mới xuống 2 dòng gọn tại dấu phép tính, không tách số. Đã kiểm tra gần 10 000 nhãn ở 5 lớp.

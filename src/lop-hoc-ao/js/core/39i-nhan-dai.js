@@ -42,18 +42,19 @@ function lblMark(el){if(!el||!el.classList)return;const t=(el.textContent||'').r
  const FIN=[["",""],["",""],["",""],["",""],["",""],["",""],["",""],["",""],["",""]];
  const COL=[['o','y'],['b','x'],['c','s'],['G','l'],['p','e'],['a','t']];
  COL.forEach(([B,b],i)=>['A','B'].forEach(f=>{const T=f==='A'?TA:TB;PXS[`fsh${f}${i}`]=BODY.map((r,j)=>(T[j]+r).replace(/B/g,B).replace(/b/g,b))}));}
-function fishFrames(n){const i=n%6;return`<span class="fswim">${spr('fshA'+i,40,'mgsp fa')}${spr('fshB'+i,40,'mgsp fb')}</span>`}
+for(let i=0;i<6;i++)PXS['fshS'+i]=PXS['fshA'+i].map((r,j)=>r+PXS['fshB'+i][j]);
+/* một tấm ảnh 2 khung, đổi khung bằng dịch nền theo bước: không nhấp nháy */
+function fishFrames(n){const i=n%6,d=pxURI('fshS'+i);return`<span class="fswim"><span class="fsheet" style="background-image:url(&quot;${d.u}&quot;)"></span></span>`}
 (function(){const st=document.createElement('style');st.textContent=`
 .fishi{width:96px!important;height:auto!important;display:flex!important;flex-direction:column;align-items:center}
 .fishi .fswim{position:relative;display:block;width:71px;height:40px;animation:fbob 1s steps(2) infinite}
-.fishi .fswim .mgsp{position:absolute;left:0;top:0;transform:none!important;animation:none}
-.fishi .fswim .fb{visibility:hidden;animation:fflap .36s steps(1) infinite}
-.fishi .fswim .fa{animation:fflap .36s steps(1) infinite reverse}
-.fishi:nth-child(2n) .fswim .fb,.fishi:nth-child(2n) .fswim .fa{animation-duration:.44s}
-@keyframes fflap{0%{visibility:hidden}50%{visibility:visible}}
+.fishi .fsheet{display:block;width:71px;height:40px;background-repeat:no-repeat;background-size:142px 40px;image-rendering:pixelated;image-rendering:crisp-edges;animation:fflap .4s steps(2) infinite}
+.fishi:nth-child(2n) .fsheet{animation-duration:.5s}
+@keyframes fflap{from{background-position:0 0}to{background-position:-142px 0}}
 @keyframes fbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 .fishi .mgt{position:static!important;transform:none!important;margin-top:2px;max-width:120px;box-shadow:0 0 0 2px #1F2A5A!important;background:#FFFFFF!important}
 .fishi::after{left:-4px;top:8px}
 .mgt.l5{font-size:15px!important}
-.mgi.pop .fswim .mgsp,.mgi.wrong .fswim .mgsp{animation:none}
+.mgi.pop .fsheet,.mgi.wrong .fsheet{animation:none;filter:grayscale(1)}
+.mgi.pop .fsheet{filter:none}
 `;document.head.appendChild(st)})();
