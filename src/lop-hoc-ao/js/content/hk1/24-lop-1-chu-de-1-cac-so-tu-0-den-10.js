@@ -81,7 +81,24 @@ const NEXT1=['Làm quen với một số hình phẳng','Phép cộng, phép tr�
 const Q1N=3,BOSSN=5;
 /* ---- giọng Jenny ---- */
 let v1Voice=null,v1Said='';
-function sayJ(text){if(muted||!text)return;try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(!v1Voice){const vs=s.getVoices();v1Voice=vs.find(v=>/^vi/i.test(v.lang))||null}const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));u.lang='vi-VN';if(v1Voice)u.voice=v1Voice;u.rate=.92;u.pitch=1.15;s.speak(u)}catch(e){}}
+/* chuyển đề (có thể chứa HTML, kí hiệu toán) thành lời đọc tiếng Việt */
+function spoken(t){t=String(t).normalize('NFC');
+  t=t.replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g,' $1 phần $2 ');
+  t=t.replace(/<br\s*\/?>/gi,'. ').replace(/<\/?[a-zA-Z][^<>]*>/g,' ');
+  try{const d=document.createElement('textarea');d.innerHTML=t;t=d.value}catch(e){}
+  for(let i=0;i<3;i++)t=t.replace(/(\d)[ \u00a0](?=\d{3}(?!\d))/g,'$1');
+  t=t.replace(/(\d),(\d)/g,'$1 phẩy $2').replace(/(\d)\s*\/\s*(\d)/g,'$1 phần $2')
+   .replace(/(km|dm|cm|mm|m)²/g,(m,u)=>({km:' ki-lô-mét vuông',dm:' đề-xi-mét vuông',cm:' xăng-ti-mét vuông',mm:' mi-li-mét vuông',m:' mét vuông'})[u])
+   .replace(/(km|dm|cm|mm|m)³/g,(m,u)=>({km:' ki-lô-mét khối',dm:' đề-xi-mét khối',cm:' xăng-ti-mét khối',mm:' mi-li-mét khối',m:' mét khối'})[u])
+   .replace(/(\d|\?|☐)\s*(kg|km|cm|mm|dm|ml|ha|m|g|l)(?![a-zA-Zà-ỹ²³])/g,(m,d,u)=>d+' '+({kg:'ki-lô-gam',km:'ki-lô-mét',cm:'xăng-ti-mét',mm:'mi-li-mét',dm:'đề-xi-mét',ml:'mi-li-lít',ha:'héc-ta',m:'mét',g:'gam',l:'lít'})[u])
+   .replace(/°C/g,' độ C').replace(/°/g,' độ').replace(/%/g,' phần trăm')
+   .replace(/≥/g,' lớn hơn hoặc bằng ').replace(/≤/g,' bé hơn hoặc bằng ').replace(/≠/g,' khác ')
+   .replace(/\s*>\s*/g,' lớn hơn ').replace(/\s*<\s*/g,' bé hơn ').replace(/\s*=\s*/g,' bằng ')
+   .replace(/\s*×\s*/g,' nhân ')
+   .replace(/(\d|\))\s*:\s*(?=[\d(☐])/g,'$1 chia ').replace(/\s*\+\s*/g,' cộng ').replace(/\s*[−–]\s*/g,' trừ ').replace(/(\d)\s+-\s+(?=\d)/g,'$1 trừ ')
+   .replace(/bằng\s*\?/g,'bằng bao nhiêu').replace(/☐|\?(?=\s*(?:cộng|trừ|nhân|chia|bằng|lớn|bé|$))/g,' mấy ').replace(/…|\.\.\./g,', ').replace(/[→⟶]/g,', ');
+  return t.replace(/\s+/g,' ').trim()}
+function sayJ(text){if(muted||!text)return;try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(!v1Voice){const vs=s.getVoices();const vi=vs.filter(v=>/^vi/i.test(v.lang));v1Voice=vi.find(v=>/google|natural|premium|enhanced/i.test(v.name))||vi[0]||null}const u=new SpeechSynthesisUtterance(spoken(text));u.lang='vi-VN';if(v1Voice)u.voice=v1Voice;u.rate=.9;u.pitch=1;s.speak(u)}catch(e){}}
 try{window.speechSynthesis&&window.speechSynthesis.addEventListener&&window.speechSynthesis.addEventListener('voiceschanged',()=>{v1Voice=null})}catch(e){}
 /* ---- trạng thái ---- */
 const isl1=id=>Object.values(PRIM).flatMap(p=>p.isl).find(x=>x.id===id);

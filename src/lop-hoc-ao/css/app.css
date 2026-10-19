@@ -465,7 +465,7 @@ body.px .node .lbl b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient
  .qtxt{font-size:24px}
 }
 /* điện thoại xoay ngang, màn thấp: câu hỏi bên trái, phần trả lời bên phải */
-@media (orientation:landscape) and (max-height:520px){
+@media (orientation:landscape) and (max-height:520px) and (pointer:coarse){
  .game{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);column-gap:8px}
  .game>*{max-width:none;margin:0}
  .gtop{grid-column:1/-1;padding-top:6px;padding-bottom:4px}
@@ -542,7 +542,7 @@ body.px .node .lbl b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient
 .g1goal{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:10px 0 12px;padding:10px 12px;background:var(--sun-soft);color:var(--sun-ink)}
 .g1next{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:6px;color:var(--muted)}
 .g1next li{display:flex;gap:8px;align-items:center}
-@media (orientation:landscape) and (max-height:520px){.g1opts button{min-height:46px}.g1opts.big button{font-size:34px}.g1tile{width:50px;height:50px;font-size:32px}.g1grp img{height:22px!important;width:auto!important}}
+@media (orientation:landscape) and (max-height:520px) and (pointer:coarse){.g1opts button{min-height:46px}.g1opts.big button{font-size:34px}.g1tile{width:50px;height:50px;font-size:32px}.g1grp img{height:22px!important;width:auto!important}}
 .pxq:not(.mist):not(.storm){--pq:#1F2A5A;--pq2:#3A4A8A}
 .g1qm{display:grid;place-items:center;width:34px;height:34px;font-family:var(--f-display);font-size:30px;color:var(--coral);background:var(--sun-soft);box-shadow:var(--f2)}
 .g1line{flex-wrap:nowrap;max-width:none}
@@ -574,7 +574,7 @@ body.px .node .lbl b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient
 .mini .gtop{gap:10px}
 .mgsc{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-display);font-size:26px;line-height:1}
 .mgrule{display:flex;align-items:center;gap:10px;margin:4px 16px 8px;padding:10px 12px;background:var(--surface);font-weight:700;font-size:17px;box-shadow:var(--f2);position:relative;padding-right:48px}
-.mgf{position:relative;flex:1;min-height:260px;overflow:hidden;margin:0 0 0;touch-action:none}
+.mgf{position:relative;flex:1;min-height:260px;overflow:hidden;margin:0 auto;touch-action:none}
 .mgf.fish{background:#3FC1EC radial-gradient(#BDEBFA 2px,transparent 3px) 0 0/46px 34px}
 .mgf.balloon{background:#9CE0F6 radial-gradient(#fff 3px,transparent 4px) 0 0/70px 54px}
 .mgi{position:absolute;left:0;top:0;border:0;background:none;cursor:pointer;font:inherit;color:#1F2A5A;will-change:transform;padding:0}
@@ -656,3 +656,8 @@ u.hl{text-decoration:none;background:var(--sun);padding:0 2px}
 .g1bar{display:flex;gap:0;padding:8px;background:var(--surface);box-shadow:var(--f2)}
 .g1bar i{width:34px;height:44px;background:#fff;box-shadow:inset 0 0 0 3px #1F2A5A;margin-left:-3px}
 .angsvg{display:block}
+
+/* trò chơi nhỏ: luôn xếp dọc, căn giữa, vừa mọi màn hình (máy tính, điện thoại xoay ngang) */
+.game.mini{display:flex!important;flex-direction:column}
+.game.mini>*{width:100%;max-width:720px!important;margin-left:auto!important;margin-right:auto!important;grid-column:auto!important}
+.game.mini>.mgrule{max-width:688px!important;width:calc(100% - 32px)}

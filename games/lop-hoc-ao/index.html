@@ -472,7 +472,7 @@ body.px .node .lbl b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient
  .qtxt{font-size:24px}
 }
 /* điện thoại xoay ngang, màn thấp: câu hỏi bên trái, phần trả lời bên phải */
-@media (orientation:landscape) and (max-height:520px){
+@media (orientation:landscape) and (max-height:520px) and (pointer:coarse){
  .game{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);column-gap:8px}
  .game>*{max-width:none;margin:0}
  .gtop{grid-column:1/-1;padding-top:6px;padding-bottom:4px}
@@ -549,7 +549,7 @@ body.px .node .lbl b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient
 .g1goal{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:10px 0 12px;padding:10px 12px;background:var(--sun-soft);color:var(--sun-ink)}
 .g1next{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:6px;color:var(--muted)}
 .g1next li{display:flex;gap:8px;align-items:center}
-@media (orientation:landscape) and (max-height:520px){.g1opts button{min-height:46px}.g1opts.big button{font-size:34px}.g1tile{width:50px;height:50px;font-size:32px}.g1grp img{height:22px!important;width:auto!important}}
+@media (orientation:landscape) and (max-height:520px) and (pointer:coarse){.g1opts button{min-height:46px}.g1opts.big button{font-size:34px}.g1tile{width:50px;height:50px;font-size:32px}.g1grp img{height:22px!important;width:auto!important}}
 .pxq:not(.mist):not(.storm){--pq:#1F2A5A;--pq2:#3A4A8A}
 .g1qm{display:grid;place-items:center;width:34px;height:34px;font-family:var(--f-display);font-size:30px;color:var(--coral);background:var(--sun-soft);box-shadow:var(--f2)}
 .g1line{flex-wrap:nowrap;max-width:none}
@@ -581,7 +581,7 @@ body.px .node .lbl b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient
 .mini .gtop{gap:10px}
 .mgsc{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-display);font-size:26px;line-height:1}
 .mgrule{display:flex;align-items:center;gap:10px;margin:4px 16px 8px;padding:10px 12px;background:var(--surface);font-weight:700;font-size:17px;box-shadow:var(--f2);position:relative;padding-right:48px}
-.mgf{position:relative;flex:1;min-height:260px;overflow:hidden;margin:0 0 0;touch-action:none}
+.mgf{position:relative;flex:1;min-height:260px;overflow:hidden;margin:0 auto;touch-action:none}
 .mgf.fish{background:#3FC1EC radial-gradient(#BDEBFA 2px,transparent 3px) 0 0/46px 34px}
 .mgf.balloon{background:#9CE0F6 radial-gradient(#fff 3px,transparent 4px) 0 0/70px 54px}
 .mgi{position:absolute;left:0;top:0;border:0;background:none;cursor:pointer;font:inherit;color:#1F2A5A;will-change:transform;padding:0}
@@ -663,6 +663,11 @@ u.hl{text-decoration:none;background:var(--sun);padding:0 2px}
 .g1bar{display:flex;gap:0;padding:8px;background:var(--surface);box-shadow:var(--f2)}
 .g1bar i{width:34px;height:44px;background:#fff;box-shadow:inset 0 0 0 3px #1F2A5A;margin-left:-3px}
 .angsvg{display:block}
+
+/* trò chơi nhỏ: luôn xếp dọc, căn giữa, vừa mọi màn hình (máy tính, điện thoại xoay ngang) */
+.game.mini{display:flex!important;flex-direction:column}
+.game.mini>*{width:100%;max-width:720px!important;margin-left:auto!important;margin-right:auto!important;grid-column:auto!important}
+.game.mini>.mgrule{max-width:688px!important;width:calc(100% - 32px)}
 
 /* ===== bản học sinh ===== */
 [hidden]{display:none!important}
@@ -1824,7 +1829,24 @@ const NEXT1=['Làm quen với một số hình phẳng','Phép cộng, phép tr�
 const Q1N=3,BOSSN=5;
 /* ---- giọng Jenny ---- */
 let v1Voice=null,v1Said='';
-function sayJ(text){if(muted||!text)return;try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(!v1Voice){const vs=s.getVoices();v1Voice=vs.find(v=>/^vi/i.test(v.lang))||null}const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));u.lang='vi-VN';if(v1Voice)u.voice=v1Voice;u.rate=.92;u.pitch=1.15;s.speak(u)}catch(e){}}
+/* chuyển đề (có thể chứa HTML, kí hiệu toán) thành lời đọc tiếng Việt */
+function spoken(t){t=String(t).normalize('NFC');
+  t=t.replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g,' $1 phần $2 ');
+  t=t.replace(/<br\s*\/?>/gi,'. ').replace(/<\/?[a-zA-Z][^<>]*>/g,' ');
+  try{const d=document.createElement('textarea');d.innerHTML=t;t=d.value}catch(e){}
+  for(let i=0;i<3;i++)t=t.replace(/(\d)[ \u00a0](?=\d{3}(?!\d))/g,'$1');
+  t=t.replace(/(\d),(\d)/g,'$1 phẩy $2').replace(/(\d)\s*\/\s*(\d)/g,'$1 phần $2')
+   .replace(/(km|dm|cm|mm|m)²/g,(m,u)=>({km:' ki-lô-mét vuông',dm:' đề-xi-mét vuông',cm:' xăng-ti-mét vuông',mm:' mi-li-mét vuông',m:' mét vuông'})[u])
+   .replace(/(km|dm|cm|mm|m)³/g,(m,u)=>({km:' ki-lô-mét khối',dm:' đề-xi-mét khối',cm:' xăng-ti-mét khối',mm:' mi-li-mét khối',m:' mét khối'})[u])
+   .replace(/(\d|\?|☐)\s*(kg|km|cm|mm|dm|ml|ha|m|g|l)(?![a-zA-Zà-ỹ²³])/g,(m,d,u)=>d+' '+({kg:'ki-lô-gam',km:'ki-lô-mét',cm:'xăng-ti-mét',mm:'mi-li-mét',dm:'đề-xi-mét',ml:'mi-li-lít',ha:'héc-ta',m:'mét',g:'gam',l:'lít'})[u])
+   .replace(/°C/g,' độ C').replace(/°/g,' độ').replace(/%/g,' phần trăm')
+   .replace(/≥/g,' lớn hơn hoặc bằng ').replace(/≤/g,' bé hơn hoặc bằng ').replace(/≠/g,' khác ')
+   .replace(/\s*>\s*/g,' lớn hơn ').replace(/\s*<\s*/g,' bé hơn ').replace(/\s*=\s*/g,' bằng ')
+   .replace(/\s*×\s*/g,' nhân ')
+   .replace(/(\d|\))\s*:\s*(?=[\d(☐])/g,'$1 chia ').replace(/\s*\+\s*/g,' cộng ').replace(/\s*[−–]\s*/g,' trừ ').replace(/(\d)\s+-\s+(?=\d)/g,'$1 trừ ')
+   .replace(/bằng\s*\?/g,'bằng bao nhiêu').replace(/☐|\?(?=\s*(?:cộng|trừ|nhân|chia|bằng|lớn|bé|$))/g,' mấy ').replace(/…|\.\.\./g,', ').replace(/[→⟶]/g,', ');
+  return t.replace(/\s+/g,' ').trim()}
+function sayJ(text){if(muted||!text)return;try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(!v1Voice){const vs=s.getVoices();const vi=vs.filter(v=>/^vi/i.test(v.lang));v1Voice=vi.find(v=>/google|natural|premium|enhanced/i.test(v.name))||vi[0]||null}const u=new SpeechSynthesisUtterance(spoken(text));u.lang='vi-VN';if(v1Voice)u.voice=v1Voice;u.rate=.9;u.pitch=1;s.speak(u)}catch(e){}}
 try{window.speechSynthesis&&window.speechSynthesis.addEventListener&&window.speechSynthesis.addEventListener('voiceschanged',()=>{v1Voice=null})}catch(e){}
 /* ---- trạng thái ---- */
 const isl1=id=>Object.values(PRIM).flatMap(p=>p.isl).find(x=>x.id===id);
