@@ -185,3 +185,10 @@
 @keyframes xfrip{50%{transform:translateX(6px)}}
 .xfpad.good{transform:translateY(2px)}
 .xfpad.sink{transition:transform .3s steps(3),filter .3s steps(3)}
+.xdots{display:inline-block;line-height:1.05;letter-spacing:1px;font-size:.8em;color:#F04A1B}
+/* Hứng sao: dấu chỗ chạm + giỏ nghiêng */
+.xgbask{transform-origin:50% 100%}
+.xgmark{position:absolute;bottom:4px;width:16px;height:8px;pointer-events:none;opacity:0;background:
+ linear-gradient(#FCD655,#FCD655) 6px 0/4px 4px no-repeat,linear-gradient(#FCD655,#FCD655) 0 4px/16px 4px no-repeat}
+.xgmark.on{animation:xgmk .6s steps(3) forwards}
+@keyframes xgmk{0%{opacity:1;transform:scale(1.4)}70%{opacity:1;transform:scale(1)}100%{opacity:0}}

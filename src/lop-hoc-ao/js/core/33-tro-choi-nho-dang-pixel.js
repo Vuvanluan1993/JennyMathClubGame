@@ -18,7 +18,7 @@ function mgBg(f,mode){const Z=4,W=Math.ceil(f.clientWidth/Z),H=Math.ceil(f.clien
   if(mode==='fish'){for(let i=0;i<7;i++){const b=document.createElement('i');b.className='mgbub';b.style.left=(8+rnd()*84)+'%';b.style.animationDelay=(rnd()*4).toFixed(1)+'s';b.style.animationDuration=(3+rnd()*3).toFixed(1)+'s';f.appendChild(b)}
     const boat=document.createElement('div');boat.className='mgboat';boat.innerHTML=spr('boat',56)+`<span class="mgjen">${spr(typeof ofVariant==='function'?ofVariant('jenny',jOutfit()):'jenny',30)}</span>`;f.appendChild(boat)}}
 function miniAfterRender(){if(scr.k!=='mini'||scr.end||scr.started)return;scr.started=true;stopMini();const f=document.getElementById('mgf');if(!f)return;sayJ(scr.say);mgBg(f,scr.mode);
-  const items=[];let last=0,spawnGap=1100,n=0;const W=()=>f.clientWidth,H=()=>f.clientHeight,fish=scr.mode==='fish';
+  const items=[];let last=0,spawnGap=2000,n=0;const W=()=>f.clientWidth,H=()=>f.clientHeight,fish=scr.mode==='fish';
   const FS=['fishO','fishY','fishP','fishG','fish'],BS=['balloon','balloonB','balloonP','balloonG'];
   const spawn=()=>{const it=scr._r.item(),el=document.createElement('button');el.type='button';n++;
     if(fish){el.className='mgi fishi';el.innerHTML=`${spr(FS[n%FS.length],46,'mgsp flip')}<span class="mgt">${it.t}</span>`}
@@ -30,7 +30,7 @@ function miniAfterRender(){if(scr.k!=='mini'||scr.end||scr.started)return;scr.st
       setTimeout(()=>el.remove(),380)});
     f.appendChild(el);items.push(o)};
   let prev=performance.now();
-  const step=ts=>{if(!mgLoop)return;const dt=Math.min(.05,(ts-prev)/1000);prev=ts;if(ts-last>spawnGap){spawn();last=ts;spawnGap=Math.max(650,spawnGap-12)}
+  const step=ts=>{if(!mgLoop)return;const dt=Math.min(.05,(ts-prev)/1000);prev=ts;if(ts-last>spawnGap&&items.filter(o=>!o.dead&&!o.gone).length<4){spawn();last=ts;spawnGap=Math.max(1400,spawnGap-6)}
     items.forEach(o=>{if(!o.el.isConnected)return;if(!o.dead){if(fish)o.x+=o.v*dt;else o.y-=o.v*dt}const bob=fish?Math.round(Math.sin(ts/300+o.ph)*3):Math.round(Math.sin(ts/500+o.ph)*4);
       o.el.style.transform=`translate(${Math.round(fish?o.x:o.x+bob)}px,${Math.round(fish?o.y+bob:o.y)}px)`;if(!o.dead&&((fish&&o.x>W()+20)||(!fish&&o.y<-130))){o.dead=true;o.el.remove()}});
     mgLoop.raf=requestAnimationFrame(step)};

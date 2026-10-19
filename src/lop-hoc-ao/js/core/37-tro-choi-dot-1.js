@@ -83,15 +83,18 @@ function starHit(ok,el){const g=scr;if(g.end)return;xgRec(ok);
   else{g.lives--;sfx('bad');hurtFx(1);xgHearts();if(el){el.classList.add('wrong');el.insertAdjacentHTML('beforeend',`<span class="mgfx">${spr('puff',42)}</span>`)}if(g.lives<=0)setTimeout(xgEnd,350)}}
 function starRun(){const g=scr,f=document.getElementById('xgf');if(!f)return;starBg(f);
   const bk=document.createElement('div');bk.className='xgbask';bk.innerHTML=spr('basket',84)+`<span class="xgbj">${spr(typeof ofVariant==='function'?ofVariant('jenny',jOutfit()):'jenny',34)}</span>`;f.appendChild(bk);
-  const W=()=>f.clientWidth,H=()=>f.clientHeight,BW=84;let bx=W()/2-BW/2,tx=bx;const items=[];let last=0,gap=1000,prev=performance.now();
+  const W=()=>f.clientWidth,H=()=>f.clientHeight,BW=84;let bx=W()/2-BW/2,tx=bx,vx=0;const items=[];let last=0,gap=2300,prev=performance.now();
+  const mk=document.createElement('div');mk.className='xgmark';f.appendChild(mk);
   const setT=cx=>{tx=Math.max(0,Math.min(W()-BW,cx-BW/2))};
-  const pd=e=>{e.preventDefault();const r=f.getBoundingClientRect();setT(e.clientX-r.left)};
+  const pd=e=>{e.preventDefault();const r=f.getBoundingClientRect();setT(e.clientX-r.left);mk.style.left=Math.round(tx+BW/2-8)+'px';mk.classList.remove('on');void mk.offsetWidth;mk.classList.add('on')};
   const pm=e=>{if(e.buttons||e.pointerType==='touch'){const r=f.getBoundingClientRect();setT(e.clientX-r.left)}};
   const kd=e=>{if(e.key==='ArrowLeft'){tx=Math.max(0,tx-60);e.preventDefault()}if(e.key==='ArrowRight'){tx=Math.min(W()-BW,tx+60);e.preventDefault()}};
   f.addEventListener('pointerdown',pd);f.addEventListener('pointermove',pm);addEventListener('keydown',kd);
   const spawn=()=>{const it=g._r.item(),el=document.createElement('div');el.className='xgsi';el.innerHTML=`${spr('star',66,'mgsp')}<span class="mgt">${it.t}</span>`;f.appendChild(el);items.push({el,ok:it.ok,x:R(4,Math.max(6,W()-70)),y:-70,v:70+Math.random()*40+(60-g.t)*1.4,dead:false})};
-  const step=ts=>{if(!xgLoop||scr!==g||g.end)return;const dt=Math.min(.05,(ts-prev)/1000);prev=ts;if(ts-last>gap){spawn();last=ts;gap=Math.max(650,gap-10)}
-    bx+=(tx-bx)*Math.min(1,dt*12);bk.style.transform=`translate(${Math.round(bx)}px,0)`;const top=H()-62;
+  const step=ts=>{if(!xgLoop||scr!==g||g.end)return;const dt=Math.min(.05,(ts-prev)/1000);prev=ts;if(ts-last>gap&&items.filter(o=>!o.dead).length<3){spawn();last=ts;gap=Math.max(1700,gap-6)}
+    /* giỏ có quán tính: tăng tốc dần về chỗ chạm, nghiêng theo hướng chạy, hãm lại khi tới */
+    {const d=tx-bx;vx+=d*dt*14-vx*dt*3.2;vx=Math.max(-260,Math.min(260,vx));bx+=vx*dt;if(bx<0){bx=0;vx=-vx*.3}if(bx>W()-BW){bx=W()-BW;vx=-vx*.3}if(Math.abs(d)<1&&Math.abs(vx)<6){bx=tx;vx=0}}
+    bk.style.transform=`translate(${Math.round(bx)}px,0) rotate(${Math.max(-14,Math.min(14,vx*.06)).toFixed(1)}deg)`;const top=H()-62;
     items.forEach(o=>{if(o.dead)return;o.y+=o.v*dt;o.el.style.transform=`translate(${Math.round(o.x)}px,${Math.round(o.y)}px)`;
       if(o.y+56>=top&&o.y<top+20&&o.x+52>bx&&o.x+12<bx+BW){o.dead=true;starHit(o.ok,o.el);o.el.classList.add('pop');setTimeout(()=>o.el.remove(),380)}
       else if(o.y>H()){o.dead=true;o.el.remove()}});
