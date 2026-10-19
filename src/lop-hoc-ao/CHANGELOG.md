@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Cân lại trò chơi thêm lớp 4–5
+- Lớp 4–5: mỗi đảo giữ trò bắt buộc theo nội dung (Ghép hình, Cửa hàng, Cân), rồi lấp đủ 3 trò bằng trò phù hợp đang ít dùng nhất (`core/39c-can-bang-tro-choi.js`). Mỗi trò nay có ở khoảng 35–49 đảo; Đập chuột lớp 5 giảm từ 88 xuống 48; Ghép hình lớp 4 tăng từ 6 lên 16 (thêm đảo Luyện tập, Ôn tập của chủ đề hình học).
+
 ## 2026-10-19 — Chơi thêm đợt 3
 - Đập chuột chũi: chuột thò lên từ 9 hang, cầm biển số; đập con đúng luật của đảo (+1, búa, sao nổ), đập sai mất tim. Chuột trốn nhanh dần. 60 giây, 3 tim.
 - Ếch nhảy lá súng: hồ sen pixel, 3 lá súng mang đáp án cho câu của đảo; chọn đúng thì ếch nhảy lên, sai thì ếch rơi xuống nước và mất tim. Qua 8 hàng là thắng. Có ghi vào Sức mạnh Toán.
