@@ -11,7 +11,13 @@ Object.assign(PXS,{
 const PXCV={};
 function pxCanvas(name){if(PXCV[name])return PXCV[name];const rows=PXS[name],W=Math.max(...rows.map(r=>r.length)),H=rows.length,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');rows.forEach((r,j)=>[...r].forEach((ch,i)=>{if(PXC[ch]){x.fillStyle=PXC[ch];x.fillRect(i,j,1,1)}}));return PXCV[name]=c}
 let seaRun=0;
-function startSea(){const r=++seaRun;document.querySelectorAll('.seacv').forEach(cv=>seaOne(cv,r))}
+/* chủ đề ít đảo trên màn hình rộng: kéo biển cho đầy khung, đưa đảo vào giữa */
+function fitSea(){document.querySelectorAll('.seain').forEach(si=>{const sea=si.parentElement;if(!sea)return;const w0=+(si.dataset.w0||(si.dataset.w0=parseInt(si.style.width)||si.offsetWidth));
+  const pw=sea.clientWidth,W=Math.max(w0,pw),dx=Math.floor((W-w0)/2),old=+(si.dataset.dx||0);if(W===si.offsetWidth&&dx===old)return;
+  si.style.width=W+'px';const cv=si.querySelector('.seacv');if(cv){cv.width=W;if(cv.dataset.isl){const P=JSON.parse(cv.dataset.isl).map(([x,y])=>[x-old+dx,y]);cv.dataset.isl=JSON.stringify(P)}}
+  [...si.children].forEach(el=>{if(el===cv)return;if(el.tagName==='svg'){el.style.left=dx+'px';return}const l=parseFloat(el.style.left);if(!isNaN(l))el.style.left=(l-old+dx)+'px'});si.dataset.dx=dx})}
+{let _rt;addEventListener('resize',()=>{clearTimeout(_rt);_rt=setTimeout(()=>{if(document.querySelector('.seain')){fitSea();startSea()}},200)})}
+function startSea(){fitSea();const r=++seaRun;document.querySelectorAll('.seacv').forEach(cv=>seaOne(cv,r))}
 function seaOne(cv,run0){if(!cv.getContext)return;let ctx;try{ctx=cv.getContext('2d')}catch(e){return}if(!ctx)return;
   const Z=3,W=Math.ceil(cv.width/Z),H=Math.ceil(cv.height/Z),run=run0;
   const dark=document.documentElement.dataset.theme==='dark'||(document.documentElement.dataset.theme!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);

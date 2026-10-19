@@ -1863,7 +1863,13 @@ Object.assign(PXS,{
 const PXCV={};
 function pxCanvas(name){if(PXCV[name])return PXCV[name];const rows=PXS[name],W=Math.max(...rows.map(r=>r.length)),H=rows.length,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');rows.forEach((r,j)=>[...r].forEach((ch,i)=>{if(PXC[ch]){x.fillStyle=PXC[ch];x.fillRect(i,j,1,1)}}));return PXCV[name]=c}
 let seaRun=0;
-function startSea(){const r=++seaRun;document.querySelectorAll('.seacv').forEach(cv=>seaOne(cv,r))}
+/* chủ đề ít đảo trên màn hình rộng: kéo biển cho đầy khung, đưa đảo vào giữa */
+function fitSea(){document.querySelectorAll('.seain').forEach(si=>{const sea=si.parentElement;if(!sea)return;const w0=+(si.dataset.w0||(si.dataset.w0=parseInt(si.style.width)||si.offsetWidth));
+  const pw=sea.clientWidth,W=Math.max(w0,pw),dx=Math.floor((W-w0)/2),old=+(si.dataset.dx||0);if(W===si.offsetWidth&&dx===old)return;
+  si.style.width=W+'px';const cv=si.querySelector('.seacv');if(cv){cv.width=W;if(cv.dataset.isl){const P=JSON.parse(cv.dataset.isl).map(([x,y])=>[x-old+dx,y]);cv.dataset.isl=JSON.stringify(P)}}
+  [...si.children].forEach(el=>{if(el===cv)return;if(el.tagName==='svg'){el.style.left=dx+'px';return}const l=parseFloat(el.style.left);if(!isNaN(l))el.style.left=(l-old+dx)+'px'});si.dataset.dx=dx})}
+{let _rt;addEventListener('resize',()=>{clearTimeout(_rt);_rt=setTimeout(()=>{if(document.querySelector('.seain')){fitSea();startSea()}},200)})}
+function startSea(){fitSea();const r=++seaRun;document.querySelectorAll('.seacv').forEach(cv=>seaOne(cv,r))}
 function seaOne(cv,run0){if(!cv.getContext)return;let ctx;try{ctx=cv.getContext('2d')}catch(e){return}if(!ctx)return;
   const Z=3,W=Math.ceil(cv.width/Z),H=Math.ceil(cv.height/Z),run=run0;
   const dark=document.documentElement.dataset.theme==='dark'||(document.documentElement.dataset.theme!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);
@@ -2387,7 +2393,6 @@ function viewHome1t(){const st=S.st[sid],tab=scr.tab||'map',nm=Object.keys(mist(
   let body=tab==='jenny'?viewJTab1(st):tab==='fix'?viewFix1(st):tab==='album'?viewAlbum(st):tab==='hoso'?viewHoSo(st):viewHome1();
   if(tab==='map'){const c=cbCard(st);if(c)body=body.replace('<!--CARDS-->','<!--CARDS-->'+c)}
   if(tab==='map'&&nm)body=body.replace('<!--CARDS-->',`<!--CARDS--><button class="pxq mist" onclick="go({k:'home',tab:'fix'})"><span class="pxq-ic">${spr('book',46)}<i class="pxq-n">${nm}</i></span><span class="pxq-tx"><b>Sổ lỗi sai</b><span>${nm} dạng bài cần sửa · mỗi lỗi sửa xong +5 ${spr('coin',14)}</span><span class="pxq-dots" aria-hidden="true">${Array.from({length:Math.min(6,nm)},()=>'<i></i>').join('')}</span></span><span class="pxq-go">Luyện ▶</span></button>`);
-  if(tab==='map'&&st.active){const jb=P2_1.find(x=>!x.draft&&S.open[x.id]&&!j1s(st,x.id).m.every(Boolean));if(jb)body=body.replace('<!--CARDS-->',`<!--CARDS--><button class="pxq" style="--pq:#FCB40C;--pq2:#F37A1F" onclick="go({k:'jenny',id:'${jb.id}'})"><span class="pxq-ic">${spr('star',38)}</span><span class="pxq-tx"><b>Cô vừa mở Toán Jenny</b><span>${esc(jb.title)}</span></span><span class="pxq-go">Học ▶</span></button>`)}
   return body+`<nav class="bnav" aria-label="Điều hướng">${nav.map(([k,i,n])=>`<button class="${k===tab?'on':''}" aria-current="${k===tab?'page':'false'}" onclick="go({k:'home',tab:'${k}'})"><span aria-hidden="true">${i}</span>${n}</button>`).join('')}</nav>`}
 function endFix1(){const g=scr,st=S.st[sid];g.end=true;g.pass=true;st.coins+=g.fixed*5;log(sid,'passed',`Toán ${curG()} · Sổ lỗi sai`,0,{success:true,score:{raw:g.fixed}});sfx(g.fixed?'win':'ok');sayJ(g.fixed?`Em đã sửa xong ${NUMW[g.fixed]||g.fixed} lỗi. Giỏi quá!`:'Luyện tốt lắm!');save();render()}
 function endJ1(alive){const g=scr,st=S.st[sid],x=ju1(g.id),s=j1s(st,x.id),qd=quest(st);g.end=true;g.pass=alive&&g.hearts>0&&g.ok>=needOf(g.qs.length);g.newStar=0;

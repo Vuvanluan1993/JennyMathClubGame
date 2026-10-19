@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Biển đầy khung, bỏ thẻ trùng
+- Chủ đề ít đảo trên màn hình rộng (laptop): biển tự kéo đầy khung, các đảo nằm giữa; tự chỉnh lại khi đổi cỡ cửa sổ.
+- Bỏ thẻ "Cô vừa mở Toán Jenny" trên bản đồ (đã có ở tab Toán Jenny).
+
 ## 2026-10-19 — Hồ sơ của em (lớp 1–5)
 - Tab mới **Hồ sơ** ở thanh dưới (icon bảng có đường đi lên), giữ nguyên các icon cũ.
 - **Chuỗi ngày chăm chỉ**: mỗi ô là 1 ngày của năm học 2026–2027 (từ 05/09 đến 31/05), có tên tháng; màu đậm dần theo số câu (0, 1–9, 10–24, 25–49, từ 50); hôm nay viền vàng; chạm ô để xem "Thứ Hai 19/10: 32 câu · đúng 28 · 18 phút". Trên điện thoại vuốt ngang, tự mở ở tuần hiện tại.
