@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Nhãn dài không che hình
+- Câu cá, Bóng bay, Hứng sao, Đập chuột, Ếch nhảy, Tàu hoả: nhãn được xếp theo độ dài. Tên đồ vật (ví dụ "Hộp sữa tươi") thành thẻ tên 2 dòng đặt dưới con cá / ngôi sao (cá to hơn), trong lòng bóng bay thì xuống dòng, chữ nhỏ lại; phép tính dài ("3 cm + 11 cm") chữ nhỏ lại. Đã rà các đảo có nhãn dài ở cả 5 lớp (khoảng 120 đảo mỗi trò).
+
 ## 2026-10-19 — Cửa hàng Jenny: chuyển lượt rõ ràng
 - Mỗi lượt là một quầy khác (Quầy bánh, Sạp trái cây, Tiệm đồ chơi, Hiệu sách, Quầy kem, Tiệm hoa, Sạp rau, Quầy nước) với mái che, màu, tên quầy và số khách "Khách n/8". Trả đúng: tiền bay vào máy tính tiền (ting!), món hàng nhảy vào túi, bảng "Khách n/8 ✓ Cảm ơn!", quầy cũ trượt sang trái, quầy mới trượt vào từ bên phải.
 
