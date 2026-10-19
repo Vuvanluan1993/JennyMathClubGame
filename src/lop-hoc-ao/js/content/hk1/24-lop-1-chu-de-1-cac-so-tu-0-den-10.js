@@ -86,6 +86,7 @@ function spoken(t){t=String(t).normalize('NFC');
   t=t.replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g,' $1 phần $2 ');
   t=t.replace(/<br\s*\/?>/gi,'. ').replace(/<\/?[a-zA-Z][^<>]*>/g,' ');
   try{const d=document.createElement('textarea');d.innerHTML=t;t=d.value}catch(e){}
+  t=t.replace(/\u00a0{2,}|\u00a0(?!\d{3})| {3,}/g,'. ');
   for(let i=0;i<3;i++)t=t.replace(/(\d)[ \u00a0](?=\d{3}(?!\d))/g,'$1');
   t=t.replace(/(\d),(\d)/g,'$1 phẩy $2').replace(/(\d)\s*\/\s*(\d)/g,'$1 phần $2')
    .replace(/(km|dm|cm|mm|m)²/g,(m,u)=>({km:' ki-lô-mét vuông',dm:' đề-xi-mét vuông',cm:' xăng-ti-mét vuông',mm:' mi-li-mét vuông',m:' mét vuông'})[u])
@@ -96,8 +97,15 @@ function spoken(t){t=String(t).normalize('NFC');
    .replace(/\s*>\s*/g,' lớn hơn ').replace(/\s*<\s*/g,' bé hơn ').replace(/\s*=\s*/g,' bằng ')
    .replace(/\s*×\s*/g,' nhân ')
    .replace(/(\d|\))\s*:\s*(?=[\d(☐])/g,'$1 chia ').replace(/\s*\+\s*/g,' cộng ').replace(/\s*[−–]\s*/g,' trừ ').replace(/(\d)\s+-\s+(?=\d)/g,'$1 trừ ')
-   .replace(/bằng\s*\?/g,'bằng bao nhiêu').replace(/☐|\?(?=\s*(?:cộng|trừ|nhân|chia|bằng|lớn|bé|$))/g,' mấy ').replace(/…|\.\.\./g,', ').replace(/[→⟶]/g,', ');
-  return t.replace(/\s+/g,' ').trim()}
+   .replace(/bằng\s*\?/g,'bằng bao nhiêu').replace(/(\S)\s+(?:…|\.\.\.)\s+(?=\S)/g,(m,c)=>/[,:]/.test(c)?c+' chỗ trống ':c+' và ').replace(/(?:…|\.\.\.)(?=\s*,)/g,' chỗ trống ').replace(/☐|\?(?=\s*(?:cộng|trừ|nhân|chia|bằng|lớn|bé|$))/g,' mấy ').replace(/…|\.\.\./g,', ').replace(/[→⟶]/g,', ');
+  return t.replace(/\s+/g,' ').replace(/\s+([.,:;!?])/g,'$1').replace(/([.,])(?:\s*[.,])+/g,'$1').trim()}
+/* lời đọc đầy đủ: lời Jenny + các dòng phép tính trên màn hình mà lời Jenny chưa nhắc tới */
+function sayFull(say,html){say=String(say||'');if(!html)return say;
+  const lines=String(html).replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g,'$1/$2').split(/<\/?(?:p|li|tr|div|br|h\d|ol|ul|table)\b[^>]*>/i).map(l=>l.replace(/<\/?[a-zA-Z][^<>]*>/g,' ')).map(l=>{try{const d=document.createElement('textarea');d.innerHTML=l;return d.value}catch(e){return l}}).map(l=>l.replace(/[ \t\n\r]+/g,' ').trim()).filter(l=>/\d/.test(l)&&/[=<>+−×:…☐?]/.test(l));
+  const S=say.toLowerCase().normalize('NFC'),SD=S.replace(/(\d)[  ](?=\d{3}(?!\d))/g,'$1');
+  const has=n=>{const raw=n.replace(/[  ]/g,'');if(new RegExp('(^|[^\\d,])'+raw.replace(',','[,.]')+'(?![\\d])').test(SD))return true;if(raw.includes(','))return raw.split(',').every(p=>S.includes(vnRead(Number(p)))||S.includes(p));const v=Number(raw);return v<1e12&&S.includes(vnRead(v).toLowerCase())};
+  const miss=[];for(const l of lines){const nums=l.match(/\d{1,3}(?:[  ]\d{3})+(?:,\d+)?|\d+(?:,\d+)?/g)||[];if(nums.length&&!nums.every(has)&&!miss.includes(l))miss.push(l)}
+  return miss.length?(say+(say?' ':'')+miss.map(l=>spoken(l)).join('. ')+'.').replace(/([.!?])\s*\.+/g,'$1'):say}
 function sayJ(text){if(muted||!text)return;try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(!v1Voice){const vs=s.getVoices();const vi=vs.filter(v=>/^vi/i.test(v.lang));v1Voice=vi.find(v=>/google|natural|premium|enhanced/i.test(v.name))||vi[0]||null}const u=new SpeechSynthesisUtterance(spoken(text));u.lang='vi-VN';if(v1Voice)u.voice=v1Voice;u.rate=.9;u.pitch=1;s.speak(u)}catch(e){}}
 try{window.speechSynthesis&&window.speechSynthesis.addEventListener&&window.speechSynthesis.addEventListener('voiceschanged',()=>{v1Voice=null})}catch(e){}
 /* ---- trạng thái ---- */
@@ -177,7 +185,7 @@ function viewGame1(){
   const track=g.race?`<span class="mgsc">${spr('star',22)} <b>${g.ok}</b></span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="rtime">${g.t}</b></span>`:cbb?`<div class="bosshp" aria-label="Máu trùm lớp"><i style="width:${cbb.hp/cbb.max*100}%"></i></div>`:boss?`<div class="bosshp" aria-label="Máu trùm ${g.hp}/${n}"><i style="width:${g.hp/n*100}%"></i></div>`:`<div class="planks" aria-label="Câu ${g.j+1}/${n}">${g.qs.map((_,k)=>`<i class="${g.res[k]===true?'ok':g.res[k]===false?'bad':k===g.j?'cur':''}"></i>`).join('')}</div>`;
   return`<div class="game g1" role="dialog" aria-label="${esc(x.title)}"><div class="gtop"><button class="gx" onclick="try{speechSynthesis.cancel()}catch(e){};${g.tre?`go({k:'home'})`:g.race||g.cbo?`go({k:'island',id:'${g.id}'})`:g.fix?`go({k:'home',tab:'fix'})`:g.part===2?`go({k:'jenny',id:'${g.id}'})`:`go({k:'island',id:'${g.id}'})`}" aria-label="Thoát">✕</button>${track}${g.race?'':g.tre?'<span class="pill acc">Kho báu</span>':g.fix?'<span class="pill acc">📒 Luyện lỗi</span>':`<span class="hearts" aria-label="Còn ${g.hearts} tim">${[0,1,2].map(i=>`<span class="${i<g.hearts?'':'lost'}">❤</span>`).join('')}</span>`}</div>
    <div class="gmid ${g.flash?'fl'+g.flash:''}">${cbb?`<div class="scene boss"><span class="monster ${g.hit?'hit':''}">${spr(cbb.spr,84)}</span><span class="muted">${esc(cbb.name)} · ${cbb.hp}/${cbb.max} máu</span></div>`:''}${boss?`<div class="scene boss"><span class="monster ${g.hit?'hit':''}">${spr(bossOf(scr.id)[0],84)}</span><span class="muted">${bossOf(scr.id)[1]}</span></div>`:''}
-    <div class="g1q">${jenny(54)}<div class="g1bub"><div>${q.q}</div><button class="g1spk" type="button" onclick="sayJ(q1().say)" aria-label="Nghe lại đề">🔊</button></div></div>
+    <div class="g1q">${jenny(54)}<div class="g1bub"><div>${q.q}</div><button class="g1spk" type="button" onclick="sayJ(sayFull(q1().say,q1().q))" aria-label="Nghe lại đề">🔊</button></div></div>
     ${q.pic?`<div class="g1pic">${q.pic}</div>`:''}${q.type==='num'?`<div class="slotbox ${g.inp?'':'empty'}" aria-live="polite">${g.inp?esc(g.inp):'?'}</div>`:''}${q.type==='slots'?slotsView(q):q.type==='build'?buildView(q):q.type==='order'?`<div class="g1seq">${q.a.map((_,k)=>`<span>${g.seq[k]!==undefined?q.opts[g.seq[k]]:''}</span>`).join('')}</div>`:''}</div>
    <div class="gbot">${g.sheet?sheet1():input1(q)}</div></div>`;
 }
@@ -241,6 +249,6 @@ function viewEnd1(){if(scr.fix||scr.part===2)return viewEnd1b();const g=scr,x=is
    ${g.newStar?'<p class="earn">+1 sao</p>':''}${g.card?`<p class="earn">Thẻ mới: ${spr(g.card[0],28)} ${esc(g.card[1])}</p>`:''}${g.unlock?`<p class="muted">Đã mở đảo mới: <b>${esc(g.unlock.short)}</b></p>`:''}
    <div class="gendbtn">${g.pass&&nextL>0?`<button class="gobtn" type="button" onclick="startG1('${x.id}',${nextL})">${nextL===2?'Đánh trùm':'Màn '+(nextL+1)}</button>`:''}${!g.pass?`<button class="gobtn" type="button" onclick="startG1('${x.id}',${g.lv})">Chơi lại</button>`:''}${g.pass&&nextL<0&&PI()[k+1]?`<button class="gobtn" type="button" onclick="go({k:'island',id:'${PI()[k+1].id}'})">Đảo tiếp theo →</button>`:''}<button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${x.id}'})">Về đảo</button><button class="gobtn ghost" type="button" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`}
 /* đọc đề khi câu mới hiện ra */
-function g1AfterRender(){if(role==='hs'&&S.st[sid]&&S.st[sid].grade<=5&&scr.k==='home'&&(scr.tab||'map')==='map'&&!scr.noJump){const c=curT1(S.st[sid]);setTimeout(()=>{if(c>0)jumpT1(c);const ch=document.querySelector('.tchip.on');if(ch&&ch.parentNode)ch.parentNode.scrollLeft=ch.offsetLeft-ch.parentNode.clientWidth/2+ch.offsetWidth/2},0)}if(role!=='hs'||!S.st[sid]||S.st[sid].grade>2||scr.k!=='game'||scr.end||scr.sheet)return;const key=scr.id+scr.lv+':'+scr.j+':'+scr.t0;if(v1Said===key)return;v1Said=key;setTimeout(()=>{if(scr.k==='game'&&scr.g1&&scr.qs&&!scr.end&&!scr.sheet)sayJ(q1().say)},250)}
+function g1AfterRender(){if(role==='hs'&&S.st[sid]&&S.st[sid].grade<=5&&scr.k==='home'&&(scr.tab||'map')==='map'&&!scr.noJump){const c=curT1(S.st[sid]);setTimeout(()=>{if(c>0)jumpT1(c);const ch=document.querySelector('.tchip.on');if(ch&&ch.parentNode)ch.parentNode.scrollLeft=ch.offsetLeft-ch.parentNode.clientWidth/2+ch.offsetWidth/2},0)}if(role!=='hs'||!S.st[sid]||S.st[sid].grade>2||scr.k!=='game'||scr.end||scr.sheet)return;const key=scr.id+scr.lv+':'+scr.j+':'+scr.t0;if(v1Said===key)return;v1Said=key;setTimeout(()=>{if(scr.k==='game'&&scr.g1&&scr.qs&&!scr.end&&!scr.sheet)sayJ(sayFull(q1().say,q1().q))},250)}
 
 P1BY[1]=P1_1;ALLP1.push(...P1_1);
