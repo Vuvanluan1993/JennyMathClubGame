@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Thông báo trên thanh điều hướng
+- Bản đồ: hiện số đảo vừa mở mà em chưa vào (tính theo tiến độ thật).
+- Toán Jenny: hiện số buổi cô mới giao; nếu chưa kích hoạt (bản miễn phí) thì icon mờ kèm ổ khoá.
+- Sưu tập: hiện số món mới (thẻ sinh vật, dấu hộ chiếu) em chưa xem.
+- Số đỏ + rung nhẹ giống Luyện lỗi; tự mất khi em vào xem. Lưu ở `st.seen` (`core/36-thong-bao.js`).
+
 ## 2026-10-19 — Sổ lỗi sai lên thanh điều hướng
 - Số lỗi nằm gọn trong thanh điều hướng, không bị che trên điện thoại.
 - Bỏ thẻ Sổ lỗi sai trên bản đồ. Khi có lỗi cần sửa, icon Luyện lỗi ở thanh dưới hiện số lỗi và rung nhẹ.
