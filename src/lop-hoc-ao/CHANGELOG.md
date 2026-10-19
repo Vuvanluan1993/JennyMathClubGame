@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Bỏ chữ "Hệ …" sau tên trùm
+- Tên trùm không còn đuôi "· Hệ Kẹo ngọt", "· Hệ Độc", "· Hệ Lửa"… (bản đồ, đảo, trận trùm). Màu trùm theo vùng biển vẫn giữ.
+
 ## 2026-10-19 — Tên chủ đề trên bản đồ luôn một dòng
 - Mọi lớp, mọi chủ đề: tên chủ đề nằm gọn một dòng. Tên dài thì chữ tự nhỏ lại cho vừa khung (điện thoại, máy tính đều vậy; xoay màn hình cũng tự chỉnh).
 
