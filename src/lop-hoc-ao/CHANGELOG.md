@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Tên chủ đề trên bản đồ luôn một dòng
+- Mọi lớp, mọi chủ đề: tên chủ đề nằm gọn một dòng. Tên dài thì chữ tự nhỏ lại cho vừa khung (điện thoại, máy tính đều vậy; xoay màn hình cũng tự chỉnh).
+
 ## 2026-10-19 — Leo núi: lời giải gọn
 - Khung lời giải chỉ còn câu dẫn và các phép tính; bỏ chữ "Bài giải" và dòng "Đáp số" (cả phần Jenny đọc).
 
