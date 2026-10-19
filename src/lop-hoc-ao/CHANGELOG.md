@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Leo núi: lời giải gọn
+- Khung lời giải chỉ còn câu dẫn và các phép tính; bỏ chữ "Bài giải" và dòng "Đáp số" (cả phần Jenny đọc).
+
 ## 2026-10-19 — Leo núi: bài giải có câu dẫn, chờ em đọc xong; Thả mồi xoá thông báo cũ
 - Leo núi: sai 2 lần thì hiện khung "Bài giải" (chỉ một lần chữ này), có câu dẫn dựng từ câu hỏi (vd "Số quyển vở cửa hàng có là:"), từng phép tính một dòng, "Đáp số" có đơn vị. Jenny đọc bài giải.
 - Không tự chuyển bài nữa: đồng hồ dừng, em bấm "Em hiểu rồi, leo tiếp ▶" mới sang bài mới. Chữ trong khung dùng phông dễ đọc có dấu.

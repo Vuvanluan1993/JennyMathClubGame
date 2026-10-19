@@ -141,7 +141,7 @@ function climbAns(i){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end||g.ph!==
   sfx('bad');if(g.tries<2){g.bad.push(i);g.ph='slip';g.pt=performance.now();if(fb)fb.innerHTML='<span class="bad">Cẩn thận! Đá lăn rồi. Đọc lại đề và thử lại nhé.</span>';climbUI();try{navigator.vibrate&&navigator.vibrate(80)}catch(e){}
     setTimeout(()=>{if(scr===g&&!g.end&&g.ph==='slip'){g.ph='ask';climbUI()}},700);return}
   g.lockA=1;g.ph='rest';g.pt=performance.now();g.miss++;const L=climbSol(q);
-  if(fb)fb.innerHTML=`<div class="xcsolbox"><div class="xcsolh">Jenny nghỉ ở trại. Cùng xem bài giải nhé!</div><div class="xcsolc"><b class="xcbg">Bài giải</b>${L.lead?`<div>${L.lead}</div>`:''}${L.lines.map(l=>`<div class="xcln">${l}</div>`).join('')}<div class="xcds">Đáp số: ${L.ans}.</div></div><button type="button" class="gobtn xcgo" onclick="climbGoOn()">Em hiểu rồi, leo tiếp ▶</button></div>`;climbUI();
+  if(fb)fb.innerHTML=`<div class="xcsolbox"><div class="xcsolh">Jenny nghỉ ở trại. Cùng xem bài giải nhé!</div><div class="xcsolc">${L.lead?`<div>${L.lead}</div>`:''}${L.lines.map(l=>`<div class="xcln">${l}</div>`).join('')}</div><button type="button" class="gobtn xcgo" onclick="climbGoOn()">Em hiểu rồi, leo tiếp ▶</button></div>`;climbUI();
   try{sayJ(`Cùng xem bài giải nhé. ${L.say}`)}catch(e){}}
 /* bài giải có câu dẫn: lấy từ câu hỏi "Hỏi … bao nhiêu …?" → "Số … … là:" */
 const CL_UNIT=/^(ki-lô-gam|gam|tấn|tạ|yến|mét|xăng-ti-mét|đề-xi-mét|mi-li-mét|ki-lô-mét|lít|mi-li-lít|(xăng-ti-mét|đề-xi-mét|mét|ki-lô-mét|mi-li-mét)\s+(vuông|khối)|giờ|phút|giây|độ|tuổi|đồng)$/i;
@@ -163,7 +163,7 @@ function climbSol(q){const raw=String(q.sol||'').replace(/^\s*(<b>)?\s*(Bài gi�
   /* đáp số có đơn vị */
   if(!/[a-zà-ỹđ²³]/i.test(ans)){const last=ktClean(lines[lines.length-1]||''),u=last.match(/\(([^()\d]{1,20})\)\s*$/)||last.match(/\d\s*([a-zà-ỹđ²³]+(?:\s[a-zà-ỹđ²³]+)?)\s*$/i);
     if(u&&!/dư/.test(u[1]))ans=`${ans} ${u[1].trim()}`;else if(noun)ans=`${ans} ${noun}`}
-  const say=ktClean(`${lead} ${lines.join('. ')}. Đáp số: ${ans}.`);return{lead,lines,ans,say}}
+  const say=ktClean(`${lead} ${lines.join('. ')}.`);return{lead,lines,ans,say}}
 function climbGoOn(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end||g.ph!=='rest')return;try{speechSynthesis.cancel()}catch(e){}sfx('tap');climbNext(g)}
 function climbEnd(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end)return;stopXG();const st=S.st[sid];st.mg=st.mg||{};const key=`${g.id}:climb`;g.prev=st.mg[key]||0;st.mg[key]=Math.max(g.prev,g.score);
   g.coins=addCoins(sid,Math.min(20,g.score*3+(g.score>=CLIMB_N?2:0)),'self');g.end=true;g.win=g.score>=CLIMB_N;log(sid,'passed',`Leo núi · ${isl1(g.id).title}`,0,{success:true,score:{raw:g.score}});
