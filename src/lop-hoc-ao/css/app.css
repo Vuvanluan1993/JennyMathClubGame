@@ -710,3 +710,23 @@ u.hl{text-decoration:none;background:var(--sun);padding:0 2px}
 .bossbdg{animation:bBadge 1.2s steps(4) infinite}
 @keyframes bBadge{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-4px) scale(1.08)}}
 .cbimg .px{animation:bIdle 1.2s steps(4) infinite;transform-origin:50% 100%}
+/* ===== Jenny biểu cảm ===== */
+.jav{position:relative;overflow:visible!important}
+.jbody{position:relative;display:block;line-height:0;transform-origin:50% 100%}
+.jbody .jblink{position:absolute;left:0;bottom:0;opacity:0;animation:jBlink 3.6s steps(1) infinite}
+@keyframes jBlink{0%,93%{opacity:0}94%,97%{opacity:1}98%,100%{opacity:0}}
+.jm-idle .jbody{animation:jBreath 2.4s steps(4) infinite}
+@keyframes jBreath{50%{transform:scale(1.03,.97)}}
+.jm-happy .jbody{animation:jHop .5s steps(4) 2}
+@keyframes jHop{0%,100%{transform:translateY(0)}40%{transform:translateY(-8px) scale(.96,1.05)}70%{transform:translateY(0) scale(1.06,.94)}}
+.jm-cheer .jbody{animation:jCheer .6s steps(4) infinite}
+@keyframes jCheer{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-10px) rotate(-5deg)}50%{transform:translateY(0) scale(1.05,.95)}75%{transform:translateY(-10px) rotate(5deg)}}
+.jm-sad .jbody{animation:jSad .7s steps(4) 1 forwards}
+@keyframes jSad{0%{transform:none}25%{transform:translateX(-3px) rotate(-4deg)}50%{transform:translateX(3px) rotate(4deg)}75%{transform:translateX(-2px)}100%{transform:translateY(2px) scale(1,.97)}}
+.jfx{position:absolute;pointer-events:none;line-height:0}
+.jfx.s1{top:-6px;right:-6px;animation:jSpark .8s steps(4) infinite}
+.jfx.s2{bottom:6px;left:-8px;animation:jSpark .8s steps(4) infinite;animation-delay:-.4s}
+@keyframes jSpark{0%,100%{transform:scale(.4);opacity:.2}50%{transform:scale(1.1);opacity:1}}
+.jfx.tear{top:48%;left:20%;animation:jTear 1.2s steps(5) infinite}
+@keyframes jTear{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(16px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.jbody,.jfx,.jblink{animation:none!important}}

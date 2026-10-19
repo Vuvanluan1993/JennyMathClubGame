@@ -1,6 +1,8 @@
 # Lịch sử thay đổi
 
 ## 2026-10-19 — Trùm hoạt hình
+- Jenny có biểu cảm (`core/33d`, `jenny(size, mood)`): chờ thì thở và nháy mắt; đúng thì mắt cười, miệng mở, nhảy, lấp lánh; sai thì lo lắng, rơm rớm nước mắt, lắc đầu; qua màn/hạ trùm thì giơ hai tay ăn mừng.
+- Trùm lớp dùng chung hoạt hình trùm (chờ, bị đánh, nổi giận, sắp thua, bị hạ) và có 6 hệ màu: Lửa, Băng, Độc, Vàng, Bóng đêm, Kẹo ngọt (đổi bảng màu sprite, cố định theo đảo, tên thêm "· Hệ …").
 - Trùm có hoạt hình pixel và biểu cảm (`core/33c`, `bossHTML()`): thở/nhún khi chờ; bị đánh thì loé trắng, bật lùi, sao nổ, hiện "-1"; học sinh sai thì trùm lao tới, đỏ mặt, gân giận, "Hừm!" kèm tiếng gầm; sắp thua thì run và đổ mồ hôi; bị hạ thì xoay, bẹp xuống, sao quay vòng; thắng thì nhảy cười "HA HA!" kèm tiếng cười.
 - Biểu tượng trùm trên bản đồ và ô Trùm lớp cũng nhún nhảy.
 - Đặt lại tên trùm lớp 2–5 theo chủ đề (trước bị cắt dở, ví dụ "Cá mập Và bổ sung").

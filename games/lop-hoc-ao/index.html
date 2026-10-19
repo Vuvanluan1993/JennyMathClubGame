@@ -717,6 +717,26 @@ u.hl{text-decoration:none;background:var(--sun);padding:0 2px}
 .bossbdg{animation:bBadge 1.2s steps(4) infinite}
 @keyframes bBadge{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-4px) scale(1.08)}}
 .cbimg .px{animation:bIdle 1.2s steps(4) infinite;transform-origin:50% 100%}
+/* ===== Jenny biểu cảm ===== */
+.jav{position:relative;overflow:visible!important}
+.jbody{position:relative;display:block;line-height:0;transform-origin:50% 100%}
+.jbody .jblink{position:absolute;left:0;bottom:0;opacity:0;animation:jBlink 3.6s steps(1) infinite}
+@keyframes jBlink{0%,93%{opacity:0}94%,97%{opacity:1}98%,100%{opacity:0}}
+.jm-idle .jbody{animation:jBreath 2.4s steps(4) infinite}
+@keyframes jBreath{50%{transform:scale(1.03,.97)}}
+.jm-happy .jbody{animation:jHop .5s steps(4) 2}
+@keyframes jHop{0%,100%{transform:translateY(0)}40%{transform:translateY(-8px) scale(.96,1.05)}70%{transform:translateY(0) scale(1.06,.94)}}
+.jm-cheer .jbody{animation:jCheer .6s steps(4) infinite}
+@keyframes jCheer{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-10px) rotate(-5deg)}50%{transform:translateY(0) scale(1.05,.95)}75%{transform:translateY(-10px) rotate(5deg)}}
+.jm-sad .jbody{animation:jSad .7s steps(4) 1 forwards}
+@keyframes jSad{0%{transform:none}25%{transform:translateX(-3px) rotate(-4deg)}50%{transform:translateX(3px) rotate(4deg)}75%{transform:translateX(-2px)}100%{transform:translateY(2px) scale(1,.97)}}
+.jfx{position:absolute;pointer-events:none;line-height:0}
+.jfx.s1{top:-6px;right:-6px;animation:jSpark .8s steps(4) infinite}
+.jfx.s2{bottom:6px;left:-8px;animation:jSpark .8s steps(4) infinite;animation-delay:-.4s}
+@keyframes jSpark{0%,100%{transform:scale(.4);opacity:.2}50%{transform:scale(1.1);opacity:1}}
+.jfx.tear{top:48%;left:20%;animation:jTear 1.2s steps(5) infinite}
+@keyframes jTear{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(16px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.jbody,.jfx,.jblink{animation:none!important}}
 
 /* ===== bản học sinh ===== */
 [hidden]{display:none!important}
@@ -1983,7 +2003,7 @@ function viewGame1(){
   const track=g.race?`<span class="mgsc">${spr('star',22)} <b>${g.ok}</b></span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="rtime">${g.t}</b></span>`:cbb?`<div class="bosshp" aria-label="Máu trùm lớp"><i style="width:${cbb.hp/cbb.max*100}%"></i></div>`:boss?`<div class="bosshp" aria-label="Máu trùm ${g.hp}/${n}"><i style="width:${g.hp/n*100}%"></i></div>`:`<div class="planks" aria-label="Câu ${g.j+1}/${n}">${g.qs.map((_,k)=>`<i class="${g.res[k]===true?'ok':g.res[k]===false?'bad':k===g.j?'cur':''}"></i>`).join('')}</div>`;
   return`<div class="game g1" role="dialog" aria-label="${esc(x.title)}"><div class="gtop"><button class="gx" onclick="try{speechSynthesis.cancel()}catch(e){};${g.tre?`go({k:'home'})`:g.race||g.cbo?`go({k:'island',id:'${g.id}'})`:g.fix?`go({k:'home',tab:'fix'})`:g.part===2?`go({k:'jenny',id:'${g.id}'})`:`go({k:'island',id:'${g.id}'})`}" aria-label="Thoát">✕</button>${track}${g.race?'':g.tre?'<span class="pill acc">Kho báu</span>':g.fix?'<span class="pill acc">📒 Luyện lỗi</span>':`<span class="hearts" aria-label="Còn ${g.hearts} tim">${[0,1,2].map(i=>`<span class="${i<g.hearts?'':'lost'}">❤</span>`).join('')}</span>`}</div>
    <div class="gmid ${g.flash?'fl'+g.flash:''}">${cbb?`<div class="scene boss"><span class="monster">${bossHTML(cbb.spr,84,g.hit?'hit':g.mad?'mad':'idle',cbb.hp/cbb.max)}</span><span class="muted">${esc(cbb.name)} · ${cbb.hp}/${cbb.max} máu</span></div>`:''}${boss?`<div class="scene boss"><span class="monster">${bossHTML(bossOf(scr.id)[0],84,g.hit?'hit':g.mad?'mad':'idle',g.hp/n)}</span><span class="muted">${bossOf(scr.id)[1]}</span></div>`:''}
-    <div class="g1q">${jenny(54)}<div class="g1bub"><div>${q.q}</div><button class="g1spk" type="button" onclick="sayJ(sayFull(q1().say,q1().q))" aria-label="Nghe lại đề">🔊</button></div></div>
+    <div class="g1q">${jenny(54,jMood(g))}<div class="g1bub"><div>${q.q}</div><button class="g1spk" type="button" onclick="sayJ(sayFull(q1().say,q1().q))" aria-label="Nghe lại đề">🔊</button></div></div>
     ${q.pic?`<div class="g1pic">${q.pic}</div>`:''}${q.type==='num'?`<div class="slotbox ${g.inp?'':'empty'}" aria-live="polite">${g.inp?esc(g.inp):'?'}</div>`:''}${q.type==='slots'?slotsView(q):q.type==='build'?buildView(q):q.type==='order'?`<div class="g1seq">${q.a.map((_,k)=>`<span>${g.seq[k]!==undefined?q.opts[g.seq[k]]:''}</span>`).join('')}</div>`:''}</div>
    <div class="gbot">${g.sheet?sheet1():input1(q)}</div></div>`;
 }
@@ -2041,7 +2061,7 @@ function end1(alive){if(scr.race||scr.tre||scr.cbo)return endExtra();if(scr.fix)
   else{s.fails[g.lv]=(s.fails[g.lv]||0)+1;log(sid,'failed',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{success:false});sfx('bad');sfx(scr.lv===2?'bosslaugh':'lose');sayJ('Không sao cả. Mình chơi lại nhé!')}
   save();render()}
 function viewEnd1(){if(scr.fix||scr.part===2)return viewEnd1b();const g=scr,x=isl1(g.id),k=PI().indexOf(x),boss=g.lv===2,nextL=x.lv[g.lv+1]?g.lv+1:-1;
-  return`<div class="game g1"><div class="gend">${g.pass?(boss?`<div class="bigicon bossend">${bossHTML(bossOf(scr.id)[0],80,'dead')}${spr('chest',70)}</div>`:`<div class="bigicon">${spr('star',84)}</div>`):(boss?`<div class="bigicon bossend">${bossHTML(bossOf(scr.id)[0],90,'win')}</div>`:jenny(84))}
+  return`<div class="game g1"><div class="gend">${g.pass?(boss?`<div class="bigicon bossend">${jenny(70,'cheer')}${bossHTML(bossOf(scr.id)[0],80,'dead')}${spr('chest',60)}</div>`:`<div class="bigicon bossend">${jenny(76,'cheer')}${spr('star',70)}</div>`):(boss?`<div class="bigicon bossend">${jenny(64,'sad')}${bossHTML(bossOf(scr.id)[0],90,'win')}</div>`:jenny(84,'sad'))}
    <h1>${g.pass?(boss?`Hạ gục ${bossOf(scr.id)[1]}!`:'Qua màn!'):'Mình chơi lại nhé!'}</h1>
    <p class="muted">${g.ok}/${g.qs.length} câu đúng · còn ${Math.max(0,g.hearts)} tim${g.pass?` · +${boss?30:10} xu`:''}</p>
    ${g.newStar?'<p class="earn">+1 sao</p>':''}${g.card?`<p class="earn">Thẻ mới: ${spr(g.card[0],28)} ${esc(g.card[1])}</p>`:''}${g.unlock?`<p class="muted">Đã mở đảo mới: <b>${esc(g.unlock.short)}</b></p>`:''}
@@ -4923,7 +4943,7 @@ function viewEndExtra(){const g=scr,st=S.st[sid];
     <div class="board">${bd.map(([n,v,id],i)=>`<div class="${id===sid?'me':''}"><span>${i+1}</span><b>${esc(n)}</b><em>${v}</em></div>`).join('')}</div>
     <div class="gendbtn"><button class="gobtn" type="button" onclick="startRace('${g.id}')">Đua lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}
   if(g.tre)return`<div class="game g1"><div class="gend"><div class="bigicon">${g.card?spr(g.card[0],84):spr(TRE[g.tre][0],84)}</div><h1>${g.ok?'Mở được kho báu!':'Kho báu trôi mất rồi'}</h1>${g.ok?`<p class="earn">${esc(g.reward)}</p>`:`<p class="muted">Đáp án đúng: ${q1().sol}</p>`}<p class="muted">Hôm nay còn ${treLeft(st)} kho báu trên biển.</p><div class="gendbtn"><button class="gobtn" type="button" onclick="go({k:'home'})">Về biển</button>${g.card?`<button class="gobtn ghost" type="button" onclick="go({k:'home',tab:'album'})">Xem bộ sưu tập</button>`:''}</div></div></div>`;
-  const b=cbI(g.id);return`<div class="game g1"><div class="gend"><div class="bigicon">${spr(b.spr,84)}</div><h1>${b.won?'Cả lớp hạ được trùm!':'Em đã góp sức!'}</h1><p class="muted">Em đánh trúng <b>${g.ok}</b> đòn. Trùm còn ${b.hp}/${b.max} máu.</p>${g.card?`<p class="earn">+20 xu · thẻ ${spr(g.card[0],28)} ${esc(g.card[1])}</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}
+  const b=cbI(g.id);return`<div class="game g1"><div class="gend"><div class="bigicon bossend">${jenny(70,b.won?'cheer':'happy')}${bossHTML(b.spr,84,b.won?'dead':'idle',b.hp/b.max)}</div><h1>${b.won?'Cả lớp hạ được trùm!':'Em đã góp sức!'}</h1><p class="muted">Em đánh trúng <b>${g.ok}</b> đòn. Trùm còn ${b.hp}/${b.max} máu.</p>${g.card?`<p class="earn">+20 xu · thẻ ${spr(g.card[0],28)} ${esc(g.card[1])}</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}
 
 /* ===================== Trò chơi nhỏ dạng pixel ===================== */
 PXS.fishO=PXS.fish.map(r=>r.replace(/b/g,'o'));PXS.fishY=PXS.fish.map(r=>r.replace(/b/g,'a'));PXS.fishP=PXS.fish.map(r=>r.replace(/b/g,'p'));PXS.fishG=PXS.fish.map(r=>r.replace(/b/g,'g'));
@@ -5075,6 +5095,37 @@ function bossHTML(name,size,state='idle',ratio=1){const low=state!=='dead'&&stat
   return`<span class="bstage" style="--bs:${size}px"><span class="boss2 st-${state}${low?' low':''}">${spr(name,size,'bspr')}</span>${low&&state==='idle'?`<span class="bfx sweat">${spr('fxSweat',Math.round(size*.22))}</span>`:''}${fx}<span class="bshadow"></span></span>`}
 SFX.bossmad=()=>{tone(mHz(40),0,.25,'sawtooth',.2,1.4);tone(mHz(43),.12,.25,'sawtooth',.16,.8)};
 SFX.bosslaugh=()=>[0,.14,.28,.42].forEach((t,i)=>tone(mHz(i%2?55:58),t,.1,'square',.16,.85));
+/* ===================== JENNY: biểu cảm pixel + TRÙM LỚP: hệ màu ===================== */
+/* Jenny: idle (nháy mắt, thở), happy (mắt cười, miệng mở, nhảy, lấp lánh), sad (lo lắng, rơm rớm, lắc đầu),
+   cheer (giơ hai tay, nhảy ăn mừng), think (nghiêng đầu khi chờ lâu). */
+{const J=PXS.jenny,row=(r,i,v)=>r.map((x,k)=>k===i?v:x);
+ PXS.jennyBlink=row(J,7,".kssssssssssssk.");
+ PXS.jennyHappy=[...J].map((r,i)=>({6:'.kssksssssskssk.',7:'.kskskssssksksk.',8:'.kscsskkkksscsk.',9:'.ksssskrrkssssk.'})[i]||r);
+ PXS.jennySad=[...J].map((r,i)=>({5:'.kkkskkkkkkskkk.',8:'.kscbsskkssbcsk.',9:'.kssssksskssssk.'})[i]||r);
+ PXS.jennyCheer=[...J].map((r,i)=>({6:'.kssksssssskssk.',7:'.kskskssssksksk.',8:'.kscsskkkksscsk.',9:'.ksssskrrkssssk.',10:'.skssssssssssks.',11:'..skkkkkkkkkks..',12:'...gggggggggg...'})[i]||r);
+ PXS.fxSpark=["...y...","...y...","yyywyyy","...y...","...y..."];
+ PXS.fxTear=[".b.","bwb","bbb",".b."];}
+const JMOOD={idle:'jenny',happy:'jennyHappy',sad:'jennySad',cheer:'jennyCheer',think:'jenny'};
+/* thay hàm jenny(): thêm tham số biểu cảm; mặc định vẫn nháy mắt nhẹ */
+function jenny(size,mood='idle'){const s=Math.round(size*.86),sp=JMOOD[mood]||'jenny';
+  const fx=mood==='happy'||mood==='cheer'?`<span class="jfx s1">${spr('fxSpark',Math.round(size*.26))}</span><span class="jfx s2">${spr('fxSpark',Math.round(size*.2))}</span>`:mood==='sad'?`<span class="jfx tear">${spr('fxTear',Math.round(size*.16))}</span>`:'';
+  return`<span class="jav jm-${mood}" style="width:${size}px;height:${size}px" aria-hidden="true"><span class="jbody">${spr(sp,s,'jf')}${mood==='idle'?spr('jennyBlink',s,'jf jblink'):''}</span>${fx}</span>`}
+/* biểu cảm theo màn chơi */
+function jMood(g){if(!g)return'idle';if(g.end)return g.pass||g.won||g.ok?'cheer':'sad';if(g.sheet){return g.sheet.kind==='ok'?'happy':'sad'}return'idle'}
+
+/* ----- Trùm lớp: hệ màu (đổi bảng màu sprite) ----- */
+const CBHE=[
+ {k:'lua',n:'Hệ Lửa',m:{b:'r',B:'R',p:'r',P:'R',g:'o',G:'O',c:'a',x:'a',e:'y',E:'o'},tag:'#F04A1B'},
+ {k:'bang',n:'Hệ Băng',m:{r:'b',R:'B',p:'b',P:'B',g:'x',G:'b',o:'x',O:'B',c:'w',a:'e'},tag:'#12B5E8'},
+ {k:'doc',n:'Hệ Độc',m:{r:'g',R:'G',b:'l',B:'G',p:'g',P:'G',o:'l',O:'G',c:'l'},tag:'#2AB563'},
+ {k:'vang',n:'Hệ Vàng',m:{r:'a',R:'T',b:'y',B:'a',p:'a',P:'u',g:'y',G:'T',o:'y',O:'T',c:'t'},tag:'#FCB40C'},
+ {k:'dem',n:'Hệ Bóng đêm',m:{r:'P',R:'k',b:'P',B:'k',p:'P',P:'k',g:'P',G:'k',o:'P',O:'k',c:'E',e:'E',w:'e',a:'E',y:'e'},tag:'#5E3A7A'},
+ {k:'keo',n:'Hệ Kẹo ngọt',m:{r:'c',R:'p',b:'c',B:'p',g:'c',G:'p',o:'c',O:'p',p:'c',P:'R',e:'w'},tag:'#F26249'},
+];
+function cbVariant(name,he){const key=`${name}__${he.k}`;if(!PXS[key]&&PXS[name])PXS[key]=PXS[name].map(r=>r.replace(/./g,ch=>he.m[ch]||ch));return PXS[key]?key:name}
+CBN.forEach(([s])=>CBHE.forEach(h=>cbVariant(s,h)));
+/* gắn hệ màu cho mỗi trùm lớp (cố định theo đảo); giữ tên gốc, thêm tên hệ khi hiển thị */
+{const _cbI=cbI;cbI=function(id){const b=_cbI(id);if(!b.he){const k=islIdx(id),he=CBHE[(k*5+3)%CBHE.length];b.he=he.k;b.baseSpr=b.spr;b.baseName=b.name;b.spr=cbVariant(b.spr,he);b.name=`${b.name} · ${he.n}`}return b}}
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 
