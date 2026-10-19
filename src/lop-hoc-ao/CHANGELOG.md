@@ -3,6 +3,7 @@
 ## 2026-10-19 — Sửa giọng đọc (lần 2)
 - Bỏ chữ "mấy" thừa ở cuối câu hỏi: dấu "?" cuối câu không còn bị đọc thành "mấy"; chỉ ô trống trong phép tính (☐, "12 + ? = 20") mới đọc là "mấy".
 - Chọn giọng tiếng Việt tốt nhất trên máy (ưu tiên giọng tự nhiên của Edge, Google Tiếng Việt của Chrome, giọng nâng cao của Mac), chờ danh sách giọng nạp xong; có thể ghim giọng bằng `localStorage.jennyVoice`.
+- Câu cá lớp 1 Chủ đề 5: luật "lớn hơn 9" có quá ít cá đúng; nay chọn mốc 3–6.
 - Máy không có giọng tiếng Việt (nguyên nhân đọc "bé" thành "bớ", đọc không rõ): hiện hướng dẫn cài giọng "Linh" trên Mac hoặc mở bằng Chrome/Edge.
 
 ## 2026-10-19 — Trùm hoạt hình
