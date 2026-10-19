@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Chơi thêm đợt 3
+- Đập chuột chũi: chuột thò lên từ 9 hang, cầm biển số; đập con đúng luật của đảo (+1, búa, sao nổ), đập sai mất tim. Chuột trốn nhanh dần. 60 giây, 3 tim.
+- Ếch nhảy lá súng: hồ sen pixel, 3 lá súng mang đáp án cho câu của đảo; chọn đúng thì ếch nhảy lên, sai thì ếch rơi xuống nước và mất tim. Qua 8 hàng là thắng. Có ghi vào Sức mạnh Toán.
+- Ghép hình pixel (đảo hình học): bức tranh rô-bốt, tên lửa, xe ô tô có chỗ trống nhấp nháy; chọn đúng hình (hình vuông, tròn, tam giác, chữ nhật; khối lập phương, hộp, trụ, cầu; góc vuông, nhọn, tù, bẹt; bình hành, thoi, thang — theo lớp và bài). Đủ tranh thì bừng màu. 2 tranh, 3 tim. Ghi vào trục Hình học.
+- Cửa hàng Jenny có thêm ở lớp 1–3 (đảo Luyện tập, Ôn tập, bài lời văn); lớp 1 trả tiền chẵn nghìn từ 1 000 đến 10 000 đồng.
+
 ## 2026-10-19 — Cân thăng bằng: đồ hoạ pixel
 - Vẽ lại cân bằng pixel (`core/38b-can-pixel.js`): đế bậc thang, cột gỗ, trục vàng, đòn cân nghiêng theo từng bậc, xích và đĩa cân hình bát; quả cân và vật bên trái là hình pixel. Lệch ít vẫn nghiêng rõ; cân bằng thì trục và đĩa chuyển xanh, có dấu "=" nhấp nháy.
 

@@ -57,5 +57,6 @@ Kích thước chữ phương án tự co cho vừa nút và đồng đều (`op
 ## Chơi thêm (lớp 1–5)
 `core/37-tro-choi-dot-1.js`: `islOpts2(x)` chọn 2–3 trò cho đảo (theo nội dung, cố định theo mã đảo); trang đảo dựng lại mục "Chơi thêm".
 `core/38-tro-choi-dot-2.js`: thêm `scale` (Cân thăng bằng), `shop` (Cửa hàng Jenny), `train` (Tàu hoả xếp số) vào `XGN`; bọc `islOpts2` (đảo tiền → shop, đảo khối lượng → scale, còn lại theo nội dung và mã đảo), `startXG`, `viewXG`, `xgAfterRender`, `musicTheme`; kết thúc bằng `xg2End()`. Bảng trò từng đảo: chạy `islOpts2(x)`.
+`core/38b-can-pixel.js`: vẽ Cân thăng bằng trên canvas pixel. `core/39-tro-choi-dot-3.js`: thêm `mole` (Đập chuột chũi, luật MGT/MG như Hứng sao), `frog` (Ếch nhảy lá súng, câu ngắn của đảo, 8 hàng), `shape` (Ghép hình pixel, đảo hình học, bộ hình theo lớp/bài: hình phẳng, khối, góc, bình hành/thoi/thang) vào `XGN`; bọc `islOpts2` (đảo hình học luôn có `shape`; lớp 1–3 thêm `shop` ở đảo Luyện tập/Ôn tập, lời văn); lớp 1 Cửa hàng dùng tiền chẵn nghìn (`shopNotes`, `shopPrice`). Cảnh vẽ trên canvas thấp (×3, `image-rendering: pixelated`).
 Trò mới chạy ở màn `scr.k==='xg'` (`startXG(mode,id)`, `viewXG`, `xgEnd`): `star`, `pair`, `clock`. Kéo co dùng máy Đua giờ với cờ `scr.tug` (`startTug`).
 Kỷ lục ở `st.mg['đảo:trò']`; ghi Hồ sơ qua `hsRec`.
