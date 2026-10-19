@@ -58,8 +58,8 @@ const THEMES={
 };
 let muCur=null,muTimer=null,muStep=0,muNext=0;
 function musicTheme(){if(role!=='hs')return null;const k=scr.k;if(k==='mini')return scr.end?null:(scr.mode==='fish'?'fish':'balloon');
-  if(k==='game'){if(scr.end)return null;if(scr.race)return'race';if(scr.tre)return'game';if(scr.cbo||scr.lv===2)return'boss';return'game'}
-  if(k==='lslide'||k==='jslide'||k==='video'||k==='jex'||k==='example')return'learn';return'map'}
+  if(k==='game'){if(scr.end||(scr.sheet&&scr.sheet.kind!=='ok'))return null;if(scr.race)return'race';if(scr.tre)return'game';if(scr.cbo||scr.lv===2)return'boss';return'game'}
+  if(k==='lslide'||k==='jslide'||k==='video'||k==='jex'||k==='example'||k==='jenny')return null;return'map'}
 function musicSync(){const want=SND.m?musicTheme():null;if(want===muCur)return;muCur=want;const A=aud();if(!A)return;
   const t=A.ac.currentTime;A.mu.gain.cancelScheduledValues(t);A.mu.gain.setValueAtTime(A.mu.gain.value,t);A.mu.gain.linearRampToValueAtTime(want?1:0,t+.35);
   if(want&&!muTimer){muNext=A.ac.currentTime+.1;muStep=0;muTimer=setInterval(muTick,60)}if(!want&&muTimer){setTimeout(()=>{if(!muCur&&muTimer){clearInterval(muTimer);muTimer=null}},500)}}
@@ -88,5 +88,7 @@ function hurtFx(quiet){if(!quiet)sfx('hurt');const h=document.querySelector('.ga
   try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}}
 
 function toggleMute(){if(SND.m||SND.s){SND.m=0;SND.s=0}else{SND.m=1;SND.s=1}sndSave();musicSync();render()}
+/* nhạc nhỏ lại khi Jenny đang nói */
+function duck(on){const A=AUD;if(!A||!muCur)return;const t=A.ac.currentTime;A.mu.gain.cancelScheduledValues(t);A.mu.gain.setValueAtTime(A.mu.gain.value,t);A.mu.gain.linearRampToValueAtTime(on?.2:1,t+.25)}
 /* gắn vào vẽ màn hình: đổi nhạc theo màn, vẽ nút âm thanh */
 {const _r=render;render=function(){const a=_r.apply(this,arguments);try{sndUI();musicSync()}catch(e){}return a}}
