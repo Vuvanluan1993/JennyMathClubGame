@@ -32,7 +32,7 @@ function shopCheck(v){const g=scr;if(g.k!=='xg'||g.end||g.lockC)return;const r=g
   setTimeout(()=>{g.lockC=0;if(scr!==g||g.end)return;if(g.lives<=0||g.ri>=g.N-1)return xg2End();g.ri++;g.r=shopRound(curG(),g.ri,g.N);g.pay=[];g.enter=1;render();sayJ(shopSay(g.r))},3200)}
 {const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='shop'&&scr.enter){scr.enter=0;const b=document.querySelector('.xshop');if(b)b.classList.add('xsenter')}}catch(e){}return v}}
 (function(){const st=document.createElement('style');st.textContent=`
-.xshop{position:relative;overflow:hidden}
+.xshop{position:relative;overflow-x:clip;overflow-y:visible;padding-bottom:10px}
 .xsquay{position:relative;height:30px;margin:0 0 0;background:var(--qc);border:3px solid #1F2A5A;border-bottom:0;display:flex;align-items:center;justify-content:center}
 .xsawn{position:absolute;left:0;right:0;bottom:-10px;height:10px;background:repeating-linear-gradient(90deg,var(--qc) 0 16px,#FFFFFF 16px 32px);border-bottom:3px solid #1F2A5A;z-index:1}
 .xsname{position:relative;z-index:2;font-family:var(--f-display,'VT323',monospace);font-size:20px;line-height:1;color:#FFFFFF;text-shadow:2px 2px 0 #1F2A5A;white-space:nowrap}
