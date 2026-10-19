@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Ghép hình: vẽ khối chính xác
+- Khối trụ: mặt đáy trên là elip đủ, hai đường sinh thẳng, nửa elip đáy dưới (nửa sau nét đứt), có bóng sáng tối. Khối lập phương, khối hộp chữ nhật: đủ mặt trước, mặt trên, mặt bên và các cạnh; hình lớn có cạnh khuất nét đứt. Khối cầu: có bóng, đốm sáng và đường xích đạo (trước nét liền, sau nét đứt) để phân biệt với hình tròn.
+
 ## 2026-10-19 — Ếch nhảy: chuyển hàng rõ ràng
 - Trả lời đúng: hiện bảng "Hàng n/8 ✓", lá súng mang ếch trôi xuống thành chỗ đứng mới, các lá khác trôi đi, nước cuộn, rồi hàng lá mới trôi vào từ phía trên. Mỗi hàng có cảnh khác nhau (đá, khúc gỗ, rùa, vịt, chuồn chuồn, khóm sen; nước sâu dần ở giữa sông); hàng đầu đứng trên bãi cỏ, các hàng sau đứng trên lá súng; bờ đích có cờ chỉ hiện khi gần tới.
 

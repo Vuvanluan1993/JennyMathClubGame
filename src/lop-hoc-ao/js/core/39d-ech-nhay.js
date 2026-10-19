@@ -79,3 +79,40 @@ function frogAdvance(g,i,el,pad){if(scr!==g)return;const z=document.getElementBy
 @keyframes xfin{from{transform:translateY(-130px);opacity:0}to{transform:translateY(0);opacity:1}}
 .xfban{position:absolute;left:50%;top:6px;transform:translateX(-50%);z-index:5;font-family:var(--f-display,'VT323',monospace);font-size:24px;line-height:1;color:#1E8A4A;background:#DFF6E8;border:3px solid #1E8A4A;padding:2px 10px;animation:xgpop .6s steps(3)}
 `;document.head.appendChild(st)})();
+
+/* ===================== GHÉP HÌNH: vẽ khối chính xác (trụ, lập phương, hộp chữ nhật, cầu) ===================== */
+/* Vẽ viền đầy đủ như hình trong sách: khối trụ có mặt đáy trên là hình elip đủ, hai đường sinh thẳng đứng, nửa elip đáy dưới
+   (nửa sau nét đứt khi đủ chỗ); khối lập phương / hộp có mặt trước, mặt trên, mặt bên và đủ các cạnh; khối cầu tròn có bóng và đốm sáng. */
+{const _sf=shapeFill;
+ const LIGHT={b:'x',B:'b',o:'t',O:'o',y:'y',a:'y',c:'#F8B3A6',R:'c',p:'#C9A6E0',P:'p',g:'l',G:'g',x:'e',r:'#F8B3A6'};
+ shapeFill=function(ctx,k,X,Y,W,H,cols,ghost){if(!['tru','lapphuong','hop','cau'].includes(k))return _sf.apply(this,arguments);
+  const p=xpx(ctx),[c1,c2]=cols||XSHC[k]||['b','B'],cl=LIGHT[c1]||'w',G1=ghost?'#E3E7F0':c1,G2=ghost?'#C3CBDD':c2,GL=ghost?'#F1F3F8':cl;
+  const line=(x0,y0,x1,y1,c,dash)=>{x0=Math.round(x0);y0=Math.round(y0);x1=Math.round(x1);y1=Math.round(y1);const dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1;let e=dx+dy,n=0;for(;;){if(!dash||(n++>>1)%2===0)p(c,x0,y0);if(x0===x1&&y0===y1)break;const e2=2*e;if(e2>=dy){e+=dy;x0+=sx}if(e2<=dx){e+=dx;y0+=sy}}};
+  const fillPoly=(pts,c)=>{const ys=pts.map(q=>q[1]);for(let py=Math.floor(Math.min(...ys));py<=Math.ceil(Math.max(...ys));py++){const xs=[];for(let i=0,j=pts.length-1;i<pts.length;j=i++){const[xi,yi]=pts[i],[xj,yj]=pts[j];if((yi>py+.5)!==(yj>py+.5))xs.push(xi+(py+.5-yi)*(xj-xi)/(yj-yi))}xs.sort((a,b)=>a-b);for(let m=0;m+1<xs.length;m+=2)for(let px=Math.round(xs[m]);px<Math.round(xs[m+1]);px++)p(c,px,py)}};
+  if(k==='cau'){const r=Math.min(W,H)/2-.5,cx=X+W/2,cy=Y+H/2;
+    for(let py=Y;py<Y+H;py++)for(let px=X;px<X+W;px++){const dx=px+.5-cx,dy=py+.5-cy,d=dx*dx+dy*dy;if(d>r*r)continue;
+      const edge=(Math.hypot(dx,dy)>r-1);if(edge){p('k',px,py);continue}
+      const sh=(dx*.6+dy*.8)/r;p(sh>.45?G2:G1,px,py)}
+    if(!ghost){const hx=Math.round(cx-r*.42),hy=Math.round(cy-r*.42),hs=Math.max(1,Math.round(r*.22));p('w',hx,hy,hs+1,hs);p(GL,hx+hs+1,hy,1,hs);p(GL,hx,hy+hs,hs,1)}
+    /* đường xích đạo nét đứt cho thấy là khối, không phải hình tròn */
+    const ew=r-1.6,eh=Math.max(1.5,r*.28),ec=ghost?'#9AA4C0':'k';let n=0;for(let a=0;a<=Math.PI;a+=.05)p(ec,Math.round(cx+ew*Math.cos(a)),Math.round(cy+eh*Math.sin(a)));if(r>=12)for(let a=Math.PI;a<=Math.PI*2;a+=.06){if((n++>>1)%2===0)p('#5E6B8C',Math.round(cx+ew*Math.cos(a)),Math.round(cy+eh*Math.sin(a)))}
+    return}
+  if(k==='tru'){const w=Math.max(8,Math.round(Math.min(W,H*.8))),x0=X+Math.floor((W-w)/2),x1=x0+w-1,cx=(x0+x1)/2,rx=w/2-.5,ry=Math.max(2,Math.round(w*.2)),yt=Y+ry,yb=Y+H-1-ry;
+    const inE=(px,py,cy)=>((px-cx)/(rx+.01))**2+((py-cy)/(ry+.01))**2<=1;
+    /* thân + đáy dưới */
+    for(let py=yt;py<=Y+H-1;py++)for(let px=x0;px<=x1;px++){if(py<=yb||inE(px,py,yb)){const sh=(px-cx)/rx;p(sh>.45?G2:sh<-.55?GL:G1,px,py)}}
+    /* mặt đáy trên (sáng hơn) */
+    for(let py=Y;py<=yt+ry;py++)for(let px=x0;px<=x1;px++)if(inE(px,py,yt))p(GL,px,py);
+    /* viền: elip trên đủ, hai đường sinh, nửa elip dưới (trước nét liền, sau nét đứt) */
+    const ell=(cy,from,to,dash)=>{let prev=null,n=0;for(let a=from;a<=to+1e-6;a+=.03){const px=Math.round(cx+rx*Math.cos(a)),py=Math.round(cy+ry*Math.sin(a));if(prev&&prev[0]===px&&prev[1]===py)continue;prev=[px,py];if(!dash||(n++>>1)%2===0)p(dash?'#5E6B8C':'k',px,py)}};
+    ell(yt,0,Math.PI*2);line(x0,yt,x0,yb,'k');line(x1,yt,x1,yb,'k');ell(yb,0,Math.PI);if(H>=22&&!ghost)ell(yb,Math.PI,Math.PI*2,true);
+    return}
+  /* lập phương / hộp chữ nhật: mặt trước, mặt trên, mặt bên phải */
+  const cube=k==='lapphuong';let fw,fh,d;
+  if(cube){const s=Math.min(W,H);d=Math.max(3,Math.round(s*.3));fw=fh=s-d}else{d=Math.max(3,Math.round(Math.min(W,H)*.28));fw=W-d;fh=Math.max(4,Math.round((H-d)*.62))}
+  const ox=X+Math.floor((W-(fw+d))/2),oy=Y+Math.floor((H-(fh+d))/2)+d;  /* góc trên-trái mặt trước */
+  const A=[ox,oy],B=[ox+fw-1,oy],C=[ox+fw-1,oy+fh-1],D=[ox,oy+fh-1],A2=[ox+d,oy-d],B2=[ox+fw-1+d,oy-d],C2=[ox+fw-1+d,oy+fh-1-d];
+  fillPoly([A,A2,B2,B],GL);fillPoly([B,B2,C2,C],G2);fillPoly([A,B,C,D],G1);
+  [[A,B],[B,C],[C,D],[D,A],[A,A2],[A2,B2],[B2,B],[B2,C2],[C2,C]].forEach(([u,v])=>line(u[0],u[1],v[0],v[1],'k'));
+  if(fw+d>=20&&!ghost){const D2=[ox+d,oy+fh-1-d];line(D2[0],D2[1],A2[0],A2[1],'#5E6B8C',true);line(D2[0],D2[1],C2[0],C2[1],'#5E6B8C',true);line(D2[0],D2[1],D[0],D[1],'#5E6B8C',true)}
+ }}
