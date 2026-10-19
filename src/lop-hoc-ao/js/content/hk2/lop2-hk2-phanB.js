@@ -1,7 +1,7 @@
 /* ===== LỚP 2 · CHỦ ĐỀ 11–14: Độ dài, tiền · Cộng trừ phạm vi 1 000 · Thống kê, xác suất · Ôn tập cuối năm ===== */
 (()=>{
 const G=2;
-const NOTE=v=>`<span class="wt" style="background:${{100:'#8656A8',200:'#F26249',500:'#2AB563',1000:'#0B7FB8',2000:'#C77C2A'}[v]||'#1F2A5A'};padding:0 8px">${fN(v)} đồng</span>`;
+const NOTE=v=>`<span class="wt" style="background:${{100:'#6E6233',200:'#9C4F2A',500:'#A8385A',1000:'#64438A',2000:'#82552A',5000:'#2D5294',10000:'#7C7A22'}[v]||'#1F2A5A'};padding:0 8px">${fN(v)} đồng</span>`;
 const picto=(rows,s,unit)=>`<table class="lstab"><tr><th>${unit||''}</th><th>Số lượng</th></tr>${rows.map(([l,n])=>`<tr><th>${l}</th><td style="text-align:left;padding:4px">${Array.from({length:n},()=>spr(s,20)).join('')}</td></tr>`).join('')}</table>`;
 const dg=n=>String(n).split('').map(Number);
 /* ---------- Chủ đề 11: Độ dài, tiền Việt Nam ---------- */

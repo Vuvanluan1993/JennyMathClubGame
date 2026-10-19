@@ -4098,7 +4098,7 @@ Object.assign(LES[G]=LES[G]||{},{
 /* ===== LỚP 2 · CHỦ ĐỀ 11–14: Độ dài, tiền · Cộng trừ phạm vi 1 000 · Thống kê, xác suất · Ôn tập cuối năm ===== */
 (()=>{
 const G=2;
-const NOTE=v=>`<span class="wt" style="background:${{100:'#8656A8',200:'#F26249',500:'#2AB563',1000:'#0B7FB8',2000:'#C77C2A'}[v]||'#1F2A5A'};padding:0 8px">${fN(v)} đồng</span>`;
+const NOTE=v=>`<span class="wt" style="background:${{100:'#6E6233',200:'#9C4F2A',500:'#A8385A',1000:'#64438A',2000:'#82552A',5000:'#2D5294',10000:'#7C7A22'}[v]||'#1F2A5A'};padding:0 8px">${fN(v)} đồng</span>`;
 const picto=(rows,s,unit)=>`<table class="lstab"><tr><th>${unit||''}</th><th>Số lượng</th></tr>${rows.map(([l,n])=>`<tr><th>${l}</th><td style="text-align:left;padding:4px">${Array.from({length:n},()=>spr(s,20)).join('')}</td></tr>`).join('')}</table>`;
 const dg=n=>String(n).split('').map(Number);
 /* ---------- Chủ đề 11: Độ dài, tiền Việt Nam ---------- */
@@ -6929,8 +6929,8 @@ function shopCheck(v){const g=scr;if(g.k!=='xg'||g.end||g.lockC)return;const r=g
   /* 2. món hàng nhảy vào túi */
   setTimeout(()=>{if(!bag)return;const [bx,by]=ctr(bag);document.querySelectorAll('.xsitem').forEach((it,i)=>{const [ix,iy]=ctr(it);setTimeout(()=>{anim(it,[{transform:'translate(0,0)'},{transform:`translate(${(bx-ix)/2}px,${by-iy-60}px)`,offset:.5},{transform:`translate(${bx-ix}px,${by-iy}px) scale(.35)`,opacity:.3}],460);sfx('pop')},i*120)});setTimeout(()=>bag.classList.add('full'),480)},620);
   /* 3. bảng khách + quầy trượt đi */
-  setTimeout(()=>{if(!box)return;const b=document.createElement('span');b.className='xsban';b.textContent=`Khách ${g.ri+1}/${g.N} ✓ Cảm ơn!`;box.appendChild(b);setTimeout(()=>box.classList.add('xsout'),450)},1050);
-  setTimeout(()=>{g.lockC=0;if(scr!==g||g.end)return;if(g.lives<=0||g.ri>=g.N-1)return xg2End();g.ri++;g.r=shopRound(curG(),g.ri,g.N);g.pay=[];g.enter=1;render();sayJ(shopSay(g.r))},1900)}
+  setTimeout(()=>{if(!box)return;const b=document.createElement('span');b.className='xsban';b.textContent=`Khách ${g.ri+1}/${g.N} ✓ Cảm ơn!`;box.appendChild(b);setTimeout(()=>box.classList.add('xsout'),1500)},1150);
+  setTimeout(()=>{g.lockC=0;if(scr!==g||g.end)return;if(g.lives<=0||g.ri>=g.N-1)return xg2End();g.ri++;g.r=shopRound(curG(),g.ri,g.N);g.pay=[];g.enter=1;render();sayJ(shopSay(g.r))},3200)}
 {const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='shop'&&scr.enter){scr.enter=0;const b=document.querySelector('.xshop');if(b)b.classList.add('xsenter')}}catch(e){}return v}}
 (function(){const st=document.createElement('style');st.textContent=`
 .xshop{position:relative;overflow:hidden}
@@ -6945,12 +6945,25 @@ function shopCheck(v){const g=scr;if(g.k!=='xg'||g.end||g.lockC)return;const r=g
 @keyframes xsting{40%{transform:translateY(-6px) scale(1.15)}}
 .xsbag.full{animation:xsting .4s steps(2)}
 .xsitem{position:relative;z-index:3}
-.xsban{position:absolute;left:50%;top:40px;transform:translateX(-50%);z-index:6;font-family:var(--f-display,'VT323',monospace);font-size:24px;line-height:1;color:#1E8A4A;background:#DFF6E8;border:3px solid #1E8A4A;padding:3px 10px;white-space:nowrap;animation:xgpop .6s steps(3)}
-.xshop.xsout>*{transition:transform .4s steps(5),opacity .4s steps(5);transform:translateX(-110%);opacity:0}
-.xshop.xsout>.xsban{transform:translateX(-50%);opacity:1}
-.xshop.xsenter>*{animation:xsslide .45s steps(5) backwards}
-.xshop.xsenter>*:nth-child(2){animation-delay:.06s}.xshop.xsenter>*:nth-child(3){animation-delay:.12s}.xshop.xsenter>*:nth-child(n+4){animation-delay:.18s}
+.xsban{position:absolute;left:50%;top:60px;transform:translateX(-50%);z-index:6;font-family:var(--f-display,'VT323',monospace);font-size:24px;line-height:1;color:#1E8A4A;background:#DFF6E8;border:3px solid #1E8A4A;padding:3px 10px;white-space:nowrap;animation:xgpop .6s steps(3)}
+.xshop.xsout>:is(.xsquay,.xlive,.xshelf,.xsq){transition:transform .5s steps(5),opacity .5s steps(5);transform:translateX(-110%);opacity:0}
+
+.xshop.xsenter>:is(.xsquay,.xlive,.xshelf,.xsq){animation:xsslide .55s steps(6) backwards}
+.xshop.xsenter>.xshelf{animation-delay:.08s}.xshop.xsenter>.xsq{animation-delay:.16s}
 @keyframes xsslide{from{transform:translateX(110%);opacity:0}to{transform:none;opacity:1}}
+`;document.head.appendChild(st)})();
+
+/* ---- tiền Việt Nam: màu gần với tờ tiền thật ---- */
+const VNDC={100:['#D9CFA3','#6E6233'],200:['#F2CDB0','#9C4F2A'],500:['#F6C7D2','#A8385A'],1000:['#DCCDEB','#64438A'],2000:['#E9D3B5','#82552A'],5000:['#C9D9F1','#2D5294'],
+ 10000:['#E6E4AA','#7C7A22'],20000:['#C2D5EF','#1F4C8A'],50000:['#EDC4D2','#8A3456'],100000:['#CFE7C6','#3A7736'],200000:['#F1C6B2','#9A4328'],500000:['#C2E4E1','#1D6B67']};
+function vndPaint(root){(root||document).querySelectorAll('.xsn').forEach(b=>{const v=+String(b.getAttribute('aria-label')||b.textContent).replace(/[^\d]/g,'');const c=VNDC[v];if(!c)return;b.style.setProperty('--nb',c[0]);b.style.setProperty('--nd',c[1]);b.classList.add('vnd')})}
+(function(){const mo=new MutationObserver(()=>{if(document.querySelector('.xsn:not(.vnd)'))vndPaint()});const go=()=>{try{mo.observe(document.body,{childList:true,subtree:true})}catch(e){}};if(document.body)go();else addEventListener('DOMContentLoaded',go);
+ const st=document.createElement('style');st.textContent=`
+.xsn.vnd{background:var(--nb)!important;color:var(--nd)!important;box-shadow:0 0 0 3px var(--nd)!important;position:relative;overflow:hidden}
+.xsn.vnd::before{content:'';position:absolute;inset:3px;border:1px dashed var(--nd);opacity:.55;pointer-events:none}
+.xsn.vnd::after{content:'';position:absolute;right:6px;top:50%;width:12px;height:12px;margin-top:-6px;background:var(--nd);opacity:.22;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)}
+.xsn.vnd b{position:relative;z-index:1;font-weight:400}
+.xsn.vnd i{position:relative;z-index:1}
 `;document.head.appendChild(st)})();
 /* ===================== NHÃN DÀI TRONG TRÒ CHƠI: không che đối tượng ===================== */
 /* Nhãn (số, phép tính, tên đồ vật) trên cá, bóng bay, ngôi sao, biển chuột, lá súng, toa tàu… được xếp loại theo độ dài:

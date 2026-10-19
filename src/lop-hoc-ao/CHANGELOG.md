@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Cửa hàng Jenny: chậm lại, chỉ quầy hàng chuyển, tiền có màu như thật
+- Chuyển lượt chậm hơn (khoảng 3 giây): bảng "Khách n/8 ✓ Cảm ơn!" hiện đủ lâu để đọc. Chỉ phần quầy hàng (mái che, kệ, câu hỏi) trượt đi và trượt vào; phần "Em đưa", ví tiền, nút Đưa lại, Trả tiền đứng yên.
+- Tờ tiền có màu gần với tiền Việt Nam thật (1 000 tím, 2 000 nâu, 5 000 xanh lam, 10 000 vàng xanh, 20 000 xanh dương, 50 000 hồng tím, 100 000 xanh lá, 200 000 đỏ nâu, 500 000 xanh ngọc; 100/200/500 đồng nâu ô liu / nâu cam / hồng đỏ); dùng cùng màu cho tờ tiền trong bài học lớp 2.
+
 ## 2026-10-19 — Nhãn dài không che hình
 - Câu cá, Bóng bay, Hứng sao, Đập chuột, Ếch nhảy, Tàu hoả: nhãn được xếp theo độ dài. Tên đồ vật (ví dụ "Hộp sữa tươi") thành thẻ tên 2 dòng đặt dưới con cá / ngôi sao (cá to hơn), trong lòng bóng bay thì xuống dòng, chữ nhỏ lại; phép tính dài ("3 cm + 11 cm") chữ nhỏ lại. Đã rà các đảo có nhãn dài ở cả 5 lớp (khoảng 120 đảo mỗi trò).
 
