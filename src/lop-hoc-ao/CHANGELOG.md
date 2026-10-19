@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Sổ lỗi sai lên thanh điều hướng
+- Bỏ thẻ Sổ lỗi sai trên bản đồ. Khi có lỗi cần sửa, icon Luyện lỗi ở thanh dưới hiện số lỗi và rung nhẹ.
+
 ## 2026-10-19 — Biển đầy khung, bỏ thẻ trùng
 - Chủ đề ít đảo trên màn hình rộng (laptop): biển tự kéo đầy khung, các đảo nằm giữa; tự chỉnh lại khi đổi cỡ cửa sổ.
 - Bỏ thẻ "Cô vừa mở Toán Jenny" trên bản đồ (đã có ở tab Toán Jenny).

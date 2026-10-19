@@ -48,3 +48,8 @@
 .bnav:has(> button:nth-child(5)) button{min-width:0;padding:5px 1px;font-size:15px;line-height:.95;text-align:center;white-space:normal;overflow-wrap:normal}
 body.px .bnav:has(> button:nth-child(5)) button{font-size:16px}
 .hs-kpi b{font-size:clamp(18px,6vw,24px)}
+
+/* Luyện lỗi: số lỗi cần sửa + rung trên thanh điều hướng */
+.bnav .bnic{position:relative;display:inline-block}
+.bnav .bnfix .bnic{animation:pxwob 1.2s steps(2) infinite}
+.bnav .bnn{top:-8px;right:-14px;min-width:20px;height:20px;font-size:18px}
