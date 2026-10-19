@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Ao ếch sống động
+- Ếch nhảy: mặt nước lấp lánh trôi, cá nhỏ bơi qua lại dưới nước, gợn sóng; lau sậy và cỏ hai bờ đung đưa; hoa sen, lá súng nhấp nhô; cờ đích bay. Câu hỏi đầu lớp 1 dùng bể cá ("Bể có mấy con cá?").
+
 ## 2026-10-19 — Lật thẻ, Ếch nhảy lớp 1: bể cá thay chấm tròn
 - Ở các đảo chưa học phép tính, thẻ và câu hỏi dùng bể cá pixel có 0–5 con cá (bể trống là 0) thay cho chấm tròn: "Bể có mấy con cá?". Lời hướng dẫn Lật thẻ đổi thành "ghép bể cá với số con cá".
 

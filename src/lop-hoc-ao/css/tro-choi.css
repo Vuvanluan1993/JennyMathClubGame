@@ -212,3 +212,8 @@
 .xtank .xtks{position:absolute;left:0;right:0;bottom:0}
 .xgc .xtank{width:76px;height:58px}
 .mgrule .xtank{width:78px;height:54px}
+/* ao động: lá súng nhấp nhô lệch nhịp */
+.xfpad{animation:xfbob 1.6s steps(2) infinite}
+.xfpad:nth-of-type(2){animation-delay:-.5s}.xfpad:nth-of-type(3){animation-delay:-1.1s}
+.xfpad.sink,.xfpad.good{animation:none}
+@keyframes xfbob{0%,100%{margin-top:0}50%{margin-top:3px}}

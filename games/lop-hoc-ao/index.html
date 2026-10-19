@@ -1053,6 +1053,11 @@ body.px .bnav:has(> button:nth-child(5)) button{font-size:16px}
 .xtank .xtks{position:absolute;left:0;right:0;bottom:0}
 .xgc .xtank{width:76px;height:58px}
 .mgrule .xtank{width:78px;height:54px}
+/* ao động: lá súng nhấp nhô lệch nhịp */
+.xfpad{animation:xfbob 1.6s steps(2) infinite}
+.xfpad:nth-of-type(2){animation-delay:-.5s}.xfpad:nth-of-type(3){animation-delay:-1.1s}
+.xfpad.sink,.xfpad.good{animation:none}
+@keyframes xfbob{0%,100%{margin-top:0}50%{margin-top:3px}}
 
 /* ===== bản học sinh ===== */
 [hidden]{display:none!important}
@@ -6515,6 +6520,28 @@ function frogDone(g,i,ok){if(scr!==g)return;g.lock=0;
   if(ok){g.score+=g.tries===1?1:0;g.ri++;g.hop=null;g.tries=0;g.bad=[];g.fb='';if(g.ri>=g.N)return xg3End();g.q=frogQ(isl1(g.id));sfx('splash');render();try{if(curG()<=2)sayJ(frogSay(g.q))}catch(e){}return}
   if(!document.getElementById('xfj'))g.lives--;
   g.bad.push(i);g.splash=null;g.fb='<span class="bad">Ếch đã về bờ. Em chọn lá khác nhé!</span>';if(g.lives<=0)return xg3End();render()}
+
+/* ---- Ao sống động: nước lấp lánh trôi, cá bơi, lau sậy và cỏ rung rinh, sen và lá súng nhấp nhô, gợn sóng ---- */
+let frogFx=null;
+function frogBg(){const x=xcv('xfcv');if(!x)return;const g=scr;if(!g||g.mode!=='frog')return;
+  if(!frogFx||frogFx.cv!==x.canvas){frogFx={cv:x.canvas,f:0,fish:[{x:10,y:70,v:.6,c:'o'},{x:80,y:20,v:-.45,c:'y'},{x:50,y:77,v:-.35,c:'r'}],rip:[]}}
+  frogDraw(x)}
+function frogDraw(x){const p=xpx(x),g=scr,F=frogFx,f=F.f,B=(typeof BIOME!=='undefined'&&BIOME.jung)?BIOME.jung.band:['#8DDFB9','#62CD9E','#3EB585','#26996C'],rn=xgRand(5+g.ri*7);
+  x.clearRect(0,0,114,100);
+  /* bờ xa + cỏ rung */ p('G',0,0,114,14);p('g',0,0,114,11);for(let X=0;X<114;X+=3){const h=2+((X+f)%6<3?1:0);p(rn()<.5?'l':'G',X,12-h+Math.floor(rn()*2),1,h)}
+  /* nước */ for(let y=14;y<84;y++)p(B[Math.min(3,Math.floor((y-14)/18))],0,y,114,1);
+  /* lấp lánh trôi theo dòng */ for(let i=0;i<34;i++){const X=Math.floor(rn()*114+f*.5*(1+(i%3)))%114,Y=16+Math.floor(rn()*66);if((i+f)%5)p('#E6FFF2',X,Y,(i%3)+1,1)}
+  /* cá bơi dưới nước (bóng mờ) */ F.fish.forEach(o=>{o.x+=o.v;if(o.x>118)o.x=-8;if(o.x<-8)o.x=118;const X=Math.round(o.x),Y=o.y+((f>>2)%2),d=o.v>0?1:-1,c=PXC[o.c];
+    x.globalAlpha=.75;p(c,X,Y,4,2);p(c,X+(d>0?-2:4),Y-((f>>1)%2),2,1);p(c,X+(d>0?-2:4),Y+1+((f>>1)%2),2,1);p('k',X+(d>0?3:0),Y,1,1);x.globalAlpha=1;
+    if(f%37===((o.y*3)%37))F.rip.push({x:X+2,y:Y,r:0})});
+  /* gợn sóng */ F.rip=F.rip.filter(r=>r.r<6);F.rip.forEach(r=>{r.r+=.5;const R=Math.round(r.r);x.globalAlpha=1-r.r/6;p('#FFFFFF',r.x-R,r.y,R*2+1,1);p('#FFFFFF',r.x-R+1,r.y-1,1,1);p('#FFFFFF',r.x+R-1,r.y-1,1,1);x.globalAlpha=1});
+  /* lá súng hàng sau nhấp nhô */ [14,52,90].forEach((X,i)=>{const b=((f>>2)+i)%2;p('#2F9A6A',X,24+b,12,4);p('#2F9A6A',X+2,23+b,8,1);p('#4FB884',X+3,24+b,3,1)});
+  /* sen nhấp nhô */ xblit(x,'lotus',4,60+((f>>2)%2));xblit(x,'lotus',103,30+(((f>>2)+1)%2));
+  /* lau sậy đung đưa */ [[2,4],[5,6],[108,2],[111,5]].forEach(([X,Y],i)=>{const s=Math.round(Math.sin((f+i*3)/4));for(let k=0;k<12;k++){const off=k<4?s:0;p('G',X+off,Y+k,1,1)}p('N',X+s,Y-2,1,3);p('n',X+s,Y-1,1,1)});
+  /* bờ gần + cỏ lay */ p('k',0,84,114,1);p('G',0,85,114,15);p('g',0,86,114,10);for(let X=1;X<114;X+=4){const w=((X>>2)+(f>>1))%4===0?1:0;p('l',X+w,85+(X%3),1,2);p('G',X+1,85,1,1)}
+  /* cờ đích bay phấp phới */ p('N',56,1,1,10);const fl=(f>>1)%2;p('r',57,1,6-fl,4);p('r',57,1,6,3-fl);p('y',58,2,2,1)}
+{let tid=0;const _r=render;render=function(){const v=_r.apply(this,arguments);try{clearInterval(tid);if(scr.k==='xg'&&scr.mode==='frog'&&!scr.end&&document.getElementById('xfcv')){frogFx=null;frogBg();
+  tid=setInterval(()=>{const x=xcv('xfcv');if(!x||scr.k!=='xg'||scr.mode!=='frog'||scr.end){clearInterval(tid);return}frogFx.f++;frogDraw(x)},120)}}catch(e){}return v}}
 /* ===================== CHƠI THÊM KHÔNG VƯỢT KIẾN THỨC ===================== */
 /* Thầy Luân: trò chơi ở đảo nào chỉ được dùng kiến thức đã học tới đảo đó (đảo này + các đảo trước, cùng lớp).
    1) Dòng kiến thức KT[lớp][k]: gộp dần các "dấu hiệu" lấy từ tên/mục tiêu đảo và câu hỏi thật của đảo
