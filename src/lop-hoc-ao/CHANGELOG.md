@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Trò mới: Thả mồi câu cá
+- Cảnh pixel động: Jenny ngồi trên cầu gỗ cầm cần câu, hồ nước, lau sậy, mây, thùng cá. Chạm "Thả mồi" → dây quăng vòng cung, phao rơi xuống nước, chờ 1–3 giây, bóng cá bơi tới, phao chìm "Cá cắn câu!" → hiện câu hỏi (cùng nguồn câu đã lọc kiến thức như Ếch nhảy).
+- Đúng: kéo cá lên, cá bay vào thùng, bảng "Con cá n/8 ✓". Sai 1 lần: cá giãy, đáp án sai bị khoá. Sai 2 lần: cá chạy mất, hiện đáp án đúng, thả lại mồi. Không mất tim. Câu đủ 8 con hoặc hết 120 giây thì kết thúc.
+- Mỗi con cá trời đổi dần từ sáng tới hoàng hôn, mặt trời đi theo vòng cung; có vịt, rùa bơi ngang ở vài lượt. Có ở khoảng 26–46 đảo mỗi lớp (`core/39j-tha-moi-cau-ca.js`).
+
 ## 2026-10-19 — Sửa cá nhấp nháy
 - Câu cá: hai khung vẫy đuôi gộp thành một tấm ảnh, đổi khung bằng cách dịch nền theo bước nên cá không còn nhấp nháy.
 

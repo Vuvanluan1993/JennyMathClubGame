@@ -68,3 +68,6 @@ Kỷ lục ở `st.mg['đảo:trò']`; ghi Hồ sơ qua `hsRec`.
 - Nắn nội dung: `ktRule` (luật Câu cá/Bóng bay/Hứng sao/Đập chuột), `pairDeck`/`frogQ` (câu đảo này → 4 đảo trước → phép tính đã học → đếm chấm), `scaleRound`, `trainRound`, `shopRound`/`shopPrice`/`shopNotes`, `clockTarget`, `shapeSet`.
 - `islOpts2` = `ktBalance(lớp)`: trò bắt buộc theo nội dung (Đồng hồ, Ghép hình, Cửa hàng, Cân) → một trò luyện đúng bài → lấp tới 3 bằng trò ít dùng nhất.
 - Kiểm tra: `node tools/test/kien-thuc-tro-choi.js [lớp]` (cần playwright; `PW_DIR`, `OUT_DIR`, `CHROME` tùy chọn) → in vi phạm trước/sau, ghi `vi-pham.csv`, `cho-choi.csv`, `kien-thuc.json`.
+
+## Trò Thả mồi câu cá (`core/39j`)
+`startXG('bait', id)`: pha `idle → cast → wait → bite → reel/escape`, vẽ trên canvas 114×100 mỗi 120 ms (`baitDraw`), câu hỏi lấy từ `frogQ(x)` (đã lọc kiến thức ở `core/39e`). Được chia trò như Ếch nhảy (`ktAllowed`/`ktOwn`/`ktSample` ánh xạ `bait → frog`). Kỷ lục `st.mg['đảo:bait']`.
