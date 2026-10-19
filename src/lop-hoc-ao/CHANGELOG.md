@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Trò mới: Trồng cây
+- Trò chuyển cảnh như Ếch nhảy: mỗi câu trả lời đúng, Jenny cầm bình tưới cây một lần (bình nghiêng, giọt nước rơi, lấp lánh), cây lớn thêm một bậc và hiện "Lần tưới n/8 ✓". Cây lớn qua 9 bậc: hạt → nảy mầm → hai lá → cây non → cây cao có cành → nụ → hoa nở → quả xanh → quả chín, rồi quả rơi vào giỏ.
+- Cảnh đổi dần: sáng → trưa → chiều; có mưa rào và cầu vồng khi cây có cành; bướm, ong bay, mây trôi, hoa cỏ lay.
+- Sai 1 lần: cây rũ xuống, mọc cỏ dại, thử lại. Sai 2 lần: ốc sên gặm lá, lượt đó cây không lớn, hiện đáp án đúng rồi sang câu khác. Không mất bậc đã lớn, không có tim.
+- Mỗi đảo một loài cây: táo, cam, xoài, dâu tây, hướng dương. Ưu tiên lớp 1–2 (35 và 50 đảo), lớp 3–5 khoảng 22–25 đảo. Câu hỏi không vượt kiến thức đã học.
+
 ## 2026-10-19 — Trò mới: Thả mồi câu cá
 - Cảnh pixel động: Jenny ngồi trên cầu gỗ cầm cần câu, hồ nước, lau sậy, mây, thùng cá. Chạm "Thả mồi" → dây quăng vòng cung, phao rơi xuống nước, chờ 1–3 giây, bóng cá bơi tới, phao chìm "Cá cắn câu!" → hiện câu hỏi (cùng nguồn câu đã lọc kiến thức như Ếch nhảy).
 - Đúng: kéo cá lên, cá bay vào thùng, bảng "Con cá n/8 ✓". Sai 1 lần: cá giãy, đáp án sai bị khoá. Sai 2 lần: cá chạy mất, hiện đáp án đúng, thả lại mồi. Không mất tim. Câu đủ 8 con hoặc hết 120 giây thì kết thúc.

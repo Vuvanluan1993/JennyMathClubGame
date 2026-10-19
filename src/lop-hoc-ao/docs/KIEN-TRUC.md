@@ -71,3 +71,12 @@ Kỷ lục ở `st.mg['đảo:trò']`; ghi Hồ sơ qua `hsRec`.
 
 ## Trò Thả mồi câu cá (`core/39j`)
 `startXG('bait', id)`: pha `idle → cast → wait → bite → reel/escape`, vẽ trên canvas 114×100 mỗi 120 ms (`baitDraw`), câu hỏi lấy từ `frogQ(x)` (đã lọc kiến thức ở `core/39e`). Được chia trò như Ếch nhảy (`ktAllowed`/`ktOwn`/`ktSample` ánh xạ `bait → frog`). Kỷ lục `st.mg['đảo:bait']`.
+
+## Trò Trồng cây (`core/39k`)
+- Mode `plant`. Cảnh canvas 114×100 (phóng ×3); cây vẽ với ô gấp đôi để nổi bật. 9 bậc (`g.stage` 0–8): hạt → mầm → hai lá → cây non → cây cao có cành (mưa rào + cầu vồng) → nụ → hoa → quả xanh → quả chín → thu hoạch vào giỏ.
+- Loài cây theo đảo (`plantSp(id)`, băm mã đảo): táo, cam, xoài (cây ăn quả), dâu tây (bụi), hướng dương.
+- Câu hỏi: `frogQ(x)` (đã lọc kiến thức như Ếch nhảy); `ktAllowed/ktOwn/ktSample/xgElig` coi `plant` như `frog`.
+- Đúng: tưới, cây lớn 1 bậc. Sai 1: cây rũ, cỏ dại, khoá đáp án sai. Sai 2: ốc sên gặm lá, lượt này không lớn, sang câu khác. Không tim; 8 lần tưới hoặc 150 giây.
+- Chia trò: `ktBalance0` được viết lại trong 39k với `PLANT_BIAS` để ưu tiên lớp 1–2.
+- Lưu: kỷ lục `st.mg['đảo:plant']`, xu tối đa 20, nhật kí "Trồng cây · …", câu trả lời ghi `st.dd`, `st.sk` qua `xgRec`.
+
