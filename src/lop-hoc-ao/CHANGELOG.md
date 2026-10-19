@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Lật thẻ, Ếch nhảy lớp 1: bể cá thay chấm tròn
+- Ở các đảo chưa học phép tính, thẻ và câu hỏi dùng bể cá pixel có 0–5 con cá (bể trống là 0) thay cho chấm tròn: "Bể có mấy con cá?". Lời hướng dẫn Lật thẻ đổi thành "ghép bể cá với số con cá".
+
 ## 2026-10-19 — Lời Jenny khớp luật trò chơi
 - Câu cá, Bóng bay, Hứng sao, Đập chuột: Jenny đọc đúng dòng luật đang hiện trên màn hình (ví dụ "Em hứng sao mang số 4 nhé."). Đã kiểm tra 909 lượt ở 5 lớp, không còn chỗ lệch.
 

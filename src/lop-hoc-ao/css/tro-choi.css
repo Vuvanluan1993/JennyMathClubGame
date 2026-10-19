@@ -192,3 +192,23 @@
  linear-gradient(#FCD655,#FCD655) 6px 0/4px 4px no-repeat,linear-gradient(#FCD655,#FCD655) 0 4px/16px 4px no-repeat}
 .xgmark.on{animation:xgmk .6s steps(3) forwards}
 @keyframes xgmk{0%{opacity:1;transform:scale(1.4)}70%{opacity:1;transform:scale(1)}100%{opacity:0}}
+/* bể cá pixel (lớp 1 đầu năm: Lật thẻ, Ếch nhảy) */
+.xtank{position:relative;display:inline-flex;flex-direction:column;justify-content:flex-end;width:70px;height:52px;background:#BFE9F8;border:3px solid #1F2A5A;border-top-width:2px;box-sizing:border-box;vertical-align:middle;line-height:0;overflow:hidden}
+.xtank::before{content:'';position:absolute;left:0;right:0;top:0;height:5px;background:#7FD3F0}
+.xtkw{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:2px 3px;flex:1;padding:6px 2px 0}
+.xtank.many .xtkw{gap:1px 2px;padding-top:5px}
+.xtkf{display:inline-block;line-height:0}.xtkf.r{transform:scaleX(-1)}
+.xtks{display:block;height:6px;background:linear-gradient(90deg,#F6D98B 0 50%,#E2B85E 50% 100%) 0 0/8px 6px}
+.xtkb{position:absolute;right:6px;top:8px;z-index:0}
+.xtkb i{display:block;width:4px;height:4px;margin:0 0 4px 3px;background:#FFFFFF;box-shadow:0 0 0 1px #12B5E8}
+.xtkb i+i{margin-left:0}
+.xfpad .xtank,.xfq .xtank{width:64px;height:46px}
+.xtank .xtkw,.xtank .xtkb,.xtank .xtkf{background:transparent!important;box-shadow:none!important;border:0!important;padding-left:2px;color:inherit}
+.xtank .xtks{background:linear-gradient(90deg,#F6D98B 0 50%,#E2B85E 50% 100%) 0 0/8px 6px!important;border:0!important;box-shadow:none!important;padding:0!important}
+.xtank .xtkb i{background:#FFFFFF!important}
+.xtank{background:#BFE9F8!important;padding:0!important}
+.xtank{display:inline-block!important}
+.xtank .xtkw{position:absolute!important;left:2px;right:12px;top:6px;bottom:7px;display:flex!important;flex-wrap:wrap;justify-content:center;align-content:center;align-items:center;gap:2px 3px;padding:0!important}
+.xtank .xtks{position:absolute;left:0;right:0;bottom:0}
+.xgc .xtank{width:76px;height:58px}
+.mgrule .xtank{width:78px;height:54px}

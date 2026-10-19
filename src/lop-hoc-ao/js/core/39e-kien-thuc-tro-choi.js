@@ -93,7 +93,9 @@ function ktFacts(K,G,n){const M=Math.min(K.max,G<=1?10:G===2?100:G===3?1000:1000
     else if(o==='×'){const u=R(2,G<=2?5:9),v=R(2,9);if(u*v>M)continue;q=`${u} × ${v}`;a=u*v}
     else{const u=R(2,G<=2?5:9),v=R(2,9);if(u*v>M)continue;q=`${u*v} : ${u}`;a=v}
     out.push([q,String(fN(a))])}return out}
-const ktDots=n=>n?`<span class="xdots">${'●'.repeat(Math.min(n,5))}${n>5?'<br>'+'●'.repeat(n-5):''}</span>`:'<span class="xdots">—</span>';
+/* bể cá pixel: số cá = số cần ghép (0 → bể trống, chỉ có bọt nước) */
+const ktDots=n=>{n=Math.max(0,Math.min(10,n|0));const fs=Array.from({length:n},(_,i)=>`<i class="xtkf${i%2?' r':''}">${spr('fish',n>5?6:n>3?8:10)}</i>`).join('');
+  return`<span class="xtank${n>5?' many':''}" role="img" aria-label="Bể có ${n} con cá"><span class="xtkw">${fs}</span><span class="xtkb"><i></i><i></i></span><span class="xtks"></span></span>`};
 pairFacts=function(x,n){const K=ktOf(x);return ktFacts(K,xgGr(x),n)};
 pairDeck=function(x){const K=ktOf(x),G=xgGr(x),pairs=[],seenA=new Set(),seenQ=new Set();
   const add=(p,q)=>{if(p&&pairs.length<6&&!seenA.has(p[1])&&!seenQ.has(p[0])&&!ktViol(K,p[0]+' | '+p[1]).length){seenA.add(p[1]);seenQ.add(p[0]);pairs.push({p,q})}};
@@ -106,7 +108,7 @@ pairDeck=function(x){const K=ktOf(x),G=xgGr(x),pairs=[],seenA=new Set(),seenQ=ne
 {const _f=frogQ;frogQ=function(x){const K=ktOf(x),G=xgGr(x);
   for(const y of [x,...ktPrev(x,4)]){const pool=islPool(y);for(let i=0;i<50&&pool.length;i++){let q;try{q=mkQ(pick(pool))}catch(e){continue}const f=frogFromQ(q);if(f&&!ktViol(K,f.t+' | '+f.ans+' | '+f.d.join(' | ')).length)return frogMk(f)}}
   for(let i=0;i<20;i++){const [t,a]=ktFacts(K,G,1)[0]||[];if(!t)break;const d=xNear(a).filter(v=>xNum(v)<=K.max);if(d.length>=2)return frogMk({t:esc(t)+' = ?',ans:a,d:d.slice(0,2),q:null})}
-  const M=Math.min(K.max,10),n=R(1,M),d=shuf(range(0,M).filter(v=>v!==n)).slice(0,2);return frogMk({t:`Có mấy chấm? ${ktDots(n)}`,ans:String(n),d:d.map(String),q:null})}}
+  const M=Math.min(K.max,10),n=R(1,M),d=shuf(range(0,M).filter(v=>v!==n)).slice(0,2);return frogMk({t:`Bể có mấy con cá? ${ktDots(n)}`,ans:String(n),d:d.map(String),q:null})}}
 
 /* ---------- Cân / Tàu hoả / Cửa hàng / Đồng hồ / Ghép hình: nắn theo kiến thức ---------- */
 {const _s=scaleRound;scaleRound=function(x){const K=ktOf(x);const r=_s.apply(this,arguments);
@@ -191,3 +193,6 @@ function ktAuditBefore(G,n){const NOW={islOpts2,pairDeck,pairFacts,frogQ,scaleRo
 function ktSayFromRule(rule){const t=String(rule||'').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').trim();return t?`Em ${t.charAt(0).toLowerCase()+t.slice(1)} nhé.`:''}
 {const _m=startMini;startMini=function(mode,id){const v=_m.apply(this,arguments);try{if(scr.k==='mini'&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v}}
 {const _x=startXG;startXG=function(mode,id){const v=_x.apply(this,arguments);try{if(scr.k==='xg'&&(mode==='star'||mode==='mole')&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v}}
+
+/* Lật thẻ dùng bể cá: đổi lời hướng dẫn cho đúng */
+{const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='pair'&&scr.cards&&scr.cards.some(c=>/xtank/.test(c.t))){const sp=document.querySelector('.mgrule span');if(sp)sp.innerHTML='Lật 2 thẻ: ghép <b>bể cá</b> với <b>số con cá</b>';scr.say='Em lật hai thẻ, ghép bể cá với số con cá trong bể nhé.'}}catch(e){}return v}}

@@ -1033,6 +1033,26 @@ body.px .bnav:has(> button:nth-child(5)) button{font-size:16px}
  linear-gradient(#FCD655,#FCD655) 6px 0/4px 4px no-repeat,linear-gradient(#FCD655,#FCD655) 0 4px/16px 4px no-repeat}
 .xgmark.on{animation:xgmk .6s steps(3) forwards}
 @keyframes xgmk{0%{opacity:1;transform:scale(1.4)}70%{opacity:1;transform:scale(1)}100%{opacity:0}}
+/* bể cá pixel (lớp 1 đầu năm: Lật thẻ, Ếch nhảy) */
+.xtank{position:relative;display:inline-flex;flex-direction:column;justify-content:flex-end;width:70px;height:52px;background:#BFE9F8;border:3px solid #1F2A5A;border-top-width:2px;box-sizing:border-box;vertical-align:middle;line-height:0;overflow:hidden}
+.xtank::before{content:'';position:absolute;left:0;right:0;top:0;height:5px;background:#7FD3F0}
+.xtkw{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:2px 3px;flex:1;padding:6px 2px 0}
+.xtank.many .xtkw{gap:1px 2px;padding-top:5px}
+.xtkf{display:inline-block;line-height:0}.xtkf.r{transform:scaleX(-1)}
+.xtks{display:block;height:6px;background:linear-gradient(90deg,#F6D98B 0 50%,#E2B85E 50% 100%) 0 0/8px 6px}
+.xtkb{position:absolute;right:6px;top:8px;z-index:0}
+.xtkb i{display:block;width:4px;height:4px;margin:0 0 4px 3px;background:#FFFFFF;box-shadow:0 0 0 1px #12B5E8}
+.xtkb i+i{margin-left:0}
+.xfpad .xtank,.xfq .xtank{width:64px;height:46px}
+.xtank .xtkw,.xtank .xtkb,.xtank .xtkf{background:transparent!important;box-shadow:none!important;border:0!important;padding-left:2px;color:inherit}
+.xtank .xtks{background:linear-gradient(90deg,#F6D98B 0 50%,#E2B85E 50% 100%) 0 0/8px 6px!important;border:0!important;box-shadow:none!important;padding:0!important}
+.xtank .xtkb i{background:#FFFFFF!important}
+.xtank{background:#BFE9F8!important;padding:0!important}
+.xtank{display:inline-block!important}
+.xtank .xtkw{position:absolute!important;left:2px;right:12px;top:6px;bottom:7px;display:flex!important;flex-wrap:wrap;justify-content:center;align-content:center;align-items:center;gap:2px 3px;padding:0!important}
+.xtank .xtks{position:absolute;left:0;right:0;bottom:0}
+.xgc .xtank{width:76px;height:58px}
+.mgrule .xtank{width:78px;height:54px}
 
 /* ===== bản học sinh ===== */
 [hidden]{display:none!important}
@@ -6590,7 +6610,9 @@ function ktFacts(K,G,n){const M=Math.min(K.max,G<=1?10:G===2?100:G===3?1000:1000
     else if(o==='×'){const u=R(2,G<=2?5:9),v=R(2,9);if(u*v>M)continue;q=`${u} × ${v}`;a=u*v}
     else{const u=R(2,G<=2?5:9),v=R(2,9);if(u*v>M)continue;q=`${u*v} : ${u}`;a=v}
     out.push([q,String(fN(a))])}return out}
-const ktDots=n=>n?`<span class="xdots">${'●'.repeat(Math.min(n,5))}${n>5?'<br>'+'●'.repeat(n-5):''}</span>`:'<span class="xdots">—</span>';
+/* bể cá pixel: số cá = số cần ghép (0 → bể trống, chỉ có bọt nước) */
+const ktDots=n=>{n=Math.max(0,Math.min(10,n|0));const fs=Array.from({length:n},(_,i)=>`<i class="xtkf${i%2?' r':''}">${spr('fish',n>5?6:n>3?8:10)}</i>`).join('');
+  return`<span class="xtank${n>5?' many':''}" role="img" aria-label="Bể có ${n} con cá"><span class="xtkw">${fs}</span><span class="xtkb"><i></i><i></i></span><span class="xtks"></span></span>`};
 pairFacts=function(x,n){const K=ktOf(x);return ktFacts(K,xgGr(x),n)};
 pairDeck=function(x){const K=ktOf(x),G=xgGr(x),pairs=[],seenA=new Set(),seenQ=new Set();
   const add=(p,q)=>{if(p&&pairs.length<6&&!seenA.has(p[1])&&!seenQ.has(p[0])&&!ktViol(K,p[0]+' | '+p[1]).length){seenA.add(p[1]);seenQ.add(p[0]);pairs.push({p,q})}};
@@ -6603,7 +6625,7 @@ pairDeck=function(x){const K=ktOf(x),G=xgGr(x),pairs=[],seenA=new Set(),seenQ=ne
 {const _f=frogQ;frogQ=function(x){const K=ktOf(x),G=xgGr(x);
   for(const y of [x,...ktPrev(x,4)]){const pool=islPool(y);for(let i=0;i<50&&pool.length;i++){let q;try{q=mkQ(pick(pool))}catch(e){continue}const f=frogFromQ(q);if(f&&!ktViol(K,f.t+' | '+f.ans+' | '+f.d.join(' | ')).length)return frogMk(f)}}
   for(let i=0;i<20;i++){const [t,a]=ktFacts(K,G,1)[0]||[];if(!t)break;const d=xNear(a).filter(v=>xNum(v)<=K.max);if(d.length>=2)return frogMk({t:esc(t)+' = ?',ans:a,d:d.slice(0,2),q:null})}
-  const M=Math.min(K.max,10),n=R(1,M),d=shuf(range(0,M).filter(v=>v!==n)).slice(0,2);return frogMk({t:`Có mấy chấm? ${ktDots(n)}`,ans:String(n),d:d.map(String),q:null})}}
+  const M=Math.min(K.max,10),n=R(1,M),d=shuf(range(0,M).filter(v=>v!==n)).slice(0,2);return frogMk({t:`Bể có mấy con cá? ${ktDots(n)}`,ans:String(n),d:d.map(String),q:null})}}
 
 /* ---------- Cân / Tàu hoả / Cửa hàng / Đồng hồ / Ghép hình: nắn theo kiến thức ---------- */
 {const _s=scaleRound;scaleRound=function(x){const K=ktOf(x);const r=_s.apply(this,arguments);
@@ -6688,6 +6710,9 @@ function ktAuditBefore(G,n){const NOW={islOpts2,pairDeck,pairFacts,frogQ,scaleRo
 function ktSayFromRule(rule){const t=String(rule||'').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').trim();return t?`Em ${t.charAt(0).toLowerCase()+t.slice(1)} nhé.`:''}
 {const _m=startMini;startMini=function(mode,id){const v=_m.apply(this,arguments);try{if(scr.k==='mini'&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v}}
 {const _x=startXG;startXG=function(mode,id){const v=_x.apply(this,arguments);try{if(scr.k==='xg'&&(mode==='star'||mode==='mole')&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v}}
+
+/* Lật thẻ dùng bể cá: đổi lời hướng dẫn cho đúng */
+{const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='pair'&&scr.cards&&scr.cards.some(c=>/xtank/.test(c.t))){const sp=document.querySelector('.mgrule span');if(sp)sp.innerHTML='Lật 2 thẻ: ghép <b>bể cá</b> với <b>số con cá</b>';scr.say='Em lật hai thẻ, ghép bể cá với số con cá trong bể nhé.'}}catch(e){}return v}}
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 
