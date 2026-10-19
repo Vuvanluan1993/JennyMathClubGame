@@ -1,5 +1,13 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Chơi thêm không vượt kiến thức của bài
+- Mỗi lớp có "dòng kiến thức": học tới đảo nào thì biết những gì (phép cộng, trừ, nhân, chia, so sánh, phân số, số thập phân, tiền, giờ, đơn vị đo, tên hình, số lớn nhất đã học). Lớp sau mang theo kiến thức lớp trước (`core/39e-kien-thuc-tro-choi.js`).
+- Trò chỉ mở ở đảo khi đủ kiến thức; nội dung được nắn theo bài: Lật thẻ và Ếch nhảy lấy câu của chính đảo, rồi vài đảo ngay trước; chưa học phép tính thì ghép "nhóm chấm ↔ số" (ví dụ lớp 1 Số 0–5). Phép cộng chỉ xuất hiện từ bài Phép cộng, phép trừ từ bài Phép trừ.
+- Câu cá, Bóng bay, Hứng sao, Đập chuột: luật của chủ đề vượt bài thì đổi sang luật hợp bài (chọn số 3; số lớn hơn 6 khi đã học so sánh; phép cộng có kết quả bằng 8 khi đã học cộng…).
+- Tàu hoả chỉ có từ bài So sánh; Cửa hàng chỉ có từ bài Tiền (lớp 1 không có), giá không vượt số đã học; Đồng hồ lớp 1 chỉ giờ đúng; Ghép hình chỉ dùng hình đã học; Cân không dùng phép tính chưa học.
+- Chọn 3 trò mỗi đảo: ưu tiên trò luyện đúng nội dung của đảo, rồi chia đều trong lớp. Kết quả cố định.
+- Kiểm tra mới `tools/test/kien-thuc-tro-choi.js`: trước sửa 159 cặp đảo–trò vượt kiến thức (lớp 1: 55), sau sửa 0.
+
 ## 2026-10-19 — Ếch nhảy: hiệu ứng nhảy, rơi, bơi về bờ
 - Chạm lá súng: ếch nhảy vòng cung từ bờ lên lá đó. Đúng thì đứng trên lá rồi sang hàng mới. Sai thì lá chìm, ếch rơi xuống nước (bọt bắn, mất tim), rồi bơi về bờ (thấy đầu ếch, có gợn sóng); về tới bờ mới chọn lá khác được (`core/39d-ech-nhay.js`).
 

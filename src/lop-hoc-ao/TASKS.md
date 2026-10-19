@@ -31,3 +31,4 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 - ☑ **T-15 Chơi thêm đợt 1** — Hứng sao rơi, Lật thẻ ghép đôi, Kéo co với trùm, Đồng hồ thần kì (19/10).
 - ☑ **T-16 Chơi thêm đợt 2** — Cân thăng bằng, Cửa hàng Jenny, Tàu hoả xếp số (19/10).
 - ☑ **T-17 Chơi thêm đợt 3** — Đập chuột chũi, Ếch nhảy lá súng, Ghép hình pixel; thêm Cửa hàng Jenny cho lớp 1–3 (19/10).
+- ☑ **T-18 Chơi thêm không vượt kiến thức** — dòng kiến thức từng đảo; trò chỉ mở khi đủ kiến thức, nội dung nắn theo bài; kiểm tra `tools/test/kien-thuc-tro-choi.js` (19/10).

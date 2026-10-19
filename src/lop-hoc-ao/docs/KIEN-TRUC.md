@@ -60,3 +60,11 @@ Kích thước chữ phương án tự co cho vừa nút và đồng đều (`op
 `core/38b-can-pixel.js`: vẽ Cân thăng bằng trên canvas pixel. `core/39-tro-choi-dot-3.js`: thêm `mole` (Đập chuột chũi, luật MGT/MG như Hứng sao), `frog` (Ếch nhảy lá súng, câu ngắn của đảo, 8 hàng), `shape` (Ghép hình pixel, đảo hình học, bộ hình theo lớp/bài: hình phẳng, khối, góc, bình hành/thoi/thang) vào `XGN`; bọc `islOpts2` (đảo hình học luôn có `shape`; lớp 1–3 thêm `shop` ở đảo Luyện tập/Ôn tập, lời văn); lớp 1 Cửa hàng dùng tiền chẵn nghìn (`shopNotes`, `shopPrice`). Cảnh vẽ trên canvas thấp (×3, `image-rendering: pixelated`).
 Trò mới chạy ở màn `scr.k==='xg'` (`startXG(mode,id)`, `viewXG`, `xgEnd`): `star`, `pair`, `clock`. Kéo co dùng máy Đua giờ với cờ `scr.tug` (`startTug`).
 Kỷ lục ở `st.mg['đảo:trò']`; ghi Hồ sơ qua `hsRec`.
+
+## Chơi thêm theo kiến thức (`core/39e`)
+
+- `ktGrade(lớp)` → mảng theo thứ tự đảo; mỗi phần tử `{f: tập dấu hiệu đã học, max: mức số}`. Dấu hiệu lấy từ tên/mục tiêu đảo và câu hỏi thật của đảo (phép tính chỉ lấy từ tên bài; số lấy từ đáp án đúng). Lớp sau bắt đầu bằng kiến thức cuối lớp trước. Tính một lần, số ngẫu nhiên cố định (`ktSeeded`).
+- `ktViol(K, nội dung)` → các dấu hiệu chưa học hoặc số vượt mức. `ktAllowed(đảo, trò)` = yêu cầu tối thiểu + lấy mẫu không vi phạm.
+- Nắn nội dung: `ktRule` (luật Câu cá/Bóng bay/Hứng sao/Đập chuột), `pairDeck`/`frogQ` (câu đảo này → 4 đảo trước → phép tính đã học → đếm chấm), `scaleRound`, `trainRound`, `shopRound`/`shopPrice`/`shopNotes`, `clockTarget`, `shapeSet`.
+- `islOpts2` = `ktBalance(lớp)`: trò bắt buộc theo nội dung (Đồng hồ, Ghép hình, Cửa hàng, Cân) → một trò luyện đúng bài → lấp tới 3 bằng trò ít dùng nhất.
+- Kiểm tra: `node tools/test/kien-thuc-tro-choi.js [lớp]` (cần playwright; `PW_DIR`, `OUT_DIR`, `CHROME` tùy chọn) → in vi phạm trước/sau, ghi `vi-pham.csv`, `cho-choi.csv`, `kien-thuc.json`.
