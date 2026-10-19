@@ -12,7 +12,7 @@ function climbEasy(x,seen){const K=ktOf(x),G=xgGr(x),F=K.f||new Set(),ops=['+','
     if(ans<0)continue;const key='e:'+t;if(seen&&seen.has(key))continue;if(seen)seen.add(key);
     /* đáp án nhiễu gần đúng: ±1, ±2 (hoặc ±10 khi số lớn), không âm */
     const d=ans>=50?10:1,cand=[...new Set([ans+d,ans-d,ans+2*d,ans+1,ans-1].filter(v=>v>=0&&v!==ans))];const opts=shuf([ans,...shuf(cand).slice(0,2)]).map(v=>`${fN(v)} ${cl}`);
-    return{t,pic:'',opts,a:opts.indexOf(`${fN(ans)} ${cl}`),q:{kind:'Giải toán lời văn (khởi động)',say:t},sol:`Bài giải: ${sol}.`,easy:1}}
+    return{t,pic:'',opts,a:opts.indexOf(`${fN(ans)} ${cl}`),q:{kind:'Giải toán lời văn (khởi động)',say:t},sol:sol,easy:1}}
   return null}
 {const _q=climbQ;climbQ=function(x,seen){const g=scr,sc=(g&&g.k==='xg'&&g.mode==='climb'&&g.seen===seen)?g.score:0;if(sc<CLIMB_EASY_N){const e=climbEasy(x,seen);if(e)return e}return _q.apply(this,arguments)}}
 /* lời mở đầu / huy hiệu theo số chặng mới */

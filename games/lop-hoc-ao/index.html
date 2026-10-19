@@ -7126,7 +7126,7 @@ function baitLoop(){const g=scr;stopXG();let sec=performance.now();
     if(g.ph==='cast'&&now-g.pt>650){g.ph='wait';g.pt=now;sfx('splash');g.shT=now+R(700,1900);g.biteAt=g.shT+950;baitUI()}
     else if(g.ph==='wait'&&now>g.biteAt){g.ph='bite';g.pt=now;g.q=frogQ(isl1(g.id));g.tries=0;g.bad=[];sfx('catch');try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}baitUI();try{if(curG()<=2)sayJ('Cá cắn câu! '+frogSay(g.q))}catch(e){}}
     baitDraw()},120)}}
-function baitCast(){const g=scr;if(g.k!=='xg'||g.mode!=='bait'||g.end||g.ph!=='idle')return;g.ph='cast';g.pt=performance.now();g.bx=R(70,92);sfx('tap');baitUI()}
+function baitCast(){const g=scr;if(g.k!=='xg'||g.mode!=='bait'||g.end||g.ph!=='idle')return;g.ph='cast';g.pt=performance.now();g.bx=R(70,92);sfx('tap');const fb=document.getElementById('xgfb');if(fb)fb.innerHTML='';baitUI()}
 function baitAns(i){const g=scr;if(g.k!=='xg'||g.mode!=='bait'||g.end||g.ph!=='bite'||g.lockA)return;const q=g.q,ok=i===q.a;
   xgRec(ok,g.tries===0&&q.q?q.q:g.tries===0?{kind:'Tính nhẩm'}:null);g.tries++;const fb=document.getElementById('xgfb');
   if(ok){g.ph='reel';g.pt=performance.now();g.lockA=1;sfx('ok');if(fb)fb.innerHTML='<span class="ok">Đúng rồi! Kéo cá lên nào!</span>';baitUI();
@@ -7444,7 +7444,7 @@ function climbDraw(){const x=xcv('xccv');if(!x)return;const g=scr,p=xpx(x),now=p
 /* ---------- điều khiển ---------- */
 function climbLoop(){const g=scr;stopXG();let sec=performance.now();
   xgLoop={tick:setInterval(()=>{if(scr!==g||g.end||!document.getElementById('xccv')){stopXG();return}const now=performance.now();
-    if(now-sec>=1000){sec=now;if(g.ph!=='chest'){g.t--;const e=document.getElementById('xctm');if(e)e.textContent=g.t;if(g.t>0&&g.t<=10)sfx('tick');if(g.t<=0){climbEnd();return}}}
+    if(now-sec>=1000){sec=now;if(g.ph!=='chest'&&g.ph!=='rest'){g.t--;const e=document.getElementById('xctm');if(e)e.textContent=g.t;if(g.t>0&&g.t<=10)sfx('tick');if(g.t<=0){climbEnd();return}}}
     climbDraw()},120)}}
 function climbNext(g){g.ph='ask';g.pt=performance.now();g.q=climbQ(isl1(g.id),g.seen);g.tries=0;g.bad=[];g.lockA=0;const fb=document.getElementById('xgfb');if(fb)fb.innerHTML='';climbUI();
   const qb=document.getElementById('xcq');if(qb)try{qb.animate([{transform:'translateY(30px)',opacity:0},{transform:'none',opacity:1}],{duration:400,easing:'steps(4)'})}catch(e){}
@@ -7459,9 +7459,31 @@ function climbAns(i){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end||g.ph!==
       g.ph='wait';climbUI();setTimeout(()=>{if(scr===g&&!g.end)climbNext(g)},1100)},1350);return}
   sfx('bad');if(g.tries<2){g.bad.push(i);g.ph='slip';g.pt=performance.now();if(fb)fb.innerHTML='<span class="bad">Cẩn thận! Đá lăn rồi. Đọc lại đề và thử lại nhé.</span>';climbUI();try{navigator.vibrate&&navigator.vibrate(80)}catch(e){}
     setTimeout(()=>{if(scr===g&&!g.end&&g.ph==='slip'){g.ph='ask';climbUI()}},700);return}
-  g.lockA=1;g.ph='rest';g.pt=performance.now();g.miss++;const sol=ktClean(q.sol||'').slice(0,160);
-  if(fb)fb.innerHTML=`<span class="bad">Jenny nghỉ ở trại. Đáp án đúng: <b>${q.opts[q.a]}</b>${sol?`<br><small class="xcsol">Lời giải: ${esc(sol)}</small>`:''}</span>`;climbUI();
-  setTimeout(()=>{if(scr===g&&!g.end)climbNext(g)},Math.max(3200,Math.min(6000,sol.length*45)))}
+  g.lockA=1;g.ph='rest';g.pt=performance.now();g.miss++;const L=climbSol(q);
+  if(fb)fb.innerHTML=`<div class="xcsolbox"><div class="xcsolh">Jenny nghỉ ở trại. Cùng xem bài giải nhé!</div><div class="xcsolc"><b class="xcbg">Bài giải</b>${L.lead?`<div>${L.lead}</div>`:''}${L.lines.map(l=>`<div class="xcln">${l}</div>`).join('')}<div class="xcds">Đáp số: ${L.ans}.</div></div><button type="button" class="gobtn xcgo" onclick="climbGoOn()">Em hiểu rồi, leo tiếp ▶</button></div>`;climbUI();
+  try{sayJ(`Cùng xem bài giải nhé. ${L.say}`)}catch(e){}}
+/* bài giải có câu dẫn: lấy từ câu hỏi "Hỏi … bao nhiêu …?" → "Số … … là:" */
+const CL_UNIT=/^(ki-lô-gam|gam|tấn|tạ|yến|mét|xăng-ti-mét|đề-xi-mét|mi-li-mét|ki-lô-mét|lít|mi-li-lít|(xăng-ti-mét|đề-xi-mét|mét|ki-lô-mét|mi-li-mét)\s+(vuông|khối)|giờ|phút|giây|độ|tuổi|đồng)$/i;
+const CL_LOW=/^(Cửa|Có|Cả|Mỗi|Giá|Tháng|Bạn|Lớp|Trường|Thùng|Hộp|Đội|Nhà|Vườn|Bể|Xe|Tàu|Người|Cô|Chú|Bác|Mẹ|Bố|Ông|Bà|Anh|Chị|Em|Hai|Ba|Bốn|Năm|Sáu|Chiều|Diện|Thể|Chu|Quãng|Số|Trong|Khối|Hình|Cạnh|Đáy|Tuần|Hôm|Ngày|Sáng|Buổi|Thư|Bao|Túi|Giỏ|Chuồng|Ao|Cây|Tổ|Khu|Đoạn|Sợi|Tấm|Mảnh|Đường|Bán|Quả|Con|Chiếc|Bức|Sân|Mảnh)(?=\s|$)/;
+const clCap=t=>t.replace(/^\s*(.)/,c=>c.toUpperCase()),clLow=t=>CL_LOW.test(t)?t.replace(/^(.)/,c=>c.toLowerCase()):t;
+/* bài giải có câu dẫn, dựng từ câu hỏi cuối của đề */
+function climbSol(q){const raw=String(q.sol||'').replace(/^\s*(<b>)?\s*(Bài giải|Lời giải)\s*:?\s*(<\/b>)?\s*/i,''),qt=ktClean(q.t||'').replace(/\s+/g,' ');
+  let ans=ktClean(q.opts[q.a]||'').trim(),lead='',noun='';
+  const sents=qt.match(/[^.?!]*\?/g),Q=(sents?sents[sents.length-1]:'').trim().replace(/^Hỏi\s+/i,'');
+  const m=Q.match(/^(.*?)\s*(bao nhiêu|mấy)\s*(.*?)\s*\?$/i);
+  if(m){let before=m[1].trim().replace(/\s*,\s*$/,'');noun=m[3].trim();
+    if(/^tuổi$/i.test(noun)){lead=/hơn|kém/.test(before)?`Số tuổi ${clLow(before)} là:`:`Tuổi của ${clLow(before.replace(/\s+(năm nay|hiện nay)$/i,''))} là:`}
+    else if(CL_UNIT.test(noun)&&/\sdài$/i.test(before)){lead=`Độ dài ${clLow(before.replace(/\s+dài$/i,''))} là:`}
+    else if(!noun||/\s(là|bằng)$/i.test(before)){lead=clCap(before.replace(/\s+(là|bằng)$/i,''))+' là:'}
+    else{if(/^có$/i.test(before))before='';lead=`Số ${noun}${before?' '+clLow(before):''} là:`}}
+  else if(Q)lead=clCap(Q.replace(/\?$/,''))+' là:';
+  lead=lead.replace(/\s+/g,' ').replace(/\s+là là:$/,' là:');
+  const lines=raw.split(/(?:<br\s*\/?>|\.\s+(?=[A-ZÀ-Ỹa-zà-ỹ0-9(])|;\s*)/).map(x=>x.replace(/\.\s*$/,'').trim()).filter(Boolean);
+  /* đáp số có đơn vị */
+  if(!/[a-zà-ỹđ²³]/i.test(ans)){const last=ktClean(lines[lines.length-1]||''),u=last.match(/\(([^()\d]{1,20})\)\s*$/)||last.match(/\d\s*([a-zà-ỹđ²³]+(?:\s[a-zà-ỹđ²³]+)?)\s*$/i);
+    if(u&&!/dư/.test(u[1]))ans=`${ans} ${u[1].trim()}`;else if(noun)ans=`${ans} ${noun}`}
+  const say=ktClean(`${lead} ${lines.join('. ')}. Đáp số: ${ans}.`);return{lead,lines,ans,say}}
+function climbGoOn(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end||g.ph!=='rest')return;try{speechSynthesis.cancel()}catch(e){}sfx('tap');climbNext(g)}
 function climbEnd(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end)return;stopXG();const st=S.st[sid];st.mg=st.mg||{};const key=`${g.id}:climb`;g.prev=st.mg[key]||0;st.mg[key]=Math.max(g.prev,g.score);
   g.coins=addCoins(sid,Math.min(20,g.score*3+(g.score>=CLIMB_N?2:0)),'self');g.end=true;g.win=g.score>=CLIMB_N;log(sid,'passed',`Leo núi · ${isl1(g.id).title}`,0,{success:true,score:{raw:g.score}});
   sfx(g.win?'win':'timeup');sayJ(g.win?'Jenny đã lên tới đỉnh núi và mở được rương báu! Em giỏi quá!':`Em đã leo được ${g.score} chặng!`);save();render()}
@@ -7490,6 +7512,13 @@ function climbEnd(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end)return;st
 .xco:disabled{background:#E3E7F0;color:#9AA4C0;box-shadow:0 0 0 3px #9AA4C0;cursor:default}
 .xco.right:disabled{background:#DFF6E8;color:#1E8A4A;box-shadow:0 0 0 3px #1E8A4A}
 .xcsol{display:block;margin-top:4px;color:#5E6B8C;font-size:14px;line-height:1.3}
+.xcsolbox{text-align:left;max-width:520px;margin:0 auto}
+.xcsolh{font-family:var(--f-body);font-size:16px;color:#B8320F;font-weight:700;margin-bottom:6px;text-align:center}
+.xcsolc{font-family:var(--f-body);background:#FFFDF2;border:3px solid #1F2A5A;padding:8px 10px;font-size:17px;line-height:1.45;color:#1F2A5A}
+.xcbg{display:block;text-align:center;text-decoration:underline;margin-bottom:2px}
+.xcln{padding-left:18px}
+.xcds{margin-top:2px;font-weight:700}
+.xcgo{font-family:var(--f-body)!important;font-weight:700!important;font-size:18px!important;text-transform:none!important;line-height:1.2!important;padding:12px!important;display:block;margin:10px auto 0;min-width:0;width:100%;max-width:340px}
 .xcbadge{display:inline-flex;align-items:center;gap:10px;margin:8px auto;padding:6px 12px;background:#FFF6D6;border:3px solid #1F2A5A;text-align:left}
 .xcbadge small{display:block;color:#5E6B8C}
 `;document.head.appendChild(st)})();
@@ -7653,7 +7682,7 @@ function climbEasy(x,seen){const K=ktOf(x),G=xgGr(x),F=K.f||new Set(),ops=['+','
     if(ans<0)continue;const key='e:'+t;if(seen&&seen.has(key))continue;if(seen)seen.add(key);
     /* đáp án nhiễu gần đúng: ±1, ±2 (hoặc ±10 khi số lớn), không âm */
     const d=ans>=50?10:1,cand=[...new Set([ans+d,ans-d,ans+2*d,ans+1,ans-1].filter(v=>v>=0&&v!==ans))];const opts=shuf([ans,...shuf(cand).slice(0,2)]).map(v=>`${fN(v)} ${cl}`);
-    return{t,pic:'',opts,a:opts.indexOf(`${fN(ans)} ${cl}`),q:{kind:'Giải toán lời văn (khởi động)',say:t},sol:`Bài giải: ${sol}.`,easy:1}}
+    return{t,pic:'',opts,a:opts.indexOf(`${fN(ans)} ${cl}`),q:{kind:'Giải toán lời văn (khởi động)',say:t},sol:sol,easy:1}}
   return null}
 {const _q=climbQ;climbQ=function(x,seen){const g=scr,sc=(g&&g.k==='xg'&&g.mode==='climb'&&g.seen===seen)?g.score:0;if(sc<CLIMB_EASY_N){const e=climbEasy(x,seen);if(e)return e}return _q.apply(this,arguments)}}
 /* lời mở đầu / huy hiệu theo số chặng mới */

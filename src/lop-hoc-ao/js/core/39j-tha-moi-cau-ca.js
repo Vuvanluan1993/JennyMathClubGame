@@ -81,7 +81,7 @@ function baitLoop(){const g=scr;stopXG();let sec=performance.now();
     if(g.ph==='cast'&&now-g.pt>650){g.ph='wait';g.pt=now;sfx('splash');g.shT=now+R(700,1900);g.biteAt=g.shT+950;baitUI()}
     else if(g.ph==='wait'&&now>g.biteAt){g.ph='bite';g.pt=now;g.q=frogQ(isl1(g.id));g.tries=0;g.bad=[];sfx('catch');try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}baitUI();try{if(curG()<=2)sayJ('Cá cắn câu! '+frogSay(g.q))}catch(e){}}
     baitDraw()},120)}}
-function baitCast(){const g=scr;if(g.k!=='xg'||g.mode!=='bait'||g.end||g.ph!=='idle')return;g.ph='cast';g.pt=performance.now();g.bx=R(70,92);sfx('tap');baitUI()}
+function baitCast(){const g=scr;if(g.k!=='xg'||g.mode!=='bait'||g.end||g.ph!=='idle')return;g.ph='cast';g.pt=performance.now();g.bx=R(70,92);sfx('tap');const fb=document.getElementById('xgfb');if(fb)fb.innerHTML='';baitUI()}
 function baitAns(i){const g=scr;if(g.k!=='xg'||g.mode!=='bait'||g.end||g.ph!=='bite'||g.lockA)return;const q=g.q,ok=i===q.a;
   xgRec(ok,g.tries===0&&q.q?q.q:g.tries===0?{kind:'Tính nhẩm'}:null);g.tries++;const fb=document.getElementById('xgfb');
   if(ok){g.ph='reel';g.pt=performance.now();g.lockA=1;sfx('ok');if(fb)fb.innerHTML='<span class="ok">Đúng rồi! Kéo cá lên nào!</span>';baitUI();

@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Leo núi: bài giải có câu dẫn, chờ em đọc xong; Thả mồi xoá thông báo cũ
+- Leo núi: sai 2 lần thì hiện khung "Bài giải" (chỉ một lần chữ này), có câu dẫn dựng từ câu hỏi (vd "Số quyển vở cửa hàng có là:"), từng phép tính một dòng, "Đáp số" có đơn vị. Jenny đọc bài giải.
+- Không tự chuyển bài nữa: đồng hồ dừng, em bấm "Em hiểu rồi, leo tiếp ▶" mới sang bài mới. Chữ trong khung dùng phông dễ đọc có dấu.
+- Thả mồi câu cá: thả mồi mới thì thông báo đúng/sai của câu trước biến mất.
+
 ## 2026-10-19 — Leo núi 5 chặng có khởi động; bản đồ quay lại đúng chủ đề
 - Leo núi còn 5 chặng: 3 chặng đầu là bài khởi động rất đơn giản (một phép tính đã học, số nhỏ), 2 chặng sau là bài lời văn của tiết như trước.
 - Bản đồ: vào đảo của chủ đề nào (hoặc chạm thẻ chủ đề nào) thì khi quay lại bản đồ sẽ ở đúng chủ đề đó, biển cuộn tới đúng đảo vừa vào.
