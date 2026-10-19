@@ -178,3 +178,10 @@
 .xmole,.xfrog,.xspic{width:342px!important;max-width:none!important;flex:none!important;align-self:center}
 .xfpad{width:64px;height:40px}
 .xfpad b{font-size:22px;top:40%}
+/* ếch: nhảy / bơi (vị trí do JS điều khiển) */
+.xfrogj{transition:none}
+.xfrogj.swim{filter:none}
+.xfrogj.swim::after{content:'';position:absolute;left:-8px;right:-8px;bottom:6px;height:4px;background:repeating-linear-gradient(90deg,#FFFFFF 0 6px,transparent 6px 12px);animation:xfrip .4s steps(2) infinite}
+@keyframes xfrip{50%{transform:translateX(6px)}}
+.xfpad.good{transform:translateY(2px)}
+.xfpad.sink{transition:transform .3s steps(3),filter .3s steps(3)}

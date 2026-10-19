@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Ếch nhảy: hiệu ứng nhảy, rơi, bơi về bờ
+- Chạm lá súng: ếch nhảy vòng cung từ bờ lên lá đó. Đúng thì đứng trên lá rồi sang hàng mới. Sai thì lá chìm, ếch rơi xuống nước (bọt bắn, mất tim), rồi bơi về bờ (thấy đầu ếch, có gợn sóng); về tới bờ mới chọn lá khác được (`core/39d-ech-nhay.js`).
+
 ## 2026-10-19 — Cân lại trò chơi thêm lớp 4–5
 - Lớp 4–5: mỗi đảo giữ trò bắt buộc theo nội dung (Ghép hình, Cửa hàng, Cân), rồi lấp đủ 3 trò bằng trò phù hợp đang ít dùng nhất (`core/39c-can-bang-tro-choi.js`). Mỗi trò nay có ở khoảng 35–49 đảo; Đập chuột lớp 5 giảm từ 88 xuống 48; Ghép hình lớp 4 tăng từ 6 lên 16 (thêm đảo Luyện tập, Ôn tập của chủ đề hình học).
 
