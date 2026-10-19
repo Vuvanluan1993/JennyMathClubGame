@@ -1,0 +1,7705 @@
+{
+"grades": {
+"1": [
+{
+"name": "Các số từ 0 đến 10",
+"a": 1,
+"b": 6,
+"isl": [
+{
+"id": "L1-B1-T1",
+"b": 1,
+"t": "Các số 0, 1, 2, 3, 4, 5",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B1-T2",
+"b": 1,
+"t": "Các số 0, 1, 2, 3, 4, 5",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L1-B1-T3",
+"b": 1,
+"t": "Các số 0, 1, 2, 3, 4, 5",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L1-B2-T1",
+"b": 2,
+"t": "Các số 6, 7, 8, 9, 10",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B2-T2",
+"b": 2,
+"t": "Các số 6, 7, 8, 9, 10",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B2-T3",
+"b": 2,
+"t": "Các số 6, 7, 8, 9, 10",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B3-T1",
+"b": 3,
+"t": "Nhiều hơn, ít hơn, bằng nhau",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L1-B3-T2",
+"b": 3,
+"t": "Nhiều hơn, ít hơn, bằng nhau",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 1
+},
+{
+"id": "L1-B4-T1",
+"b": 4,
+"t": "So sánh số",
+"n": 1,
+"nt": 4,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B4-T2",
+"b": 4,
+"t": "So sánh số",
+"n": 2,
+"nt": 4,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L1-B4-T3",
+"b": 4,
+"t": "So sánh số",
+"n": 3,
+"nt": 4,
+"typ": "cung",
+"nbt": 2
+},
+{
+"id": "L1-B4-T4",
+"b": 4,
+"t": "So sánh số",
+"n": 4,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B5-T1",
+"b": 5,
+"t": "Mấy và mấy",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B5-T2",
+"b": 5,
+"t": "Mấy và mấy",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L1-B5-T3",
+"b": 5,
+"t": "Mấy và mấy",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L1-B6-T1",
+"b": 6,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 4,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L1-B6-T2",
+"b": 6,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 4,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L1-B6-T3",
+"b": 6,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 4,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L1-B6-T4",
+"b": 6,
+"t": "Luyện tập chung",
+"n": 4,
+"nt": 4,
+"typ": "trum",
+"nbt": 3
+}
+]
+},
+{
+"name": "Làm quen với một số hình phẳng",
+"a": 7,
+"b": 9,
+"isl": [
+{
+"id": "L1-B7-T1",
+"b": 7,
+"t": "Hình vuông, hình tròn, hình tam giác, hình chữ nhật",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B7-T2",
+"b": 7,
+"t": "Hình vuông, hình tròn, hình tam giác, hình chữ nhật",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B8-T1",
+"b": 8,
+"t": "Thực hành lắp ghép, xếp hình",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 4
+},
+{
+"id": "L1-B8-T2",
+"b": 8,
+"t": "Thực hành lắp ghép, xếp hình",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L1-B9-T1",
+"b": 9,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 1,
+"typ": "trum",
+"nbt": 3
+}
+]
+},
+{
+"name": "Phép cộng, phép trừ trong phạm vi 10",
+"a": 10,
+"b": 13,
+"isl": [
+{
+"id": "L1-B10-T1",
+"b": 10,
+"t": "Phép cộng trong phạm vi 10",
+"n": 1,
+"nt": 6,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L1-B10-T2",
+"b": 10,
+"t": "Phép cộng trong phạm vi 10",
+"n": 2,
+"nt": 6,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B10-T3",
+"b": 10,
+"t": "Phép cộng trong phạm vi 10",
+"n": 3,
+"nt": 6,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L1-B10-T4",
+"b": 10,
+"t": "Phép cộng trong phạm vi 10",
+"n": 4,
+"nt": 6,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B10-T5",
+"b": 10,
+"t": "Phép cộng trong phạm vi 10",
+"n": 5,
+"nt": 6,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B10-T6",
+"b": 10,
+"t": "Phép cộng trong phạm vi 10",
+"n": 6,
+"nt": 6,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L1-B11-T1",
+"b": 11,
+"t": "Phép trừ trong phạm vi 10",
+"n": 1,
+"nt": 6,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B11-T2",
+"b": 11,
+"t": "Phép trừ trong phạm vi 10",
+"n": 2,
+"nt": 6,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L1-B11-T3",
+"b": 11,
+"t": "Phép trừ trong phạm vi 10",
+"n": 3,
+"nt": 6,
+"typ": "cung",
+"nbt": 10
+},
+{
+"id": "L1-B11-T4",
+"b": 11,
+"t": "Phép trừ trong phạm vi 10",
+"n": 4,
+"nt": 6,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L1-B11-T5",
+"b": 11,
+"t": "Phép trừ trong phạm vi 10",
+"n": 5,
+"nt": 6,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B11-T6",
+"b": 11,
+"t": "Phép trừ trong phạm vi 10",
+"n": 6,
+"nt": 6,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L1-B12-T1",
+"b": 12,
+"t": "Bảng cộng, bảng trừ trong phạm vi 10",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B12-T2",
+"b": 12,
+"t": "Bảng cộng, bảng trừ trong phạm vi 10",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B12-T3",
+"b": 12,
+"t": "Bảng cộng, bảng trừ trong phạm vi 10",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B13-T1",
+"b": 13,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L1-B13-T2",
+"b": 13,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L1-B13-T3",
+"b": 13,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Làm quen với một số hình khối",
+"a": 14,
+"b": 16,
+"isl": [
+{
+"id": "L1-B14-T1",
+"b": 14,
+"t": "Khối lập phương, khối hộp chữ nhật",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B14-T2",
+"b": 14,
+"t": "Khối lập phương, khối hộp chữ nhật",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L1-B15-T1",
+"b": 15,
+"t": "Vị trí, định hướng trong không gian",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B15-T2",
+"b": 15,
+"t": "Vị trí, định hướng trong không gian",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B16-T1",
+"b": 16,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 1,
+"typ": "trum",
+"nbt": 3
+}
+]
+},
+{
+"name": "Ôn tập học kì 1",
+"a": 17,
+"b": 20,
+"isl": [
+{
+"id": "L1-B17-T1",
+"b": 17,
+"t": "Ôn tập các số trong phạm vi 10",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 8
+},
+{
+"id": "L1-B17-T2",
+"b": 17,
+"t": "Ôn tập các số trong phạm vi 10",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L1-B18-T1",
+"b": 18,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 10",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L1-B18-T2",
+"b": 18,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 10",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L1-B19-T1",
+"b": 19,
+"t": "Ôn tập hình học",
+"n": 1,
+"nt": 1,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L1-B20-T1",
+"b": 20,
+"t": "Ôn tập chung",
+"n": 1,
+"nt": 1,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Các số đến 100",
+"a": 21,
+"b": 24,
+"isl": [
+{
+"id": "L1-B21-T1",
+"b": 21,
+"t": "Số có hai chữ số",
+"n": 1,
+"nt": 6,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L1-B21-T2",
+"b": 21,
+"t": "Số có hai chữ số",
+"n": 2,
+"nt": 6,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B21-T3",
+"b": 21,
+"t": "Số có hai chữ số",
+"n": 3,
+"nt": 6,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B21-T4",
+"b": 21,
+"t": "Số có hai chữ số",
+"n": 4,
+"nt": 6,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B21-T5",
+"b": 21,
+"t": "Số có hai chữ số",
+"n": 5,
+"nt": 6,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L1-B21-T6",
+"b": 21,
+"t": "Số có hai chữ số",
+"n": 6,
+"nt": 6,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B22-T1",
+"b": 22,
+"t": "So sánh số có hai chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L1-B22-T2",
+"b": 22,
+"t": "So sánh số có hai chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B22-T3",
+"b": 22,
+"t": "So sánh số có hai chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L1-B23-T1",
+"b": 23,
+"t": "Bảng các số từ 1 đến 100",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L1-B24-T1",
+"b": 24,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 5
+},
+{
+"id": "L1-B24-T2",
+"b": 24,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 3
+}
+]
+},
+{
+"name": "Độ dài và đo độ dài",
+"a": 25,
+"b": 28,
+"isl": [
+{
+"id": "L1-B25-T1",
+"b": 25,
+"t": "Dài hơn, ngắn hơn",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B25-T2",
+"b": 25,
+"t": "Dài hơn, ngắn hơn",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L1-B26-T1",
+"b": 26,
+"t": "Đơn vị đo độ dài",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L1-B26-T2",
+"b": 26,
+"t": "Đơn vị đo độ dài",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 2
+},
+{
+"id": "L1-B27-T1",
+"b": 27,
+"t": "Thực hành ước lượng và đo độ dài",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L1-B27-T2",
+"b": 27,
+"t": "Thực hành ước lượng và đo độ dài",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L1-B28-T1",
+"b": 28,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L1-B28-T2",
+"b": 28,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Phép cộng, phép trừ (không nhớ) trong phạm vi 100",
+"a": 29,
+"b": 33,
+"isl": [
+{
+"id": "L1-B29-T1",
+"b": 29,
+"t": "Phép cộng số có hai chữ số với số có một chữ số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L1-B29-T2",
+"b": 29,
+"t": "Phép cộng số có hai chữ số với số có một chữ số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B30-T1",
+"b": 30,
+"t": "Phép cộng số có hai chữ số với số có hai chữ số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L1-B30-T2",
+"b": 30,
+"t": "Phép cộng số có hai chữ số với số có hai chữ số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B31-T1",
+"b": 31,
+"t": "Phép trừ số có hai chữ số cho số có một chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B31-T2",
+"b": 31,
+"t": "Phép trừ số có hai chữ số cho số có một chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L1-B31-T3",
+"b": 31,
+"t": "Phép trừ số có hai chữ số cho số có một chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L1-B32-T1",
+"b": 32,
+"t": "Phép trừ số có hai chữ số cho số có hai chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B32-T2",
+"b": 32,
+"t": "Phép trừ số có hai chữ số cho số có hai chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B32-T3",
+"b": 32,
+"t": "Phép trừ số có hai chữ số cho số có hai chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L1-B33-T1",
+"b": 33,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 4,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L1-B33-T2",
+"b": 33,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 4,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L1-B33-T3",
+"b": 33,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 4,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L1-B33-T4",
+"b": 33,
+"t": "Luyện tập chung",
+"n": 4,
+"nt": 4,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Thời gian. Giờ và lịch",
+"a": 34,
+"b": 37,
+"isl": [
+{
+"id": "L1-B34-T1",
+"b": 34,
+"t": "Xem giờ đúng trên đồng hồ",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 1
+},
+{
+"id": "L1-B34-T2",
+"b": 34,
+"t": "Xem giờ đúng trên đồng hồ",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L1-B35-T1",
+"b": 35,
+"t": "Các ngày trong tuần",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L1-B35-T2",
+"b": 35,
+"t": "Các ngày trong tuần",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L1-B36-T1",
+"b": 36,
+"t": "Thực hành xem lịch và giờ",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 4
+},
+{
+"id": "L1-B36-T2",
+"b": 36,
+"t": "Thực hành xem lịch và giờ",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 6
+},
+{
+"id": "L1-B37-T1",
+"b": 37,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L1-B37-T2",
+"b": 37,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 11
+}
+]
+},
+{
+"name": "Ôn tập cuối năm",
+"a": 38,
+"b": 41,
+"isl": [
+{
+"id": "L1-B38-T1",
+"b": 38,
+"t": "Ôn tập các số và phép tính trong phạm vi 10",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L1-B38-T2",
+"b": 38,
+"t": "Ôn tập các số và phép tính trong phạm vi 10",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L1-B38-T3",
+"b": 38,
+"t": "Ôn tập các số và phép tính trong phạm vi 10",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L1-B39-T1",
+"b": 39,
+"t": "Ôn tập các số và phép tính trong phạm vi 100",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L1-B39-T2",
+"b": 39,
+"t": "Ôn tập các số và phép tính trong phạm vi 100",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L1-B39-T3",
+"b": 39,
+"t": "Ôn tập các số và phép tính trong phạm vi 100",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 6
+},
+{
+"id": "L1-B40-T1",
+"b": 40,
+"t": "Ôn tập hình học và đo lường",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 2
+},
+{
+"id": "L1-B40-T2",
+"b": 40,
+"t": "Ôn tập hình học và đo lường",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L1-B41-T1",
+"b": 41,
+"t": "Ôn tập chung",
+"n": 1,
+"nt": 1,
+"typ": "trum",
+"nbt": 5
+}
+]
+}
+],
+"2": [
+{
+"name": "Ôn tập và bổ sung",
+"a": 1,
+"b": 6,
+"isl": [
+{
+"id": "L2-B1-T1",
+"b": 1,
+"t": "Ôn tập các số đến 100",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B1-T2",
+"b": 1,
+"t": "Ôn tập các số đến 100",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 6
+},
+{
+"id": "L2-B1-T3",
+"b": 1,
+"t": "Ôn tập các số đến 100",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L2-B2-T1",
+"b": 2,
+"t": "Tia số. Số liền trước, số liền sau",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B2-T2",
+"b": 2,
+"t": "Tia số. Số liền trước, số liền sau",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L2-B3-T1",
+"b": 3,
+"t": "Các thành phần của phép cộng, phép trừ",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B3-T2",
+"b": 3,
+"t": "Các thành phần của phép cộng, phép trừ",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B3-T3",
+"b": 3,
+"t": "Các thành phần của phép cộng, phép trừ",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L2-B4-T1",
+"b": 4,
+"t": "Hơn, kém nhau bao nhiêu",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L2-B4-T2",
+"b": 4,
+"t": "Hơn, kém nhau bao nhiêu",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B5-T1",
+"b": 5,
+"t": "Ôn tập phép cộng, phép trừ (không nhớ) trong phạm vi 100",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L2-B5-T2",
+"b": 5,
+"t": "Ôn tập phép cộng, phép trừ (không nhớ) trong phạm vi 100",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B5-T3",
+"b": 5,
+"t": "Ôn tập phép cộng, phép trừ (không nhớ) trong phạm vi 100",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L2-B6-T1",
+"b": 6,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L2-B6-T2",
+"b": 6,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Phép cộng, phép trừ trong phạm vi 20",
+"a": 7,
+"b": 14,
+"isl": [
+{
+"id": "L2-B7-T1",
+"b": 7,
+"t": "Phép cộng (qua 10) trong phạm vi 20",
+"n": 1,
+"nt": 5,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B7-T2",
+"b": 7,
+"t": "Phép cộng (qua 10) trong phạm vi 20",
+"n": 2,
+"nt": 5,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B7-T3",
+"b": 7,
+"t": "Phép cộng (qua 10) trong phạm vi 20",
+"n": 3,
+"nt": 5,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B7-T4",
+"b": 7,
+"t": "Phép cộng (qua 10) trong phạm vi 20",
+"n": 4,
+"nt": 5,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B7-T5",
+"b": 7,
+"t": "Phép cộng (qua 10) trong phạm vi 20",
+"n": 5,
+"nt": 5,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L2-B8-T1",
+"b": 8,
+"t": "Bảng cộng (qua 10)",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B8-T2",
+"b": 8,
+"t": "Bảng cộng (qua 10)",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L2-B9-T1",
+"b": 9,
+"t": "Bài toán về thêm, bớt một số đơn vị",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B9-T2",
+"b": 9,
+"t": "Bài toán về thêm, bớt một số đơn vị",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B10-T1",
+"b": 10,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L2-B10-T2",
+"b": 10,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L2-B11-T1",
+"b": 11,
+"t": "Phép trừ (qua 10) trong phạm vi 20",
+"n": 1,
+"nt": 5,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B11-T2",
+"b": 11,
+"t": "Phép trừ (qua 10) trong phạm vi 20",
+"n": 2,
+"nt": 5,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B11-T3",
+"b": 11,
+"t": "Phép trừ (qua 10) trong phạm vi 20",
+"n": 3,
+"nt": 5,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B11-T4",
+"b": 11,
+"t": "Phép trừ (qua 10) trong phạm vi 20",
+"n": 4,
+"nt": 5,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L2-B11-T5",
+"b": 11,
+"t": "Phép trừ (qua 10) trong phạm vi 20",
+"n": 5,
+"nt": 5,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B12-T1",
+"b": 12,
+"t": "Bảng trừ (qua 10)",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B12-T2",
+"b": 12,
+"t": "Bảng trừ (qua 10)",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B13-T1",
+"b": 13,
+"t": "Bài toán về nhiều hơn, ít hơn một số đơn vị",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L2-B13-T2",
+"b": 13,
+"t": "Bài toán về nhiều hơn, ít hơn một số đơn vị",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B14-T1",
+"b": 14,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L2-B14-T2",
+"b": 14,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 6
+},
+{
+"id": "L2-B14-T3",
+"b": 14,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Làm quen với khối lượng, dung tích",
+"a": 15,
+"b": 18,
+"isl": [
+{
+"id": "L2-B15-T1",
+"b": 15,
+"t": "Ki-lô-gam",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B15-T2",
+"b": 15,
+"t": "Ki-lô-gam",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B15-T3",
+"b": 15,
+"t": "Ki-lô-gam",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B16-T1",
+"b": 16,
+"t": "Lít",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B16-T2",
+"b": 16,
+"t": "Lít",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B17-T1",
+"b": 17,
+"t": "Thực hành và trải nghiệm với các đơn vị ki-lô-gam, lít",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 3
+},
+{
+"id": "L2-B17-T2",
+"b": 17,
+"t": "Thực hành và trải nghiệm với các đơn vị ki-lô-gam, lít",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L2-B18-T1",
+"b": 18,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 1,
+"typ": "trum",
+"nbt": 3
+}
+]
+},
+{
+"name": "Phép cộng, phép trừ có nhớ trong phạm vi 100",
+"a": 19,
+"b": 24,
+"isl": [
+{
+"id": "L2-B19-T1",
+"b": 19,
+"t": "Phép cộng (có nhớ) số có hai chữ số với số có một chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B19-T2",
+"b": 19,
+"t": "Phép cộng (có nhớ) số có hai chữ số với số có một chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 2
+},
+{
+"id": "L2-B19-T3",
+"b": 19,
+"t": "Phép cộng (có nhớ) số có hai chữ số với số có một chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B20-T1",
+"b": 20,
+"t": "Phép cộng (có nhớ) số có hai chữ số với số có hai chữ số",
+"n": 1,
+"nt": 4,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B20-T2",
+"b": 20,
+"t": "Phép cộng (có nhớ) số có hai chữ số với số có hai chữ số",
+"n": 2,
+"nt": 4,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B20-T3",
+"b": 20,
+"t": "Phép cộng (có nhớ) số có hai chữ số với số có hai chữ số",
+"n": 3,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B20-T4",
+"b": 20,
+"t": "Phép cộng (có nhớ) số có hai chữ số với số có hai chữ số",
+"n": 4,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B21-T1",
+"b": 21,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L2-B21-T2",
+"b": 21,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L2-B22-T1",
+"b": 22,
+"t": "Phép trừ (có nhớ) số có hai chữ số cho số có một chữ số",
+"n": 1,
+"nt": 4,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B22-T2",
+"b": 22,
+"t": "Phép trừ (có nhớ) số có hai chữ số cho số có một chữ số",
+"n": 2,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B22-T3",
+"b": 22,
+"t": "Phép trừ (có nhớ) số có hai chữ số cho số có một chữ số",
+"n": 3,
+"nt": 4,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B22-T4",
+"b": 22,
+"t": "Phép trừ (có nhớ) số có hai chữ số cho số có một chữ số",
+"n": 4,
+"nt": 4,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L2-B23-T1",
+"b": 23,
+"t": "Phép trừ (có nhớ) số có hai chữ số cho số có hai chữ số",
+"n": 1,
+"nt": 5,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B23-T2",
+"b": 23,
+"t": "Phép trừ (có nhớ) số có hai chữ số cho số có hai chữ số",
+"n": 2,
+"nt": 5,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B23-T3",
+"b": 23,
+"t": "Phép trừ (có nhớ) số có hai chữ số cho số có hai chữ số",
+"n": 3,
+"nt": 5,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B23-T4",
+"b": 23,
+"t": "Phép trừ (có nhớ) số có hai chữ số cho số có hai chữ số",
+"n": 4,
+"nt": 5,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L2-B23-T5",
+"b": 23,
+"t": "Phép trừ (có nhớ) số có hai chữ số cho số có hai chữ số",
+"n": 5,
+"nt": 5,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B24-T1",
+"b": 24,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L2-B24-T2",
+"b": 24,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 6
+}
+]
+},
+{
+"name": "Làm quen với hình phẳng",
+"a": 25,
+"b": 28,
+"isl": [
+{
+"id": "L2-B25-T1",
+"b": 25,
+"t": "Điểm, đoạn thẳng, đường thẳng, đường cong, ba điểm thẳng hàng",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B25-T2",
+"b": 25,
+"t": "Điểm, đoạn thẳng, đường thẳng, đường cong, ba điểm thẳng hàng",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L2-B26-T1",
+"b": 26,
+"t": "Đường gấp khúc. Hình tứ giác",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L2-B26-T2",
+"b": 26,
+"t": "Đường gấp khúc. Hình tứ giác",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B27-T1",
+"b": 27,
+"t": "Thực hành gấp, cắt, ghép, xếp hình. Vẽ đoạn thẳng",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 1
+},
+{
+"id": "L2-B27-T2",
+"b": 27,
+"t": "Thực hành gấp, cắt, ghép, xếp hình. Vẽ đoạn thẳng",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 4
+},
+{
+"id": "L2-B28-T1",
+"b": 28,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 1,
+"typ": "trum",
+"nbt": 3
+}
+]
+},
+{
+"name": "Ngày – giờ, giờ – phút, ngày – tháng",
+"a": 29,
+"b": 31,
+"isl": [
+{
+"id": "L2-B29-T1",
+"b": 29,
+"t": "Ngày - giờ, giờ - phút",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B29-T2",
+"b": 29,
+"t": "Ngày - giờ, giờ - phút",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B30-T1",
+"b": 30,
+"t": "Ngày - tháng",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L2-B30-T2",
+"b": 30,
+"t": "Ngày - tháng",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B31-T1",
+"b": 31,
+"t": "Thực hành và trải nghiệm xem đồng hồ, xem lịch",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 4
+},
+{
+"id": "L2-B31-T2",
+"b": 31,
+"t": "Thực hành và trải nghiệm xem đồng hồ, xem lịch",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Ôn tập học kì 1",
+"a": 32,
+"b": 36,
+"isl": [
+{
+"id": "L2-B32-T1",
+"b": 32,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 1,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L2-B33-T1",
+"b": 33,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 20, 100",
+"n": 1,
+"nt": 4,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L2-B33-T2",
+"b": 33,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 20, 100",
+"n": 2,
+"nt": 4,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B33-T3",
+"b": 33,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 20, 100",
+"n": 3,
+"nt": 4,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B33-T4",
+"b": 33,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 20, 100",
+"n": 4,
+"nt": 4,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B34-T1",
+"b": 34,
+"t": "Ôn tập hình phẳng",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B34-T2",
+"b": 34,
+"t": "Ôn tập hình phẳng",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L2-B35-T1",
+"b": 35,
+"t": "Ôn tập đo lường",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L2-B35-T2",
+"b": 35,
+"t": "Ôn tập đo lường",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B36-T1",
+"b": 36,
+"t": "Ôn tập chung",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B36-T2",
+"b": 36,
+"t": "Ôn tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Phép nhân, phép chia",
+"a": 37,
+"b": 45,
+"isl": [
+{
+"id": "L2-B37-T1",
+"b": 37,
+"t": "Phép nhân",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 5
+},
+{
+"id": "L2-B37-T2",
+"b": 37,
+"t": "Phép nhân",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B38-T1",
+"b": 38,
+"t": "Thừa số, tích",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B38-T2",
+"b": 38,
+"t": "Thừa số, tích",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B39-T1",
+"b": 39,
+"t": "Bảng nhân 2",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B39-T2",
+"b": 39,
+"t": "Bảng nhân 2",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B40-T1",
+"b": 40,
+"t": "Bảng nhân 5",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B40-T2",
+"b": 40,
+"t": "Bảng nhân 5",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B41-T1",
+"b": 41,
+"t": "Phép chia",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B41-T2",
+"b": 41,
+"t": "Phép chia",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B42-T1",
+"b": 42,
+"t": "Số bị chia, số chia, thương",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B42-T2",
+"b": 42,
+"t": "Số bị chia, số chia, thương",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B43-T1",
+"b": 43,
+"t": "Bảng chia 2",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B43-T2",
+"b": 43,
+"t": "Bảng chia 2",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B44-T1",
+"b": 44,
+"t": "Bảng chia 5",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B44-T2",
+"b": 44,
+"t": "Bảng chia 5",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B45-T1",
+"b": 45,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 5,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L2-B45-T2",
+"b": 45,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 5,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L2-B45-T3",
+"b": 45,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 5,
+"typ": "luyen",
+"nbt": 5
+},
+{
+"id": "L2-B45-T4",
+"b": 45,
+"t": "Luyện tập chung",
+"n": 4,
+"nt": 5,
+"typ": "luyen",
+"nbt": 5
+},
+{
+"id": "L2-B45-T5",
+"b": 45,
+"t": "Luyện tập chung",
+"n": 5,
+"nt": 5,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Làm quen với hình khối",
+"a": 46,
+"b": 47,
+"isl": [
+{
+"id": "L2-B46-T1",
+"b": 46,
+"t": "Khối trụ, khối cầu",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L2-B46-T2",
+"b": 46,
+"t": "Khối trụ, khối cầu",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L2-B47-T1",
+"b": 47,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 5
+},
+{
+"id": "L2-B47-T2",
+"b": 47,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Các số trong phạm vi 1 000",
+"a": 48,
+"b": 54,
+"isl": [
+{
+"id": "L2-B48-T1",
+"b": 48,
+"t": "Đơn vị, chục, trăm, nghìn",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B48-T2",
+"b": 48,
+"t": "Đơn vị, chục, trăm, nghìn",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B49-T1",
+"b": 49,
+"t": "Các số tròn trăm, tròn chục",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B49-T2",
+"b": 49,
+"t": "Các số tròn trăm, tròn chục",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B50-T1",
+"b": 50,
+"t": "So sánh các số tròn trăm, tròn chục",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B50-T2",
+"b": 50,
+"t": "So sánh các số tròn trăm, tròn chục",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L2-B51-T1",
+"b": 51,
+"t": "Số có ba chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B51-T2",
+"b": 51,
+"t": "Số có ba chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B51-T3",
+"b": 51,
+"t": "Số có ba chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B52-T1",
+"b": 52,
+"t": "Viết số thành tổng các trăm, chục, đơn vị",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L2-B52-T2",
+"b": 52,
+"t": "Viết số thành tổng các trăm, chục, đơn vị",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B53-T1",
+"b": 53,
+"t": "So sánh các số có ba chữ số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B53-T2",
+"b": 53,
+"t": "So sánh các số có ba chữ số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B54-T1",
+"b": 54,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L2-B54-T2",
+"b": 54,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Độ dài và đơn vị đo độ dài. Tiền Việt Nam",
+"a": 55,
+"b": 58,
+"isl": [
+{
+"id": "L2-B55-T1",
+"b": 55,
+"t": "Đề-xi-mét. Mét. Ki-lô-mét",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B55-T2",
+"b": 55,
+"t": "Đề-xi-mét. Mét. Ki-lô-mét",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B55-T3",
+"b": 55,
+"t": "Đề-xi-mét. Mét. Ki-lô-mét",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L2-B56-T1",
+"b": 56,
+"t": "Giới thiệu tiền Việt Nam",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B57-T1",
+"b": 57,
+"t": "Thực hành và trải nghiệm đo độ dài",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L2-B57-T2",
+"b": 57,
+"t": "Thực hành và trải nghiệm đo độ dài",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 3
+},
+{
+"id": "L2-B58-T1",
+"b": 58,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L2-B58-T2",
+"b": 58,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Phép cộng, phép trừ trong phạm vi 1 000",
+"a": 59,
+"b": 63,
+"isl": [
+{
+"id": "L2-B59-T1",
+"b": 59,
+"t": "Phép cộng (không nhớ) trong phạm vi 1 000",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B59-T2",
+"b": 59,
+"t": "Phép cộng (không nhớ) trong phạm vi 1 000",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B60-T1",
+"b": 60,
+"t": "Phép cộng (có nhớ) trong phạm vi 1 000",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B60-T2",
+"b": 60,
+"t": "Phép cộng (có nhớ) trong phạm vi 1 000",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B60-T3",
+"b": 60,
+"t": "Phép cộng (có nhớ) trong phạm vi 1 000",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B61-T1",
+"b": 61,
+"t": "Phép trừ (không nhớ) trong phạm vi 1 000",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B61-T2",
+"b": 61,
+"t": "Phép trừ (không nhớ) trong phạm vi 1 000",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B61-T3",
+"b": 61,
+"t": "Phép trừ (không nhớ) trong phạm vi 1 000",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L2-B62-T1",
+"b": 62,
+"t": "Phép trừ (có nhớ) trong phạm vi 1 000",
+"n": 1,
+"nt": 4,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B62-T2",
+"b": 62,
+"t": "Phép trừ (có nhớ) trong phạm vi 1 000",
+"n": 2,
+"nt": 4,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B62-T3",
+"b": 62,
+"t": "Phép trừ (có nhớ) trong phạm vi 1 000",
+"n": 3,
+"nt": 4,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L2-B62-T4",
+"b": 62,
+"t": "Phép trừ (có nhớ) trong phạm vi 1 000",
+"n": 4,
+"nt": 4,
+"typ": "cung",
+"nbt": 7
+},
+{
+"id": "L2-B63-T1",
+"b": 63,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L2-B63-T2",
+"b": 63,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Làm quen với yếu tố thống kê, xác suất",
+"a": 64,
+"b": 67,
+"isl": [
+{
+"id": "L2-B64-T1",
+"b": 64,
+"t": "Thu thập, phân loại, kiểm đếm số liệu",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L2-B65-T1",
+"b": 65,
+"t": "Biểu đồ tranh",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L2-B65-T2",
+"b": 65,
+"t": "Biểu đồ tranh",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L2-B66-T1",
+"b": 66,
+"t": "Chắc chắn, có thể, không thể",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L2-B67-T1",
+"b": 67,
+"t": "Thực hành và trải nghiệm thu thập, phân loại, kiểm đếm số liệu",
+"n": 1,
+"nt": 1,
+"typ": "trum",
+"nbt": 3
+}
+]
+},
+{
+"name": "Ôn tập cuối năm",
+"a": 68,
+"b": 75,
+"isl": [
+{
+"id": "L2-B68-T1",
+"b": 68,
+"t": "Ôn tập các số trong phạm vi 1 000",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L2-B68-T2",
+"b": 68,
+"t": "Ôn tập các số trong phạm vi 1 000",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L2-B69-T1",
+"b": 69,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 100",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L2-B69-T2",
+"b": 69,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 100",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B69-T3",
+"b": 69,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 100",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B70-T1",
+"b": 70,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 1 000",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L2-B70-T2",
+"b": 70,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 1 000",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B70-T3",
+"b": 70,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 1 000",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 6
+},
+{
+"id": "L2-B71-T1",
+"b": 71,
+"t": "Ôn tập phép nhân, phép chia",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L2-B71-T2",
+"b": 71,
+"t": "Ôn tập phép nhân, phép chia",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B71-T3",
+"b": 71,
+"t": "Ôn tập phép nhân, phép chia",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 6
+},
+{
+"id": "L2-B72-T1",
+"b": 72,
+"t": "Ôn tập hình học",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L2-B72-T2",
+"b": 72,
+"t": "Ôn tập hình học",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B73-T1",
+"b": 73,
+"t": "Ôn tập đo lường",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L2-B73-T2",
+"b": 73,
+"t": "Ôn tập đo lường",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L2-B74-T1",
+"b": 74,
+"t": "Ôn tập kiểm đếm số liệu và lựa chọn khả năng",
+"n": 1,
+"nt": 1,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L2-B75-T1",
+"b": 75,
+"t": "Ôn tập chung",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L2-B75-T2",
+"b": 75,
+"t": "Ôn tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 6
+}
+]
+}
+],
+"3": [
+{
+"name": "Ôn tập và bổ sung",
+"a": 1,
+"b": 8,
+"isl": [
+{
+"id": "L3-B1-T1",
+"b": 1,
+"t": "Ôn tập các số đến 1 000",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L3-B1-T2",
+"b": 1,
+"t": "Ôn tập các số đến 1 000",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L3-B2-T1",
+"b": 2,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 1 000",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L3-B2-T2",
+"b": 2,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 1 000",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L3-B3-T1",
+"b": 3,
+"t": "Tìm thành phần trong phép cộng, phép trừ",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B3-T2",
+"b": 3,
+"t": "Tìm thành phần trong phép cộng, phép trừ",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B4-T1",
+"b": 4,
+"t": "Ôn tập bảng nhân 2; 5, bảng chia 2; 5",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 2
+},
+{
+"id": "L3-B4-T2",
+"b": 4,
+"t": "Ôn tập bảng nhân 2; 5, bảng chia 2; 5",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L3-B5-T1",
+"b": 5,
+"t": "Bảng nhân 3, bảng chia 3",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B5-T2",
+"b": 5,
+"t": "Bảng nhân 3, bảng chia 3",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B6-T1",
+"b": 6,
+"t": "Bảng nhân 4, bảng chia 4",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B6-T2",
+"b": 6,
+"t": "Bảng nhân 4, bảng chia 4",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B7-T1",
+"b": 7,
+"t": "Ôn tập hình học và đo lường",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L3-B7-T2",
+"b": 7,
+"t": "Ôn tập hình học và đo lường",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L3-B8-T1",
+"b": 8,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L3-B8-T2",
+"b": 8,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L3-B8-T3",
+"b": 8,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Bảng nhân, bảng chia",
+"a": 9,
+"b": 15,
+"isl": [
+{
+"id": "L3-B9-T1",
+"b": 9,
+"t": "Bảng nhân 6, bảng chia 6",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B9-T2",
+"b": 9,
+"t": "Bảng nhân 6, bảng chia 6",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B10-T1",
+"b": 10,
+"t": "Bảng nhân 7, bảng chia 7",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L3-B10-T2",
+"b": 10,
+"t": "Bảng nhân 7, bảng chia 7",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B11-T1",
+"b": 11,
+"t": "Bảng nhân 8, bảng chia 8",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B11-T2",
+"b": 11,
+"t": "Bảng nhân 8, bảng chia 8",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B12-T1",
+"b": 12,
+"t": "Bảng nhân 9, bảng chia 9",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 1
+},
+{
+"id": "L3-B12-T2",
+"b": 12,
+"t": "Bảng nhân 9, bảng chia 9",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B12-T3",
+"b": 12,
+"t": "Bảng nhân 9, bảng chia 9",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B13-T1",
+"b": 13,
+"t": "Tìm thành phần trong phép nhân, phép chia",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B13-T2",
+"b": 13,
+"t": "Tìm thành phần trong phép nhân, phép chia",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B14-T1",
+"b": 14,
+"t": "Một phần mấy",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L3-B14-T2",
+"b": 14,
+"t": "Một phần mấy",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 2
+},
+{
+"id": "L3-B15-T1",
+"b": 15,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L3-B15-T2",
+"b": 15,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Làm quen với hình phẳng, hình khối",
+"a": 16,
+"b": 22,
+"isl": [
+{
+"id": "L3-B16-T1",
+"b": 16,
+"t": "Điểm ở giữa, trung điểm của đoạn thẳng",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L3-B16-T2",
+"b": 16,
+"t": "Điểm ở giữa, trung điểm của đoạn thẳng",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L3-B17-T1",
+"b": 17,
+"t": "Hình tròn. Tâm, bán kính, đường kính của hình tròn",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B18-T1",
+"b": 18,
+"t": "Góc, góc vuông, góc không vuông",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L3-B19-T1",
+"b": 19,
+"t": "Hình tam giác, hình tứ giác. Hình chữ nhật, hình vuông",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L3-B19-T2",
+"b": 19,
+"t": "Hình tam giác, hình tứ giác. Hình chữ nhật, hình vuông",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L3-B19-T3",
+"b": 19,
+"t": "Hình tam giác, hình tứ giác. Hình chữ nhật, hình vuông",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L3-B20-T1",
+"b": 20,
+"t": "Thực hành vẽ góc vuông, vẽ đường tròn, hình vuông, hình chữ nhật và vẽ trang trí",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L3-B20-T2",
+"b": 20,
+"t": "Thực hành vẽ góc vuông, vẽ đường tròn, hình vuông, hình chữ nhật và vẽ trang trí",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 3
+},
+{
+"id": "L3-B21-T1",
+"b": 21,
+"t": "Khối lập phương, khối hộp chữ nhật",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 5
+},
+{
+"id": "L3-B22-T1",
+"b": 22,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 2
+},
+{
+"id": "L3-B22-T2",
+"b": 22,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Phép nhân, phép chia trong phạm vi 100",
+"a": 23,
+"b": 29,
+"isl": [
+{
+"id": "L3-B23-T1",
+"b": 23,
+"t": "Nhân số có hai chữ số với số có một chữ số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L3-B23-T2",
+"b": 23,
+"t": "Nhân số có hai chữ số với số có một chữ số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B24-T1",
+"b": 24,
+"t": "Gấp một số lên một số lần",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L3-B24-T2",
+"b": 24,
+"t": "Gấp một số lên một số lần",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B25-T1",
+"b": 25,
+"t": "Phép chia hết, phép chia có dư",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B25-T2",
+"b": 25,
+"t": "Phép chia hết, phép chia có dư",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B26-T1",
+"b": 26,
+"t": "Chia số có hai chữ số cho số có một chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L3-B26-T2",
+"b": 26,
+"t": "Chia số có hai chữ số cho số có một chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B26-T3",
+"b": 26,
+"t": "Chia số có hai chữ số cho số có một chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B27-T1",
+"b": 27,
+"t": "Giảm một số đi một số lần",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L3-B27-T2",
+"b": 27,
+"t": "Giảm một số đi một số lần",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B28-T1",
+"b": 28,
+"t": "Bài toán giải bằng hai bước tính",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L3-B28-T2",
+"b": 28,
+"t": "Bài toán giải bằng hai bước tính",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 2
+},
+{
+"id": "L3-B29-T1",
+"b": 29,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 2
+},
+{
+"id": "L3-B29-T2",
+"b": 29,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 3
+}
+]
+},
+{
+"name": "Một số đơn vị đo độ dài, khối lượng, dung tích, nhiệt độ",
+"a": 30,
+"b": 35,
+"isl": [
+{
+"id": "L3-B30-T1",
+"b": 30,
+"t": "Mi-li-mét",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B30-T2",
+"b": 30,
+"t": "Mi-li-mét",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B31-T1",
+"b": 31,
+"t": "Gam",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 5
+},
+{
+"id": "L3-B32-T1",
+"b": 32,
+"t": "Mi-li-lít",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L3-B33-T1",
+"b": 33,
+"t": "Nhiệt độ. Đơn vị đo nhiệt độ",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B34-T1",
+"b": 34,
+"t": "Thực hành và trải nghiệm với các đơn vị mi-li-mét, gam, mi-li-lít, độ C",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L3-B34-T2",
+"b": 34,
+"t": "Thực hành và trải nghiệm với các đơn vị mi-li-mét, gam, mi-li-lít, độ C",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 4
+},
+{
+"id": "L3-B35-T1",
+"b": 35,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 2
+},
+{
+"id": "L3-B35-T2",
+"b": 35,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 3
+}
+]
+},
+{
+"name": "Phép nhân, phép chia trong phạm vi 1 000",
+"a": 36,
+"b": 40,
+"isl": [
+{
+"id": "L3-B36-T1",
+"b": 36,
+"t": "Nhân số có ba chữ số với số có một chữ số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B36-T2",
+"b": 36,
+"t": "Nhân số có ba chữ số với số có một chữ số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B37-T1",
+"b": 37,
+"t": "Chia số có ba chữ số cho số có một chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L3-B37-T2",
+"b": 37,
+"t": "Chia số có ba chữ số cho số có một chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L3-B37-T3",
+"b": 37,
+"t": "Chia số có ba chữ số cho số có một chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B38-T1",
+"b": 38,
+"t": "Biểu thức số. Tính giá trị của biểu thức số",
+"n": 1,
+"nt": 4,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B38-T2",
+"b": 38,
+"t": "Biểu thức số. Tính giá trị của biểu thức số",
+"n": 2,
+"nt": 4,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B38-T3",
+"b": 38,
+"t": "Biểu thức số. Tính giá trị của biểu thức số",
+"n": 3,
+"nt": 4,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B38-T4",
+"b": 38,
+"t": "Biểu thức số. Tính giá trị của biểu thức số",
+"n": 4,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B39-T1",
+"b": 39,
+"t": "So sánh số lớn gấp mấy lần số bé",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B39-T2",
+"b": 39,
+"t": "So sánh số lớn gấp mấy lần số bé",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B40-T1",
+"b": 40,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 2
+},
+{
+"id": "L3-B40-T2",
+"b": 40,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Ôn tập học kì 1",
+"a": 41,
+"b": 44,
+"isl": [
+{
+"id": "L3-B41-T1",
+"b": 41,
+"t": "Ôn tập phép nhân, phép chia trong phạm vi 100, 1 000",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L3-B41-T2",
+"b": 41,
+"t": "Ôn tập phép nhân, phép chia trong phạm vi 100, 1 000",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L3-B41-T3",
+"b": 41,
+"t": "Ôn tập phép nhân, phép chia trong phạm vi 100, 1 000",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L3-B42-T1",
+"b": 42,
+"t": "Ôn tập biểu thức số",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L3-B42-T2",
+"b": 42,
+"t": "Ôn tập biểu thức số",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L3-B43-T1",
+"b": 43,
+"t": "Ôn tập hình học và đo lường",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L3-B43-T2",
+"b": 43,
+"t": "Ôn tập hình học và đo lường",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L3-B44-T1",
+"b": 44,
+"t": "Ôn tập chung",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L3-B44-T2",
+"b": 44,
+"t": "Ôn tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 6
+}
+]
+},
+{
+"name": "Các số đến 10 000",
+"a": 45,
+"b": 49,
+"isl": [
+{
+"id": "L3-B45-T1",
+"b": 45,
+"t": "Các số có bốn chữ số. Số 10 000",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L3-B45-T2",
+"b": 45,
+"t": "Các số có bốn chữ số. Số 10 000",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B45-T3",
+"b": 45,
+"t": "Các số có bốn chữ số. Số 10 000",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B46-T1",
+"b": 46,
+"t": "So sánh các số trong phạm vi 10 000",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 5
+},
+{
+"id": "L3-B46-T2",
+"b": 46,
+"t": "So sánh các số trong phạm vi 10 000",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L3-B47-T1",
+"b": 47,
+"t": "Làm quen với chữ số La Mã",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B47-T2",
+"b": 47,
+"t": "Làm quen với chữ số La Mã",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B48-T1",
+"b": 48,
+"t": "Làm tròn số đến hàng chục, hàng trăm",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L3-B49-T1",
+"b": 49,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L3-B49-T2",
+"b": 49,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 5
+},
+{
+"id": "L3-B49-T3",
+"b": 49,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Chu vi, diện tích một số hình phẳng",
+"a": 50,
+"b": 53,
+"isl": [
+{
+"id": "L3-B50-T1",
+"b": 50,
+"t": "Chu vi hình tam giác, hình tứ giác, hình chữ nhật, hình vuông",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B50-T2",
+"b": 50,
+"t": "Chu vi hình tam giác, hình tứ giác, hình chữ nhật, hình vuông",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B50-T3",
+"b": 50,
+"t": "Chu vi hình tam giác, hình tứ giác, hình chữ nhật, hình vuông",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B51-T1",
+"b": 51,
+"t": "Diện tích của một hình. Xăng-ti-mét vuông",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B51-T2",
+"b": 51,
+"t": "Diện tích của một hình. Xăng-ti-mét vuông",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B52-T1",
+"b": 52,
+"t": "Diện tích hình chữ nhật, diện tích hình vuông",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L3-B52-T2",
+"b": 52,
+"t": "Diện tích hình chữ nhật, diện tích hình vuông",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L3-B52-T3",
+"b": 52,
+"t": "Diện tích hình chữ nhật, diện tích hình vuông",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L3-B53-T1",
+"b": 53,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L3-B53-T2",
+"b": 53,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L3-B53-T3",
+"b": 53,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Cộng, trừ, nhân, chia trong phạm vi 10 000",
+"a": 54,
+"b": 58,
+"isl": [
+{
+"id": "L3-B54-T1",
+"b": 54,
+"t": "Phép cộng trong phạm vi 10 000",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L3-B54-T2",
+"b": 54,
+"t": "Phép cộng trong phạm vi 10 000",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B55-T1",
+"b": 55,
+"t": "Phép trừ trong phạm vi 10 000",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L3-B55-T2",
+"b": 55,
+"t": "Phép trừ trong phạm vi 10 000",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B56-T1",
+"b": 56,
+"t": "Nhân số có bốn chữ số với số có một chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L3-B56-T2",
+"b": 56,
+"t": "Nhân số có bốn chữ số với số có một chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B56-T3",
+"b": 56,
+"t": "Nhân số có bốn chữ số với số có một chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B57-T1",
+"b": 57,
+"t": "Chia số có bốn chữ số cho số có một chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B57-T2",
+"b": 57,
+"t": "Chia số có bốn chữ số cho số có một chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L3-B57-T3",
+"b": 57,
+"t": "Chia số có bốn chữ số cho số có một chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B58-T1",
+"b": 58,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 2
+},
+{
+"id": "L3-B58-T2",
+"b": 58,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L3-B58-T3",
+"b": 58,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 3
+}
+]
+},
+{
+"name": "Các số đến 100 000",
+"a": 59,
+"b": 62,
+"isl": [
+{
+"id": "L3-B59-T1",
+"b": 59,
+"t": "Các số có năm chữ số. Số 100 000",
+"n": 1,
+"nt": 4,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B59-T2",
+"b": 59,
+"t": "Các số có năm chữ số. Số 100 000",
+"n": 2,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B59-T3",
+"b": 59,
+"t": "Các số có năm chữ số. Số 100 000",
+"n": 3,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B59-T4",
+"b": 59,
+"t": "Các số có năm chữ số. Số 100 000",
+"n": 4,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B60-T1",
+"b": 60,
+"t": "So sánh các số trong phạm vi 100 000",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B60-T2",
+"b": 60,
+"t": "So sánh các số trong phạm vi 100 000",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B61-T1",
+"b": 61,
+"t": "Làm tròn số đến hàng nghìn, hàng chục nghìn",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L3-B62-T1",
+"b": 62,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L3-B62-T2",
+"b": 62,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L3-B62-T3",
+"b": 62,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Cộng, trừ trong phạm vi 100 000",
+"a": 63,
+"b": 65,
+"isl": [
+{
+"id": "L3-B63-T1",
+"b": 63,
+"t": "Phép cộng trong phạm vi 100 000",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B63-T2",
+"b": 63,
+"t": "Phép cộng trong phạm vi 100 000",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B64-T1",
+"b": 64,
+"t": "Phép trừ trong phạm vi 100 000",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B64-T2",
+"b": 64,
+"t": "Phép trừ trong phạm vi 100 000",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B65-T1",
+"b": 65,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 1,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Xem đồng hồ. Tháng – năm. Tiền Việt Nam",
+"a": 66,
+"b": 69,
+"isl": [
+{
+"id": "L3-B66-T1",
+"b": 66,
+"t": "Xem đồng hồ. Tháng – năm",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L3-B66-T2",
+"b": 66,
+"t": "Xem đồng hồ. Tháng – năm",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L3-B67-T1",
+"b": 67,
+"t": "Thực hành xem đồng hồ, xem lịch",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 4
+},
+{
+"id": "L3-B67-T2",
+"b": 67,
+"t": "Thực hành xem đồng hồ, xem lịch",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 5
+},
+{
+"id": "L3-B68-T1",
+"b": 68,
+"t": "Tiền Việt Nam",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B68-T2",
+"b": 68,
+"t": "Tiền Việt Nam",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B69-T1",
+"b": 69,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 7
+},
+{
+"id": "L3-B69-T2",
+"b": 69,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 5
+},
+{
+"id": "L3-B69-T3",
+"b": 69,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 3
+}
+]
+},
+{
+"name": "Nhân, chia trong phạm vi 100 000",
+"a": 70,
+"b": 72,
+"isl": [
+{
+"id": "L3-B70-T1",
+"b": 70,
+"t": "Nhân số có năm chữ số với số có một chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L3-B70-T2",
+"b": 70,
+"t": "Nhân số có năm chữ số với số có một chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B70-T3",
+"b": 70,
+"t": "Nhân số có năm chữ số với số có một chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L3-B71-T1",
+"b": 71,
+"t": "Chia số có năm chữ số cho số có một chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L3-B71-T2",
+"b": 71,
+"t": "Chia số có năm chữ số cho số có một chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L3-B71-T3",
+"b": 71,
+"t": "Chia số có năm chữ số cho số có một chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L3-B72-T1",
+"b": 72,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L3-B72-T2",
+"b": 72,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Làm quen với yếu tố thống kê, xác suất",
+"a": 73,
+"b": 75,
+"isl": [
+{
+"id": "L3-B73-T1",
+"b": 73,
+"t": "Thu thập, phân loại, ghi chép số liệu. Bảng số liệu",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 1
+},
+{
+"id": "L3-B73-T2",
+"b": 73,
+"t": "Thu thập, phân loại, ghi chép số liệu. Bảng số liệu",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 2
+},
+{
+"id": "L3-B73-T3",
+"b": 73,
+"t": "Thu thập, phân loại, ghi chép số liệu. Bảng số liệu",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 2
+},
+{
+"id": "L3-B74-T1",
+"b": 74,
+"t": "Khả năng xảy ra của một sự kiện",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L3-B75-T1",
+"b": 75,
+"t": "Thực hành và trải nghiệm thu thập, phân loại, ghi chép số liệu, đọc bảng số liệu",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L3-B75-T2",
+"b": 75,
+"t": "Thực hành và trải nghiệm thu thập, phân loại, ghi chép số liệu, đọc bảng số liệu",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 1
+}
+]
+},
+{
+"name": "Ôn tập cuối năm",
+"a": 76,
+"b": 81,
+"isl": [
+{
+"id": "L3-B76-T1",
+"b": 76,
+"t": "Ôn tập các số trong phạm vi 10 000, 100 000",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L3-B76-T2",
+"b": 76,
+"t": "Ôn tập các số trong phạm vi 10 000, 100 000",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L3-B77-T1",
+"b": 77,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 100 000",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L3-B77-T2",
+"b": 77,
+"t": "Ôn tập phép cộng, phép trừ trong phạm vi 100 000",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L3-B78-T1",
+"b": 78,
+"t": "Ôn tập phép nhân, phép chia trong phạm vi 100 000",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L3-B78-T2",
+"b": 78,
+"t": "Ôn tập phép nhân, phép chia trong phạm vi 100 000",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L3-B78-T3",
+"b": 78,
+"t": "Ôn tập phép nhân, phép chia trong phạm vi 100 000",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L3-B79-T1",
+"b": 79,
+"t": "Ôn tập hình học và đo lường",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L3-B79-T2",
+"b": 79,
+"t": "Ôn tập hình học và đo lường",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L3-B80-T1",
+"b": 80,
+"t": "Ôn tập bảng số liệu, khả năng xảy ra của một sự kiện",
+"n": 1,
+"nt": 1,
+"typ": "ontap",
+"nbt": 2
+},
+{
+"id": "L3-B81-T1",
+"b": 81,
+"t": "Ôn tập chung",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L3-B81-T2",
+"b": 81,
+"t": "Ôn tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 3
+}
+]
+}
+],
+"4": [
+{
+"name": "Ôn tập và bổ sung",
+"a": 1,
+"b": 6,
+"isl": [
+{
+"id": "L4-B1-T1",
+"b": 1,
+"t": "Ôn tập các số đến 100 000",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 6
+},
+{
+"id": "L4-B1-T2",
+"b": 1,
+"t": "Ôn tập các số đến 100 000",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 6
+},
+{
+"id": "L4-B2-T1",
+"b": 2,
+"t": "Ôn tập các phép tính trong phạm vi 100 000",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 6
+},
+{
+"id": "L4-B2-T2",
+"b": 2,
+"t": "Ôn tập các phép tính trong phạm vi 100 000",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L4-B2-T3",
+"b": 2,
+"t": "Ôn tập các phép tính trong phạm vi 100 000",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L4-B3-T1",
+"b": 3,
+"t": "Số chẵn, số lẻ",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B3-T2",
+"b": 3,
+"t": "Số chẵn, số lẻ",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L4-B4-T1",
+"b": 4,
+"t": "Biểu thức chứa chữ",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 6
+},
+{
+"id": "L4-B4-T2",
+"b": 4,
+"t": "Biểu thức chứa chữ",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B4-T3",
+"b": 4,
+"t": "Biểu thức chứa chữ",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L4-B5-T1",
+"b": 5,
+"t": "Giải bài toán có ba bước tính",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B5-T2",
+"b": 5,
+"t": "Giải bài toán có ba bước tính",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B6-T1",
+"b": 6,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L4-B6-T2",
+"b": 6,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 6
+}
+]
+},
+{
+"name": "Góc và đơn vị đo góc",
+"a": 7,
+"b": 9,
+"isl": [
+{
+"id": "L4-B7-T1",
+"b": 7,
+"t": "Đo góc, đơn vị đo góc",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 1
+},
+{
+"id": "L4-B7-T2",
+"b": 7,
+"t": "Đo góc, đơn vị đo góc",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L4-B8-T1",
+"b": 8,
+"t": "Góc nhọn, góc tù, góc bẹt",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L4-B8-T2",
+"b": 8,
+"t": "Góc nhọn, góc tù, góc bẹt",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B8-T3",
+"b": 8,
+"t": "Góc nhọn, góc tù, góc bẹt",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L4-B9-T1",
+"b": 9,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L4-B9-T2",
+"b": 9,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Số có nhiều chữ số",
+"a": 10,
+"b": 16,
+"isl": [
+{
+"id": "L4-B10-T1",
+"b": 10,
+"t": "Số có sáu chữ số. Số 1 000 000",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B10-T2",
+"b": 10,
+"t": "Số có sáu chữ số. Số 1 000 000",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L4-B11-T1",
+"b": 11,
+"t": "Hàng và lớp",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L4-B11-T2",
+"b": 11,
+"t": "Hàng và lớp",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B11-T3",
+"b": 11,
+"t": "Hàng và lớp",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L4-B12-T1",
+"b": 12,
+"t": "Các số trong phạm vi lớp triệu",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B12-T2",
+"b": 12,
+"t": "Các số trong phạm vi lớp triệu",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B12-T3",
+"b": 12,
+"t": "Các số trong phạm vi lớp triệu",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L4-B13-T1",
+"b": 13,
+"t": "Làm tròn số đến hàng trăm nghìn",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L4-B14-T1",
+"b": 14,
+"t": "So sánh các số có nhiều chữ số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 6
+},
+{
+"id": "L4-B14-T2",
+"b": 14,
+"t": "So sánh các số có nhiều chữ số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L4-B15-T1",
+"b": 15,
+"t": "Làm quen với dãy số tự nhiên",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B15-T2",
+"b": 15,
+"t": "Làm quen với dãy số tự nhiên",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B16-T1",
+"b": 16,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L4-B16-T2",
+"b": 16,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L4-B16-T3",
+"b": 16,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Một số đơn vị đo đại lượng",
+"a": 17,
+"b": 21,
+"isl": [
+{
+"id": "L4-B17-T1",
+"b": 17,
+"t": "Yến, tạ, tấn",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B17-T2",
+"b": 17,
+"t": "Yến, tạ, tấn",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B17-T3",
+"b": 17,
+"t": "Yến, tạ, tấn",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B18-T1",
+"b": 18,
+"t": "Đề-xi-mét vuông, mét vuông, mi-li-mét vuông",
+"n": 1,
+"nt": 4,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B18-T2",
+"b": 18,
+"t": "Đề-xi-mét vuông, mét vuông, mi-li-mét vuông",
+"n": 2,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B18-T3",
+"b": 18,
+"t": "Đề-xi-mét vuông, mét vuông, mi-li-mét vuông",
+"n": 3,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B18-T4",
+"b": 18,
+"t": "Đề-xi-mét vuông, mét vuông, mi-li-mét vuông",
+"n": 4,
+"nt": 4,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L4-B19-T1",
+"b": 19,
+"t": "Giây, thế kỉ",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L4-B19-T2",
+"b": 19,
+"t": "Giây, thế kỉ",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L4-B20-T1",
+"b": 20,
+"t": "Thực hành và trải nghiệm sử dụng một số đơn vị đo đại lượng",
+"n": 1,
+"nt": 3,
+"typ": "thuchanh",
+"nbt": 4
+},
+{
+"id": "L4-B20-T2",
+"b": 20,
+"t": "Thực hành và trải nghiệm sử dụng một số đơn vị đo đại lượng",
+"n": 2,
+"nt": 3,
+"typ": "thuchanh",
+"nbt": 3
+},
+{
+"id": "L4-B20-T3",
+"b": 20,
+"t": "Thực hành và trải nghiệm sử dụng một số đơn vị đo đại lượng",
+"n": 3,
+"nt": 3,
+"typ": "thuchanh",
+"nbt": 5
+},
+{
+"id": "L4-B21-T1",
+"b": 21,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L4-B21-T2",
+"b": 21,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Phép cộng và phép trừ",
+"a": 22,
+"b": 26,
+"isl": [
+{
+"id": "L4-B22-T1",
+"b": 22,
+"t": "Phép cộng các số có nhiều chữ số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B22-T2",
+"b": 22,
+"t": "Phép cộng các số có nhiều chữ số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L4-B23-T1",
+"b": 23,
+"t": "Phép trừ các số có nhiều chữ số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B23-T2",
+"b": 23,
+"t": "Phép trừ các số có nhiều chữ số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B24-T1",
+"b": 24,
+"t": "Tính chất giao hoán và kết hợp của phép cộng",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B24-T2",
+"b": 24,
+"t": "Tính chất giao hoán và kết hợp của phép cộng",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L4-B24-T3",
+"b": 24,
+"t": "Tính chất giao hoán và kết hợp của phép cộng",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B25-T1",
+"b": 25,
+"t": "Tìm hai số biết tổng và hiệu của hai số đó",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L4-B25-T2",
+"b": 25,
+"t": "Tìm hai số biết tổng và hiệu của hai số đó",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L4-B26-T1",
+"b": 26,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L4-B26-T2",
+"b": 26,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L4-B26-T3",
+"b": 26,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Đường thẳng vuông góc, đường thẳng song song",
+"a": 27,
+"b": 32,
+"isl": [
+{
+"id": "L4-B27-T1",
+"b": 27,
+"t": "Hai đường thẳng vuông góc",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L4-B27-T2",
+"b": 27,
+"t": "Hai đường thẳng vuông góc",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B28-T1",
+"b": 28,
+"t": "Thực hành và trải nghiệm vẽ hai đường thẳng vuông góc",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L4-B28-T2",
+"b": 28,
+"t": "Thực hành và trải nghiệm vẽ hai đường thẳng vuông góc",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 1
+},
+{
+"id": "L4-B29-T1",
+"b": 29,
+"t": "Hai đường thẳng song song",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B29-T2",
+"b": 29,
+"t": "Hai đường thẳng song song",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B30-T1",
+"b": 30,
+"t": "Thực hành và trải nghiệm vẽ hai đường thẳng song song",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 0
+},
+{
+"id": "L4-B30-T2",
+"b": 30,
+"t": "Thực hành và trải nghiệm vẽ hai đường thẳng song song",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L4-B31-T1",
+"b": 31,
+"t": "Hình bình hành, hình thoi",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B31-T2",
+"b": 31,
+"t": "Hình bình hành, hình thoi",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B31-T3",
+"b": 31,
+"t": "Hình bình hành, hình thoi",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L4-B32-T1",
+"b": 32,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 2
+},
+{
+"id": "L4-B32-T2",
+"b": 32,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L4-B32-T3",
+"b": 32,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Ôn tập học kì 1",
+"a": 33,
+"b": 37,
+"isl": [
+{
+"id": "L4-B33-T1",
+"b": 33,
+"t": "Ôn tập các số đến lớp triệu",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B33-T2",
+"b": 33,
+"t": "Ôn tập các số đến lớp triệu",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B34-T1",
+"b": 34,
+"t": "Ôn tập phép cộng, phép trừ",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B34-T2",
+"b": 34,
+"t": "Ôn tập phép cộng, phép trừ",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B34-T3",
+"b": 34,
+"t": "Ôn tập phép cộng, phép trừ",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 6
+},
+{
+"id": "L4-B35-T1",
+"b": 35,
+"t": "Ôn tập hình học",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L4-B35-T2",
+"b": 35,
+"t": "Ôn tập hình học",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L4-B35-T3",
+"b": 35,
+"t": "Ôn tập hình học",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B36-T1",
+"b": 36,
+"t": "Ôn tập đo lường",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L4-B36-T2",
+"b": 36,
+"t": "Ôn tập đo lường",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B37-T1",
+"b": 37,
+"t": "Ôn tập chung",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L4-B37-T2",
+"b": 37,
+"t": "Ôn tập chung",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L4-B37-T3",
+"b": 37,
+"t": "Ôn tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Phép nhân, phép chia",
+"a": 38,
+"b": 48,
+"isl": [
+{
+"id": "L4-B38-T1",
+"b": 38,
+"t": "Nhân với số có một chữ số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B38-T2",
+"b": 38,
+"t": "Nhân với số có một chữ số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B39-T1",
+"b": 39,
+"t": "Chia cho số có một chữ số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B39-T2",
+"b": 39,
+"t": "Chia cho số có một chữ số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B40-T1",
+"b": 40,
+"t": "Tính chất giao hoán và kết hợp của phép nhân",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B40-T2",
+"b": 40,
+"t": "Tính chất giao hoán và kết hợp của phép nhân",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B40-T3",
+"b": 40,
+"t": "Tính chất giao hoán và kết hợp của phép nhân",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B41-T1",
+"b": 41,
+"t": "Nhân, chia với 10, 100, 1 000…",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B41-T2",
+"b": 41,
+"t": "Nhân, chia với 10, 100, 1 000…",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L4-B42-T1",
+"b": 42,
+"t": "Tính chất phân phối của phép nhân đối với phép cộng",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B42-T2",
+"b": 42,
+"t": "Tính chất phân phối của phép nhân đối với phép cộng",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B42-T3",
+"b": 42,
+"t": "Tính chất phân phối của phép nhân đối với phép cộng",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B43-T1",
+"b": 43,
+"t": "Nhân với số có hai chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L4-B43-T2",
+"b": 43,
+"t": "Nhân với số có hai chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B43-T3",
+"b": 43,
+"t": "Nhân với số có hai chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L4-B44-T1",
+"b": 44,
+"t": "Chia cho số có hai chữ số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L4-B44-T2",
+"b": 44,
+"t": "Chia cho số có hai chữ số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L4-B44-T3",
+"b": 44,
+"t": "Chia cho số có hai chữ số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B45-T1",
+"b": 45,
+"t": "Thực hành và trải nghiệm ước lượng trong tính toán",
+"n": 1,
+"nt": 1,
+"typ": "thuchanh",
+"nbt": 3
+},
+{
+"id": "L4-B46-T1",
+"b": 46,
+"t": "Tìm số trung bình cộng",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B46-T2",
+"b": 46,
+"t": "Tìm số trung bình cộng",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B47-T1",
+"b": 47,
+"t": "Bài toán liên quan đến rút về đơn vị",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B47-T2",
+"b": 47,
+"t": "Bài toán liên quan đến rút về đơn vị",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B48-T1",
+"b": 48,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L4-B48-T2",
+"b": 48,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 5
+},
+{
+"id": "L4-B48-T3",
+"b": 48,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Làm quen với yếu tố thống kê, xác suất",
+"a": 49,
+"b": 52,
+"isl": [
+{
+"id": "L4-B49-T1",
+"b": 49,
+"t": "Dãy số liệu thống kê",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B49-T2",
+"b": 49,
+"t": "Dãy số liệu thống kê",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B50-T1",
+"b": 50,
+"t": "Biểu đồ cột",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L4-B50-T2",
+"b": 50,
+"t": "Biểu đồ cột",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B51-T1",
+"b": 51,
+"t": "Số lần xuất hiện của một sự kiện",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B51-T2",
+"b": 51,
+"t": "Số lần xuất hiện của một sự kiện",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L4-B52-T1",
+"b": 52,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 1,
+"typ": "trum",
+"nbt": 6
+}
+]
+},
+{
+"name": "Phân số",
+"a": 53,
+"b": 59,
+"isl": [
+{
+"id": "L4-B53-T1",
+"b": 53,
+"t": "Khái niệm phân số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L4-B53-T2",
+"b": 53,
+"t": "Khái niệm phân số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B54-T1",
+"b": 54,
+"t": "Phân số và phép chia số tự nhiên",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B54-T2",
+"b": 54,
+"t": "Phân số và phép chia số tự nhiên",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L4-B55-T1",
+"b": 55,
+"t": "Tính chất cơ bản của phân số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B55-T2",
+"b": 55,
+"t": "Tính chất cơ bản của phân số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L4-B56-T1",
+"b": 56,
+"t": "Rút gọn phân số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B56-T2",
+"b": 56,
+"t": "Rút gọn phân số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B57-T1",
+"b": 57,
+"t": "Quy đồng mẫu số các phân số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L4-B57-T2",
+"b": 57,
+"t": "Quy đồng mẫu số các phân số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B58-T1",
+"b": 58,
+"t": "So sánh phân số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B58-T2",
+"b": 58,
+"t": "So sánh phân số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B58-T3",
+"b": 58,
+"t": "So sánh phân số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B59-T1",
+"b": 59,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L4-B59-T2",
+"b": 59,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 5
+},
+{
+"id": "L4-B59-T3",
+"b": 59,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Phép cộng, phép trừ phân số",
+"a": 60,
+"b": 62,
+"isl": [
+{
+"id": "L4-B60-T1",
+"b": 60,
+"t": "Phép cộng phân số",
+"n": 1,
+"nt": 4,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B60-T2",
+"b": 60,
+"t": "Phép cộng phân số",
+"n": 2,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B60-T3",
+"b": 60,
+"t": "Phép cộng phân số",
+"n": 3,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B60-T4",
+"b": 60,
+"t": "Phép cộng phân số",
+"n": 4,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B61-T1",
+"b": 61,
+"t": "Phép trừ phân số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B61-T2",
+"b": 61,
+"t": "Phép trừ phân số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B61-T3",
+"b": 61,
+"t": "Phép trừ phân số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B62-T1",
+"b": 62,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L4-B62-T2",
+"b": 62,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L4-B62-T3",
+"b": 62,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Phép nhân, phép chia phân số",
+"a": 63,
+"b": 66,
+"isl": [
+{
+"id": "L4-B63-T1",
+"b": 63,
+"t": "Phép nhân phân số",
+"n": 1,
+"nt": 4,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L4-B63-T2",
+"b": 63,
+"t": "Phép nhân phân số",
+"n": 2,
+"nt": 4,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L4-B63-T3",
+"b": 63,
+"t": "Phép nhân phân số",
+"n": 3,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B63-T4",
+"b": 63,
+"t": "Phép nhân phân số",
+"n": 4,
+"nt": 4,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L4-B64-T1",
+"b": 64,
+"t": "Phép chia phân số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L4-B64-T2",
+"b": 64,
+"t": "Phép chia phân số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 7
+},
+{
+"id": "L4-B64-T3",
+"b": 64,
+"t": "Phép chia phân số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B65-T1",
+"b": 65,
+"t": "Tìm phân số của một số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L4-B65-T2",
+"b": 65,
+"t": "Tìm phân số của một số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L4-B66-T1",
+"b": 66,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L4-B66-T2",
+"b": 66,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L4-B66-T3",
+"b": 66,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Ôn tập cuối năm",
+"a": 67,
+"b": 73,
+"isl": [
+{
+"id": "L4-B67-T1",
+"b": 67,
+"t": "Ôn tập số tự nhiên",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B67-T2",
+"b": 67,
+"t": "Ôn tập số tự nhiên",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L4-B68-T1",
+"b": 68,
+"t": "Ôn tập phép tính với số tự nhiên",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B68-T2",
+"b": 68,
+"t": "Ôn tập phép tính với số tự nhiên",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B69-T1",
+"b": 69,
+"t": "Ôn tập phân số",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B69-T2",
+"b": 69,
+"t": "Ôn tập phân số",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L4-B70-T1",
+"b": 70,
+"t": "Ôn tập phép tính với phân số",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L4-B70-T2",
+"b": 70,
+"t": "Ôn tập phép tính với phân số",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B71-T1",
+"b": 71,
+"t": "Ôn tập hình học và đo lường",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B71-T2",
+"b": 71,
+"t": "Ôn tập hình học và đo lường",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B72-T1",
+"b": 72,
+"t": "Ôn tập một số yếu tố thống kê và xác suất",
+"n": 1,
+"nt": 1,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B73-T1",
+"b": 73,
+"t": "Ôn tập chung",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L4-B73-T2",
+"b": 73,
+"t": "Ôn tập chung",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L4-B73-T3",
+"b": 73,
+"t": "Ôn tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 6
+}
+]
+}
+],
+"5": [
+{
+"name": "Ôn tập và bổ sung",
+"a": 1,
+"b": 9,
+"isl": [
+{
+"id": "L5-B1-T1",
+"b": 1,
+"t": "Ôn tập số tự nhiên",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L5-B1-T2",
+"b": 1,
+"t": "Ôn tập số tự nhiên",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L5-B2-T1",
+"b": 2,
+"t": "Ôn tập các phép tính với số tự nhiên",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L5-B2-T2",
+"b": 2,
+"t": "Ôn tập các phép tính với số tự nhiên",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 6
+},
+{
+"id": "L5-B3-T1",
+"b": 3,
+"t": "Ôn tập phân số",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B3-T2",
+"b": 3,
+"t": "Ôn tập phân số",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 6
+},
+{
+"id": "L5-B4-T1",
+"b": 4,
+"t": "Phân số thập phân",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 5
+},
+{
+"id": "L5-B5-T1",
+"b": 5,
+"t": "Ôn tập các phép tính với phân số",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L5-B5-T2",
+"b": 5,
+"t": "Ôn tập các phép tính với phân số",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L5-B5-T3",
+"b": 5,
+"t": "Ôn tập các phép tính với phân số",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L5-B6-T1",
+"b": 6,
+"t": "Cộng, trừ hai phân số khác mẫu số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L5-B6-T2",
+"b": 6,
+"t": "Cộng, trừ hai phân số khác mẫu số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B7-T1",
+"b": 7,
+"t": "Hỗn số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L5-B7-T2",
+"b": 7,
+"t": "Hỗn số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B8-T1",
+"b": 8,
+"t": "Ôn tập hình học và đo lường",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B8-T2",
+"b": 8,
+"t": "Ôn tập hình học và đo lường",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B9-T1",
+"b": 9,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L5-B9-T2",
+"b": 9,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L5-B9-T3",
+"b": 9,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Số thập phân",
+"a": 10,
+"b": 14,
+"isl": [
+{
+"id": "L5-B10-T1",
+"b": 10,
+"t": "Khái niệm số thập phân",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 5
+},
+{
+"id": "L5-B10-T2",
+"b": 10,
+"t": "Khái niệm số thập phân",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B10-T3",
+"b": 10,
+"t": "Khái niệm số thập phân",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B11-T1",
+"b": 11,
+"t": "So sánh các số thập phân",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B11-T2",
+"b": 11,
+"t": "So sánh các số thập phân",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 7
+},
+{
+"id": "L5-B12-T1",
+"b": 12,
+"t": "Viết số đo đại lượng dưới dạng số thập phân",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L5-B12-T2",
+"b": 12,
+"t": "Viết số đo đại lượng dưới dạng số thập phân",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L5-B12-T3",
+"b": 12,
+"t": "Viết số đo đại lượng dưới dạng số thập phân",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B13-T1",
+"b": 13,
+"t": "Làm tròn số thập phân",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B13-T2",
+"b": 13,
+"t": "Làm tròn số thập phân",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B14-T1",
+"b": 14,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L5-B14-T2",
+"b": 14,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Một số đơn vị đo diện tích",
+"a": 15,
+"b": 18,
+"isl": [
+{
+"id": "L5-B15-T1",
+"b": 15,
+"t": "Ki-lô-mét vuông. Héc-ta",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B15-T2",
+"b": 15,
+"t": "Ki-lô-mét vuông. Héc-ta",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B16-T1",
+"b": 16,
+"t": "Các đơn vị đo diện tích",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L5-B16-T2",
+"b": 16,
+"t": "Các đơn vị đo diện tích",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B17-T1",
+"b": 17,
+"t": "Thực hành và trải nghiệm với một số đơn vị đo đại lượng",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 3
+},
+{
+"id": "L5-B17-T2",
+"b": 17,
+"t": "Thực hành và trải nghiệm với một số đơn vị đo đại lượng",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 3
+},
+{
+"id": "L5-B18-T1",
+"b": 18,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L5-B18-T2",
+"b": 18,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 5
+}
+]
+},
+{
+"name": "Các phép tính với số thập phân",
+"a": 19,
+"b": 24,
+"isl": [
+{
+"id": "L5-B19-T1",
+"b": 19,
+"t": "Phép cộng số thập phân",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B19-T2",
+"b": 19,
+"t": "Phép cộng số thập phân",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B20-T1",
+"b": 20,
+"t": "Phép trừ số thập phân",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B20-T2",
+"b": 20,
+"t": "Phép trừ số thập phân",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B21-T1",
+"b": 21,
+"t": "Phép nhân số thập phân",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L5-B21-T2",
+"b": 21,
+"t": "Phép nhân số thập phân",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B21-T3",
+"b": 21,
+"t": "Phép nhân số thập phân",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 6
+},
+{
+"id": "L5-B22-T1",
+"b": 22,
+"t": "Phép chia số thập phân",
+"n": 1,
+"nt": 4,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L5-B22-T2",
+"b": 22,
+"t": "Phép chia số thập phân",
+"n": 2,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B22-T3",
+"b": 22,
+"t": "Phép chia số thập phân",
+"n": 3,
+"nt": 4,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B22-T4",
+"b": 22,
+"t": "Phép chia số thập phân",
+"n": 4,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B23-T1",
+"b": 23,
+"t": "Nhân, chia số thập phân với 10; 100; 1 000; ... hoặc với 0,1; 0,01; 0,001; ...",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B23-T2",
+"b": 23,
+"t": "Nhân, chia số thập phân với 10; 100; 1 000; ... hoặc với 0,1; 0,01; 0,001; ...",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B24-T1",
+"b": 24,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L5-B24-T2",
+"b": 24,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L5-B24-T3",
+"b": 24,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Một số hình phẳng. Chu vi và diện tích",
+"a": 25,
+"b": 29,
+"isl": [
+{
+"id": "L5-B25-T1",
+"b": 25,
+"t": "Hình tam giác. Diện tích hình tam giác",
+"n": 1,
+"nt": 4,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B25-T2",
+"b": 25,
+"t": "Hình tam giác. Diện tích hình tam giác",
+"n": 2,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B25-T3",
+"b": 25,
+"t": "Hình tam giác. Diện tích hình tam giác",
+"n": 3,
+"nt": 4,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L5-B25-T4",
+"b": 25,
+"t": "Hình tam giác. Diện tích hình tam giác",
+"n": 4,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B26-T1",
+"b": 26,
+"t": "Hình thang. Diện tích hình thang",
+"n": 1,
+"nt": 4,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B26-T2",
+"b": 26,
+"t": "Hình thang. Diện tích hình thang",
+"n": 2,
+"nt": 4,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L5-B26-T3",
+"b": 26,
+"t": "Hình thang. Diện tích hình thang",
+"n": 3,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B26-T4",
+"b": 26,
+"t": "Hình thang. Diện tích hình thang",
+"n": 4,
+"nt": 4,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B27-T1",
+"b": 27,
+"t": "Đường tròn. Chu vi và diện tích hình tròn",
+"n": 1,
+"nt": 5,
+"typ": "moi",
+"nbt": 1
+},
+{
+"id": "L5-B27-T2",
+"b": 27,
+"t": "Đường tròn. Chu vi và diện tích hình tròn",
+"n": 2,
+"nt": 5,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B27-T3",
+"b": 27,
+"t": "Đường tròn. Chu vi và diện tích hình tròn",
+"n": 3,
+"nt": 5,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B27-T4",
+"b": 27,
+"t": "Đường tròn. Chu vi và diện tích hình tròn",
+"n": 4,
+"nt": 5,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B27-T5",
+"b": 27,
+"t": "Đường tròn. Chu vi và diện tích hình tròn",
+"n": 5,
+"nt": 5,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B28-T1",
+"b": 28,
+"t": "Thực hành và trải nghiệm đo, vẽ, lắp ghép, tạo hình",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L5-B28-T2",
+"b": 28,
+"t": "Thực hành và trải nghiệm đo, vẽ, lắp ghép, tạo hình",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 3
+},
+{
+"id": "L5-B29-T1",
+"b": 29,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L5-B29-T2",
+"b": 29,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L5-B29-T3",
+"b": 29,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Ôn tập học kì 1",
+"a": 30,
+"b": 35,
+"isl": [
+{
+"id": "L5-B30-T1",
+"b": 30,
+"t": "Ôn tập số thập phân",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L5-B30-T2",
+"b": 30,
+"t": "Ôn tập số thập phân",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B30-T3",
+"b": 30,
+"t": "Ôn tập số thập phân",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B31-T1",
+"b": 31,
+"t": "Ôn tập các phép tính với số thập phân",
+"n": 1,
+"nt": 4,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L5-B31-T2",
+"b": 31,
+"t": "Ôn tập các phép tính với số thập phân",
+"n": 2,
+"nt": 4,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B31-T3",
+"b": 31,
+"t": "Ôn tập các phép tính với số thập phân",
+"n": 3,
+"nt": 4,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B31-T4",
+"b": 31,
+"t": "Ôn tập các phép tính với số thập phân",
+"n": 4,
+"nt": 4,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B32-T1",
+"b": 32,
+"t": "Ôn tập một số hình phẳng",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B32-T2",
+"b": 32,
+"t": "Ôn tập một số hình phẳng",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B33-T1",
+"b": 33,
+"t": "Ôn tập diện tích, chu vi một số hình phẳng",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 2
+},
+{
+"id": "L5-B33-T2",
+"b": 33,
+"t": "Ôn tập diện tích, chu vi một số hình phẳng",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B33-T3",
+"b": 33,
+"t": "Ôn tập diện tích, chu vi một số hình phẳng",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L5-B34-T1",
+"b": 34,
+"t": "Ôn tập đo lường",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 2
+},
+{
+"id": "L5-B34-T2",
+"b": 34,
+"t": "Ôn tập đo lường",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B35-T1",
+"b": 35,
+"t": "Ôn tập chung",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B35-T2",
+"b": 35,
+"t": "Ôn tập chung",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 7
+},
+{
+"id": "L5-B35-T3",
+"b": 35,
+"t": "Ôn tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Tỉ số và các bài toán liên quan",
+"a": 36,
+"b": 44,
+"isl": [
+{
+"id": "L5-B36-T1",
+"b": 36,
+"t": "Tỉ số. Tỉ số phần trăm",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B36-T2",
+"b": 36,
+"t": "Tỉ số. Tỉ số phần trăm",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B37-T1",
+"b": 37,
+"t": "Tỉ lệ bản đồ và ứng dụng",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B37-T2",
+"b": 37,
+"t": "Tỉ lệ bản đồ và ứng dụng",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B38-T1",
+"b": 38,
+"t": "Tìm hai số khi biết tổng và tỉ số của hai số đó",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L5-B38-T2",
+"b": 38,
+"t": "Tìm hai số khi biết tổng và tỉ số của hai số đó",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L5-B39-T1",
+"b": 39,
+"t": "Tìm hai số khi biết hiệu và tỉ số của hai số đó",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L5-B39-T2",
+"b": 39,
+"t": "Tìm hai số khi biết hiệu và tỉ số của hai số đó",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B40-T1",
+"b": 40,
+"t": "Tìm tỉ số phần trăm của hai số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B40-T2",
+"b": 40,
+"t": "Tìm tỉ số phần trăm của hai số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B41-T1",
+"b": 41,
+"t": "Tìm giá trị phần trăm của một số",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B41-T2",
+"b": 41,
+"t": "Tìm giá trị phần trăm của một số",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B42-T1",
+"b": 42,
+"t": "Máy tính cầm tay",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L5-B42-T2",
+"b": 42,
+"t": "Máy tính cầm tay",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B43-T1",
+"b": 43,
+"t": "Thực hành và trải nghiệm sử dụng máy tính cầm tay",
+"n": 1,
+"nt": 1,
+"typ": "thuchanh",
+"nbt": 5
+},
+{
+"id": "L5-B44-T1",
+"b": 44,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L5-B44-T2",
+"b": 44,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 6
+}
+]
+},
+{
+"name": "Thể tích. Đơn vị đo thể tích",
+"a": 45,
+"b": 48,
+"isl": [
+{
+"id": "L5-B45-T1",
+"b": 45,
+"t": "Thể tích của một hình",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L5-B46-T1",
+"b": 46,
+"t": "Xăng-ti-mét khối. Đề-xi-mét khối",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B46-T2",
+"b": 46,
+"t": "Xăng-ti-mét khối. Đề-xi-mét khối",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B47-T1",
+"b": 47,
+"t": "Mét khối",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B47-T2",
+"b": 47,
+"t": "Mét khối",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B48-T1",
+"b": 48,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 2,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L5-B48-T2",
+"b": 48,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 2,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Diện tích và thể tích của một số hình khối",
+"a": 49,
+"b": 55,
+"isl": [
+{
+"id": "L5-B49-T1",
+"b": 49,
+"t": "Hình khai triển của hình lập phương, hình hộp chữ nhật và hình trụ",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B49-T2",
+"b": 49,
+"t": "Hình khai triển của hình lập phương, hình hộp chữ nhật và hình trụ",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B50-T1",
+"b": 50,
+"t": "Diện tích xung quanh và diện tích toàn phần của hình hộp chữ nhật",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B50-T2",
+"b": 50,
+"t": "Diện tích xung quanh và diện tích toàn phần của hình hộp chữ nhật",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B50-T3",
+"b": 50,
+"t": "Diện tích xung quanh và diện tích toàn phần của hình hộp chữ nhật",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B51-T1",
+"b": 51,
+"t": "Diện tích xung quanh và diện tích toàn phần của hình lập phương",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B51-T2",
+"b": 51,
+"t": "Diện tích xung quanh và diện tích toàn phần của hình lập phương",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B52-T1",
+"b": 52,
+"t": "Thể tích của hình hộp chữ nhật",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L5-B52-T2",
+"b": 52,
+"t": "Thể tích của hình hộp chữ nhật",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 3
+},
+{
+"id": "L5-B53-T1",
+"b": 53,
+"t": "Thể tích của hình lập phương",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B53-T2",
+"b": 53,
+"t": "Thể tích của hình lập phương",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B54-T1",
+"b": 54,
+"t": "Thực hành tính toán và ước lượng thể tích một số hình khối",
+"n": 1,
+"nt": 1,
+"typ": "thuchanh",
+"nbt": 3
+},
+{
+"id": "L5-B55-T1",
+"b": 55,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L5-B55-T2",
+"b": 55,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 5
+},
+{
+"id": "L5-B55-T3",
+"b": 55,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Số đo thời gian, vận tốc. Chuyển động đều",
+"a": 56,
+"b": 62,
+"isl": [
+{
+"id": "L5-B56-T1",
+"b": 56,
+"t": "Các đơn vị đo thời gian",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 4
+},
+{
+"id": "L5-B57-T1",
+"b": 57,
+"t": "Cộng, trừ số đo thời gian",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B57-T2",
+"b": 57,
+"t": "Cộng, trừ số đo thời gian",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B58-T1",
+"b": 58,
+"t": "Nhân, chia số đo thời gian với một số",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B58-T2",
+"b": 58,
+"t": "Nhân, chia số đo thời gian với một số",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B58-T3",
+"b": 58,
+"t": "Nhân, chia số đo thời gian với một số",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B59-T1",
+"b": 59,
+"t": "Vận tốc của một chuyển động đều",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B59-T2",
+"b": 59,
+"t": "Vận tốc của một chuyển động đều",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 5
+},
+{
+"id": "L5-B60-T1",
+"b": 60,
+"t": "Quãng đường, thời gian của một chuyển động đều",
+"n": 1,
+"nt": 3,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B60-T2",
+"b": 60,
+"t": "Quãng đường, thời gian của một chuyển động đều",
+"n": 2,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B60-T3",
+"b": 60,
+"t": "Quãng đường, thời gian của một chuyển động đều",
+"n": 3,
+"nt": 3,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B61-T1",
+"b": 61,
+"t": "Thực hành tính toán và ước lượng về vận tốc, quãng đường, thời gian trong chuyển động đều",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L5-B61-T2",
+"b": 61,
+"t": "Thực hành tính toán và ước lượng về vận tốc, quãng đường, thời gian trong chuyển động đều",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 4
+},
+{
+"id": "L5-B62-T1",
+"b": 62,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 3,
+"typ": "luyen",
+"nbt": 3
+},
+{
+"id": "L5-B62-T2",
+"b": 62,
+"t": "Luyện tập chung",
+"n": 2,
+"nt": 3,
+"typ": "luyen",
+"nbt": 4
+},
+{
+"id": "L5-B62-T3",
+"b": 62,
+"t": "Luyện tập chung",
+"n": 3,
+"nt": 3,
+"typ": "trum",
+"nbt": 3
+}
+]
+},
+{
+"name": "Một số yếu tố thống kê và xác suất",
+"a": 63,
+"b": 67,
+"isl": [
+{
+"id": "L5-B63-T1",
+"b": 63,
+"t": "Thu thập, phân loại, sắp xếp các số liệu",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B64-T1",
+"b": 64,
+"t": "Biểu đồ hình quạt tròn",
+"n": 1,
+"nt": 2,
+"typ": "moi",
+"nbt": 2
+},
+{
+"id": "L5-B64-T2",
+"b": 64,
+"t": "Biểu đồ hình quạt tròn",
+"n": 2,
+"nt": 2,
+"typ": "cung",
+"nbt": 4
+},
+{
+"id": "L5-B65-T1",
+"b": 65,
+"t": "Tỉ số của số lần lặp lại một sự kiện so với tổng số lần thực hiện",
+"n": 1,
+"nt": 1,
+"typ": "moi",
+"nbt": 3
+},
+{
+"id": "L5-B66-T1",
+"b": 66,
+"t": "Thực hành và trải nghiệm thu thập, phân tích, biểu diễn các số liệu thống kê",
+"n": 1,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L5-B66-T2",
+"b": 66,
+"t": "Thực hành và trải nghiệm thu thập, phân tích, biểu diễn các số liệu thống kê",
+"n": 2,
+"nt": 2,
+"typ": "thuchanh",
+"nbt": 2
+},
+{
+"id": "L5-B67-T1",
+"b": 67,
+"t": "Luyện tập chung",
+"n": 1,
+"nt": 1,
+"typ": "trum",
+"nbt": 4
+}
+]
+},
+{
+"name": "Ôn tập cuối năm",
+"a": 68,
+"b": 75,
+"isl": [
+{
+"id": "L5-B68-T1",
+"b": 68,
+"t": "Ôn tập số tự nhiên, phân số, số thập phân",
+"n": 1,
+"nt": 3,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L5-B68-T2",
+"b": 68,
+"t": "Ôn tập số tự nhiên, phân số, số thập phân",
+"n": 2,
+"nt": 3,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L5-B68-T3",
+"b": 68,
+"t": "Ôn tập số tự nhiên, phân số, số thập phân",
+"n": 3,
+"nt": 3,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L5-B69-T1",
+"b": 69,
+"t": "Ôn tập các phép tính với số tự nhiên, phân số, số thập phân",
+"n": 1,
+"nt": 4,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L5-B69-T2",
+"b": 69,
+"t": "Ôn tập các phép tính với số tự nhiên, phân số, số thập phân",
+"n": 2,
+"nt": 4,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L5-B69-T3",
+"b": 69,
+"t": "Ôn tập các phép tính với số tự nhiên, phân số, số thập phân",
+"n": 3,
+"nt": 4,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L5-B69-T4",
+"b": 69,
+"t": "Ôn tập các phép tính với số tự nhiên, phân số, số thập phân",
+"n": 4,
+"nt": 4,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L5-B70-T1",
+"b": 70,
+"t": "Ôn tập tỉ số, tỉ số phần trăm",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L5-B70-T2",
+"b": 70,
+"t": "Ôn tập tỉ số, tỉ số phần trăm",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B71-T1",
+"b": 71,
+"t": "Ôn tập hình học",
+"n": 1,
+"nt": 4,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B71-T2",
+"b": 71,
+"t": "Ôn tập hình học",
+"n": 2,
+"nt": 4,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B71-T3",
+"b": 71,
+"t": "Ôn tập hình học",
+"n": 3,
+"nt": 4,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L5-B71-T4",
+"b": 71,
+"t": "Ôn tập hình học",
+"n": 4,
+"nt": 4,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B72-T1",
+"b": 72,
+"t": "Ôn tập đo lường",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L5-B72-T2",
+"b": 72,
+"t": "Ôn tập đo lường",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L5-B73-T1",
+"b": 73,
+"t": "Ôn tập toán chuyển động đều",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L5-B73-T2",
+"b": 73,
+"t": "Ôn tập toán chuyển động đều",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B74-T1",
+"b": 74,
+"t": "Ôn tập một số yếu tố thống kê và xác suất",
+"n": 1,
+"nt": 2,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L5-B74-T2",
+"b": 74,
+"t": "Ôn tập một số yếu tố thống kê và xác suất",
+"n": 2,
+"nt": 2,
+"typ": "ontap",
+"nbt": 4
+},
+{
+"id": "L5-B75-T1",
+"b": 75,
+"t": "Ôn tập chung",
+"n": 1,
+"nt": 4,
+"typ": "ontap",
+"nbt": 3
+},
+{
+"id": "L5-B75-T2",
+"b": 75,
+"t": "Ôn tập chung",
+"n": 2,
+"nt": 4,
+"typ": "ontap",
+"nbt": 6
+},
+{
+"id": "L5-B75-T3",
+"b": 75,
+"t": "Ôn tập chung",
+"n": 3,
+"nt": 4,
+"typ": "ontap",
+"nbt": 5
+},
+{
+"id": "L5-B75-T4",
+"b": 75,
+"t": "Ôn tập chung",
+"n": 4,
+"nt": 4,
+"typ": "trum",
+"nbt": 5
+}
+]
+}
+]
+}
+}

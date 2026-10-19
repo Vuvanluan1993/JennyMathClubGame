@@ -22,7 +22,7 @@ Trang chơi: https://vuvanluan1993.github.io/JennyMathClubGame/
 | Hành Trình Của Jenny (đi màn + toán, cần mã CLB) | Lớp 6 | 30 màn + 673 bài | `games/hanh-trinh-jenny/lop-6/` |
 
 | Hành Trình Của Jenny Mầm non | 5–6 tuổi | 48 màn tương tác | `games/hanh-trinh-jenny/mam-non/` |
-| Lớp Học Ảo Jenny (đăng nhập tài khoản Clb) | Lớp 1–9 | Chủ đề 1 mỗi lớp | `games/lop-hoc-ao/` |
+| Lớp Học Ảo Jenny (đăng nhập tài khoản Clb) | Lớp 1–9 | Lớp 1–5 cả năm; lớp 6–9 chương I | `games/lop-hoc-ao/` (mã nguồn: `src/lop-hoc-ao/`) |
 | Hành Trình Của Jenny Tiểu học (cần mã CLB) | Lớp 1–4 | 40 màn + 120 bài toán tư duy | `games/hanh-trinh-jenny/tieu-hoc/` |
 
 Hiện trang chủ chỉ hiện bản Mầm non và Tiểu học; các game khác có `hidden: true` trong `games.js` (bỏ dòng đó để hiện lại).
@@ -98,7 +98,7 @@ python tools/build_bank.py <_pool_lop6.json> games/hanh-trinh-jenny/lop-6/bank.e
 
 ## Lớp Học Ảo Jenny – tài khoản học sinh
 
-Trang: `games/lop-hoc-ao/`. Mật khẩu mọi tài khoản: `jenny123`. Tên đăng nhập không phân biệt hoa thường.
+Trang: `games/lop-hoc-ao/`. Mã nguồn, cách build, kiểm tra và danh sách việc: `src/lop-hoc-ao/README.md`. Mật khẩu mọi tài khoản: `jenny123`. Tên đăng nhập không phân biệt hoa thường.
 
 | Lớp | Tài khoản chính | Tài khoản dự phòng |
 |---|---|---|
