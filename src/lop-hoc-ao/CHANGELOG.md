@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Sửa giọng đọc (lần 2)
+- Bỏ chữ "mấy" thừa ở cuối câu hỏi: dấu "?" cuối câu không còn bị đọc thành "mấy"; chỉ ô trống trong phép tính (☐, "12 + ? = 20") mới đọc là "mấy".
+- Chọn giọng tiếng Việt tốt nhất trên máy (ưu tiên giọng tự nhiên của Edge, Google Tiếng Việt của Chrome, giọng nâng cao của Mac), chờ danh sách giọng nạp xong; có thể ghim giọng bằng `localStorage.jennyVoice`.
+- Máy không có giọng tiếng Việt (nguyên nhân đọc "bé" thành "bớ", đọc không rõ): hiện hướng dẫn cài giọng "Linh" trên Mac hoặc mở bằng Chrome/Edge.
+
 ## 2026-10-19 — Trùm hoạt hình
 - Jenny có biểu cảm (`core/33d`, `jenny(size, mood)`): chờ thì thở và nháy mắt; đúng thì mắt cười, miệng mở, nhảy, lấp lánh; sai thì lo lắng, rơm rớm nước mắt, lắc đầu; qua màn/hạ trùm thì giơ hai tay ăn mừng.
 - Trùm lớp dùng chung hoạt hình trùm (chờ, bị đánh, nổi giận, sắp thua, bị hạ) và có 6 hệ màu: Lửa, Băng, Độc, Vàng, Bóng đêm, Kẹo ngọt (đổi bảng màu sprite, cố định theo đảo, tên thêm "· Hệ …").
