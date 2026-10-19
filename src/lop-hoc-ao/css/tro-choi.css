@@ -233,3 +233,19 @@
 @keyframes xlrope{50%{transform:translateY(1px)}}
 @media (prefers-reduced-motion: reduce){.xstag.xlswing,.xgtr{animation:none}}
 .xtrack.xlov>.xtrain{position:relative}
+/* ---- Câu cá: cá bơi uốn mình, vẫy đuôi, nhả bọt; Bóng bay: bóng đung đưa, dây lắc ---- */
+.fishi .mgsp.flip{animation:fswim .5s steps(2) infinite;transform-origin:70% 50%}
+.fishi:nth-child(3n) .mgsp.flip{animation-duration:.42s}.fishi:nth-child(3n+1) .mgsp.flip{animation-duration:.58s;animation-delay:-.2s}
+@keyframes fswim{0%,100%{transform:scaleX(-1) skewY(0deg) translateY(0)}50%{transform:scaleX(-1.04) skewY(6deg) translateY(-2px)}}
+.fishi::after{content:'';position:absolute;left:-6px;top:10px;width:6px;height:6px;background:#FFFFFF;box-shadow:0 0 0 2px #7FD3F0,-10px -8px 0 -1px #FFFFFF,-10px -8px 0 1px #7FD3F0;opacity:0;animation:fbub 1.4s steps(4) infinite;pointer-events:none}
+.fishi:nth-child(2n)::after{animation-delay:-.7s}
+@keyframes fbub{0%{opacity:0;transform:translate(0,0)}20%{opacity:1}100%{opacity:0;transform:translate(-14px,-22px)}}
+.fishi.pop::after,.fishi.wrong::after{display:none}
+.balloi .mgsp{animation:bsway 2.2s steps(6) infinite;transform-origin:50% 8%}
+.balloi:nth-child(2n) .mgsp{animation-duration:2.8s;animation-delay:-1s}.balloi:nth-child(3n) .mgsp{animation-duration:1.9s;animation-delay:-.5s}
+@keyframes bsway{0%,100%{transform:rotate(-5deg) scale(1,1)}25%{transform:rotate(0deg) scale(1.02,.98)}50%{transform:rotate(5deg) scale(1,1)}75%{transform:rotate(0deg) scale(.98,1.02)}}
+.balloi .mgt{animation:bsway2 2.2s steps(6) infinite}
+.balloi:nth-child(2n) .mgt{animation-duration:2.8s;animation-delay:-1s}.balloi:nth-child(3n) .mgt{animation-duration:1.9s;animation-delay:-.5s}
+@keyframes bsway2{0%,100%{margin-left:-3px}50%{margin-left:3px}}
+.mgi.pop .mgsp,.mgi.wrong .mgsp{animation:none}
+@media (prefers-reduced-motion:reduce){.fishi .mgsp.flip,.balloi .mgsp,.balloi .mgt,.fishi::after{animation:none}}

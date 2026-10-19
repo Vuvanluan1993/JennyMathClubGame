@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Cá bơi, bóng đung đưa
+- Câu cá: cá uốn mình vẫy đuôi khi bơi, nhịp mỗi con khác nhau, nhả bọt nước phía sau. Bóng bay: bóng đung đưa qua lại, phồng xẹp nhẹ, dây lắc theo; nhãn số lắc theo bóng. Tắt hiệu ứng khi máy bật "giảm chuyển động".
+
 ## 2026-10-19 — Cửa hàng Jenny: chậm lại, chỉ quầy hàng chuyển, tiền có màu như thật
 - Sửa nút "Đưa lại", "Trả tiền" bị mất viền dưới (khung cửa hàng cắt mất bóng viền).
 - Chuyển lượt chậm hơn (khoảng 3 giây): bảng "Khách n/8 ✓ Cảm ơn!" hiện đủ lâu để đọc. Chỉ phần quầy hàng (mái che, kệ, câu hỏi) trượt đi và trượt vào; phần "Em đưa", ví tiền, nút Đưa lại, Trả tiền đứng yên.
