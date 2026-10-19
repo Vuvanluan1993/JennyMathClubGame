@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Chơi thêm: 3 trò mới (đợt 2)
+- **Cân thăng bằng**: chạm quả cân để đặt lên đĩa phải (chạm lại để bỏ), cân nghiêng theo từng quả, bấm "Cân!" khi hai bên bằng nhau. Bên trái là số hoặc phép tính (lớp 1 ≤ 10, lớp 2 ≤ 100, lớp 3 ≤ 1 000, lớp 4–5 lớn hơn); ở đảo khối lượng dùng kg, g, yến, tạ. Sai thì cân tự đặt lại cách đúng cho em xem. 8 lượt, 3 tim.
+- **Cửa hàng Jenny**: chạm tờ tiền trong ví để trả đúng giá món hàng (chạm tờ đã đưa để lấy lại). Lớp 2 dùng tờ 100–1 000 đồng; lớp 3 đến 100 000 đồng và thêm câu "cô trả lại bao nhiêu"; lớp 4–5 thêm mua 2–3 món và giảm giá. 8 lượt, 3 tim.
+- **Tàu hoả xếp số**: chạm các toa theo thứ tự từ bé đến lớn (hoặc từ lớn đến bé) để nối vào đầu tàu, chạm toa cuối để tháo; đúng thì tàu chạy đi. Số theo lớp và bài: lớp 1 đến 5, 10 hoặc 100; lớp 2 đến 1 000; lớp 3–4 số có 5–6 chữ số gần nhau; lớp 4–5 phân số, số thập phân. 6 lượt, 3 tim.
+- Đảo học tiền luôn có Cửa hàng Jenny, đảo học khối lượng luôn có Cân thăng bằng; các đảo khác nhận trò mới theo nội dung, vẫn 2–3 trò mỗi đảo. Kết quả vào Hồ sơ: Cân → Phép tính (đảo khối lượng → Đo lường), Cửa hàng → Đo lường (mua nhiều món → Lời văn), Tàu hoả → Số.
+
 ## 2026-10-19 — Chơi thêm: 4 trò mới (đợt 1)
 - **Hứng sao rơi**: di giỏ (kéo, chạm hai bên hoặc phím mũi tên) hứng sao có số đúng luật của đảo, 60 giây, 3 tim, nền trời đêm.
 - **Lật thẻ ghép đôi**: 12 thẻ (6 cặp) ghép phép tính với kết quả, lấy từ câu của đảo (thiếu thì tự tạo phép tính hợp lớp), 90 giây, lật sai không mất tim.
