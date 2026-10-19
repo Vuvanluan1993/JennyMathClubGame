@@ -1833,10 +1833,12 @@ function seaOne(cv,run0){if(!cv.getContext)return;let ctx;try{ctx=cv.getContext(
   const whale={x:Math.round((155+300)/Z),y:H-12},bottle={x:rnd()*W,y:Math.round(H*.8)},boat={x:-30,y:Math.round(H*.86)};
   const blit=(n,x,y)=>ctx.drawImage(pxCanvas(n),Math.round(x),Math.round(y));
   ctx.imageSmoothingEnabled=false;ctx.setTransform(Z,0,0,Z,0,0);
-  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches||cv.dataset.live!=='1';
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* mọi vùng biển đều chuyển động; chỉ vẽ khi vùng đó đang hiện trên màn hình (đỡ tốn pin) */
+  let vis=true;if('IntersectionObserver' in window){vis=false;const io=new IntersectionObserver(es=>{vis=es[es.length-1].isIntersecting;if(run!==seaRun||!cv.isConnected)io.disconnect()},{rootMargin:'120px'});io.observe(cv)}
   let f=0,last=0;
   function frame(ts){if(run!==seaRun||!cv.isConnected)return;
-    if(!reduce&&ts-last<125){requestAnimationFrame(frame);return}last=ts;f++;
+    if(!reduce&&(ts-last<125||(!vis&&f>0))){requestAnimationFrame(frame);return}last=ts;f++;
     // nền: 4 dải nước, chỗ nối có hạt so le
     const bh=H/4;for(let b=0;b<4;b++){ctx.fillStyle=band[b];ctx.fillRect(0,Math.floor(b*bh),W,Math.ceil(bh)+1)}
     for(let b=1;b<4;b++){const y0=Math.floor(b*bh);ctx.fillStyle=band[b-1];for(let x=(f>>2)%4;x<W;x+=4){ctx.fillRect(x,y0,2,1);ctx.fillRect(x+2,y0+1,1,1)}}

@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Mọi vùng biển đều chuyển động
+- Trước đây chỉ vùng biển của chủ đề đang học mới chuyển động (để đỡ tốn máy). Nay mọi vùng đều chuyển động; vùng nào khuất màn hình thì tạm dừng vẽ để đỡ tốn pin.
+
 ## 2026-10-19 — Vùng biển đúng tên, trùm và nhạc theo vùng, Hộ chiếu đại dương
 - Vẽ lại 10 đảo (26×18 ô) cho đúng tên vùng: dừa + phao (Nhiệt đới), lều tuyết + cánh cụt (Băng), núi lửa dung nham, ốc đảo xương rồng + kim tự tháp, bánh kem + kẹo mút, cụm pha lê, cây rừng dây leo, cây lá đỏ + nấm, hải đăng, dừa bóng tối hoàng hôn.
 - Trong nước có vật thể của vùng: san hô + cá; tảng băng, cánh cụt bơi, cực quang; đá bazan, dung nham, khói; cồn cát, rùa; kẹo trôi, cốm rơi; pha lê nhô khỏi mặt nước, mảnh pha lê, tia cầu vồng; lá súng, sen, ếch, đom đóm; lá thu trôi, thuyền giấy; trăng, sứa phát sáng, sao băng, đèn hải đăng quét; mặt trời lặn, chim và thuyền bóng tối. Cá voi/thuyền/hải âu chỉ còn ở Nhiệt đới. Bộ sinh hình: `tools/sprite/vung-bien-gen.py`.
