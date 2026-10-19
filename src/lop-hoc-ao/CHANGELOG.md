@@ -3,8 +3,8 @@
 ## 2026-10-19 — Bỏ chữ "Hệ …" sau tên trùm
 - Tên trùm không còn đuôi "· Hệ Kẹo ngọt", "· Hệ Độc", "· Hệ Lửa"… (bản đồ, đảo, trận trùm). Màu trùm theo vùng biển vẫn giữ.
 
-## 2026-10-19 — Tên chủ đề trên bản đồ luôn một dòng
-- Mọi lớp, mọi chủ đề: tên chủ đề nằm gọn một dòng. Tên dài thì chữ tự nhỏ lại cho vừa khung (điện thoại, máy tính đều vậy; xoay màn hình cũng tự chỉnh).
+## 2026-10-19 — Tên chủ đề trên bản đồ: cùng cỡ chữ, tối đa 2 dòng
+- Mọi chủ đề cùng một cỡ chữ (24px). Dòng 1 của tên nằm ngay cạnh nhãn "CHỦ ĐỀ n"; tên dài xuống dòng 2. Riêng tên dài hơn 2 dòng thì nhỏ bớt vừa đủ 2 dòng (hiện chỉ lớp 3 chủ đề 5 trên điện thoại hẹp).
 
 ## 2026-10-19 — Leo núi: lời giải gọn
 - Khung lời giải chỉ còn câu dẫn và các phép tính; bỏ chữ "Bài giải" và dòng "Đáp số" (cả phần Jenny đọc).
