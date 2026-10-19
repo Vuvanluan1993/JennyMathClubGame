@@ -4,8 +4,13 @@
    bên dưới (cá, sao) để hình vẫn hiện rõ; vật mang nhãn dài to hơn một chút. */
 const LBL_SEL='.mgt,.xmsign,.xfpad b,.xtw b,.xstag';
 function lblMark(el){if(!el||!el.classList)return;const t=(el.textContent||'').replace(/\s+/g,' ').trim(),n=t.length,words=t.split(' ').length;
-  const word=/[a-zà-ỹđ]{2,}/i.test(t.replace(/\b(cm|dm|mm|km|kg|g|m|l|ml|giờ|phút|đồng)\b/gi,''));const cls=n>=10||(word&&n>=5)?'l3':n>=6?'l2':'';el.classList.remove('l2','l3');if(cls)el.classList.add(cls);
-  const host=el.closest('.mgi,.xgsi,.xmm,.xfpad,.xtw');if(host){host.classList.remove('hl2','hl3');if(cls)host.classList.add('h'+cls)}}
+  const word=/[a-zà-ỹđ]{2,}/i.test(t.replace(/\b(cm|dm|mm|km|kg|g|m|l|ml|giờ|phút|đồng)\b/gi,''));const cls=word&&n>=5?'l3':n>=10?'l4':n>=6?'l2':'';el.classList.remove('l2','l3','l4');if(cls)el.classList.add(cls);
+  const host=el.closest('.mgi,.xgsi,.xmm,.xfpad,.xtw');if(host){host.classList.remove('hl2','hl3','hl4');if(cls)host.classList.add('h'+cls)}
+  /* nhãn phép tính: thu nhỏ chữ cho vừa một dòng trong khung vật (chuột 92px, bóng 74px, cá/sao/lá súng ~104px) */
+  el.style.fontSize='';if(cls==='l3'||!host)return;const lim=host.matches('.xmm')?90:host.matches('.balloi')?72:host.matches('.xtw')?Math.max(40,host.clientWidth-6):104;
+  const tw=()=>{const r=document.createRange();r.selectNodeContents(el);return r.getBoundingClientRect().width};let fs=parseFloat(getComputedStyle(el).fontSize)||20,k=0;const minF=host.matches('.balloi')?12:11;while(tw()>lim&&fs>minF&&k++<14){fs-=1;el.style.setProperty('font-size',fs+'px','important')}
+  /* vẫn chưa vừa: xuống 2 dòng gọn gàng tại dấu phép tính, số không bị tách */
+  if(tw()>lim&&!el.dataset.br&&!el.querySelector('.frac,svg,img')){const t=el.textContent.trim(),m=t.match(/^(.*?\S)\s+([+−\-×:=<>])\s+(.*)$/);if(m){el.dataset.br=1;el.innerHTML=`${m[1].replace(/ /g,'&nbsp;')}<br>${m[2]}&nbsp;${m[3].replace(/ /g,'&nbsp;')}`;el.style.whiteSpace='normal';el.style.lineHeight='1.05';el.classList.add('l5')}}}
 (function(){const scan=root=>{if(!root||!root.querySelectorAll)return;if(root.matches&&root.matches(LBL_SEL))lblMark(root);root.querySelectorAll(LBL_SEL).forEach(lblMark)};
   const mo=new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData'){lblMark(m.target.parentElement&&m.target.parentElement.closest(LBL_SEL))}else{m.addedNodes.forEach(n=>{if(n.nodeType===1){scan(n);const c=n.closest&&n.closest(LBL_SEL);if(c)lblMark(c)}});if(m.target&&m.target.matches&&m.target.matches(LBL_SEL))lblMark(m.target)}}});
   const go=()=>{try{mo.observe(document.body,{childList:true,subtree:true,characterData:true});scan(document.body)}catch(e){}};if(document.body)go();else addEventListener('DOMContentLoaded',go)})();
@@ -13,10 +18,6 @@ function lblMark(el){if(!el||!el.classList)return;const t=(el.textContent||'').r
 .mgt.l2,.xmsign.l2,.xfpad b.l2,.xtw b.l2{font-size:19px!important}
 .mgt.l3,.xmsign.l3,.xfpad b.l3,.xtw b.l3{font-size:15px!important;line-height:1.05!important;white-space:normal!important;text-align:center;overflow-wrap:anywhere}
 /* cá: nhãn dài thành thẻ tên dưới bụng cá, cá to hơn */
-.fishi.hl3{width:110px;height:56px}
-.fishi.hl3 .mgsp{width:110px!important;height:auto!important}
-.fishi.hl3 .mgt{top:auto!important;bottom:-24px;transform:translate(-50%,0)!important;max-width:120px;width:max-content;padding:2px 5px!important}
-.fishi.hl2 .mgt{padding:2px 4px!important}
 /* bóng bay: nhãn dài trong lòng bóng, 2 dòng */
 .balloi.hl3 .mgt{max-width:72px;top:30%!important}
 .balloi.hl2 .mgt{max-width:76px;font-size:17px!important}
@@ -27,4 +28,32 @@ function lblMark(el){if(!el||!el.classList)return;const t=(el.textContent||'').r
 /* biển chuột, lá súng, toa tàu */
 .xmsign.l3{max-width:112px!important;padding:1px 3px!important;font-size:14px!important}
 .xfpad b.l3{max-width:86px;padding:1px 3px!important}
+/* phép tính dài (không có chữ): giữ một dòng, chữ nhỏ lại, khung rộng ra */
+.mgt.l2,.mgt.l4,.xmsign.l2,.xmsign.l4,.xfpad b.l2,.xfpad b.l4,.xtw b.l2,.xtw b.l4,.xstag.l4{white-space:nowrap!important}
+.mgt.l4,.xmsign.l4,.xfpad b.l4,.xtw b.l4{font-size:16px!important;letter-spacing:-.3px}
+.xmsign.l4{max-width:none!important;padding:1px 4px!important}
+.balloi.hl4 .mgt{font-size:14px!important;padding:2px 2px 0!important}
+.xgsi.hl4 .mgt{font-size:17px!important}
+`;document.head.appendChild(st)})();
+
+/* ===================== CÁ PIXEL BƠI (2 khung hình vẫy đuôi) ===================== */
+{const BODY=["...kkkk.....",".kkBBBBkk...","kBBBBBBBBk..","kBBBBBBwwBk.","BBBBBBBwkBBk","bbbbbbbbbbbk","kbbbbbbbbbk.","kkbbbbbbkk..",".kkkkkkk...."];
+ const TA=["....","....","kk..","kBk.","kBBB","kBBb","kBk.","kk..","...."],TB=["....","....","....","kk..","kBBB","kBBb","kBBk","kBk.","kk.."];
+ const FIN=[["",""],["",""],["",""],["",""],["",""],["",""],["",""],["",""],["",""]];
+ const COL=[['o','y'],['b','x'],['c','s'],['G','l'],['p','e'],['a','t']];
+ COL.forEach(([B,b],i)=>['A','B'].forEach(f=>{const T=f==='A'?TA:TB;PXS[`fsh${f}${i}`]=BODY.map((r,j)=>(T[j]+r).replace(/B/g,B).replace(/b/g,b))}));}
+function fishFrames(n){const i=n%6;return`<span class="fswim">${spr('fshA'+i,40,'mgsp fa')}${spr('fshB'+i,40,'mgsp fb')}</span>`}
+(function(){const st=document.createElement('style');st.textContent=`
+.fishi{width:96px!important;height:auto!important;display:flex!important;flex-direction:column;align-items:center}
+.fishi .fswim{position:relative;display:block;width:71px;height:40px;animation:fbob 1s steps(2) infinite}
+.fishi .fswim .mgsp{position:absolute;left:0;top:0;transform:none!important;animation:none}
+.fishi .fswim .fb{visibility:hidden;animation:fflap .36s steps(1) infinite}
+.fishi .fswim .fa{animation:fflap .36s steps(1) infinite reverse}
+.fishi:nth-child(2n) .fswim .fb,.fishi:nth-child(2n) .fswim .fa{animation-duration:.44s}
+@keyframes fflap{0%{visibility:hidden}50%{visibility:visible}}
+@keyframes fbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+.fishi .mgt{position:static!important;transform:none!important;margin-top:2px;max-width:120px;box-shadow:0 0 0 2px #1F2A5A!important;background:#FFFFFF!important}
+.fishi::after{left:-4px;top:8px}
+.mgt.l5{font-size:15px!important}
+.mgi.pop .fswim .mgsp,.mgi.wrong .fswim .mgsp{animation:none}
 `;document.head.appendChild(st)})();

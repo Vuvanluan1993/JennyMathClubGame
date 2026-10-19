@@ -21,7 +21,7 @@ function miniAfterRender(){if(scr.k!=='mini'||scr.end||scr.started)return;scr.st
   const items=[];let last=0,spawnGap=2000,n=0;const W=()=>f.clientWidth,H=()=>f.clientHeight,fish=scr.mode==='fish';
   const FS=['fishO','fishY','fishP','fishG','fish'],BS=['balloon','balloonB','balloonP','balloonG'];
   const spawn=()=>{const it=scr._r.item(),el=document.createElement('button');el.type='button';n++;
-    if(fish){el.className='mgi fishi';el.innerHTML=`${spr(FS[n%FS.length],46,'mgsp flip')}<span class="mgt">${it.t}</span>`}
+    if(fish){el.className='mgi fishi';el.innerHTML=`${typeof fishFrames==='function'?fishFrames(n):spr(FS[n%FS.length],46,'mgsp flip')}<span class="mgt">${it.t}</span>`}
     else{el.className='mgi balloi';el.innerHTML=`${spr(BS[n%BS.length],132,'mgsp')}<span class="mgt">${it.t}</span>`}
     const sp=(fish?55:45)+Math.random()*35+(45-scr.t)*1.3;const o={el,ok:it.ok,x:fish?-140:R(6,Math.max(10,W()-90)),y:fish?R(70,Math.max(80,H()-90)):H()+10,v:sp,dead:false,ph:Math.random()*6};
     el.addEventListener('pointerdown',e=>{e.preventDefault();if(o.dead)return;o.dead=true;
