@@ -58,7 +58,7 @@ const THEMES={
 };
 let muCur=null,muTimer=null,muStep=0,muNext=0;
 function musicTheme(){if(role!=='hs')return null;const k=scr.k;if(k==='mini')return scr.end?null:(scr.mode==='fish'?'fish':'balloon');
-  if(k==='game'){if(scr.end||(scr.sheet&&scr.sheet.kind!=='ok'))return null;if(scr.race)return'race';if(scr.tre)return'game';if(scr.cbo||scr.lv===2)return'boss';return'game'}
+  if(k==='game'){if(scr.end||(scr.sheet&&scr.sheet.kind!=='ok'))return null;if(scr.race)return'race';if(scr.tre)return'game';if(scr.cbo)return'boss';return null}/* các màn Học trên đảo: không nhạc nền */
   if(k==='lslide'||k==='jslide'||k==='video'||k==='jex'||k==='example'||k==='jenny')return null;return'map'}
 function musicSync(){const want=SND.m?musicTheme():null;if(want===muCur)return;muCur=want;const A=aud();if(!A)return;
   const t=A.ac.currentTime;A.mu.gain.cancelScheduledValues(t);A.mu.gain.setValueAtTime(A.mu.gain.value,t);A.mu.gain.linearRampToValueAtTime(want?1:0,t+.35);

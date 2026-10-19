@@ -4,6 +4,7 @@
 - Nhạc nền 8-bit tự tổng hợp (không cần file), đổi theo màn: bản đồ, bài giảng, màn chơi, đánh trùm, Câu cá, Bóng bay, Đua giờ.
 - Hiệu ứng riêng từng trò: Câu cá (câu được, cá vẫy tuột), Bóng bay (nổ bóng, bóng xì hơi), Đua giờ (tích tắc 10 giây cuối, hết giờ), trùm (đòn đánh, hạ trùm), kho báu (mở rương), slide (lật trang), thắng/thua.
 - Mất tim: tim nảy đỏ, màn hình rung nhẹ và loé đỏ, điện thoại rung (nếu hỗ trợ).
+- Các màn "Học trên đảo" (Màn 1, Màn 2, Trùm đảo), Sổ lỗi sai: không phát nhạc nền, chỉ giữ hiệu ứng. Nhạc chỉ còn ở bản đồ, Trùm lớp, Kho báu, Câu cá, Bóng bay, Đua giờ.
 - Tắt nhạc nền khi hiện lời giải (sau khi trả lời sai), khi xem Bài giảng Jenny, video, ví dụ, Toán Jenny; nhạc tự nhỏ lại khi Jenny đang nói.
 - Nút âm thanh (đầu trang và trong màn chơi): bật cả hai → chỉ hiệu ứng → tắt hết. Lưu ở `localStorage.jennySound`.
 
