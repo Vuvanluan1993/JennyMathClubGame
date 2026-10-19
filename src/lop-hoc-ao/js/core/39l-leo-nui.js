@@ -12,7 +12,7 @@ Object.assign(XGN,{climb:['climbI','Leo núi tìm kho báu','Giải bài toán l
 if(!XG_ALL.includes('climb'))XG_ALL.push('climb');
 
 /* ---------- nội dung: bài toán lời văn ---------- */
-const CLIMB_N=6,CLIMB_T=300;
+const CLIMB_N=5,CLIMB_T=300;
 function climbIsWord(q){if(!q||!(q.type==='num'||q.type==='opt'))return false;if(q.type==='opt'&&!(q.opts&&q.opts[q.a]))return false;
   const t=ktClean(q.q);if(t.length<26||!/\d/.test(t))return false;
   if(/lời văn|bài toán|hơn, kém|bài toán/i.test(q.kind||'')&&/[?.]/.test(t))return true;

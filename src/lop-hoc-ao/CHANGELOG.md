@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Leo núi 5 chặng có khởi động; bản đồ quay lại đúng chủ đề
+- Leo núi còn 5 chặng: 3 chặng đầu là bài khởi động rất đơn giản (một phép tính đã học, số nhỏ), 2 chặng sau là bài lời văn của tiết như trước.
+- Bản đồ: vào đảo của chủ đề nào (hoặc chạm thẻ chủ đề nào) thì khi quay lại bản đồ sẽ ở đúng chủ đề đó, biển cuộn tới đúng đảo vừa vào.
+
 ## 2026-10-19 — Trò mới: Leo núi tìm kho báu
 - Trò cho các tiết toán có lời văn. Jenny đeo ba lô leo núi 6 chặng. Mỗi bài toán giải đúng, Jenny leo dây lên trại kế tiếp, hiện "Chặng n/6 ✓". Lên cao: mây ở dưới, đại bàng bay qua, gần đỉnh có tuyết, trời ngả hoàng hôn.
 - Sai 1 lần: đá lăn, "Cẩn thận!", đáp án sai bị khoá. Sai 2 lần: Jenny nghỉ ở trại, hiện đáp án đúng và lời giải ngắn, sang bài khác, không mất chặng nào. Không có tim, 300 giây.
