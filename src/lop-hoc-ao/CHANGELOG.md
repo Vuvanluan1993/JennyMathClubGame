@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Chơi thêm: 4 trò mới (đợt 1)
+- **Hứng sao rơi**: di giỏ (kéo, chạm hai bên hoặc phím mũi tên) hứng sao có số đúng luật của đảo, 60 giây, 3 tim, nền trời đêm.
+- **Lật thẻ ghép đôi**: 12 thẻ (6 cặp) ghép phép tính với kết quả, lấy từ câu của đảo (thiếu thì tự tạo phép tính hợp lớp), 90 giây, lật sai không mất tim.
+- **Kéo co với trùm**: trả lời câu của đảo, đúng thì kéo dây về phía Jenny, sai hoặc đứng yên 6 giây thì trùm kéo lại; 90 giây.
+- **Đồng hồ thần kì** (chỉ ở đảo học xem giờ): kéo kim hoặc bấm +/− cho đúng giờ, 8 lượt, 3 tim; lớp 1 giờ đúng, lớp 2 giờ rưỡi, 15 phút, 5 phút, lớp 3 trở lên đúng từng phút.
+- Mỗi đảo hiện 2–3 trò chơi thêm, chọn theo nội dung tiết và cố định theo đảo, để mỗi đảo một khác. Kết quả các trò được ghi vào Hồ sơ (Chuỗi ngày chăm chỉ; Kéo co và Đồng hồ còn vào Sức mạnh Toán).
+
 ## 2026-10-19 — Thông báo trên thanh điều hướng
 - Bản đồ: hiện số đảo vừa mở mà em chưa vào (tính theo tiến độ thật).
 - Toán Jenny: hiện số buổi cô mới giao; nếu chưa kích hoạt (bản miễn phí) thì icon mờ kèm ổ khoá.

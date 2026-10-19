@@ -53,3 +53,8 @@ Kích thước chữ phương án tự co cho vừa nút và đồng đều (`op
 
 `tools/_student.py` lấy bản đầy đủ rồi: đổi khoá lưu theo tài khoản, thêm màn đăng nhập (mật khẩu băm SHA-256),
 ẩn vai trò giáo viên/phụ huynh và thanh demo, tính "ngày học" theo lịch (từ 05/09/2026).
+
+## Chơi thêm (lớp 1–5)
+`core/37-tro-choi-dot-1.js`: `islOpts2(x)` chọn 2–3 trò cho đảo (theo nội dung, cố định theo mã đảo); trang đảo dựng lại mục "Chơi thêm".
+Trò mới chạy ở màn `scr.k==='xg'` (`startXG(mode,id)`, `viewXG`, `xgEnd`): `star`, `pair`, `clock`. Kéo co dùng máy Đua giờ với cờ `scr.tug` (`startTug`).
+Kỷ lục ở `st.mg['đảo:trò']`; ghi Hồ sơ qua `hsRec`.
