@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Vùng biển khác nhau
+- Mỗi chủ đề là một vùng biển riêng (`core/23b`, `BIOME`, `biomeOf()`): 10 vùng — Nhiệt đới, Kẹo ngọt, Rừng xanh, Pha lê, Biển Băng, Lá Thu, Ốc đảo Sa mạc, Núi lửa, Đêm sao, Hoàng hôn. Mỗi vùng có màu nước, kiểu đảo (dừa, thông tuyết, núi lửa, xương rồng, nấm kẹo, pha lê, cây tròn, cây lá đỏ) và hiệu ứng động riêng (tuyết rơi + băng trôi, tàn lửa bay, kẹo trôi + bong bóng, pha lê lấp lánh, lá súng, lá thu rơi, sao + trăng, mặt trời lặn, cồn cát).
+- Mỗi lớp là một đại dương có tên và màu nhấn riêng (Vịnh Tí Hon, Biển Ngọc Bích, Quần đảo Mây Trắng, Đại dương Sao Băng, Biển Huyền Thoại); thứ tự vùng biển mỗi lớp khác nhau. Ôn tập học kì 1 luôn là Biển Băng, Ôn tập cuối năm luôn là Biển Hoàng hôn.
+
 ## 2026-10-19 — Sửa giọng đọc (lần 2)
 - Bỏ chữ "mấy" thừa ở cuối câu hỏi: dấu "?" cuối câu không còn bị đọc thành "mấy"; chỉ ô trống trong phép tính (☐, "12 + ? = 20") mới đọc là "mấy".
 - Chọn giọng tiếng Việt tốt nhất trên máy (ưu tiên giọng tự nhiên của Edge, Google Tiếng Việt của Chrome, giọng nâng cao của Mac), chờ danh sách giọng nạp xong; có thể ghim giọng bằng `localStorage.jennyVoice`.

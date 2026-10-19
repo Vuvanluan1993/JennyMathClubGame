@@ -737,6 +737,13 @@ u.hl{text-decoration:none;background:var(--sun);padding:0 2px}
 .jfx.tear{top:48%;left:20%;animation:jTear 1.2s steps(5) infinite}
 @keyframes jTear{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(16px);opacity:0}}
 @media (prefers-reduced-motion:reduce){.jbody,.jfx,.jblink{animation:none!important}}
+/* ===== vùng biển theo chủ đề, đại dương theo lớp ===== */
+.bmtag{display:inline-block;margin-right:6px;padding:1px 8px;background:var(--bmc,#3FC1EC);color:#fff;font-weight:700;font-size:12px;box-shadow:var(--f2);text-shadow:1px 1px 0 rgba(0,0,0,.25)}
+.t1sec .sea{background:var(--bmc,#3FC1EC)!important;border-color:var(--bmd,#1F2A5A)}
+.t1sec .tno{background:var(--bmd,var(--pxk))!important}
+.hero[class*="ocean"]{box-shadow:var(--f3),0 6px 0 0 var(--pxk),inset 0 -6px 0 0 var(--oc)!important}
+.ocname{display:inline-block;margin-bottom:4px;padding:1px 8px;background:var(--oc);color:#1F2A5A;font-weight:800;font-size:12px;box-shadow:var(--f2)}
+.tstrip .tchip.on{background:var(--oc,var(--sun))!important}
 
 /* ===== bản học sinh ===== */
 [hidden]{display:none!important}
@@ -1775,8 +1782,9 @@ function startSea(){const r=++seaRun;document.querySelectorAll('.seacv').forEach
 function seaOne(cv,run0){if(!cv.getContext)return;let ctx;try{ctx=cv.getContext('2d')}catch(e){return}if(!ctx)return;
   const Z=3,W=Math.ceil(cv.width/Z),H=Math.ceil(cv.height/Z),run=run0;
   const dark=document.documentElement.dataset.theme==='dark'||(document.documentElement.dataset.theme!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);
-  const band=dark?['#123d5c','#0f3550','#0c2d45','#0a263b']:['#9CE0F6','#6FD0F2','#3FC1EC','#1FA9DD'];
-  const foam=dark?'#3f7fa6':'#FFFFFF',spark=dark?'#5aa3c9':'#FFFFFF',shade=dark?'#08202f':'#1590C4';
+  const BM=(typeof BIOME!=='undefined'&&BIOME[cv.dataset.biome])||null;const dk=c=>{const n=parseInt(c.slice(1),16);return'#'+[16,8,0].map(s=>Math.round(((n>>s)&255)*.45).toString(16).padStart(2,'0')).join('')};
+  const band=BM?(dark?BM.band.map(dk):BM.band):dark?['#123d5c','#0f3550','#0c2d45','#0a263b']:['#9CE0F6','#6FD0F2','#3FC1EC','#1FA9DD'];
+  const foam=BM&&BM.foam?(dark?dk(BM.foam):BM.foam):dark?'#3f7fa6':'#FFFFFF',spark=BM&&BM.spark?BM.spark:dark?'#5aa3c9':'#FFFFFF',shade=BM&&BM.shade?(dark?dk(BM.shade):BM.shade):dark?'#08202f':'#1590C4';
   let seed=11;const rnd=()=>(seed=(seed*9301+49297)%233280)/233280;
   const isl=JSON.parse(cv.dataset.isl||'[]').map(([x,y])=>[Math.round(x/Z),Math.round(y/Z)]);
   const sparks=Array.from({length:Math.round(W*H/180)},()=>({x:rnd()*W,y:rnd()*H,v:.15+rnd()*.25,p:Math.floor(rnd()*8)}));
@@ -1784,6 +1792,7 @@ function seaOne(cv,run0){if(!cv.getContext)return;let ctx;try{ctx=cv.getContext(
   const gulls=[{x:rnd()*W,y:6,v:.6},{x:rnd()*W,y:12,v:.45}];
   const rocks=Array.from({length:Math.round(W/70)},(_,i)=>({x:Math.round(30+i*70+rnd()*30),y:Math.round(rnd()<.5?6+rnd()*10:H-14-rnd()*6)}));
   const weeds=Array.from({length:Math.round(W/40)},()=>({x:Math.round(rnd()*W),y:Math.round(H-8-rnd()*10)}));
+  const bfx=BM&&BM.fx?biomeFx(BM.fx,W,H):null;const noWhale=BM&&/volc|nigh|cand|crys/.test(cv.dataset.biome);
   const whale={x:Math.round((155+300)/Z),y:H-12},bottle={x:rnd()*W,y:Math.round(H*.8)},boat={x:-30,y:Math.round(H*.86)};
   const blit=(n,x,y)=>ctx.drawImage(pxCanvas(n),Math.round(x),Math.round(y));
   ctx.imageSmoothingEnabled=false;ctx.setTransform(Z,0,0,Z,0,0);
@@ -1800,13 +1809,14 @@ function seaOne(cv,run0){if(!cv.getContext)return;let ctx;try{ctx=cv.getContext(
     weeds.forEach(w=>blit('weed',w.x+((f>>2)%2),w.y));
     // sóng lấp lánh trôi
     sparks.forEach(s=>{s.x-=s.v;if(s.x<-4)s.x=W+2;const ph=(f+s.p)%16;if(ph<12){ctx.fillStyle=spark;const x=Math.round(s.x),y=Math.round(s.y);ctx.fillRect(x,y,ph<4||ph>8?2:3,1);if(ph>=4&&ph<=8)ctx.fillRect(x+1,y-1,1,1)}});
+    if(bfx)bfx(ctx,f);
     // vòng bọt quanh mỗi đảo
     ctx.fillStyle=foam;isl.forEach(([cx,cy],k)=>{const r=15+((f+k*3)>>2)%2;for(let a=0;a<28;a++){if((a+(f>>1))%3===0)continue;const t=a/28*Math.PI*2;ctx.fillRect(Math.round(cx+Math.cos(t)*(r+3)),Math.round(cy+Math.sin(t)*(r*.55+2)+9),1,1)}});
     // đá ngầm có bọt
     rocks.forEach(r=>{blit('rock',r.x,r.y);ctx.fillStyle=foam;const o=(f>>1)%2;ctx.fillRect(r.x-1-o,r.y+3,2,1);ctx.fillRect(r.x+7+o,r.y+3,2,1)});
     // cá voi nổi lên, phun nước
-    const wy=whale.y+((f>>3)%2);blit('whale',whale.x,wy);ctx.fillStyle=foam;ctx.fillRect(whale.x-1,wy+5,18,1);
-    const sp=f%24;if(sp<10){const h=Math.min(sp,5);ctx.fillStyle=foam;for(let i=0;i<h;i++)ctx.fillRect(whale.x+7,wy-1-i,1,1);if(sp>=5){ctx.fillRect(whale.x+5,wy-6,1,1);ctx.fillRect(whale.x+9,wy-6,1,1);ctx.fillRect(whale.x+4,wy-4,1,1);ctx.fillRect(whale.x+10,wy-4,1,1)}}
+    if(!noWhale){const wy=whale.y+((f>>3)%2);blit('whale',whale.x,wy);ctx.fillStyle=foam;ctx.fillRect(whale.x-1,wy+5,18,1);
+    const sp=f%24;if(sp<10){const h=Math.min(sp,5);ctx.fillStyle=foam;for(let i=0;i<h;i++)ctx.fillRect(whale.x+7,wy-1-i,1,1);if(sp>=5){ctx.fillRect(whale.x+5,wy-6,1,1);ctx.fillRect(whale.x+9,wy-6,1,1);ctx.fillRect(whale.x+4,wy-4,1,1);ctx.fillRect(whale.x+10,wy-4,1,1)}}}
     // chai thư trôi
     bottle.x+=.12;if(bottle.x>W+6)bottle.x=-6;blit('bottle',bottle.x,bottle.y+((f>>2)%2));
     // thuyền buồm nhỏ
@@ -1816,6 +1826,69 @@ function seaOne(cv,run0){if(!cv.getContext)return;let ctx;try{ctx=cv.getContext(
     if(!reduce)requestAnimationFrame(frame)}
   requestAnimationFrame(frame)}
 
+/* ===================== VÙNG BIỂN THEO CHỦ ĐỀ VÀ ĐẠI DƯƠNG THEO LỚP ===================== */
+/* Mỗi chủ đề là một vùng biển riêng: màu nước, kiểu đảo, vật trang trí động. Mỗi lớp là một đại dương có tên và màu nhấn riêng,
+   thứ tự vùng biển của mỗi lớp khác nhau. Ôn tập học kì 1 luôn là Biển Băng, Ôn tập cuối năm luôn là Biển Hoàng Hôn. */
+{const G=["..kkttttttttttkk",".kttttttTttttTtk","bkkkkkkkkkkkkkkkb","bbxbbbbbxbbbbbxbb"];
+ const TOP={
+  palm:["........kk.kk...",".......kgGkGgk..","......kgGgggGgk.",".........knk....",".........knk....","....kkkkknkkkk.."],
+  pine:["........kk......",".......kwwk.....","......kgwGgk....",".....kgGgwGgk...","....kgGwGgGwgk..","....kkkkknkkkk.."],
+  volc:["......r..a......",".....kraark.....","....kNrarNNk....","...kNNNaNNNNk...","..kNNnNNNNnNNk..","..kkkkkkkkkkkk.."],
+  cact:["........kk......",".......kgGk.....","....kk.kgGk.kk..","....kgkkgGkkgk..","....kgggggGggk..","....kkkkkGkkkk.."],
+  mush:["......kkkk......","....kkcwccck....","...kcccccwcck...","...kcwccccccck..","....kkkwwkkkk...","....kkkkwwkkkk.."],
+  crys:["........k.......",".......kwk..k...","...k..kpwPk.kwk.","..kwk.kpwPkkpPk.","..kpPkkpwPkkpPk.","....kkkkkkkkkk.."],
+  tree:["......kkkkk.....","....kkgGgGgkk...","...kgGgGgGgGgk..","...kgGgGgGgGgk..","....kkgknkgkk...","....kkkkknkkkk.."],
+ };
+ const mk=(top,map,gmap)=>top.map(r=>r.replace(/./g,c=>map&&map[c]||c)).concat(G.map(r=>r.replace(/./g,c=>gmap&&gmap[c]||c)));
+ Object.assign(PXS,{
+  isl_trop:mk(TOP.palm),
+  isl_snow:mk(TOP.pine,null,{t:'w',T:'e'}),
+  isl_volc:mk(TOP.volc,null,{t:'E',T:'k'}),
+  isl_dese:mk(TOP.cact,null,{t:'y',T:'a'}),
+  isl_cand:mk(TOP.mush,null,{t:'c',T:'p'}),
+  isl_crys:mk(TOP.crys,null,{t:'e',T:'E'}),
+  isl_jung:mk(TOP.tree,null,{T:'g'}),
+  isl_autu:mk(TOP.tree,{g:'o',G:'O'},{T:'u'}),
+  isl_nigh:mk(TOP.palm,{g:'G'},{t:'T',T:'u'}),
+  floe:["..wwww..",".wwwwwe.","wwwwwwee","eeeeeee."],
+  cloudS:["..ww...",".wwww..","wwwwwww"],
+  lily:[".gg.g.","gggggG",".gGGg."],
+  candyS:[".c.",
+          "cwc",".c.",".w.",".w."],
+  rockL:["..kkk...",".kNrNk..","kNNNrNk.","kNNNNNNk"],
+ });}
+const BIOME={
+ trop:{n:'Quần đảo Nhiệt đới',ic:'🏝',isl:'isl_trop',band:['#9CE0F6','#6FD0F2','#3FC1EC','#1FA9DD']},
+ snow:{n:'Biển Băng',ic:'❄️',isl:'isl_snow',band:['#E4F6FC','#C3EAF7','#9BD9EF','#74C4E3'],foam:'#FFFFFF',spark:'#FFFFFF',shade:'#5AA9C9',fx:'snow'},
+ volc:{n:'Đảo Núi lửa',ic:'🌋',isl:'isl_volc',band:['#66789A','#55657F','#45526B','#364159'],foam:'#C3CBDD',spark:'#F37A1F',shade:'#29324A',fx:'ember'},
+ dese:{n:'Ốc đảo Sa mạc',ic:'🌵',isl:'isl_dese',band:['#8FE8DC','#5DD6C9','#33BDB1','#1FA197'],foam:'#FFFFFF',spark:'#FFF6C8',shade:'#178278',fx:'heat'},
+ cand:{n:'Vịnh Kẹo ngọt',ic:'🍭',isl:'isl_cand',band:['#FFD3E6','#FBB6D3','#F497BF','#E87AAB'],foam:'#FFFFFF',spark:'#FFFFFF',shade:'#C85A8D',fx:'candy'},
+ crys:{n:'Biển Pha lê',ic:'💎',isl:'isl_crys',band:['#D4C6F4','#B9A5EA','#9C85DD','#8068CB'],foam:'#F2EEFF',spark:'#FFFFFF',shade:'#5E47A6',fx:'twinkle'},
+ jung:{n:'Đầm lầy Rừng xanh',ic:'🌿',isl:'isl_jung',band:['#8DDFB9','#62CD9E','#3EB585','#26996C'],foam:'#E6FFF2',spark:'#FFFFFF',shade:'#167553',fx:'lily'},
+ autu:{n:'Vịnh Lá Thu',ic:'🍁',isl:'isl_autu',band:['#A9DDF0','#86CBE6','#62B6D8','#4A9FC6'],foam:'#FFFFFF',spark:'#FFE3B0',shade:'#2E7FA3',fx:'leaf'},
+ nigh:{n:'Biển Đêm sao',ic:'🌙',isl:'isl_nigh',band:['#33437F','#29386E','#202D5C','#18234B'],foam:'#8FA3D8',spark:'#FCD655',shade:'#0F173A',fx:'stars'},
+ suns:{n:'Biển Hoàng hôn',ic:'🌅',isl:'isl_trop',band:['#FFD8A0','#FDB57E','#F5926C','#DF7160'],foam:'#FFF3E0',spark:'#FFFFFF',shade:'#B4524A',fx:'sun'},
+};
+const BIOME_ORDER={1:['trop','cand','jung','crys','snow','autu','dese','volc','nigh','suns'],2:['jung','trop','dese','crys','cand','autu','snow','volc','nigh','trop','jung','dese','crys','suns'],
+ 3:['dese','crys','trop','volc','jung','cand','snow','autu','nigh','trop','dese','jung','crys','volc','cand','suns'],4:['crys','volc','autu','trop','nigh','jung','snow','dese','cand','crys','volc','trop','suns'],
+ 5:['volc','nigh','crys','dese','autu','snow','jung','cand','trop','volc','crys','suns']};
+const OCEAN={1:['Vịnh Tí Hon','#FCB40C'],2:['Biển Ngọc Bích','#2AB563'],3:['Quần đảo Mây Trắng','#12B5E8'],4:['Đại dương Sao Băng','#8656A8'],5:['Biển Huyền Thoại','#F04A1B']};
+function biomeOf(g,ti,name){const n=String(name||'');if(/ôn tập học kì 1/i.test(n))return'snow';if(/ôn tập cuối năm/i.test(n))return'suns';const L=BIOME_ORDER[g]||BIOME_ORDER[1];return L[ti%L.length]}
+/* hiệu ứng động riêng từng vùng biển (vẽ trên canvas biển, mỗi khung hình) */
+function biomeFx(kind,W,H){let s=7;const rnd=()=>(s=(s*9301+49297)%233280)/233280;const N=(k)=>Array.from({length:k},()=>({x:rnd()*W,y:rnd()*H,p:Math.floor(rnd()*16),v:.2+rnd()*.4}));
+ const blit=(ctx,n,x,y)=>ctx.drawImage(pxCanvas(n),Math.round(x),Math.round(y));
+ if(kind==='snow'){const fl=N(Math.round(W/12)),ice=N(Math.round(W/60));return(ctx,f)=>{ice.forEach(o=>{o.x-=.05;if(o.x<-10)o.x=W+4;blit(ctx,'floe',o.x,Math.round(o.y*.8)+((f>>3)%2))});ctx.fillStyle='#FFFFFF';fl.forEach(o=>{o.y+=o.v*.7;o.x+=Math.sin((f+o.p)/8)*.2;if(o.y>H)o.y=-2;ctx.fillRect(Math.round(o.x),Math.round(o.y),1,1)})}}
+ if(kind==='ember'){const e=N(Math.round(W/10)),rk=N(Math.round(W/80));return(ctx,f)=>{rk.forEach(o=>blit(ctx,'rockL',o.x,Math.round(H*.15+o.y*.6)));e.forEach(o=>{o.y-=o.v;if(o.y<-2){o.y=H;o.x=rnd()*W}const ph=(f+o.p)%12;ctx.fillStyle=ph<6?'#F37A1F':'#FCD655';ctx.fillRect(Math.round(o.x),Math.round(o.y),1,ph<3?2:1)})}}
+ if(kind==='candy'){const c=N(Math.round(W/70)),b=N(Math.round(W/14));return(ctx,f)=>{c.forEach(o=>{o.x+=.08;if(o.x>W+4)o.x=-4;blit(ctx,'candyS',o.x,Math.round(o.y*.7+10)+((f>>2)%2))});b.forEach(o=>{o.y-=o.v*.5;if(o.y<-3)o.y=H;const r=(f+o.p)%16<8;ctx.fillStyle='#FFFFFF';ctx.fillRect(Math.round(o.x),Math.round(o.y),r?2:1,r?2:1)})}}
+ if(kind==='twinkle'){const t=N(Math.round(W*H/220));return(ctx,f)=>{t.forEach(o=>{const ph=(f+o.p)%20;if(ph>10)return;ctx.fillStyle=ph<4?'#FFFFFF':'#E8DEFF';const x=Math.round(o.x),y=Math.round(o.y);ctx.fillRect(x,y,1,1);if(ph>2&&ph<8){ctx.fillRect(x-1,y,3,1);ctx.fillRect(x,y-1,1,3)}})}}
+ if(kind==='lily'){const l=N(Math.round(W/35));return(ctx,f)=>{l.forEach(o=>{blit(ctx,'lily',o.x+((f>>4)%2),Math.round(o.y*.9+6));if((f+o.p)%40<6){ctx.fillStyle='#F26249';ctx.fillRect(Math.round(o.x)+2,Math.round(o.y*.9+5),2,1)}})}}
+ if(kind==='leaf'){const l=N(Math.round(W/16));return(ctx,f)=>{l.forEach(o=>{o.y+=o.v*.5;o.x+=Math.sin((f+o.p)/6)*.5;if(o.y>H){o.y=-2;o.x=rnd()*W}ctx.fillStyle=(o.p%3===0)?'#F37A1F':(o.p%3===1)?'#C95A0E':'#FCB40C';ctx.fillRect(Math.round(o.x),Math.round(o.y),2,1);ctx.fillRect(Math.round(o.x)+((f>>2)%2),Math.round(o.y)+1,1,1)})}}
+ if(kind==='stars'){const t=N(Math.round(W*H/150));return(ctx,f)=>{t.forEach(o=>{const ph=(f+o.p)%24;ctx.fillStyle=ph<12?'#FCD655':'#FFFFFF';if(ph%6<4)ctx.fillRect(Math.round(o.x),Math.round(o.y),1,1)});const mx=W-30,my=10;ctx.fillStyle='#FFF6C8';ctx.fillRect(mx,my,6,6);ctx.fillRect(mx+1,my-1,4,8);ctx.fillRect(mx-1,my+1,8,4);ctx.fillStyle='#33437F';ctx.fillRect(mx+3,my,4,5);
+   for(let i=0;i<6;i++){if((i+(f>>2))%2)continue;ctx.fillStyle='#FFF6C8';ctx.fillRect(mx-2+((i*3+(f>>2))%9),my+16+i*3,3,1)}}}
+ if(kind==='sun'){return(ctx,f)=>{const cx=Math.round(W*.82),cy=Math.round(H*.18);ctx.fillStyle='#FFF0B8';for(let r=0;r<9;r++){const w=Math.round(Math.sqrt(81-r*r))*2;ctx.fillRect(cx-w/2,cy-r,w,1);ctx.fillRect(cx-w/2,cy+r,w,1)}
+   for(let i=0;i<10;i++){const y=cy+14+i*4,w=Math.max(2,18-i*2)+((f+i)>>2)%3;if(y<H){ctx.fillStyle='#FFE08A';ctx.fillRect(cx-w/2,y,w,1)}}}}
+ if(kind==='heat'){const d=N(Math.round(W/50));return(ctx,f)=>{d.forEach(o=>{ctx.fillStyle='#F6D98B';const x=Math.round(o.x),y=Math.round(o.y*.85+8);ctx.fillRect(x,y,10,2);ctx.fillRect(x+2,y-1,6,1);if((f+o.p)%30<10){ctx.fillStyle='#FFFFFF';ctx.fillRect(x+3+((f>>2)%3),y-3,1,1)}})}}
+ return null}
 /* ===================== LỚP 1 · CHỦ ĐỀ 1: CÁC SỐ TỪ 0 ĐẾN 10 ===================== */
 /* Mỗi tiết trong Vở BT-TH Toán 1 là một đảo. Đề viết lại (đồ vật, bối cảnh, số liệu khác), giữ đúng kiến thức của tiết. */
 Object.assign(PXS,{
@@ -1951,20 +2024,20 @@ const BOSSES1=[['crab','Cua Số Đếm'],['octo','Bạch tuộc Hình Phẳng']
 function viewHome1(){
   const st=S.st[sid],tot=p1Stars(st),W=140,Hh=280,cur=curT1(st);
   const strip=PT().map(([name],ti)=>{const ts=topicSt1(st,ti);return`<button type="button" class="tchip ${ts.cls}${ti===cur?' on':''}" onclick="jumpT1(${ti},1)" aria-label="Chủ đề ${ti+1}: ${esc(name)}"><b>${ti+1}</b><span>${ts.cls==='lock'?'🔒':ts.cls==='soon'?'…':ts.done?'✓':'★'+ts.got}</span></button>`}).join('');
-  const secs=PT().map(([name,isl],ti)=>{const ts=topicSt1(st,ti),live=ti===cur,boss=PB()[ti];
+  const G=curG(),secs=PT().map(([name,isl],ti)=>{const ts=topicSt1(st,ti),live=ti===cur,boss=PB()[ti],bk=biomeOf(G,ti,name),bm=BIOME[bk];
     const pts=isl.map((_,k)=>[80+k*W,k%2?165:85]);
     const path=pts.map((p,k)=>k?`Q ${p[0]-W/2} ${pts[k-1][1]===85?55:200} ${p[0]} ${p[1]}`:`M ${p[0]} ${p[1]}`).join(' ');
     let nodes;
     if(PLAY(ti)){const ck=cur1(st);const IL=PI();nodes=IL.filter(y=>y.ti===ti).map((x,j)=>{const k=IL.indexOf(x),s=s1(st,x.id),n=s.m.filter(Boolean).length,op=open1(st,k),[cx,cy]=pts[j],state=!op?'lock':n===x.nm?'done':'cur';
-      return`<button class="node ${state}${k===ck&&live?' here':''}" style="left:${cx-55}px;top:${cy-50}px" ${op?`onclick="go({k:'island',id:'${x.id}'})"`:`onclick="toast('Qua Màn 1 của đảo trước để mở đảo này nhé!')"`} aria-label="${esc(x.lesson)}, tiết ${x.tiet}${op?'':' (đang khóa)'}"><span class="ball">${spr(state==='lock'?'islandG':'island',60)}${state==='lock'?spr('lock',26,'bdg'):k===ck&&live?spr('jenny',34,'bdg jen'):x.boss?spr(boss[0],26,'bdg bossbdg'):state==='done'?spr('medG',24,'bdg'):''}</span><span class="lbl"><b>${j+1}. ${esc(x.short)}</b><span class="stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(x.nm-n)}</span></span></span>${k===ck&&live?'<span class="flag">Đang học</span>':x.boss&&op?'<span class="flag warn">Trùm</span>':''}</button>`}).join('')}
+      return`<button class="node ${state}${k===ck&&live?' here':''}" style="left:${cx-55}px;top:${cy-50}px" ${op?`onclick="go({k:'island',id:'${x.id}'})"`:`onclick="toast('Qua Màn 1 của đảo trước để mở đảo này nhé!')"`} aria-label="${esc(x.lesson)}, tiết ${x.tiet}${op?'':' (đang khóa)'}"><span class="ball">${spr(state==='lock'?'islandG':bm.isl,60)}${state==='lock'?spr('lock',26,'bdg'):k===ck&&live?spr('jenny',34,'bdg jen'):x.boss?spr(boss[0],26,'bdg bossbdg'):state==='done'?spr('medG',24,'bdg'):''}</span><span class="lbl"><b>${j+1}. ${esc(x.short)}</b><span class="stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(x.nm-n)}</span></span></span>${k===ck&&live?'<span class="flag">Đang học</span>':x.boss&&op?'<span class="flag warn">Trùm</span>':''}</button>`}).join('')}
     else nodes=isl.map(([b,t,tt],k)=>{const [cx,cy]=pts[k],last=k===isl.length-1;return`<button class="node lock" style="left:${cx-55}px;top:${cy-50}px" onclick="toast('${ts.cls==='soon'?'Chủ đề này đang được soạn.':`Hạ trùm ${PB()[ti-1][1]} ở Chủ đề ${ti} để mở.`}')" aria-label="Bài ${b}, tiết ${t} (đang khóa)"><span class="ball">${spr('islandG',60)}${last?spr(boss[0],26,'bdg'):''}</span><span class="lbl"><b>B${b} · T${t}</b><small>${esc(tt)}</small></span></button>`}).join('');
     const bs=isl[0][0],be=isl[isl.length-1][0];
-    return`<section class="card t1sec ${ts.cls}${live?' cur':''}" id="t1_${ti}" style="padding:16px 0 8px"><div class="secthead" style="padding:0 16px;flex-wrap:wrap;gap:6px 10px"><span class="tno">CHỦ ĐỀ ${ti+1}</span><h2>${esc(name)}</h2><span class="grow"></span>${PLAY(ti)?`<span class="muted">${PI().filter(x=>x.ti===ti).reduce((a,x)=>a+s1(st,x.id).m.filter(Boolean).length,0)}/${PI().filter(x=>x.ti===ti).reduce((a,x)=>a+x.nm,0)} ★</span>`:`<span class="pill">${ts.cls==='soon'?'Đang soạn':'Chưa mở'}</span>`}</div>
-     <p class="muted" style="margin:2px 16px 6px">Bài ${bs}–${be} · ${isl.length} đảo · trùm ${spr(boss[0],18)} ${esc(boss[1])}</p>
-     <div class="t1wrap"><div class="sea" ${live?'id="sea"':''}><div class="seain" style="width:${100+isl.length*W}px;height:${Hh}px"><canvas class="seacv" ${live?'data-live="1"':''} width="${100+isl.length*W}" height="${Hh}" data-isl="${JSON.stringify(pts.map(([x,y])=>[x,y-14]))}" aria-hidden="true"></canvas><svg class="route" width="${100+isl.length*W}" height="${Hh}" aria-hidden="true"><path d="${path}" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-dasharray="6 9" stroke-linecap="butt" opacity=".9"/></svg>${nodes}${live&&PLAY(ti)?treOverlay(st,pts):''}</div></div>
+    return`<section class="card t1sec bm-${bk} ${ts.cls}${live?' cur':''}" id="t1_${ti}" style="padding:16px 0 8px;--bmc:${bm.band[2]};--bmd:${bm.band[3]}"><div class="secthead" style="padding:0 16px;flex-wrap:wrap;gap:6px 10px"><span class="tno">CHỦ ĐỀ ${ti+1}</span><h2>${esc(name)}</h2><span class="grow"></span>${PLAY(ti)?`<span class="muted">${PI().filter(x=>x.ti===ti).reduce((a,x)=>a+s1(st,x.id).m.filter(Boolean).length,0)}/${PI().filter(x=>x.ti===ti).reduce((a,x)=>a+x.nm,0)} ★</span>`:`<span class="pill">${ts.cls==='soon'?'Đang soạn':'Chưa mở'}</span>`}</div>
+     <p class="muted" style="margin:2px 16px 6px"><span class="bmtag">${bm.ic} ${bm.n}</span> Bài ${bs}–${be} · ${isl.length} đảo · trùm ${spr(boss[0],18)} ${esc(boss[1])}</p>
+     <div class="t1wrap"><div class="sea" ${live?'id="sea"':''}><div class="seain" style="width:${100+isl.length*W}px;height:${Hh}px"><canvas class="seacv" data-biome="${bk}" ${live?'data-live="1"':''} width="${100+isl.length*W}" height="${Hh}" data-isl="${JSON.stringify(pts.map(([x,y])=>[x,y-14]))}" aria-hidden="true"></canvas><svg class="route" width="${100+isl.length*W}" height="${Hh}" aria-hidden="true"><path d="${path}" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-dasharray="6 9" stroke-linecap="butt" opacity=".9"/></svg>${nodes}${live&&PLAY(ti)?treOverlay(st,pts):''}</div></div>
      ${ts.cls==='lock'||ts.cls==='soon'?`<div class="t1lock">${spr('lock',22)} <span>${ts.cls==='soon'?'Nội dung chủ đề này đang được soạn':`Hạ trùm <b>${esc(PB()[ti-1][1])}</b> ở Chủ đề ${ti} để mở`}</span></div>`:''}</div></section>${live?'<!--CARDS-->':''}`}).join('');
-  return`<div class="grid">
-   <section class="hero sm">${jenny(56)}<div class="grow"><h1>Chào ${esc(st.name.split(' ').pop())}!</h1><div class="chips"><span class="chip">★ <b>${tot}</b></span><span class="chip">🪙 <b>${st.coins}</b></span><button class="chip g1say" type="button" onclick="sayJ('Chào em! Mình là Jenny. Em chạm vào hòn đảo có Jenny đứng để học tiếp nhé.')">🔊 Nghe Jenny</button></div></div></section>
+  return`<div class="grid" style="--oc:${OCEAN[G][1]}">
+   <section class="hero sm ocean${G}" style="--oc:${OCEAN[G][1]}">${jenny(56)}<div class="grow"><span class="ocname">🌊 ${OCEAN[G][0]} · Lớp ${G}</span><h1>Chào ${esc(st.name.split(' ').pop())}!</h1><div class="chips"><span class="chip">★ <b>${tot}</b></span><span class="chip">🪙 <b>${st.coins}</b></span><button class="chip g1say" type="button" onclick="sayJ('Chào em! Mình là Jenny. Em chạm vào hòn đảo có Jenny đứng để học tiếp nhé.')">🔊 Nghe Jenny</button></div></div></section>
    <nav class="tstrip" aria-label="Các chủ đề Toán 1">${strip}</nav>
    ${secs}</div>`;
 }

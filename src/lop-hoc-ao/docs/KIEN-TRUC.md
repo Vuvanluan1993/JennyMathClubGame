@@ -8,7 +8,8 @@ Lưu ý: khai báo `function` trùng tên thì bản viết sau thắng (một s
 
 1. `core/01` tiện ích (`R`, `pick`, `shuf`, `range`, `esc`…), `content/hk1/02–08` dữ liệu lớp 6–9 và Toán Jenny lớp 6.
 2. `core/09–20` dữ liệu demo, lưu trữ, giao diện chung, học sinh / giáo viên / phụ huynh, chơi màn lớp 6.
-3. `core/22–23` đồ hoạ pixel (`PXS`, `spr()`, `pixelize()`), biển động (`startSea()`).
+3. `core/23b` vùng biển: `BIOME` (màu nước, kiểu đảo, hiệu ứng), `BIOME_ORDER[lớp]`, `OCEAN[lớp]`, `biomeOf(lớp, chủ đề, tên)`, `biomeFx()`.
+   `core/22–23` đồ hoạ pixel (`PXS`, `spr()`, `pixelize()`), biển động (`startSea()`).
 4. `content/hk1/24` **bộ máy tiểu học**: `startG1`, `ans1`, `render` các dạng câu, `viewIsland1`, bản đồ chủ đề…
    (nằm chung với Chủ đề 1 lớp 1). `core/25` Sổ lỗi sai và Toán Jenny tiểu học.
 5. `content/hk1/26–29` lớp 2–5 Chủ đề 1, Chủ đề 2–5 lớp 1–5. `content/hk1/30` khung Bài giảng Jenny,

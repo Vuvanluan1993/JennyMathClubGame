@@ -730,3 +730,10 @@ u.hl{text-decoration:none;background:var(--sun);padding:0 2px}
 .jfx.tear{top:48%;left:20%;animation:jTear 1.2s steps(5) infinite}
 @keyframes jTear{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(16px);opacity:0}}
 @media (prefers-reduced-motion:reduce){.jbody,.jfx,.jblink{animation:none!important}}
+/* ===== vùng biển theo chủ đề, đại dương theo lớp ===== */
+.bmtag{display:inline-block;margin-right:6px;padding:1px 8px;background:var(--bmc,#3FC1EC);color:#fff;font-weight:700;font-size:12px;box-shadow:var(--f2);text-shadow:1px 1px 0 rgba(0,0,0,.25)}
+.t1sec .sea{background:var(--bmc,#3FC1EC)!important;border-color:var(--bmd,#1F2A5A)}
+.t1sec .tno{background:var(--bmd,var(--pxk))!important}
+.hero[class*="ocean"]{box-shadow:var(--f3),0 6px 0 0 var(--pxk),inset 0 -6px 0 0 var(--oc)!important}
+.ocname{display:inline-block;margin-bottom:4px;padding:1px 8px;background:var(--oc);color:#1F2A5A;font-weight:800;font-size:12px;box-shadow:var(--f2)}
+.tstrip .tchip.on{background:var(--oc,var(--sun))!important}
