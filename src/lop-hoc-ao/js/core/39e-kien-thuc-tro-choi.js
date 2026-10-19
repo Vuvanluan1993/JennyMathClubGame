@@ -186,3 +186,8 @@ function ktAuditBefore(G,n){const NOW={islOpts2,pairDeck,pairFacts,frogQ,scaleRo
       const v=ktViol(K,t);if(v.length){rows.push({k,mode:m,v:v.join(' ')});break}}})})}
   finally{({islOpts2,pairDeck,pairFacts,frogQ,scaleRound,trainRound,shopPrice,shopRound,shopNotes,clockTarget,shapeSet,shapeTray}=NOW)}
   return rows}
+
+/* Lời Jenny đọc luật luôn khớp dòng luật trên màn hình (Câu cá, Bóng bay, Hứng sao, Đập chuột) */
+function ktSayFromRule(rule){const t=String(rule||'').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').trim();return t?`Em ${t.charAt(0).toLowerCase()+t.slice(1)} nhé.`:''}
+{const _m=startMini;startMini=function(mode,id){const v=_m.apply(this,arguments);try{if(scr.k==='mini'&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v}}
+{const _x=startXG;startXG=function(mode,id){const v=_x.apply(this,arguments);try{if(scr.k==='xg'&&(mode==='star'||mode==='mole')&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v}}

@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Lời Jenny khớp luật trò chơi
+- Câu cá, Bóng bay, Hứng sao, Đập chuột: Jenny đọc đúng dòng luật đang hiện trên màn hình (ví dụ "Em hứng sao mang số 4 nhé."). Đã kiểm tra 909 lượt ở 5 lớp, không còn chỗ lệch.
+
 ## 2026-10-19 — Chơi thêm không vượt kiến thức của bài
 - Mỗi lớp có "dòng kiến thức": học tới đảo nào thì biết những gì (phép cộng, trừ, nhân, chia, so sánh, phân số, số thập phân, tiền, giờ, đơn vị đo, tên hình, số lớn nhất đã học). Lớp sau mang theo kiến thức lớp trước (`core/39e-kien-thuc-tro-choi.js`).
 - Trò chỉ mở ở đảo khi đủ kiến thức; nội dung được nắn theo bài: Lật thẻ và Ếch nhảy lấy câu của chính đảo, rồi vài đảo ngay trước; chưa học phép tính thì ghép "nhóm chấm ↔ số" (ví dụ lớp 1 Số 0–5). Phép cộng chỉ xuất hiện từ bài Phép cộng, phép trừ từ bài Phép trừ.
