@@ -6,7 +6,7 @@ const OUT=process.env.OUT_DIR||'/tmp/claude-0/-home-claude/77fff399-704f-58e4-a6
 const grades=process.argv.slice(2).map(Number).filter(Boolean);const G=grades.length?grades:[1,2,3,4,5];
 (async()=>{const b=await pw.chromium.launch({executablePath:process.env.CHROME||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});const p=await b.newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));
  await p.goto('file://'+path.resolve(__dirname,'../../dist/lop-hoc-ao-jenny.html'));await p.waitForTimeout(600);
- let all=[],tl={};const NAME={fish:'Câu cá',balloon:'Bóng bay',race:'Đua giờ',star:'Hứng sao',pair:'Lật thẻ',tug:'Kéo co',clock:'Đồng hồ',scale:'Cân',shop:'Cửa hàng',train:'Tàu hoả',mole:'Chuột',frog:'Ếch',shape:'Ghép hình',bait:'Thả mồi',plant:'Trồng cây'};
+ let all=[],tl={};const NAME={fish:'Câu cá',balloon:'Bóng bay',race:'Đua giờ',star:'Hứng sao',pair:'Lật thẻ',tug:'Kéo co',clock:'Đồng hồ',scale:'Cân',shop:'Cửa hàng',train:'Tàu hoả',mole:'Chuột',frog:'Ếch',shape:'Ghép hình',bait:'Thả mồi',plant:'Trồng cây',climb:'Leo núi'};
  const csv=['lop,chu_de,dao,tro_choi'];
  for(const g of G){const t0=Date.now();const r=await p.evaluate(g=>{role='hs';const id=Object.keys(S.st).find(k=>S.st[k].grade==g);(0,eval)(`sid='${id}'`);
    const before=ktAuditBefore(g,8);const t1=performance.now();ktBalance(g);const tb=performance.now()-t1;const rows=ktAudit(g,12);

@@ -77,6 +77,13 @@ Kỷ lục ở `st.mg['đảo:trò']`; ghi Hồ sơ qua `hsRec`.
 - Loài cây theo đảo (`plantSp(id)`, băm mã đảo): táo, cam, xoài (cây ăn quả), dâu tây (bụi), hướng dương.
 - Câu hỏi: `frogQ(x)` (đã lọc kiến thức như Ếch nhảy); `ktAllowed/ktOwn/ktSample/xgElig` coi `plant` như `frog`.
 - Đúng: tưới, cây lớn 1 bậc. Sai 1: cây rũ, cỏ dại, khoá đáp án sai. Sai 2: ốc sên gặm lá, lượt này không lớn, sang câu khác. Không tim; 8 lần tưới hoặc 150 giây.
-- Chia trò: `ktBalance0` được viết lại trong 39k với `PLANT_BIAS` để ưu tiên lớp 1–2.
+- Chia trò: một hàm `ktBalance0` duy nhất ở 39e; mỗi trò khai ưu tiên theo lớp trong `XG_BIAS[mode]` (số âm = được chọn nhiều hơn). Trồng cây: `XG_BIAS.plant` ưu tiên lớp 1–2.
 - Lưu: kỷ lục `st.mg['đảo:plant']`, xu tối đa 20, nhật kí "Trồng cây · …", câu trả lời ghi `st.dd`, `st.sk` qua `xgRec`.
+
+## Trò Leo núi tìm kho báu (`core/39l`)
+- Mode `climb`, dành cho tiết toán có lời văn. Cảnh 114×84 (phóng ×3); núi dựng sẵn một lần vào canvas phụ 114×288 (`climbWorld`), mỗi 120 ms chỉ vẽ trời, mây, đại bàng, tuyết, Jenny, rương (`climbDraw`); camera đi theo Jenny.
+- 6 chặng + đỉnh có rương. Đúng: leo dây lên chặng sau, bảng "Chặng n/6 ✓". Sai 1: đá lăn, khoá đáp án sai. Sai 2: nghỉ ở trại, hiện đáp án và lời giải, sang bài khác, không mất chặng. 300 giây, không tim.
+- Đề: `climbQ(x)` lấy bài lời văn (`climbIsWord`) của đảo, thiếu thì của 1–4 đảo trước (`ktPrev`), lọc `ktViol`. Câu số: đáp án + 2 phương án gần (±1, ±10, làm nhầm phép tính), không âm, kèm đơn vị lấy từ lời giải.
+- Chia trò: chỉ đảo có bài lời văn (`climbHas`); "đúng nội dung" khi chính đảo có nhiều bài lời văn (`climbOwn`); `XG_BIAS.climb`.
+- Lưu: kỷ lục `st.mg['đảo:climb']`, xu tối đa 20, nhật kí "Leo núi · …", `st.dd`, `st.sk` qua `xgRec`.
 

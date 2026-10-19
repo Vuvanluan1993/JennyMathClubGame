@@ -21,17 +21,9 @@ if(!XG_ALL.includes('plant'))XG_ALL.push('plant');
 {const _o=ktOwn;ktOwn=function(x,mode){return _o.call(this,x,mode==='plant'?'frog':mode)}}
 {const _e=xgElig;xgElig=function(x){const r=_e.apply(this,arguments);if(r&&r.E&&r.E.includes('frog')&&!r.E.includes('plant'))r.E.push('plant');return r}}
 {const _s=ktSample;ktSample=function(x,mode,n){if(mode!=='plant')return _s.apply(this,arguments);return _s.call(this,x,'frog',n)}}
-/* chia trò: như 39e nhưng Trồng cây được ưu tiên ở lớp 1–2, ít hơn ở lớp 3–5 */
+/* chia trò (ktBalance0 ở 39e): Trồng cây được ưu tiên ở lớp 1–2, ít hơn ở lớp 3–5 */
 const PLANT_BIAS={1:-14,2:-9,3:16,4:16,5:16};
-function ktBalance0(G){const I=(PRIM[G]&&PRIM[G].isl)||[],cnt={},out={};XG_ALL.forEach(o=>cnt[o]=0);if('plant' in cnt)cnt.plant=PLANT_BIAS[G]||0;
-  const order=[...I].sort((a,b)=>xgHash(a.id+'kt')-xgHash(b.id+'kt'));
-  order.forEach(x=>{const al=XG_ALL.filter(m=>ktAllowed(x,m)),el=new Set(xgElig(x).E),own=al.filter(m=>ktOwn(x,m)),pick_=[];
-    const must=['clock','shape','shop','scale'].filter(m=>al.includes(m)&&ktOwn(x,m));must.slice(0,2).forEach(m=>pick_.push(m));
-    const least=c=>c.sort((a,b)=>cnt[a]-cnt[b]||xgHash(a+x.id)-xgHash(b+x.id))[0];
-    if(!pick_.some(m=>own.includes(m))){const c=own.filter(m=>!pick_.includes(m));if(c.length)pick_.push(least(c))}
-    while(pick_.length<3){let c=al.filter(m=>!pick_.includes(m)&&el.has(m));if(!c.length)c=al.filter(m=>!pick_.includes(m));if(!c.length)break;pick_.push(least(c))}
-    pick_.forEach(m=>cnt[m]++);out[x.id]=pick_});
-  return XG_PICK[G]=out}
+XG_BIAS.plant=PLANT_BIAS;
 
 const PLANT_N=8,PLANT_T=150;
 const PLANT_SKY=['#CFEFFB','#C3EBFB','#B6E6FA','#A8E0F8','#9DB7C9','#A6DCF5','#B6E1F2','#F3DDA0','#F6C79A'];

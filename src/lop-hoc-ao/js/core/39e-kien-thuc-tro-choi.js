@@ -162,8 +162,10 @@ function ktOwn(x,mode){if(mode==='clock')return xgTime(x);if(mode==='shape')retu
   if(mode==='fish'||mode==='balloon'||mode==='star'||mode==='mole')return!!ktRule(x,'fish').own;
   return false}
 const XG_PICK={};
+/* ưu tiên riêng từng trò theo lớp: số âm = được chọn nhiều hơn (cộng vào bộ đếm ban đầu) */
+const XG_BIAS={};
 function ktBalance(G){if(XG_PICK[G])return XG_PICK[G];ktGrade(G);return ktSeeded(311+G,()=>ktBalance0(G))}
-function ktBalance0(G){const I=(PRIM[G]&&PRIM[G].isl)||[],cnt={},out={};XG_ALL.forEach(o=>cnt[o]=0);
+function ktBalance0(G){const I=(PRIM[G]&&PRIM[G].isl)||[],cnt={},out={};XG_ALL.forEach(o=>cnt[o]=(XG_BIAS[o]&&XG_BIAS[o][G])||0);
   const order=[...I].sort((a,b)=>xgHash(a.id+'kt')-xgHash(b.id+'kt'));
   order.forEach(x=>{const al=XG_ALL.filter(m=>ktAllowed(x,m)),el=new Set(xgElig(x).E),own=al.filter(m=>ktOwn(x,m)),pick_=[];
     const must=['clock','shape','shop','scale'].filter(m=>al.includes(m)&&ktOwn(x,m));must.slice(0,2).forEach(m=>pick_.push(m));

@@ -1,5 +1,18 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Trò mới: Leo núi tìm kho báu
+- Trò cho các tiết toán có lời văn. Jenny đeo ba lô leo núi 6 chặng. Mỗi bài toán giải đúng, Jenny leo dây lên trại kế tiếp, hiện "Chặng n/6 ✓". Lên cao: mây ở dưới, đại bàng bay qua, gần đỉnh có tuyết, trời ngả hoàng hôn.
+- Sai 1 lần: đá lăn, "Cẩn thận!", đáp án sai bị khoá. Sai 2 lần: Jenny nghỉ ở trại, hiện đáp án đúng và lời giải ngắn, sang bài khác, không mất chặng nào. Không có tim, 300 giây.
+- Lên đỉnh: mở rương báu (vàng, đá quý), pháo giấy, nhận huy hiệu "Nhà leo núi".
+- Đề là bài lời văn của chính tiết, thiếu thì lấy của 1–4 tiết trước, luôn trong kiến thức đã học. Lớp 1–2 Jenny tự đọc đề, lớp 3–5 bấm loa để nghe.
+- Có ở khoảng 27–47 đảo mỗi lớp (đảo có bài lời văn). Chia trò gộp về một chỗ, mỗi trò có bảng ưu tiên riêng theo lớp.
+
+## 2026-10-19 — Trồng cây: vẽ lại Jenny tưới và cây lớn
+- Jenny cầm bình đứng chờ; trả lời đúng thì bước tới luống, nghiêng bình, tia nước vòng cung rơi xuống gốc khoảng 1 giây, đất ướt, nước bắn; xong quay về. Đúng thì Jenny nhảy vui, sai thì mặt lo.
+- Cây vẽ lại có viền và bóng, to hơn (cuối cùng cao gần nửa khung). 9 bậc khác nhau rõ: hạt trong hố → mầm 2 lá → 2 lá thật → cây non → cây cao (mưa, cầu vồng) → nụ → hoa → quả xanh → quả chín.
+- Mỗi loài một dáng: táo tán tròn, cam tán dày, xoài tán cao và quả dài, dâu tây là bụi thấp quả treo, hướng dương thân cao bông to. Mỗi lần lớn có hiệu ứng phóng to và lấp lánh.
+- Giữ nguyên cách chơi, giờ, điểm, cỏ dại, ốc sên, thu hoạch (`core/39k2-trong-cay-ve.js`).
+
 ## 2026-10-19 — Trò mới: Trồng cây
 - Trò chuyển cảnh như Ếch nhảy: mỗi câu trả lời đúng, Jenny cầm bình tưới cây một lần (bình nghiêng, giọt nước rơi, lấp lánh), cây lớn thêm một bậc và hiện "Lần tưới n/8 ✓". Cây lớn qua 9 bậc: hạt → nảy mầm → hai lá → cây non → cây cao có cành → nụ → hoa nở → quả xanh → quả chín, rồi quả rơi vào giỏ.
 - Cảnh đổi dần: sáng → trưa → chiều; có mưa rào và cầu vồng khi cây có cành; bướm, ong bay, mây trôi, hoa cỏ lay.
