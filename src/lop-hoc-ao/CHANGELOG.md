@@ -1,5 +1,13 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Hồ sơ của em (lớp 1–5)
+- Tab mới **Hồ sơ** ở thanh dưới (icon bảng có đường đi lên), giữ nguyên các icon cũ.
+- **Chuỗi ngày chăm chỉ**: mỗi ô là 1 ngày của năm học 2026–2027 (từ 05/09 đến 31/05), có tên tháng; màu đậm dần theo số câu (0, 1–9, 10–24, 25–49, từ 50); hôm nay viền vàng; chạm ô để xem "Thứ Hai 19/10: 32 câu · đúng 28 · 18 phút". Trên điện thoại vuốt ngang, tự mở ở tuần hiện tại.
+- 4 ô số liệu: chuỗi ngày học hiện tại, chuỗi dài nhất, số ngày học, tổng số câu.
+- **Sức mạnh Toán**: biểu đồ mạng nhện pixel 6 trục (Số, Phép tính, Giải toán lời văn, Hình học, Đo lường, Thống kê – Xác suất). Điểm mỗi trục = tỉ lệ đúng 10 lần làm gần nhất của từng dạng bài; câu Trùm tính gấp đôi; cần ít nhất 5 câu mới hiện điểm ("chưa đủ"); trục lớp chưa học hiện "chưa học". Nét chấm là tháng trước.
+- **Luyện**: Jenny gợi ý trục yếu nhất; 8 câu (6 câu dạng yếu, 2 câu dạng đã vững) lấy từ chính các đảo em đã học; không mất tim, sai thì hiện lời giải ngay; +5 xu; hết lượt xem điểm trục trước → sau. Không phát nhạc nền.
+- Ghi nhận mới (giữ tiến độ cũ, tự điền lại số liệu ngày từ nhật kí cũ): `st.dd` theo ngày, `st.sk` theo dạng bài, `st.skm` theo tháng. Mọi dạng bài đã gắn trục (`tools/test/truc-kien-thuc.js`).
+
 ## 2026-10-19 — Mọi vùng biển đều chuyển động
 - Trước đây chỉ vùng biển của chủ đề đang học mới chuyển động (để đỡ tốn máy). Nay mọi vùng đều chuyển động; vùng nào khuất màn hình thì tạm dừng vẽ để đỡ tốn pin.
 

@@ -16,7 +16,8 @@ Lưu ý: khai báo `function` trùng tên thì bản viết sau thắng (một s
    trong đó ghép `content/lessons/*` và `content/hk2/*`, rồi `addTopic`, `lesOf`, `viewLes`.
 6. `core/33b` âm thanh: `sfx(tên)` (thư viện `SFX`), nhạc nền `THEMES` chọn theo màn trong `musicTheme()`, `hurtFx()` hiệu ứng mất tim; bọc `render()` để đổi nhạc và vẽ nút âm thanh.
 7. `core/33c–33e`: trùm hoạt hình, Jenny biểu cảm + hệ màu trùm theo vùng (`BIOME_HE`), Hộ chiếu đại dương (`st.pass`, `st.outfit`, `ofVariant`).
-8. `core/31–33` tính năng chơi thêm (Trùm lớp, Đua giờ, Kho báu, Sưu tập, Câu cá, Bóng bay). `core/34` khởi động.
+8. `core/35` Hồ sơ của em: ghi nhận (`hsRec` bọc `ans1`), 6 trục (`HS_AX`, `hsAxOf`), điểm trục (`hsScores`), màn Luyện (`startLuyen`, chạy trên chế độ Sổ lỗi sai với cờ `lz`), giao diện `viewHoSo`.
+9. `core/31–33` tính năng chơi thêm (Trùm lớp, Đua giờ, Kho báu, Sưu tập, Câu cá, Bóng bay). `core/34` khởi động.
 
 ## Dữ liệu chính
 
@@ -28,6 +29,10 @@ Lưu ý: khai báo `function` trùng tên thì bản viết sau thắng (một s
 | `s1(st,id)` | Tiến độ một đảo của học sinh: `{m:[đã qua màn?], fails:[], les:đã xem bài giảng}` |
 | `MG[g]` | Luật Câu cá / Bóng bay chủ đề 1. `MGT[ti][g]` cho chủ đề `ti ≥ 1`. |
 | `LES[g][bài]` | Slide Bài giảng Jenny: `[{t, h, say}]`. Trang cuối luôn là "Em nhớ nhé". |
+| `st.dd` | Số liệu theo ngày `'YYYY-MM-DD' → {n câu, c đúng, sec giây}` (bản học sinh theo lịch thật; bản demo: ngày 1 = 05/09/2026). |
+| `st.sk` | Theo dạng bài (`q.kind`): `{r:[10 kết quả gần nhất 1/0], t:lần cuối, ax:trục}`. Câu Trùm ghi 2 lần. |
+| `st.skm` | Điểm trục theo tháng `'YYYY-MM' → {trục: điểm}` (vẽ nét "tháng trước"). |
+| Trục | `so` Số · `pt` Phép tính · `lv` Giải toán lời văn · `hh` Hình học · `dl` Đo lường · `tk` Thống kê – Xác suất. Gắn bằng luật từ khoá `HS_RULES`; kiểm tra `node tools/test/truc-kien-thuc.js`. |
 | `UNL` | Mở khoá tất cả đảo (mặc định bật; khoá lại bằng `localStorage.jennyLockOn='1'`). |
 
 ## Câu hỏi

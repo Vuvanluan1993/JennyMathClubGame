@@ -62,8 +62,8 @@ function startJ1(id,L){const x=ju1(id),gens=x.lv[L],ord=shuf(gens.map((_,i)=>i))
 
 
 function viewHome1t(){const st=S.st[sid],tab=scr.tab||'map',nm=Object.keys(mist(st)).length;
-  const nav=[['map','🗺️','Bản đồ'],['jenny','★','Toán Jenny'],['fix','📒','Luyện lỗi'],['album',spr('fish',24),'Sưu tập']];
-  let body=tab==='jenny'?viewJTab1(st):tab==='fix'?viewFix1(st):tab==='album'?viewAlbum(st):viewHome1();
+  const nav=[['map','🗺️','Bản đồ'],['jenny','★','Toán Jenny'],['fix','📒','Luyện lỗi'],['album',spr('fish',24),'Sưu tập'],['hoso',spr('hoso',24),'Hồ sơ']];
+  let body=tab==='jenny'?viewJTab1(st):tab==='fix'?viewFix1(st):tab==='album'?viewAlbum(st):tab==='hoso'?viewHoSo(st):viewHome1();
   if(tab==='map'){const c=cbCard(st);if(c)body=body.replace('<!--CARDS-->','<!--CARDS-->'+c)}
   if(tab==='map'&&nm)body=body.replace('<!--CARDS-->',`<!--CARDS--><button class="pxq mist" onclick="go({k:'home',tab:'fix'})"><span class="pxq-ic">${spr('book',46)}<i class="pxq-n">${nm}</i></span><span class="pxq-tx"><b>Sổ lỗi sai</b><span>${nm} dạng bài cần sửa · mỗi lỗi sửa xong +5 ${spr('coin',14)}</span><span class="pxq-dots" aria-hidden="true">${Array.from({length:Math.min(6,nm)},()=>'<i></i>').join('')}</span></span><span class="pxq-go">Luyện ▶</span></button>`);
   if(tab==='map'&&st.active){const jb=P2_1.find(x=>!x.draft&&S.open[x.id]&&!j1s(st,x.id).m.every(Boolean));if(jb)body=body.replace('<!--CARDS-->',`<!--CARDS--><button class="pxq" style="--pq:#FCB40C;--pq2:#F37A1F" onclick="go({k:'jenny',id:'${jb.id}'})"><span class="pxq-ic">${spr('star',38)}</span><span class="pxq-tx"><b>Cô vừa mở Toán Jenny</b><span>${esc(jb.title)}</span></span><span class="pxq-go">Học ▶</span></button>`)}

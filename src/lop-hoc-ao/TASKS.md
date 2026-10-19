@@ -15,6 +15,8 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 - ☐ **T-08 Toán Jenny (nâng cao) lớp 2–5** — hiện mới có lớp 1 và lớp 6.
 - ☐ **T-09 Lớp 6–9 theo mô hình đảo** — làm các chương còn lại như tiểu học.
 - ☑ **T-10 Âm thanh, hiệu ứng** — nhạc nền 8-bit theo màn, hiệu ứng từng trò chơi, nút bật/tắt (19/10).
+- ☑ **T-13 Hồ sơ của em** — Chuỗi ngày chăm chỉ (lịch ô màu cả năm học), Sức mạnh Toán (mạng nhện 6 trục), Luyện theo trục yếu (19/10).
+- ☐ **T-14 Đánh giá cho giáo viên, phụ huynh** — dùng `st.dd`, `st.sk`, `st.skm`; thiết kế riêng sau.
 - ☐ **T-11 Chế độ ngoại tuyến (PWA)** — cài lên màn hình điện thoại, chơi khi không có mạng.
 - ☐ **T-12 Tối ưu dung lượng** — file ~1,1 MB; tách nội dung theo lớp, chỉ tải lớp của học sinh.
 
