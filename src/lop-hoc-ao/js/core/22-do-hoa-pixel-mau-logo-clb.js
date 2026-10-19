@@ -29,6 +29,7 @@ const PXS={
  catH:PXCAT.map((r,i)=>i==5?"kokkoooookkok":r),
  catS:PXCAT.map((r,i)=>i==5?"kokoooooooko k".replace(/ /g,''):i==6?"kboooccccooobk":r),
  heart:[".kk.kk.","kwrkrrk","krrrrrk","krrrrrk",".krrrk.","..krk..","...k..."],
+ heartE:[".kk.kk.","kwwkwwk","kwwwwwk","kwwwwwk",".kwwwk.","..kwk..","...k..."],
  heartB:[".kk.kk.","kwrkrrk","krrwrrk","krrrwrk",".krwrk.","..krk..","...k..."],
  star:["....k....","...kyk...","...kyk...","kkkkyykkk","kyyyyyyak",".kyyyyak.","..kyyak..",".kyakyak.",".kak.kak.","kk.....kk"],
  coin:["..kkkk..",".kyyyyk.","kyywyyak","kywyyyak","kyyyyyak","kyyyyaak",".kaaaak.","..kkkk.."],
