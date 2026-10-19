@@ -16,7 +16,7 @@ function mgBg(f,mode){const Z=4,W=Math.ceil(f.clientWidth/Z),H=Math.ceil(f.clien
     x.fillStyle='#2AB563';for(let k=0;k<W;k++){const h=6+Math.round(3*Math.sin(k/9)+2*Math.sin(k/4));x.fillRect(k,H-h,1,h)}x.fillStyle='#1E8A4A';for(let k=0;k<W;k+=5)x.fillRect(k,H-3,2,3)}
   f.appendChild(cv);
   if(mode==='fish'){for(let i=0;i<7;i++){const b=document.createElement('i');b.className='mgbub';b.style.left=(8+rnd()*84)+'%';b.style.animationDelay=(rnd()*4).toFixed(1)+'s';b.style.animationDuration=(3+rnd()*3).toFixed(1)+'s';f.appendChild(b)}
-    const boat=document.createElement('div');boat.className='mgboat';boat.innerHTML=spr('boat',56)+`<span class="mgjen">${spr('jenny',30)}</span>`;f.appendChild(boat)}}
+    const boat=document.createElement('div');boat.className='mgboat';boat.innerHTML=spr('boat',56)+`<span class="mgjen">${spr(typeof ofVariant==='function'?ofVariant('jenny',jOutfit()):'jenny',30)}</span>`;f.appendChild(boat)}}
 function miniAfterRender(){if(scr.k!=='mini'||scr.end||scr.started)return;scr.started=true;stopMini();const f=document.getElementById('mgf');if(!f)return;sayJ(scr.say);mgBg(f,scr.mode);
   const items=[];let last=0,spawnGap=1100,n=0;const W=()=>f.clientWidth,H=()=>f.clientHeight,fish=scr.mode==='fish';
   const FS=['fishO','fishY','fishP','fishG','fish'],BS=['balloon','balloonB','balloonP','balloonG'];

@@ -744,6 +744,41 @@ u.hl{text-decoration:none;background:var(--sun);padding:0 2px}
 .hero[class*="ocean"]{box-shadow:var(--f3),0 6px 0 0 var(--pxk),inset 0 -6px 0 0 var(--oc)!important}
 .ocname{display:inline-block;margin-bottom:4px;padding:1px 8px;background:var(--oc);color:#1F2A5A;font-weight:800;font-size:12px;box-shadow:var(--f2)}
 .tstrip .tchip.on{background:var(--oc,var(--sun))!important}
+/* vùng biển: đảo 26×18 ô vẽ to hơn một chút cho rõ hình (vừa khung nút 110px) */
+body.px .t1sec .node .ball>img:first-child{height:68px!important;width:auto!important;max-width:104px}
+body.px .t1sec .node.lock .ball>img:first-child{height:56px!important}
+/* hộ chiếu đại dương: CSS riêng */
+.passcard{background:linear-gradient(180deg,color-mix(in srgb,var(--oc) 10%,var(--surface)) 0,var(--surface) 120px)}
+.pbook{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;padding:12px;background:repeating-linear-gradient(0deg,transparent 0 23px,color-mix(in srgb,var(--line) 70%,transparent) 23px 24px),var(--surface2);box-shadow:var(--f2)}
+.pslot{display:grid;place-items:center;min-height:104px}
+.pempty{display:grid;place-items:center;gap:2px;width:88px;height:88px;border:3px dashed color-mix(in srgb,var(--muted) 45%,transparent);border-radius:50%;color:var(--muted);text-align:center;font-size:11px;line-height:1.15;padding:6px}
+.pempty b{font-size:20px;opacity:.6}
+.pstamp{--sc:#12B5E8;--sd:#0079C1;display:grid;place-items:center;align-content:center;gap:1px;width:92px;height:92px;border-radius:50%;border:4px double var(--sd);color:var(--sd);background:radial-gradient(circle,color-mix(in srgb,var(--sc) 22%,transparent) 0 55%,transparent 56%);text-align:center;font-size:10.5px;line-height:1.1;padding:8px;transform:rotate(-8deg);box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--sc) 45%,transparent)}
+.pslot:nth-child(2n) .pstamp{transform:rotate(6deg)}
+.pslot:nth-child(3n) .pstamp{transform:rotate(-3deg)}
+.pstamp .pst-ic{font-size:24px;line-height:1}
+.pstamp b{font-weight:800;text-transform:uppercase;letter-spacing:.02em}
+.pstamp small{font-size:9px;opacity:.85}
+.pstamp.lg{width:150px;height:150px;font-size:15px;border-width:6px}
+.pstamp.lg .pst-ic{font-size:40px}.pstamp.lg small{font-size:12px}
+.ofh{margin:16px 0 8px;font-size:16px}
+.ofgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.ofbtn{position:relative;display:grid;justify-items:center;gap:4px;padding:10px 4px 8px;background:var(--surface2);box-shadow:var(--f2);border:0;color:inherit;font:inherit;font-size:12px;text-align:center;cursor:pointer;min-height:96px}
+.ofbtn.on{outline:3px solid var(--oc,#FCB40C);outline-offset:-3px;background:color-mix(in srgb,var(--oc,#FCB40C) 16%,var(--surface2))}
+.ofbtn.off{opacity:.55;cursor:help}
+.ofbtn i{font-style:normal;font-size:10px;font-weight:700;color:var(--oc,#C95A0E)}
+.oflock{display:grid;place-items:center;width:44px;height:44px}
+.jacc{position:absolute;left:50%;top:-14%;transform:translateX(-50%);line-height:0;pointer-events:none}
+.jav .jbody{position:relative}
+.stamppop{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:rgba(10,16,40,.55);opacity:0;transition:opacity .25s;padding:16px}
+.stamppop.on{opacity:1}
+.spbox{display:grid;justify-items:center;gap:12px;max-width:320px;width:100%;padding:20px 16px;background:var(--surface);box-shadow:var(--f2,0 4px 0 #1F2A5A);text-align:center}
+.sptitle{font-weight:800}
+.spof{display:flex;align-items:center;gap:8px;font-size:13px;text-align:left}
+.stamppop.on .pstamp{animation:stampIn .6s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes stampIn{0%{transform:scale(2.6) rotate(-30deg);opacity:0}60%{transform:scale(.92) rotate(-6deg);opacity:1}100%{transform:scale(1) rotate(-8deg)}}
+@media (prefers-reduced-motion:reduce){.stamppop.on .pstamp{animation:none}}
+@media (max-width:420px){.pbook,.ofgrid{grid-template-columns:repeat(3,1fr);gap:6px;padding:8px}.pstamp{width:84px;height:84px;font-size:9.5px}.pempty{width:80px;height:80px}}
 
 /* ===== bản học sinh ===== */
 [hidden]{display:none!important}
@@ -1792,7 +1827,9 @@ function seaOne(cv,run0){if(!cv.getContext)return;let ctx;try{ctx=cv.getContext(
   const gulls=[{x:rnd()*W,y:6,v:.6},{x:rnd()*W,y:12,v:.45}];
   const rocks=Array.from({length:Math.round(W/70)},(_,i)=>({x:Math.round(30+i*70+rnd()*30),y:Math.round(rnd()<.5?6+rnd()*10:H-14-rnd()*6)}));
   const weeds=Array.from({length:Math.round(W/40)},()=>({x:Math.round(rnd()*W),y:Math.round(H-8-rnd()*10)}));
-  const bfx=BM&&BM.fx?biomeFx(BM.fx,W,H):null;const noWhale=BM&&/volc|nigh|cand|crys/.test(cv.dataset.biome);
+  const bk=BM?cv.dataset.biome:'trop',bfx=BM&&BM.fx?biomeFx(BM.fx,W,H,isl):null;
+  /* chỉ Nhiệt đới có cá voi, thuyền, hải âu, chai thư; đá ngầm và rong ở vùng có bờ đá */
+  const noWhale=bk!=='trop',noBoat=bk!=='trop',noRock=!/trop|dese|autu|jung/.test(bk),noWeed=!/trop|dese|autu|jung/.test(bk);
   const whale={x:Math.round((155+300)/Z),y:H-12},bottle={x:rnd()*W,y:Math.round(H*.8)},boat={x:-30,y:Math.round(H*.86)};
   const blit=(n,x,y)=>ctx.drawImage(pxCanvas(n),Math.round(x),Math.round(y));
   ctx.imageSmoothingEnabled=false;ctx.setTransform(Z,0,0,Z,0,0);
@@ -1806,59 +1843,80 @@ function seaOne(cv,run0){if(!cv.getContext)return;let ctx;try{ctx=cv.getContext(
     // bóng cá lặn
     ctx.fillStyle=shade;fish.forEach(o=>{o.x+=o.v;if(o.x>W+6)o.x=-6;const y=o.y+Math.round(Math.sin((f+o.x)/9));ctx.fillRect(Math.round(o.x),y,3,1);ctx.fillRect(Math.round(o.x)+1,y-1,1,1);ctx.fillRect(Math.round(o.x)+1,y+1,1,1);ctx.fillRect(Math.round(o.x)-1,y-1,1,3)});
     // rong biển lắc lư
-    weeds.forEach(w=>blit('weed',w.x+((f>>2)%2),w.y));
+    if(!noWeed)weeds.forEach(w=>blit('weed',w.x+((f>>2)%2),w.y));
     // sóng lấp lánh trôi
     sparks.forEach(s=>{s.x-=s.v;if(s.x<-4)s.x=W+2;const ph=(f+s.p)%16;if(ph<12){ctx.fillStyle=spark;const x=Math.round(s.x),y=Math.round(s.y);ctx.fillRect(x,y,ph<4||ph>8?2:3,1);if(ph>=4&&ph<=8)ctx.fillRect(x+1,y-1,1,1)}});
     if(bfx)bfx(ctx,f);
     // vòng bọt quanh mỗi đảo
     ctx.fillStyle=foam;isl.forEach(([cx,cy],k)=>{const r=15+((f+k*3)>>2)%2;for(let a=0;a<28;a++){if((a+(f>>1))%3===0)continue;const t=a/28*Math.PI*2;ctx.fillRect(Math.round(cx+Math.cos(t)*(r+3)),Math.round(cy+Math.sin(t)*(r*.55+2)+9),1,1)}});
     // đá ngầm có bọt
-    rocks.forEach(r=>{blit('rock',r.x,r.y);ctx.fillStyle=foam;const o=(f>>1)%2;ctx.fillRect(r.x-1-o,r.y+3,2,1);ctx.fillRect(r.x+7+o,r.y+3,2,1)});
+    if(!noRock)rocks.forEach(r=>{blit('rock',r.x,r.y);ctx.fillStyle=foam;const o=(f>>1)%2;ctx.fillRect(r.x-1-o,r.y+3,2,1);ctx.fillRect(r.x+7+o,r.y+3,2,1)});
     // cá voi nổi lên, phun nước
     if(!noWhale){const wy=whale.y+((f>>3)%2);blit('whale',whale.x,wy);ctx.fillStyle=foam;ctx.fillRect(whale.x-1,wy+5,18,1);
     const sp=f%24;if(sp<10){const h=Math.min(sp,5);ctx.fillStyle=foam;for(let i=0;i<h;i++)ctx.fillRect(whale.x+7,wy-1-i,1,1);if(sp>=5){ctx.fillRect(whale.x+5,wy-6,1,1);ctx.fillRect(whale.x+9,wy-6,1,1);ctx.fillRect(whale.x+4,wy-4,1,1);ctx.fillRect(whale.x+10,wy-4,1,1)}}}
     // chai thư trôi
-    bottle.x+=.12;if(bottle.x>W+6)bottle.x=-6;blit('bottle',bottle.x,bottle.y+((f>>2)%2));
+    if(!noBoat){bottle.x+=.12;if(bottle.x>W+6)bottle.x=-6;blit('bottle',bottle.x,bottle.y+((f>>2)%2));
     // thuyền buồm nhỏ
     boat.x+=.25;if(boat.x>W+20)boat.x=-20;blit('boat',boat.x,boat.y-11+((f>>2)%2));
     // hải âu
-    gulls.forEach((g,i)=>{g.x+=g.v;if(g.x>W+8)g.x=-8;blit((f+i)%4<2?'gullA':'gullB',g.x,g.y+Math.round(Math.sin(f/5+i)))});
+    gulls.forEach((g,i)=>{g.x+=g.v;if(g.x>W+8)g.x=-8;blit((f+i)%4<2?'gullA':'gullB',g.x,g.y+Math.round(Math.sin(f/5+i)))})}
     if(!reduce)requestAnimationFrame(frame)}
   requestAnimationFrame(frame)}
 
 /* ===================== VÙNG BIỂN THEO CHỦ ĐỀ VÀ ĐẠI DƯƠNG THEO LỚP ===================== */
 /* Mỗi chủ đề là một vùng biển riêng: màu nước, kiểu đảo, vật trang trí động. Mỗi lớp là một đại dương có tên và màu nhấn riêng,
    thứ tự vùng biển của mỗi lớp khác nhau. Ôn tập học kì 1 luôn là Biển Băng, Ôn tập cuối năm luôn là Biển Hoàng Hôn. */
-{const G=["..kkttttttttttkk",".kttttttTttttTtk","bkkkkkkkkkkkkkkkb","bbxbbbbbxbbbbbxbb"];
- const TOP={
-  palm:["........kk.kk...",".......kgGkGgk..","......kgGgggGgk.",".........knk....",".........knk....","....kkkkknkkkk.."],
-  pine:["........kk......",".......kwwk.....","......kgwGgk....",".....kgGgwGgk...","....kgGwGgGwgk..","....kkkkknkkkk.."],
-  volc:["......r..a......",".....kraark.....","....kNrarNNk....","...kNNNaNNNNk...","..kNNnNNNNnNNk..","..kkkkkkkkkkkk.."],
-  cact:["........kk......",".......kgGk.....","....kk.kgGk.kk..","....kgkkgGkkgk..","....kgggggGggk..","....kkkkkGkkkk.."],
-  mush:["......kkkk......","....kkcwccck....","...kcccccwcck...","...kcwccccccck..","....kkkwwkkkk...","....kkkkwwkkkk.."],
-  crys:["........k.......",".......kwk..k...","...k..kpwPk.kwk.","..kwk.kpwPkkpPk.","..kpPkkpwPkkpPk.","....kkkkkkkkkk.."],
-  tree:["......kkkkk.....","....kkgGgGgkk...","...kgGgGgGgGgk..","...kgGgGgGgGgk..","....kkgknkgkk...","....kkkkknkkkk.."],
- };
- const mk=(top,map,gmap)=>top.map(r=>r.replace(/./g,c=>map&&map[c]||c)).concat(G.map(r=>r.replace(/./g,c=>gmap&&gmap[c]||c)));
- Object.assign(PXS,{
-  isl_trop:mk(TOP.palm),
-  isl_snow:mk(TOP.pine,null,{t:'w',T:'e'}),
-  isl_volc:mk(TOP.volc,null,{t:'E',T:'k'}),
-  isl_dese:mk(TOP.cact,null,{t:'y',T:'a'}),
-  isl_cand:mk(TOP.mush,null,{t:'c',T:'p'}),
-  isl_crys:mk(TOP.crys,null,{t:'e',T:'E'}),
-  isl_jung:mk(TOP.tree,null,{T:'g'}),
-  isl_autu:mk(TOP.tree,{g:'o',G:'O'},{T:'u'}),
-  isl_nigh:mk(TOP.palm,{g:'G'},{t:'T',T:'u'}),
-  floe:["..wwww..",".wwwwwe.","wwwwwwee","eeeeeee."],
-  cloudS:["..ww...",".wwww..","wwwwwww"],
-  lily:[".gg.g.","gggggG",".gGGg."],
-  candyS:[".c.",
-          "cwc",".c.",".w.",".w."],
-  rockL:["..kkk...",".kNrNk..","kNNNrNk.","kNNNNNNk"],
- });}
+/* Đảo 26×18 ô và vật thể trong nước: sinh từ bản vẽ (xem docs), thêm 12 màu riêng cho vùng biển (v,V tím nhạt; q,Q hồng; i băng; d,D đá bazan; f dung nham; h,H bóng tối; z kem sáng; j lá non). */
+Object.assign(PXC,{"v": "#CDB8F7", "V": "#A07FE3", "q": "#FBB9DA", "Q": "#E8649F", "i": "#BFF1FF", "d": "#3A3F52", "D": "#585F78", "f": "#FFB13B", "h": "#4B2A4A", "H": "#2E1A33", "z": "#FFF3C4", "j": "#8FD14F"});
+Object.assign(PXS,{
+ isl_trop:["....kk..kk................", "..kkggkkgGkk..............", ".kggGggggGggk.............", ".kGgkgNNgkgGk...kk.kk.....", ".kk.k.NNk.kkk.kkggkgGkk...", ".k....knk...k.kgGgNgGgk...", "......knk.....k.kNNkk.k...", ".......knk....k..knk.k....", ".......knk.......knk.kkk..", ".......knk......knk.krwrk.", "........knk.....knk.kw.wk.", ".....kkkknkNktttknkkkrwrk.", "...kktttttttkNkttttttkkk..", "..kttttttttttttttttttttk..", ".kttttttttttttttttttttttk.", ".kTTTTTTTTTTTTTTTTTTTTTTk.", "..kTTuTTTTTTuTTTTTTuTTkk..", "...kkkkkkkkkkkkkkkkkkk...."],
+ isl_snow:[".................w........", "...w..................w...", ".......................w..", "..........................", "..........................", "....k...............kk....", "...kik..kkkkkkkk...kkwk...", "..kiwxkkwwwewwwwk..kkkoo..", ".kiwixxkwewwwweewk.kwwk...", "kiwiixxkwwwkkkwwek.kwwkk..", "kiiixxbkwwkkkkkwwk.kwwk...", "kiwixxbkewkkkkkeekwkook...", "...kkwwwwwwiwwwwwwwwwikk..", "..kwwwiwwwwwwwwwwiwwwwwk..", ".kwwwwwwwwwwiwwwwwwwwwwwk.", ".kiiiiiiiiiiiiiiiiiiiiiik.", "..kiixiiiiiixiiiiiixiikk..", "...kkkkkkkkkkkkkkkkkkk...."],
+ isl_volc:["..........EE.eE...........", ".........eEeEEe...........", "...........EeE............", "............E.............", "..........krfrk...........", ".........kdrffrdk.........", "........kdDdrfdDdk........", ".......kdDdDrrdDdDk.......", "......kdDddDdrDddDdk......", ".....kdDdddDdroDdddDk.....", "....kdDddDdddrfdddDddk....", "...kdDdddddDdorrdddDddk...", "..kdDddDdddddffodddddDdk..", "..kdddDddddddodddDdddddk..", ".kddddddddddDdddddddddddk.", ".kkkkkkkkkkkkkkkkkkkkkkkk.", "..kkkdkkkkkkdkkkkkkdkkkk..", "...kkkkkkkkkkkkkkkkkkk...."],
+ isl_dese:["..........................", "..kk.kk...................", "kkgGkgGkk.................", "kgGgGgGgk..kk.............", "k.kakak.k.kgGk............", "...kak..k.kgGk............", "...knk..kgkgGk.k..........", "...knk..kgkgGkkg....k.....", "....knk.kggggGgk...kak....", "....knk..kkgGkk...kaTTk...", "....knk....gGk...kaaTTTk..", "....knkkkykgGkyykaaaTTTTk.", "...kkyyyyyytyyyyyyyykkkkk.", "..kyyytyyyyyyyyyytykxxbbk.", ".kyyyyyyyyyytyyyyyyyyyyyk.", ".kTTTTTTTTTTTTTTTTTTTTTTk.", "..kTTaTTTTTTaTTTTTTaTTkk..", "...kkkkkkkkkkkkkkkkkkk...."],
+ isl_cand:["..........................", "...........r..............", ".kkkk.....kwk.............", "kcqqck....kck.............", "kqwcqk....kkkkk......kkk..", "kqcwqk...kqqqqqk....kwrwk.", "kcqqck..kwwwwwwwk...krkrk.", ".kkkk...kwqwwqwwk...kw.k..", "..kw....kqqqqqqqk...kr....", "..kw...kwwwwwwwwwk..kw....", "..kw...kwqwwwqwwqk..kr....", "..kw.kkkqqcqqqcqqkwkkwk...", "...kkwkqqqqqqqqqqqkwwqkk..", "..kwwwqwwwwwwwwwwqwwwwwk..", ".kwwwwwwwwwwqwwwwwwwwwwwk.", ".kQQQQQQQQQQQQQQQQQQQQQQk.", "..kQQnQQQQQQnQQQQQQnQQkk..", "...kkkkkkkkkkkkkkkkkkk...."],
+ isl_crys:["............k.............", "...........kwk............", "...w......kwvVk.....w.....", "..........kwvVk.........w.", ".........kwvvVVk.......www", "......k..kwvwVVk........w.", ".....kwk.kwvvVPk..k.......", "....kwqQkkwvvVPk.kwk......", "....kwqQkkvvvVPkkwixk.....", "....kqqQkkvvVVPkkwixk.k...", "..k.kqQQkkvvVPPkkixbkkwk..", ".kwkkqQQkkvVVPPkkixbkkqk..", ".kvkkqQQkkvVVPPkkixbkkQk..", ".kVkppVppppppppppVpppppk..", ".kppppppppppVpppppppppppk.", ".kPPPPPPPPPPPPPPPPPPPPPPk.", "..kPPvPPPPPPvPPPPPPvPPkk..", "...kkkkkkkkkkkkkkkkkkk...."],
+ isl_jung:["........kkkkkkkk..........", ".....kkkgGgjgGgGkkk.......", "....kgGjgGgGgGjgGgGk......", "...kgGgGgGjgGgGgGgjgk.....", "..kgGjgGgGgGgGgjgGgGgk....", "..kGgGgGjgGgGgGgGgGjGk....", "...kGkGkkGkknkkGkkGkk.....", "....G.G..G.knk.G..G.......", "....G.r....knk....G.......", "....r.....kNnk....r.......", "...r.......knk.g.g...c....", "..ryrkkkkgggggggGggkcyc...", "...rkggggggGgggggggggckk..", "..kgggGggggggggggGgggggk..", ".kggggggggggGgggggggggggk.", ".kNNNNNNNNNNNNNNNNNNNNNNk.", "..kNNjNNNNNNjNNNNNNjNNkk..", "...kkkkkkkkkkkkkkkkkkk...."],
+ isl_autu:["........kkkkkkkk..........", "......kkoarooaorkk........", ".....koOroaoOrooaOk.......", "....kroaOoroOaroOrok......", "....kOroaOroaoOroaOk......", ".....kOkrkOkkOkrkOk.......", "......k..k.knk.k..k.......", "...........knk....kkkk....", "..........kNnk...krwrrk...", "...........knk...krrrwk...", "...o.r.a..........kwwk....", "..orarooauuuuuuuuuukwkk...", ".oroaoraouuuuuuuuuuuuukk..", "..kuuuuuuuuuuuuuuuuuuuuk..", ".kuuuuuuuuuuuuuuuuuuuuuuk.", ".kOOOOOOOOOOOOOOOOOOOOOOk.", "..kOOoOOOOOOoOOOOOOoOOkk..", "...kkkkkkkkkkkkkkkkkkk...."],
+ isl_nigh:["............kk............", "...........kRRk...........", "..........kkkkkk..........", "......a...kyyzyk.a........", ".......a..kyzyyka.........", "......a...kkkkkk.a........", "...........kwwk...........", "...........krrk...........", "...........krrk...........", "..........kwwwwk..........", "..........kwwwwk..........", "..g.gkkkkGkrrrrkGGGkgkg...", "..gGgGGGGGkrrkNkGGGGgGgk..", "..kGGGDGGkwwwkNkkDGGGGGk..", ".kGGGGGGGGGGDGGGGGGGGGGGk.", ".kddddddddddddddddddddddk.", "..kddgddddddgddddddgddkk..", "...kkkkkkkkkkkkkkkkkkk...."],
+ isl_suns:[".....hh..hh...............", "...hhhhhhhhhh.............", "..hhhhhhhhhhhh............", "..hh.h.hhh.hhh............", "..h....hh....h..hh.hh.....", ".......hh.....hhhhhhhhh...", ".......hh.....hh.hhh.hh...", "........hh....h..h...h....", "........hh.......hh.......", "........hh.......hh..hhh..", ".........hh.....hh..hhhhh.", ".....kkkkhhooooohhohhhhhhh", "...kkoooohhaoooooooooakk..", "..koooaooooooooooaoooook..", ".kooooooooooaoooooooooook.", ".kOOOOOOOOOOOOOOOOOOOOOOk.", "..kOOfOOOOOOfOOOOOOfOOkk..", "...kkkkkkkkkkkkkkkkkkk...."],
+ coralA:["...c....c..", ".c.cc..cc.c", ".cc.cqcc.cc", "..cccqccc..", "c..ccqcc..c", "cc..ccc..cc", ".ccccqcccc.", "...ccccc...", "....ccc...."],
+ coralB:[".o...o...o.", ".oo..o..oo.", "..oo.o.oo..", "o..ooooo..o", "oo..ooo..oo", ".ooooooooo.", "...ooooo...", "....ooo...."],
+ fishC:["..kkk...k", ".kowok.kk", "kowkwokok", "kowwwookk", ".kowok.kk", "..kkk...k"],
+ fishY:["..kkk...k", ".kyyyk.kk", "kykyyakyk", "kyyyyakkk", ".kyyyk.kk", "..kkk...k"],
+ berg:[".....kk........", "....kiwk.......", "...kiwixk..k...", "..kiwiixxkkik..", ".kiwiiixxbkixk.", "kiwiiiixxxbkxbk", "kiiiiixxxbbkbbk"],
+ pengS:[".kkk..", "kkwkk.", "kkkkoo", "kwwwk.", "wwwwww"],
+ lavaP:["..rrr..", ".rfffr.", "rffzffr", ".rfffr.", "..rrr.."],
+ basalt:["...kkk....", "..kDdDk...", ".kDdddDkk.", "kDdddrdDdk", "kddDdddddk", ".kkkkkkkk."],
+ turtle:["...kkk.....", "..kGgGk.kk.", ".kgGgGgkgjk", "kGgGgGgGkk.", ".kGgGgGk...", "..k...k...."],
+ dune:[".....kkkk.....", "...kkttyykk...", ".kktttyyyyykk.", "kttttyyyyyyyyk", "wwwwwwwwwwwwww"],
+ wrapA:["kk.....kk", "kckkkkkck", ".kcqcwck.", ".kcwcqck.", "kckkkkkck", "kk.....kk"],
+ mint:["..kkk..", ".kwrwk.", "kwrwrwk", "krwwwrk", "kwrwrwk", ".kwrwk.", "..kkk.."],
+ wrapB:["kk.......kk", "kbkkkkkkkbk", ".kbwbwbwbk.", "kbkkkkkkkbk", "kk.......kk"],
+ crysW1:["....k....", "...kwk...", "..kwvVk..", "..kwvVk..", ".kwvvVVk.", ".kwvvVPk.", ".kvvvVPk.", "kwvvVVPPk", "kvvvVVPPk", "kvvVVPPPk", "wwwwwwwww"],
+ crysW2:["..k....", ".kwk...", ".kqQk..", "kwqQk..", "kqqQk..", "kqQQkk.", "kqQQkQk", "wwwwwww"],
+ crysW3:["......k.......", ".....kwk......", "..k..kwxk..k..", ".kwk.kixk.kwk.", ".kik.kixbkkik.", "kwixkkixbkkixk", "kiixkkixbkkixk", "wwwwwwwwwwwwww"],
+ shard:["..w..", ".wvV.", "wvvVP", ".VVP.", "..P.."],
+ lotus:["...q...", "..qwq..", ".qqwqq.", "qqQqQqq", ".gggGg.", "gGgggGg", ".gGGgg."],
+ reed:["N...N.", "N..NN.", "N..N..", "g..N.N", "g.gg.N", "gg.g.g", ".gg.gg", ".g.gg.", "..gg..", "..g..."],
+ log:["..kkkkkkkkk..", ".knNnNnNnNkk.", "kunNnNnNnNkuk", "kNnNnNnnNnkuk", ".kkkkkkkkkkk.", "wwwwwwwwwwwww"],
+ frog:[".kk.kk.", "kwkkwkk", "kgggggk", "kgjjjgk", "kgggggk", ".k...k."],
+ maple:["...r...", ".r.r.r.", "rrrrrrr", ".rrRrr.", "rrrRrrr", "..rrr..", "...n..."],
+ mapleO:["...o...", ".o.o.o.", "ooooooo", ".ooOoo.", "oooOooo", "..ooo..", "...n..."],
+ pboat:[".....w.....", "....kwk....", "...kwwek...", "..kwwwwek..", "kkkkkkkkkkk", ".kwwwwwwek.", "..kkkkkkk.."],
+ jellyP:["..kkk..", ".kqwqk.", "kqwqqqk", "kqqqqQk", "kkkkkkk", ".q.q.q.", "q.q.q.q", ".q...q."],
+ jellyB:["..kkk..", ".kiwik.", "kiwiiik", "kiiiixk", "kkkkkkk", ".i.i.i.", "i.i.i.i", ".i...i."],
+ birdH:["hh...hh", "..h.h..", "...h..."],
+ boatH:[".....h.....", "....hh.....", "...hhh.h...", "..hhhh.hh..", ".hhhhh.hhh.", "hhhhhh.hhhh", ".....h.....", "hhhhhhhhhhh", ".hhhhhhhhh.", "..hhhhhhh.."]
+});
+Object.assign(PXS,{
+ floe:["..wwww..",".wwwwwe.","wwwwwwee","eeeeeee."],
+ cloudS:["..ww...",".wwww..","wwwwwww"],
+ lily:[".gg.g.","gggggG",".gGGg."],
+ candyS:[".c.","cwc",".c.",".w.",".w."],
+ rockL:["..kkk...",".kNrNk..","kNNNrNk.","kNNNNNNk"],
+});
 const BIOME={
- trop:{n:'Quần đảo Nhiệt đới',ic:'🏝',isl:'isl_trop',band:['#9CE0F6','#6FD0F2','#3FC1EC','#1FA9DD']},
+ trop:{n:'Quần đảo Nhiệt đới',ic:'🏝',isl:'isl_trop',band:['#9CE0F6','#6FD0F2','#3FC1EC','#1FA9DD'],fx:'reef'},
  snow:{n:'Biển Băng',ic:'❄️',isl:'isl_snow',band:['#E4F6FC','#C3EAF7','#9BD9EF','#74C4E3'],foam:'#FFFFFF',spark:'#FFFFFF',shade:'#5AA9C9',fx:'snow'},
  volc:{n:'Đảo Núi lửa',ic:'🌋',isl:'isl_volc',band:['#66789A','#55657F','#45526B','#364159'],foam:'#C3CBDD',spark:'#F37A1F',shade:'#29324A',fx:'ember'},
  dese:{n:'Ốc đảo Sa mạc',ic:'🌵',isl:'isl_dese',band:['#8FE8DC','#5DD6C9','#33BDB1','#1FA197'],foam:'#FFFFFF',spark:'#FFF6C8',shade:'#178278',fx:'heat'},
@@ -1867,27 +1925,83 @@ const BIOME={
  jung:{n:'Đầm lầy Rừng xanh',ic:'🌿',isl:'isl_jung',band:['#8DDFB9','#62CD9E','#3EB585','#26996C'],foam:'#E6FFF2',spark:'#FFFFFF',shade:'#167553',fx:'lily'},
  autu:{n:'Vịnh Lá Thu',ic:'🍁',isl:'isl_autu',band:['#A9DDF0','#86CBE6','#62B6D8','#4A9FC6'],foam:'#FFFFFF',spark:'#FFE3B0',shade:'#2E7FA3',fx:'leaf'},
  nigh:{n:'Biển Đêm sao',ic:'🌙',isl:'isl_nigh',band:['#33437F','#29386E','#202D5C','#18234B'],foam:'#8FA3D8',spark:'#FCD655',shade:'#0F173A',fx:'stars'},
- suns:{n:'Biển Hoàng hôn',ic:'🌅',isl:'isl_trop',band:['#FFD8A0','#FDB57E','#F5926C','#DF7160'],foam:'#FFF3E0',spark:'#FFFFFF',shade:'#B4524A',fx:'sun'},
+ suns:{n:'Biển Hoàng hôn',ic:'🌅',isl:'isl_suns',band:['#FFD8A0','#FDB57E','#F5926C','#DF7160'],foam:'#FFF3E0',spark:'#FFFFFF',shade:'#B4524A',fx:'sun'},
 };
 const BIOME_ORDER={1:['trop','cand','jung','crys','snow','autu','dese','volc','nigh','suns'],2:['jung','trop','dese','crys','cand','autu','snow','volc','nigh','trop','jung','dese','crys','suns'],
  3:['dese','crys','trop','volc','jung','cand','snow','autu','nigh','trop','dese','jung','crys','volc','cand','suns'],4:['crys','volc','autu','trop','nigh','jung','snow','dese','cand','crys','volc','trop','suns'],
  5:['volc','nigh','crys','dese','autu','snow','jung','cand','trop','volc','crys','suns']};
 const OCEAN={1:['Vịnh Tí Hon','#FCB40C'],2:['Biển Ngọc Bích','#2AB563'],3:['Quần đảo Mây Trắng','#12B5E8'],4:['Đại dương Sao Băng','#8656A8'],5:['Biển Huyền Thoại','#F04A1B']};
 function biomeOf(g,ti,name){const n=String(name||'');if(/ôn tập học kì 1/i.test(n))return'snow';if(/ôn tập cuối năm/i.test(n))return'suns';const L=BIOME_ORDER[g]||BIOME_ORDER[1];return L[ti%L.length]}
-/* hiệu ứng động riêng từng vùng biển (vẽ trên canvas biển, mỗi khung hình) */
-function biomeFx(kind,W,H){let s=7;const rnd=()=>(s=(s*9301+49297)%233280)/233280;const N=(k)=>Array.from({length:k},()=>({x:rnd()*W,y:rnd()*H,p:Math.floor(rnd()*16),v:.2+rnd()*.4}));
- const blit=(ctx,n,x,y)=>ctx.drawImage(pxCanvas(n),Math.round(x),Math.round(y));
- if(kind==='snow'){const fl=N(Math.round(W/12)),ice=N(Math.round(W/60));return(ctx,f)=>{ice.forEach(o=>{o.x-=.05;if(o.x<-10)o.x=W+4;blit(ctx,'floe',o.x,Math.round(o.y*.8)+((f>>3)%2))});ctx.fillStyle='#FFFFFF';fl.forEach(o=>{o.y+=o.v*.7;o.x+=Math.sin((f+o.p)/8)*.2;if(o.y>H)o.y=-2;ctx.fillRect(Math.round(o.x),Math.round(o.y),1,1)})}}
- if(kind==='ember'){const e=N(Math.round(W/10)),rk=N(Math.round(W/80));return(ctx,f)=>{rk.forEach(o=>blit(ctx,'rockL',o.x,Math.round(H*.15+o.y*.6)));e.forEach(o=>{o.y-=o.v;if(o.y<-2){o.y=H;o.x=rnd()*W}const ph=(f+o.p)%12;ctx.fillStyle=ph<6?'#F37A1F':'#FCD655';ctx.fillRect(Math.round(o.x),Math.round(o.y),1,ph<3?2:1)})}}
- if(kind==='candy'){const c=N(Math.round(W/70)),b=N(Math.round(W/14));return(ctx,f)=>{c.forEach(o=>{o.x+=.08;if(o.x>W+4)o.x=-4;blit(ctx,'candyS',o.x,Math.round(o.y*.7+10)+((f>>2)%2))});b.forEach(o=>{o.y-=o.v*.5;if(o.y<-3)o.y=H;const r=(f+o.p)%16<8;ctx.fillStyle='#FFFFFF';ctx.fillRect(Math.round(o.x),Math.round(o.y),r?2:1,r?2:1)})}}
- if(kind==='twinkle'){const t=N(Math.round(W*H/220));return(ctx,f)=>{t.forEach(o=>{const ph=(f+o.p)%20;if(ph>10)return;ctx.fillStyle=ph<4?'#FFFFFF':'#E8DEFF';const x=Math.round(o.x),y=Math.round(o.y);ctx.fillRect(x,y,1,1);if(ph>2&&ph<8){ctx.fillRect(x-1,y,3,1);ctx.fillRect(x,y-1,1,3)}})}}
- if(kind==='lily'){const l=N(Math.round(W/35));return(ctx,f)=>{l.forEach(o=>{blit(ctx,'lily',o.x+((f>>4)%2),Math.round(o.y*.9+6));if((f+o.p)%40<6){ctx.fillStyle='#F26249';ctx.fillRect(Math.round(o.x)+2,Math.round(o.y*.9+5),2,1)}})}}
- if(kind==='leaf'){const l=N(Math.round(W/16));return(ctx,f)=>{l.forEach(o=>{o.y+=o.v*.5;o.x+=Math.sin((f+o.p)/6)*.5;if(o.y>H){o.y=-2;o.x=rnd()*W}ctx.fillStyle=(o.p%3===0)?'#F37A1F':(o.p%3===1)?'#C95A0E':'#FCB40C';ctx.fillRect(Math.round(o.x),Math.round(o.y),2,1);ctx.fillRect(Math.round(o.x)+((f>>2)%2),Math.round(o.y)+1,1,1)})}}
- if(kind==='stars'){const t=N(Math.round(W*H/150));return(ctx,f)=>{t.forEach(o=>{const ph=(f+o.p)%24;ctx.fillStyle=ph<12?'#FCD655':'#FFFFFF';if(ph%6<4)ctx.fillRect(Math.round(o.x),Math.round(o.y),1,1)});const mx=W-30,my=10;ctx.fillStyle='#FFF6C8';ctx.fillRect(mx,my,6,6);ctx.fillRect(mx+1,my-1,4,8);ctx.fillRect(mx-1,my+1,8,4);ctx.fillStyle='#33437F';ctx.fillRect(mx+3,my,4,5);
-   for(let i=0;i<6;i++){if((i+(f>>2))%2)continue;ctx.fillStyle='#FFF6C8';ctx.fillRect(mx-2+((i*3+(f>>2))%9),my+16+i*3,3,1)}}}
- if(kind==='sun'){return(ctx,f)=>{const cx=Math.round(W*.82),cy=Math.round(H*.18);ctx.fillStyle='#FFF0B8';for(let r=0;r<9;r++){const w=Math.round(Math.sqrt(81-r*r))*2;ctx.fillRect(cx-w/2,cy-r,w,1);ctx.fillRect(cx-w/2,cy+r,w,1)}
-   for(let i=0;i<10;i++){const y=cy+14+i*4,w=Math.max(2,18-i*2)+((f+i)>>2)%3;if(y<H){ctx.fillStyle='#FFE08A';ctx.fillRect(cx-w/2,y,w,1)}}}}
- if(kind==='heat'){const d=N(Math.round(W/50));return(ctx,f)=>{d.forEach(o=>{ctx.fillStyle='#F6D98B';const x=Math.round(o.x),y=Math.round(o.y*.85+8);ctx.fillRect(x,y,10,2);ctx.fillRect(x+2,y-1,6,1);if((f+o.p)%30<10){ctx.fillStyle='#FFFFFF';ctx.fillRect(x+3+((f>>2)%3),y-3,1,1)}})}}
+/* hiệu ứng riêng từng vùng biển, vẽ trên canvas biển mỗi khung hình.
+   Vật thể tĩnh đặt tránh chỗ các đảo (isl: toạ độ tâm đảo theo đơn vị canvas). Sprite dựng sẵn bằng pxCanvas, không tạo mới mỗi khung. */
+function biomeFx(kind,W,H,isl){let s=7;const rnd=()=>(s=(s*9301+49297)%233280)/233280;const N=(k)=>Array.from({length:k},()=>({x:rnd()*W,y:rnd()*H,p:Math.floor(rnd()*16),v:.2+rnd()*.4}));
+ const IS=isl||[];const free=(x,y,w,h)=>!IS.some(([cx,cy])=>x+w>cx-20&&x<cx+20&&y+h>cy-14&&y<cy+30);
+ /* vật thể tĩnh: n cái, rải đều theo chiều ngang, tránh đảo */
+ const place=(n,w,h,y0=4,y1=H-4)=>{const L=[];for(let i=0;i<n;i++){for(let t=0;t<14;t++){const x=Math.round((i+rnd())*W/n-w/2),y=Math.round(y0+rnd()*Math.max(1,y1-y0-h));if(free(x,y,w,h)||t===13){L.push({x,y,p:Math.floor(rnd()*40),k:Math.floor(rnd()*3)});break}}}return L};
+ const per=(u)=>Math.max(2,Math.round(W/u));
+ const C=n=>pxCanvas(n);const blit=(ctx,n,x,y)=>ctx.drawImage(C(n),Math.round(x),Math.round(y));
+ const wake=(ctx,x,y,w,f,col)=>{ctx.fillStyle=col;const o=(f>>2)%2;ctx.fillRect(Math.round(x)-1-o,Math.round(y),2,1);ctx.fillRect(Math.round(x)+w-1+o,Math.round(y),2,1)};
+ const swim=(L,ctx,f,spr,dy=0,col='#FFFFFF')=>L.forEach(o=>{o.x+=o.v*.35*(o.d||1);if(o.x>W+12)o.x=-12;if(o.x<-12)o.x=W+12;const y=Math.round(o.y+Math.sin((f+o.p)/7)*dy);const c=typeof spr==='function'?spr(o,f):spr;blit(ctx,c,o.x,y);if(col)wake(ctx,o.x,y+C(c).height-1,C(c).width,f,col)});
+ if(kind==='reef'){ /* Nhiệt đới: rạn san hô, cá sặc sỡ */
+  const co=place(per(50),11,9,H*.45,H-2),fs=N(per(40));fs.forEach(o=>{o.y=10+o.y*.8;o.d=o.p%2?1:-1});
+  return(ctx,f)=>{co.forEach(o=>blit(ctx,o.k?'coralA':'coralB',o.x,o.y));fs.forEach(o=>{o.x+=o.v*.6*o.d;if(o.x>W+10)o.x=-10;if(o.x<-10)o.x=W+10;const n=o.p%2?'fishC':'fishY';ctx.save();const y=Math.round(o.y+Math.sin((f+o.p)/6));if(o.d<0){ctx.translate(Math.round(o.x)+9,0);ctx.scale(-1,1);ctx.drawImage(C(n),0,y)}else ctx.drawImage(C(n),Math.round(o.x),y);ctx.restore()})}}
+ if(kind==='snow'){ /* Biển Băng: núi băng, băng trôi, chim cánh cụt bơi, tuyết rơi, cực quang */
+  const bg=place(per(55),15,7,6,H-8),fl=N(Math.round(W/12)),ice=N(per(55)),pg=N(per(90));pg.forEach(o=>o.y=12+o.y*.75);
+  return(ctx,f)=>{for(let x=0;x<W;x+=2){const y=Math.round(4+Math.sin((x+f*1.5)/18)*3+Math.sin(x/7)*1);ctx.fillStyle='rgba(98,232,160,.35)';ctx.fillRect(x,y,2,3);ctx.fillStyle='rgba(120,200,255,.28)';ctx.fillRect(x,y+3,2,2)}
+   bg.forEach(o=>{blit(ctx,'berg',o.x,o.y+((f+o.p)>>4)%2);ctx.fillStyle='#FFFFFF';ctx.fillRect(o.x-1,o.y+7,17,1)});
+   ice.forEach(o=>{o.x-=.05;if(o.x<-10)o.x=W+4;blit(ctx,'floe',o.x,Math.round(o.y*.8)+((f>>3)%2))});
+   swim(pg,ctx,f,'pengS',1);
+   ctx.fillStyle='#FFFFFF';fl.forEach(o=>{o.y+=o.v*.7;o.x+=Math.sin((f+o.p)/8)*.2;if(o.y>H)o.y=-2;ctx.fillRect(Math.round(o.x),Math.round(o.y),1,1)})}}
+ if(kind==='ember'){ /* Núi lửa: đá bazan, vệt dung nham sáng, khói, bọt sôi, tàn lửa */
+  const rk=place(per(48),10,6,4,H-6),lv=place(per(40),7,5,6,H-4),e=N(Math.round(W/10)),bb=N(per(25));
+  return(ctx,f)=>{lv.forEach(o=>{const ph=(f+o.p)%16;ctx.globalAlpha=ph<8?.95:.6;blit(ctx,'lavaP',o.x,o.y);ctx.globalAlpha=1});
+   rk.forEach(o=>{blit(ctx,'basalt',o.x,o.y);ctx.fillStyle='rgba(255,255,255,.6)';ctx.fillRect(o.x-1-((f>>1)%2),o.y+5,12,1);for(let i=0;i<3;i++){const t=(f+o.p+i*8)%24;ctx.fillStyle=t<12?'rgba(200,205,220,.7)':'rgba(170,175,195,.45)';const r=1+(t>>3);ctx.fillRect(Math.round(o.x+4+Math.sin((t+o.p)/4)*1.5),Math.round(o.y-2-t*.6),r,r)}});
+   bb.forEach(o=>{const t=(f+o.p)%20;if(t<10){ctx.fillStyle='rgba(255,255,255,.75)';const x=Math.round(o.x),y=Math.round(o.y),r=t>>2;ctx.fillRect(x-r,y,1,1);ctx.fillRect(x+r,y,1,1);ctx.fillRect(x,y-r,1,1);if(t>7)ctx.fillRect(x,y,1,1)}});
+   e.forEach(o=>{o.y-=o.v;if(o.y<-2){o.y=H;o.x=rnd()*W}const ph=(f+o.p)%12;ctx.fillStyle=ph<6?'#F37A1F':'#FCD655';ctx.fillRect(Math.round(o.x),Math.round(o.y),1,ph<3?2:1)})}}
+ if(kind==='heat'){ /* Sa mạc: cồn cát nổi, rùa biển, nắng gắt, sóng nhiệt */
+  const d=place(per(48),14,5,6,H-4),sun=place(1,20,18,0,26)[0],tu=N(per(80));tu.forEach(o=>{o.y=10+o.y*.8;o.v*=.5});
+  return(ctx,f)=>{const cx=sun.x+10,cy=sun.y+9;ctx.fillStyle='rgba(255,246,200,.5)';for(let i=0;i<8;i++){const a=i/8*Math.PI*2+f/30,r=10+((f>>2)%2);ctx.fillRect(Math.round(cx+Math.cos(a)*r),Math.round(cy+Math.sin(a)*r),2,2)}ctx.fillStyle='#FFF3C4';ctx.fillRect(cx-4,cy-3,9,7);ctx.fillRect(cx-3,cy-4,7,9);
+   for(let k=0;k<3;k++){const y=14+k*6;ctx.fillStyle='rgba(255,255,255,.22)';for(let x=(k*7+f)%12;x<W;x+=12)ctx.fillRect(x,y+Math.round(Math.sin((x+f*2)/6)),5,1)}
+   d.forEach(o=>{blit(ctx,'dune',o.x,o.y);if((f+o.p)%30<10){ctx.fillStyle='#FFFFFF';ctx.fillRect(o.x+5+((f>>2)%3),o.y-2,1,1)}});
+   swim(tu,ctx,f,'turtle',1)}}
+ if(kind==='candy'){ /* Kẹo ngọt: kẹo bọc giấy, kẹo bạc hà tròn, kẹo mút trôi, cốm màu rơi, bong bóng */
+  const w=place(per(36),11,7,6,H-4),c=N(per(70)),b=N(Math.round(W/14)),sp=N(Math.round(W/9));const SC=['#F26249','#FCD655','#12B5E8','#2AB563','#FFFFFF','#8656A8'];
+  return(ctx,f)=>{w.forEach(o=>blit(ctx,['wrapA','mint','wrapB'][o.k],o.x,o.y+((f+o.p)>>3)%2));
+   c.forEach(o=>{o.x+=.08;if(o.x>W+4)o.x=-4;blit(ctx,'candyS',o.x,Math.round(o.y*.7+10)+((f>>2)%2))});
+   sp.forEach((o,i)=>{o.y+=o.v*.6;if(o.y>H){o.y=-2;o.x=rnd()*W}ctx.fillStyle=SC[i%6];ctx.fillRect(Math.round(o.x),Math.round(o.y),(i+(f>>2))%2?2:1,(i+(f>>2))%2?1:2)});
+   b.forEach(o=>{o.y-=o.v*.5;if(o.y<-3)o.y=H;const r=(f+o.p)%16<8;ctx.fillStyle='#FFFFFF';ctx.fillRect(Math.round(o.x),Math.round(o.y),r?2:1,r?2:1)})}}
+ if(kind==='twinkle'){ /* Pha lê: khối pha lê nhô khỏi mặt nước, mảnh pha lê trôi, lấp lánh, tia cầu vồng quét */
+  const sp=place(per(34),14,11,4,H-4),sh=N(per(30)),t=N(Math.round(W*H/220));const RB=['#F04A1B','#F37A1F','#FCD655','#2AB563','#12B5E8','#8656A8'];
+  return(ctx,f)=>{const ph=(f%160);if(ph<70){const x0=Math.round(ph/70*(W+H*2))-H;ctx.globalAlpha=.16;RB.forEach((col,i)=>{ctx.fillStyle=col;for(let y=0;y<H;y+=2)ctx.fillRect(x0+i*3-y,y,3,2)});ctx.globalAlpha=1}
+   sp.forEach(o=>{const n=['crysW1','crysW2','crysW3'][o.k],cv=C(n);blit(ctx,n,o.x,o.y);ctx.fillStyle='#F2EEFF';const q=(f>>2)%2;ctx.fillRect(o.x-1-q,o.y+cv.height-1,2,1);ctx.fillRect(o.x+cv.width-1+q,o.y+cv.height-1,2,1);if((f+o.p)%24<4){ctx.fillStyle='#FFFFFF';ctx.fillRect(o.x+1,o.y+1,1,1)}});
+   sh.forEach(o=>{o.x+=o.v*.15;if(o.x>W+4)o.x=-4;blit(ctx,'shard',o.x,Math.round(o.y+Math.sin((f+o.p)/8)))});
+   t.forEach(o=>{const ph=(f+o.p)%20;if(ph>10)return;ctx.fillStyle=ph<4?'#FFFFFF':'#E8DEFF';const x=Math.round(o.x),y=Math.round(o.y);ctx.fillRect(x,y,1,1);if(ph>2&&ph<8){ctx.fillRect(x-1,y,3,1);ctx.fillRect(x,y-1,1,3)}})}}
+ if(kind==='lily'){ /* Rừng xanh: lá súng, hoa sen, cỏ lau, khúc gỗ, ếch nhảy, đom đóm, chuồn chuồn */
+  const l=place(per(26),6,3,6,H-4),lo=place(per(55),7,7,6,H-4),rd=place(per(45),6,10,2,H-10),lg=place(per(90),13,6,8,H-6),ff=N(per(14)),dr=N(per(120));
+  return(ctx,f)=>{rd.forEach(o=>blit(ctx,'reed',o.x+(((f+o.p)>>3)%2),o.y));lg.forEach(o=>blit(ctx,'log',o.x,o.y+((f>>4)%2)));
+   l.forEach(o=>blit(ctx,'lily',o.x+((f>>4)%2),o.y));lo.forEach(o=>blit(ctx,'lotus',o.x,o.y));
+   l.forEach((o,i)=>{if(i%3)return;const t=(f+o.p*3)%60,nx=l[(i+1)%l.length];if(t<12&&nx&&Math.abs(nx.x-o.x)<60){const k=t/12,x=o.x+(nx.x-o.x)*k,y=o.y+(nx.y-o.y)*k-Math.sin(k*Math.PI)*8;blit(ctx,'frog',x,y-3)}else blit(ctx,'frog',t<36?(nx&&Math.abs(nx.x-o.x)<60?nx.x:o.x):o.x,(t<36?(nx&&Math.abs(nx.x-o.x)<60?nx.y:o.y):o.y)-3)});
+   ff.forEach(o=>{o.x+=Math.sin((f+o.p)/9)*.4;o.y+=Math.cos((f+o.p)/11)*.3;if((f+o.p)%14<8){ctx.fillStyle='#FFF3C4';ctx.fillRect(Math.round(o.x),Math.round(o.y),1,1);ctx.fillStyle='rgba(252,214,85,.45)';ctx.fillRect(Math.round(o.x)-1,Math.round(o.y),3,1)}});
+   dr.forEach(o=>{o.x+=.5;if(o.x>W+4)o.x=-4;const x=Math.round(o.x),y=Math.round(o.y*.6+4+Math.sin(f/3+o.p)*2);ctx.fillStyle='#0079C1';ctx.fillRect(x,y,4,1);ctx.fillStyle=f%2?'#BFF1FF':'#7FD3F0';ctx.fillRect(x+1,y-1,1,1);ctx.fillRect(x+1,y+1,1,1)})}}
+ if(kind==='leaf'){ /* Lá Thu: lá nổi trên mặt nước, thuyền giấy trôi, lá rơi xoay */
+  const fl=place(per(28),7,7,6,H-4),bt=N(per(110)),l=N(Math.round(W/16));bt.forEach(o=>{o.y=14+o.y*.7;o.v*=.4});
+  return(ctx,f)=>{fl.forEach(o=>blit(ctx,o.k===1?'mapleO':'maple',o.x+((f+o.p)>>4)%2,o.y));swim(bt,ctx,f,'pboat',1);
+   l.forEach(o=>{o.y+=o.v*.5;o.x+=Math.sin((f+o.p)/6)*.5;if(o.y>H){o.y=-2;o.x=rnd()*W}ctx.fillStyle=(o.p%3===0)?'#F37A1F':(o.p%3===1)?'#C95A0E':'#FCB40C';ctx.fillRect(Math.round(o.x),Math.round(o.y),2,1);ctx.fillRect(Math.round(o.x)+((f>>2)%2),Math.round(o.y)+1,1,1)})}}
+ if(kind==='stars'){ /* Đêm sao: sao nhấp nháy, trăng và bóng trăng, sứa phát sáng, sao băng, chùm sáng hải đăng */
+  const t=N(Math.round(W*H/150)),je=N(per(55));je.forEach(o=>{o.y=14+o.y*.75});const mp=place(1,10,30,0,30)[0],mx=mp.x,my=mp.y+3;
+  return(ctx,f)=>{t.forEach(o=>{const ph=(f+o.p)%24;ctx.fillStyle=ph<12?'#FCD655':'#FFFFFF';if(ph%6<4)ctx.fillRect(Math.round(o.x),Math.round(o.y),1,1)});
+   IS.forEach(([cx,cy],k)=>{const a=(f/14+k*1.7)%(Math.PI*2),x=cx,y=cy-16;ctx.fillStyle='rgba(255,243,196,.13)';ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+Math.cos(a-.18)*55,y+Math.sin(a-.18)*28);ctx.lineTo(x+Math.cos(a+.18)*55,y+Math.sin(a+.18)*28);ctx.closePath();ctx.fill()});
+   ctx.fillStyle='#FFF6C8';ctx.fillRect(mx,my,6,6);ctx.fillRect(mx+1,my-1,4,8);ctx.fillRect(mx-1,my+1,8,4);ctx.fillStyle='#33437F';ctx.fillRect(mx+3,my,4,5);
+   for(let i=0;i<7;i++){if((i+(f>>2))%2)continue;ctx.fillStyle='#FFF6C8';const w=Math.max(2,8-i);ctx.fillRect(mx+2-w/2+((i*3+(f>>2))%3),my+14+i*3,w,1)}
+   je.forEach(o=>{o.y-=.08*(1+((f+o.p)%16<8));if(o.y<10)o.y=H-4;const x=Math.round(o.x+Math.sin((f+o.p)/10)*2),y=Math.round(o.y),n=o.p%2?'jellyP':'jellyB';ctx.fillStyle=o.p%2?'rgba(251,185,218,.3)':'rgba(191,241,255,.3)';ctx.fillRect(x-1,y-1,7,7);blit(ctx,n,x,y)});
+   const sf=f%90;if(sf<10){const x0=(Math.floor(f/90)*137)%W,y0=2;ctx.fillStyle='#FFFFFF';for(let i=0;i<5;i++){ctx.globalAlpha=1-i*.18;ctx.fillRect(x0+sf*4-i*2,y0+sf*2-i,2,1)}ctx.globalAlpha=1}}}
+ if(kind==='sun'){ /* Hoàng hôn: mặt trời lặn nửa vầng, vệt nắng, chim bóng tối, thuyền buồm bóng tối */
+  const bi=N(per(70)),bt=N(per(160));bi.forEach(o=>{o.y=3+o.y*.25});bt.forEach(o=>{o.y=Math.round(H*.6+o.y*.3);o.v*=.4});
+  return(ctx,f)=>{const sp0=place(1,30,30,0,34)[0],cx=sp0.x+15,cy=sp0.y+14;ctx.fillStyle='rgba(255,240,184,.35)';for(let r=0;r<13;r++){const w=Math.round(Math.sqrt(169-r*r))*2;ctx.fillRect(cx-w/2,cy-r,w,1)}
+   ctx.fillStyle='#FFF0B8';for(let r=0;r<10;r++){const w=Math.round(Math.sqrt(100-r*r))*2;ctx.fillRect(cx-w/2,cy-r,w,1)}ctx.fillStyle='#FDB57E';ctx.fillRect(cx-12,cy+1,24,1);ctx.fillStyle='#F5926C';ctx.fillRect(cx-14,cy+2,28,1);
+   for(let i=0;i<10;i++){const y=cy+5+i*3,w=Math.max(2,20-i*2)+((f+i)>>2)%3;if(y<H){ctx.fillStyle=i%2?'#FFE08A':'#FFF0B8';ctx.fillRect(Math.round(cx-w/2+Math.sin((f+i*3)/5)),y,w,1)}}
+   bt.forEach(o=>{o.x+=o.v*.3;if(o.x>W+10)o.x=-10;blit(ctx,'boatH',o.x,o.y+((f>>3)%2))});
+   bi.forEach(o=>{o.x+=o.v*.8;if(o.x>W+6)o.x=-6;const y=Math.round(o.y+Math.sin((f+o.p)/4));if((f+o.p)%6<3)blit(ctx,'birdH',o.x,y);else{ctx.fillStyle='#4B2A4A';ctx.fillRect(Math.round(o.x),y+1,5,1)}})}}
  return null}
 /* ===================== LỚP 1 · CHỦ ĐỀ 1: CÁC SỐ TỪ 0 ĐẾN 10 ===================== */
 /* Mỗi tiết trong Vở BT-TH Toán 1 là một đảo. Đề viết lại (đồ vật, bối cảnh, số liệu khác), giữ đúng kiến thức của tiết. */
@@ -2029,7 +2143,7 @@ function viewHome1(){
     const path=pts.map((p,k)=>k?`Q ${p[0]-W/2} ${pts[k-1][1]===85?55:200} ${p[0]} ${p[1]}`:`M ${p[0]} ${p[1]}`).join(' ');
     let nodes;
     if(PLAY(ti)){const ck=cur1(st);const IL=PI();nodes=IL.filter(y=>y.ti===ti).map((x,j)=>{const k=IL.indexOf(x),s=s1(st,x.id),n=s.m.filter(Boolean).length,op=open1(st,k),[cx,cy]=pts[j],state=!op?'lock':n===x.nm?'done':'cur';
-      return`<button class="node ${state}${k===ck&&live?' here':''}" style="left:${cx-55}px;top:${cy-50}px" ${op?`onclick="go({k:'island',id:'${x.id}'})"`:`onclick="toast('Qua Màn 1 của đảo trước để mở đảo này nhé!')"`} aria-label="${esc(x.lesson)}, tiết ${x.tiet}${op?'':' (đang khóa)'}"><span class="ball">${spr(state==='lock'?'islandG':bm.isl,60)}${state==='lock'?spr('lock',26,'bdg'):k===ck&&live?spr('jenny',34,'bdg jen'):x.boss?spr(boss[0],26,'bdg bossbdg'):state==='done'?spr('medG',24,'bdg'):''}</span><span class="lbl"><b>${j+1}. ${esc(x.short)}</b><span class="stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(x.nm-n)}</span></span></span>${k===ck&&live?'<span class="flag">Đang học</span>':x.boss&&op?'<span class="flag warn">Trùm</span>':''}</button>`}).join('')}
+      return`<button class="node ${state}${k===ck&&live?' here':''}" style="left:${cx-55}px;top:${cy-50}px" ${op?`onclick="go({k:'island',id:'${x.id}'})"`:`onclick="toast('Qua Màn 1 của đảo trước để mở đảo này nhé!')"`} aria-label="${esc(x.lesson)}, tiết ${x.tiet}${op?'':' (đang khóa)'}"><span class="ball">${spr(state==='lock'?'islandG':bm.isl,60)}${state==='lock'?spr('lock',26,'bdg'):k===ck&&live?spr(typeof ofVariant==='function'?ofVariant('jenny',jOutfit()):'jenny',34,'bdg jen'):x.boss?spr(boss[0],26,'bdg bossbdg'):state==='done'?spr('medG',24,'bdg'):''}</span><span class="lbl"><b>${j+1}. ${esc(x.short)}</b><span class="stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(x.nm-n)}</span></span></span>${k===ck&&live?'<span class="flag">Đang học</span>':x.boss&&op?'<span class="flag warn">Trùm</span>':''}</button>`}).join('')}
     else nodes=isl.map(([b,t,tt],k)=>{const [cx,cy]=pts[k],last=k===isl.length-1;return`<button class="node lock" style="left:${cx-55}px;top:${cy-50}px" onclick="toast('${ts.cls==='soon'?'Chủ đề này đang được soạn.':`Hạ trùm ${PB()[ti-1][1]} ở Chủ đề ${ti} để mở.`}')" aria-label="Bài ${b}, tiết ${t} (đang khóa)"><span class="ball">${spr('islandG',60)}${last?spr(boss[0],26,'bdg'):''}</span><span class="lbl"><b>B${b} · T${t}</b><small>${esc(tt)}</small></span></button>`}).join('');
     const bs=isl[0][0],be=isl[isl.length-1][0];
     return`<section class="card t1sec bm-${bk} ${ts.cls}${live?' cur':''}" id="t1_${ti}" style="padding:16px 0 8px;--bmc:${bm.band[2]};--bmd:${bm.band[3]}"><div class="secthead" style="padding:0 16px;flex-wrap:wrap;gap:6px 10px"><span class="tno">CHỦ ĐỀ ${ti+1}</span><h2>${esc(name)}</h2><span class="grow"></span>${PLAY(ti)?`<span class="muted">${PI().filter(x=>x.ti===ti).reduce((a,x)=>a+s1(st,x.id).m.filter(Boolean).length,0)}/${PI().filter(x=>x.ti===ti).reduce((a,x)=>a+x.nm,0)} ★</span>`:`<span class="pill">${ts.cls==='soon'?'Đang soạn':'Chưa mở'}</span>`}</div>
@@ -5046,7 +5160,7 @@ function mgBg(f,mode){const Z=4,W=Math.ceil(f.clientWidth/Z),H=Math.ceil(f.clien
     x.fillStyle='#2AB563';for(let k=0;k<W;k++){const h=6+Math.round(3*Math.sin(k/9)+2*Math.sin(k/4));x.fillRect(k,H-h,1,h)}x.fillStyle='#1E8A4A';for(let k=0;k<W;k+=5)x.fillRect(k,H-3,2,3)}
   f.appendChild(cv);
   if(mode==='fish'){for(let i=0;i<7;i++){const b=document.createElement('i');b.className='mgbub';b.style.left=(8+rnd()*84)+'%';b.style.animationDelay=(rnd()*4).toFixed(1)+'s';b.style.animationDuration=(3+rnd()*3).toFixed(1)+'s';f.appendChild(b)}
-    const boat=document.createElement('div');boat.className='mgboat';boat.innerHTML=spr('boat',56)+`<span class="mgjen">${spr('jenny',30)}</span>`;f.appendChild(boat)}}
+    const boat=document.createElement('div');boat.className='mgboat';boat.innerHTML=spr('boat',56)+`<span class="mgjen">${spr(typeof ofVariant==='function'?ofVariant('jenny',jOutfit()):'jenny',30)}</span>`;f.appendChild(boat)}}
 function miniAfterRender(){if(scr.k!=='mini'||scr.end||scr.started)return;scr.started=true;stopMini();const f=document.getElementById('mgf');if(!f)return;sayJ(scr.say);mgBg(f,scr.mode);
   const items=[];let last=0,spawnGap=1100,n=0;const W=()=>f.clientWidth,H=()=>f.clientHeight,fish=scr.mode==='fish';
   const FS=['fishO','fishY','fishP','fishG','fish'],BS=['balloon','balloonB','balloonP','balloonG'];
@@ -5123,17 +5237,33 @@ const THEMES={
  fish:{bpm:108,w:'triangle',v:.05,mel:[79,0,76,0,79,81,79,0,76,0,74,72,74,0,0,0, 79,0,76,0,79,84,83,0,81,0,79,76,79,0,0,0],bass:[48,43,45,41,48,43,45,43],drum:0,bub:1},
  balloon:{bpm:100,w:'sine',v:.06,mel:[84,0,83,0,81,0,79,0,81,83,84,0,86,0,0,0, 84,0,88,0,86,0,84,0,83,81,79,0,81,0,0,0],bass:[48,52,53,55,48,52,53,43],drum:0},
  race:{bpm:160,w:'square',v:.03,mel:[72,74,76,79,76,74,72,0,74,76,79,81,79,76,74,0],bass:[48,55,53,55],drum:1},
+ /* nhạc bản đồ theo vùng biển (m_ + mã vùng) */
+ m_trop:{bpm:112,w:'triangle',v:.05,mel:[72,0,74,76,79,0,76,0,81,79,76,0,74,0,72,0, 72,0,74,76,79,0,81,0,84,81,79,0,76,74,72,0],bass:[48,48,53,53,55,55,48,48],drum:1},
+ m_snow:{bpm:72,w:'sine',v:.05,mel:[84,0,0,88,0,0,91,0,89,0,88,0,86,0,0,0, 83,0,0,86,0,0,89,0,88,0,86,0,84,0,0,0],bass:[48,45,41,43],bell:1},
+ m_volc:{bpm:96,w:'square',v:.03,mel:[57,0,60,0,57,59,60,0,64,0,62,60,59,0,0,0, 57,0,60,0,64,65,64,0,62,0,60,59,57,0,0,0],bass:[33,33,29,29,31,31,28,28],drum:2},
+ m_dese:{bpm:100,w:'triangle',v:.05,mel:[64,65,68,0,69,0,68,65,64,0,0,0,68,69,71,0, 72,71,69,0,68,0,65,64,65,0,64,0,0,0,0,0],bass:[40,40,41,40],drum:1},
+ m_cand:{bpm:144,w:'square',v:.03,mel:[79,81,84,0,81,84,88,0,86,84,81,0,84,0,0,0, 79,81,84,0,88,86,84,0,81,79,76,0,79,0,0,0],bass:[48,55,52,55,53,57,55,43],drum:1},
+ m_crys:{bpm:84,w:'sine',v:.045,mel:[76,0,79,0,83,0,79,0,74,0,77,0,81,0,77,0, 72,0,76,0,79,0,84,0,83,0,79,0,76,0,0,0],bass:[48,43,45,41],arp:[84,88,91,95]},
+ m_jung:{bpm:104,w:'triangle',v:.05,mel:[69,0,72,74,0,72,69,0,67,0,69,0,72,0,0,0, 69,0,72,74,76,74,72,0,69,67,64,0,67,0,0,0],bass:[45,45,43,43,41,41,43,43],wood:1},
+ m_autu:{bpm:96,w:'triangle',v:.05,bs:6,mel:[76,0,72,0,74,0, 72,0,69,0,71,0, 72,0,76,0,79,0, 77,0,0,0,0,0, 76,0,74,0,72,0, 74,0,71,0,67,0, 69,0,71,0,72,0, 72,0,0,0,0,0],bass:[48,53,48,43,45,43,41,48]},
+ m_nigh:{bpm:64,w:'sine',v:.05,mel:[76,0,0,79,0,0,76,0,74,0,72,0,74,0,0,0, 72,0,0,76,0,0,74,0,71,0,67,0,72,0,0,0],bass:[48,45,41,43],bell:1},
+ m_suns:{bpm:80,w:'triangle',v:.05,mel:[77,0,76,0,74,0,72,0,74,0,76,0,72,0,0,0, 69,0,72,0,77,0,76,0,74,0,72,0,70,0,69,0],bass:[41,41,46,46,48,48,41,41]},
 };
 let muCur=null,muTimer=null,muStep=0,muNext=0;
 function musicTheme(){if(role!=='hs')return null;const k=scr.k;if(k==='mini')return scr.end?null:(scr.mode==='fish'?'fish':'balloon');
   if(k==='game'){if(scr.end||(scr.sheet&&scr.sheet.kind!=='ok'))return null;if(scr.race)return'race';if(scr.tre)return'game';if(scr.cbo)return'boss';return null}/* các màn Học trên đảo: không nhạc nền */
-  if(k==='lslide'||k==='jslide'||k==='video'||k==='jex'||k==='example'||k==='jenny')return null;return'map'}
+  if(k==='lslide'||k==='jslide'||k==='video'||k==='jex'||k==='example'||k==='jenny')return null;return mapTheme()}
+/* nhạc bản đồ: theo vùng biển của chủ đề đang học (trang đảo: vùng của đảo đó) */
+function mapTheme(){try{const st=S.st[sid];if(!st||st.grade>5||typeof biomeOf!=='function')return'map';const g=curG();let ti;if(scr.k==='island'&&scr.id){const x=isl1(scr.id);ti=x?x.ti:0}else ti=curT1(st);const T=PT()[ti],t='m_'+biomeOf(g,ti,T?T[0]:'');return THEMES[t]?t:'map'}catch(e){return'map'}}
 function musicSync(){const want=SND.m?musicTheme():null;if(want===muCur)return;muCur=want;const A=aud();if(!A)return;
   const t=A.ac.currentTime;A.mu.gain.cancelScheduledValues(t);A.mu.gain.setValueAtTime(A.mu.gain.value,t);A.mu.gain.linearRampToValueAtTime(want?1:0,t+.35);
   if(want&&!muTimer){muNext=A.ac.currentTime+.1;muStep=0;muTimer=setInterval(muTick,60)}if(!want&&muTimer){setTimeout(()=>{if(!muCur&&muTimer){clearInterval(muTimer);muTimer=null}},500)}}
 function muTick(){const A=AUD;if(!A||!muCur)return;const T=THEMES[muCur],sp=60/T.bpm/2;while(muNext<A.ac.currentTime+.25){const i=muStep%T.mel.length,at=muNext-A.ac.currentTime;
    const n=T.mel[i];if(n)tone(mHz(n),at,sp*.9,T.w,T.v,0,A.mu);
-   if(muStep%4===0){const b=T.bass[Math.floor(muStep/4)%T.bass.length];tone(mHz(b),at,sp*3.6,'triangle',T.v*1.6,0,A.mu)}
+   const bs=T.bs||4;if(muStep%bs===0){const b=T.bass[Math.floor(muStep/bs)%T.bass.length];tone(mHz(b),at,sp*(bs-.4),'triangle',T.v*1.6,0,A.mu)}
+   if(T.bell&&n)tone(mHz(n+12),at+sp*.5,sp*1.6,'sine',T.v*.35,0,A.mu);
+   if(T.arp&&muStep%2===1)tone(mHz(T.arp[(muStep>>1)%T.arp.length]),at,sp*.7,'sine',T.v*.3,0,A.mu);
+   if(T.wood&&(muStep%4===1||muStep%8===6))tone(mHz(muStep%8===6?79:84),at,.04,'square',T.v*.6,.5,A.mu);
    if(T.drum&&muStep%4===2)noise(at,.05,T.v*1.1,4000,A.mu);if(T.drum===2&&muStep%8===0)tone(mHz(36),at,.12,'sine',T.v*3,.5,A.mu);
    if(T.bub&&muStep%6===3&&Math.random()<.5)tone(mHz(R(80,92)),at,.06,'sine',T.v*.7,1.8,A.mu);
    muNext+=sp;muStep++}}
@@ -5190,9 +5320,10 @@ SFX.bosslaugh=()=>[0,.14,.28,.42].forEach((t,i)=>tone(mHz(i%2?55:58),t,.1,'squar
  PXS.fxTear=[".b.","bwb","bbb",".b."];}
 const JMOOD={idle:'jenny',happy:'jennyHappy',sad:'jennySad',cheer:'jennyCheer',think:'jenny'};
 /* thay hàm jenny(): thêm tham số biểu cảm; mặc định vẫn nháy mắt nhẹ */
-function jenny(size,mood='idle'){const s=Math.round(size*.86),sp=JMOOD[mood]||'jenny';
+function jenny(size,mood='idle'){const s=Math.round(size*.86),of=typeof jOutfit==='function'?jOutfit():null,V=n=>of?ofVariant(n,of):n,sp=V(JMOOD[mood]||'jenny');
   const fx=mood==='happy'||mood==='cheer'?`<span class="jfx s1">${spr('fxSpark',Math.round(size*.26))}</span><span class="jfx s2">${spr('fxSpark',Math.round(size*.2))}</span>`:mood==='sad'?`<span class="jfx tear">${spr('fxTear',Math.round(size*.16))}</span>`:'';
-  return`<span class="jav jm-${mood}" style="width:${size}px;height:${size}px" aria-hidden="true"><span class="jbody">${spr(sp,s,'jf')}${mood==='idle'?spr('jennyBlink',s,'jf jblink'):''}</span>${fx}</span>`}
+  const acc=of&&OUTFIT[of]&&OUTFIT[of].acc?`<span class="jacc">${spr(OUTFIT[of].acc,Math.round(size*.34))}</span>`:'';
+  return`<span class="jav jm-${mood}${of?' of-'+of:''}" style="width:${size}px;height:${size}px" aria-hidden="true"><span class="jbody">${spr(sp,s,'jf')}${mood==='idle'?spr(V('jennyBlink'),s,'jf jblink'):''}${acc}</span>${fx}</span>`}
 /* biểu cảm theo màn chơi */
 function jMood(g){if(!g)return'idle';if(g.end)return g.pass||g.won||g.ok?'cheer':'sad';if(g.sheet){return g.sheet.kind==='ok'?'happy':'sad'}return'idle'}
 
@@ -5204,11 +5335,91 @@ const CBHE=[
  {k:'vang',n:'Hệ Vàng',m:{r:'a',R:'T',b:'y',B:'a',p:'a',P:'u',g:'y',G:'T',o:'y',O:'T',c:'t'},tag:'#FCB40C'},
  {k:'dem',n:'Hệ Bóng đêm',m:{r:'P',R:'k',b:'P',B:'k',p:'P',P:'k',g:'P',G:'k',o:'P',O:'k',c:'E',e:'E',w:'e',a:'E',y:'e'},tag:'#5E3A7A'},
  {k:'keo',n:'Hệ Kẹo ngọt',m:{r:'c',R:'p',b:'c',B:'p',g:'c',G:'p',o:'c',O:'p',p:'c',P:'R',e:'w'},tag:'#F26249'},
+ {k:'cat',n:'Hệ Cát',m:{r:'a',R:'u',b:'t',B:'T',p:'t',P:'u',g:'t',G:'T',o:'T',O:'u',c:'y',x:'t'},tag:'#E2B85E'},
+ {k:'phale',n:'Hệ Pha lê',m:{r:'p',R:'P',b:'x',B:'p',g:'x',G:'p',o:'x',O:'p',c:'w',a:'x',y:'e'},tag:'#8656A8'},
+ {k:'thu',n:'Hệ Lá Thu',m:{r:'o',R:'R',b:'o',B:'O',g:'a',G:'o',p:'r',P:'R',c:'a',x:'a'},tag:'#F37A1F'},
+ {k:'hh',n:'Hệ Hoàng hôn',m:{r:'c',R:'R',b:'a',B:'o',g:'a',G:'O',p:'c',P:'p',o:'c',O:'R',e:'t',x:'c'},tag:'#F26249'},
 ];
 function cbVariant(name,he){const key=`${name}__${he.k}`;if(!PXS[key]&&PXS[name])PXS[key]=PXS[name].map(r=>r.replace(/./g,ch=>he.m[ch]||ch));return PXS[key]?key:name}
-CBN.forEach(([s])=>CBHE.forEach(h=>cbVariant(s,h)));
-/* gắn hệ màu cho mỗi trùm lớp (cố định theo đảo); giữ tên gốc, thêm tên hệ khi hiển thị */
-{const _cbI=cbI;cbI=function(id){const b=_cbI(id);if(!b.he){const k=islIdx(id),he=CBHE[(k*5+3)%CBHE.length];b.he=he.k;b.baseSpr=b.spr;b.baseName=b.name;b.spr=cbVariant(b.spr,he);b.name=`${b.name} · ${he.n}`}return b}}
+/* vùng biển → hệ trùm (Nhiệt đới giữ màu gốc) */
+const BIOME_HE={trop:null,snow:'bang',volc:'lua',dese:'cat',cand:'keo',crys:'phale',jung:'doc',autu:'thu',nigh:'dem',suns:'hh'};
+const heOf=k=>CBHE.find(h=>h.k===BIOME_HE[k])||null;
+/* vùng biển của một đảo / một chủ đề */
+function biomeOfTopic(g,ti){const T=PRIM[g]&&PRIM[g].T[ti];return biomeOf(g,ti,T?T[0]:'')}
+function biomeOfIsl(id){const m=String(id).match(/^g(\d)/),x=isl1(id);if(!m||!x)return'trop';return biomeOfTopic(+m[1],x.ti||0)}
+{const sp=new Set(CBN.map(c=>c[0]));for(const g in PRIM)(PRIM[g].boss||[]).forEach(b=>b&&sp.add(b[0]));sp.forEach(s=>CBHE.forEach(h=>cbVariant(s,h)))}
+/* trùm chủ đề (trùm đảo): đổi màu theo vùng biển, thêm tên hệ */
+for(const g in PRIM){if(!PRIM[g].boss||!PRIM[g].T)continue;PRIM[g].boss=PRIM[g].boss.map((b,ti)=>{if(!b)return b;const bk=biomeOfTopic(+g,ti),he=heOf(bk);const r=[he?cbVariant(b[0],he):b[0],he?`${b[1]} · ${he.n}`:b[1]];r.base=b[0];r.baseName=b[1];r.he=he?he.k:'bien';r.bk=bk;return r})}
+/* trùm lớp: hệ theo vùng biển của đảo (tính lại mỗi lần, kể cả dữ liệu đã lưu) */
+{const _cbI=cbI;cbI=function(id){const b=_cbI(id);if(!b.baseSpr){b.baseSpr=b.spr;b.baseName=b.name}const he=heOf(biomeOfIsl(id)),k=he?he.k:'bien';if(b.he!==k){b.he=k;b.spr=he?cbVariant(b.baseSpr,he):b.baseSpr;b.name=he?`${b.baseName} · ${he.n}`:b.baseName}return b}}
+/* ===================== HỘ CHIẾU ĐẠI DƯƠNG ===================== */
+/* Mỗi lớp một cuốn hộ chiếu. Hạ trùm ở đảo cuối của một chủ đề → đóng dấu vùng biển của chủ đề đó.
+   Mỗi vùng biển mới mở một trang phục Jenny (đổi màu áo, giày, nút). Đủ mọi vùng biển trong hộ chiếu → Trang phục Huyền thoại.
+   Lưu: st.pass = {'lớp:chủ đề': {bk, d}}, st.outfit = mã trang phục ('' = áo gốc). */
+Object.assign(PXS,{
+ crownS:["y.y.y.y","yaywyay","yyyyyyy","araryra"],
+ ancS:["..k..",".kyk.","..k..","kkkkk","..k..","k.k.k",".kkk."],
+});
+const OUTFIT={
+ trop:{n:'Áo Thủy thủ',m:{g:'b',G:'B',y:'w'}},
+ snow:{n:'Áo len Băng',m:{g:'e',G:'E',y:'b',o:'B'}},
+ volc:{n:'Áo Lửa',m:{g:'r',G:'R',y:'y',o:'R'}},
+ dese:{n:'Áo Sa mạc',m:{g:'t',G:'T',y:'u',o:'n'}},
+ cand:{n:'Váy Kẹo ngọt',m:{g:'c',G:'p',y:'w',o:'p'}},
+ crys:{n:'Áo Pha lê',m:{g:'p',G:'P',y:'x',o:'P'}},
+ jung:{n:'Áo Rừng xanh',m:{g:'G',y:'l',o:'N'}},
+ autu:{n:'Áo Lá Thu',m:{g:'o',G:'O',y:'r',o:'N'}},
+ nigh:{n:'Áo Đêm sao',m:{g:'P',G:'k',y:'y',o:'k'}},
+ suns:{n:'Áo Hoàng hôn',m:{g:'a',G:'O',y:'c',o:'O'}},
+ leg:{n:'Trang phục Huyền thoại',m:{g:'y',G:'a',y:'r',o:'a'},acc:'crownS'},
+};
+const OF_KEYS=['trop','snow','volc','dese','cand','crys','jung','autu','nigh','suns'];
+function ofVariant(name,of){const o=OUTFIT[of];if(!o||!PXS[name])return name;const key=`${name}__of_${of}`;if(!PXS[key])PXS[key]=PXS[name].map(r=>r.replace(/./g,ch=>o.m[ch]||ch));return key}
+['jenny','jennyBlink','jennyHappy','jennySad','jennyCheer'].forEach(n=>Object.keys(OUTFIT).forEach(o=>ofVariant(n,o)));
+
+/* trang phục đang mặc (chỉ học sinh tiểu học) */
+function jOutfit(){try{if(role!=='hs')return null;const st=S.st[sid];if(!st||!st.outfit)return null;return ofOwn(st).has(st.outfit)?st.outfit:null}catch(e){return null}}
+/* các vùng biển của một lớp (theo thứ tự chủ đề) */
+const passTopics=g=>(PRIM[g]&&PRIM[g].T||[]).map((t,ti)=>({ti,name:t[0],bk:biomeOfTopic(g,ti)}));
+const passGradeBiomes=g=>[...new Set(passTopics(g).map(t=>t.bk))];
+/* trang phục đã mở: vùng có dấu; Huyền thoại khi đủ mọi vùng của hộ chiếu (tối đa 10) */
+function ofOwn(st){const P=st.pass||{},got=new Set(Object.values(P).map(v=>v.bk)),own=new Set(got);
+  const g=st.grade<=5?st.grade:1,need=passGradeBiomes(g);if(got.size>=10||(need.length&&need.every(k=>got.has(k))))own.add('leg');return own}
+/* đảo trùm của chủ đề: đảo có trùm, nếu không có thì đảo cuối */
+function passBossIsl(g,ti){const L=(PRIM[g]&&PRIM[g].isl||[]).filter(x=>x.ti===ti);return L.find(x=>x.boss)||L[L.length-1]}
+const passDone=(st,x)=>{const p=st.p1&&st.p1[x.id];return!!(p&&p.m&&p.m[x.nm-1])};
+const PASS_SEEN={};
+/* đóng dấu mới; lần đầu với mỗi học sinh trong phiên: bù dấu từ tiến độ cũ, không hiện hiệu ứng */
+function passSync(){if(role!=='hs')return;const st=S.st[sid];if(!st||st.grade>5)return;const g=st.grade,silent=!PASS_SEEN[sid];PASS_SEEN[sid]=1;
+  st.pass=st.pass||{};const before=ofOwn(st),fresh=[];
+  passTopics(g).forEach(t=>{const key=`${g}:${t.ti}`;if(st.pass[key])return;const x=passBossIsl(g,t.ti);if(x&&passDone(st,x)){st.pass[key]={bk:t.bk,d:passDate()};fresh.push(t)}});
+  if(!fresh.length)return;save();if(silent)return;
+  const after=ofOwn(st),newOf=[...after].filter(k=>!before.has(k));setTimeout(()=>passPop(g,fresh[fresh.length-1],newOf),350)}
+const passDate=()=>{const d=new Date();return`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`};
+/* con dấu */
+function stampHTML(bk,ti,d,size='md'){const bm=BIOME[bk]||BIOME.trop;
+  return`<span class="pstamp ${size}" style="--sc:${bm.band[2]};--sd:${bm.band[3]}" role="img" aria-label="Dấu ${esc(bm.n)}${d?', ngày '+d:''}"><span class="pst-ic">${bm.ic}</span><b>${esc(bm.n)}</b><small>Chủ đề ${ti+1}${d?' · '+d:''}</small></span>`}
+SFX.stamp=()=>{noise(0,.09,.32,300);tone(mHz(40),0,.14,'square',.2,.5);tone(mHz(84),.18,.25,'sine',.14);tone(mHz(91),.3,.4,'sine',.12)};
+function passPop(g,t,newOf){document.querySelectorAll('.stamppop').forEach(e=>e.remove());const d=(S.st[sid].pass||{})[`${g}:${t.ti}`]||{};
+  const el=document.createElement('div');el.className='stamppop';el.setAttribute('role','status');
+  el.innerHTML=`<div class="spbox"><span class="sptitle">🛂 Hộ chiếu đại dương</span>${stampHTML(t.bk,t.ti,d.d,'lg')}${newOf.length?`<span class="spof">${jennyOf(46,newOf[newOf.length-1])}<span>Mở trang phục mới: <b>${esc(OUTFIT[newOf[newOf.length-1]].n)}</b></span></span>`:''}<button type="button" class="btn sm pri" onclick="this.closest('.stamppop').remove();go({k:'home',tab:'album'})">Xem hộ chiếu</button><button type="button" class="btn sm" onclick="this.closest('.stamppop').remove()">Đóng</button></div>`;
+  document.body.appendChild(el);pixelize(el);sfx('stamp');try{sayJ(`Em được đóng dấu ${BIOME[t.bk].n} vào hộ chiếu đại dương!`)}catch(e){}
+  setTimeout(()=>el.classList.add('on'),20)}
+/* Jenny mặc một trang phục bất kì (xem thử) */
+function jennyOf(size,of){const s=Math.round(size*.86),o=OUTFIT[of];return`<span class="jav" style="width:${size}px;height:${size}px" aria-hidden="true"><span class="jbody">${spr(of?ofVariant('jenny',of):'jenny',s,'jf')}${o&&o.acc?`<span class="jacc">${spr(o.acc,Math.round(size*.34))}</span>`:''}</span></span>`}
+function setOutfit(of){const st=S.st[sid];if(of&&!ofOwn(st).has(of))return;st.outfit=of||'';save();sfx('card');render();toast(of?`Jenny mặc ${OUTFIT[of].n}`:'Jenny mặc áo xanh gốc')}
+function viewPass(st){const g=st.grade<=5?st.grade:1,P=st.pass||{},T=passTopics(g),got=T.filter(t=>P[`${g}:${t.ti}`]).length,own=ofOwn(st),cur=st.outfit&&own.has(st.outfit)?st.outfit:'';
+  const need=passGradeBiomes(g),keys=OF_KEYS.filter(k=>need.includes(k)||own.has(k)).concat('leg');
+  const slots=T.map(t=>{const v=P[`${g}:${t.ti}`];return`<div class="pslot ${v?'own':''}" title="Chủ đề ${t.ti+1}: ${esc(t.name)}">${v?stampHTML(v.bk,t.ti,v.d):`<span class="pempty"><b>${t.ti+1}</b><small>${BIOME[t.bk]?esc(BIOME[t.bk].n):''}</small></span>`}</div>`}).join('');
+  const ofs=[['', 'Áo xanh gốc',true]].concat(keys.map(k=>[k,OUTFIT[k].n,own.has(k)])).map(([k,n,ok])=>`<button type="button" class="ofbtn ${ok?'':'off'} ${k===cur?'on':''}" ${ok?`onclick="setOutfit('${k}')"`:`onclick="toast('${k==='leg'?'Đủ dấu mọi vùng biển trong hộ chiếu để mở':`Hạ trùm ở ${esc((BIOME[k]||{}).n||'')} để mở`}')"`} aria-pressed="${k===cur}">${ok?jennyOf(44,k):`<span class="oflock">${spr('lock',22)}</span>`}<b>${esc(n)}</b>${k===cur?'<i>Đang mặc</i>':''}</button>`).join('');
+  return`<section class="card passcard" style="--oc:${OCEAN[g][1]}"><div class="secthead"><h2>🛂 Hộ chiếu đại dương</h2><span class="grow"></span><span class="pill ${got===T.length?'ok':'acc'}">${got}/${T.length} dấu</span></div>
+   <p class="muted" style="margin:4px 0 10px">${esc(OCEAN[g][0])} · Lớp ${g}. Hạ trùm ở đảo cuối mỗi chủ đề để được đóng dấu vùng biển đó. Mỗi vùng biển mới mở một trang phục cho Jenny.</p>
+   <div class="pbook">${slots}</div>
+   <h3 class="ofh">Tủ đồ của Jenny</h3><div class="ofgrid">${ofs}</div></section>`}
+/* Sưu tập: hộ chiếu ở trên, thẻ sinh vật ở dưới */
+{const _va=viewAlbum;viewAlbum=function(st){const a=_va(st);return a.replace('<div class="grid">',`<div class="grid">${viewPass(st)}`)}}
+/* sau mỗi lần vẽ màn hình: kiểm tra dấu mới */
+{const _r=render;render=function(){const a=_r.apply(this,arguments);try{passSync()}catch(e){}return a}}
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 

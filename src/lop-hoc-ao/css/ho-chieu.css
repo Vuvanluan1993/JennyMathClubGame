@@ -1,0 +1,32 @@
+/* hộ chiếu đại dương: CSS riêng */
+.passcard{background:linear-gradient(180deg,color-mix(in srgb,var(--oc) 10%,var(--surface)) 0,var(--surface) 120px)}
+.pbook{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;padding:12px;background:repeating-linear-gradient(0deg,transparent 0 23px,color-mix(in srgb,var(--line) 70%,transparent) 23px 24px),var(--surface2);box-shadow:var(--f2)}
+.pslot{display:grid;place-items:center;min-height:104px}
+.pempty{display:grid;place-items:center;gap:2px;width:88px;height:88px;border:3px dashed color-mix(in srgb,var(--muted) 45%,transparent);border-radius:50%;color:var(--muted);text-align:center;font-size:11px;line-height:1.15;padding:6px}
+.pempty b{font-size:20px;opacity:.6}
+.pstamp{--sc:#12B5E8;--sd:#0079C1;display:grid;place-items:center;align-content:center;gap:1px;width:92px;height:92px;border-radius:50%;border:4px double var(--sd);color:var(--sd);background:radial-gradient(circle,color-mix(in srgb,var(--sc) 22%,transparent) 0 55%,transparent 56%);text-align:center;font-size:10.5px;line-height:1.1;padding:8px;transform:rotate(-8deg);box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--sc) 45%,transparent)}
+.pslot:nth-child(2n) .pstamp{transform:rotate(6deg)}
+.pslot:nth-child(3n) .pstamp{transform:rotate(-3deg)}
+.pstamp .pst-ic{font-size:24px;line-height:1}
+.pstamp b{font-weight:800;text-transform:uppercase;letter-spacing:.02em}
+.pstamp small{font-size:9px;opacity:.85}
+.pstamp.lg{width:150px;height:150px;font-size:15px;border-width:6px}
+.pstamp.lg .pst-ic{font-size:40px}.pstamp.lg small{font-size:12px}
+.ofh{margin:16px 0 8px;font-size:16px}
+.ofgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.ofbtn{position:relative;display:grid;justify-items:center;gap:4px;padding:10px 4px 8px;background:var(--surface2);box-shadow:var(--f2);border:0;color:inherit;font:inherit;font-size:12px;text-align:center;cursor:pointer;min-height:96px}
+.ofbtn.on{outline:3px solid var(--oc,#FCB40C);outline-offset:-3px;background:color-mix(in srgb,var(--oc,#FCB40C) 16%,var(--surface2))}
+.ofbtn.off{opacity:.55;cursor:help}
+.ofbtn i{font-style:normal;font-size:10px;font-weight:700;color:var(--oc,#C95A0E)}
+.oflock{display:grid;place-items:center;width:44px;height:44px}
+.jacc{position:absolute;left:50%;top:-14%;transform:translateX(-50%);line-height:0;pointer-events:none}
+.jav .jbody{position:relative}
+.stamppop{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:rgba(10,16,40,.55);opacity:0;transition:opacity .25s;padding:16px}
+.stamppop.on{opacity:1}
+.spbox{display:grid;justify-items:center;gap:12px;max-width:320px;width:100%;padding:20px 16px;background:var(--surface);box-shadow:var(--f2,0 4px 0 #1F2A5A);text-align:center}
+.sptitle{font-weight:800}
+.spof{display:flex;align-items:center;gap:8px;font-size:13px;text-align:left}
+.stamppop.on .pstamp{animation:stampIn .6s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes stampIn{0%{transform:scale(2.6) rotate(-30deg);opacity:0}60%{transform:scale(.92) rotate(-6deg);opacity:1}100%{transform:scale(1) rotate(-8deg)}}
+@media (prefers-reduced-motion:reduce){.stamppop.on .pstamp{animation:none}}
+@media (max-width:420px){.pbook,.ofgrid{grid-template-columns:repeat(3,1fr);gap:6px;padding:8px}.pstamp{width:84px;height:84px;font-size:9.5px}.pempty{width:80px;height:80px}}

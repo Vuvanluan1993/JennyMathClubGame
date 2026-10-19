@@ -1,0 +1,3 @@
+/* vùng biển: đảo 26×18 ô vẽ to hơn một chút cho rõ hình (vừa khung nút 110px) */
+body.px .t1sec .node .ball>img:first-child{height:68px!important;width:auto!important;max-width:104px}
+body.px .t1sec .node.lock .ball>img:first-child{height:56px!important}

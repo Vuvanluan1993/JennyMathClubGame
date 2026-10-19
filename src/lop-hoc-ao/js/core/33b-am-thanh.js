@@ -55,17 +55,33 @@ const THEMES={
  fish:{bpm:108,w:'triangle',v:.05,mel:[79,0,76,0,79,81,79,0,76,0,74,72,74,0,0,0, 79,0,76,0,79,84,83,0,81,0,79,76,79,0,0,0],bass:[48,43,45,41,48,43,45,43],drum:0,bub:1},
  balloon:{bpm:100,w:'sine',v:.06,mel:[84,0,83,0,81,0,79,0,81,83,84,0,86,0,0,0, 84,0,88,0,86,0,84,0,83,81,79,0,81,0,0,0],bass:[48,52,53,55,48,52,53,43],drum:0},
  race:{bpm:160,w:'square',v:.03,mel:[72,74,76,79,76,74,72,0,74,76,79,81,79,76,74,0],bass:[48,55,53,55],drum:1},
+ /* nhạc bản đồ theo vùng biển (m_ + mã vùng) */
+ m_trop:{bpm:112,w:'triangle',v:.05,mel:[72,0,74,76,79,0,76,0,81,79,76,0,74,0,72,0, 72,0,74,76,79,0,81,0,84,81,79,0,76,74,72,0],bass:[48,48,53,53,55,55,48,48],drum:1},
+ m_snow:{bpm:72,w:'sine',v:.05,mel:[84,0,0,88,0,0,91,0,89,0,88,0,86,0,0,0, 83,0,0,86,0,0,89,0,88,0,86,0,84,0,0,0],bass:[48,45,41,43],bell:1},
+ m_volc:{bpm:96,w:'square',v:.03,mel:[57,0,60,0,57,59,60,0,64,0,62,60,59,0,0,0, 57,0,60,0,64,65,64,0,62,0,60,59,57,0,0,0],bass:[33,33,29,29,31,31,28,28],drum:2},
+ m_dese:{bpm:100,w:'triangle',v:.05,mel:[64,65,68,0,69,0,68,65,64,0,0,0,68,69,71,0, 72,71,69,0,68,0,65,64,65,0,64,0,0,0,0,0],bass:[40,40,41,40],drum:1},
+ m_cand:{bpm:144,w:'square',v:.03,mel:[79,81,84,0,81,84,88,0,86,84,81,0,84,0,0,0, 79,81,84,0,88,86,84,0,81,79,76,0,79,0,0,0],bass:[48,55,52,55,53,57,55,43],drum:1},
+ m_crys:{bpm:84,w:'sine',v:.045,mel:[76,0,79,0,83,0,79,0,74,0,77,0,81,0,77,0, 72,0,76,0,79,0,84,0,83,0,79,0,76,0,0,0],bass:[48,43,45,41],arp:[84,88,91,95]},
+ m_jung:{bpm:104,w:'triangle',v:.05,mel:[69,0,72,74,0,72,69,0,67,0,69,0,72,0,0,0, 69,0,72,74,76,74,72,0,69,67,64,0,67,0,0,0],bass:[45,45,43,43,41,41,43,43],wood:1},
+ m_autu:{bpm:96,w:'triangle',v:.05,bs:6,mel:[76,0,72,0,74,0, 72,0,69,0,71,0, 72,0,76,0,79,0, 77,0,0,0,0,0, 76,0,74,0,72,0, 74,0,71,0,67,0, 69,0,71,0,72,0, 72,0,0,0,0,0],bass:[48,53,48,43,45,43,41,48]},
+ m_nigh:{bpm:64,w:'sine',v:.05,mel:[76,0,0,79,0,0,76,0,74,0,72,0,74,0,0,0, 72,0,0,76,0,0,74,0,71,0,67,0,72,0,0,0],bass:[48,45,41,43],bell:1},
+ m_suns:{bpm:80,w:'triangle',v:.05,mel:[77,0,76,0,74,0,72,0,74,0,76,0,72,0,0,0, 69,0,72,0,77,0,76,0,74,0,72,0,70,0,69,0],bass:[41,41,46,46,48,48,41,41]},
 };
 let muCur=null,muTimer=null,muStep=0,muNext=0;
 function musicTheme(){if(role!=='hs')return null;const k=scr.k;if(k==='mini')return scr.end?null:(scr.mode==='fish'?'fish':'balloon');
   if(k==='game'){if(scr.end||(scr.sheet&&scr.sheet.kind!=='ok'))return null;if(scr.race)return'race';if(scr.tre)return'game';if(scr.cbo)return'boss';return null}/* các màn Học trên đảo: không nhạc nền */
-  if(k==='lslide'||k==='jslide'||k==='video'||k==='jex'||k==='example'||k==='jenny')return null;return'map'}
+  if(k==='lslide'||k==='jslide'||k==='video'||k==='jex'||k==='example'||k==='jenny')return null;return mapTheme()}
+/* nhạc bản đồ: theo vùng biển của chủ đề đang học (trang đảo: vùng của đảo đó) */
+function mapTheme(){try{const st=S.st[sid];if(!st||st.grade>5||typeof biomeOf!=='function')return'map';const g=curG();let ti;if(scr.k==='island'&&scr.id){const x=isl1(scr.id);ti=x?x.ti:0}else ti=curT1(st);const T=PT()[ti],t='m_'+biomeOf(g,ti,T?T[0]:'');return THEMES[t]?t:'map'}catch(e){return'map'}}
 function musicSync(){const want=SND.m?musicTheme():null;if(want===muCur)return;muCur=want;const A=aud();if(!A)return;
   const t=A.ac.currentTime;A.mu.gain.cancelScheduledValues(t);A.mu.gain.setValueAtTime(A.mu.gain.value,t);A.mu.gain.linearRampToValueAtTime(want?1:0,t+.35);
   if(want&&!muTimer){muNext=A.ac.currentTime+.1;muStep=0;muTimer=setInterval(muTick,60)}if(!want&&muTimer){setTimeout(()=>{if(!muCur&&muTimer){clearInterval(muTimer);muTimer=null}},500)}}
 function muTick(){const A=AUD;if(!A||!muCur)return;const T=THEMES[muCur],sp=60/T.bpm/2;while(muNext<A.ac.currentTime+.25){const i=muStep%T.mel.length,at=muNext-A.ac.currentTime;
    const n=T.mel[i];if(n)tone(mHz(n),at,sp*.9,T.w,T.v,0,A.mu);
-   if(muStep%4===0){const b=T.bass[Math.floor(muStep/4)%T.bass.length];tone(mHz(b),at,sp*3.6,'triangle',T.v*1.6,0,A.mu)}
+   const bs=T.bs||4;if(muStep%bs===0){const b=T.bass[Math.floor(muStep/bs)%T.bass.length];tone(mHz(b),at,sp*(bs-.4),'triangle',T.v*1.6,0,A.mu)}
+   if(T.bell&&n)tone(mHz(n+12),at+sp*.5,sp*1.6,'sine',T.v*.35,0,A.mu);
+   if(T.arp&&muStep%2===1)tone(mHz(T.arp[(muStep>>1)%T.arp.length]),at,sp*.7,'sine',T.v*.3,0,A.mu);
+   if(T.wood&&(muStep%4===1||muStep%8===6))tone(mHz(muStep%8===6?79:84),at,.04,'square',T.v*.6,.5,A.mu);
    if(T.drum&&muStep%4===2)noise(at,.05,T.v*1.1,4000,A.mu);if(T.drum===2&&muStep%8===0)tone(mHz(36),at,.12,'sine',T.v*3,.5,A.mu);
    if(T.bub&&muStep%6===3&&Math.random()<.5)tone(mHz(R(80,92)),at,.06,'sine',T.v*.7,1.8,A.mu);
    muNext+=sp;muStep++}}

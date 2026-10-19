@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Vùng biển đúng tên, trùm và nhạc theo vùng, Hộ chiếu đại dương
+- Vẽ lại 10 đảo (26×18 ô) cho đúng tên vùng: dừa + phao (Nhiệt đới), lều tuyết + cánh cụt (Băng), núi lửa dung nham, ốc đảo xương rồng + kim tự tháp, bánh kem + kẹo mút, cụm pha lê, cây rừng dây leo, cây lá đỏ + nấm, hải đăng, dừa bóng tối hoàng hôn.
+- Trong nước có vật thể của vùng: san hô + cá; tảng băng, cánh cụt bơi, cực quang; đá bazan, dung nham, khói; cồn cát, rùa; kẹo trôi, cốm rơi; pha lê nhô khỏi mặt nước, mảnh pha lê, tia cầu vồng; lá súng, sen, ếch, đom đóm; lá thu trôi, thuyền giấy; trăng, sứa phát sáng, sao băng, đèn hải đăng quét; mặt trời lặn, chim và thuyền bóng tối. Cá voi/thuyền/hải âu chỉ còn ở Nhiệt đới. Bộ sinh hình: `tools/sprite/vung-bien-gen.py`.
+- Trùm theo vùng: trùm chủ đề và Trùm lớp mang hệ màu của vùng (10 hệ, thêm Cát, Pha lê, Lá Thu, Hoàng hôn).
+- Nhạc theo vùng: 10 bản nhạc bản đồ, phát theo vùng đang học.
+- Hộ chiếu đại dương (tab Sưu tập): hạ trùm cuối chủ đề → đóng dấu vùng biển (có hiệu ứng, âm thanh); mỗi vùng mở 1 trang phục Jenny, đủ vùng → Trang phục Huyền thoại. Tiến độ cũ được tự đóng dấu bù.
+
 ## 2026-10-19 — Vùng biển khác nhau
 - Mỗi chủ đề là một vùng biển riêng (`core/23b`, `BIOME`, `biomeOf()`): 10 vùng — Nhiệt đới, Kẹo ngọt, Rừng xanh, Pha lê, Biển Băng, Lá Thu, Ốc đảo Sa mạc, Núi lửa, Đêm sao, Hoàng hôn. Mỗi vùng có màu nước, kiểu đảo (dừa, thông tuyết, núi lửa, xương rồng, nấm kẹo, pha lê, cây tròn, cây lá đỏ) và hiệu ứng động riêng (tuyết rơi + băng trôi, tàn lửa bay, kẹo trôi + bong bóng, pha lê lấp lánh, lá súng, lá thu rơi, sao + trăng, mặt trời lặn, cồn cát).
 - Mỗi lớp là một đại dương có tên và màu nhấn riêng (Vịnh Tí Hon, Biển Ngọc Bích, Quần đảo Mây Trắng, Đại dương Sao Băng, Biển Huyền Thoại); thứ tự vùng biển mỗi lớp khác nhau. Ôn tập học kì 1 luôn là Biển Băng, Ôn tập cuối năm luôn là Biển Hoàng hôn.
