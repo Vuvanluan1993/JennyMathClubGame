@@ -1,6 +1,7 @@
 # Lịch sử thay đổi
 
 ## 2026-10-19 — Sổ lỗi sai lên thanh điều hướng
+- Số lỗi nằm gọn trong thanh điều hướng, không bị che trên điện thoại.
 - Bỏ thẻ Sổ lỗi sai trên bản đồ. Khi có lỗi cần sửa, icon Luyện lỗi ở thanh dưới hiện số lỗi và rung nhẹ.
 
 ## 2026-10-19 — Biển đầy khung, bỏ thẻ trùng
