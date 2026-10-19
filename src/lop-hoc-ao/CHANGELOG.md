@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Cửa hàng Jenny: chuyển lượt rõ ràng
+- Mỗi lượt là một quầy khác (Quầy bánh, Sạp trái cây, Tiệm đồ chơi, Hiệu sách, Quầy kem, Tiệm hoa, Sạp rau, Quầy nước) với mái che, màu, tên quầy và số khách "Khách n/8". Trả đúng: tiền bay vào máy tính tiền (ting!), món hàng nhảy vào túi, bảng "Khách n/8 ✓ Cảm ơn!", quầy cũ trượt sang trái, quầy mới trượt vào từ bên phải.
+
 ## 2026-10-19 — Ghép hình: vẽ khối chính xác
 - Khối trụ: mặt đáy trên là elip đủ, hai đường sinh thẳng, nửa elip đáy dưới (nửa sau nét đứt), có bóng sáng tối. Khối lập phương, khối hộp chữ nhật: đủ mặt trước, mặt trên, mặt bên và các cạnh; hình lớn có cạnh khuất nét đứt. Khối cầu: có bóng, đốm sáng và đường xích đạo (trước nét liền, sau nét đứt) để phân biệt với hình tròn.
 
