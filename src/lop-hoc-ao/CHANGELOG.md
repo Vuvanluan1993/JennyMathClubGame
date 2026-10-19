@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-19 — Cân thăng bằng: đồ hoạ pixel
+- Vẽ lại cân bằng pixel (`core/38b-can-pixel.js`): đế bậc thang, cột gỗ, trục vàng, đòn cân nghiêng theo từng bậc, xích và đĩa cân hình bát; quả cân và vật bên trái là hình pixel. Lệch ít vẫn nghiêng rõ; cân bằng thì trục và đĩa chuyển xanh, có dấu "=" nhấp nháy.
+
 ## 2026-10-19 — Chơi thêm: 3 trò mới (đợt 2)
 - **Cân thăng bằng**: chạm quả cân để đặt lên đĩa phải (chạm lại để bỏ), cân nghiêng theo từng quả, bấm "Cân!" khi hai bên bằng nhau. Bên trái là số hoặc phép tính (lớp 1 ≤ 10, lớp 2 ≤ 100, lớp 3 ≤ 1 000, lớp 4–5 lớn hơn); ở đảo khối lượng dùng kg, g, yến, tạ. Sai thì cân tự đặt lại cách đúng cho em xem. 8 lượt, 3 tim.
 - **Cửa hàng Jenny**: chạm tờ tiền trong ví để trả đúng giá món hàng (chạm tờ đã đưa để lấy lại). Lớp 2 dùng tờ 100–1 000 đồng; lớp 3 đến 100 000 đồng và thêm câu "cô trả lại bao nhiêu"; lớp 4–5 thêm mua 2–3 món và giảm giá. 8 lượt, 3 tim.

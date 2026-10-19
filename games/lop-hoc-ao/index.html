@@ -941,6 +941,35 @@ body.px .bnav:has(> button:nth-child(5)) button{font-size:16px}
 .xtw.ghost{visibility:hidden}
 .xtw .frac{font-size:18px}
 @media (max-width:400px){.xtrain .xtw{min-width:30px;padding:0 3px 8px;font-size:16px}.xtrain .xteng svg,.xtrain .xteng img,.xtrain .xteng canvas{width:44px!important;height:auto!important}.xsbal{transform:scale(.92);transform-origin:top center;margin-bottom:-14px}}
+/* ---- Cân thăng bằng: bản pixel ---- */
+.xsbal{position:relative;width:342px;height:210px;margin:0 auto}
+.xscv{position:absolute;left:0;top:0;width:342px;height:210px;image-rendering:pixelated;image-rendering:crisp-edges}
+.xsbeam,.xspiv,.xspost,.xsbase,.xsstr,.xsplate{display:none}
+.xspan{position:absolute;width:0;height:0;transition:top .3s steps(3)}
+.xspan>*{position:absolute;bottom:0}
+.xspan.l .xstarget{left:50%;transform:translateX(-50%);bottom:2px}
+.xspan.r{display:block}
+.xspan.r .xsempty{left:50%;transform:translateX(-50%);bottom:4px}
+.xspan.r{--n:0}
+.xspan.r{display:flex}
+.xspan.r>*{position:static}
+.xspan.r{position:absolute;width:96px;height:auto;margin-left:-48px;transform:translateY(-100%);display:flex;flex-wrap:wrap-reverse;justify-content:center;align-items:flex-end;gap:1px 2px;padding-bottom:2px}
+.xstarget{display:block;background:#FFF6D6;color:#1F2A5A;border:3px solid #1F2A5A;box-shadow:none;padding:2px 6px;font-family:var(--f-display,'VT323',monospace);font-size:20px;line-height:1;white-space:nowrap;text-align:center;
+ clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))}
+.xsw{border:0!important;box-shadow:none!important;clip-path:none!important;background:var(--xsWt) center/100% 100% no-repeat!important;image-rendering:pixelated;min-width:58px;height:48px;padding:16px 4px 0!important;color:#1F2A5A;font-family:var(--f-display,'VT323',monospace);font-size:19px;line-height:1;cursor:pointer;white-space:nowrap}
+.xsw span{display:inline-block;padding:0 2px}
+.xsw.on{min-width:44px;height:36px;font-size:15px;padding-top:12px!important;background-image:var(--xsWtG)!important}
+.xstray .xsw{min-width:64px;height:52px;font-size:21px;padding-top:18px!important}
+.xstray .xsw:active{transform:translateY(2px)}
+.xsempty{font-family:var(--f-display,'VT323',monospace);font-size:26px;color:#9AA4C0}
+.xsok{position:absolute;left:50%;top:44px;transform:translateX(-50%);font-family:var(--f-display,'VT323',monospace);font-size:28px;color:#1E8A4A;background:#DFF6E8;border:3px solid #1E8A4A;padding:0 8px;line-height:1.1;animation:pxwob 1s steps(2) infinite}
+.xstray{background:#F6D98B;border:3px solid #1F2A5A;box-shadow:none;gap:8px;padding:8px}
+.xspan.r{width:114px;margin-left:-57px;gap:0 1px}
+.xsw.on{min-width:30px;height:30px;font-size:14px;padding:11px 4px 0!important}
+.xstray .xsw{min-width:72px;height:54px;font-size:20px;padding:19px 8px 0!important}
+.xsok{top:-2px;font-size:24px;padding:0 6px}
+.xspan.r{flex-direction:row}
+.xsw.on{min-width:34px;height:32px;font-size:15px;padding-top:12px!important}
 
 /* ===== bản học sinh ===== */
 [hidden]{display:none!important}
@@ -6101,6 +6130,42 @@ function xg2End(){const g=scr;if(g.k!=='xg'||g.end)return;stopXG();const st=S.st
   return''}}
 {const _ar=xgAfterRender;xgAfterRender=function(){const g=scr;if(g.k==='xg'&&W2.includes(g.mode)){if(g.end)return;if(g.mode==='shop')shopPaint();if(g.started)return;g.started=true;sayJ(g.say);return}return _ar.apply(this,arguments)}}
 {const _mt=musicTheme;musicTheme=function(){try{if(role==='hs'&&scr.k==='xg'&&W2.includes(scr.mode))return scr.end?null:({scale:'game',shop:'fish',train:'race'})[scr.mode]}catch(e){}return _mt.apply(this,arguments)}}
+/* ===================== CÂN THĂNG BẰNG: đồ hoạ pixel ===================== */
+/* Vẽ cân trên canvas độ phân giải thấp (114×70, phóng ×3): đế bậc thang, cột gỗ, trục vàng, đòn cân nghiêng theo bậc,
+   xích, đĩa cân. Quả cân và vật bên trái là nút HTML có nền sprite pixel. Lệch ít vẫn nghiêng rõ (tối thiểu 2 bậc). */
+Object.assign(PXS,{
+ xsWt:["....kkkk....","...k....k...","...k....k...","..kkkkkkkk..",".kmeeeeeemk.",".kmewwweemk.","kmeeeeeeeemk","kmeeeeeeeemk","kmmmmmmmmmmk","kkkkkkkkkkkk"],
+ xsWtG:["....kkkk....","...k....k...","...k....k...","..kkkkkkkk..",".kayyyyyyak.",".kaywwyyyak.","kayyyyyyyyak","kayyyyyyyyak","kaaaaaaaaaak","kkkkkkkkkkkk"],
+ xsBox:["kkkkkkkkkkkkkk","knnnnnnnnnnnnk","knttttttttttnk","knttttttttttnk","knttttttttttnk","knttttttttttnk","knnnnnnnnnnnnk","kkkkkkkkkkkkkk"],
+});
+const XSZ=3,XSW=114,XSH=70,XSCX=57,XSPY=13,XSARM=38;
+function xsTilt(g){const L=g.r.T,R_=scaleRight(g);if(R_===L)return 0;if(!g.on.length)return -6;const k=Math.max(2,Math.min(6,Math.round(Math.abs(R_-L)/Math.max(1,L)*14)));return R_>L?k:-k}
+function scaleHTML(g){const r=g.r,R_=scaleRight(g),eq=R_===r.T&&g.on.length,t=xsTilt(g);
+  const ly=XSPY-t,ry=XSPY+t,panY=y=>(y+21)*XSZ;  /* đỉnh đĩa (px) */
+  const wt=i=>`<button type="button" class="xsw on" onclick="scaleTap(${i})" aria-label="Bỏ quả cân ${esc(r.fmt(r.tray[i].v))}"><span>${r.fmt(r.tray[i].v)}</span></button>`;
+  return`<div class="xsbal ${eq?'eq':''}" aria-label="Cân: bên trái ${esc(r.left)}, bên phải ${r.fmt(R_)}" data-t="${t}">
+   <canvas class="xscv" id="xscv" width="${XSW}" height="${XSH}" aria-hidden="true"></canvas>
+   <div class="xspan l" style="left:${(XSCX-XSARM)*XSZ}px;top:${panY(ly)}px"><span class="xstarget">${r.left}</span></div>
+   <div class="xspan r" style="left:${(XSCX+XSARM)*XSZ}px;top:${panY(ry)}px">${g.on.length?g.on.map(wt).join(''):'<span class="xsempty">?</span>'}</div>
+   ${eq?'<span class="xsok">=</span>':''}</div>`}
+function scaleDraw(){const cv=document.getElementById('xscv');if(!cv||scr.k!=='xg'||scr.mode!=='scale')return;const x=cv.getContext('2d'),t=+cv.parentElement.dataset.t||0,eq=cv.parentElement.classList.contains('eq');
+  const C=PXC,p=(c,X,Y,w=1,h=1)=>{x.fillStyle=c;x.fillRect(X,Y,w,h)};x.clearRect(0,0,XSW,XSH);
+  /* sàn */ p(C.e,0,64,XSW,6);for(let i=0;i<XSW;i+=6)p(C.m,i,64,3,1);
+  /* đế bậc thang */ [[38,63,38],[42,60,30],[46,57,22]].forEach(([X,Y,w])=>{p(C.k,X,Y,w,3);p(C.n,X+1,Y,w-2,2);p(C.t,X+1,Y,w-2,1)});
+  /* cột gỗ */ p(C.k,XSCX-3,XSPY+2,7,43);p(C.n,XSCX-2,XSPY+2,5,43);p(C.N,XSCX+1,XSPY+2,1,43);p(C.t,XSCX-2,XSPY+2,1,43);for(let y=XSPY+8;y<57;y+=8)p(C.N,XSCX-2,y,5,1);
+  /* đòn cân: mỗi cột một ô, nghiêng theo bậc */
+  for(let X=XSCX-XSARM;X<=XSCX+XSARM;X++){const y=XSPY+Math.round(t*(X-XSCX)/XSARM);p(C.k,X,y-2,1,5);p(C.n,X,y-1,1,2);p(C.t,X,y-1,1,1)}
+  /* hai đầu đòn + xích + đĩa */
+  [[-1,XSPY-t],[1,XSPY+t]].forEach(([s,ey])=>{const ex=XSCX+s*XSARM;p(C.k,ex-2,ey-3,5,5);p(eq?C.g:C.a,ex-1,ey-2,3,3);
+    const py=ey+21;for(let k=0;k<17;k+=2){const f=k/18;p(C.E,Math.round(ex+(-15-ex+ex)*f),ey+2+k);p(C.E,Math.round(ex+15*f),ey+2+k);p(C.m,ex,ey+2+k)}
+    /* đĩa hình bát */ p(C.k,ex-16,py,33,1);p(C.k,ex-16,py+1,1,2);p(C.k,ex+16,py+1,1,2);p(eq?C.l:C.m,ex-15,py+1,31,2);p(C.w,ex-14,py+1,8,1);
+    p(C.k,ex-15,py+3,31,1);p(C.k,ex-12,py+4,25,1);p(C.E,ex-14,py+3,29,1);p(C.k,ex-15,py+3,1,1);p(C.k,ex+15,py+3,1,1)});
+  /* trục vàng */ p(C.k,XSCX-3,XSPY-3,7,7);p(eq?C.g:C.a,XSCX-2,XSPY-2,5,5);p(eq?C.l:C.y,XSCX-2,XSPY-2,2,2);
+  if(eq){[[XSCX-8,4],[XSCX+8,3],[XSCX,0]].forEach(([X,Y])=>{p(C.y,X,Y+1,3,1);p(C.y,X+1,Y,1,3)})}}
+function scalePaint(){const b=document.getElementById('xsb');if(b)b.innerHTML=scaleHTML(scr);const t=document.getElementById('xstray');if(t)t.innerHTML=scaleTray(scr);const s=document.getElementById('xssum');if(s)s.textContent=scr.r.fmt(scaleRight(scr));scaleDraw();xsSprites()}
+/* nền sprite cho quả cân / hộp */
+function xsSprites(){try{const W=pxCanvas('xsWt').toDataURL(),G=pxCanvas('xsWtG').toDataURL(),B=pxCanvas('xsBox').toDataURL(),r=document.documentElement.style;r.setProperty('--xsWt',`url(${W})`);r.setProperty('--xsWtG',`url(${G})`);r.setProperty('--xsBox',`url(${B})`)}catch(e){}}
+{const _r=render;render=function(){const a=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='scale'){scaleDraw();xsSprites()}}catch(e){}return a}}
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 
