@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 2026-10-20 — Hướng dẫn khi làm sai · Lô 2a đã bật
+- Đặt tính có nhớ (lớp 2–4): cộng, trừ, nhân với số có một chữ số. Bảng có hàng C, Đ (Tr, N); cột đang tính sáng vàng; câu trắc nghiệm ở hàng có nhớ đầu tiên; cộng: số nhớ đỏ trên hàng bên trái; trừ: số 1 nhớ đỏ nhỏ cạnh chữ số của số trừ ("2 thêm 1 bằng 3").
+- So sánh số (lớp 1–4): chỉ dùng bảng hàng (N, Tr, C, Đ). Hàng bằng nhau tô xanh, hàng khác nhau tô vàng; hỏi "số nào lớn hơn?" rồi chọn dấu.
+- Bảng nhân, bảng chia (lớp 2–3): dãy đếm thêm cách đều (5, 10, 15, 20), ghi số lần đếm; chia là đếm thêm số chia đến số bị chia rồi đếm số lần.
+- Câu tương tự cho dạng "Đặt tính rồi tính" so cả phép tính trong hình, không chỉ chữ đề.
+- Bài có dư không dùng câu hỏi gợi ý lời văn (để Lô 2b).
+
 ## 2026-10-20 — Số bản; đơn vị trong lời giải leo núi; câu tương tự đúng chiều; khung Lô 2a (chưa bật)
 - Thẻ chào trên bản đồ có dòng nhỏ "Bản ngày/tháng · giờ:phút" (thời điểm dựng), để biết đang mở bản mới hay cũ.
 - Leo núi: phép tính cuối của lời giải có đơn vị, ví dụ "29 + 24 = 53 (cái bánh)".

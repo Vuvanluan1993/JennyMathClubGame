@@ -7803,7 +7803,7 @@ function gdKind(q){if(!q||!q.sol)return null;const G=(typeof curG==='function'?c
  return null}
 function gdAnsOk(q,r){if(/%/.test(gdTxt(q.sol)))return false;let a=q.type==='num'?String(q.a):q.type==='opt'&&q.opts[q.a]?gdTxt(q.opts[q.a].h||q.opts[q.a]):'';if(/%|⁄|km|tấn|tạ|yến/.test(a))return false;const m=a.match(new RegExp(GD_NUM));if(!m)return q.type!=='num';return Math.abs(gdN(m[0])-gdN(r))<1e-9}
 /* các bước tính trong lời giải: "a op b (op c…) = r" */
-function gdSteps(q){const s=gdTxt(q.sol).replace(/\(([^()]*[a-zà-ỹ][^()]*)\)/gi,' ');const re=new RegExp(`(\\(?${GD_NUM}\\)?(?:\\s*[+−×:]\\s*\\(?${GD_NUM}\\)?)+)\\s*=\\s*(${GD_NUM})`,'g');const out=[];let m;
+function gdSteps(q){if(/\bdư\b/.test(gdTxt(q.sol)))return null;const s=gdTxt(q.sol).replace(/\(([^()]*[a-zà-ỹ][^()]*)\)/gi,' ');const re=new RegExp(`(\\(?${GD_NUM}\\)?(?:\\s*[+−×:]\\s*\\(?${GD_NUM}\\)?)+)\\s*=\\s*(${GD_NUM})`,'g');const out=[];let m;
  while((m=re.exec(s))&&out.length<4){const e=m[1].replace(/\s+/g,' ').trim(),ops=(e.match(/[+−×:]/g)||[]);if(!ops.length)continue;let r=m[2],rest=s.slice(m.index+m[0].length);
   if(/^\s*⁄/.test(rest))return null;
   const ch=new RegExp(`^\\s*(?:[+−×:]\\s*${GD_NUM}\\s*)*=\\s*(${GD_NUM})`);let c;while((c=rest.match(ch))){r=c[1];rest=rest.slice(c[0].length);re.lastIndex=s.length-rest.length}
@@ -7972,8 +7972,8 @@ function gdFinish(){const auto=GD&&GD.auto;gdClose();const g=scr;if(!g||g.k!=='g
  if(g.sheet&&g.sheet.kind==='bad'){g.gdRedo={stage:'same'};g.sheet=null;g.mad=0;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;render()}}
 function gdSimilar(q){try{if(!q.src)return null;const x=isl1(q.src[0])||(typeof ju1==='function'&&ju1(q.src[0]));const gn=x&&x.lv&&x.lv[q.src[1]]&&x.lv[q.src[1]][q.src[2]];if(!gn)return null;
   /* câu tương tự: cùng dạng, cùng chiều (cùng phép tính, cùng chỗ trống, cùng kiểu thêm/bớt) */
-  const t0=gdTxt(q.q),k0=gdKind(q),sig=(qq,k)=>{if(!k)return'';const ops=k.t==='word'?k.steps.map(s=>s.op).join(''):(k.op||'');const w=gdTxt(qq.q);return [k.t,ops,k.miss||'',/thêm|nữa|tất cả|cả hai/.test(w)?'+':'',/bớt|còn lại|cho đi|bay đi|ăn/.test(w)?'-':'',/ít hơn|kém/.test(w)?'<':'',/nhiều hơn|hơn/.test(w)&&!/ít hơn/.test(w)?'>':''].join('|')};
-  const want=sig(q,k0);let any=null;for(let n=0;n<40;n++){const c=gn();if(gdTxt(c.q)===t0)continue;if(!any)any=c;if(!k0||sig(c,gdKind(c))===want)return c}return any}catch(e){}return null}
+  const qk=x=>gdTxt(x.q)+'|'+String(x.pic||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' '),t0=qk(q),k0=gdKind(q),sig=(qq,k)=>{if(!k)return'';const ops=k.t==='word'?k.steps.map(s=>s.op).join(''):(k.op||'');const w=gdTxt(qq.q);return [k.t,ops,k.miss||'',/thêm|nữa|tất cả|cả hai/.test(w)?'+':'',/bớt|còn lại|cho đi|bay đi|ăn/.test(w)?'-':'',/ít hơn|kém/.test(w)?'<':'',/nhiều hơn|hơn/.test(w)&&!/ít hơn/.test(w)?'>':''].join('|')};
+  const want=sig(q,k0);let any=null;for(let n=0;n<40;n++){const c=gn();if(qk(c)===t0)continue;if(!any)any=c;if(!k0||sig(c,gdKind(c))===want)return c}return any}catch(e){}return null}
 const gdOn=()=>{const g=scr;return g&&g.k==='game'&&g.g1&&!g.race&&!g.tre&&!g.cbo&&role==='hs'};
 
 /* ---------- gắn vào luồng trả lời ---------- */
@@ -8032,7 +8032,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbtn{display:inline-flex!important;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='20/10 · 10:36';
+const APP_VER='20/10 · 10:43';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -8085,9 +8085,9 @@ function gdCmpTable(A,B,n,state){/* state[p]: 'eq'|'hl'|'' */const dA=gdDig(A),d
  for(const [ds,lab] of [[dA,'A'],[dB,'B']]){h+=`<div class="gcr"><b class="gco">${lab==='A'?fmt(A):fmt(B)}</b>${Array.from({length:n},(_,k)=>{const p=n-1-k;return`<i class="${state[p]||''}">${ds[p]===undefined?'':ds[p]}</i>`}).join('')}</div>`}
  return h+'</div>'}
 function gdFramesCmp(k){const F=[],{A,B}=k,sA=String(A).length,sB=String(B).length,n=Math.max(sA,sB),sign=A>B?'>':A<B?'<':'=',st={},dA=gdDig(A),dB=gdDig(B);
- const pic=()=>(Math.max(A,B)<=99?`<div class="gdrods">${gdRods(A)}${gdRods(B)}</div>`:'')+gdCmpTable(A,B,n,{...st});
+ const pic=()=>gdCmpTable(A,B,n,{...st});
  const signQ=(why)=>({q:`Chọn dấu: ${fmt(A)} … ${fmt(B)}`,opts:['>','<','='],a:sign,ok:`Đúng rồi: ${fmt(A)} ${sign} ${fmt(B)}.`,hint:why,grid:3});
- F.push({h:pic()+gdEq(`${fmt(A)} … ${fmt(B)}`),say:Math.max(A,B)<=99?`Mỗi que là một chục, mỗi ô vuông nhỏ là một đơn vị. Mình so sánh từ hàng cao nhất.`:`Viết hai số vào bảng hàng. Mình so sánh từ hàng cao nhất, bên trái.`,dur:3000});
+ F.push({h:pic()+gdEq(`${fmt(A)} … ${fmt(B)}`),say:`Viết hai số vào bảng hàng. Mình so sánh từ hàng cao nhất, bên trái.`,dur:3000});
  if(sA!==sB){F.push({h:pic()+gdEq(`${fmt(A)} … ${fmt(B)}`),say:`${fmt(A)} có ${sA} chữ số, ${fmt(B)} có ${sB} chữ số. Số nào nhiều chữ số hơn thì lớn hơn.`,dur:3200});F.push({h:pic(),say:'Chọn dấu đúng nhé.',dur:0,mcq:signQ('Số có nhiều chữ số hơn thì lớn hơn.')})}
  else{let p=n-1;for(;p>=0;p--){if(dA[p]===dB[p]){st[p]='eq';F.push({h:pic()+gdEq(`${fmt(A)} … ${fmt(B)}`),say:`Hàng ${GD_PL[p]}: cùng là ${dA[p]}, bằng nhau. So tiếp hàng bên phải.`,dur:2600})}else break}
   if(p<0){F.push({h:pic(),say:'Các hàng đều bằng nhau, nên hai số bằng nhau.',dur:0,mcq:signQ('Hai số giống hệt nhau.')})}
@@ -8101,29 +8101,29 @@ function gdMulParse(q){const G=curG();if(G<2||G>3)return null;const t=gdTxt(q.q)
  const v=x=>x==='☐'||x==='?'?null:+x;let x=v(m[1]),y=v(m[3]),z=v(m[4]),op=m[2],miss=x==null?'a':y==null?'b':'c';
  if(op==='×'){if(x==null)x=z/y;if(y==null)y=z/x;z=x*y;if(!(x<=10&&y<=10))return null;return{op,a:x,b:y,c:z,miss}}
  if(x==null)x=z*y;if(y==null)y=x/z;z=x/y;if(!Number.isInteger(z)||y>10||z>10)return null;return{op,a:x,b:y,c:z,miss}}
-function gdRows(per,rows,total,hiRows){/* rows hàng, mỗi hàng per viên kẹo; nhãn đếm thêm cuối hàng */const C=['#FCB40C','#F26249','#1E9A52','#0079C1','#8656A8'],sz=per>6||rows>6?10:13;
- let h=`<div class="gdmul" style="--gs:${sz}px">`;for(let r=0;r<rows;r++)h+=`<div class="gmr${hiRows&&r===rows-1?' new':''}">${Array.from({length:per},()=>`<i style="background:${C[r%5]}"></i>`).join('')}<b>${per*(r+1)}</b></div>`;
- return h+'</div>'}
+function gdRows(per,rows,total,hiNew){/* dãy đếm thêm cách đều: per, 2·per, … (rows số) */let h=`<div class="gdseq">`;
+ for(let r=0;r<rows;r++){if(r)h+=`<span class="gsq-j">+${per}</span>`;h+=`<b class="${hiNew&&r===rows-1?'new':''}">${per*(r+1)}</b>`}
+ return h+`</div><div class="gsq-n">${rows} lần</div>`}
 function gdFramesMul(k){const F=[],{op,a,b,c,miss}=k;
  if(op==='×'){/* a × b: a được lấy b lần → b hàng, mỗi hàng a */const eq=miss==='c'?`${a} × ${b} = ?`:miss==='b'?`${a} × ☐ = ${c}`:`☐ × ${b} = ${c}`;
   if(miss==='a'){/* ☐ × b = c: b hàng bằng nhau, chia đều c cho b hàng */F.push({h:gdEq(eq),say:`Số nào được lấy ${b} lần thì bằng ${c}? Mình thử đếm thêm từng số nhé.`,dur:2600});
    for(let t=1;t<=a;t++)if(t===a||t>=a-2)F.push({h:gdRows(t,b,0,false)+gdEq(`${t} × ${b} = ${t*b}`),say:t===a?`${t} lấy ${b} lần bằng ${c}. Đúng rồi!`:`${t} lấy ${b} lần bằng ${t*b}, chưa đủ ${c}.`,dur:2400});
    F.push({h:gdRows(a,b,0,false)+gdEq(eq.replace('☐',`<em>${a}</em>`)),say:`Ô trống là ${a}, vì ${a} nhân ${b} bằng ${c}.`,dur:2600});return F}
-  F.push({h:gdEq(eq),say:miss==='c'?`${a} nhân ${b} nghĩa là ${a} được lấy ${b} lần. Mỗi hàng ${a} viên kẹo, có ${b} hàng.`:`${a} được lấy mấy lần thì bằng ${c}? Mỗi hàng ${a} viên kẹo, xếp đến khi đủ ${c}.`,dur:3000});
+  F.push({h:gdEq(eq),say:miss==='c'?`${a} nhân ${b} nghĩa là ${a} được lấy ${b} lần. Đếm thêm ${a}, đếm ${b} lần.`:`${a} được lấy mấy lần thì bằng ${c}? Đếm thêm ${a} đến khi được ${c}.`,dur:3000});
   for(let r=1;r<=b;r++)F.push({h:gdRows(a,r,0,true)+gdEq(eq),say:`${a*r}`,dur:r===1?1400:900});
-  F.push({h:gdRows(a,b,0,false)+gdEq(miss==='c'?`${a} × ${b} = <em>${c}</em>`:eq.replace('☐',`<em>${b}</em>`)),say:miss==='c'?`Đếm thêm ${a}: ${Array.from({length:b},(_,i)=>a*(i+1)).join(', ')}. ${a} nhân ${b} bằng ${c}.`:`Có ${b} hàng thì đủ ${c}. Ô trống là ${b}.`,dur:3200});return F}
+  F.push({h:gdRows(a,b,0,false)+gdEq(miss==='c'?`${a} × ${b} = <em>${c}</em>`:eq.replace('☐',`<em>${b}</em>`)),say:miss==='c'?`Đếm thêm ${a}: ${Array.from({length:b},(_,i)=>a*(i+1)).join(', ')}. ${a} nhân ${b} bằng ${c}.`:`Đếm thêm ${a} được ${b} lần thì tới ${c}. Ô trống là ${b}.`,dur:3200});return F}
  /* phép chia a : b = c → a viên chia thành các hàng b viên; đếm số hàng */const eq=miss==='c'?`${a} : ${b} = ?`:miss==='b'?`${a} : ☐ = ${c}`:`☐ : ${b} = ${c}`;
- if(miss==='b'){/* a : ☐ = c → mỗi hàng c viên, có mấy hàng? */F.push({h:gdEq(eq),say:`${a} chia cho mấy thì được ${c}? Xếp ${a} viên kẹo thành các hàng, mỗi hàng ${c} viên. Có mấy hàng?`,dur:3200});
+ if(miss==='b'){/* a : ☐ = c → mỗi hàng c viên, có mấy hàng? */F.push({h:gdEq(eq),say:`${a} chia cho mấy thì được ${c}? Đếm thêm ${c} đến ${a}, đếm được mấy lần?`,dur:3200});
   for(let r=1;r<=b;r++)F.push({h:gdRows(c,r,0,true)+gdEq(eq),say:`${c*r}`,dur:r===1?1400:900});
-  F.push({h:gdRows(c,b,0,false)+gdEq(eq.replace('☐',`<em>${b}</em>`)),say:`Được ${b} hàng. Ô trống là ${b}, vì ${c} nhân ${b} bằng ${a}.`,dur:3000});return F}
- if(miss==='a'){F.push({h:gdEq(eq),say:`Số nào chia ${b} được ${c}? Có ${c} hàng, mỗi hàng ${b} viên. Tất cả có mấy viên?`,dur:3000});
+  F.push({h:gdRows(c,b,0,false)+gdEq(eq.replace('☐',`<em>${b}</em>`)),say:`Đếm được ${b} lần. Ô trống là ${b}, vì ${c} nhân ${b} bằng ${a}.`,dur:3000});return F}
+ if(miss==='a'){F.push({h:gdEq(eq),say:`Số nào chia ${b} được ${c}? Đếm thêm ${b}, đếm ${c} lần thì được bao nhiêu?`,dur:3000});
   for(let r=1;r<=c;r++)F.push({h:gdRows(b,r,0,true)+gdEq(eq),say:`${b*r}`,dur:r===1?1400:900});
-  F.push({h:gdRows(b,c,0,false)+gdEq(eq.replace('☐',`<em>${a}</em>`)),say:`Tất cả ${a} viên. Ô trống là ${a}, vì ${b} nhân ${c} bằng ${a}.`,dur:3000});return F}
- F.push({h:gdEq(eq),say:`${a} chia ${b}: xếp ${a} viên kẹo thành các hàng, mỗi hàng ${b} viên. Được mấy hàng?`,dur:3000});
+  F.push({h:gdRows(b,c,0,false)+gdEq(eq.replace('☐',`<em>${a}</em>`)),say:`Được ${a}. Ô trống là ${a}, vì ${b} nhân ${c} bằng ${a}.`,dur:3000});return F}
+ F.push({h:gdEq(eq),say:`${a} chia ${b}: đếm thêm ${b} cho đến ${a}. Đếm được mấy lần?`,dur:3000});
  for(let r=1;r<=c;r++)F.push({h:gdRows(b,r,0,true)+gdEq(eq),say:`${b*r}`,dur:r===1?1400:900});
- F.push({h:gdRows(b,c,0,false)+gdEq(`${a} : ${b} = <em>${c}</em>`),say:`Được ${c} hàng. ${a} chia ${b} bằng ${c}, vì ${b} nhân ${c} bằng ${a}.`,dur:3200});return F}
+ F.push({h:gdRows(b,c,0,false)+gdEq(`${a} : ${b} = <em>${c}</em>`),say:`Đếm được ${c} lần. ${a} chia ${b} bằng ${c}, vì ${b} nhân ${c} bằng ${a}.`,dur:3200});return F}
 
-GD_EXT.push({t:'col',on:false,kind:gdColParse,frames:gdFramesCol},{t:'cmp',on:false,kind:gdCmpParse,frames:gdFramesCmp},{t:'mul',on:false,kind:gdMulParse,frames:gdFramesMul});
+GD_EXT.push({t:'col',on:true,kind:gdColParse,frames:gdFramesCol},{t:'cmp',on:true,kind:gdCmpParse,frames:gdFramesCmp},{t:'mul',on:true,kind:gdMulParse,frames:gdFramesMul});
 
 document.head.insertAdjacentHTML('beforeend',`<style>
 .gcol,.gcmp{display:inline-flex;flex-direction:column;gap:2px;font-family:var(--f-display);color:#1F2A5A;background:#fff;padding:6px 10px 8px;box-shadow:0 0 0 3px #1F2A5A}
@@ -8141,6 +8141,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdrods{display:flex;gap:18px;justify-content:center;align-items:flex-end;flex-wrap:wrap}
 .gdrodw{display:flex;flex-direction:column;align-items:center;gap:4px}.gdrodw>b{font-family:var(--f-body);font-size:12px;font-weight:700;color:#1F2A5A}.gdrod{display:flex;gap:3px;align-items:flex-end}.gdrod i.r{width:8px;height:60px;display:block;background:repeating-linear-gradient(#0079C1 0 5px,#3FA0DD 5px 6px);box-shadow:0 0 0 2px #1F2A5A}
 .gdu{display:grid;grid-template-columns:repeat(3,8px);gap:3px;margin-left:4px}.gdu i{width:8px;height:8px;display:block;background:#FCB40C;box-shadow:0 0 0 2px #1F2A5A}
+.gdseq{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 2px;max-width:320px}.gdseq b{min-width:34px;height:34px;padding:0 4px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:400;font-size:26px;color:#1F2A5A;background:#fff;box-shadow:0 0 0 3px #1F2A5A}.gdseq b.new{background:#FFF0B8;color:#E0441A;animation:gdpop2 .3s steps(3)}.gsq-j{font-family:var(--f-display);font-size:16px;color:#1E9A52;padding:0 2px}.gsq-n{font-family:var(--f-body);font-size:13px;font-weight:700;color:#5E6B8C}
 .gdmul{display:flex;flex-direction:column;gap:4px;align-items:flex-start;background:#fff;padding:6px 8px;box-shadow:0 0 0 3px #1F2A5A}
 .gmr{display:flex;gap:5px;align-items:center}.gmr i{width:var(--gs);height:var(--gs);display:block;box-shadow:0 0 0 2px #1F2A5A}
 .gmr b{font-family:var(--f-display);font-weight:400;font-size:20px;line-height:1;margin-left:8px;color:#1F2A5A}

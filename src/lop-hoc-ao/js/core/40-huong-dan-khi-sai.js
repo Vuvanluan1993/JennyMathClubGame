@@ -76,7 +76,7 @@ function gdKind(q){if(!q||!q.sol)return null;const G=(typeof curG==='function'?c
  return null}
 function gdAnsOk(q,r){if(/%/.test(gdTxt(q.sol)))return false;let a=q.type==='num'?String(q.a):q.type==='opt'&&q.opts[q.a]?gdTxt(q.opts[q.a].h||q.opts[q.a]):'';if(/%|⁄|km|tấn|tạ|yến/.test(a))return false;const m=a.match(new RegExp(GD_NUM));if(!m)return q.type!=='num';return Math.abs(gdN(m[0])-gdN(r))<1e-9}
 /* các bước tính trong lời giải: "a op b (op c…) = r" */
-function gdSteps(q){const s=gdTxt(q.sol).replace(/\(([^()]*[a-zà-ỹ][^()]*)\)/gi,' ');const re=new RegExp(`(\\(?${GD_NUM}\\)?(?:\\s*[+−×:]\\s*\\(?${GD_NUM}\\)?)+)\\s*=\\s*(${GD_NUM})`,'g');const out=[];let m;
+function gdSteps(q){if(/\bdư\b/.test(gdTxt(q.sol)))return null;const s=gdTxt(q.sol).replace(/\(([^()]*[a-zà-ỹ][^()]*)\)/gi,' ');const re=new RegExp(`(\\(?${GD_NUM}\\)?(?:\\s*[+−×:]\\s*\\(?${GD_NUM}\\)?)+)\\s*=\\s*(${GD_NUM})`,'g');const out=[];let m;
  while((m=re.exec(s))&&out.length<4){const e=m[1].replace(/\s+/g,' ').trim(),ops=(e.match(/[+−×:]/g)||[]);if(!ops.length)continue;let r=m[2],rest=s.slice(m.index+m[0].length);
   if(/^\s*⁄/.test(rest))return null;
   const ch=new RegExp(`^\\s*(?:[+−×:]\\s*${GD_NUM}\\s*)*=\\s*(${GD_NUM})`);let c;while((c=rest.match(ch))){r=c[1];rest=rest.slice(c[0].length);re.lastIndex=s.length-rest.length}
@@ -245,8 +245,8 @@ function gdFinish(){const auto=GD&&GD.auto;gdClose();const g=scr;if(!g||g.k!=='g
  if(g.sheet&&g.sheet.kind==='bad'){g.gdRedo={stage:'same'};g.sheet=null;g.mad=0;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;render()}}
 function gdSimilar(q){try{if(!q.src)return null;const x=isl1(q.src[0])||(typeof ju1==='function'&&ju1(q.src[0]));const gn=x&&x.lv&&x.lv[q.src[1]]&&x.lv[q.src[1]][q.src[2]];if(!gn)return null;
   /* câu tương tự: cùng dạng, cùng chiều (cùng phép tính, cùng chỗ trống, cùng kiểu thêm/bớt) */
-  const t0=gdTxt(q.q),k0=gdKind(q),sig=(qq,k)=>{if(!k)return'';const ops=k.t==='word'?k.steps.map(s=>s.op).join(''):(k.op||'');const w=gdTxt(qq.q);return [k.t,ops,k.miss||'',/thêm|nữa|tất cả|cả hai/.test(w)?'+':'',/bớt|còn lại|cho đi|bay đi|ăn/.test(w)?'-':'',/ít hơn|kém/.test(w)?'<':'',/nhiều hơn|hơn/.test(w)&&!/ít hơn/.test(w)?'>':''].join('|')};
-  const want=sig(q,k0);let any=null;for(let n=0;n<40;n++){const c=gn();if(gdTxt(c.q)===t0)continue;if(!any)any=c;if(!k0||sig(c,gdKind(c))===want)return c}return any}catch(e){}return null}
+  const qk=x=>gdTxt(x.q)+'|'+String(x.pic||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' '),t0=qk(q),k0=gdKind(q),sig=(qq,k)=>{if(!k)return'';const ops=k.t==='word'?k.steps.map(s=>s.op).join(''):(k.op||'');const w=gdTxt(qq.q);return [k.t,ops,k.miss||'',/thêm|nữa|tất cả|cả hai/.test(w)?'+':'',/bớt|còn lại|cho đi|bay đi|ăn/.test(w)?'-':'',/ít hơn|kém/.test(w)?'<':'',/nhiều hơn|hơn/.test(w)&&!/ít hơn/.test(w)?'>':''].join('|')};
+  const want=sig(q,k0);let any=null;for(let n=0;n<40;n++){const c=gn();if(qk(c)===t0)continue;if(!any)any=c;if(!k0||sig(c,gdKind(c))===want)return c}return any}catch(e){}return null}
 const gdOn=()=>{const g=scr;return g&&g.k==='game'&&g.g1&&!g.race&&!g.tre&&!g.cbo&&role==='hs'};
 
 /* ---------- gắn vào luồng trả lời ---------- */
