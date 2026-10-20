@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 2026-10-20 — Nút Đăng xuất dễ tìm hơn
+- Ô chữ cái tên có thêm dấu ▾ để biết chạm vào sẽ mở bảng (có nút Đăng xuất).
+- Cuối trang Hồ sơ có thêm nút Đăng xuất.
+- Lưu ý: bản đầy đủ (giáo viên/phụ huynh/demo) không có đăng nhập nên không có Đăng xuất; chỉ bản học sinh có.
+
 ## 2026-10-20 — Đầu trang gọn; nút ngôn ngữ VI | EN (giai đoạn 1: giao diện)
 - Bản học sinh: thanh trên cùng chỉ còn "Toán cùng Jenny" (ngôi sao), nút [VI | EN], nút nhạc và ô chữ cái tên. Chạm ô tên mở bảng nhỏ: tên, lớp, tài khoản, nút Đăng xuất (đỏ). Bỏ hình đại diện, tên, lớp lặp với thẻ "Chào".
 - Nút VI | EN (cả bản đầy đủ): EN đổi chữ giao diện — thanh điều hướng, nút bấm, thông báo đúng/sai, kết thúc màn, hướng dẫn, nhắc luyện lỗi, Hồ sơ, Sưu tập, trang đảo (phần khung). Lựa chọn được nhớ trên máy.
