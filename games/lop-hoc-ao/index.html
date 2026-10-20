@@ -8067,7 +8067,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox button{color:#1F2A5A}.gdbox .gdgo{color:#1F2A5A}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='20/10 · 14:28';
+const APP_VER='20/10 · 14:36';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -10040,14 +10040,14 @@ function petSpr(p,H,cls){const st=S.st[sid],sc=P_SC[pStage(p)],h=Math.round(H*sc
  const g=p.wear&&ghSt(st).gear.find(x=>x.u===p.wear);if(g&&P_WEAR[g.id]){const[nm,x,y,ww]=P_WEAR[g.id],dd=pxURI(nm),W=w*ww;wear=`<img class="px pwear" src="${dd.u}" alt="" style="left:${x*w}px;top:${y*h}px;width:${W}px;height:${W*dd.h/dd.w}px">`}
  return`<span class="pspr st${pStage(p)} ${p.sick?'sick':''} ${cls||''}" style="width:${w}px;height:${h}px">${spr(p.sp,h)}${wear}</span>`}
 /* ===== Đảo nhà ===== */
-const P_POS=[[52,60],[72,64]];
+const P_POS=[[42,60],[64,64]];
 function petMood(p){if(p.sick)return['Mình mệt quá… mình cần thuốc.','sick'];if(p.no<25)return['Mình đói bụng lắm!','hungry'];if(p.sach<25)return['Mình bẩn quá, tắm cho mình nhé!','dirty'];if(p.vui<30)return['Chơi với mình đi!','sad'];if(pStage(p)===3)return['Mình già rồi, ở bên mình nhé.','old'];return['Mình vui lắm!','ok']}
 function pBar(n,v,c){return`<div class="pbar"><span>${n}</span><i><b style="width:${Math.round(v)}%;background:${v<25?'#F04A1B':c}"></b></i></div>`}
 function viewIsle(st){petSim(st);const P=petsOf(st),s=ghSt(st),now=pNow();
  const dec=s.dec.map(id=>{const p=GH_SLOT[id]||[50,50];return`<span class="idec" style="left:${p[0]}%;top:${p[1]*.9}%">${spr(id,id==='boat'?34:42)}</span>`}).join('');
  const home=['nest','feeder','inc'].filter(id=>gearHas(st,id)).map((id,i)=>`<span class="ihome h${i}">${spr(careOf(id)[5],id==='inc'?30:26)}${id==='inc'?P.eggs.filter(e=>e.inc).map(()=>`<i class="iegg">${spr('eggCS',14)}</i>`).join(''):''}${id==='nest'?P.eggs.filter(e=>!e.inc).map(()=>`<i class="iegg">${spr('eggCS',14)}</i>`).join(''):''}</span>`).join('');
  const pets=P.list.map((p,i)=>{const[x,y]=P_POS[i];return`<button type="button" class="ipet" style="left:${x}%;top:${y}%" onclick="petPat(${i})" aria-label="Cưng nựng ${esc(p.name||'thú cưng')}">${petSpr(p,58)}${p.sick?`<i class="ifx">${spr('fxSweat',14)}</i>`:p.no<25?`<i class="ifx">${spr('bowlS',14)}</i>`:''}</button>`}).join('');
- const scene=`<div class="iscene" id="iscene"><div class="isky"></div>${spr('island',230,'iisl')}${dec}${home}<span class="ijen">${jenny(54)}</span>${pets}</div>`;
+ const scene=`<div class="iscene" id="iscene"><div class="isky"></div>${spr('island',230,'iisl')}${dec}${home}${pets}</div>`;
  const ev=P.ev.filter(e=>!e.seen).map(e=>{e.seen=1;return`<div class="iev ${e.kind}">${esc(e.msg)}</div>`}).join('');
  const bye=P.bye?petByeHTML(P.bye):'';
  const cards=P.list.map((p,i)=>{const[m,mk]=petMood(p),a=Math.floor(pAge(p));
