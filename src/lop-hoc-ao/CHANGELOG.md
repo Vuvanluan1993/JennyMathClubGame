@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 2026-10-20 — Hướng dẫn khi đếm sai (lớp 1)
+- Bài "Có mấy …?" và "Có mấy hình …?" trong phạm vi 10: hướng dẫn khoanh lần lượt từng đối tượng bằng vòng pixel đỏ, đánh số 1, 2, 3… ngay góc vòng, Jenny đếm to; đối tượng cuối cùng được khoanh là số cần tìm.
+- Jenny nhắc cách đếm: từ trái sang phải, từ trên xuống dưới, đếm cái nào khoanh cái đó để không sót, không đếm hai lần.
+- Đếm hình: các hình khác loại được làm mờ, chỉ khoanh đúng loại hình được hỏi.
+
 ## 2026-10-20 — Hướng dẫn khi làm sai · Lô 2a đã bật
 - Đặt tính có nhớ (lớp 2–4): cộng, trừ, nhân với số có một chữ số. Bảng có hàng C, Đ (Tr, N); cột đang tính sáng vàng; câu trắc nghiệm ở hàng có nhớ đầu tiên; cộng: số nhớ đỏ trên hàng bên trái; trừ: số 1 nhớ đỏ nhỏ cạnh chữ số của số trừ ("2 thêm 1 bằng 3").
 - So sánh số (lớp 1–4): chỉ dùng bảng hàng (N, Tr, C, Đ). Hàng bằng nhau tô xanh, hàng khác nhau tô vàng; hỏi "số nào lớn hơn?" rồi chọn dấu.
