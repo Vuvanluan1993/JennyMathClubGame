@@ -1,7 +1,8 @@
 # Hướng dẫn cho Claude khi làm việc với dự án này
 
 Dự án: **Lớp học ảo Jenny** — app học Toán dạng trò chơi pixel cho Clb Học Toán cùng Jenny (chủ: thầy Luân).
-Đọc `README.md`, `docs/KIEN-TRUC.md`, `docs/THEM-NOI-DUNG.md`, rồi chọn việc trong `TASKS.md`.
+Đọc **`docs/LUAT-DA-CHOT.md` trước tiên** (mọi quyết định thầy đã duyệt), rồi `README.md`, `docs/KIEN-TRUC.md`, `docs/THEM-NOI-DUNG.md`, `CHANGELOG.md` (mục mới nhất) và chọn việc trong `TASKS.md`.
+Thầy chốt điều mới → ghi ngay vào `docs/LUAT-DA-CHOT.md`.
 
 ## Cách trả lời thầy Luân
 - Tiếng Việt, ngắn, từ ngữ đơn giản.
@@ -10,8 +11,8 @@ Dự án: **Lớp học ảo Jenny** — app học Toán dạng trò chơi pixel
 ## Quy trình mỗi task
 1. Sửa trong `src/lop-hoc-ao/` (không sửa tay `dist/` hay `games/lop-hoc-ao/index.html`).
 2. `python3 tools/build.py`
-3. `node tools/test/kiem-tra.js [lớp] [chủ đề]` — phải ĐẠT. Xem lại các dòng "xem lại phép tính".
-4. Kiểm tra trực quan trên khổ điện thoại 360px (Playwright, Chromium ở `/opt/pw-browsers/...`) khi đổi giao diện.
+3. `node tools/test/kiem-tra.js [lớp] [chủ đề]` — phải ĐẠT. Xem lại các dòng "xem lại phép tính". Các bài kiểm tra khác: xem mục 7 của `docs/LUAT-DA-CHOT.md`.
+4. Kiểm tra trực quan khổ 320/375/414px và **chế độ tối** (Playwright, Chromium ở `/opt/pw-browsers/...`) khi đổi giao diện.
 5. Cập nhật `CHANGELOG.md` và đánh dấu `TASKS.md`.
 6. Commit (kèm dòng ghi công theo hướng dẫn phiên), `git pull --rebase`, `git push`.
 7. Nếu phiên có công cụ Artifact: đăng lại `dist/lop-hoc-ao-jenny.html` lên artifact
