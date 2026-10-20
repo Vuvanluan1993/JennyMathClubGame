@@ -20,7 +20,12 @@ const ACC=__ACC__;
 const START=Date.UTC(2026,8,5);
 const dayNow=()=>Math.max(1,Math.floor((Date.now()-START)/864e5)+1);
 async function sha(s){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-function header(){const st=S&&S.st&&S.st[sid];const m=document.getElementById('hsme');if(m&&st)m.innerHTML=`<span class="av">${initials(st.name)}</span><span class="hsn"><b>${esc(st.name)}</b><small>Lớp ${st.grade} · ${esc(sid)}</small></span><button class="btn sm" type="button" onclick="logoutHS()">Đăng xuất</button>`}
+function header(){const st=S&&S.st&&S.st[sid];const m=document.getElementById('hsme');if(!m||!st)return;const ini=(st.name.trim().split(/ +/).pop()||'?').charAt(0).toUpperCase();
+  m.innerHTML=`<button type="button" class="nb-av" aria-haspopup="true" aria-expanded="false" onclick="hsMenu(event)" title="${esc(st.name)}">${esc(ini)}</button><div class="nb-menu" id="hsMenu" hidden><b>${esc(st.name)}</b><small>${LANG==='en'?'Grade':'Lớp'} ${st.grade} · ${LANG==='en'?'account':'tài khoản'} ${esc(sid)}</small><button type="button" class="nb-out" onclick="logoutHS()">${LANG==='en'?'Log out':'Đăng xuất'}</button></div>`;
+  const br=document.querySelector('.appbar .brand');if(br&&!br.classList.contains('nb-brand')){br.className='brand nb-brand';br.innerHTML=`${spr('star',22)}<b>${LANG==='en'?'Math with<br>Jenny':'Toán cùng<br>Jenny'}</b>`}}
+function hsMenu(e){e.stopPropagation();const m=document.getElementById('hsMenu'),b=e.currentTarget;if(!m)return;m.hidden=!m.hidden;b.setAttribute('aria-expanded',!m.hidden)}
+document.addEventListener('click',e=>{const m=document.getElementById('hsMenu');if(m&&!m.hidden&&!e.target.closest('#hsMenu'))m.hidden=true});
+{const _sl=setLang;setLang=function(l){const br=document.querySelector('.appbar .brand');if(br)br.classList.remove('nb-brand');const r=_sl.apply(this,arguments);header();return r}}
 function setRole(){}
 function bootUser(u,name){const a=ACC[u];STUDENTS=[[u,name||(u.charAt(0).toUpperCase()+u.slice(1)),a.g]];sid=u;role='hs';KEY='jennyHS_'+u;
   if(!load()){S={day:dayNow(),events:[],open:{j1:true,j2:true,jg1b1:true,jg1b2:true},st:{},cbi:{}};S.st[u]=newStudent(name||(u.charAt(0).toUpperCase()+u.slice(1)),a.g);S.st[u].active=true}
@@ -53,7 +58,12 @@ css='''
 /* ===== bản học sinh ===== */
 [hidden]{display:none!important}
 .demo,#tabs,#whoBox{display:none!important}
-.hsme{display:flex;align-items:center;gap:8px;min-width:0}.hsn{display:grid;line-height:1.15;min-width:0}.hsn b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40vw}.hsn small{color:var(--muted);font-size:11.5px}
+.hsme{display:flex;align-items:center;min-width:0;order:9;position:relative}
+.appbar .wrap{flex-wrap:nowrap!important;gap:8px!important}.appbar .brand{margin-right:auto!important}
+.nb-brand{display:flex!important;align-items:center;gap:6px}.nb-brand b{font-family:var(--f-display);font-weight:400;font-size:20px;line-height:.85;color:var(--ink)}
+.nb-av{width:38px;height:38px;border:0;cursor:pointer;background:var(--sea-soft);color:var(--ink);font-family:var(--f-display);font-size:26px;line-height:1;box-shadow:var(--f2),0 3px 0 2px var(--pxk)}
+.nb-menu{position:absolute;right:0;top:46px;z-index:40;background:var(--surface);box-shadow:var(--f3),4px 4px 0 3px var(--pxk);padding:10px 12px;min-width:210px}.nb-menu b{display:block;font-size:16px}.nb-menu small{display:block;color:var(--muted);margin:2px 0 10px}
+.nb-out{width:100%;border:0;padding:8px;font:inherit;font-weight:700;cursor:pointer;background:var(--coral-soft);color:var(--coral);box-shadow:0 0 0 2px var(--coral)}
 .login{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:#3FC1EC radial-gradient(#BDEBFA 2px,transparent 3px) 0 0/46px 34px;overflow:auto}
 .lgcard{width:100%;max-width:400px;background:var(--surface);color:var(--ink);padding:22px;display:grid;gap:8px;box-shadow:var(--f3),0 8px 0 0 var(--pxk)}
 .lghead{display:flex;gap:12px;align-items:center;margin-bottom:6px}.lghead h1{font-size:34px}.lghead p{margin:0;color:var(--muted)}

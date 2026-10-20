@@ -1107,7 +1107,12 @@ body.px .bnav:has(> button:nth-child(5)) button{font-size:16px}
 /* ===== bản học sinh ===== */
 [hidden]{display:none!important}
 .demo,#tabs,#whoBox{display:none!important}
-.hsme{display:flex;align-items:center;gap:8px;min-width:0}.hsn{display:grid;line-height:1.15;min-width:0}.hsn b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40vw}.hsn small{color:var(--muted);font-size:11.5px}
+.hsme{display:flex;align-items:center;min-width:0;order:9;position:relative}
+.appbar .wrap{flex-wrap:nowrap!important;gap:8px!important}.appbar .brand{margin-right:auto!important}
+.nb-brand{display:flex!important;align-items:center;gap:6px}.nb-brand b{font-family:var(--f-display);font-weight:400;font-size:20px;line-height:.85;color:var(--ink)}
+.nb-av{width:38px;height:38px;border:0;cursor:pointer;background:var(--sea-soft);color:var(--ink);font-family:var(--f-display);font-size:26px;line-height:1;box-shadow:var(--f2),0 3px 0 2px var(--pxk)}
+.nb-menu{position:absolute;right:0;top:46px;z-index:40;background:var(--surface);box-shadow:var(--f3),4px 4px 0 3px var(--pxk);padding:10px 12px;min-width:210px}.nb-menu b{display:block;font-size:16px}.nb-menu small{display:block;color:var(--muted);margin:2px 0 10px}
+.nb-out{width:100%;border:0;padding:8px;font:inherit;font-weight:700;cursor:pointer;background:var(--coral-soft);color:var(--coral);box-shadow:0 0 0 2px var(--coral)}
 .login{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:#3FC1EC radial-gradient(#BDEBFA 2px,transparent 3px) 0 0/46px 34px;overflow:auto}
 .lgcard{width:100%;max-width:400px;background:var(--surface);color:var(--ink);padding:22px;display:grid;gap:8px;box-shadow:var(--f3),0 8px 0 0 var(--pxk)}
 .lghead{display:flex;gap:12px;align-items:center;margin-bottom:6px}.lghead h1{font-size:34px}.lghead p{margin:0;color:var(--muted)}
@@ -8057,7 +8062,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbtn{display:inline-flex!important;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='20/10 · 12:38';
+const APP_VER='20/10 · 12:48';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -8356,6 +8361,59 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gatebd{display:flex;gap:12px;align-items:center;padding:14px;background:linear-gradient(#FFF4D6,#FFE9B8);border-bottom:3px solid #1F2A5A}.gatebd p{margin:0;font-family:var(--f-body);font-size:16px;line-height:1.4}
 .gatenote{display:flex;gap:8px;align-items:center;font-family:var(--f-body);font-size:14px;background:#FFF4D6;color:#7A4E00;padding:8px 10px;box-shadow:0 0 0 2px #FCB40C;margin-bottom:6px;text-align:left}
 </style>`);
+/* 47 — Chọn ngôn ngữ VI | EN (giai đoạn 1: giao diện)
+   - Nút [VI | EN] trên thanh trên cùng; lưu lựa chọn trên máy (localStorage 'jennyLang').
+   - EN: dịch chữ giao diện (nút, thanh điều hướng, tiêu đề, thông báo) bằng bảng từ + mẫu câu.
+     Đề bài, tên chủ đề, tên đảo, lời Jenny đọc vẫn tiếng Việt — giai đoạn 2 làm dần theo từng lớp.
+   - Không dịch vùng nội dung bài: .g1bub .qtxt .g1pic .lslide .gdq .g1opts .xcq .tl b … (xem I18N_SKIP). */
+let LANG='vi';try{LANG=localStorage.getItem('jennyLang')==='en'?'en':'vi'}catch(e){}
+const I18N={
+ 'Bản đồ':'Map','Toán Jenny':'Jenny Math','Luyện lỗi':'Fix mistakes','Sưu tập':'Collection','Hồ sơ':'Profile','← Bản đồ':'← Map',
+ 'Học sinh':'Student','Giáo viên':'Teacher','Phụ huynh':'Parent','Đăng xuất':'Log out','Nghe Jenny':'Listen to Jenny','Đang học':'You are here','Trùm':'Boss',
+ 'Tiếp tục':'Continue','Thử lại':'Try again','Chơi lại':'Play again','Về đảo':'Back to island','Kiểm tra':'Check','Nộp':'Submit','Đúng':'True','Sai':'False','Xếp lại':'Reset',
+ 'Tuyệt vời!':'Excellent!','Giỏi quá!':'Well done!','Đúng rồi!':'Correct!','Qua màn!':'Level passed!','Mình chơi lại nhé!':"Let's try again!",'Hết tim rồi!':'Out of hearts!','Hết giờ!':"Time's up!",'Kỷ lục mới!':'New record!',
+ 'Chưa đúng, mất 1 tim.':'Not quite — you lost 1 heart.','Chưa đúng.':'Not quite.','Em nhìn kỹ hình và thử lại nhé.':'Look carefully and try again.','Xem kết quả':'See results',
+ 'Hướng dẫn':'How to','Xem hướng dẫn':'See how','Xem cách làm':'See how to solve','↺ Xem lại':'↺ Replay','🐢 Chậm hơn':'🐢 Slower','🐇 Bình thường':'🐇 Normal','Em làm lại ▶':'Try it again ▶',
+ 'Luyện ngay ▶':'Practise now ▶','Luyện lỗi trước nhé':'Fix your mistakes first','Luyện ngay':'Practise now','Luyện tiếp':'Keep practising','Về sổ lỗi sai':'Back to mistakes book',
+ 'Sổ lỗi sai':'Mistakes book','Hộ chiếu đại dương':'Ocean passport','🛂 Hộ chiếu đại dương':'🛂 Ocean passport','Tủ đồ của Jenny':"Jenny's wardrobe",'Đang mặc':'Wearing',
+ '📖 Bộ sưu tập sinh vật biển':'📖 Sea creature collection','Hồ sơ của em':'My profile','Chuỗi':'Streak','Dài nhất':'Longest','Ngày học':'Study days','Số câu':'Questions',
+ 'Chuỗi ngày chăm chỉ':'Study streak','Hôm nay':'Today','Ít':'Less','Nhiều':'More','Sức mạnh Toán':'Math power','Số':'Numbers','Phép tính':'Operations','Lời văn':'Word problems',
+ 'Hình học':'Geometry','Đo lường':'Measurement','Thống kê':'Statistics','chưa đủ':'not enough','Tháng này':'This month',
+ 'Hôm nay em học:':'Today you learn:','Bài giảng Jenny':"Jenny's lesson",'Nên xem':'Recommended','Học trên đảo':'Learn on the island','Chơi':'Play','Trùm lớp':'Class boss','bắt buộc':'required',
+ 'Góp sức':'Join in','Chơi thêm':'More games','tùy chọn':'optional','Nâng cao':'Advanced','Đánh trùm':'Fight the boss','Đảo tiếp theo →':'Next island →',
+ 'Chế độ demo':'Demo mode','🔒 Khóa lại':'🔒 Lock','🔓 Mở khóa tất cả':'🔓 Unlock all','Sang ngày mới →':'Next day →','Làm lại demo':'Reset demo',
+ 'Dữ liệu chỉ lưu trên trình duyệt này.':'Data is saved only in this browser.','Jenny nghỉ ở trại. Cùng xem bài giải nhé!':"Jenny rests at camp. Let's look at the solution!",'Em hiểu rồi, leo tiếp ▶':'Got it, keep climbing ▶',
+ 'Kéo số vào ô trống, hoặc chạm vào số.':'Drag a number into the box, or tap it.','Câu giống vậy, số mới. Em làm nhé!':'A similar question with new numbers. Your turn!',
+ 'Cân thăng bằng':'Balance scale','Lật thẻ ghép đôi':'Memory match','Bóng bay':'Balloons','Câu cá':'Fishing','Ếch nhảy':'Frog jump','Thả mồi câu cá':'Bait fishing','Trồng cây':'Grow a tree','Leo núi tìm kho báu':'Treasure climb','Đập chuột':'Whack-a-mole','Ghép hình':'Shape puzzle','Tàu hoả':'Number train','Cửa hàng Jenny':"Jenny's shop",'Kéo co':'Tug of war','Đồng hồ':'Clock','Hứng sao':'Catch the stars','Đua giờ 60 giây':'60-second race',
+ 'T2':'Mon','T3':'Tue','T4':'Wed','T5':'Thu','T6':'Fri','T7':'Sat','CN':'Sun'};
+const I18N_RE=[
+ [/^CHỦ ĐỀ (\d+)$/,'TOPIC $1'],[/^Chủ đề (\d+)$/,'Topic $1'],[/^Bài (\d+)–(\d+) · (\d+) đảo · trùm$/,'Lessons $1–$2 · $3 islands · boss'],[/^Bài (\d+)–(\d+) · (\d+) đảo ·$/,'Lessons $1–$2 · $3 islands ·'],[/^trùm$/,'boss'],
+ [/^Chào (.+)!$/,'Hi $1!'],[/^(.+) · Lớp (\d+)$/,'$1 · Grade $2'],[/^Lớp (\d+)$/,'Grade $1'],[/^Bản (\d+\/\d+ · \d+:\d+)$/,'Build $1'],
+ [/^Màn (\d+)$/,'Level $1'],[/^Khoảng (\d+) câu · (\d+) tim$/,'About $1 questions · $2 hearts'],[/^(\d+)\/(\d+) câu đúng · còn (\d+) tim(.*)$/,'$1/$2 correct · $3 hearts left$4'],[/^(\d+)\/(\d+) câu đúng(.*)$/,'$1/$2 correct$3'],
+ [/^\+(\d+) xu$/,'+$1 coins'],[/^\+(\d+) sao$/,'+$1 star'],[/^(\d+) dạng$/,'$1 types'],[/^(\d+)\/(\d+) dấu$/,'$1/$2 stamps'],[/^(\d+) ngày$/,'$1 days'],
+ [/^Em vừa sai (\d+) câu\. Luyện lại một lượt để mở màn tiếp theo\.$/,'You missed $1 question(s). Practise them once to unlock the next level.'],[/^Em vừa sai (\d+) câu\. Luyện lại một lượt để chơi tiếp\.$/,'You missed $1 question(s). Practise them once to keep playing.'],
+ [/^Luyện lỗi \((\d+)\) ▶$/,'Fix mistakes ($1) ▶'],[/^Lần trước em (chọn|ghi) (.+), chưa đúng\. Em làm lại nhé!$/,'Last time you answered $2 — not quite. Try again!'],
+ [/^Bài (\d+) · Tiết (\d+)$/,'Lesson $1 · Period $2'],[/^(\d+) trang · Jenny đọc to · không bắt buộc$/,'$1 pages · Jenny reads aloud · optional'],
+ [/^Năm học (.+) · mỗi ô là 1 ngày em vào làm bài$/,'School year $1 · each square is a day you practised'],[/^(.+): em chưa làm bài$/,'$1: no practice yet'],[/^(.+): em làm (\d+) câu$/,'$1: you did $2 questions'],
+ [/^(.+) · Lớp (\d+) · (.+)$/,'$1 · Grade $2 · $3'],[/^Còn (\d+)\/(\d+) máu · em đã đánh (\d+) đòn$/,'$1/$2 HP left · you hit $3 times'],
+ [/^Mỗi màn đúng khoảng 3\/4 số câu và còn tim là được 1 sao\. Qua Màn 1 là mở đảo tiếp theo và mở Trùm lớp\.$/,'Get about 3/4 right with hearts left to earn a star. Passing Level 1 opens the next island and the class boss.'],
+ [/^Thưởng khi cả lớp hạ trùm: (\d+) xu và thẻ$/,'Reward when the class beats the boss: $1 coins and a card'],
+ [/^Th(\d+)$/,(m,n)=>['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][n-1]||m],[/^(\d+) lần$/,'$1 times']];
+const I18N_SKIP='.g1bub,.qtxt,.g1pic,.lslide,.gdq,.gdbub,.gdmq,.g1opts,.opts,.xcq,.xcsolbox,.gdstage,.g1cells,.g1tiles,.node .lbl,.t1sec h2,.tl .grow,.lesson h1,.lesson .muted,.mlist,script,style,select,option,#gateov p';
+function i18nText(t){const s=t.trim();if(!s)return null;if(I18N[s])return t.replace(s,I18N[s]);for(const [re,to] of I18N_RE){if(re.test(s))return t.replace(s,s.replace(re,to))}return null}
+function i18nApply(root){if(LANG!=='en')return;root=root||document.body;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;const todo=[];while(n=w.nextNode()){const p=n.parentElement;if(!p||p.closest(I18N_SKIP))continue;const r=i18nText(n.nodeValue);if(r!=null)todo.push([n,r])}todo.forEach(([n,r])=>n.nodeValue=r)}
+function setLang(l){LANG=l==='en'?'en':'vi';try{localStorage.setItem('jennyLang',LANG)}catch(e){}document.documentElement.lang=LANG;render();langUI();try{sfx('tap')}catch(e){}}
+function langUI(){const bar=document.querySelector('.appbar .wrap');if(!bar)return;let b=document.getElementById('langSw');
+ if(!b){b=document.createElement('div');b.id='langSw';b.className='nb-lang';b.setAttribute('role','group');b.setAttribute('aria-label','Ngôn ngữ / Language');b.innerHTML='<button type="button" data-l="vi">VI</button><button type="button" data-l="en">EN</button>';b.addEventListener('click',e=>{const l=e.target.closest('button');if(l)setLang(l.dataset.l)});bar.appendChild(b)}
+ b.querySelectorAll('button').forEach(x=>{x.classList.toggle('on',x.dataset.l===LANG);x.setAttribute('aria-pressed',x.dataset.l===LANG)})}
+{const _r=render;render=function(){const a=_r.apply(this,arguments);try{langUI();i18nApply()}catch(e){}return a}}
+/* hộp thoại tạo ngoài render (hướng dẫn, nhắc luyện lỗi, thông báo) */
+new MutationObserver(ms=>{if(LANG!=='en')return;for(const m of ms)m.addedNodes.forEach(x=>{if(x.nodeType===1)i18nApply(x);else if(x.nodeType===3&&x.parentElement&&!x.parentElement.closest(I18N_SKIP)){const r=i18nText(x.nodeValue);if(r!=null)x.nodeValue=r}})}).observe(document.body,{childList:true,subtree:true});
+document.documentElement.lang=LANG;
+document.head.insertAdjacentHTML('beforeend',`<style>
+.nb-lang{display:flex;flex:none;box-shadow:0 0 0 2px var(--pxk,#1F2A5A);order:7}.nb-lang button{border:0;font-family:var(--f-display);font-size:20px;line-height:1;padding:6px 8px;background:var(--surface,#fff);color:#5E6B8C;cursor:pointer}.nb-lang button.on{background:#FCB40C;color:#1F2A5A}
+#sndBtn{order:8}
+</style>`);
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 
@@ -8364,7 +8422,12 @@ const ACC={"jenny01": {"g": 1, "h": "8014daec6f077a72559375c0a7ce0bbc55722fd59a1
 const START=Date.UTC(2026,8,5);
 const dayNow=()=>Math.max(1,Math.floor((Date.now()-START)/864e5)+1);
 async function sha(s){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-function header(){const st=S&&S.st&&S.st[sid];const m=document.getElementById('hsme');if(m&&st)m.innerHTML=`<span class="av">${initials(st.name)}</span><span class="hsn"><b>${esc(st.name)}</b><small>Lớp ${st.grade} · ${esc(sid)}</small></span><button class="btn sm" type="button" onclick="logoutHS()">Đăng xuất</button>`}
+function header(){const st=S&&S.st&&S.st[sid];const m=document.getElementById('hsme');if(!m||!st)return;const ini=(st.name.trim().split(/ +/).pop()||'?').charAt(0).toUpperCase();
+  m.innerHTML=`<button type="button" class="nb-av" aria-haspopup="true" aria-expanded="false" onclick="hsMenu(event)" title="${esc(st.name)}">${esc(ini)}</button><div class="nb-menu" id="hsMenu" hidden><b>${esc(st.name)}</b><small>${LANG==='en'?'Grade':'Lớp'} ${st.grade} · ${LANG==='en'?'account':'tài khoản'} ${esc(sid)}</small><button type="button" class="nb-out" onclick="logoutHS()">${LANG==='en'?'Log out':'Đăng xuất'}</button></div>`;
+  const br=document.querySelector('.appbar .brand');if(br&&!br.classList.contains('nb-brand')){br.className='brand nb-brand';br.innerHTML=`${spr('star',22)}<b>${LANG==='en'?'Math with<br>Jenny':'Toán cùng<br>Jenny'}</b>`}}
+function hsMenu(e){e.stopPropagation();const m=document.getElementById('hsMenu'),b=e.currentTarget;if(!m)return;m.hidden=!m.hidden;b.setAttribute('aria-expanded',!m.hidden)}
+document.addEventListener('click',e=>{const m=document.getElementById('hsMenu');if(m&&!m.hidden&&!e.target.closest('#hsMenu'))m.hidden=true});
+{const _sl=setLang;setLang=function(l){const br=document.querySelector('.appbar .brand');if(br)br.classList.remove('nb-brand');const r=_sl.apply(this,arguments);header();return r}}
 function setRole(){}
 function bootUser(u,name){const a=ACC[u];STUDENTS=[[u,name||(u.charAt(0).toUpperCase()+u.slice(1)),a.g]];sid=u;role='hs';KEY='jennyHS_'+u;
   if(!load()){S={day:dayNow(),events:[],open:{j1:true,j2:true,jg1b1:true,jg1b2:true},st:{},cbi:{}};S.st[u]=newStudent(name||(u.charAt(0).toUpperCase()+u.slice(1)),a.g);S.st[u].active=true}

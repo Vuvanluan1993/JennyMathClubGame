@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 2026-10-20 — Đầu trang gọn; nút ngôn ngữ VI | EN (giai đoạn 1: giao diện)
+- Bản học sinh: thanh trên cùng chỉ còn "Toán cùng Jenny" (ngôi sao), nút [VI | EN], nút nhạc và ô chữ cái tên. Chạm ô tên mở bảng nhỏ: tên, lớp, tài khoản, nút Đăng xuất (đỏ). Bỏ hình đại diện, tên, lớp lặp với thẻ "Chào".
+- Nút VI | EN (cả bản đầy đủ): EN đổi chữ giao diện — thanh điều hướng, nút bấm, thông báo đúng/sai, kết thúc màn, hướng dẫn, nhắc luyện lỗi, Hồ sơ, Sưu tập, trang đảo (phần khung). Lựa chọn được nhớ trên máy.
+- Chưa dịch (giai đoạn 2, làm theo từng lớp): đề bài, tên chủ đề, tên đảo, bài giảng, lời Jenny đọc.
+
 ## 2026-10-20 — Bắt buộc luyện lỗi trước khi chơi tiếp; bản đồ về "Đang học"
 - Câu sai trong màn học hoặc trò chơi được ghi lại. Xong màn/trò đó, muốn vào màn hay trò khác thì Jenny nhắc "Em vừa làm sai n câu. Mình luyện lại một lượt rồi chơi tiếp nhé!" kèm nút "Luyện ngay". Màn hình kết thúc có thêm dòng nhắc và nút "Luyện lỗi (n)" đứng đầu.
 - Lượt luyện chỉ gồm các câu vừa sai (≤ 3 lỗi: mỗi lỗi câu cũ + 1 câu giống vậy; nhiều hơn: mỗi lỗi 1 câu cũ). Làm hết lượt là mở khoá; có hướng dẫn khi sai như Luyện lỗi. Lỗi chưa đúng 2 lần liền vẫn nằm trong sổ để luyện tiếp sau.
