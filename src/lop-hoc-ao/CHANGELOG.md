@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 2026-10-20 — Hướng dẫn bài dùng tính chất
+- "Biết 1 + 7 = 8. Vậy 7 + 1 = ?" (lớp 1) và "a + b = b + ☐" (lớp 4): không hướng dẫn cách cộng nữa mà nhắc tính chất. Hai phép tính tô cùng màu cho cùng một số, mũi tên ⇄; Jenny nói "Đổi chỗ các số hạng thì tổng không đổi. Không cần tính lại!"; hỏi trắc nghiệm rồi chốt "7 cộng 1 cũng bằng 8".
+- "Biết 2 × 10 = 20. Vậy 20 : 2 = ?" (lớp 2): "Từ một phép nhân viết được hai phép chia — lấy tích chia cho thừa số này thì được thừa số kia".
+
 ## 2026-10-20 — Bàn tay: đếm lần lượt từ trái sang phải
 - Hướng dẫn bằng bàn tay (lớp 1): giơ ngón như cũ (trỏ, giữa, áp út, út, cái), nhưng khi đếm thì đếm các ngón đã giơ lần lượt từ trái sang phải trên màn hình. Đếm thêm: giơ các ngón mới cùng lúc (viền vàng) rồi đếm tiếp từ trái sang phải. Phép trừ: gập và đếm số ngón gập cũng từ trái sang phải, rồi đếm số ngón còn lại.
 ## 2026-10-20 — Hướng dẫn chỉ có trong Luyện lỗi; lỗi trò chơi vào sổ; thêm 3 dạng đếm
