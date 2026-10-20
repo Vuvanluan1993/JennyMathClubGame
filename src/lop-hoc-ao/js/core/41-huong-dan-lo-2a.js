@@ -64,8 +64,9 @@ function gdMulParse(q){const G=curG();if(G<2||G>3)return null;const t=gdTxt(q.q)
  const v=x=>x==='☐'||x==='?'?null:+x;let x=v(m[1]),y=v(m[3]),z=v(m[4]),op=m[2],miss=x==null?'a':y==null?'b':'c';
  if(op==='×'){if(x==null)x=z/y;if(y==null)y=z/x;z=x*y;if(!(x<=10&&y<=10))return null;return{op,a:x,b:y,c:z,miss}}
  if(x==null)x=z*y;if(y==null)y=x/z;z=x/y;if(!Number.isInteger(z)||y>10||z>10)return null;return{op,a:x,b:y,c:z,miss}}
-function gdRows(per,rows,total,hiNew){/* dãy đếm thêm cách đều: per, 2·per, … (rows số) */let h=`<div class="gdseq">`;
- for(let r=0;r<rows;r++){if(r)h+=`<span class="gsq-j">+${per}</span>`;h+=`<b class="${hiNew&&r===rows-1?'new':''}">${per*(r+1)}</b>`}
+function gdRows(per,rows,total,hiNew){/* dãy đếm thêm cách đều, chia đều các dòng (tối đa 5 số/dòng); chỗ số chưa hiện vẫn giữ để dãy không xô lệch */
+ const n=Math.max(rows,total||0),lines=Math.ceil(n/5),k=Math.ceil(n/lines);let h=`<div class="gdseq">`;
+ for(let L=0;L<lines;L++){h+=`<div class="gsq-r">`;for(let r=L*k;r<Math.min(n,(L+1)*k);r++){const on=r<rows;h+=`${r%k?`<span class="gsq-j${on?'':' off'}">+${per}</span>`:''}<b class="${hiNew&&r===rows-1?'new':''}${on?'':' off'}">${per*(r+1)}</b>`}h+=`</div>`}
  return h+`</div><div class="gsq-n">${rows} lần</div>`}
 function gdFramesMul(k){const F=[],{op,a,b,c,miss}=k;
  if(op==='×'){/* a × b: a được lấy b lần → b hàng, mỗi hàng a */const eq=miss==='c'?`${a} × ${b} = ?`:miss==='b'?`${a} × ☐ = ${c}`:`☐ × ${b} = ${c}`;
@@ -73,17 +74,17 @@ function gdFramesMul(k){const F=[],{op,a,b,c,miss}=k;
    for(let t=1;t<=a;t++)if(t===a||t>=a-2)F.push({h:gdRows(t,b,0,false)+gdEq(`${t} × ${b} = ${t*b}`),say:t===a?`${t} lấy ${b} lần bằng ${c}. Đúng rồi!`:`${t} lấy ${b} lần bằng ${t*b}, chưa đủ ${c}.`,dur:2400});
    F.push({h:gdRows(a,b,0,false)+gdEq(eq.replace('☐',`<em>${a}</em>`)),say:`Ô trống là ${a}, vì ${a} nhân ${b} bằng ${c}.`,dur:2600});return F}
   F.push({h:gdEq(eq),say:miss==='c'?`${a} nhân ${b} nghĩa là ${a} được lấy ${b} lần. Đếm thêm ${a}, đếm ${b} lần.`:`${a} được lấy mấy lần thì bằng ${c}? Đếm thêm ${a} đến khi được ${c}.`,dur:3000});
-  for(let r=1;r<=b;r++)F.push({h:gdRows(a,r,0,true)+gdEq(eq),say:`${a*r}`,dur:r===1?1400:900});
+  for(let r=1;r<=b;r++)F.push({h:gdRows(a,r,b,true)+gdEq(eq),say:`${a*r}`,dur:r===1?1400:900});
   F.push({h:gdRows(a,b,0,false)+gdEq(miss==='c'?`${a} × ${b} = <em>${c}</em>`:eq.replace('☐',`<em>${b}</em>`)),say:miss==='c'?`Đếm thêm ${a}: ${Array.from({length:b},(_,i)=>a*(i+1)).join(', ')}. ${a} nhân ${b} bằng ${c}.`:`Đếm thêm ${a} được ${b} lần thì tới ${c}. Ô trống là ${b}.`,dur:3200});return F}
  /* phép chia a : b = c → a viên chia thành các hàng b viên; đếm số hàng */const eq=miss==='c'?`${a} : ${b} = ?`:miss==='b'?`${a} : ☐ = ${c}`:`☐ : ${b} = ${c}`;
  if(miss==='b'){/* a : ☐ = c → mỗi hàng c viên, có mấy hàng? */F.push({h:gdEq(eq),say:`${a} chia cho mấy thì được ${c}? Đếm thêm ${c} đến ${a}, đếm được mấy lần?`,dur:3200});
-  for(let r=1;r<=b;r++)F.push({h:gdRows(c,r,0,true)+gdEq(eq),say:`${c*r}`,dur:r===1?1400:900});
+  for(let r=1;r<=b;r++)F.push({h:gdRows(c,r,b,true)+gdEq(eq),say:`${c*r}`,dur:r===1?1400:900});
   F.push({h:gdRows(c,b,0,false)+gdEq(eq.replace('☐',`<em>${b}</em>`)),say:`Đếm được ${b} lần. Ô trống là ${b}, vì ${c} nhân ${b} bằng ${a}.`,dur:3000});return F}
  if(miss==='a'){F.push({h:gdEq(eq),say:`Số nào chia ${b} được ${c}? Đếm thêm ${b}, đếm ${c} lần thì được bao nhiêu?`,dur:3000});
-  for(let r=1;r<=c;r++)F.push({h:gdRows(b,r,0,true)+gdEq(eq),say:`${b*r}`,dur:r===1?1400:900});
+  for(let r=1;r<=c;r++)F.push({h:gdRows(b,r,c,true)+gdEq(eq),say:`${b*r}`,dur:r===1?1400:900});
   F.push({h:gdRows(b,c,0,false)+gdEq(eq.replace('☐',`<em>${a}</em>`)),say:`Được ${a}. Ô trống là ${a}, vì ${b} nhân ${c} bằng ${a}.`,dur:3000});return F}
  F.push({h:gdEq(eq),say:`${a} chia ${b}: đếm thêm ${b} cho đến ${a}. Đếm được mấy lần?`,dur:3000});
- for(let r=1;r<=c;r++)F.push({h:gdRows(b,r,0,true)+gdEq(eq),say:`${b*r}`,dur:r===1?1400:900});
+ for(let r=1;r<=c;r++)F.push({h:gdRows(b,r,c,true)+gdEq(eq),say:`${b*r}`,dur:r===1?1400:900});
  F.push({h:gdRows(b,c,0,false)+gdEq(`${a} : ${b} = <em>${c}</em>`),say:`Đếm được ${c} lần. ${a} chia ${b} bằng ${c}, vì ${b} nhân ${c} bằng ${a}.`,dur:3200});return F}
 
 GD_EXT.push({t:'col',on:true,kind:gdColParse,frames:gdFramesCol},{t:'cmp',on:true,kind:gdCmpParse,frames:gdFramesCmp},{t:'mul',on:true,kind:gdMulParse,frames:gdFramesMul});
@@ -104,7 +105,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdrods{display:flex;gap:18px;justify-content:center;align-items:flex-end;flex-wrap:wrap}
 .gdrodw{display:flex;flex-direction:column;align-items:center;gap:4px}.gdrodw>b{font-family:var(--f-body);font-size:12px;font-weight:700;color:#1F2A5A}.gdrod{display:flex;gap:3px;align-items:flex-end}.gdrod i.r{width:8px;height:60px;display:block;background:repeating-linear-gradient(#0079C1 0 5px,#3FA0DD 5px 6px);box-shadow:0 0 0 2px #1F2A5A}
 .gdu{display:grid;grid-template-columns:repeat(3,8px);gap:3px;margin-left:4px}.gdu i{width:8px;height:8px;display:block;background:#FCB40C;box-shadow:0 0 0 2px #1F2A5A}
-.gdseq{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 2px;max-width:320px}.gdseq b{min-width:34px;height:34px;padding:0 4px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:400;font-size:26px;color:#1F2A5A;background:#fff;box-shadow:0 0 0 3px #1F2A5A}.gdseq b.new{background:#FFF0B8;color:#E0441A;animation:gdpop2 .3s steps(3)}.gsq-j{font-family:var(--f-display);font-size:16px;color:#1E9A52;padding:0 2px}.gsq-n{font-family:var(--f-body);font-size:13px;font-weight:700;color:#5E6B8C}
+.gdseq{display:flex;flex-direction:column;align-items:center;gap:16px}.gsq-r{display:flex;align-items:center;gap:2px}.gdseq .off{visibility:hidden}.gdseq b{min-width:34px;height:34px;padding:0 4px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:400;font-size:26px;color:#1F2A5A;background:#fff;box-shadow:0 0 0 3px #1F2A5A}.gdseq b.new{background:#FFF0B8;color:#E0441A;animation:gdpop2 .3s steps(3)}.gsq-j{font-family:var(--f-display);font-size:16px;color:#1E9A52;padding:0 2px}.gsq-n{font-family:var(--f-body);font-size:13px;font-weight:700;color:#5E6B8C}
 .gdmul{display:flex;flex-direction:column;gap:4px;align-items:flex-start;background:#fff;padding:6px 8px;box-shadow:0 0 0 3px #1F2A5A}
 .gmr{display:flex;gap:5px;align-items:center}.gmr i{width:var(--gs);height:var(--gs);display:block;box-shadow:0 0 0 2px #1F2A5A}
 .gmr b{font-family:var(--f-display);font-weight:400;font-size:20px;line-height:1;margin-left:8px;color:#1F2A5A}
