@@ -1,6 +1,8 @@
 # Lịch sử thay đổi
 
-## 2026-10-20 — Sơ đồ: tổng dùng móc nhọn dọc
+## 2026-10-20 — Sơ đồ: tổng dùng móc nhọn dọc, hiệu dùng móc nhọn ngang
+- Hiệu – tỉ và tổng – hiệu: phần dài hơn của đoạn lớn tô hồng, phía trên có móc nhọn ngang ôm đúng phần đó, ghi "Hiệu: …".
+- Móc nhọn tổng khớp đúng mép trên đoạn lớn và mép dưới đoạn bé.
 - Sơ đồ tổng – hiệu, tổng – tỉ: thay đường ngang bằng móc nhọn dọc "}" bên phải ôm cả hai đoạn, chữ "Tổng: …" đứng cạnh mũi móc, giống cách vẽ trong sách.
 
 ## 2026-10-20 — Hướng dẫn khi làm sai (Lô 1); số sao chủ đề cạnh tên vùng biển
