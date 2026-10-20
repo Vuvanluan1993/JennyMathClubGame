@@ -9,6 +9,7 @@
   - 2 con trưởng thành + Ổ rơm → có thể đẻ trứng; Máy ấp 3 ngày cho nở; trứng không ấp hỏng sau 2 ngày; bán được trứng.
   - Đồ dùng cũ dần; Túi đồ có bán thanh lý (nửa giá × độ mới). Máng ăn tự động cho ăn khi em vắng.
   - Mỗi lần qua màn, thú cưng vui thêm. Dấu ! đỏ ở ảnh Jenny khi thú cần chăm.
+- Chế độ tối (MacBook): Gian hàng, Đảo nhà, Nhà em dùng màu theo chế độ tối — chữ không còn hoà vào nền.
 - **Thanh dưới mới**: Bản đồ · Toán Jenny · Luyện lỗi · **Nhà em** · **Cửa hàng**. "Nhà em" mở 3 ô: Đảo nhà, Sưu tập, Hồ sơ (Hồ sơ vẫn có nút Đăng xuất).
 - **Thú cưng bắt đầu 2 loài**, có mô tả và tuổi thọ: Gà con 40–50 ngày (150 xu), Rùa biển 100–200 ngày (250 xu). Các giai đoạn lớn tính theo tuổi thọ từng con.
 - **Tiếng Anh lớp 1** bật: đề, lời giải, hình, hướng dẫn, bài giảng, Jenny đọc giọng Anh – Anh. Công cụ rà `tools/test/tieng-anh.js`: 0 chuỗi sót.
