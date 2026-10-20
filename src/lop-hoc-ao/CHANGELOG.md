@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 20/10/2026 — Nút Đăng xuất hiện sẵn
+- Bản học sinh: bỏ ô chữ cái tên (J) và menu thả; nút **Đăng xuất** nằm ngay trên thanh trên cùng (EN: Log out).
+- Màn rất hẹp (≤360px): ẩn chữ "Toán cùng Jenny", giữ ngôi sao để vừa hàng.
+- Thêm khung dịch tiếng Anh (48, 48b) — chưa bật, chờ dịch xong lớp 1.
+
 ## 2026-10-20 — Nút Đăng xuất dễ tìm hơn
 - Ô chữ cái tên có thêm dấu ▾ để biết chạm vào sẽ mở bảng (có nút Đăng xuất).
 - Cuối trang Hồ sơ có thêm nút Đăng xuất.
