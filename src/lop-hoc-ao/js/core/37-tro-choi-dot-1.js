@@ -106,7 +106,9 @@ function starRun(){const g=scr,f=document.getElementById('xgf');if(!f)return;sta
 const xgTxt=h=>String(h||'').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
 function pairFromQ(q){if(!q||q.pic||q.big)return null;const raw=String(q.q||'');if(/<svg|<img|<canvas|class="(pic|shp)/i.test(raw))return null;
   let t=xgTxt(raw).replace(/\s*=\s*(\?|☐|\.\.\.|…)\s*$/,'').replace(/^(Tính|Tính nhẩm|Điền số|Số)\s*:?\s*/i,'');
-  if(!t||t.length>13||/[a-zà-ỹ]{4,}/i.test(t.replace(/×|:/g,'')))return null;if(!/[+\-−×:x\/]/.test(t))return null;
+  if(!t||t.length>13||/[a-zà-ỹ]{4,}/i.test(t.replace(/×|:/g,'')))return null;
+  /* thẻ phép tính phải là phép tính trọn vẹn (không có ô trống, dấu =, dấu ?) — kết quả mới đúng là giá trị của nó */
+  if(/[☐□?=…_]|\.\.\./.test(t))return null;if(!/[+\-−×:x\/]/.test(t))return null;
   let a=q.type==='num'?fN(q.a):q.type==='opt'&&typeof q.a==='string'?xgTxt(q.a):null;if(a==null||!String(a).length||String(a).length>8)return null;return[t,String(a)]}
 function pairFacts(x,n){const g=curG(),t=`${x.title} ${x.lesson} ${x.goal}`,out=[];const mul=/nhân|chia|Bảng/i.test(t)||g===3;
   for(let i=0;i<60&&out.length<n;i++){let q,a;

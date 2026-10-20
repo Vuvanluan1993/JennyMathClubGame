@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 20/10/2026 — Sửa trò Lật thẻ ghép đôi
+- Lỗi: thẻ "phép tính" có thể là câu tìm số còn thiếu (ví dụ "6 + ☐ = 14" ghép với 8, "390 = 300 + ☐" ghép với 90, "33% × 4 = ?%" ghép với 132) — nhìn như hai thẻ không cùng giá trị.
+- Sửa: chỉ lấy phép tính trọn vẹn (không ô trống, không dấu =, không dấu ?) làm thẻ.
+- Thêm kiểm tra `tools/test/the-ghep-doi.js`: 20 100 bộ thẻ lớp 1–5, mọi cặp đúng giá trị, không hai cặp trùng giá trị.
+
 ## 20/10/2026 — Gian hàng Jenny, Đảo nhà & thú cưng, tiếng Anh lớp 1
 - **Gian hàng Jenny** (bảng giá thầy duyệt): Áo váy, Mũ kính, Khung, Đảo nhà, Thú cưng, Đồ nuôi, Vé game (sắp có). Chạm để thử miễn phí, Mua bằng xu. Vào bằng ô xu ở thẻ chào.
 - Jenny đội mũ/kính đã mua ở mọi nơi; khung ảnh hiện quanh ảnh Jenny ở thẻ chào.
