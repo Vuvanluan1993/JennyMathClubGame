@@ -28,10 +28,11 @@ function trKey(s){const tags=[],nums=[],words=[],nouns=[];
 const enNum=v=>{const n=Number(String(v).replace(/[  ]/g,'').replace(',','.'));return isNaN(n)?null:n};
 function enPlural(vi,n){const e=EN_NOUN[vi];if(!e)return vi;return n===1?e[0]:e[1]}
 function trFill(t,P){const it={'#':0,'{w}':0,'{o}':0,'<>':0};let last=null,out='';
- const re=/<>|#(\d+)?|\{w(\d+)?\}|\{o(\d+)?(?::([spSP]))?\}|\{W(\d+)?\}|\{be\}|\{a\}/g;let m,i=0;
+ const re=/<>|#(\d+)?|\{w(\d+)?\}|\{o(\d+)?(?::([spSP]))?\}|\{W(\d+)?\}|\{be\}|\{a\}|\{1:([^|}]*)\|([^}]*)\}/g;let m,i=0;
  while((m=re.exec(t))){out+=t.slice(i,m.index);i=re.lastIndex;const tok=m[0];
   if(tok==='<>'){out+=P.tags[it['<>']++]??''}
   else if(tok==='{a}'){out+='\u0005'}
+  else if(tok.startsWith('{1:')){out+=last===1?m[6]:m[7]}
   else if(tok==='{be}'){/* is/are theo số đứng ngay sau */const r=t.slice(i),j=r.search(/#|\{w|\{W/);let v=null;if(j>=0){const n=r.slice(j).match(/^#(\d+)?|^\{[wW](\d+)?\}/);if(n&&n[0][0]==='#')v=enNum(P.nums[n[1]?n[1]-1:it['#']]);else if(n)v=P.words[n[2]?n[2]-1:it['{w}']]}out+=v===1?'is':'are'}
   else if(tok[0]==='#'){const v=P.nums[m[1]?m[1]-1:it['#']++];out+=v??'';last=enNum(v)}
   else if(tok.startsWith('{w')){const v=P.words[m[2]?m[2]-1:it['{w}']++];out+=v==null?'':enWord(v);last=v}
@@ -44,14 +45,19 @@ function trFill(t,P){const it={'#':0,'{w}':0,'{o}':0,'<>':0};let last=null,out='
 function trOne(s){const P=trKey(s),t=EN_T[P.key];if(t==null)return null;let r=trFill(t,P);const a=String(s).replace(/<[^>]*>/g,'').trim().charAt(0),b=r.replace(/<[^>]*>/g,'').trim().charAt(0);if(a&&a===a.toUpperCase()&&a!==a.toLowerCase()&&b&&b!==b.toUpperCase()){const i=r.indexOf(b,r.search(/(?:^|>)[^<]/));r=r.slice(0,i)+b.toUpperCase()+r.slice(i+1)}return r}
 /* dịch một chuỗi (có thể có thẻ HTML): thử cả chuỗi → từng câu → từng đoạn chữ giữa các thẻ */
 function enSplit(s){const m=s.replace(/<[^>]*>/g,x=>'\u0001'.repeat(x.length)),re=/(?<=[.?!:])\s+(?=[^\s])/g,out=[];let i=0,k;while((k=re.exec(m))){out.push(s.slice(i,k.index));i=k.index+k[0].length}out.push(s.slice(i));return out}
-function trSeg(t){const s=t.trim();if(!s||!/[A-Za-zÀ-ỹđĐ]/.test(s))return t;let x=trOne(s);if(x==null){const ps=enSplit(s);if(ps.length>1){const tr=ps.map(trOne);if(tr.some(v=>v!=null))x=ps.map((p,i)=>tr[i]??p).join(' ')}}return x==null?t:t.replace(s,x)}
+/* ghép câu tham lam: thử đoạn dài nhất trước (khuôn có thể chứa dấu ":" hay nhiều câu) */
+function trJoin(ps){const out=[];let i=0,hit=0;while(i<ps.length){let ok=0;for(let j=ps.length;j>i;j--){const x=trOne(ps.slice(i,j).join(' '));if(x!=null){out.push(x);i=j;ok=1;hit=1;break}}if(!ok){out.push(ps[i]);i++}}return hit?out.join(' '):null}
+function trSeg(t){const s=t.trim();if(!s||!/[A-Za-zÀ-ỹđĐ]/.test(s))return t;let x=trOne(s);if(x==null){const ps=enSplit(s);if(ps.length>1)x=trJoin(ps)}return x==null?t:t.replace(s,x)}
+const enViCount=h=>(String(h).replace(/<[^>]*>/g,'').match(/[À-ỹđĐ]/g)||[]).length;
 function trEN(s){if(s==null||typeof s!=='string'||!/[À-ỹđĐ]|[a-z]/i.test(s.replace(/<[^>]*>/g,'')))return s;const r=trOne(s);if(r!=null)return r;
- const tg=/<[^>]+>/.test(s),parts=enSplit(s);
- return parts.map(p=>{const x=trOne(p);if(x!=null)return x;return tg&&/<[^>]+>/.test(p)?p.replace(/(^|>)([^<]+)(?=<|$)/g,(m,a,txt)=>a+trSeg(txt)):trSeg(p)}).join(' ')}
+ const tg=/<[^>]+>/.test(s),segs=h=>h.replace(/(^|>)([^<]+)(?=<|$)/g,(m,a,txt)=>a+trSeg(txt));
+ const ps=enSplit(s);let A=s;if(ps.length>1){const out=[];let i=0;while(i<ps.length){let ok=0;for(let j=ps.length;j>i;j--){const x=trOne(ps.slice(i,j).join(' '));if(x!=null){out.push(x);i=j;ok=1;break}}if(!ok){out.push(tg&&/<[^>]+>/.test(ps[i])?segs(ps[i]):trSeg(ps[i]));i++}}A=out.join(' ')}else if(!tg)A=trSeg(s);
+ if(!tg)return A;const B=segs(s);return enViCount(B)<enViCount(A)?B:A}
 const enOn=()=>LANG==='en'&&EN_GR.has(+(typeof curG==='function'?curG():0));
 const EN_GR=new Set();/* các lớp đã dịch xong (48b… tự thêm) */
 /* câu hỏi: dịch các trường khi sinh câu */
-function trQ(q){if(!q||!enOn()||q.en)return q;const c={...q,en:1};for(const f of ['q','say','sol','pic','label'])if(typeof c[f]==='string')c[f]=trEN(c[f]);
+const enCap=h=>typeof h==='string'?h.replace(/^((?:\s|<[^>]*>)*)([a-z])/,(m,a,c)=>a+c.toUpperCase()):h;
+function trQ(q){if(!q||!enOn()||q.en)return q;const c={...q,en:1};for(const f of ['q','say','sol','pic','label'])if(typeof c[f]==='string')c[f]=trEN(c[f]);for(const f of ['q','say','sol'])c[f]=enCap(c[f]);
  if(Array.isArray(c.opts))c.opts=c.opts.map(o=>o&&typeof o==='object'?{...o,h:trEN(o.h)}:trEN(o));if(Array.isArray(c.tiles))c.tiles=c.tiles.map(trEN);return c}
 for(const G in PRIM){if(!PRIM[G].isl)continue;for(const x of PRIM[G].isl)(x.lv||[]).forEach(gs=>gs.forEach((gn,i)=>{if(typeof gn==='function'&&!gn.en){const w=function(){return trQ(gn.apply(this,arguments))};w.en=1;w.gdFlip=gn.gdFlip;gs[i]=w}}))}
 /* nội dung tĩnh của lớp: tên chủ đề, đảo, bài giảng, trùm, vùng biển — đổi tại chỗ, giữ bản gốc trong _vi */
@@ -63,7 +69,7 @@ function enSwapAll(){for(const G of EN_GR){const P=PRIM[G];if(!P)continue;(P.isl
 /* Jenny đọc: tiếng Anh thì dịch câu và đọc giọng en-GB */
 let enVoice=null;function pickEnVoice(){try{const vs=speechSynthesis.getVoices();return vs.find(v=>/^en-GB/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null}catch(e){return null}}
 {const _s=sayJ;sayJ=function(text){if(!enOn())return _s.apply(this,arguments);if(muted||!text)return;try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(!enVoice)enVoice=pickEnVoice();
-  const t=trEN(String(text)).replace(/<[^>]+>/g,' ').replace(/×/g,' times ').replace(/:/g,' divided by ').replace(/−/g,' minus ').replace(/\+/g,' plus ').replace(/=/g,' equals ').replace(/☐/g,' blank ').replace(/\s+/g,' ');
+  const t=trEN(String(text)).replace(/<[^>]+>/g,' ').replace(/×/g,' times ').replace(/(\d)\s*:\s*(\d)/g,'$1 divided by $2').replace(/(\d)\s*cm\b/g,'$1 centimetres').replace(/−/g,' minus ').replace(/\+/g,' plus ').replace(/=/g,' equals ').replace(/☐/g,' blank ').replace(/\s+/g,' ');
   const u=new SpeechSynthesisUtterance(t);u.lang='en-GB';if(enVoice)u.voice=enVoice;u.rate=.92;u.onstart=()=>{try{duck(1)}catch(e){}};u.onend=u.onerror=()=>{try{duck(0)}catch(e){}};s.speak(u)}catch(e){}}}
 /* chữ trên màn hình còn sót (hướng dẫn, trò chơi, hình): dịch thêm bằng khuôn khi bật EN */
 {const _t=i18nText;i18nText=function(t){const r=_t(t);if(r!=null||!enOn())return r;const s=t.trim();const x=trOne(s);return x==null?null:t.replace(s,x)}}

@@ -8067,7 +8067,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox button{color:#1F2A5A}.gdbox .gdgo{color:#1F2A5A}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='20/10 · 13:16';
+const APP_VER='20/10 · 14:05';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -8390,11 +8390,27 @@ const I18N={
  'Dữ liệu chỉ lưu trên trình duyệt này.':'Data is saved only in this browser.','Jenny nghỉ ở trại. Cùng xem bài giải nhé!':"Jenny rests at camp. Let's look at the solution!",'Em hiểu rồi, leo tiếp ▶':'Got it, keep climbing ▶',
  'Kéo số vào ô trống, hoặc chạm vào số.':'Drag a number into the box, or tap it.','Câu giống vậy, số mới. Em làm nhé!':'A similar question with new numbers. Your turn!',
  'Cân thăng bằng':'Balance scale','Lật thẻ ghép đôi':'Memory match','Bóng bay':'Balloons','Câu cá':'Fishing','Ếch nhảy':'Frog jump','Thả mồi câu cá':'Bait fishing','Trồng cây':'Grow a tree','Leo núi tìm kho báu':'Treasure climb','Đập chuột':'Whack-a-mole','Ghép hình':'Shape puzzle','Tàu hoả':'Number train','Cửa hàng Jenny':"Jenny's shop",'Kéo co':'Tug of war','Đồng hồ':'Clock','Hứng sao':'Catch the stars','Đua giờ 60 giây':'60-second race',
+ '← Trước':'← Back','Tiếp →':'Next →','Vào chơi':'Play','Nhắc lại nhanh kiến thức của bài · không bắt buộc':'A quick recap of the lesson · optional','Xem':'View','Nghe':'Listen',
+ 'Đang có:':'You have:','− Bớt':'− Less','+ Thêm':'+ More','Chậm hơn':'Slower','Em làm lại':'Try it again','Cả lớp đã hạ trùm này!':'The class has beaten this boss!','Đã hạ':'Beaten',
+ 'Vào học':'Start','Khóa':'Locked','chưa học':'not started','2 buổi/tuần':'2 sessions/week','Hứng sao rơi':'Catch falling stars','Đập chuột chũi':'Whack-a-mole','Tàu hoả xếp số':'Number train',
+ 'Kéo co với trùm':'Tug of war with the boss','Ếch nhảy lá súng':'Lily pad frog jump','Giải bài toán lời văn để leo 6 chặng, lên đỉnh mở rương báu':'Solve word problems to climb 6 stages and open the treasure chest at the top',
+ 'Câu cá theo luật của đảo trong 45 giây':'Catch the fish that follow the island rule in 45 seconds','Di giỏ hứng sao đúng luật trong 60 giây':'Move the basket to catch the right stars in 60 seconds',
+ 'Đập chuột cầm số đúng luật, 60 giây':'Whack the moles holding the right numbers, 60 seconds','Làm liên tục câu của đảo này, có bảng xếp hạng lớp':"Answer this island's questions non-stop, with a class leaderboard",
+ 'Bắn bóng theo luật của đảo trong 45 giây':'Pop the balloons that follow the island rule in 45 seconds','Xếp toa theo thứ tự số, 6 lượt':'Put the carriages in number order, 6 rounds',
+ 'Trả lời nhanh để kéo dây về phía Jenny':"Answer quickly to pull the rope to Jenny's side",'Trả lời đúng để tưới cây, cây lớn dần tới khi ra quả, 8 lần tưới':'Answer correctly to water the tree until it bears fruit, 8 waterings',
+ 'Chọn lá súng có đáp án đúng, 8 hàng':'Jump onto the lily pad with the right answer, 8 rows','Thả mồi, cá cắn câu thì trả lời đúng để kéo lên, 8 con cá':'Cast the bait; when a fish bites, answer correctly to reel it in, 8 fish',
+ 'Cô giáo mở buổi nào thì em học buổi đó. Mỗi buổi có video, ví dụ và 3 màn, được tới 9 sao.':'Do the sessions your teacher opens. Each session has a video, examples and 3 levels, worth up to 9 stars.',
+ 'Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu liền là dạng đó ra khỏi sổ, được +5 xu. Luyện lỗi không mất tim.':'Each round practises 3 question types, 2 questions each with new numbers. Get both right in a row to clear that type from the book and earn +5 coins. No hearts are lost when fixing mistakes.',
+ 'Em chơi thêm các đảo nhé! Khi đủ bài, Jenny sẽ vẽ Sức mạnh Toán cho em.':'Play more islands! When you have done enough, Jenny will draw your Math power chart.',
+ 'Tìm khung đúng số lượng':'Find the box with the right amount','Đếm số lượng':'Count how many','Điền số theo thứ tự':'Fill in numbers in order',
  'T2':'Mon','T3':'Tue','T4':'Wed','T5':'Thu','T6':'Fri','T7':'Sat','CN':'Sun'};
 const I18N_RE=[
+ [/^(.+) · Toán (\d+) · Chủ đề (\d+)$/,'$1 · Maths $2 · Topic $3'],[/^Khoảng (\d+) đòn · (\d+) tim · rương$/,'About $1 hits · $2 hearts · chest'],[/^Trùm đảo · (.+)$/,'Island boss · $1'],
+ [/^Tuần (\d+) · (\d+)\/(\d+) sao$/,'Week $1 · $2/$3 stars'],[/^Tuần (\d+) · đang soạn$/,'Week $1 · coming soon'],[/^sai (\d+) lần$/,'missed $1×'],[/^Kỷ lục (\d+)$/,'Record $1'],
+ [/^Buổi (\d+) · (.+)$/,(m,n,t)=>'Session '+n+' · '+({'Quy luật xếp hình':'Shape patterns','Đếm khéo, thứ tự':'Clever counting and order','Giống nhau, khác nhau':'Same and different','Cân thăng bằng':'Balance scales'}[t]||t)],
  [/^CHỦ ĐỀ (\d+)$/,'TOPIC $1'],[/^Chủ đề (\d+)$/,'Topic $1'],[/^Bài (\d+)–(\d+) · (\d+) đảo · trùm$/,'Lessons $1–$2 · $3 islands · boss'],[/^Bài (\d+)–(\d+) · (\d+) đảo ·$/,'Lessons $1–$2 · $3 islands ·'],[/^trùm$/,'boss'],
  [/^Chào (.+)!$/,'Hi $1!'],[/^(.+) · Lớp (\d+)$/,'$1 · Grade $2'],[/^Lớp (\d+)$/,'Grade $1'],[/^Bản (\d+\/\d+ · \d+:\d+)$/,'Build $1'],
- [/^Màn (\d+)$/,'Level $1'],[/^Khoảng (\d+) câu · (\d+) tim$/,'About $1 questions · $2 hearts'],[/^(\d+)\/(\d+) câu đúng · còn (\d+) tim(.*)$/,'$1/$2 correct · $3 hearts left$4'],[/^(\d+)\/(\d+) câu đúng(.*)$/,'$1/$2 correct$3'],
+ [/^Màn (\d+)$/,'Level $1'],[/^Trang (\d+)\/(\d+)$/,'Page $1/$2'],[/^Khoảng (\d+) câu · (\d+) tim$/,'About $1 questions · $2 hearts'],[/^(\d+)\/(\d+) câu đúng · còn (\d+) tim(.*)$/,'$1/$2 correct · $3 hearts left$4'],[/^(\d+)\/(\d+) câu đúng(.*)$/,'$1/$2 correct$3'],
  [/^\+(\d+) xu$/,'+$1 coins'],[/^\+(\d+) sao$/,'+$1 star'],[/^(\d+) dạng$/,'$1 types'],[/^(\d+)\/(\d+) dấu$/,'$1/$2 stamps'],[/^(\d+) ngày$/,'$1 days'],
  [/^Em vừa sai (\d+) câu\. Luyện lại một lượt để mở màn tiếp theo\.$/,'You missed $1 question(s). Practise them once to unlock the next level.'],[/^Em vừa sai (\d+) câu\. Luyện lại một lượt để chơi tiếp\.$/,'You missed $1 question(s). Practise them once to keep playing.'],
  [/^Luyện lỗi \((\d+)\) ▶$/,'Fix mistakes ($1) ▶'],[/^Lần trước em (chọn|ghi) (.+), chưa đúng\. Em làm lại nhé!$/,'Last time you answered $2 — not quite. Try again!'],
@@ -8403,17 +8419,24 @@ const I18N_RE=[
  [/^(.+) · Lớp (\d+) · (.+)$/,'$1 · Grade $2 · $3'],[/^Còn (\d+)\/(\d+) máu · em đã đánh (\d+) đòn$/,'$1/$2 HP left · you hit $3 times'],
  [/^Mỗi màn đúng khoảng 3\/4 số câu và còn tim là được 1 sao\. Qua Màn 1 là mở đảo tiếp theo và mở Trùm lớp\.$/,'Get about 3/4 right with hearts left to earn a star. Passing Level 1 opens the next island and the class boss.'],
  [/^Thưởng khi cả lớp hạ trùm: (\d+) xu và thẻ$/,'Reward when the class beats the boss: $1 coins and a card'],
- [/^Th(\d+)$/,(m,n)=>['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][n-1]||m],[/^(\d+) lần$/,'$1 times']];
+ [/^Th(\d+)$/,(m,n)=>['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][n-1]||m],[/^(\d+) lần$/,'$1 times'],[/^Ngày (\d+)$/,'Day $1']];
 const I18N_SKIP='.g1bub,.qtxt,.g1pic,.lslide,.gdq,.gdbub,.gdmq,.g1opts,.opts,.xcq,.xcsolbox,.gdstage,.g1cells,.g1tiles,.node .lbl,.t1sec h2,.tl .grow,.lesson h1,.lesson .muted,.mlist,script,style,select,option,#gateov p';
-function i18nText(t){const s=t.trim();if(!s)return null;if(I18N[s])return t.replace(s,I18N[s]);for(const [re,to] of I18N_RE){if(re.test(s))return t.replace(s,s.replace(re,to))}return null}
-function i18nApply(root){if(LANG!=='en')return;root=root||document.body;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;const todo=[];while(n=w.nextNode()){const p=n.parentElement;if(!p||p.closest(I18N_SKIP))continue;const r=i18nText(n.nodeValue);if(r!=null)todo.push([n,r])}todo.forEach(([n,r])=>n.nodeValue=r)}
+/* tên riêng của vùng biển: thay ngay trong chuỗi */
+const I18N_PLACE={'Vịnh Tí Hon':'Tiny Bay','Biển Ngọc Bích':'Emerald Sea','Quần đảo Mây Trắng':'White Cloud Islands','Đại dương Sao Băng':'Shooting Star Ocean','Biển Huyền Thoại':'Legend Sea',
+ 'Quần đảo Nhiệt đới':'Tropical Islands','Biển Băng':'Ice Sea','Đảo Núi lửa':'Volcano Island','Ốc đảo Sa mạc':'Desert Oasis','Vịnh Kẹo ngọt':'Candy Bay','Biển Pha lê':'Crystal Sea','Đầm lầy Rừng xanh':'Green Jungle Swamp','Vịnh Lá Thu':'Autumn Leaf Bay','Biển Đêm sao':'Starry Night Sea','Biển Hoàng hôn':'Sunset Sea',
+ 'Cá Xanh':'Blue Fish','Cua Đỏ':'Red Crab','Sứa Hồng':'Pink Jellyfish','Bạch Tuộc Tím':'Purple Octopus','Rùa Biển':'Sea Turtle','Cá Mập Con':'Baby Shark','Mực Lửa':'Fire Squid','Rắn Biển':'Sea Snake','Gà Lạc Đảo':'Lost Island Chick','Bọ Rùa Bay':'Flying Ladybird','Mèo Thủy Thủ':'Sailor Cat','Cá Voi Vàng':'Golden Whale','Rồng Biển':'Sea Dragon','Sao Biển Vàng':'Golden Starfish',
+ 'Bạch tuộc khổng lồ':'Giant Octopus','Cá mập khổng lồ':'Giant Shark','Sứa khổng lồ':'Giant Jellyfish','Mực khổng lồ':'Giant Squid','Rắn biển khổng lồ':'Giant Sea Snake','Rồng biển':'Sea Dragon','Cua khổng lồ':'Giant Crab','Toán Jenny':'Jenny Math',
+ 'Thứ Hai':'Mon','Thứ Ba':'Tue','Thứ Tư':'Wed','Thứ Năm':'Thu','Thứ Sáu':'Fri','Thứ Bảy':'Sat','Chủ nhật':'Sun'};
+const I18N_PLACE_RE=new RegExp(Object.keys(I18N_PLACE).sort((a,b)=>b.length-a.length).join('|'),'g');
+function i18nText(t){const s=t.trim();if(!s)return null;if(I18N[s])return t.replace(s,I18N[s]);const p=s.replace(I18N_PLACE_RE,m=>I18N_PLACE[m]);for(const [re,to] of I18N_RE){if(re.test(p))return t.replace(s,p.replace(re,to))}return p!==s?t.replace(s,p):null}
+function i18nApply(root){if(LANG!=='en')return;root=root||document.body;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;const todo=[];while(n=w.nextNode()){const p=n.parentElement;if(!p||p.closest('script,style')||(!(typeof enOn==='function'&&enOn())&&p.closest(I18N_SKIP)))continue;const r=i18nText(n.nodeValue);if(r!=null)todo.push([n,r])}todo.forEach(([n,r])=>n.nodeValue=r)}
 function setLang(l){LANG=l==='en'?'en':'vi';try{localStorage.setItem('jennyLang',LANG)}catch(e){}document.documentElement.lang=LANG;render();langUI();try{sfx('tap')}catch(e){}}
 function langUI(){const bar=document.querySelector('.appbar .wrap');if(!bar)return;let b=document.getElementById('langSw');
  if(!b){b=document.createElement('div');b.id='langSw';b.className='nb-lang';b.setAttribute('role','group');b.setAttribute('aria-label','Ngôn ngữ / Language');b.innerHTML='<button type="button" data-l="vi">VI</button><button type="button" data-l="en">EN</button>';b.addEventListener('click',e=>{const l=e.target.closest('button');if(l)setLang(l.dataset.l)});bar.appendChild(b)}
  b.querySelectorAll('button').forEach(x=>{x.classList.toggle('on',x.dataset.l===LANG);x.setAttribute('aria-pressed',x.dataset.l===LANG)})}
 {const _r=render;render=function(){const a=_r.apply(this,arguments);try{langUI();i18nApply()}catch(e){}return a}}
 /* hộp thoại tạo ngoài render (hướng dẫn, nhắc luyện lỗi, thông báo) */
-new MutationObserver(ms=>{if(LANG!=='en')return;for(const m of ms)m.addedNodes.forEach(x=>{if(x.nodeType===1)i18nApply(x);else if(x.nodeType===3&&x.parentElement&&!x.parentElement.closest(I18N_SKIP)){const r=i18nText(x.nodeValue);if(r!=null)x.nodeValue=r}})}).observe(document.body,{childList:true,subtree:true});
+new MutationObserver(ms=>{if(LANG!=='en')return;for(const m of ms)m.addedNodes.forEach(x=>{if(x.nodeType===1)i18nApply(x);else if(x.nodeType===3&&x.parentElement&&!x.parentElement.closest('script,style')&&((typeof enOn==='function'&&enOn())||!x.parentElement.closest(I18N_SKIP))){const r=i18nText(x.nodeValue);if(r!=null)x.nodeValue=r}})}).observe(document.body,{childList:true,subtree:true});
 document.documentElement.lang=LANG;
 document.head.insertAdjacentHTML('beforeend',`<style>
 .nb-lang{display:flex;flex:none;box-shadow:0 0 0 2px var(--pxk,#1F2A5A);order:7}.nb-lang button{border:0;font-family:var(--f-display);font-size:20px;line-height:1;padding:6px 8px;background:var(--surface,#fff);color:#5E6B8C;cursor:pointer}.nb-lang button.on{background:#FCB40C;color:#1F2A5A}
@@ -8449,10 +8472,11 @@ function trKey(s){const tags=[],nums=[],words=[],nouns=[];
 const enNum=v=>{const n=Number(String(v).replace(/[  ]/g,'').replace(',','.'));return isNaN(n)?null:n};
 function enPlural(vi,n){const e=EN_NOUN[vi];if(!e)return vi;return n===1?e[0]:e[1]}
 function trFill(t,P){const it={'#':0,'{w}':0,'{o}':0,'<>':0};let last=null,out='';
- const re=/<>|#(\d+)?|\{w(\d+)?\}|\{o(\d+)?(?::([spSP]))?\}|\{W(\d+)?\}|\{be\}|\{a\}/g;let m,i=0;
+ const re=/<>|#(\d+)?|\{w(\d+)?\}|\{o(\d+)?(?::([spSP]))?\}|\{W(\d+)?\}|\{be\}|\{a\}|\{1:([^|}]*)\|([^}]*)\}/g;let m,i=0;
  while((m=re.exec(t))){out+=t.slice(i,m.index);i=re.lastIndex;const tok=m[0];
   if(tok==='<>'){out+=P.tags[it['<>']++]??''}
   else if(tok==='{a}'){out+='\u0005'}
+  else if(tok.startsWith('{1:')){out+=last===1?m[6]:m[7]}
   else if(tok==='{be}'){/* is/are theo số đứng ngay sau */const r=t.slice(i),j=r.search(/#|\{w|\{W/);let v=null;if(j>=0){const n=r.slice(j).match(/^#(\d+)?|^\{[wW](\d+)?\}/);if(n&&n[0][0]==='#')v=enNum(P.nums[n[1]?n[1]-1:it['#']]);else if(n)v=P.words[n[2]?n[2]-1:it['{w}']]}out+=v===1?'is':'are'}
   else if(tok[0]==='#'){const v=P.nums[m[1]?m[1]-1:it['#']++];out+=v??'';last=enNum(v)}
   else if(tok.startsWith('{w')){const v=P.words[m[2]?m[2]-1:it['{w}']++];out+=v==null?'':enWord(v);last=v}
@@ -8465,14 +8489,19 @@ function trFill(t,P){const it={'#':0,'{w}':0,'{o}':0,'<>':0};let last=null,out='
 function trOne(s){const P=trKey(s),t=EN_T[P.key];if(t==null)return null;let r=trFill(t,P);const a=String(s).replace(/<[^>]*>/g,'').trim().charAt(0),b=r.replace(/<[^>]*>/g,'').trim().charAt(0);if(a&&a===a.toUpperCase()&&a!==a.toLowerCase()&&b&&b!==b.toUpperCase()){const i=r.indexOf(b,r.search(/(?:^|>)[^<]/));r=r.slice(0,i)+b.toUpperCase()+r.slice(i+1)}return r}
 /* dịch một chuỗi (có thể có thẻ HTML): thử cả chuỗi → từng câu → từng đoạn chữ giữa các thẻ */
 function enSplit(s){const m=s.replace(/<[^>]*>/g,x=>'\u0001'.repeat(x.length)),re=/(?<=[.?!:])\s+(?=[^\s])/g,out=[];let i=0,k;while((k=re.exec(m))){out.push(s.slice(i,k.index));i=k.index+k[0].length}out.push(s.slice(i));return out}
-function trSeg(t){const s=t.trim();if(!s||!/[A-Za-zÀ-ỹđĐ]/.test(s))return t;let x=trOne(s);if(x==null){const ps=enSplit(s);if(ps.length>1){const tr=ps.map(trOne);if(tr.some(v=>v!=null))x=ps.map((p,i)=>tr[i]??p).join(' ')}}return x==null?t:t.replace(s,x)}
+/* ghép câu tham lam: thử đoạn dài nhất trước (khuôn có thể chứa dấu ":" hay nhiều câu) */
+function trJoin(ps){const out=[];let i=0,hit=0;while(i<ps.length){let ok=0;for(let j=ps.length;j>i;j--){const x=trOne(ps.slice(i,j).join(' '));if(x!=null){out.push(x);i=j;ok=1;hit=1;break}}if(!ok){out.push(ps[i]);i++}}return hit?out.join(' '):null}
+function trSeg(t){const s=t.trim();if(!s||!/[A-Za-zÀ-ỹđĐ]/.test(s))return t;let x=trOne(s);if(x==null){const ps=enSplit(s);if(ps.length>1)x=trJoin(ps)}return x==null?t:t.replace(s,x)}
+const enViCount=h=>(String(h).replace(/<[^>]*>/g,'').match(/[À-ỹđĐ]/g)||[]).length;
 function trEN(s){if(s==null||typeof s!=='string'||!/[À-ỹđĐ]|[a-z]/i.test(s.replace(/<[^>]*>/g,'')))return s;const r=trOne(s);if(r!=null)return r;
- const tg=/<[^>]+>/.test(s),parts=enSplit(s);
- return parts.map(p=>{const x=trOne(p);if(x!=null)return x;return tg&&/<[^>]+>/.test(p)?p.replace(/(^|>)([^<]+)(?=<|$)/g,(m,a,txt)=>a+trSeg(txt)):trSeg(p)}).join(' ')}
+ const tg=/<[^>]+>/.test(s),segs=h=>h.replace(/(^|>)([^<]+)(?=<|$)/g,(m,a,txt)=>a+trSeg(txt));
+ const ps=enSplit(s);let A=s;if(ps.length>1){const out=[];let i=0;while(i<ps.length){let ok=0;for(let j=ps.length;j>i;j--){const x=trOne(ps.slice(i,j).join(' '));if(x!=null){out.push(x);i=j;ok=1;break}}if(!ok){out.push(tg&&/<[^>]+>/.test(ps[i])?segs(ps[i]):trSeg(ps[i]));i++}}A=out.join(' ')}else if(!tg)A=trSeg(s);
+ if(!tg)return A;const B=segs(s);return enViCount(B)<enViCount(A)?B:A}
 const enOn=()=>LANG==='en'&&EN_GR.has(+(typeof curG==='function'?curG():0));
 const EN_GR=new Set();/* các lớp đã dịch xong (48b… tự thêm) */
 /* câu hỏi: dịch các trường khi sinh câu */
-function trQ(q){if(!q||!enOn()||q.en)return q;const c={...q,en:1};for(const f of ['q','say','sol','pic','label'])if(typeof c[f]==='string')c[f]=trEN(c[f]);
+const enCap=h=>typeof h==='string'?h.replace(/^((?:\s|<[^>]*>)*)([a-z])/,(m,a,c)=>a+c.toUpperCase()):h;
+function trQ(q){if(!q||!enOn()||q.en)return q;const c={...q,en:1};for(const f of ['q','say','sol','pic','label'])if(typeof c[f]==='string')c[f]=trEN(c[f]);for(const f of ['q','say','sol'])c[f]=enCap(c[f]);
  if(Array.isArray(c.opts))c.opts=c.opts.map(o=>o&&typeof o==='object'?{...o,h:trEN(o.h)}:trEN(o));if(Array.isArray(c.tiles))c.tiles=c.tiles.map(trEN);return c}
 for(const G in PRIM){if(!PRIM[G].isl)continue;for(const x of PRIM[G].isl)(x.lv||[]).forEach(gs=>gs.forEach((gn,i)=>{if(typeof gn==='function'&&!gn.en){const w=function(){return trQ(gn.apply(this,arguments))};w.en=1;w.gdFlip=gn.gdFlip;gs[i]=w}}))}
 /* nội dung tĩnh của lớp: tên chủ đề, đảo, bài giảng, trùm, vùng biển — đổi tại chỗ, giữ bản gốc trong _vi */
@@ -8484,7 +8513,7 @@ function enSwapAll(){for(const G of EN_GR){const P=PRIM[G];if(!P)continue;(P.isl
 /* Jenny đọc: tiếng Anh thì dịch câu và đọc giọng en-GB */
 let enVoice=null;function pickEnVoice(){try{const vs=speechSynthesis.getVoices();return vs.find(v=>/^en-GB/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null}catch(e){return null}}
 {const _s=sayJ;sayJ=function(text){if(!enOn())return _s.apply(this,arguments);if(muted||!text)return;try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(!enVoice)enVoice=pickEnVoice();
-  const t=trEN(String(text)).replace(/<[^>]+>/g,' ').replace(/×/g,' times ').replace(/:/g,' divided by ').replace(/−/g,' minus ').replace(/\+/g,' plus ').replace(/=/g,' equals ').replace(/☐/g,' blank ').replace(/\s+/g,' ');
+  const t=trEN(String(text)).replace(/<[^>]+>/g,' ').replace(/×/g,' times ').replace(/(\d)\s*:\s*(\d)/g,'$1 divided by $2').replace(/(\d)\s*cm\b/g,'$1 centimetres').replace(/−/g,' minus ').replace(/\+/g,' plus ').replace(/=/g,' equals ').replace(/☐/g,' blank ').replace(/\s+/g,' ');
   const u=new SpeechSynthesisUtterance(t);u.lang='en-GB';if(enVoice)u.voice=enVoice;u.rate=.92;u.onstart=()=>{try{duck(1)}catch(e){}};u.onend=u.onerror=()=>{try{duck(0)}catch(e){}};s.speak(u)}catch(e){}}}
 /* chữ trên màn hình còn sót (hướng dẫn, trò chơi, hình): dịch thêm bằng khuôn khi bật EN */
 {const _t=i18nText;i18nText=function(t){const r=_t(t);if(r!=null||!enOn())return r;const s=t.trim();const x=trOne(s);return x==null?null:t.replace(s,x)}}
@@ -8499,7 +8528,7 @@ Object.assign(EN_NOUN,{
  'chiếc lá':['leaf','leaves'],'con chim':['bird','birds'],'cái kẹo':['sweet','sweets'],'quyển truyện':['storybook','storybooks'],'quả cam':['orange','oranges'],'viên bi':['marble','marbles'],
  'chiếc lược':['comb','combs'],'cái thước':['ruler','rulers'],'cây bút':['pen','pens'],'que tính':['counting stick','counting sticks'],'bút chì':['pencil','pencils'],'bút màu':['crayon','crayons'],
  'thước kẻ':['ruler','rulers'],'cục tẩy':['rubber','rubbers'],'quyển vở':['exercise book','exercise books'],
- 'đồng xu':['coin','coins'],'ngón tay':['finger','fingers'],'ngón':['finger','fingers'],'hình tam giác':['triangle','triangles'],'hình vuông':['square','squares'],'hình tròn':['circle','circles'],'hình chữ nhật':['rectangle','rectangles'],
+ 'đồng xu':['coin','coins'],'đồ vật':['object','objects'],'ngón tay':['finger','fingers'],'ngón':['finger','fingers'],'hình tam giác':['triangle','triangles'],'hình vuông':['square','squares'],'hình tròn':['circle','circles'],'hình chữ nhật':['rectangle','rectangles'],
  'khối lập phương':['cube','cubes'],'khối hộp chữ nhật':['cuboid','cuboids'],'khối trụ':['cylinder','cylinders'],
  'chiếc đĩa ăn cơm':['dinner plate','dinner plates'],'viên gạch xây nhà':['building brick','building bricks'],'bánh xe đạp':['bicycle wheel','bicycle wheels'],'biển báo nguy hiểm':['warning sign','warning signs'],
  'cánh cửa ra vào':['front door','front doors'],'mặt bàn học':['desk top','desk tops'],'miếng bánh mì kẹp cắt chéo':['sandwich cut corner to corner','sandwiches cut corner to corner'],'mặt con xúc xắc':['face of a dice','faces of a dice'],
@@ -8509,6 +8538,1636 @@ Object.assign(EN_NOUN,{
  'hộp quà hình vuông':['square gift box','square gift boxes'],'ô cửa sổ nhỏ hình bốn cạnh bằng nhau':['small window with four equal sides','small windows with four equal sides'],
 });
 EN_NOUN_RE=null;
+/* khuôn câu lớp 1 (tạo từ công cụ, sửa ở đây) */
+Object.assign(EN_T,{
+"Đếm từng đồ: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm đồ nào thì khoanh đồ đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng đồ {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng con: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm con nào thì khoanh con đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng con {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng củ: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm củ nào thì khoanh củ đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng củ {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng chú: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm chú nào thì khoanh chú đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng chú {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng quả: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm quả nào thì khoanh quả đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng quả {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng ngôi: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm ngôi nào thì khoanh ngôi đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng ngôi {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng bông: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm bông nào thì khoanh bông đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng bông {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng cái: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm cái nào thì khoanh cái đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng cái {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng chiếc: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm chiếc nào thì khoanh chiếc đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng chiếc {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng hình: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm hình nào thì khoanh hình đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng hình {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng viên: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm viên nào thì khoanh viên đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng viên {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng que: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm que nào thì khoanh que đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng que {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng cây: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm cây nào thì khoanh cây đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng cây {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng quyển: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm quyển nào thì khoanh quyển đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng quyển {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng cục: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm cục nào thì khoanh cục đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng cục {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng ô: có # {o}.": "Count the squares one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm ô nào thì khoanh ô đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng ô {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng khối: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm khối nào thì khoanh khối đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng khối {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng bạn: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm bạn nào thì khoanh bạn đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng bạn {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng lá: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm lá nào thì khoanh lá đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng lá {w}.": "Let's count each box in turn, circling them one by one.",
+"Đếm từng bút: có # {o}.": "Count them one by one: there {be} # {o}.",
+"Mình đếm lần lượt từng {o}: từ trái sang phải, từ trên xuống dưới. Đếm bút nào thì khoanh bút đó, để {w} đếm sót, {w} đếm {w} lần.": "Let's count the {o:p} one at a time: left to right, top to bottom. Circle each one as you count it, so you don't miss any or count any twice.",
+"Mình đếm lần lượt từng khung, khoanh từng bút {w}.": "Let's count each box in turn, circling them one by one.",
+"Bài #. Các số #, #, #, #, #, #": "Lesson #. The numbers #, #, #, #, #, #",
+"Bài #. Các số #, #, #, #, #": "Lesson #. The numbers #, #, #, #, #",
+"Số #–# · T#": "Numbers #–# · P#",
+"Đếm và nhận biết các số từ # đến #": "Count and recognise the numbers from # to #",
+"Bài # · Tiết #": "Lesson # · Period #",
+"Bài #.": "Lesson #.",
+"Có mấy {o}?": "How many {o:p} are there?",
+"Em đếm rồi chạm vào số đúng nhé.": "Count them, then tap the right number.",
+"{o} cuối cùng được khoanh là số #.": "The last {o:s} we circled is number #.",
+"Vậy có # {o}.": "So there {be} # {o}.",
+"Chạm vào số <>{w}<>.": "Tap the number <>{w}<>.",
+"Em hãy chạm vào số {w}.": "Tap the number {w}.",
+"Số {w} viết là #.": "The number {w} is written #.",
+"Chạm vào khung có <>#<> {o}.": "Tap the box with <>#<> {o}.",
+"Chạm vào khung có {w} {o}.": "Tap the box with {w} {o}.",
+"Khung đúng có # {o}.": "The right box has # {o}.",
+"Cần tìm khung có # {o}.": "We need to find the box with # {o}.",
+"Khung # có # {o}.": "Box # has # {o}.",
+"Đúng rồi!": "That's right!",
+"Khung thứ # có đúng # {o}.": "Box # has exactly # {o}.",
+"Đếm và viết các số theo thứ tự từ # đến #": "Count and write the numbers in order from # to #",
+"Điền số còn thiếu vào ô trống.": "Fill in the missing number.",
+"Đếm thêm {w} rồi kéo số còn thiếu vào ô trống nhé.": "Count on by one, then drag the missing number into the box.",
+"Dãy đúng:": "The correct order:",
+"Chọn số đúng, thêm hình cho đủ số lượng": "Choose the right number, add pictures to make the amount",
+"Thêm cho đủ <>#<> {o}.": "Add more to make <>#<> {o}.",
+"Đã có {w} {o}.": "You have {w} {o} already.",
+"Em bấm dấu cộng để thêm cho đủ {w} {o} nhé.": "Press the plus sign to add more until you have {w} {o}.",
+"Cần thêm # để có đủ #.": "Add # more to make #.",
+"Điền số còn thiếu (đếm lùi).": "Fill in the missing number (count back).",
+"Đếm lùi rồi kéo số còn thiếu vào ô trống nhé.": "Count back, then drag the missing number into the box.",
+"Viết các số theo thứ tự từ # đến #": "Write the numbers in order from # to #",
+"Bạn Mèo xếp các số nhưng làm rơi mất {w} số.": "Cat put the numbers in order but dropped one.",
+"Số nào bị rơi?": "Which number was dropped?",
+"Bạn Mèo xếp các số từ {w} đến {w} nhưng làm rơi mất {w} số.": "Cat put the numbers from {w} to {w} in order but dropped one.",
+"Đó là số nào?": "Which number is it?",
+"Các số từ # đến # còn thiếu số #.": "The numbers from # to # are missing #.",
+"Thêm hình cho đủ, tìm số bị rơi": "Add pictures, find the dropped number",
+"Bài #. Nhiều hơn, ít hơn, bằng nhau": "Lesson #. More, fewer, the same",
+"Nhiều – ít · T#": "More – fewer · P#",
+"So sánh {w} nhóm: nhiều hơn, ít hơn, bằng nhau": "Compare two groups: more, fewer, the same",
+"Số {o} so với số {o} thì thế nào?": "How does the number of {o1:p} compare with the number of {o2:p}?",
+"Em ghép mỗi {o} với {w} {o}.": "Match each {o1:s} with one {o2:s}.",
+"Số {o} nhiều hơn, ít hơn hay bằng số {o}?": "Are there more, fewer or the same number of {o1:p} as {o2:p}?",
+"Có # {o} và # {o}, nên số {o} ít hơn số {o}.": "There {be} # {o} and # {o}, so there are fewer {o3:p} than {o4:p}.",
+"Có # {o} và # {o}, nên số {o} bằng số {o}.": "There {be} # {o} and # {o}, so there are as many {o3:p} as {o4:p}.",
+"Có # {o} và # {o}, nên số {o} nhiều hơn số {o}.": "There {be} # {o} and # {o}, so there are more {o3:p} than {o4:p}.",
+"Nhiều hơn": "More",
+"Ít hơn": "Fewer",
+"Bằng nhau": "The same",
+"Chạm vào khung có <>nhiều<> {o} nhất.": "Tap the box with the <>most<> {o:p}.",
+"Khung nào có nhiều {o} nhất?": "Which box has the most {o:p}?",
+"Em chạm vào khung đó nhé.": "Tap that box.",
+"Khung có # {o} là nhiều nhất.": "The box with # {o} has the most.",
+"Chạm vào khung có <>ít<> {o} nhất.": "Tap the box with the <>fewest<> {o:p}.",
+"Khung nào có ít {o} nhất?": "Which box has the fewest {o:p}?",
+"Khung có # {o} là ít nhất.": "The box with # {o} has the fewest.",
+"Đúng hay sai: nhóm nào nhiều hơn?": "True or false: which group has more",
+"Số {o} ít hơn số {o}.": "There are fewer {o:p} than {o2:p}.",
+"Đúng hay sai?": "True or false?",
+"Có # {o} và # {o}.": "There {be} # {o} and # {o}.",
+"Số {o} bằng số {o}.": "There are as many {o:p} as {o2:p}.",
+"Số {o} nhiều hơn số {o}.": "There are more {o:p} than {o2:p}.",
+"Bài #. So sánh số": "Lesson #. Comparing numbers",
+"So sánh · T#": "Comparing · P#",
+"Dùng dấu >, <, = để so sánh các số đến #": "Use >, < and = to compare numbers up to #",
+"Chọn dấu đúng: <># … #<>": "Choose the right sign: <># … #<>",
+"Bên trái có {w}, bên phải có {w}.": "On the left is {w}, on the right is {w}.",
+"Em chọn dấu lớn hơn, bé hơn hay bằng?": "Choose greater than, less than or equal to.",
+"Em chọn dấu lớn hơn, bé hơn hay bằng.": "Choose greater than, less than or equal to.",
+"Đ": "O",
+"C": "T",
+"Viết {w} số vào bảng hàng.": "Write the two numbers in the place value table.",
+"Mình so sánh từ hàng cao nhất, bên trái.": "We compare from the biggest place, on the left.",
+"Hàng đơn vị: # và #.": "Ones: # and #.",
+"Số nào lớn hơn?": "Which number is greater?",
+"Hàng đơn vị: số nào lớn hơn?": "Ones: which is greater?",
+"Đúng rồi, # lớn hơn.": "Yes, # is greater.",
+"So {w} chữ số trong cột đang sáng vàng.": "Compare the two digits in the yellow column.",
+"Hàng đơn vị của # lớn hơn, nên # lớn hơn.": "The ones digit of # is greater, so # is greater.",
+"Chọn dấu nào?": "Which sign do we choose?",
+"Chọn dấu: # … #": "Choose the sign: # … #",
+"Đúng rồi: # < #.": "Yes: # < #.",
+"Đúng rồi: # > #.": "Yes: # > #.",
+"Đúng rồi: # = #.": "Yes: # = #.",
+"Đầu nhọn của dấu chỉ vào số bé hơn.": "The pointed end of the sign points to the smaller number.",
+"# bé hơn #.": "# is less than #.",
+"Đầu nhọn của dấu luôn chỉ vào số bé hơn.": "The pointed end of the sign always points to the smaller number.",
+"# lớn hơn #.": "# is greater than #.",
+"Chạm vào <>tất cả<> các số lớn hơn #.": "Tap <>all<> the numbers greater than #.",
+"Chạm vào tất cả các số lớn hơn {w}, rồi bấm kiểm tra.": "Tap all the numbers greater than {w}, then press Check.",
+"Các số lớn hơn #:": "Numbers greater than #:",
+"Số nào điền được vào ô trống: <>☐ &lt; #<>": "Which number can go in the box? <>☐ &lt; #<>",
+"Số nào điền được vào ô trống: <>☐ &gt; #<>": "Which number can go in the box? <>☐ &gt; #<>",
+"Số nào điền được vào ô trống:": "Which number can go in the box?",
+"Số nào điền vào ô trống để ô trống bé hơn {w}?": "Which number in the box is less than {w}?",
+"Số nào điền vào ô trống để ô trống lớn hơn {w}?": "Which number in the box is greater than {w}?",
+"So sánh các số đến #": "Compare numbers up to #",
+"Chạm vào số lớn hơn.": "Tap the greater number.",
+"{w} và {w}.": "{w} and {w}.",
+"Hàng đơn vị: cùng là #, bằng nhau.": "Ones: both are #, the same.",
+"Hàng chục: cùng là #, bằng nhau.": "Tens: both are #, the same.",
+"So tiếp hàng bên phải.": "Now compare the next place to the right.",
+"Các hàng đều bằng nhau, nên {w} số bằng nhau.": "Every place is the same, so the two numbers are equal.",
+"Hai số giống hệt nhau.": "The two numbers are exactly the same.",
+"# bằng #.": "# is equal to #.",
+"Điền dấu >, <, = vào giữa {w} số": "Write >, < or = between two numbers",
+"{w} so với {w}.": "{w} compared with {w}.",
+"{w} bé hơn {w}.": "{w} is less than {w}.",
+"{w} lớn hơn {w}.": "{w} is greater than {w}.",
+"{w} bằng {w}.": "{w} is equal to {w}.",
+"# có # chữ số, # có # chữ số.": "# is a #-digit number, # is a #-digit number.",
+"Số nào nhiều chữ số hơn thì lớn hơn.": "The number with more digits is greater.",
+"Chọn dấu đúng nhé.": "Choose the right sign.",
+"Số có nhiều chữ số hơn thì lớn hơn.": "A number with more digits is greater.",
+"Tìm số lớn hơn, nhóm ít hơn": "Find the greater number and the smaller group",
+"Bài #. Mấy và mấy": "Lesson #. Number bonds",
+"Mấy và mấy · T#": "Number bonds · P#",
+"Gộp {w} nhóm: mấy và mấy được mấy": "Put two groups together: what makes what",
+"<>#<> và <>#<> được mấy?": "What do <>#<> and <>#<> make?",
+"{w} và {w} được mấy?": "What do {w} and {w} make?",
+"# và # được #.": "# and # make #.",
+"Tách {w} số thành {w} phần": "Split a number into two parts",
+"<>#<> gồm <>#<> và mấy?": "<>#<> is <>#<> and what?",
+"{w} gồm {w} và mấy?": "{w} is {w} and what?",
+"# gồm # và #.": "# is # and #.",
+"Tách và gộp các số đến #": "Split and combine numbers up to #",
+"Bài #. Luyện tập chung": "Lesson #. Mixed practice",
+"Luyện tập · T#": "Practice · P#",
+"Đếm, tìm nhóm và tách số": "Count, find groups and split numbers",
+"Xếp thứ tự, tìm số theo tên gọi": "Put numbers in order, find numbers by name",
+"Chạm các số theo thứ tự từ lớn đến bé.": "Tap the numbers in order from greatest to smallest.",
+"Em chạm vào các số theo thứ tự từ lớn đến bé nhé.": "Tap the numbers in order from greatest to smallest.",
+"Từ lớn đến bé:": "Greatest to smallest:",
+"Chạm các số theo thứ tự từ bé đến lớn.": "Tap the numbers in order from smallest to greatest.",
+"Em chạm vào các số theo thứ tự từ bé đến lớn nhé.": "Tap the numbers in order from smallest to greatest.",
+"Từ bé đến lớn:": "Smallest to greatest:",
+"Nhóm nào ít hơn?": "Which group has fewer?",
+"Ôn cả chủ đề và đánh trùm": "Review the whole topic and fight the boss",
+"Bài #. {o}, {o}, {o}, {o}": "Lesson #. {o:P}, {o:p}, {o:p} and {o:p}",
+"Hình phẳng · T#": "2D shapes · P#",
+"Học và ôn:": "Learn and review:",
+"Luyện tập:": "Practice:",
+"{o}, {o}, {o}, {o}": "{o:p}, {o:p}, {o:p} and {o:p}",
+"Đây là hình gì?": "What shape is this?",
+"Em chọn tên đúng nhé.": "Choose the right name.",
+"Đây là {o}.": "This is {a} {o:s}.",
+"{o}": "{o:s}",
+"Chạm vào <>{o}<>.": "Tap the <>{o:s}<>.",
+"Em chạm vào {o} nhé.": "Tap the {o:s}.",
+"Đó là {o}.": "That is {a} {o:s}.",
+"Có mấy <>{o}<>?": "How many <>{o:p}<> are there?",
+"Em đếm kỹ nhé.": "Count carefully.",
+"Có # {o}.": "There {be} # {o}.",
+"Chỉ đếm {o}.": "Count only the {o:p}.",
+"Các hình khác mình để mờ đi, {w} đếm.": "The other shapes are faded out, so we don't count them.",
+"<>{o}<> có dạng hình gì?": "What shape is the <>{o:s}<>?",
+"{o} có dạng hình gì?": "What shape is the {o:s}?",
+"{o} có dạng {o}.": "The {o1:s} is shaped like {a} {o2:s}.",
+"Chạm vào <>tất cả<> các {o}.": "Tap <>all<> the {o:p}.",
+"Chạm vào tất cả các {o}, rồi bấm kiểm tra.": "Tap all the {o:p}, then press Check.",
+"Bài #. Thực hành lắp ghép, xếp hình": "Lesson #. Putting shapes together",
+"Xếp hình · T#": "Shape puzzles · P#",
+"thực hành lắp ghép, xếp hình": "putting shapes together",
+"Bạn Mèo xếp hình bên bằng các {o} nhỏ.": "Cat made this shape from small {o:p}.",
+"Bạn đã dùng mấy {o}?": "How many {o:p} did Cat use?",
+"Bạn Mèo xếp {w} hình bằng các {o} nhỏ.": "Cat made a shape from small {o:p}.",
+"Ba {o} xếp khép kín được hình gì?": "Three {o:p} joined end to end make what shape?",
+"Kết quả là {o}.": "It makes {a} {o:s}.",
+"Bốn {o} bằng nhau xếp khép kín được hình gì?": "Four equal {o:p} joined end to end make what shape?",
+"Ba {o} bằng nhau xếp thành {w} hàng tạo thành hình gì?": "Three equal {o:p} in a row make what shape?",
+"Hình nào xếp tiếp theo?": "Which shape comes next?",
+"Các hình được xếp theo quy luật.": "The shapes follow a pattern.",
+"Các hình lặp lại theo đúng thứ tự.": "The shapes repeat in the same order.",
+"Hai {o} bằng nhau đặt cạnh nhau tạo thành hình gì?": "Two equal {o:p} side by side make what shape?",
+"Bốn {o} bằng nhau xếp thành # hàng, mỗi hàng # hình, tạo thành hình gì?": "Four equal {o:p} in # rows of # make what shape?",
+"luyện tập chung": "mixed questions",
+"Hình nào <>khác loại<> với các hình còn lại?": "Which shape is the <>odd one out<>?",
+"Ba hình cùng loại, {w} hình khác loại.": "Three shapes are the same kind, one is different.",
+"Em tìm hình khác loại nhé.": "Find the odd one out.",
+"Ba hình là {o}, hình còn lại là {o}.": "Three shapes are {o1:p}, the other one is {a} {o2:s}.",
+"Bài #. Phép cộng trong phạm vi #": "Lesson #. Addition within #",
+"Phép cộng · T#": "Addition · P#",
+"phép cộng trong phạm vi #": "addition within #",
+"Có # {o}, thêm # {o}.": "There {be} # {o}. Add # more.",
+"Có tất cả mấy {o}?": "How many {o:p} are there altogether?",
+"Có {w} {o}, thêm {w} {o}.": "There {be} {w} {o}. Add {w} more.",
+"Mình dùng {w} bàn tay nhé.": "Let's use our two hands.",
+"Ngửa {w} tay ra, nắm hết các {o} lại.": "Hold both hands palms up and fold all your fingers down.",
+"Tay trái giơ # {o}.": "Left hand: put up # {o}.",
+"Tay phải giơ # {o}.": "Right hand: put up # {o}.",
+"Đếm từ trái sang phải nào: #": "Count from left to right: #",
+"# {o} với # {o} là # {o}.": "# {o} and # {o} make # {o}.",
+"# cộng # bằng #.": "# plus # equals #.",
+"{w} cộng {w} bằng mấy?": "What is {w} plus {w}?",
+"Em lấy số lớn hơn là #, rồi đếm thêm #.": "Start from the greater number, #, then count on #.",
+"Đây là # {o}.": "Here {be} # {o}.",
+"Nhớ số # trong đầu.": "Keep # in your head.",
+"Giơ thêm # {o}, viền vàng.": "Put up # more {o}, outlined in yellow.",
+"#, đếm tiếp: #": "#, count on: #",
+"# đếm thêm # là #.": "# count on # is #.",
+"Giơ # {o} trước, rồi đếm thêm #.": "Put up # {o} first, then count on #.",
+"{w} cộng mấy bằng {w}?": "{w} plus what equals {w}?",
+"# gồm # và #, nên ô trống là #.": "# is # and #, so the missing number is #.",
+"Cần # {o}.": "We need # {o}.",
+"Đã có # {o}.": "We already have # {o}.",
+"Giơ # {o}.": "Put up # {o}.",
+"Giơ thêm cho đủ # {o}, viền vàng.": "Put up more fingers to make #, outlined in yellow.",
+"Giơ thêm # {o} nữa mới đủ #.": "We need # more {o} to make #.",
+"Ô trống là #.": "The missing number is #.",
+"Viết phép cộng thích hợp với hình.": "Choose the addition that matches the picture.",
+"Nhìn hình, em chọn phép cộng thích hợp.": "Look at the picture and choose the matching addition.",
+"Có # và #, gộp lại: # + # = #.": "# and # put together: # + # = #.",
+"Biết <># + # = #<>.": "We know <># + # = #<>.",
+"Vậy <># + # = ?<>": "So <># + # = ?<>",
+"Biết {w} cộng {w} bằng {w}.": "We know {w} plus {w} equals {w}.",
+"Vậy {w} cộng {w} bằng mấy?": "So what is {w} plus {w}?",
+"Đổi chỗ {w} số trong phép cộng, kết quả {w} đổi.": "Swapping the two numbers in an addition does not change the answer.",
+"Hai phép cộng giống hệt nhau: cùng là # cộng #.": "The two additions are exactly the same: both are # plus #.",
+"Đổi chỗ các số hạng trong phép cộng thì tổng {w} đổi.": "Swapping the numbers in an addition does not change the total.",
+"Không cần tính lại!": "No need to work it out again!",
+"Vậy # cộng # bằng mấy?": "So what is # plus #?",
+"Giống # + # = #.": "Just like # + # = #.",
+"Nhìn phép tính đã biết ở trên: cùng {w} số đó.": "Look at the calculation above: the same two numbers.",
+"# cộng # cũng bằng #.": "# plus # also equals #.",
+"Nhìn kỹ {w} phép cộng: cùng có {w} số # và #, chỉ đổi chỗ cho nhau.": "Look closely at the two additions: both have # and #, just swapped round.",
+"Luyện tập: phép cộng trong phạm vi #": "Practice: addition within #",
+"Cộng với # thì {w} thêm {o} nào.": "Adding # means no more {o:p} go up.",
+"Bài #. Phép trừ trong phạm vi #": "Lesson #. Subtraction within #",
+"Phép trừ · T#": "Subtraction · P#",
+"phép trừ trong phạm vi #": "subtraction within #",
+"Có # {o}, bớt đi # {o}.": "There {be} # {o}. Take away # {o}.",
+"Còn lại mấy {o}?": "How many {o:p} are left?",
+"Có {w} {o}, bớt đi {w}.": "There {be} {w} {o}. Take away {w}.",
+"Giơ # {o} trước nhé.": "Put up # {o} first.",
+"Gập xuống # {o}: #": "Fold down # {o}: #",
+"Mình đếm từ trái sang phải nhé.": "Let's count from left to right.",
+"Còn lại # {o}.": "# {o} left.",
+"# trừ # bằng #.": "# minus # equals #.",
+"{w} trừ {w} bằng mấy?": "What is {w} minus {w}?",
+"Gập hết rồi, {w} còn {o} nào.": "All folded down, no {o:p} left.",
+"{w} trừ mấy bằng {w}?": "{w} minus what equals {w}?",
+"Gập bớt đến khi còn # {o}.": "Fold down until there {be} # {o} left.",
+"Gập: #": "Fold: #",
+"Còn lại: #": "Left: #",
+"Gập # {o} thì còn # {o}.": "Fold down # {o}, leaving # {o}.",
+"Mấy trừ {w} bằng {w}?": "What minus {w} equals {w}?",
+"Sau khi gập # {o} thì còn # {o}.": "After folding down # {o}, there {be} # {o} left.",
+"Lúc đầu có mấy {o}?": "How many {o:p} were there at the start?",
+"Đây là # {o} còn lại.": "These are the # {o} left.",
+"Giơ lại # {o} đã gập, viền vàng.": "Put the # folded {o} back up, outlined in yellow.",
+"Đếm tất cả từ trái sang phải.": "Count them all from left to right.",
+"Lúc đầu có # {o}.": "At the start there {be} # {o}.",
+"Có # {o}, cho đi # {o}.": "There {be} # {o}. We give away # {o}.",
+"Chọn phép trừ thích hợp.": "Choose the matching subtraction.",
+"Có {w} {o}, cho đi {w}.": "There {be} {w} {o}. We give away {w}.",
+"Em chọn phép trừ thích hợp.": "Choose the matching subtraction.",
+"Từ # bớt #: # − # = #.": "# take away #: # − # = #.",
+"Có # {o}, # {o} bơi đi.": "There {be} # {o}. Then # {o} {1:swims|swim} away.",
+"Có {w} {o}, {w} {o} bơi đi.": "There {be} {w} {o}. Then {w} {o} {1:swims|swim} away.",
+"Có # {o}, # {o} chạy đi.": "There {be} # {o}. Then # {o} {1:runs|run} away.",
+"Có {w} {o}, {w} {o} chạy đi.": "There {be} {w} {o}. Then {w} {o} {1:runs|run} away.",
+"Có # {o}, # {o} bò đi.": "There {be} # {o}. Then # {o} {1:crawls|crawl} away.",
+"Có {w} {o}, {w} {o} bò đi.": "There {be} {w} {o}. Then {w} {o} {1:crawls|crawl} away.",
+"Có # {o}, # {o} bay đi.": "There {be} # {o}. Then # {o} {1:flies|fly} away.",
+"Có {w} {o}, {w} {o} bay đi.": "There {be} {w} {o}. Then {w} {o} {1:flies|fly} away.",
+"Hỏi còn lại mấy {o}?": "How many {o:p} are left?",
+"Luyện tập: phép trừ trong phạm vi #": "Practice: subtraction within #",
+"Bớt # {o} thì vẫn còn # {o}.": "Fold down # {o} and there are still # {o}.",
+"Bài #. Bảng cộng, bảng trừ trong phạm vi #": "Lesson #. Addition and subtraction facts within #",
+"Bảng cộng, trừ · T#": "Number facts · P#",
+"bảng cộng, bảng trừ trong phạm vi #": "addition and subtraction facts within #",
+"Phép tính nào có kết quả bằng <>#<>?": "Which calculation has the answer <>#<>?",
+"Phép tính nào có kết quả bằng {w}?": "Which calculation has the answer {w}?",
+"Phép tính nào có kết quả bằng #?": "Which calculation has the answer #?",
+"Chạm vào <>tất cả<> phép tính có kết quả bằng #.": "Tap <>all<> the calculations with the answer #.",
+"Chạm vào tất cả phép tính có kết quả bằng {w}, rồi bấm kiểm tra.": "Tap all the calculations with the answer {w}, then press Check.",
+"Chọn dấu đúng: <># − # … #<>": "Choose the right sign: <># − # … #<>",
+"Chọn dấu đúng: <># + # … #<>": "Choose the right sign: <># + # … #<>",
+"Bạn Sóc nhặt các hạt dẻ có kết quả <>bằng #<>.": "Squirrel collects the chestnuts with the answer <>#<>.",
+"Chạm vào tất cả hạt dẻ đó.": "Tap all those chestnuts.",
+"Bạn Sóc chỉ nhặt hạt dẻ ghi phép tính có kết quả bằng {w}.": "Squirrel only collects chestnuts with calculations that equal {w}.",
+"Em chạm vào tất cả hạt dẻ đó nhé.": "Tap all those chestnuts.",
+"Trong giỏ có # {o}.": "There {be} # {o} in the basket.",
+"Mẹ để thêm # {o}.": "Mum puts in # more {o}.",
+"Trong giỏ có tất cả mấy {o}?": "How many {o:p} are in the basket altogether?",
+"Trong giỏ có {w} {o}.": "There {be} {w} {o} in the basket.",
+"Mẹ để thêm {w}.": "Mum puts in {w} more.",
+"Bài #. {o}, {o}": "Lesson #. {o:P} and {o:p}",
+"Hình khối · T#": "3D shapes · P#",
+"{o}, {o}": "{o:p} and {o:p}",
+"<>{o}<> có dạng khối gì?": "What 3D shape is the <>{o:s}<>?",
+"{o} có dạng khối gì?": "What 3D shape is the {o:s}?",
+"Hình bên được xếp bởi mấy {o}?": "How many {o:p} make this shape?",
+"Hình bên được xếp bởi mấy {o} nhỏ?": "How many small {o:p} make this shape?",
+"Em đếm từng cột nhé.": "Count each column.",
+"Đếm từng cột:": "Count each column:",
+"Mình đếm từng cột, mỗi cột đếm từ dưới lên.": "Let's count column by column, from the bottom up.",
+"Đếm khối nào thì đánh dấu khối đó.": "Mark each cube as you count it.",
+"Cột tiếp theo: #": "Next column: #",
+"Các cột có #, # khối.": "The columns have # and # cubes.",
+"Các cột có #, #, # khối.": "The columns have #, # and # cubes.",
+"Các cột có #, #, #, # khối.": "The columns have #, #, # and # cubes.",
+"Tất cả có # {o}.": "Altogether there {be} # {o}.",
+"Hình nào được xếp bởi <>#<> {o}?": "Which shape is made of <>#<> {o}?",
+"Hình nào được xếp bởi {w} {o} nhỏ?": "Which shape is made of {w} small {o}?",
+"Hình đúng có # khối.": "The right shape has # cubes.",
+"Bài #. Vị trí, định hướng trong {w} gian": "Lesson #. Position and direction",
+"Vị trí · T#": "Position · P#",
+"vị trí, định hướng trong {w} gian": "position and direction",
+"Vật nào ở <>bên trái<> {o}?": "What is to the <>left<> of the {o:s}?",
+"Vật nào ở ngay bên trái {o}?": "What is just to the left of the {o:s}?",
+"Bên trái {o} là {o}.": "To the left of the {o1:s} is the {o2:s}.",
+"Vật nào ở <>bên phải<> {o}?": "What is to the <>right<> of the {o:s}?",
+"Vật nào ở ngay bên phải {o}?": "What is just to the right of the {o:s}?",
+"Bên phải {o} là {o}.": "To the right of the {o1:s} is the {o2:s}.",
+"{o} ở trên hay ở dưới {o}?": "Is the {o1:s} above or below the {o2:s}?",
+"{o} ở trên {o}.": "The {o1:s} is above the {o2:s}.",
+"{o} ở dưới {o}.": "The {o1:s} is below the {o2:s}.",
+"Ở trên": "Above",
+"Ở dưới": "Below",
+"Tính từ bên trái, {o} đứng thứ mấy?": "Counting from the left, what position is the {o:s} in?",
+"Tính từ bên trái sang, {o} đứng thứ mấy?": "Counting from the left, what position is the {o:s} in?",
+"Đếm từ bên trái: {o} đứng thứ #.": "Counting from the left: the {o:s} is number #.",
+"Tính từ bên phải, {o} đứng thứ mấy?": "Counting from the right, what position is the {o:s} in?",
+"Tính từ bên phải sang, {o} đứng thứ mấy?": "Counting from the right, what position is the {o:s} in?",
+"Đếm từ bên phải: {o} đứng thứ #.": "Counting from the right: the {o:s} is number #.",
+"{o} ở bên trái {o}.": "The {o1:s} is to the left of the {o2:s}.",
+"{o} ở bên phải {o}.": "The {o1:s} is to the right of the {o2:s}.",
+"Sai.": "False.",
+"Đúng.": "True.",
+"Bài #. Ôn tập các số trong phạm vi #": "Lesson #. Review: numbers within #",
+"Ôn số · T#": "Number review · P#",
+"ôn tập các số trong phạm vi #": "numbers within #",
+"Bài #. Ôn tập phép cộng, phép trừ trong phạm vi #": "Lesson #. Review: addition and subtraction within #",
+"Ôn cộng, trừ · T#": "+/− review · P#",
+"ôn tập phép cộng, phép trừ trong phạm vi #": "addition and subtraction within #",
+"Bài #. Ôn tập hình học": "Lesson #. Review: geometry",
+"Ôn hình học · T#": "Geometry review · P#",
+"ôn tập hình học": "geometry",
+"Bài #. Ôn tập chung": "Lesson #. General review",
+"Ôn tập chung · T#": "General review · P#",
+"ôn tập chung": "mixed questions",
+"Bài #. Số có {w} chữ số": "Lesson #. Two-digit numbers",
+"Số # chữ số · T#": "#-digit numbers · P#",
+"số có {w} chữ số": "two-digit numbers",
+"Có tất cả bao nhiêu {o}?": "How many {o:p} are there altogether?",
+"Mỗi bó có {w} {o}.": "Each bundle has {w} {o}.",
+"# chục và # đơn vị là #.": "# tens and # ones make #.",
+"Số gồm <># chục<> và <># đơn vị<> là:": "The number with <># tens<> and <># ones<> is:",
+"Số gồm # chục và # đơn vị là số nào?": "Which number has # tens and # ones?",
+"# chục # đơn vị là #.": "# tens and # ones make #.",
+"Số <>#<> gồm mấy chục?": "How many tens are in <>#<>?",
+"Số # gồm mấy chục?": "How many tens are in #?",
+"# gồm # chục và # đơn vị.": "# has # tens and # ones.",
+"Số <>#<> gồm # chục và mấy đơn vị?": "<>#<> has # tens and how many ones?",
+"Số # gồm # chục và mấy đơn vị?": "# has # tens and how many ones?",
+"Số \"<>{w}<>\" viết là:": "The number \"<>{w}<>\" is written:",
+"Số {w} viết là số nào?": "How do we write the number {w}?",
+"{w}: #.": "{w}: #.",
+"Số nào còn thiếu? <>#, #, #, …, #<>": "Which number is missing? <>#, #, #, …, #<>",
+"Số nào còn thiếu? <>#, #, …, #, #<>": "Which number is missing? <>#, #, …, #, #<>",
+"Số nào còn thiếu? <>#, …, #, #, #<>": "Which number is missing? <>#, …, #, #, #<>",
+"Số nào còn thiếu?": "Which number is missing?",
+"Các số được xếp liền nhau.": "The numbers are in counting order.",
+"Bài #. So sánh số có {w} chữ số": "Lesson #. Comparing two-digit numbers",
+"so sánh số có {w} chữ số": "comparing two-digit numbers",
+"Hàng chục: # và #.": "Tens: # and #.",
+"Hàng chục: số nào lớn hơn?": "Tens: which is greater?",
+"Hàng chục của # lớn hơn, nên # lớn hơn.": "The tens digit of # is greater, so # is greater.",
+"Số nào <>bé nhất<>?": "Which number is the <>smallest<>?",
+"Số nào bé nhất?": "Which number is the smallest?",
+"So sánh hàng chục trước, rồi đến hàng đơn vị: # bé nhất.": "Compare the tens first, then the ones: # is the smallest.",
+"Số nào <>lớn nhất<>?": "Which number is the <>greatest<>?",
+"Số nào lớn nhất?": "Which number is the greatest?",
+"So sánh hàng chục trước, rồi đến hàng đơn vị: # lớn nhất.": "Compare the tens first, then the ones: # is the greatest.",
+"Bài #. Bảng các số từ # đến #": "Lesson #. The 1 to 100 number square",
+"Bảng số · T#": "Number square · P#",
+"bảng các số từ # đến #": "the number square from # to #",
+"Trong bảng các số từ # đến #, số ngay bên trái số <>#<> là:": "In the # to # number square, the number just left of <>#<> is:",
+"Trong bảng số từ # đến #, số ngay bên trái số # là số nào?": "In the # to # number square, which number is just left of #?",
+"Trong bảng các số từ # đến #, số ngay bên phải số <>#<> là:": "In the # to # number square, the number just right of <>#<> is:",
+"Trong bảng số từ # đến #, số ngay bên phải số # là số nào?": "In the # to # number square, which number is just right of #?",
+"Trong bảng các số từ # đến #, số ngay bên dưới số <>#<> là:": "In the # to # number square, the number just below <>#<> is:",
+"Trong bảng số từ # đến #, số ngay bên dưới số # là số nào?": "In the # to # number square, which number is just below #?",
+"Trong bảng các số từ # đến #, số ngay bên trên số <>#<> là:": "In the # to # number square, the number just above <>#<> is:",
+"Trong bảng số từ # đến #, số ngay bên trên số # là số nào?": "In the # to # number square, which number is just above #?",
+"Ô ngay bên trái hơn kém #: #.": "The square to the left is # less: #.",
+"Ô ngay bên phải hơn kém #: #.": "The square to the right is # more: #.",
+"Mỗi hàng có # số, nên ô ngay bên dưới hơn kém #: #.": "Each row has # numbers, so the square below is # more: #.",
+"Mỗi hàng có # số, nên ô ngay bên trên hơn kém #: #.": "Each row has # numbers, so the square above is # less: #.",
+"Số liền sau của <>#<> là:": "The number after <>#<> is:",
+"Số liền sau của # là số nào?": "What is the number after #?",
+"# thêm # là #.": "# add # is #.",
+"Số liền trước của <>#<> là:": "The number before <>#<> is:",
+"Số liền trước của # là số nào?": "What is the number before #?",
+"# bớt # là #.": "# take away # is #.",
+"Dùng {w} thẻ số <>#<> và <>#<> ghép thành số có {w} chữ số <>lớn nhất<>:": "Use the two cards <>#<> and <>#<> to make the <>greatest<> two-digit number:",
+"Dùng {w} thẻ số # và #, ghép thành số có {w} chữ số lớn nhất.": "Use the two cards # and # to make the greatest two-digit number.",
+"Đặt chữ số lớn hơn ở hàng chục: #.": "Put the greater digit in the tens place: #.",
+"Dùng {w} thẻ số <>#<> và <>#<> ghép thành số có {w} chữ số <>bé nhất<>:": "Use the two cards <>#<> and <>#<> to make the <>smallest<> two-digit number:",
+"Dùng {w} thẻ số # và #, ghép thành số có {w} chữ số bé nhất.": "Use the two cards # and # to make the smallest two-digit number.",
+"Đặt chữ số bé hơn ở hàng chục: #.": "Put the smaller digit in the tens place: #.",
+"Bài #. Dài hơn, ngắn hơn": "Lesson #. Longer and shorter",
+"Dài, ngắn · T#": "Long, short · P#",
+"dài hơn, ngắn hơn": "longer and shorter",
+"{o} nào <>ngắn hơn<>?": "Which object is <>shorter<>?",
+"Nhìn hình, {o} nào ngắn hơn?": "Look at the picture. Which object is shorter?",
+"{o} ngắn hơn.": "The {o:s} is shorter.",
+"{o} nào <>dài nhất<>?": "Which object is <>the longest<>?",
+"Nhìn hình, {o} nào dài nhất?": "Look at the picture. Which object is the longest?",
+"{o} dài nhất.": "The {o:s} is the longest.",
+"{o} nào <>dài hơn<>?": "Which object is <>longer<>?",
+"Nhìn hình, {o} nào dài hơn?": "Look at the picture. Which object is longer?",
+"{o} dài hơn.": "The {o:s} is longer.",
+"{o} nào <>ngắn nhất<>?": "Which object is <>the shortest<>?",
+"Nhìn hình, {o} nào ngắn nhất?": "Look at the picture. Which object is the shortest?",
+"{o} ngắn nhất.": "The {o:s} is the shortest.",
+"Bạn nào <>thấp nhất<>?": "Who is <>the shortest<>?",
+"Nhìn hình, bạn nào thấp nhất?": "Look at the picture. Who is the shortest?",
+"Mai thấp nhất.": "Mai is the shortest.",
+"Việt thấp nhất.": "Việt is the shortest.",
+"Nam thấp nhất.": "Nam is the shortest.",
+"Lan thấp nhất.": "Lan is the shortest.",
+"Bạn nào <>cao nhất<>?": "Who is <>the tallest<>?",
+"Nhìn hình, bạn nào cao nhất?": "Look at the picture. Who is the tallest?",
+"Mai cao nhất.": "Mai is the tallest.",
+"Việt cao nhất.": "Việt is the tallest.",
+"Nam cao nhất.": "Nam is the tallest.",
+"Lan cao nhất.": "Lan is the tallest.",
+"Mai": "Mai",
+"Việt": "Việt",
+"Nam": "Nam",
+"Lan": "Lan",
+"Con đường nào giúp bạn thỏ về nhà <>nhanh hơn<>?": "Which path gets Rabbit home <>faster<>?",
+"Con đường nào ngắn hơn, giúp bạn thỏ về nhà nhanh hơn?": "Which path is shorter and gets Rabbit home faster?",
+"Đường B có ít ô hơn nên ngắn hơn.": "Path B has fewer squares, so it is shorter.",
+"Đường A có ít ô hơn nên ngắn hơn.": "Path A has fewer squares, so it is shorter.",
+"Đường A": "Path A",
+"Đường B": "Path B",
+"A": "A",
+"B": "B",
+"{o} dài # cm, {o} dài # cm.": "The {o:s} is # cm long, the {o:s} is # cm long.",
+"{o} dài hơn {o}.": "The {o1:s} is longer than the {o2:s}.",
+"{o} ngắn hơn {o}.": "The {o1:s} is shorter than the {o2:s}.",
+"{o} dài # xăng-ti-mét, {o} dài # xăng-ti-mét.": "The {o:s} is # centimetres long, the {o:s} is # centimetres long.",
+"# cm dài hơn # cm.": "# cm is longer than # cm.",
+"Bài #. Đơn vị đo độ dài": "Lesson #. Units of length",
+"Xăng-ti-mét · T#": "Centimetres · P#",
+"đơn vị đo độ dài": "units of length",
+"Đoạn màu đỏ dài mấy xăng-ti-mét?": "How many centimetres long is the red line?",
+"Nhìn thước, đoạn màu đỏ dài mấy xăng-ti-mét?": "Look at the ruler. How many centimetres long is the red line?",
+"Bắt đầu từ vạch #, kết thúc ở vạch #: # cm.": "It starts at # and ends at #: # cm.",
+"Cái bút dài bằng mấy ô vuông?": "How many squares long is the pen?",
+"Em đếm các ô nhé.": "Count the squares.",
+"Đếm các ô: # ô.": "Count the squares: #.",
+"<># cm + # cm = ? cm<>": "<># cm + # cm = ? cm<>",
+"<># cm − # cm = ? cm<>": "<># cm − # cm = ? cm<>",
+"# xăng-ti-mét cộng # xăng-ti-mét bằng bao nhiêu xăng-ti-mét?": "# centimetres plus # centimetres is how many centimetres?",
+"# xăng-ti-mét trừ # xăng-ti-mét bằng bao nhiêu?": "What is # centimetres minus # centimetres?",
+"# + # = # (cm).": "# + # = # (cm).",
+"# − # = # (cm).": "# − # = # (cm).",
+"Bài #. Thực hành ước lượng và đo độ dài": "Lesson #. Estimating and measuring length",
+"Ước lượng, đo · T#": "Estimate, measure · P#",
+"thực hành ước lượng và đo độ dài": "estimating and measuring length",
+"<>Bàn học dài khoảng<> …": "<>The desk is about<> … long",
+"Bàn học dài khoảng bao nhiêu?": "About how long is the desk?",
+"Bàn học dài khoảng # gang tay.": "The desk is about # hand spans long.",
+"# gang tay": "# hand spans",
+"# cm": "# cm",
+"# bước chân": "# steps",
+"<>{o} dài khoảng<> …": "<>The {o:s} is about<> … long",
+"{o} dài khoảng bao nhiêu?": "About how long is the {o:s}?",
+"{o} dài khoảng # cm.": "The {o:s} is about # cm long.",
+"Bài #. Phép cộng số có {w} chữ số với số có {w} chữ số": "Lesson #. Adding a one-digit number to a two-digit number",
+"Cộng # + # chữ số · T#": "Add #-digit + #-digit · P#",
+"phép cộng số có {w} chữ số với số có {w} chữ số": "adding a one-digit number to a two-digit number",
+"# cộng # bằng bao nhiêu?": "What is # plus #?",
+"Cộng đơn vị: # + # = #; giữ # chục: #.": "Add the ones: # + # = #; keep # tens: #.",
+"# cộng mấy bằng #?": "# plus what equals #?",
+"Lan có # {o}, Lan trồng thêm # {o}.": "Lan has # {o}. Lan plants # more {o}.",
+"Lan có # {o}, trồng thêm #.": "Lan has # {o} and plants # more.",
+"{o}, Lan trồng thêm": "{o:p}. Lan plants",
+"Lan có # {o}, Lan được cho thêm # {o}.": "Lan has # {o}. Lan is given # more {o}.",
+"Lan có # {o}, được cho thêm #.": "Lan has # {o} and is given # more.",
+"{o}, Lan được cho thêm": "{o:p}. Lan is given",
+"Lan có # {o}, Lan mua thêm # {o}.": "Lan has # {o}. Lan buys # more {o}.",
+"Lan có # {o}, mua thêm #.": "Lan has # {o} and buys # more.",
+"{o}, Lan mua thêm": "{o:p}. Lan buys",
+"Lan có # {o}, Lan hái thêm # {o}.": "Lan has # {o}. Lan picks # more {o}.",
+"Lan có # {o}, hái thêm #.": "Lan has # {o} and picks # more.",
+"{o}, Lan hái thêm": "{o:p}. Lan picks",
+"Hỏi Lan có tất cả bao nhiêu {o}?": "How many {o:p} does Lan have altogether?",
+"Lan có tất cả bao nhiêu?": "How many does Lan have altogether?",
+"Lan có": "Lan has",
+"{o}. Hỏi Lan có tất cả bao nhiêu {o}?": "more {o:p}. How many {o:p} does Lan have altogether?",
+"Mình đọc lại đề thật chậm nhé.": "Let's read the problem again slowly.",
+"Các số tô vàng là điều bài cho biết.": "The numbers in yellow are what we are told.",
+"Bài hỏi:": "The question asks:",
+"Cần làm phép tính gì?": "Which operation do we need?",
+"Đúng rồi, phép cộng.": "Yes, addition.",
+"\"Thêm\", \"tất cả\", \"cả {w}\", \"nhiều hơn … là\" thường là gộp lại: làm phép cộng.": "\"More\", \"altogether\", \"both\", \"… more than\" usually mean putting together: we add.",
+"Cộng": "Add",
+"Trừ": "Subtract",
+"Nhân": "Multiply",
+"Chia": "Divide",
+"Phép tính đúng là phép tính nào?": "Which is the right calculation?",
+"Phép tính đúng là?": "The right calculation is?",
+"Đúng rồi: # + # = #.": "Yes: # + # = #.",
+"Xem lại số nào là số lớn, số nào là số bé, và phép tính vừa chọn.": "Check which number is bigger, which is smaller, and the operation you chose.",
+"Vậy là xong.": "That's it.",
+"Giờ em làm lại bài nhé.": "Now try the question again.",
+"Đặt tính rồi tính:": "Write it in columns and work it out:",
+"Đặt tính rồi tính.": "Write it in columns and work it out.",
+"Kết quả là bao nhiêu?": "What is the answer?",
+"Cộng đơn vị rồi cộng chục: #.": "Add the ones, then the tens: #.",
+"Tính nhẩm: <># + #<>": "Work it out in your head: <># + #<>",
+"Tính nhẩm: <># − #<>": "Work it out in your head: <># − #<>",
+"Tính nhẩm # cộng #.": "Work out # plus # in your head.",
+"Tính nhẩm # trừ #.": "Work out # minus # in your head.",
+"# chục + # chục = # chục.": "# tens + # tens = # tens.",
+"# chục − # chục = # chục.": "# tens − # tens = # tens.",
+"Bài #. Phép trừ số có {w} chữ số cho số có {w} chữ số": "Lesson #. Subtracting a one-digit number from a two-digit number",
+"Trừ # − # chữ số · T#": "Subtract #-digit − #-digit · P#",
+"phép trừ số có {w} chữ số cho số có {w} chữ số": "subtracting a one-digit number from a two-digit number",
+"# trừ # bằng bao nhiêu?": "What is # minus #?",
+"Trừ đơn vị: # − # = #; giữ # chục: #.": "Subtract the ones: # − # = #; keep # tens: #.",
+"Hỏi còn lại bao nhiêu {o}?": "How many {o:p} are left?",
+"Có # {o}, bớt đi #.": "There {be} # {o}. Take away #.",
+"Còn lại bao nhiêu?": "How many are left?",
+"Có": "There are",
+"{o}, bớt đi": "{o:p}. Take away",
+"{o}. Hỏi còn lại bao nhiêu {o}?": "{o:p}. How many {o:p} are left?",
+"Đúng rồi, phép trừ.": "Yes, subtraction.",
+"\"Bớt\", \"còn lại\", \"ít hơn\", \"hơn … bao nhiêu\" thường là phép trừ.": "\"Take away\", \"left\", \"fewer\", \"how many more\" usually mean we subtract.",
+"Đúng rồi: # − # = #.": "Yes: # − # = #.",
+"Trừ đơn vị rồi trừ chục: #.": "Subtract the ones, then the tens: #.",
+"Chạm vào <>tất cả<> phép tính có kết quả lớn hơn #.": "Tap <>all<> the calculations with an answer greater than #.",
+"Chạm vào tất cả phép tính có kết quả lớn hơn #, rồi bấm kiểm tra.": "Tap all the calculations with an answer greater than #, then press Check.",
+"Bài #. Xem giờ đúng trên đồng hồ": "Lesson #. Telling o'clock times",
+"Xem giờ · T#": "Telling the time · P#",
+"xem giờ đúng trên đồng hồ": "telling o'clock times",
+"Đồng hồ chỉ mấy giờ?": "What time does the clock show?",
+"Kim dài chỉ số {w}.": "The long hand points to {w}.",
+"Kim dài chỉ số #, kim ngắn chỉ số #: # giờ.": "The long hand points to #, the short hand points to #: # o'clock.",
+"Đồng hồ nào chỉ <># giờ<>?": "Which clock shows <># o'clock<>?",
+"Đồng hồ nào chỉ # giờ?": "Which clock shows # o'clock?",
+"Kim ngắn chỉ số #, kim dài chỉ số #.": "The short hand points to #, the long hand points to #.",
+"Việt đến nhà văn hoá lúc # giờ và về lúc # giờ.": "Việt arrives at the community centre at # o'clock and leaves at # o'clock.",
+"Việt ở đó mấy giờ?": "How many hours is Việt there?",
+"Việt đến lúc # giờ, về lúc # giờ.": "Việt arrives at # o'clock and leaves at # o'clock.",
+"Từ # giờ đến # giờ là # giờ.": "From # o'clock to # o'clock is # {1:hour|hours}.",
+"Bài #. Các ngày trong tuần": "Lesson #. Days of the week",
+"Ngày trong tuần · T#": "Days of the week · P#",
+"các ngày trong tuần": "days of the week",
+"Thứ Hai": "Monday",
+"Hôm nay là <>Thứ Hai<>.": "Today is <>Monday<>.",
+"Hôm nay là Thứ Hai.": "Today is Monday.",
+"Ngày mai là Thứ Hai.": "Tomorrow is Monday.",
+"Hôm qua là Thứ Hai.": "Yesterday was Monday.",
+"Ngày # là <>Thứ Hai<>.": "Day # is <>Monday<>.",
+"Ngày # là Thứ Hai.": "Day # is Monday.",
+"Đếm thêm # ngày: Thứ Hai.": "Count on #: Monday.",
+"thứ Hai": "Monday",
+"Hôm nay là <>thứ Hai<>.": "Today is <>Monday<>.",
+"Hôm nay là thứ Hai.": "Today is Monday.",
+"Ngày mai là thứ Hai.": "Tomorrow is Monday.",
+"Hôm qua là thứ Hai.": "Yesterday was Monday.",
+"Ngày # là <>thứ Hai<>.": "Day # is <>Monday<>.",
+"Ngày # là thứ Hai.": "Day # is Monday.",
+"Đếm thêm # ngày: thứ Hai.": "Count on #: Monday.",
+"Thứ Ba": "Tuesday",
+"Hôm nay là <>Thứ Ba<>.": "Today is <>Tuesday<>.",
+"Hôm nay là Thứ Ba.": "Today is Tuesday.",
+"Ngày mai là Thứ Ba.": "Tomorrow is Tuesday.",
+"Hôm qua là Thứ Ba.": "Yesterday was Tuesday.",
+"Ngày # là <>Thứ Ba<>.": "Day # is <>Tuesday<>.",
+"Ngày # là Thứ Ba.": "Day # is Tuesday.",
+"Đếm thêm # ngày: Thứ Ba.": "Count on #: Tuesday.",
+"thứ Ba": "Tuesday",
+"Hôm nay là <>thứ Ba<>.": "Today is <>Tuesday<>.",
+"Hôm nay là thứ Ba.": "Today is Tuesday.",
+"Ngày mai là thứ Ba.": "Tomorrow is Tuesday.",
+"Hôm qua là thứ Ba.": "Yesterday was Tuesday.",
+"Ngày # là <>thứ Ba<>.": "Day # is <>Tuesday<>.",
+"Ngày # là thứ Ba.": "Day # is Tuesday.",
+"Đếm thêm # ngày: thứ Ba.": "Count on #: Tuesday.",
+"Thứ Tư": "Wednesday",
+"Hôm nay là <>Thứ Tư<>.": "Today is <>Wednesday<>.",
+"Hôm nay là Thứ Tư.": "Today is Wednesday.",
+"Ngày mai là Thứ Tư.": "Tomorrow is Wednesday.",
+"Hôm qua là Thứ Tư.": "Yesterday was Wednesday.",
+"Ngày # là <>Thứ Tư<>.": "Day # is <>Wednesday<>.",
+"Ngày # là Thứ Tư.": "Day # is Wednesday.",
+"Đếm thêm # ngày: Thứ Tư.": "Count on #: Wednesday.",
+"thứ Tư": "Wednesday",
+"Hôm nay là <>thứ Tư<>.": "Today is <>Wednesday<>.",
+"Hôm nay là thứ Tư.": "Today is Wednesday.",
+"Ngày mai là thứ Tư.": "Tomorrow is Wednesday.",
+"Hôm qua là thứ Tư.": "Yesterday was Wednesday.",
+"Ngày # là <>thứ Tư<>.": "Day # is <>Wednesday<>.",
+"Ngày # là thứ Tư.": "Day # is Wednesday.",
+"Đếm thêm # ngày: thứ Tư.": "Count on #: Wednesday.",
+"Thứ Năm": "Thursday",
+"Hôm nay là <>Thứ Năm<>.": "Today is <>Thursday<>.",
+"Hôm nay là Thứ Năm.": "Today is Thursday.",
+"Ngày mai là Thứ Năm.": "Tomorrow is Thursday.",
+"Hôm qua là Thứ Năm.": "Yesterday was Thursday.",
+"Ngày # là <>Thứ Năm<>.": "Day # is <>Thursday<>.",
+"Ngày # là Thứ Năm.": "Day # is Thursday.",
+"Đếm thêm # ngày: Thứ Năm.": "Count on #: Thursday.",
+"thứ Năm": "Thursday",
+"Hôm nay là <>thứ Năm<>.": "Today is <>Thursday<>.",
+"Hôm nay là thứ Năm.": "Today is Thursday.",
+"Ngày mai là thứ Năm.": "Tomorrow is Thursday.",
+"Hôm qua là thứ Năm.": "Yesterday was Thursday.",
+"Ngày # là <>thứ Năm<>.": "Day # is <>Thursday<>.",
+"Ngày # là thứ Năm.": "Day # is Thursday.",
+"Đếm thêm # ngày: thứ Năm.": "Count on #: Thursday.",
+"thứ Sáu": "Friday",
+"Hôm nay là <>thứ Sáu<>.": "Today is <>Friday<>.",
+"Hôm nay là thứ Sáu.": "Today is Friday.",
+"Ngày mai là thứ Sáu.": "Tomorrow is Friday.",
+"Hôm qua là thứ Sáu.": "Yesterday was Friday.",
+"Ngày # là <>thứ Sáu<>.": "Day # is <>Friday<>.",
+"Ngày # là thứ Sáu.": "Day # is Friday.",
+"Đếm thêm # ngày: thứ Sáu.": "Count on #: Friday.",
+"Thứ Sáu": "Friday",
+"Hôm nay là <>Thứ Sáu<>.": "Today is <>Friday<>.",
+"Hôm nay là Thứ Sáu.": "Today is Friday.",
+"Ngày mai là Thứ Sáu.": "Tomorrow is Friday.",
+"Hôm qua là Thứ Sáu.": "Yesterday was Friday.",
+"Ngày # là <>Thứ Sáu<>.": "Day # is <>Friday<>.",
+"Ngày # là Thứ Sáu.": "Day # is Friday.",
+"Đếm thêm # ngày: Thứ Sáu.": "Count on #: Friday.",
+"Thứ Bảy": "Saturday",
+"Hôm nay là <>Thứ Bảy<>.": "Today is <>Saturday<>.",
+"Hôm nay là Thứ Bảy.": "Today is Saturday.",
+"Ngày mai là Thứ Bảy.": "Tomorrow is Saturday.",
+"Hôm qua là Thứ Bảy.": "Yesterday was Saturday.",
+"Ngày # là <>Thứ Bảy<>.": "Day # is <>Saturday<>.",
+"Ngày # là Thứ Bảy.": "Day # is Saturday.",
+"Đếm thêm # ngày: Thứ Bảy.": "Count on #: Saturday.",
+"thứ Bảy": "Saturday",
+"Hôm nay là <>thứ Bảy<>.": "Today is <>Saturday<>.",
+"Hôm nay là thứ Bảy.": "Today is Saturday.",
+"Ngày mai là thứ Bảy.": "Tomorrow is Saturday.",
+"Hôm qua là thứ Bảy.": "Yesterday was Saturday.",
+"Ngày # là <>thứ Bảy<>.": "Day # is <>Saturday<>.",
+"Ngày # là thứ Bảy.": "Day # is Saturday.",
+"Đếm thêm # ngày: thứ Bảy.": "Count on #: Saturday.",
+"Chủ nhật": "Sunday",
+"Hôm nay là <>Chủ nhật<>.": "Today is <>Sunday<>.",
+"Hôm nay là Chủ nhật.": "Today is Sunday.",
+"Ngày mai là Chủ nhật.": "Tomorrow is Sunday.",
+"Hôm qua là Chủ nhật.": "Yesterday was Sunday.",
+"Ngày # là <>Chủ nhật<>.": "Day # is <>Sunday<>.",
+"Ngày # là Chủ nhật.": "Day # is Sunday.",
+"Đếm thêm # ngày: Chủ nhật.": "Count on #: Sunday.",
+"Chủ Nhật": "Sunday",
+"Hôm nay là <>Chủ Nhật<>.": "Today is <>Sunday<>.",
+"Hôm nay là Chủ Nhật.": "Today is Sunday.",
+"Ngày mai là Chủ Nhật.": "Tomorrow is Sunday.",
+"Hôm qua là Chủ Nhật.": "Yesterday was Sunday.",
+"Ngày # là <>Chủ Nhật<>.": "Day # is <>Sunday<>.",
+"Ngày # là Chủ Nhật.": "Day # is Sunday.",
+"Đếm thêm # ngày: Chủ Nhật.": "Count on #: Sunday.",
+"chủ nhật": "Sunday",
+"Hôm nay là <>chủ nhật<>.": "Today is <>Sunday<>.",
+"Hôm nay là chủ nhật.": "Today is Sunday.",
+"Ngày mai là chủ nhật.": "Tomorrow is Sunday.",
+"Hôm qua là chủ nhật.": "Yesterday was Sunday.",
+"Ngày # là <>chủ nhật<>.": "Day # is <>Sunday<>.",
+"Ngày # là chủ nhật.": "Day # is Sunday.",
+"Đếm thêm # ngày: chủ nhật.": "Count on #: Sunday.",
+"Ngày mai là:": "Tomorrow is:",
+"Hôm qua là:": "Yesterday was:",
+"Ngày mai là thứ mấy?": "What day is tomorrow?",
+"Hôm qua là thứ mấy?": "What day was yesterday?",
+"Ngày # là:": "Day # is:",
+"Ngày # là thứ mấy?": "What day is day #?",
+"Thứ Bảy và Chủ nhật là ngày nghỉ.": "Saturday and Sunday are days off.",
+"Mỗi tuần có mấy ngày nghỉ?": "How many days off are there each week?",
+"Đáp án: #.": "Answer: #.",
+"Một tuần lễ có mấy ngày?": "How many days are there in a week?",
+"Em đi học từ thứ Hai đến thứ Sáu.": "You go to school from Monday to Friday.",
+"Em đi học mấy ngày {w} tuần?": "How many days a week do you go to school?",
+"Bài #. Thực hành xem lịch và giờ": "Lesson #. Using a calendar and clock",
+"Xem lịch, giờ · T#": "Calendar, clock · P#",
+"thực hành xem lịch và giờ": "using a calendar and clock",
+"Lúc # giờ sáng, mẹ bắt đầu nấu cơm.": "At # o'clock in the morning, Mum starts cooking.",
+"Một giờ sau thì nấu xong.": "She finishes one hour later.",
+"Mẹ nấu xong lúc mấy giờ?": "What time does Mum finish?",
+"Mẹ bắt đầu nấu lúc # giờ, {w} giờ sau xong.": "Mum starts cooking at # o'clock and finishes one hour later.",
+"Xong lúc mấy giờ?": "What time does she finish?",
+"# giờ thêm # giờ là # giờ.": "# o'clock plus # {1:hour|hours} is #3 o'clock.",
+"Bài #. Ôn tập các số và phép tính trong phạm vi #": "Lesson #. Review: numbers and calculations within #",
+"Ôn phạm vi # · T#": "Review within # · P#",
+"ôn tập các số và phép tính trong phạm vi #": "numbers and calculations within #",
+"Bài #. Ôn tập hình học và đo lường": "Lesson #. Review: geometry and measurement",
+"Ôn hình, đo · T#": "Shapes, measures · P#",
+"ôn tập hình học và đo lường": "geometry and measurement",
+"Các số từ # đến #": "Numbers from # to #",
+"Làm quen với {w} số hình phẳng": "Getting to know 2D shapes",
+"Phép cộng, phép trừ trong phạm vi #": "Addition and subtraction within #",
+"Làm quen với {w} số hình khối": "Getting to know 3D shapes",
+"Ôn tập học kì #": "Term # review",
+"Các số đến #": "Numbers to #",
+"Độ dài và đo độ dài": "Length and measuring length",
+"Phép cộng, phép trừ ({w} nhớ) trong phạm vi #": "Addition and subtraction (no regrouping) within #",
+"Thời gian. Giờ và lịch": "Time. Clocks and calendars",
+"Ôn tập cuối {w}": "End-of-year review",
+"Cua Số Đếm": "Counting Crab",
+"Bạch tuộc Hình Phẳng": "Flat Shape Octopus",
+"Cá mập Cộng Trừ": "Plus-Minus Shark",
+"Sứa Hình Khối": "Solid Shape Jellyfish",
+"Rồng Học Kì": "Term Dragon",
+"Rắn Số #": "Number # Snake",
+"Mực Thước Đo": "Ruler Squid",
+"Cua Hàng Chục": "Tens Crab",
+"Bạch tuộc Đồng Hồ": "Clock Octopus",
+"Rồng Cuối Năm": "Year-End Dragon",
+"Đếm từ # đến #": "Counting from # to #",
+"Chào các em!": "Hello, everyone!",
+"Mình cùng đếm nhé.": "Let's count together.",
+"Một {o}, {w} {o}, {w} {o}, {w} {o}, {w} {o}.": "One {o:s}, {w} {o}, {w} {o}, {w} {o}, {w} {o}.",
+"Mỗi hàng có thêm {w} quả.": "Each row has one more.",
+"Số #": "Number #",
+"{w} có quả nào": "no fruit at all",
+"Đĩa trống, {w} có quả nào. Ta viết số": "The plate is empty, with no fruit. We write the number",
+"Đĩa này trống, {w} có quả nào.": "This plate is empty. There is no fruit.",
+"Khi {w} có gì, ta viết số {w}.": "When there is nothing, we write zero.",
+"Thêm # được số tiếp theo": "Add # to get the next number",
+"#, #, #, #, #, #: mỗi số hơn số đứng trước": "#, #, #, #, #, #: each number is one more than the one before",
+"Không, {w}, {w}, {w}, {w}, {w}.": "Zero, {w}, {w}, {w}, {w}, {w}.",
+"Cứ thêm {w} là được số tiếp theo.": "Just add one to get the next number.",
+"Em nhớ nhé": "Remember",
+"Chạm vào mỗi vật": "Touch each object",
+"{w} lần": "once",
+"khi đếm. Số cuối cùng em đọc là": "when you count. The last number you say is",
+"số lượng": "how many",
+"vật.": "there are.",
+"Em nhớ nhé:": "Remember:",
+"khi đếm, chạm vào mỗi vật {w} lần.": "when you count, touch each object once.",
+"Số cuối cùng em đọc chính là số lượng vật.": "The last number you say tells you how many objects there are.",
+"Mình đếm tiếp nhé.": "Let's keep counting.",
+"Sáu {o}, {w} {o}, {w}, {w}, {w} {o}.": "Six {o:p}, {w} {o}, {w}, {w}, {w} {o}.",
+"# thêm # là #": "# add # is #",
+"Có # bạn gà, thêm # bạn nữa là": "There are # chicks. # more {1:comes|come} along, making",
+"Có {w} bạn gà con, thêm {w} bạn nữa là {w} bạn.": "There are {w} chicks. {w} more {1:comes|come} along, making {w} chicks.",
+"Dãy số từ # đến #": "Numbers from # to #",
+"Số": "The number",
+"có {w} chữ số: chữ số # và chữ số #.": "has two digits: # and #.",
+"Đây là dãy số từ {w} đến {w}.": "These are the numbers from {w} to {w}.",
+"Số {w} được viết bằng {w} chữ số: {w} và {w}.": "The number {w} is written with two digits: {w3} and {w4}.",
+"Đếm thêm #: #, #, #, #, #. Đếm lùi #: #, #, #, #, #.": "Count on #: #, #, #, #, #. Count back #: #, #, #, #, #.",
+"đếm thêm {w} là {w}, {w}, {w}, {w}, {w}.": "counting on one goes {w2}, {w3}, {w4}, {w5}, {w6}.",
+"Đếm lùi {w} là {w}, {w}, {w}, {w}, {w}.": "Counting back one goes {w2}, {w3}, {w4}, {w5}, {w6}.",
+"Ghép từng cặp": "Match in pairs",
+"Ghép mỗi {o} với {w} {o}. Cốc còn thừa: số cốc": "Match each {o1:s} with one {o2:s}. Some cups are left over. Cups:",
+"nhiều hơn": "more",
+", số cà rốt": ". Carrots:",
+"ít hơn": "fewer",
+"Muốn so sánh {w} nhóm, em ghép từng cặp.": "To compare two groups, match them in pairs.",
+"Mỗi {o} ghép với {w} {o}.": "Each {o1:s} goes with one {o2:s}.",
+"Cốc còn thừa ra, nên số cốc nhiều hơn, số cà rốt ít hơn.": "Some cups are left over, so there are more cups and fewer carrots.",
+"Ghép vừa đủ, {w} thừa: {w} nhóm": "They match exactly, none left over: the two groups are",
+"bằng nhau": "the same",
+"Nếu ghép vừa đủ, {w} nhóm nào thừa, thì {w} nhóm bằng nhau.": "If they match exactly and neither group has any left over, the two groups are the same.",
+"Nhóm nào": "The group that has some",
+"còn thừa": "left over",
+"khi ghép cặp thì nhóm đó": "when you match in pairs has",
+"khi ghép cặp, nhóm nào còn thừa thì nhóm đó nhiều hơn.": "when you match in pairs, the group with some left over has more.",
+"Dấu lớn hơn, bé hơn, bằng": "Greater than, less than, equal to",
+"Năm lớn hơn {w}. Một bé hơn {w}. Ba bằng {w}.": "Five is greater than {w}. One is less than {w}. Three is equal to {w}.",
+"Đầu nhọn chỉ số bé": "The point faces the smaller number",
+"Dấu luôn": "The sign always",
+"mở rộng về số lớn": "opens towards the bigger number",
+", đầu nhọn chỉ vào": ", and the point faces",
+"số bé": "the smaller number",
+"Mẹo nhỏ: phía mở rộng của dấu quay về số lớn, đầu nhọn chỉ vào số bé.": "Top tip: the open side of the sign faces the bigger number, and the point faces the smaller number.",
+"Số đứng sau lớn hơn": "Numbers further along are greater",
+"Trên dãy số, # đứng sau # nên": "On the number line, # comes after #, so",
+"Trên dãy số, số nào đứng sau thì lớn hơn.": "On the number line, the number that comes later is greater.",
+"Bảy đứng sau {w} nên {w} lớn hơn {w}.": "Seven comes after {w}, so {w} is greater than {w}.",
+"So sánh số: đếm hoặc nhìn dãy số. Số đứng sau thì": "To compare numbers, count or look at the number line. The number that comes later is",
+"lớn hơn": "greater",
+"số nào đứng sau trên dãy số thì lớn hơn.": "the number that comes later on the number line is greater.",
+"# gồm # và #": "# is # and #",
+"Có # quả và # quả, tất cả là": "# fruits and # fruits make",
+"quả.": "fruits altogether.",
+"Có {w} {o} và {w} {o}, tất cả là {w} quả.": "There are {w} {o} and {w} {o}, {w} altogether.",
+"Vậy {w} gồm {w} và {w}.": "So {w} is {w} and {w}.",
+"Tách số thành {w} phần": "Split a number into two parts",
+"# gồm # và #. Cũng có thể: # gồm # và #.": "# is # and #. Or: # is # and #.",
+"Sáu gồm {w} và {w}.": "Six is {w} and {w}.",
+"Đổi chỗ thì {w} cũng gồm {w} và {w}.": "Swap them round: {w} is also {w} and {w}.",
+"Một số có thể tách thành {w} phần theo nhiều cách. Ví dụ # gồm # và #, # và #.": "A number can be split into two parts in different ways. For example, # is # and #, or # and #.",
+"{w} số có thể tách thành {w} phần theo nhiều cách.": "a number can be split into two parts in different ways.",
+"Năm gồm {w} và {w}, hoặc {w} và {w}.": "Five is {w} and {w}, or {w} and {w}.",
+"Ôn cả chủ đề": "Topic review",
+"Đếm, đọc, viết các số từ # đến #.": "Count, read and write numbers from # to #.",
+"So sánh số, tách số thành {w} phần.": "Compare numbers and split numbers into two parts.",
+"Chủ đề này các em đã học đếm, đọc, viết các số từ {w} đến {w}, so sánh số và tách số thành {w} phần.": "In this topic you learned to count, read and write numbers from {w} to {w}, compare numbers and split numbers into two parts.",
+"Đếm cẩn thận, chạm mỗi vật {w} lần.": "Count carefully, touching each object once.",
+"Số đứng sau thì lớn hơn.": "The number that comes later is greater.",
+"Số # gồm # và #, # và #, # và #, # và #, # và #.": "# is # and #, # and #, # and #, # and #, # and #.",
+"đếm cẩn thận, số đứng sau thì lớn hơn.": "count carefully; the number that comes later is greater.",
+"Mười gồm {w} và {w}, {w} và {w}, {w} và {w}, {w} và {w}, {w} và {w}.": "Ten is {w} and {w}, {w} and {w}, {w} and {w}, {w} and {w}, {w} and {w}.",
+"Bốn hình quen thuộc": "Four familiar shapes",
+"{o}, {o}, {o}, {o}.": "{o:P}, {o:p}, {o:p} and {o:p}.",
+"Hôm nay mình làm quen với {w} hình: {o}, {o}, {o} và {o}.": "Today we're meeting four shapes: the {o:s}, the {o:s}, the {o:s} and the {o:s}.",
+"Nhận ra từng hình": "Recognising each shape",
+"{o} có": "A {o:s} has",
+"# cạnh": "# sides",
+"# cạnh dài bằng nhau": "# equal sides",
+"{o} có # cạnh dài, # cạnh ngắn.": "A {o:s} has # long sides and # short sides.",
+"{o} {w} có cạnh.": "A {o:s} has no sides.",
+"{o} có {w} cạnh.": "A {o:s} has {w} sides.",
+"{o} có {w} cạnh dài bằng nhau.": "A {o:s} has {w} equal sides.",
+"{o} có {w} cạnh dài và {w} cạnh ngắn.": "A {o:s} has {w} long sides and {w} short sides.",
+"{o} thì tròn đều, {w} có cạnh.": "A {o:s} is perfectly round, with no sides.",
+"Hình quanh em": "Shapes around you",
+"Đồng hồ treo tường:": "Wall clock:",
+"{o}:": "{o:s}:",
+"Mặt xúc xắc:": "Dice face:",
+"Nhìn quanh em nhé: mặt đồng hồ có dạng {o}, {o} có dạng {o}, {o} có dạng {o}.": "Look around you: a clock face is a {o1:s}, an {o2:s} is a {o3:s}, the {o4:s} is a {o5:s}.",
+"Đếm số cạnh để nhận ra hình: # cạnh là tam giác, # cạnh bằng nhau là {o}.": "Count the sides to name the shape: # sides make a triangle, # equal sides make a {o:s}.",
+"đếm số cạnh để nhận ra hình.": "count the sides to name the shape.",
+"Ba cạnh là {o}, {w} cạnh bằng nhau là {o}.": "Three sides make a {o1:s}, {w} equal sides make a {o2:s}.",
+"Ghép hình": "Putting shapes together",
+"Hai {o} bằng nhau đặt cạnh nhau tạo thành": "Two equal {o:p} side by side make a",
+"Đặt {w} {o} bằng nhau sát cạnh nhau, ta được {w} {o}.": "Put two equal {o1:p} side by side and you get a {o2:s}.",
+"Xếp hình bằng {o}": "Making shapes with {o:p}",
+"# {o} xếp khép kín:": "# {o} joined end to end:",
+"# {o} bằng nhau xếp khép kín:": "# equal {o} joined end to end:",
+"Ba {o} xếp khép kín được {o}.": "Three {o1:p} joined end to end make a {o2:s}.",
+"Bốn {o} bằng nhau xếp khép kín được {o}.": "Four equal {o1:p} joined end to end make a {o2:s}.",
+"Đếm ô vuông": "Counting squares",
+"Hình này được xếp từ": "This shape is made from",
+"ô vuông nhỏ.": "small squares.",
+"Muốn biết hình được xếp từ mấy ô vuông, em đếm từng ô.": "To find out how many squares make the shape, count them one by one.",
+"Hình này có {w} ô vuông nhỏ.": "This shape has {w} small squares.",
+"Khi xếp hình, đếm cẩn thận từng mảnh.": "When making shapes, count each piece carefully.",
+"Hai {o} ghép lại được {o}.": "Two {o1:p} together make a {o2:s}.",
+"khi xếp hình hãy đếm cẩn thận từng mảnh.": "when making shapes, count each piece carefully.",
+"Hai {o} ghép lại được {w} {o}.": "Two {o1:p} together make a {o2:s}.",
+"Nhận biết # hình, đếm hình, ghép và xếp hình.": "Recognise # shapes, count shapes, and put shapes together.",
+"Chủ đề này các em đã học nhận biết {w} hình, đếm hình và ghép, xếp hình.": "In this topic you learned to recognise four shapes, count shapes and put shapes together.",
+"Tam giác: # cạnh.": "Triangle: # sides.",
+"{o}: # cạnh bằng nhau.": "{o:S}: # equal sides.",
+"{o}: # cạnh dài, # cạnh ngắn.": "{o:S}: # long sides, # short sides.",
+"{o}: {w} có cạnh.": "{o:S}: no sides.",
+"tam giác có {w} cạnh, {o} có {w} cạnh bằng nhau, {o} có {w} cạnh dài {w} cạnh ngắn, {o} {w} có cạnh.": "a triangle has {w} sides, a {o:s} has {w} equal sides, a {o:s} has {w} long sides and {w} short sides, and a {o:s} has no sides.",
+"Gộp lại là phép cộng": "Putting together is addition",
+"# {o} và # {o}, gộp lại được # quả.": "# {o} and # {o} put together make #.",
+"Có {w} {o}, thêm {w} {o} nữa.": "There {be} {w} {o}, and {w} more {o}.",
+"Gộp lại được {w} {o}.": "Together that makes {w} {o}.",
+"Ta viết: {w} cộng {w} bằng {w}.": "We write: {w} plus {w} equals {w}.",
+"Thêm vào cũng là cộng": "Adding more is also addition",
+"Có # bạn gà, thêm # bạn: có tất cả # bạn.": "# chicks, # more come: # chicks altogether.",
+"Có {w} bạn gà con, chạy thêm {w} bạn nữa.": "There are {w} chicks, and {w} more run over.",
+"Có tất cả {w} bạn.": "There are {w} altogether.",
+"Bốn cộng {w} bằng {w}.": "Four plus {w} equals {w}.",
+"Đổi chỗ {w} đổi kết quả": "Swapping does not change the answer",
+"Đổi chỗ {w} số, kết quả vẫn như cũ.": "Swap the two numbers and the answer stays the same.",
+"Hai cộng {w} bằng {w}.": "Two plus {w} equals {w}.",
+"Năm cộng {w} cũng bằng {w}.": "Five plus {w} also equals {w}.",
+"Đổi chỗ {w} số thì kết quả {w} thay đổi.": "Swapping the two numbers does not change the answer.",
+"Gộp lại hoặc thêm vào thì làm": "Putting together or adding more means",
+"phép cộng": "addition",
+". Dấu cộng viết là +.": ". The plus sign is +.",
+"gộp lại hoặc thêm vào thì ta làm phép cộng.": "putting together or adding more means we add.",
+"Bớt đi là phép trừ": "Taking away is subtraction",
+"Có # {o}, ăn # quả, còn lại # quả.": "# {o}, eat #, # left.",
+"Có {w} {o}, em ăn {w} quả.": "There are {w} {o}. You eat {w}.",
+"Còn lại {w} quả.": "{w} are left.",
+"Ta viết: {w} trừ {w} bằng {w}.": "We write: {w} minus {w} equals {w}.",
+"Bay đi, chạy đi cũng là trừ": "Flying away and running away are subtraction too",
+"Có # {o}, # con bơi đi, còn lại # con.": "# {o}, # swim away, # left.",
+"Có {w} {o}, {w} con bơi đi chỗ khác.": "There are {w} {o}, and {w} swim away.",
+"Còn lại {w} con.": "{w} are left.",
+"Bảy trừ {w} bằng {w}.": "Seven minus {w} equals {w}.",
+"Trừ và cộng là bạn": "Subtraction and addition are friends",
+"Biết phép cộng, em tìm được phép trừ.": "If you know an addition, you can find a subtraction.",
+"Bốn cộng {w} bằng {w}, nên {w} trừ {w} bằng {w}.": "Four plus {w} equals {w}, so {w} minus {w} equals {w}.",
+"Biết phép cộng, em suy ra được phép trừ.": "If you know an addition, you can work out a subtraction.",
+"Bớt đi, cho đi, bay đi thì làm": "Taking away, giving away or flying away means",
+"phép trừ": "subtraction",
+". Một số trừ # vẫn bằng chính nó.": ". A number minus # stays the same.",
+"bớt đi, cho đi hay bay đi thì làm phép trừ.": "taking away, giving away or flying away means we subtract.",
+"Một số trừ {w} vẫn bằng chính số đó.": "A number minus zero stays the same.",
+"Bảng cộng trong phạm vi #": "Addition facts within #",
+"Phép tính": "Calculation",
+"Kết quả": "Answer",
+"Đây là các cặp số cộng lại bằng {w}: {w} và {w}, {w} và {w}, {w} và {w}, {w} và {w}, {w} và {w}.": "These are the pairs that add up to {w}: {w} and {w}, {w} and {w}, {w} and {w}, {w} and {w}, {w} and {w}.",
+"Bảng trừ trong phạm vi #": "Subtraction facts within #",
+"Một số trừ chính nó thì bằng #.": "A number minus itself equals #.",
+"Mười trừ {w} bằng {w}.": "Ten minus {w} equals {w}.",
+"Chín trừ {w} bằng {w}.": "Nine minus {w} equals {w}.",
+"Tám trừ {w} bằng {w}.": "Eight minus {w} equals {w}.",
+"Một số trừ chính nó thì bằng {w}.": "A number minus itself equals {w}.",
+"Thuộc các cặp số có tổng bằng # giúp em tính nhẩm thật nhanh.": "Knowing the pairs that make # helps you calculate quickly in your head.",
+"thuộc các cặp số có tổng bằng {w} sẽ giúp em tính nhẩm thật nhanh.": "knowing the pairs that make {w} helps you calculate quickly in your head.",
+"Cộng khi gộp lại, thêm vào. Trừ khi bớt đi.": "Add when putting together or adding more. Subtract when taking away.",
+"So sánh kết quả: # + # > #.": "Compare the answers: # + # > #.",
+"So sánh kết quả: # + # < #.": "Compare the answers: # + # < #.",
+"Chủ đề này các em đã học phép cộng, phép trừ trong phạm vi {w}, bảng cộng, bảng trừ và so sánh kết quả.": "In this topic you learned addition and subtraction within {w}, number facts and comparing answers.",
+"Gộp, thêm: cộng.": "Put together, add more: add.",
+"Bớt, cho đi: trừ.": "Take away, give away: subtract.",
+"gộp hay thêm thì cộng, bớt hay cho đi thì trừ.": "put together or add more, we add; take away or give away, we subtract.",
+"Đổi chỗ {w} số trong phép cộng thì kết quả {w} đổi.": "Swapping the two numbers in an addition does not change the answer.",
+"{o} có dạng": "The {o:s} is shaped like a",
+". Các mặt đều là {o}.": ". All its faces are {o:p}.",
+"Mọi mặt của {o} đều là {o}.": "Every face of a {o1:s} is a {o2:s}.",
+"Hộp sữa, {o}, {o} có dạng": "A milk carton, a {o1:s} and a {o2:s} are shaped like a",
+"{o} dài hơn, các mặt có {o}.": "A {o1:s} is longer, and its faces include {o2:p}.",
+"Hộp sữa, {o}, {o} có dạng {o}.": "A milk carton, a {o1:s} and a {o2:s} are shaped like a {o3:s}.",
+"Các mặt của nó có {o}.": "Its faces include {o:p}.",
+"Đếm {o}": "Counting {o:p}",
+"Đếm từng cột: # + # + # =": "Count each column: # + # + # =",
+"khối.": "cubes.",
+"Muốn đếm số {o}, em đếm từng cột rồi cộng lại.": "To count the {o:p}, count each column and add them up.",
+"Ba cộng {w} cộng {w} bằng {w} khối.": "Three plus {w} plus {w} equals {w} cubes.",
+"Mặt toàn {o}: {o}.": "All faces are {o1:p}: {o2:s}.",
+"Có mặt {o}: {o}.": "Some faces are {o1:p}: {o2:s}.",
+"khối có các mặt đều là {o} là {o}.": "a solid whose faces are all {o1:p} is a {o2:s}.",
+"Khối có mặt {o} là {o}.": "A solid with {o1:s} faces is a {o2:s}.",
+"Bên trái, bên phải": "Left and right",
+"Mèo ở": "The cat is on the",
+"bên trái": "left",
+"bên phải": "right of the",
+"{o}. Cá ở": "of the {o:s}. The fish is on the",
+"{o}.": "{o:s}.",
+"Nhìn hình nhé: con mèo ở bên trái {o}, {o} ở bên phải {o}.": "Look at the picture: the cat is to the left of the {o1:s}, the {o2:s} is to the right of the {o3:s}.",
+"Trên, dưới": "Above and below",
+"{o} ở": "The {o:s} is",
+"trên": "above",
+"dưới": "below",
+". Cái rương ở": ". The chest is",
+"{o} ở trên, cái rương ở dưới.": "The {o:s} is above, the chest is below.",
+"Đứng thứ mấy?": "Which position?",
+"Tính từ trái: ô tô đứng": "Counting from the left, the car is",
+"thứ {w}": "number {w}",
+"Tính từ bên trái sang: {o} thứ nhất, {o} thứ {w}, ô tô thứ {w}.": "Counting from the left: the {o:s} is first, the {o:s} is number {w}, the car is number {w}.",
+"Tay cầm bút là tay phải. Đếm vị trí thì xem đếm từ bên nào.": "The hand you write with is your right hand. When counting positions, check which side you start from.",
+"tay em cầm bút viết là tay phải.": "the hand you write with is your right hand.",
+"Khi tìm vị trí, nhớ xem mình đếm từ bên nào.": "When finding a position, remember which side you count from.",
+"{o}, {o}. Trên, dưới, trái, phải, thứ tự.": "{o:P}, {o:p}. Above, below, left, right, order.",
+"Chủ đề này các em đã học {o}, {o} và vị trí trên, dưới, trái, phải.": "In this topic you learned about {o:p}, {o:p} and positions: above, below, left and right.",
+"Đếm khối theo từng cột. Xác định trái, phải theo tay của em.": "Count cubes column by column. Use your hands to tell left from right.",
+"đếm khối theo từng cột, và xác định bên trái, bên phải theo tay của em.": "count cubes column by column, and use your hands to tell left from right.",
+"Đếm, đọc, viết, so sánh và sắp xếp các số từ # đến #.": "Count, read, write, compare and order numbers from # to #.",
+"Mình ôn lại các số từ {w} đến {w}: đếm, đọc, viết, so sánh và sắp xếp.": "Let's review the numbers from {w} to {w}: counting, reading, writing, comparing and ordering.",
+"Số đứng sau trên dãy số thì lớn hơn.": "The number that comes later on the number line is greater.",
+"Số lớn nhất trong phạm vi # là #, bé nhất là #.": "The greatest number within # is #, the smallest is #.",
+"số đứng sau thì lớn hơn.": "the number that comes later is greater.",
+"Trong phạm vi {w}, số lớn nhất là {w}, số bé nhất là {w}.": "Within {w}, the greatest number is {w} and the smallest is {w}.",
+"Ôn bảng cộng, bảng trừ trong phạm vi #.": "Review addition and subtraction facts within #.",
+"Mình ôn phép cộng, phép trừ trong phạm vi {w}.": "Let's review addition and subtraction within {w}.",
+"Sáu cộng {w} bằng {w}, {w} trừ {w} bằng {w}.": "Six plus {w} equals {w}, {w} minus {w} equals {w}.",
+"Thêm vào: cộng. Bớt đi: trừ. Dùng phép cộng để kiểm tra phép trừ.": "Adding more: add. Taking away: subtract. Use addition to check subtraction.",
+"thêm vào thì cộng, bớt đi thì trừ.": "adding more, we add; taking away, we subtract.",
+"Em có thể dùng phép cộng để kiểm tra phép trừ.": "You can use addition to check a subtraction.",
+"Hình phẳng và khối hình.": "2D shapes and 3D shapes.",
+"Mình ôn lại các hình phẳng: vuông, tròn, tam giác, chữ nhật, và các khối: {o}, {o}.": "Let's review 2D shapes: square, circle, triangle, rectangle, and 3D shapes: {o:p} and {o:p}.",
+"Hình phẳng nằm trên mặt giấy. Khối hình có thể cầm, xếp chồng lên nhau.": "2D shapes lie flat on paper. 3D shapes can be held and stacked.",
+"hình phẳng vẽ được trên mặt giấy, còn khối hình thì em cầm được và xếp chồng lên nhau được.": "2D shapes can be drawn on paper, but 3D shapes can be held and stacked.",
+"Các số từ # đến #.": "Numbers from # to #.",
+"Cộng, trừ trong phạm vi #.": "Addition and subtraction within #.",
+"Hình phẳng, khối hình.": "2D and 3D shapes.",
+"Vị trí: trên, dưới, trái, phải.": "Position: above, below, left, right.",
+"Học kì {w} các em đã học các số đến {w}, cộng trừ trong phạm vi {w}, hình phẳng, khối hình và vị trí.": "In term {w} you learned numbers to {w}, addition and subtraction within {w}, 2D and 3D shapes, and position.",
+"Đọc kĩ đề, đếm cẩn thận, tính xong thì kiểm tra lại.": "Read the question carefully, count carefully, and check your work.",
+"đọc kĩ đề, đếm cẩn thận, và tính xong thì kiểm tra lại nhé.": "read the question carefully, count carefully, and check your work when you finish.",
+"Chục và đơn vị": "Tens and ones",
+"Mỗi bó có": "Each bundle has",
+"{o}, gọi là": "{o:p}, called",
+"# chục": "# {1:ten|tens}",
+". Có # chục và # que lẻ.": ". There are # tens and # single sticks.",
+"Mười {o} bó lại thành {w} chục.": "Ten {o:p} bundled together make one ten.",
+"Ở đây có {w} bó, tức là {w} chục, và {w} que lẻ.": "Here there are {w} bundles, that is {w} tens, and {w} single sticks.",
+"Viết và đọc số": "Writing and reading numbers",
+"# chục và # đơn vị viết là": "# tens and # ones is written",
+", đọc là": ", and read as",
+"{w}": "{w}",
+"Ba chục và {w} đơn vị viết là {w}.": "Three tens and {w} ones is written {W2}.",
+"Chữ số {w} chỉ số chục, chữ số {w} chỉ số đơn vị.": "The digit {w} shows the tens, the digit {w} shows the ones.",
+"Các số tròn chục": "Multiples of ten",
+"#, #, #, …, #: hàng đơn vị là": "#, #, #, …, #: the ones digit is",
+"Mười, {w}, {w}, cho đến {w} là các số tròn chục.": "Ten, {w}, {w}, all the way to {w} are multiples of ten.",
+"Hàng đơn vị của chúng là số {w}.": "Their ones digit is zero.",
+"Số có {w} chữ số: chữ số bên trái chỉ": "In a two-digit number, the left digit shows",
+"số chục": "the tens",
+", chữ số bên phải chỉ": ", the right digit shows",
+"số đơn vị": "the ones",
+"trong số có {w} chữ số, chữ số bên trái chỉ số chục, chữ số bên phải chỉ số đơn vị.": "in a two-digit number, the left digit shows the tens and the right digit shows the ones.",
+"So sánh số chục trước": "Compare the tens first",
+"# chục nhiều hơn # chục, nên": "# tens is more than # tens, so",
+"Muốn so sánh {w} số có {w} chữ số, em so sánh số chục trước.": "To compare two two-digit numbers, compare the tens first.",
+"Năm chục nhiều hơn {w} chục, nên {w} lớn hơn {w}.": "Five tens is more than {w} tens, so {w} is greater than {w}.",
+"Số chục bằng nhau": "When the tens are the same",
+"Cùng # chục, so sánh số đơn vị: # < #.": "Both have # tens, so compare the ones: # < #.",
+"Nếu số chục bằng nhau, em so sánh số đơn vị.": "If the tens are the same, compare the ones.",
+"Ba mươi {w} bé hơn {w} vì {w} bé hơn {w}.": "Thirty-{w} is less than {w} because {w} is less than {w}.",
+"Xếp từ bé đến lớn": "Ordering from smallest to greatest",
+"So sánh từng cặp, xếp số bé nhất đứng đầu.": "Compare in pairs and put the smallest number first.",
+"Muốn xếp các số từ bé đến lớn, em tìm số bé nhất xếp trước, rồi lần lượt các số lớn hơn.": "To order numbers from smallest to greatest, find the smallest number first, then the bigger ones in turn.",
+"So sánh": "Compare",
+"trước. Số chục bằng nhau thì so sánh": "first. If the tens are the same, compare",
+"so sánh số chục trước.": "compare the tens first.",
+"Nếu số chục bằng nhau thì so sánh số đơn vị.": "If the tens are the same, compare the ones.",
+"Bảng các số từ # đến #": "The # to # number square",
+"Một phần của bảng số.": "Part of the number square.",
+"Đây là {w} phần của bảng các số từ {w} đến {w} trăm.": "This is part of the number square from one to one hundred.",
+"Mỗi hàng có {w} số.": "Each row has {w} numbers.",
+"Đi trong bảng số": "Moving around the number square",
+"Sang": "Go",
+"phải": "right",
+"trái": "left",
+"# ô: thêm #. Sang": "# {1:square|squares}: add #. Go",
+"# ô: bớt #.": "# {1:square|squares}: take away #.",
+"Xuống": "Go",
+"# ô: thêm #. Lên": "# {1:square|squares}: add #. Go",
+"Sang phải {w} ô thì thêm {w}.": "Moving right one square adds one.",
+"Đi xuống {w} ô thì thêm {w}.": "Moving down one square adds ten.",
+"Ví dụ {w} sang phải là {w}, đi xuống là {w}.": "For example, right of {w} is {w}, and below it is {w}.",
+"Trong bảng số, các số trong": "In the number square, numbers in",
+"cùng {w} cột": "the same column",
+"hơn kém nhau #. Số # là số có {w} chữ số.": "differ by #. The number # has three digits.",
+"các số cùng {w} cột hơn kém nhau {w}.": "numbers in the same column differ by ten.",
+"Số {w} trăm có {w} chữ số.": "One hundred has three digits.",
+"Đọc, viết số có {w} chữ số: chục và đơn vị.": "Read and write two-digit numbers: tens and ones.",
+"So sánh số chục trước, rồi số đơn vị.": "Compare the tens first, then the ones.",
+"Bảng các số từ # đến #.": "The # to # number square.",
+"Chủ đề này các em đã học đọc viết số có {w} chữ số, so sánh số và bảng các số từ {w} đến {w} trăm.": "In this topic you learned to read and write two-digit numbers, compare numbers and use the number square from one to one hundred.",
+"Số liền sau thêm #, số liền trước bớt #.": "The number after is # more, the number before is # less.",
+"Ghép số lớn nhất: đặt chữ số lớn ở hàng chục.": "To make the greatest number, put the bigger digit in the tens place.",
+"số liền sau thì thêm {w}, số liền trước thì bớt {w}.": "the number after is one more, the number before is one less.",
+"Muốn ghép số lớn nhất, đặt chữ số lớn hơn ở hàng chục.": "To make the greatest number, put the bigger digit in the tens place.",
+"Dài hơn, ngắn hơn": "Longer and shorter",
+"Thước": "Ruler",
+"Bút": "Pen",
+"Đặt {w} vật": "Line up the two objects",
+"thẳng {w} đầu": "at one end",
+". Thước dài hơn bút.": ". The ruler is longer than the pen.",
+"Muốn so sánh độ dài, em đặt {w} vật thẳng {w} đầu.": "To compare lengths, line up two objects at one end.",
+"Vật nào thò ra dài hơn thì vật đó dài hơn.": "The one that sticks out further is longer.",
+"Ở đây thước dài hơn bút.": "Here the ruler is longer than the pen.",
+"Cao hơn, thấp hơn": "Taller and shorter",
+"Cây": "Tree",
+"Cột": "Post",
+"Cây cao hơn cột. Cột thấp hơn cây.": "The tree is taller than the post. The post is shorter than the tree.",
+"Với chiều cao, ta nói cao hơn hoặc thấp hơn.": "For height, we say taller or shorter.",
+"Cây cao hơn cột, cột thấp hơn cây.": "The tree is taller than the post, and the post is shorter than the tree.",
+"So sánh độ dài: đặt": "To compare lengths, line them up",
+", xem đầu kia vật nào dài hơn.": ", then see which one is longer at the other end.",
+"đặt {w} vật thẳng {w} đầu rồi xem đầu kia, vật nào dài hơn thì dài hơn.": "line up two objects at one end, then look at the other end to see which is longer.",
+"Xăng-ti-mét": "Centimetres",
+"Đơn vị đo độ dài:": "A unit of length:",
+"xăng-ti-mét": "centimetre",
+", viết tắt": ", written as",
+"cm": "cm",
+"Xăng-ti-mét là đơn vị đo độ dài, viết tắt là xê mờ.": "The centimetre is a unit of length, written c m.",
+"Từ vạch {w} đến vạch {w} trên thước là {w} xăng-ti-mét.": "From {w} to {w} on the ruler is {w} centimetre.",
+"Cách đo": "How to measure",
+"Đặt vạch": "Line up the",
+"của thước trùng {w} đầu vật.": "mark on the ruler with one end of the object.",
+"Đọc số ở đầu kia của vật.": "Read the number at the other end.",
+"Đoạn đỏ dài": "The red line is",
+"Khi đo, em đặt vạch {w} của thước trùng với {w} đầu của vật, rồi đọc số ở đầu kia.": "When you measure, line up the zero on the ruler with one end of the object, then read the number at the other end.",
+"Luôn bắt đầu đo từ vạch": "Always start measuring from",
+". Viết số đo kèm": ". Write the measurement with",
+", ví dụ # cm.": ", for example # cm.",
+"luôn bắt đầu đo từ vạch {w}, và viết số đo kèm chữ xăng-ti-mét.": "always start measuring from zero, and write centimetres after the number.",
+"Ước lượng": "Estimating",
+"{o} dài khoảng": "The {o:s} is about",
+"Bàn học dài khoảng": "The desk is about",
+"Ước lượng là đoán độ dài trước khi đo.": "Estimating means making a good guess before measuring.",
+"{o} dài khoảng {w} xăng-ti-mét, {o} dài khoảng {w} xăng-ti-mét.": "The {o:s} is about {w} centimetres long, the {o:s} is about {w} centimetres long.",
+"Đo bằng ô, gang tay": "Measuring with squares and hand spans",
+"Cái bút dài bằng": "The pen is as long as",
+"# ô": "# squares",
+"Có thể đo bằng ô vuông, gang tay hay bước chân.": "We can measure with squares, hand spans or steps.",
+"Cái bút này dài bằng {w} ô vuông.": "This pen is {w} squares long.",
+"Ước lượng trước, đo lại để kiểm tra. Đo bằng thước thì chính xác hơn.": "Estimate first, then measure to check. A ruler is more accurate.",
+"ước lượng trước, rồi đo lại để kiểm tra.": "estimate first, then measure to check.",
+"Đo bằng thước thì chính xác nhất.": "Measuring with a ruler is the most accurate.",
+"Dài hơn, ngắn hơn; cao hơn, thấp hơn.": "Longer, shorter; taller, shorter.",
+"Đơn vị xăng-ti-mét (cm).": "The centimetre (cm).",
+"Đo bằng thước, ước lượng độ dài.": "Measure with a ruler, estimate length.",
+"Chủ đề này các em đã học so sánh dài ngắn, cao thấp, đơn vị xăng-ti-mét và cách đo độ dài.": "In this topic you learned to compare length and height, the centimetre, and how to measure length.",
+"Đo từ vạch #.": "Measure from #.",
+"Cộng, trừ số đo thì giữ nguyên đơn vị: # cm + # cm = # cm.": "When adding or subtracting measurements, keep the unit: # cm + # cm = # cm.",
+"đo từ vạch {w}.": "measure from zero.",
+"Khi cộng trừ số đo thì giữ nguyên đơn vị, {w} xăng-ti-mét cộng {w} xăng-ti-mét bằng {w} xăng-ti-mét.": "When adding or subtracting measurements, keep the unit: {w} centimetres plus {w} centimetres equals {w} centimetres.",
+"Cộng đơn vị với đơn vị": "Add ones to ones",
+"# + # = #, viết #. Hạ #. Kết quả": "# + # = #, write #. Bring down #. Answer",
+"Bốn mươi {w} cộng {w}.": "Forty-{w} plus {w}.",
+"Em cộng đơn vị: {w} cộng {w} bằng {w}, viết {w}.": "Add the ones: {w} plus {w} equals {w}, write {w}.",
+"Hạ {w}.": "Bring down {w}.",
+"Kết quả là {w}.": "The answer is {w}.",
+"Đặt tính thẳng cột": "Writing calculations in columns",
+"Viết số đơn vị": "Write the ones",
+"thẳng cột": "lined up",
+"với số đơn vị.": "with the ones.",
+"Tính từ": "Work from",
+"phải sang trái": "right to left",
+"Khi đặt tính, viết các chữ số đơn vị thẳng cột với nhau, rồi tính từ phải sang trái.": "When writing a calculation in columns, line up the ones digits, then work from right to left.",
+"Số có {w} chữ số cộng số có {w} chữ số: cộng đơn vị,": "Two-digit plus one-digit: add the ones,",
+"giữ nguyên số chục": "keep the tens the same",
+"cộng số đơn vị với nhau, số chục giữ nguyên.": "add the ones together and keep the tens the same.",
+"Cộng {w} số có {w} chữ số": "Adding two two-digit numbers",
+"# + # = #; # + # = #. Kết quả": "# + # = #; # + # = #. Answer",
+"Ba mươi tư cộng {w}.": "Thirty-four plus {w}.",
+"Cộng đơn vị {w} cộng {w} bằng {w}.": "Add the ones: {w} plus {w} equals {w}.",
+"Cộng chục {w} cộng {w} bằng {w}.": "Add the tens: {w} plus {w} equals {w}.",
+"Kết quả {w}.": "The answer is {w}.",
+"Cộng nhẩm số tròn chục": "Adding multiples of ten in your head",
+"Với số tròn chục, em nhẩm theo chục.": "With multiples of ten, think in tens.",
+"Ba chục cộng {w} chục bằng {w} chục, tức là {w}.": "Three tens plus {w} tens equals {w} tens, that is {w}.",
+"đơn vị": "ones",
+"với đơn vị,": "with ones,",
+"chục": "tens",
+"với chục.": "with tens.",
+"cộng đơn vị với đơn vị, chục với chục.": "add ones to ones and tens to tens.",
+"Trừ đơn vị cho đơn vị": "Subtract ones from ones",
+"# − # = #, viết #. Hạ #. Kết quả": "# − # = #, write #. Bring down #. Answer",
+"Sáu mươi {w} trừ {w}.": "Sixty-{w} minus {w}.",
+"Trừ đơn vị: {w} trừ {w} bằng {w}, viết {w}.": "Subtract the ones: {w} minus {w} equals {w}, write {w}.",
+"Bài toán bớt": "A take-away problem",
+"Có # {o}, # con bay đi.": "There {be} # {o}. # fly away.",
+"Có {w} {o}, {w} con bay đi.": "There are {w} {o}, and {w} fly away.",
+"Bốn mươi {w} trừ {w} bằng {w}.": "Forty-{w} minus {w} equals {w}.",
+"Trừ số đơn vị,": "Subtract the ones,",
+". Bớt đi, bay đi, cho đi: làm phép trừ.": ". Take away, fly away, give away: subtract.",
+"trừ số đơn vị, giữ nguyên số chục.": "subtract the ones and keep the tens the same.",
+"Bớt đi, bay đi, cho đi thì làm phép trừ.": "Take away, fly away, give away: we subtract.",
+"Trừ {w} số có {w} chữ số": "Subtracting two-digit numbers",
+"# − # = #; # − # = #. Kết quả": "# − # = #; # − # = #. Answer",
+"Bảy mươi {w} trừ {w}.": "Seventy-{w} minus {w}.",
+"Trừ đơn vị {w} trừ {w} bằng {w}.": "Subtract the ones: {w} minus {w} equals {w}.",
+"Trừ chục {w} trừ {w} bằng {w}.": "Subtract the tens: {w} minus {w} equals {w}.",
+"Trừ nhẩm số tròn chục": "Subtracting multiples of ten in your head",
+"Tám chục trừ {w} chục bằng {w} chục, tức là {w}.": "Eight tens minus {w} tens equals {w} tens, that is {w}.",
+"cho đơn vị,": "from ones,",
+"cho chục. Kiểm tra: lấy kết quả cộng số trừ.": "from tens. To check, add the answer to the number you took away.",
+"trừ đơn vị cho đơn vị, chục cho chục.": "subtract ones from ones and tens from tens.",
+"Muốn kiểm tra, lấy kết quả cộng với số trừ.": "To check, add the answer to the number you took away.",
+"Cộng, trừ số có {w} chữ số ({w} nhớ).": "Adding and subtracting two-digit numbers (no regrouping).",
+"Đặt tính thẳng cột, tính từ phải sang trái.": "Write it in columns and work from right to left.",
+"Tính nhẩm số tròn chục.": "Calculate multiples of ten in your head.",
+"Chủ đề này các em đã học cộng trừ số có {w} chữ số {w} nhớ, đặt tính thẳng cột và tính nhẩm số tròn chục.": "In this topic you learned to add and subtract two-digit numbers without regrouping, write calculations in columns and calculate multiples of ten in your head.",
+"Thêm vào, gộp lại: phép cộng.": "Adding more, putting together: addition.",
+"Bớt đi, còn lại: phép trừ.": "Taking away, what is left: subtraction.",
+"thêm vào, gộp lại thì làm phép cộng.": "adding more or putting together, we add.",
+"Bớt đi, còn lại thì làm phép trừ.": "Taking away or finding what is left, we subtract.",
+"Kim ngắn, kim dài": "The short hand and the long hand",
+"Kim": "The",
+"dài": "long hand",
+"ngắn": "short hand",
+"chỉ số #. Kim": "points to #. The",
+"chỉ số #. Đồng hồ chỉ": "points to #. The clock shows",
+"# giờ": "# o'clock",
+"Đồng hồ có kim ngắn và kim dài.": "A clock has a short hand and a long hand.",
+"Khi kim dài chỉ số {w}, kim ngắn chỉ số nào thì là mấy giờ.": "When the long hand points to twelve, the short hand shows the o'clock time.",
+"Ở đây là {w} giờ.": "Here it is {w} o'clock.",
+"Ví dụ": "Example",
+"Kim ngắn chỉ số #:": "The short hand points to #:",
+"Kim dài chỉ số {w}, kim ngắn chỉ số {w}.": "The long hand points to {w}, the short hand points to {w}.",
+"Đồng hồ chỉ {w} giờ.": "The clock shows {w} o'clock.",
+"Giờ đúng: kim dài chỉ số": "O'clock: the long hand points to",
+", kim ngắn chỉ": ", the short hand points to",
+"số giờ": "the hour",
+"giờ đúng thì kim dài chỉ số {w}, kim ngắn chỉ số giờ.": "at o'clock times, the long hand points to {w} and the short hand points to the hour.",
+"Bảy ngày trong tuần": "Seven days in a week",
+"Một tuần có {w} ngày: thứ Hai, thứ Ba, thứ Tư, thứ Năm, thứ Sáu, thứ Bảy và Chủ nhật.": "A week has {w} days: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday and Sunday.",
+"Hôm qua, hôm nay, ngày mai": "Yesterday, today, tomorrow",
+"Hôm nay là": "Today is",
+"Nếu hôm nay là thứ Tư thì hôm qua là thứ Ba, ngày mai là thứ Năm.": "If today is Wednesday, yesterday was Tuesday and tomorrow is Thursday.",
+"Một tuần có": "A week has",
+"# ngày": "# days",
+". Sau Chủ nhật lại đến thứ Hai.": ". After Sunday comes Monday again.",
+"{w} tuần có {w} ngày.": "a week has {w2} days.",
+"Sau Chủ nhật lại đến thứ Hai.": "After Sunday comes Monday again.",
+"Xem lịch": "Reading a calendar",
+"Tờ lịch cho biết ngày và thứ.": "A calendar shows the date and the day.",
+"Ngày {w} là thứ Ba, ngày {w} là thứ Tư.": "Day {w} is Tuesday, day {w} is Wednesday.",
+"Giờ trong ngày": "Times of the day",
+"# giờ sáng: thức dậy.": "# o'clock in the morning: wake up.",
+"# giờ trưa: ăn trưa.": "# o'clock at midday: lunch.",
+"# giờ tối: đọc truyện.": "# o'clock in the evening: story time.",
+"Mỗi việc trong ngày diễn ra vào {w} giờ nhất định.": "Each thing we do happens at a certain time.",
+"Ví dụ {w} giờ sáng thức dậy, {w} giờ trưa ăn trưa.": "For example, wake up at {w1} o'clock in the morning and have lunch at {w2} o'clock.",
+"Thêm # ngày là ngày mai, thêm # giờ là kim ngắn chỉ số tiếp theo.": "One more day is tomorrow; one more hour moves the short hand to the next number.",
+"thêm {w} ngày là ngày mai.": "one more day is tomorrow.",
+"Thêm {w} giờ thì kim ngắn chỉ sang số tiếp theo.": "One more hour moves the short hand to the next number.",
+"Xem giờ đúng trên đồng hồ.": "Telling o'clock times.",
+"Các ngày trong tuần.": "Days of the week.",
+"Xem lịch, tính khoảng thời gian.": "Reading a calendar, working out time.",
+"Chủ đề này các em đã học xem giờ đúng, các ngày trong tuần và xem lịch.": "In this topic you learned to tell o'clock times, the days of the week and how to read a calendar.",
+"Từ # giờ đến # giờ là # giờ: lấy # − # = #.": "From # o'clock to # o'clock is # hours: # − # = #.",
+"từ {w} giờ đến {w} giờ là {w} giờ, vì {w} trừ {w} bằng {w}.": "from {w} o'clock to {w} o'clock is {w} hours, because {w} minus {w} equals {w}.",
+"Đếm, so sánh, cộng, trừ trong phạm vi #.": "Count, compare, add and subtract within #.",
+"Chúng ta ôn các số đến {w}, so sánh, cộng và trừ trong phạm vi {w}.": "Let's review numbers to {w}, comparing, adding and subtracting within {w}.",
+"Các cặp số có tổng bằng #: # và #, # và #, # và #, # và #, # và #.": "Pairs that make #: # and #, # and #, # and #, # and #, # and #.",
+"các cặp số cộng lại bằng {w} là {w} và {w}, {w} và {w}, {w} và {w}, {w} và {w}, {w} và {w}.": "the pairs that add up to {w} are {w} and {w}, {w} and {w}, {w} and {w}, {w} and {w}, {w} and {w}.",
+"Số có {w} chữ số: chục và đơn vị.": "Two-digit numbers: tens and ones.",
+"So sánh, xếp thứ tự số đến #.": "Compare and order numbers to #.",
+"Cộng, trừ {w} nhớ trong phạm vi #.": "Add and subtract without regrouping within #.",
+"Chúng ta ôn số có {w} chữ số, so sánh và cộng trừ {w} nhớ trong phạm vi {w} trăm.": "Let's review two-digit numbers, comparing, and adding and subtracting without regrouping within one hundred.",
+"Đặt tính thẳng cột. Cộng, trừ đơn vị trước, rồi đến chục.": "Write it in columns. Add or subtract the ones first, then the tens.",
+"đặt tính thẳng cột, tính đơn vị trước rồi đến chục.": "write it in columns, and work out the ones first, then the tens.",
+"{o}, tròn, tam giác, chữ nhật; {o}, khối hộp.": "{o:S}, circle, triangle, rectangle; {o:s}, cuboid.",
+"Đo độ dài bằng cm.": "Measure length in cm.",
+"Xem giờ, xem lịch.": "Tell the time, read a calendar.",
+"Chúng ta ôn các hình, khối, đo độ dài, xem giờ và xem lịch.": "Let's review shapes, solids, measuring length, telling the time and reading a calendar.",
+"Đo từ vạch #. Giờ đúng: kim dài chỉ số #. Một tuần có # ngày.": "Measure from #. O'clock: the long hand points to #. A week has # days.",
+"đo từ vạch {w}, giờ đúng thì kim dài chỉ số {w}, {w} tuần có {w} ngày.": "measure from zero; at o'clock times the long hand points to {w2}; a week has {w4} days.",
+"Ôn tập chung": "General review",
+"Đọc, viết, so sánh số đến #.": "Read, write and compare numbers to #.",
+"Hình học, đo lường, thời gian.": "Geometry, measurement, time.",
+"Đây là bài ôn tập cuối {w} lớp {w}.": "This is the end-of-year review for Grade {w2}.",
+"Các em ôn số, phép tính, hình học, đo lường và thời gian.": "We review numbers, calculations, geometry, measurement and time.",
+"Đọc kĩ đề, tính cẩn thận, kiểm tra lại kết quả. Chúc các em lên lớp # thật vui!": "Read carefully, calculate carefully and check your answers. Have a great time in Grade #!",
+"đọc kĩ đề, tính cẩn thận và kiểm tra lại.": "read carefully, calculate carefully and check your work.",
+"Chúc các em lên lớp {w} thật vui!": "Have a great time in Grade {w}!",
+"Em nhớ nhé: {w} tuần có {w} ngày.": "Remember: a week has {w2} days.",
+"Đúng rồi: # &lt; #.": "Yes: # &lt; #.",
+"Đúng rồi: # &gt; #.": "Yes: # &gt; #.",
+"So sánh kết quả: # + # &gt; #.": "Compare the answers: # + # &gt; #.",
+"So sánh kết quả: # + # &lt; #.": "Compare the answers: # + # &lt; #.",
+"Cùng # chục, so sánh số đơn vị: # &lt; #.": "Both have # tens, so compare the ones: # &lt; #."
+});
+
+/* bật tiếng Anh cho lớp 1 */
+EN_GR.add(1);try{enSwapAll()}catch(e){}
+/* 49 — Gian hàng Jenny (tiêu xu) — thầy duyệt mẫu và bảng giá 20/10
+   Học sinh tiểu học dùng xu mua: Trang phục, Mũ & kính, Khung ảnh, Đảo nhà, Thú cưng, Đồ nuôi; Vé game tư duy (sắp có).
+   Thú cưng và đồ nuôi: xem 49b (Đảo nhà của em).
+   Chạm món đồ = thử miễn phí trên khung xem trước; bấm Mua để trừ xu. Đồ đã mua bấm Dùng/Bỏ.
+   Lưu: st.shop = {own:[mã], acc:'', pet:'', frame:'', dec:[mã]} ; trang phục mua dùng chung st.outfit. */
+Object.assign(PXS,{
+ capS:["...bbbbbb.....","..bbbwwbbb....",".bbbbbbbbbb...",".BBBBBBBBBBBBB"],
+ bowS:["rr...rr","rrr.rrr","rrrRrrr","rrr.rrr","rr...rr"],
+ glassS:["kkkkk..kkkkk","kwbbkkkkwbbk","kbbbk..kbbbk","kkkkk..kkkkk"],
+ witchS:["......PP......",".....PPPP.....",".....PPPP.....","....PPPPPP....","....yyyyyy....","...PPPPPPPP...","PPPPPPPPPPPPPP"],
+ crown2S:["y..y....y..y","yy.yy..yy.yy","yyyyyyyyyyyy","yryybyybyyry","aaaaaaaaaaaa"],
+ flowerS:[".c.c.","ccycc",".c.c.","..g..","..g.."].map(r=>r),
+ tkS:["kkkkkkkkkkkkkk","kaaaakyyyyyyyk","kaaaakykkkkyyk","aaaaakyyyyyyya","kaaaakykkkyyyk","kaaaakyyyyyyyk","kkkkkkkkkkkkkk"],
+});
+/* trang phục bán ở gian hàng (đổi màu áo Jenny) */
+Object.assign(OUTFIT,{
+ s_lime:{n:'Áo Chanh tươi',m:{g:'l',G:'G',y:'y'}},
+ s_peach:{n:'Váy Hoa đào',m:{g:'c',G:'r',y:'w',o:'r'}},
+ s_sky:{n:'Áo Bầu trời',m:{g:'b',G:'p',y:'a',o:'p'}},
+ s_hero:{n:'Áo Siêu nhân Toán',m:{g:'r',G:'B',y:'a',o:'B'}},
+ s_gold:{n:'Áo Hoàng kim',m:{g:'a',G:'n',y:'w',o:'n'}},
+});
+['jenny','jennyBlink','jennyHappy','jennySad','jennyCheer'].forEach(n=>['s_lime','s_peach','s_sky','s_hero','s_gold'].forEach(o=>ofVariant(n,o)));
+/* phụ kiện: vị trí theo ô lưới của Jenny (16×19) */
+const GH_ACC={cap:['capS',1,-1],bow:['bowS',10,-1],glass:['glassS',2,6],flower:['flowerS',11,-2],witch:['witchS',1,-5],crown:['crown2S',2,-3]};
+const GH_SLOT={palm:[18,34],umb:[40,44],castle:[60,40],flag:[78,26],light:[8,62],boat:[90,78]};
+const FRAMES={wood:['#9A6234','#6B3F1D'],silver:['#E3E7F0','#9AA4C0'],gold:['#FCD655','#C97A00'],rainbow:null};
+const GH=[
+ {k:'of',n:'Áo váy',ic:'jenny',it:[['s_lime','Áo Chanh tươi',120],['s_peach','Váy Hoa đào',150],['s_sky','Áo Bầu trời',180],['s_hero','Áo Siêu nhân Toán',300],['s_gold','Áo Hoàng kim',400]]},
+ {k:'acc',n:'Mũ kính',ic:'capS',it:[['bow','Nơ đỏ',60],['flower','Kẹp hoa',60],['cap','Mũ lưỡi trai',80],['glass','Kính tròn',100],['witch','Mũ phù thuỷ',150],['crown','Vương miện',250]]},
+ {k:'frame',n:'Khung',ic:'medG',it:[['wood','Khung Gỗ',60],['silver','Khung Bạc',120],['gold','Khung Vàng',200],['rainbow','Khung Cầu vồng',300]]},
+ {k:'dec',n:'Đảo nhà',ic:'palm',it:[['palm','Cây dừa',40],['umb','Ô che nắng',50],['castle','Lâu đài cát',70],['boat','Thuyền buồm',90],['flag','Cờ CLB Jenny',110],['light','Hải đăng',140]]},
+ {k:'pet',n:'Thú cưng',ic:'chick',it:[['chick','Gà con',150],['turtle','Rùa biển',250]]},
+ {k:'care',n:'Đồ nuôi',ic:'bowlS',it:[]},
+ {k:'tk',n:'Vé game',ic:'tkS',it:[]},
+];
+const TK_PRICE=30,TK_DAY=3,TK_MIN=5;
+const ghSt=st=>{st.shop=st.shop||{own:[],acc:'',frame:'',dec:[]};const s=st.shop;s.bag=s.bag||{};s.gear=s.gear||[];return s};
+const ghFind=id=>{for(const c of GH){const x=c.it.find(i=>i[0]===id);if(x)return{c,x}}return null};
+/* trang phục mua được tính là "đã có" trong tủ đồ */
+{const _o=ofOwn;ofOwn=function(st){const s=_o.apply(this,arguments);try{(st.shop&&st.shop.own||[]).forEach(k=>{if(OUTFIT[k])s.add(k)})}catch(e){}return s}}
+/* Jenny xem trước: áo + mũ/kính + thú cưng + khung */
+function ghJenny(H,L){const u=H/19,of=L.of,body=spr(of?ofVariant('jenny',of):'jenny',H);
+ const a=L.acc&&GH_ACC[L.acc]?(()=>{const[nm,x,y]=GH_ACC[L.acc],d=pxURI(nm);return`<img class="px ghacc" src="${d.u}" alt="" style="left:${x*u}px;top:${y*u}px;width:${d.w*u}px;height:${d.h*u}px">`})():'';
+ const p=L.pet?`<span class="ghpet">${spr(L.pet,Math.round(H*.42))}</span>`:'';
+ return`<span class="ghj ${L.frame?'fr-'+L.frame:''}"><span class="ghjb" style="width:${16*u}px;height:${H}px">${body}${a}</span>${p}</span>`}
+function ghLook(st){const s=ghSt(st),T=scr.ghTry||{};return{of:'of' in T?T.of:(st.outfit||''),acc:'acc' in T?T.acc:s.acc,pet:T.pet||'',frame:'frame' in T?T.frame:s.frame}}
+function ghCard(c,x,st){if((c.k==='pet'||c.k==='care')&&typeof petCard==='function')return petCard(c,x,st);const s=ghSt(st),[id,n,pr]=x,own=s.own.includes(id),T=scr.ghTry||{},use=c.k==='of'?st.outfit===id:c.k==='dec'?s.dec.includes(id):s[c.k]===id,sel=T.id===id;
+ const pic=c.k==='of'?spr(ofVariant('jenny',id),54):c.k==='acc'?spr(GH_ACC[id][0],30):c.k==='frame'?`<span class="ghfr fr-${id}">${spr('jenny',38)}</span>`:spr(id,c.k==='pet'?44:46);
+ return`<button type="button" class="ghit ${own?'own':''} ${use?'use':''} ${sel?'sel':''}" onclick="ghTry('${c.k}','${id}')" aria-label="${esc(n)}, ${own?'đã có':pr+' xu'}"><span class="ghpic">${pic}</span><b>${esc(n)}</b>${use?'<i class="ghtag on">Đang dùng</i>':own?'<i class="ghtag">Đã có</i>':`<i class="ghpr">${spr('coin',14)} ${pr}</i>`}</button>`}
+function ghTry(k,id){const T={k,id};if(k==='of')T.of=id;else if(k==='acc')T.acc=id;else if(k==='pet')T.pet=id;else if(k==='frame')T.frame=id;scr.ghTry=T;try{sfx('tap')}catch(e){}render()}
+function ghBuy(){const st=S.st[sid],s=ghSt(st),T=scr.ghTry;if(!T)return;const f=ghFind(T.id);if(!f)return;if(T.k==='pet')return petBuy(T.id);if(T.k==='care')return careBuy(T.id);const pr=f.x[2];
+ if(st.coins<pr){toast(`Em cần thêm ${pr-st.coins} xu. Làm bài để kiếm xu nhé!`);return}
+ st.coins-=pr;s.own.push(T.id);ghUse(1);try{sfx('win')}catch(e){}toast(`Đã mua ${f.x[1]}!`)}
+function ghUse(silent){const st=S.st[sid],s=ghSt(st),T=scr.ghTry;if(!T||!s.own.includes(T.id))return;const k=T.k,id=T.id;
+ if(k==='of')st.outfit=st.outfit===id?'':id;else if(k==='dec'){s.dec=s.dec.includes(id)?s.dec.filter(x=>x!==id):s.dec.concat(id)}else s[k]=s[k]===id?'':id;
+ scr.ghTry=null;save();if(!silent)try{sfx('card')}catch(e){}render()}
+function ghIsle(st){const s=ghSt(st),T=scr.ghTry,list=s.dec.concat(T&&T.k==='dec'&&!s.dec.includes(T.id)?[T.id]:[]);
+ return`<div class="ghisle">${spr('island',120)}${list.map(id=>{const p=GH_SLOT[id]||[50,50];return`<span class="ghdec ${T&&T.id===id&&!s.dec.includes(id)?'try':''}" style="left:${p[0]}%;top:${p[1]}%">${spr(id,id==='boat'?30:36)}</span>`}).join('')}</div>`}
+function viewShop(st){const s=ghSt(st),cat=scr.ghCat||'of',C=GH.find(c=>c.k===cat),T=scr.ghTry,f=T&&ghFind(T.id),L=ghLook(st);
+ const tabs=GH.map(c=>`<button type="button" class="ghtab ${c.k===cat?'on':''}" onclick="scr.ghCat='${c.k}';scr.ghTry=null;render()" aria-pressed="${c.k===cat}"><span class="ghti">${spr(c.ic,c.k==='of'?22:c.k==='acc'?11:c.k==='tk'?14:20)}</span><span>${c.n}</span></button>`).join('');
+ const catB=cat==='care'?careGrid(st):'';
+ let act='';if(f&&(T.k==='pet'||T.k==='care')&&typeof petAct==='function')act=petAct(T,f,st);else if(f){const own=s.own.includes(T.id),use=T.k==='of'?st.outfit===T.id:T.k==='dec'?s.dec.includes(T.id):s[T.k]===T.id,pr=f.x[2],short=Math.max(0,pr-st.coins);
+  act=own?`<button type="button" class="gobtn ghgo" onclick="ghUse()">${use?'Bỏ ra':'Dùng'} ${esc(f.x[1])}</button>`:short?`<button type="button" class="gobtn ghgo off" onclick="ghBuy()">Cần thêm ${spr('coin',16)} ${short}</button>`:`<button type="button" class="gobtn ghgo" onclick="ghBuy()">Mua ${esc(f.x[1])} · ${spr('coin',16)} ${pr}</button>`}
+ const stage=cat==='dec'?ghIsle(st):cat==='care'?careStage(st,T,f):ghJenny(112,L);
+ const body=cat==='tk'?`<div class="ghtk">${spr('tkS',44)}<div><b>Vé chơi game tư duy</b><p>Mỗi vé <b>${TK_PRICE} xu</b> = <b>${TK_MIN} phút</b> chơi game tư duy (cờ, xếp hình, mê cung…). Mỗi ngày mua tối đa <b>${TK_DAY} vé</b>.</p><span class="pill">Sắp có — mở khi có game tư duy</span></div></div>`
+  :cat==='care'?catB:`<div class="ghgrid">${C.it.map(x=>ghCard(C,x,st)).join('')}</div>`;
+ return`<div class="page ghpage"><section class="card ghtop"><div class="ghhead"><h2>${spr('shopI',26)} Gian hàng Jenny</h2><span class="ghcoin">${spr('coin',20)} <b>${st.coins}</b> xu</span></div>
+  <div class="ghstage ${cat==='dec'?'isle':''}">${stage}<div class="ghinfo">${f?`<b>${esc(f.x[1])}</b><small>${T.k==='pet'?petNote(st,T.id):T.k==='care'?esc(careNote(T.id)):s.own.includes(T.id)?'Em đã có món này':'Đang thử — chưa mua'}</small>`:`<b>Chạm món đồ để thử</b><small>Thử miễn phí. Thích thì mua bằng xu.</small>`}${act}</div></div></section>
+  <nav class="ghtabs" aria-label="Loại hàng">${tabs}</nav>${body}
+  <p class="muted ghnote">Kiếm xu: qua màn +15 · luyện lỗi +5 mỗi câu · trò chơi tới +20 · trùm lớp +20–30.</p></div>`}
+/* gắn vào trang chính tiểu học: tab 'shop' + nút xu ở thẻ chào */
+{const _v=viewHome1t;viewHome1t=function(){const r=_v.apply(this,arguments);if(scr.tab!=='shop')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewShop(st)+(i>=0?r.slice(i):'')}}
+{const _h=viewHome1;viewHome1=function(){return _h.apply(this,arguments).replace(/<span class="chip">🪙 <b>(\d+)<\/b><\/span>/,`<button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})" aria-label="$1 xu, mở Gian hàng">🪙 <b>$1</b> <span>Gian hàng ▸</span></button>`)}}
+document.head.insertAdjacentHTML('beforeend',`<style>
+.ghchip{cursor:pointer;background:#FFF4D6!important;color:#7A4E00}.ghchip span{font-family:var(--f-display);font-size:16px;margin-left:2px}
+.ghtop{padding:12px!important}.ghhead{display:flex;align-items:center;gap:8px}.ghhead h2{display:flex;align-items:center;gap:6px;margin:0;font-size:24px}.ghcoin{margin-left:auto;display:flex;align-items:center;gap:4px;font-family:var(--f-display);font-size:22px;background:#FFF4D6;color:#7A4E00;padding:2px 8px;box-shadow:var(--f2)}
+.ghstage{margin-top:10px;display:flex;gap:12px;align-items:flex-end;padding:12px;background:linear-gradient(#BDEBFA 0 62%,#F6D98B 62%);box-shadow:var(--f2);min-height:150px}
+.ghstage.isle{align-items:center;background:linear-gradient(#BDEBFA 0 40%,#12B5E8 40%)}
+.ghinfo{display:flex;flex-direction:column;gap:4px;align-self:center;min-width:0}.ghinfo b{font-family:var(--f-display);font-size:22px;line-height:1}.ghinfo small{font-size:13px;color:#3D4A70}
+.ghgo{margin-top:6px;font-size:15px!important;padding:8px 10px!important}.ghgo.off{background:#E3E7F0!important;color:#5E6B8C!important}
+.ghj{position:relative;display:inline-flex;align-items:flex-end;flex:none;padding:6px}.ghjb{position:relative;display:inline-block}.ghjb>img{display:block}.ghacc{position:absolute;image-rendering:pixelated}.ghpet{margin-left:-6px;margin-bottom:-2px}
+.ghj.fr-wood,.ghfr.fr-wood{box-shadow:0 0 0 4px #9A6234,0 0 0 7px #6B3F1D;background:#FFF4D6}.ghj.fr-silver,.ghfr.fr-silver{box-shadow:0 0 0 4px #E3E7F0,0 0 0 7px #9AA4C0;background:#fff}.ghj.fr-gold,.ghfr.fr-gold{box-shadow:0 0 0 4px #FCD655,0 0 0 7px #C97A00;background:#FFF4D6}
+.ghj.fr-rainbow,.ghfr.fr-rainbow{box-shadow:0 0 0 3px #F04A1B,0 0 0 6px #FCB40C,0 0 0 9px #2AB563,0 0 0 12px #12B5E8;background:#fff}
+.ghfr{display:inline-flex;padding:3px;margin:8px}
+.ghtabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:14px 0 10px}.ghtab{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;border:0;padding:6px 2px 5px;background:var(--surface,#fff);box-shadow:var(--f2);font-family:var(--f-display);font-size:16px;line-height:1;white-space:nowrap;color:#1F2A5A;cursor:pointer;min-width:0}.ghti{height:22px;display:grid;place-items:center;flex:none}@media(max-width:360px){.ghtab{font-size:14px}}.ghtab.on{background:#FCB40C}
+.ghgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ghit{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;padding:8px 4px;background:var(--surface,#fff);box-shadow:var(--f2),0 4px 0 0 #1F2A5A;cursor:pointer;min-width:0}
+.ghit .ghpic{height:58px;display:grid;place-items:center}.ghit b{font-family:var(--f-body);font-size:13px;line-height:1.15;text-align:center;font-weight:700}
+.ghit.sel{background:#FFF4D6;box-shadow:0 0 0 3px #FCB40C,0 4px 0 0 #1F2A5A}.ghit:active{transform:translateY(3px);box-shadow:var(--f2)}
+.ghpr{font-style:normal;display:flex;align-items:center;gap:3px;font-family:var(--f-display);font-size:18px;color:#7A4E00}
+.ghtag{font-style:normal;font-family:var(--f-display);font-size:15px;padding:0 5px;background:#E3F7EA;color:#1E8A4A}.ghtag.on{background:#2AB563;color:#fff}
+.ghisle{position:relative;width:180px;height:130px;flex:none;display:grid;place-items:center}.ghisle>img{width:180px!important;height:auto!important}.ghdec{position:absolute;transform:translate(-50%,-50%)}.ghdec.try{animation:bIdle 1s steps(2) infinite;opacity:.85}
+.ghtk{display:flex;gap:12px;align-items:flex-start;padding:14px;background:#FFF4D6;box-shadow:var(--f2)}.ghtk p{margin:4px 0 8px;font-size:14px}
+.ghnote{font-size:13px;margin:14px 2px}
+</style>`);
+/* 49b — Đảo nhà của em + Nuôi thú cưng (thầy chốt 20/10)
+   - Vào đảo: chạm ảnh Jenny ở thẻ chào (trang chính). Không có nút riêng.
+   - Nuôi 1 loài mỗi lần, tối đa 2 con. Thời gian tính theo ngày thật (cả cuối tuần).
+   - Chỉ số 0–100: No, Vui, Sạch, Sức khoẻ. Đói/bẩn lâu → sức khoẻ giảm → ốm (cần Thuốc).
+   - Bỏ bê: đói rỗng bụng hoặc ốm nặng liên tục 3 ngày → thú cưng BỎ ĐI (có thư tạm biệt).
+   - Vòng đời ≈ 6 tuần: Bé (0–7 ngày) → Lớn dần (7–21) → Trưởng thành (21–35) → Già (35+), mất khi hết tuổi (42–45 ngày).
+   - Thú mất hoặc bỏ đi → chờ 3 ngày mới mua thú mới. Có Sổ kỷ niệm.
+   - 2 con cùng loài trưởng thành, no + vui, có Ổ rơm → có thể đẻ trứng. Trứng phải đặt vào Máy ấp (không thì hỏng sau 2 ngày);
+     ấp 3 ngày thì nở nếu đảo còn chỗ. Trứng có thể bán.
+   - Đồ dùng hỏng dần (đồ mặc, ổ, máy ấp, máng ăn theo ngày; đồ chơi theo lần chơi). Bán thanh lý = 50% giá × độ mới.
+   - Học cũng giúp thú: mỗi lần qua màn, thú cưng vui thêm.
+   Lưu: st.pets={list:[…],eggs:[…],wait,mem:[…],ev:[…],layT}, st.shop.bag={mã:số}, st.shop.gear=[{u,id,dur}] */
+Object.assign(PXS,{
+ bowlS:["..tTtT..",".kkkkkk.","kbbbbbbk",".kbbbbk.","..kkkk.."],
+ seedS:["..kk..",".ktTk.","ktTtTk","kTtTtk","ktTtTk",".kkkk."],
+ medS:["..kk..","..EE..",".kkkk.","kwrrwk","kwrwwk","krrrrk","kwwwwk",".kkkk."],
+ soapS:["..w.w..",".kkkkk.","kbbbbbk","kbwbbbk","kbbbbbk",".kkkkk."],
+ teddyS:["kk...kk","knnnnnk",".nknkn.",".nnNnn.","nnnnnnn",".nnnnn.",".n...n."],
+ nestS:["............","..n.N..n.N..",".NnNnNnNnNn.","nNnNnNnNnNnN",".NNNNNNNNNN."],
+ incS:[".kkkkkkkk.","kxxxxxxxxk","kxxwwxxxxk","kxxxxxxxxk","kkkkkkkkkk","krrkaakrrk","kkkkkkkkkk"],
+ feederS:["..kkkk..","..kTTk..","..kTTk..",".kkkkkk.","kbbbbbbk",".kkkkkk."],
+ neckS:["r...r","rrRrr","r...r"],
+ beanieS:["...rr...",".rrrrrr.","rrrrrrrr","wwwwwwww"],
+ scarfS:["bbbbbbbb","bwbwbwbb","....bb..","....bw.."],
+ letterS:["kkkkkkkkkk","kwwwwwwwwk","kkwwwwwwkk","kwkwwwwkwk","kwwkkkkwwk","kkkkkkkkkk"],
+ cakeS:["..r...","..k...",".tttt.","cwcwcw","tttttt","TTTTTT"],
+ fishDS:["...kk...","kk.kTk..","kTkTTTkk","kTTTTkTk","kTkTTTkk","kk.kTk..","...kk..."],
+ heartS:[".rr.rr.","rrrrrrr","rrrrrrr",".rrrrr.","..rrr..","...r..."],
+ bubS:[".bb.","b..b","b..b",".bb."],
+ zzS:["kkk","..k",".k.","kkk"],
+ eggCS:["..kk..",".kttk.","kttttk","ktwttk","kttTtk","kTtttk",".kkkk."],
+});
+/* loài thú (bắt đầu 2 loài): [tên, giá, tuổi thọ ít nhất, nhiều nhất (ngày), mô tả] */
+const PET_SP={chick:['Gà con',150,40,50,'Nhanh lớn, ăn nhiều, hay đẻ trứng. Hợp với bạn mới nuôi lần đầu.'],turtle:['Rùa biển',250,100,200,'Lớn chậm nhưng sống rất lâu. Ăn ít hơn, cần tắm sạch thường xuyên.']};
+/* đồ nuôi: [mã, tên, giá, loại, hiệu quả, hình, số lượng mỗi lần mua] */
+const CARE=[
+ ['seed','Hạt dinh dưỡng',5,'food',{no:30},'seedS',1],['fishD','Cá khô',8,'food',{no:45,vui:5},'fishDS',1],['cake','Bánh thưởng',12,'food',{no:20,vui:20},'cakeS',1],
+ ['med','Thuốc',40,'med',{hp:60},'medS',1],['soap','Xà phòng (5 lần)',15,'soap',{sach:60},'soapS',5],
+ ['ball','Bóng',30,'toy',{vui:25},'ball',0],['teddy','Gấu bông',45,'toy',{vui:35},'teddyS',0],
+ ['neck','Nơ cổ',40,'wear',{},'neckS',0],['beanie','Mũ len',60,'wear',{},'beanieS',0],['scarf','Khăn quàng',50,'wear',{},'scarfS',0],
+ ['nest','Ổ rơm',80,'home',{},'nestS',0],['feeder','Máng ăn tự động',150,'home',{},'feederS',0],['inc','Máy ấp trứng',200,'home',{},'incS',0]];
+const CARE_GRP=[['food','Thức ăn'],['med','Thuốc & tắm'],['toy','Đồ chơi'],['wear','Đồ mặc'],['home','Nhà & máy']];
+const CARE_NOTE={seed:'Ăn no +30',fishD:'Ăn no +45, vui +5',cake:'No +20, vui +20',med:'Chữa ốm, sức khoẻ +60',soap:'Mỗi lần tắm: sạch +60',ball:'Chơi: vui +25 (mòn dần)',teddy:'Chơi: vui +35 (mòn dần)',
+ neck:'Cho thú mặc. Mặc lâu sẽ cũ',beanie:'Cho thú mặc. Mặc lâu sẽ cũ',scarf:'Cho thú mặc. Mặc lâu sẽ cũ',nest:'Cần có để thú đẻ trứng',feeder:'Tự cho ăn từ túi khi em vắng nhà',inc:'Ấp trứng 3 ngày cho nở'};
+const careOf=id=>CARE.find(c=>c[0]===id);
+{const C=GH.find(c=>c.k==='care');if(C)C.it=CARE.map(c=>[c[0],c[1],c[2]])}
+const P_H=36e5,P_D=864e5,P_LIFE=42,P_WAIT=3,P_LEAVE=72;
+const pNow=()=>Date.now()+(window.PET_SHIFT||0);
+const PET_NAMES=['Bông','Mít','Na','Kẹo','Bơ','Su','Tí','Gạo','Bin','Mochi','Đậu','Cốm'];
+function petsOf(st){st.pets=st.pets||{list:[],eggs:[],wait:0,mem:[],ev:[],layT:0};const P=st.pets;P.list=P.list||[];P.eggs=P.eggs||[];P.mem=P.mem||[];P.ev=P.ev||[];return P}
+const pAge=p=>(pNow()-p.born)/P_D;
+function pStage(p){const f=pAge(p)/p.life;return f<.15?0:f<.5?1:f<.85?2:3}
+const P_STN=['Bé','Lớn dần','Trưởng thành','Già'],P_SC=[.6,.8,1,1];
+const clamp=v=>Math.max(0,Math.min(100,v));
+const gearHas=(st,id)=>ghSt(st).gear.some(g=>g.id===id&&g.dur>0);
+const pUid=()=>Math.random().toString(36).slice(2,9);
+function pEv(P,msg,kind){P.ev.push({t:pNow(),msg,kind:kind||'info'});if(P.ev.length>12)P.ev=P.ev.slice(-12)}
+/* mô phỏng theo từng giờ kể từ lần xem trước */
+function petSim(st){const P=petsOf(st),s=ghSt(st),now=pNow();
+ /* đồ dùng cũ dần theo ngày */
+ const gT=P.gT||now,gd=(now-gT)/P_D;if(gd>0){s.gear.forEach(g=>{const c=careOf(g.id);if(!c)return;const worn=P.list.some(p=>p.wear===g.u);const r=c[3]==='wear'?(worn?3:.5):c[3]==='home'?1.5:.5;g.dur=Math.max(0,g.dur-r*gd)})}P.gT=now;
+ for(const p of P.list.slice()){let t=p.last||now;let steps=Math.floor((now-t)/P_H);if(steps>24*30)steps=24*30;
+  for(let i=0;i<steps;i++){t+=P_H;
+   if(p.no<40&&gearHas(st,'feeder')){const f=['seed','fishD','cake'].find(k=>(s.bag[k]||0)>0);if(f){s.bag[f]--;const e=careOf(f)[4];p.no=clamp(p.no+(e.no||0));p.vui=clamp(p.vui+(e.vui||0));p.fed++}}
+   p.no=clamp(p.no-2.8);p.vui=clamp(p.vui-(p.sick?2:1.2));p.sach=clamp(p.sach-1.4);
+   if(p.no<20||p.sach<15)p.hp=clamp(p.hp-2);else if(!p.sick)p.hp=clamp(p.hp+1);
+   if(p.sick)p.hp=clamp(p.hp-.5);if(p.hp<35&&!p.sick){p.sick=true;pEv(P,`${p.name} bị ốm rồi! Em mua Thuốc cho bạn ấy nhé.`,'warn')}
+   if(p.no<=0||(p.sick&&p.hp<15))p.ng++;else p.ng=Math.max(0,p.ng-2);
+   if(p.ng>=P_LEAVE)break;
+   if((t-p.born)/P_D>=p.life)break}
+  p.last=steps?p.last+steps*P_H:(p.last||now);
+  if(p.ng>=P_LEAVE)petGone(st,p,'left');else if(pAge(p)>=p.life)petGone(st,p,'old')}
+ /* đẻ trứng: mỗi ngày kiểm tra một lần */
+ if(!P.layT)P.layT=now;while(now-P.layT>=P_D){P.layT+=P_D;const L=P.list;
+  if(L.length===2&&L[0].sp===L[1].sp&&L.every(p=>pStage(p)===2&&p.no>30&&p.vui>40&&!p.sick)&&gearHas(st,'nest')&&P.eggs.length<2&&Math.random()<.6){P.eggs.push({u:pUid(),sp:L[0].sp,laid:P.layT,inc:0});pEv(P,`Có trứng mới trong Ổ rơm! Đặt vào Máy ấp để trứng nở nhé.`,'good')}}
+ /* trứng: không ấp thì hỏng sau 2 ngày; ấp đủ 3 ngày thì nở khi đảo còn chỗ */
+ P.eggs=P.eggs.filter(e=>{if(!e.inc){if(now-e.laid>2*P_D){pEv(P,'Một quả trứng bị hỏng vì không được ấp.','warn');return false}return true}
+  if(!gearHas(st,'inc')){e.inc=0;e.laid=now;return true}
+  if(now-e.inc>=3*P_D&&P.list.length<2){const b=petNew(e.sp,now);b.name='';P.list.push(b);pEv(P,`Trứng đã nở! Một bạn ${PET_SP[e.sp][0]} bé xíu ra đời. Em đặt tên cho bạn ấy nhé.`,'good');return false}return true})}
+function petNew(sp,t){return{u:pUid(),sp,name:PET_NAMES[Math.floor(Math.random()*PET_NAMES.length)],born:t,last:t,life:(PET_SP[sp]?PET_SP[sp][2]+Math.floor(Math.random()*(PET_SP[sp][3]-PET_SP[sp][2]+1)):P_LIFE),no:80,vui:80,sach:90,hp:100,sick:false,ng:0,wear:'',fed:0,pats:0,plays:0,patT:0}}
+function petGone(st,p,how){const P=petsOf(st);P.list=P.list.filter(x=>x!==p);P.mem.unshift({sp:p.sp,name:p.name||PET_SP[p.sp][0],born:p.born,end:pNow(),how,days:Math.max(1,Math.round(pAge(p))),fed:p.fed,pats:p.pats,plays:p.plays});P.wait=pNow()+P_WAIT*P_D;
+ if(p.wear){/* đồ đang mặc trả về túi */}
+ P.bye={...P.mem[0]}}
+/* ===== mua ở gian hàng ===== */
+function petBlock(st,sp){const P=petsOf(st);if(P.wait>pNow()){const d=Math.ceil((P.wait-pNow())/P_D);return`Còn ${d} ngày nữa em mới nuôi bạn mới được.`}
+ if(P.list.length>=2)return'Đảo nhà đã đủ 2 bạn rồi.';if(P.list.length&&P.list[0].sp!==sp)return`Em đang nuôi ${PET_SP[P.list[0].sp][0]}. Mỗi lần chỉ nuôi 1 loài.`;return''}
+function petNote(st,sp){const d=PET_SP[sp];return petBlock(st,sp)||`Sống khoảng ${d[2]}–${d[3]} ngày. ${d[4]}${petsOf(st).list.length?' Nuôi thêm 1 bạn cùng loài: có thể có trứng!':''}`}
+function petCard(c,x,st){const[id,n,pr]=x,T=scr.ghTry||{},sel=T.id===id,s=ghSt(st),P=petsOf(st);
+ if(c.k==='pet'){const have=P.list.filter(p=>p.sp===id).length,bl=petBlock(st,id);return`<button type="button" class="ghit ${sel?'sel':''} ${bl&&!have?'dim':''}" onclick="ghTry('pet','${id}')" aria-label="${esc(n)}, ${pr} xu"><span class="ghpic">${spr(id,44)}</span><b>${esc(n)}</b>${have?`<i class="ghtag on">Đang nuôi ${have}</i>`:`<i class="ghpr">${spr('coin',14)} ${pr}</i>`}<small class="ghlife">${PET_SP[id][2]}–${PET_SP[id][3]} ngày</small></button>`}
+ const cc=careOf(id),q=cc[6]?(s.bag[id]||0):s.gear.filter(g=>g.id===id).length;
+ return`<button type="button" class="ghit ${sel?'sel':''}" onclick="ghTry('care','${id}')" aria-label="${esc(n)}, ${pr} xu"><span class="ghpic">${spr(cc[5],cc[3]==='food'||cc[3]==='med'||cc[3]==='soap'?30:cc[3]==='wear'?20:34)}</span><b>${esc(n)}</b><i class="ghpr">${spr('coin',14)} ${pr}</i>${q?`<i class="ghq">có ${q}</i>`:''}</button>`}
+function careGrid(st){return CARE_GRP.map(([g,n])=>`<h3 class="ghgh">${n}</h3><div class="ghgrid">${CARE.filter(c=>c[3]===g).map(c=>petCard({k:'care'},[c[0],c[1],c[2]],st)).join('')}</div>`).join('')}
+const careNote=id=>CARE_NOTE[id]||'';
+function careStage(st,T,f){const P=petsOf(st),p=P.list[0];return`<span class="ghcare">${p?petSpr(p,70):spr('bowlS',40)}${f?`<span class="ghcarei">${spr(careOf(T.id)[5],34)}</span>`:''}</span>`}
+function petAct(T,f,st){const pr=f.x[2],short=Math.max(0,pr-st.coins);
+ if(T.k==='pet'){const bl=petBlock(st,T.id);if(bl)return`<button type="button" class="gobtn ghgo off" onclick="toast(this.dataset.m)" data-m="${esc(bl)}">Chưa mua được</button>`}
+ return short?`<button type="button" class="gobtn ghgo off" onclick="ghBuy()">Cần thêm ${spr('coin',16)} ${short}</button>`:`<button type="button" class="gobtn ghgo" onclick="ghBuy()">Mua ${esc(f.x[1])} · ${spr('coin',16)} ${pr}</button>`}
+function petBuy(sp){const st=S.st[sid],P=petsOf(st),pr=PET_SP[sp][1],bl=petBlock(st,sp);if(bl){toast(bl);return}if(st.coins<pr){toast(`Em cần thêm ${pr-st.coins} xu nhé!`);return}
+ st.coins-=pr;petSim(st);const p=petNew(sp,pNow());p.name='';P.list.push(p);save();try{sfx('win')}catch(e){}scr.ghTry=null;go({k:'home',tab:'isle',name:p.u})}
+function careBuy(id){const st=S.st[sid],s=ghSt(st),c=careOf(id);if(st.coins<c[2]){toast(`Em cần thêm ${c[2]-st.coins} xu nhé!`);return}st.coins-=c[2];
+ if(c[6])s.bag[id]=(s.bag[id]||0)+c[6];else s.gear.push({u:pUid(),id,dur:100,t:pNow()});save();try{sfx('coin')}catch(e){try{sfx('win')}catch(e){}}toast(`Đã mua ${c[1]}! Xem ở Túi đồ trên Đảo nhà.`);render()}
+/* ===== hình thú cưng ===== */
+const P_WEAR={neck:['neckS',.35,.5,.3],beanie:['beanieS',.28,-.12,.44],scarf:['scarfS',.25,.52,.5]};
+function petSpr(p,H,cls){const st=S.st[sid],sc=P_SC[pStage(p)],h=Math.round(H*sc),d=pxURI(p.sp),w=Math.round(h*d.w/d.h);let wear='';
+ const g=p.wear&&ghSt(st).gear.find(x=>x.u===p.wear);if(g&&P_WEAR[g.id]){const[nm,x,y,ww]=P_WEAR[g.id],dd=pxURI(nm),W=w*ww;wear=`<img class="px pwear" src="${dd.u}" alt="" style="left:${x*w}px;top:${y*h}px;width:${W}px;height:${W*dd.h/dd.w}px">`}
+ return`<span class="pspr st${pStage(p)} ${p.sick?'sick':''} ${cls||''}" style="width:${w}px;height:${h}px">${spr(p.sp,h)}${wear}</span>`}
+/* ===== Đảo nhà ===== */
+const P_POS=[[52,60],[72,64]];
+function petMood(p){if(p.sick)return['Mình mệt quá… mình cần thuốc.','sick'];if(p.no<25)return['Mình đói bụng lắm!','hungry'];if(p.sach<25)return['Mình bẩn quá, tắm cho mình nhé!','dirty'];if(p.vui<30)return['Chơi với mình đi!','sad'];if(pStage(p)===3)return['Mình già rồi, ở bên mình nhé.','old'];return['Mình vui lắm!','ok']}
+function pBar(n,v,c){return`<div class="pbar"><span>${n}</span><i><b style="width:${Math.round(v)}%;background:${v<25?'#F04A1B':c}"></b></i></div>`}
+function viewIsle(st){petSim(st);const P=petsOf(st),s=ghSt(st),now=pNow();
+ const dec=s.dec.map(id=>{const p=GH_SLOT[id]||[50,50];return`<span class="idec" style="left:${p[0]}%;top:${p[1]*.9}%">${spr(id,id==='boat'?34:42)}</span>`}).join('');
+ const home=['nest','feeder','inc'].filter(id=>gearHas(st,id)).map((id,i)=>`<span class="ihome h${i}">${spr(careOf(id)[5],id==='inc'?30:26)}${id==='inc'?P.eggs.filter(e=>e.inc).map(()=>`<i class="iegg">${spr('eggCS',14)}</i>`).join(''):''}${id==='nest'?P.eggs.filter(e=>!e.inc).map(()=>`<i class="iegg">${spr('eggCS',14)}</i>`).join(''):''}</span>`).join('');
+ const pets=P.list.map((p,i)=>{const[x,y]=P_POS[i];return`<button type="button" class="ipet" style="left:${x}%;top:${y}%" onclick="petPat(${i})" aria-label="Cưng nựng ${esc(p.name||'thú cưng')}">${petSpr(p,58)}${p.sick?`<i class="ifx">${spr('fxSweat',14)}</i>`:p.no<25?`<i class="ifx">${spr('bowlS',14)}</i>`:''}</button>`}).join('');
+ const scene=`<div class="iscene" id="iscene"><div class="isky"></div>${spr('island',230,'iisl')}${dec}${home}<span class="ijen">${jenny(54)}</span>${pets}</div>`;
+ const ev=P.ev.filter(e=>!e.seen).map(e=>{e.seen=1;return`<div class="iev ${e.kind}">${esc(e.msg)}</div>`}).join('');
+ const bye=P.bye?petByeHTML(P.bye):'';
+ const cards=P.list.map((p,i)=>{const[m,mk]=petMood(p),a=Math.floor(pAge(p));
+  return`<section class="card pcard ${mk}"><div class="pchd">${petSpr(p,48)}<div class="grow"><h3>${p.name?esc(p.name):'<i>Chưa đặt tên</i>'} <small>${PET_SP[p.sp][0]} · ${P_STN[pStage(p)]}</small></h3><div class="muted">Ngày thứ ${a+1}/~${p.life} · đã cho ăn ${p.fed} lần · cưng nựng ${p.pats} lần</div></div><button type="button" class="btn sm ghost" onclick="petName(${i})">${p.name?'Đổi tên':'Đặt tên'}</button></div>
+   <div class="psay">${spr('jenny',22)}<span>${esc(p.name||'Bạn ấy')}: “${esc(m)}”</span></div>
+   ${pBar('No',p.no,'#FCB40C')}${pBar('Vui',p.vui,'#F26249')}${pBar('Sạch',p.sach,'#12B5E8')}${pBar('Sức khoẻ',p.hp,'#2AB563')}
+   ${p.ng>24?`<div class="iev warn">${esc(p.name||'Bạn ấy')} bị bỏ đói đã ${Math.floor(p.ng/24)} ngày. Quá 3 ngày bạn ấy sẽ bỏ đi!</div>`:''}
+   <div class="pact"><button type="button" class="pbtn" onclick="petPick(${i},'food')">${spr('bowlS',18)}Cho ăn</button><button type="button" class="pbtn" onclick="petPick(${i},'soap')">${spr('soapS',18)}Tắm</button><button type="button" class="pbtn" onclick="petPick(${i},'toy')">${spr('ball',18)}Chơi</button><button type="button" class="pbtn ${p.sick?'hot':''}" onclick="petPick(${i},'med')">${spr('medS',18)}Chữa</button><button type="button" class="pbtn" onclick="petPick(${i},'wear')">${spr('beanieS',12)}Mặc đồ</button><button type="button" class="pbtn" onclick="petPat(${i})">${spr('heartS',16)}Cưng nựng</button></div>
+   ${scr.pk&&scr.pk.i===i?petPicker(st,p,i,scr.pk.g):''}</section>`}).join('');
+ const none=!P.list.length?`<section class="card pcard"><div class="pchd">${spr('eggCS',40)}<div class="grow"><h3>Em chưa có thú cưng</h3><div class="muted">${P.wait>now?`Còn ${Math.ceil((P.wait-now)/P_D)} ngày nữa em mới nuôi bạn mới được.`:'Mua một bạn ở Gian hàng. Mỗi lần nuôi 1 loài, tối đa 2 bạn.'}</div></div></div>${P.wait>now?'':`<button type="button" class="gobtn" onclick="scr.ghCat='pet';go({k:'home',tab:'shop'})">Chọn thú cưng ▶</button>`}</section>`:'';
+ const eggs=P.eggs.length?`<section class="card pcard"><h3 class="ghgh">Trứng (${P.eggs.length})</h3>${P.eggs.map(e=>`<div class="egrow">${spr('eggCS',26)}<span class="grow">${PET_SP[e.sp][0]} · ${e.inc?`đang ấp, còn ${Math.max(0,Math.ceil((3*P_D-(now-e.inc))/P_D))} ngày${P.list.length>=2?' (nở khi đảo còn chỗ)':''}`:`chưa ấp — hỏng sau ${Math.max(0,Math.ceil((2*P_D-(now-e.laid))/P_D))} ngày`}</span>${!e.inc?`<button type="button" class="btn sm" onclick="eggInc('${e.u}')">Đặt vào máy ấp</button>`:''}<button type="button" class="btn sm ghost" onclick="eggSell('${e.u}')">Bán ${Math.round(PET_SP[e.sp][1]*.4)} xu</button></div>`).join('')}</section>`:'';
+ const bag=bagHTML(st);
+ const mem=P.mem.length?`<section class="card pcard"><h3 class="ghgh">Sổ kỷ niệm</h3>${P.mem.map(m=>`<div class="memrow">${spr(m.sp,30)}<div class="grow"><b>${esc(m.name)}</b> · ${PET_SP[m.sp][0]}<div class="muted">${m.how==='old'?`Sống ${m.days} ngày, ra đi khi về già.`:`Bỏ đi sau ${m.days} ngày vì bị bỏ đói.`} Cho ăn ${m.fed} lần · cưng nựng ${m.pats} lần</div></div></div>`).join('')}</section>`:'';
+ const nm=scr.name&&P.list.find(p=>p.u===scr.name);if(nm)setTimeout(()=>petName(P.list.indexOf(nm)),300);scr.name=null;
+ save();
+ return`<div class="page ipage"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← Nhà em</button><span class="grow"></span><button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})">🪙 <b>${st.coins}</b> <span>Gian hàng ▸</span></button></div>
+  <section class="card itop"><h2>${spr('island',24)} Đảo nhà của ${esc(st.name.split(' ').pop())}</h2>${scene}${ev}</section>${bye}${none}${cards}${eggs}${bag}${mem}</div>`}
+function petByeHTML(m){return`<div class="gdov pbye" id="pbye"><div class="gdbox"><div class="gdhd"><b>${spr(m.how==='old'?'star':'letterS',20)} ${m.how==='old'?'Tạm biệt bạn nhỏ':'Lá thư tạm biệt'}</b></div>
+ <div class="gatebd">${spr(m.sp,56)}<p>${m.how==='old'?`<b>${esc(m.name)}</b> đã sống ${m.days} ngày vui vẻ bên em và ra đi thanh thản khi về già. Cảm ơn em đã chăm sóc bạn ấy thật chu đáo!`:`<b>${esc(m.name)}</b> đói quá lâu nên đã bỏ đi tìm nơi khác. Nuôi thú cưng cần chăm mỗi ngày em nhé.`}<br><small>Sau ${P_WAIT} ngày em có thể nuôi bạn mới. ${esc(m.name)} được ghi vào Sổ kỷ niệm.</small></p></div>
+ <div class="gdctl"><button type="button" class="gdgo" onclick="petsOf(S.st[sid]).bye=null;save();render()">Em hiểu rồi</button></div></div></div>`}
+/* túi đồ + bán thanh lý */
+function sellPrice(st,g){const c=careOf(g.id);return Math.max(1,Math.floor(c[2]*.5*g.dur/100))}
+function bagHTML(st){const s=ghSt(st),P=petsOf(st);const cons=CARE.filter(c=>c[6]&&(s.bag[c[0]]||0)>0).map(c=>`<div class="bagit">${spr(c[5],24)}<span class="grow"><b>${c[1].replace(/ \(.*\)/,'')}</b> × ${s.bag[c[0]]}</span><button type="button" class="btn sm ghost" onclick="bagSell('${c[0]}')">Bán ${Math.max(1,Math.floor(c[2]/c[6]*.5))} xu</button></div>`).join('');
+ const gear=s.gear.map(g=>{const c=careOf(g.id),on=P.list.find(p=>p.wear===g.u);return`<div class="bagit ${g.dur<=0?'broken':''}">${spr(c[5],22)}<span class="grow"><b>${c[1]}</b>${on?` · ${esc(on.name)} đang mặc`:''}<span class="dur"><i style="width:${Math.round(g.dur)}%"></i></span><small>${g.dur<=0?'Đã hỏng':`Độ mới ${Math.round(g.dur)}%`}</small></span><button type="button" class="btn sm ghost" onclick="gearSell('${g.u}')">${g.dur<=0?'Bỏ đi':`Bán ${sellPrice(st,g)} xu`}</button></div>`}).join('');
+ return`<section class="card pcard"><h3 class="ghgh">${spr('bag',18)} Túi đồ</h3>${cons||gear?cons+gear:'<p class="muted">Túi đồ trống. Mua thức ăn, đồ chơi… ở Gian hàng › Đồ nuôi.</p>'}<p class="muted" style="font-size:12px;margin:8px 0 0">Bán thanh lý: được nửa giá, đồ càng cũ càng rẻ.</p></section>`}
+function bagSell(id){const st=S.st[sid],s=ghSt(st),c=careOf(id);if(!(s.bag[id]>0))return;s.bag[id]--;st.coins+=Math.max(1,Math.floor(c[2]/c[6]*.5));save();render()}
+function gearSell(u){const st=S.st[sid],s=ghSt(st),g=s.gear.find(x=>x.u===u);if(!g)return;st.coins+=g.dur>0?sellPrice(st,g):0;s.gear=s.gear.filter(x=>x!==g);petsOf(st).list.forEach(p=>{if(p.wear===u)p.wear=''});save();toast(g.dur>0?`Đã bán ${careOf(g.id)[1]}.`:'Đã bỏ đồ hỏng.');render()}
+function eggInc(u){const st=S.st[sid],P=petsOf(st);if(!gearHas(st,'inc')){toast('Em cần mua Máy ấp trứng ở Gian hàng › Đồ nuôi.');return}if(P.eggs.some(e=>e.inc)){toast('Máy ấp chỉ ấp được 1 quả mỗi lần.');return}const e=P.eggs.find(x=>x.u===u);if(e){e.inc=pNow();save();toast('Đã đặt trứng vào máy ấp. 3 ngày nữa trứng nở!');render()}}
+function eggSell(u){const st=S.st[sid],P=petsOf(st),e=P.eggs.find(x=>x.u===u);if(!e)return;st.coins+=Math.round(PET_SP[e.sp][1]*.4);P.eggs=P.eggs.filter(x=>x!==e);save();render()}
+/* chăm sóc */
+function petPick(i,g){const st=S.st[sid],s=ghSt(st);scr.pk=scr.pk&&scr.pk.i===i&&scr.pk.g===g?null:{i,g};render()}
+function petPicker(st,p,i,g){const s=ghSt(st);let it=[];
+ if(g==='food'||g==='med'||g==='soap')it=CARE.filter(c=>c[3]===g&&(s.bag[c[0]]||0)>0).map(c=>`<button type="button" class="pkit" onclick="petUse(${i},'${c[0]}')">${spr(c[5],24)}<b>${c[1].replace(/ \(.*\)/,'')}</b><small>còn ${s.bag[c[0]]}</small></button>`);
+ else it=s.gear.filter(x=>careOf(x.id)[3]===g&&x.dur>0).map(x=>{const c=careOf(x.id);return`<button type="button" class="pkit ${p.wear===x.u?'on':''}" onclick="petUse(${i},'${x.u}')">${spr(c[5],g==='wear'?16:24)}<b>${c[1]}</b><small>${p.wear===x.u?'đang mặc · bấm để cởi':Math.round(x.dur)+'%'}</small></button>`});
+ return`<div class="pkbox">${it.length?it.join(''):`<span class="muted">Túi đồ chưa có ${({food:'thức ăn',med:'thuốc',soap:'xà phòng',toy:'đồ chơi',wear:'đồ mặc'})[g]}.</span><button type="button" class="btn sm" onclick="scr.ghCat='care';go({k:'home',tab:'shop'})">Mua ở Gian hàng</button>`}</div>`}
+function petFx(i,sp){const sc=document.getElementById('iscene');if(!sc)return;const b=sc.querySelectorAll('.ipet')[i];if(!b)return;for(let k=0;k<3;k++){const e=document.createElement('i');e.className='pfx';e.style.left=(20+k*25)+'%';e.style.animationDelay=(k*.15)+'s';e.innerHTML=spr(sp,14);b.appendChild(e);setTimeout(()=>e.remove(),1400)}b.classList.remove('hop');void b.offsetWidth;b.classList.add('hop')}
+function petUse(i,k){const st=S.st[sid],s=ghSt(st),P=petsOf(st),p=P.list[i];if(!p)return;
+ const c=careOf(k);if(c){/* đồ tiêu hao */if(!(s.bag[k]>0))return;const e=c[4];
+   if(c[3]==='food'&&p.no>=95){toast(`${p.name||'Bạn ấy'} no rồi!`);return}
+   if(c[3]==='med'&&!p.sick&&p.hp>=90){toast(`${p.name||'Bạn ấy'} khoẻ mà, chưa cần thuốc.`);return}
+   s.bag[k]--;p.no=clamp(p.no+(e.no||0));p.vui=clamp(p.vui+(e.vui||0));p.sach=clamp(p.sach+(e.sach||0));p.hp=clamp(p.hp+(e.hp||0));
+   if(c[3]==='food')p.fed++;if(c[3]==='med'&&p.hp>=35)p.sick=false;p.ng=0;
+   scr.pk=null;save();render();setTimeout(()=>petFx(i,c[3]==='soap'?'bubS':c[3]==='med'?'heartS':'heartS'),30);try{sfx('ok')}catch(e){}return}
+ const g=s.gear.find(x=>x.u===k);if(!g)return;const gc=careOf(g.id);
+ if(gc[3]==='toy'){if(p.no<10){toast(`${p.name||'Bạn ấy'} đói quá, không chơi nổi. Cho ăn trước nhé!`);return}p.vui=clamp(p.vui+gc[4].vui);p.no=clamp(p.no-5);p.plays++;g.dur=Math.max(0,g.dur-10);scr.pk=null;save();render();setTimeout(()=>petFx(i,'heartS'),30);try{sfx('win')}catch(e){}return}
+ if(gc[3]==='wear'){p.wear=p.wear===g.u?'':g.u;P.list.forEach(o=>{if(o!==p&&o.wear===g.u)o.wear=''});scr.pk=null;save();render();try{sfx('card')}catch(e){}}}
+function petPat(i){const st=S.st[sid],P=petsOf(st),p=P.list[i];if(!p)return;const now=pNow();if(now-p.patT>60e3){p.vui=clamp(p.vui+8);p.pats++;p.patT=now;save()}petFx(i,'heartS');try{sfx('tap')}catch(e){}}
+function petName(i){const st=S.st[sid],p=petsOf(st).list[i];if(!p)return;const el=document.createElement('div');el.className='gdov';el.innerHTML=`<div class="gdbox"><div class="gdhd"><b>${spr(p.sp,20)} Đặt tên cho bạn ${PET_SP[p.sp][0]}</b><button type="button" class="gdx" onclick="this.closest('.gdov').remove()" aria-label="Đóng">✕</button></div><div class="gatebd">${petSpr(p,56)}<input id="pnIn" maxlength="12" value="${esc(p.name||PET_NAMES[Math.floor(Math.random()*PET_NAMES.length)])}" aria-label="Tên thú cưng"></div><div class="gdctl"><button type="button" class="gdgo" id="pnOk">Xong ▶</button></div></div>`;document.body.appendChild(el);
+ const inp=el.querySelector('#pnIn');inp.focus();inp.select();el.querySelector('#pnOk').onclick=()=>{const v=inp.value.replace(/[<>"'&]/g,'').trim().slice(0,12);if(!v){inp.focus();return}p.name=v;save();el.remove();render()}}
+/* học giỏi → thú cưng vui */
+{const _e=end1;end1=function(){const r=_e.apply(this,arguments);try{if(scr&&scr.pass&&!scr.fix){const st=S.st[sid];petsOf(st).list.forEach(p=>{p.vui=clamp(p.vui+6)});save()}}catch(e){}return r}}
+/* trang chính: chạm ảnh Jenny ở thẻ chào → Đảo nhà; có dấu ! khi thú cần chăm */
+{const _h=viewHome1;viewHome1=function(){let r=_h.apply(this,arguments);try{const st=S.st[sid];petSim(st);const P=petsOf(st),need=P.list.some(p=>p.no<25||p.sick||p.sach<25||!p.name)||P.eggs.some(e=>!e.inc)||P.bye,fr=ghSt(st).frame;
+  const i=r.indexOf('<section class="hero');if(i>=0){const j=r.indexOf('<span class="jav',i);if(j>=0){let d=0,k=j;const re=/<span\b|<\/span>/g;re.lastIndex=j;let m;while((m=re.exec(r))){d+=m[0]==='</span>'?-1:1;if(!d){k=re.lastIndex;break}}
+   r=r.slice(0,j)+`<button type="button" class="herojav ${fr?'fr-'+fr:''}" onclick="go({k:'home',tab:'isle'})" aria-label="Vào Đảo nhà của em${need?' — thú cưng cần em chăm':''}">${r.slice(j,k)}${P.list[0]?`<span class="herpet">${petSpr(P.list[0],26)}</span>`:''}${need?'<i class="herbang">!</i>':''}<span class="herlbl">Đảo nhà</span></button>`+r.slice(k)}}}catch(e){}return r}}
+{const _v=viewHome1t;viewHome1t=function(){const r=_v.apply(this,arguments);if(scr.tab!=='isle')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewIsle(st)+(i>=0?r.slice(i):'')}}
+/* Jenny đội mũ/kính đã mua ở mọi nơi */
+{const _j=jenny;jenny=function(size,mood){const r=_j.apply(this,arguments);try{if(role!=='hs')return r;const st=S.st[sid],a=st&&st.shop&&st.shop.acc;if(!a||!GH_ACC[a])return r;const[nm,x,y]=GH_ACC[a],d=pxURI(nm),u=Math.round(size*.86)/19;
+  return r.replace('<span class="jbody">',`<span class="jbody"><img class="px jsacc" src="${d.u}" alt="" style="left:${x*u}px;top:${y*u}px;width:${d.w*u}px;height:${d.h*u}px">`)}catch(e){return r}}}
+document.head.insertAdjacentHTML('beforeend',`<style>
+.jsacc{position:absolute;z-index:2;image-rendering:pixelated;pointer-events:none}.jbody{position:relative}
+.herojav{position:relative;border:0;background:none;padding:0;cursor:pointer;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px}.herojav .herlbl{font-family:var(--f-display);font-size:15px;line-height:1;color:#fff;background:#1F2A5A;padding:1px 5px}
+.herojav.fr-wood .jav{box-shadow:0 0 0 3px #9A6234,0 0 0 6px #6B3F1D!important}.herojav.fr-silver .jav{box-shadow:0 0 0 3px #E3E7F0,0 0 0 6px #9AA4C0!important}.herojav.fr-gold .jav{box-shadow:0 0 0 3px #FCD655,0 0 0 6px #C97A00!important}.herojav.fr-rainbow .jav{box-shadow:0 0 0 2px #F04A1B,0 0 0 4px #FCB40C,0 0 0 6px #2AB563,0 0 0 8px #12B5E8!important}
+.herpet{position:absolute;right:-12px;bottom:14px}.herbang{position:absolute;top:-6px;right:-6px;font-style:normal;font-family:var(--f-display);font-size:18px;line-height:18px;width:20px;text-align:center;background:#F04A1B;color:#fff;box-shadow:var(--f2);animation:bIdle 1s steps(2) infinite}
+.ipage .crumb{display:flex;align-items:center;gap:8px}.itop{padding:12px!important}.itop h2{display:flex;align-items:center;gap:6px;margin:0 0 8px;font-size:24px}
+.iscene{position:relative;height:230px;overflow:hidden;background:linear-gradient(#BDEBFA 0 45%,#12B5E8 45%);box-shadow:var(--f2)}
+.iisl{position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);width:min(330px,96%)!important;height:auto!important}
+.idec,.ihome{position:absolute;transform:translate(-50%,-50%)}.ihome.h0{left:20%;top:72%}.ihome.h1{left:78%;top:52%}.ihome.h2{left:84%;top:74%}.ihome{display:flex;align-items:flex-end}.iegg{position:absolute;left:30%;top:-30%}
+.ijen{position:absolute;left:30%;top:46%;transform:translate(-50%,-50%)}.ijen .jav{background:none!important;box-shadow:none!important}
+.ipet{position:absolute;transform:translate(-50%,-50%);border:0;background:none;padding:0;cursor:pointer;animation:pWalk 3s steps(6) infinite alternate}.ipet:nth-of-type(2n){animation-duration:3.6s}
+@keyframes pWalk{0%{margin-left:-14px}100%{margin-left:14px}}.ipet.hop .pspr{animation:pHop .5s steps(3) 2}@keyframes pHop{50%{transform:translateY(-12px)}}
+.pspr{position:relative;display:inline-block;line-height:0}.pspr>img{display:block}.pspr.st3>img{filter:saturate(.55) brightness(1.05)}.pspr.sick>img{filter:hue-rotate(40deg) saturate(.6)}.pwear{position:absolute;image-rendering:pixelated}
+.ifx{position:absolute;right:-8px;top:-10px;animation:bIdle 1s steps(2) infinite}.pfx{position:absolute;bottom:60%;animation:pUp 1.3s steps(6) forwards;pointer-events:none}@keyframes pUp{to{transform:translateY(-36px);opacity:0}}
+.iev{margin-top:8px;padding:7px 10px;font-size:14px;background:#E3F7EA;color:#1E6B3A;box-shadow:0 0 0 2px #2AB563}.iev.warn{background:#FDE6DE;color:#B8320F;box-shadow:0 0 0 2px #F04A1B}
+.pcard{padding:12px!important}.pchd{display:flex;gap:10px;align-items:center}.pchd h3{margin:0;font-size:20px}.pchd h3 small{font-size:13px;font-weight:600;color:#566779}
+.psay{display:flex;gap:6px;align-items:center;margin:8px 0;padding:6px 8px;background:#FFF4D6;font-size:14px}
+.pbar{display:grid;grid-template-columns:72px 1fr;align-items:center;gap:8px;margin:5px 0;font-size:13px;font-weight:700}.pbar i{height:12px;background:#E3E7F0;box-shadow:var(--f2);display:block}.pbar b{display:block;height:100%}
+.pact{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.pbtn{display:flex;align-items:center;justify-content:center;gap:5px;border:0;padding:8px 4px;background:var(--surface,#fff);box-shadow:var(--f2),0 3px 0 0 #1F2A5A;font-family:var(--f-display);font-size:16px;line-height:1;white-space:nowrap;color:#1F2A5A;cursor:pointer}.pbtn.hot{background:#FDE6DE;color:#B8320F}.pbtn:active{transform:translateY(3px);box-shadow:var(--f2)}
+.pkbox{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;padding:10px;background:#FFF4D6;box-shadow:var(--f2);align-items:center}.pkit{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;padding:6px 8px;background:#fff;box-shadow:var(--f2);cursor:pointer;min-width:76px}.pkit b{font-size:12px}.pkit small{font-size:11px;color:#566779}.pkit.on{background:#E3F7EA}
+.ghgh{display:flex;align-items:center;gap:6px;font-family:var(--f-display);font-size:20px;font-weight:400;margin:12px 0 6px}.ghq{font-style:normal;font-size:11px;color:#1E8A4A;font-weight:700}.ghit.dim{opacity:.55}
+.ghlife{font-size:11px;color:#566779;font-weight:600}.ghcare{display:flex;align-items:flex-end;gap:10px;padding:6px}.ghcarei{animation:bIdle 1s steps(2) infinite}
+.bagit,.egrow,.memrow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:2px dashed #C9D1E6;font-size:14px}.bagit:last-of-type{border-bottom:0}.bagit .grow{display:flex;flex-direction:column;gap:2px}.bagit small{font-size:11px;color:#566779}.bagit.broken{opacity:.6}
+.dur{display:block;width:90px;height:6px;background:#E3E7F0}.dur i{display:block;height:100%;background:#2AB563}
+html[lang="en"] .bnav button{font-size:12px!important;letter-spacing:-.4px}
+#pnIn{font:inherit;font-size:20px;padding:8px;border:0;box-shadow:var(--f2);width:100%;max-width:200px}
+</style>`);
+
+/* tiếng Anh cho Gian hàng và Đảo nhà */
+Object.assign(I18N,{'Gian hàng Jenny':"Jenny's shop",'Chạm món đồ để thử':'Tap an item to try it','Thử miễn phí. Thích thì mua bằng xu.':'Try for free. Buy with coins if you like it.','Đang thử — chưa mua':'Trying — not bought yet','Em đã có món này':'You already own this','Áo váy':'Outfits','Mũ kính':'Hats','Khung':'Frames','Đảo nhà':'Home isle','Thú cưng':'Pets','Đồ nuôi':'Pet care','Vé game':'Tickets','Đã có':'Owned','Đang dùng':'In use','Chưa mua được':'Not available','Gian hàng ▸':'Shop ▸',
+ 'Áo Chanh tươi':'Lime top','Váy Hoa đào':'Peach dress','Áo Bầu trời':'Sky top','Áo Siêu nhân Toán':'Maths hero suit','Áo Hoàng kim':'Golden suit','Nơ đỏ':'Red bow','Kẹp hoa':'Flower clip','Mũ lưỡi trai':'Cap','Kính tròn':'Round glasses','Mũ phù thuỷ':'Wizard hat','Vương miện':'Crown','Khung Gỗ':'Wood frame','Khung Bạc':'Silver frame','Khung Vàng':'Gold frame','Khung Cầu vồng':'Rainbow frame',
+ 'Cây dừa':'Palm tree','Ô che nắng':'Sunshade','Lâu đài cát':'Sandcastle','Thuyền buồm':'Sailing boat','Cờ CLB Jenny':'Jenny Club flag','Hải đăng':'Lighthouse','Gà con':'Chick','Ếch xanh':'Frog','Rùa biển':'Sea turtle','Chim cánh cụt':'Penguin','Bạch tuộc':'Octopus','Rồng con':'Baby dragon',
+ 'Hạt dinh dưỡng':'Pet food','Cá khô':'Dried fish','Bánh thưởng':'Treat','Thuốc':'Medicine','Xà phòng (5 lần)':'Soap (5 baths)','Xà phòng':'Soap','Bóng':'Ball','Gấu bông':'Teddy','Nơ cổ':'Bow tie','Mũ len':'Woolly hat','Khăn quàng':'Scarf','Ổ rơm':'Straw nest','Máng ăn tự động':'Auto feeder','Máy ấp trứng':'Incubator',
+ 'Thức ăn':'Food','Thuốc & tắm':'Medicine & bath','Đồ chơi':'Toys','Đồ mặc':'Clothes','Nhà & máy':'Home & machines','Cho ăn':'Feed','Tắm':'Bath','Chữa':'Heal','Mặc đồ':'Dress','Cưng nựng':'Pat','No':'Full','Vui':'Happy','Sạch':'Clean','Sức khoẻ':'Health','Đổi tên':'Rename','Đặt tên':'Name','Túi đồ':'Bag','Sổ kỷ niệm':'Memory book','Đặt vào máy ấp':'Put in incubator','Em hiểu rồi':'I understand','Xong ▶':'Done ▶','Chọn thú cưng ▶':'Choose a pet ▶','Mua ở Gian hàng':'Buy at the shop','Em chưa có thú cưng':"You don't have a pet yet",'Bỏ đi':'Throw away','Đã hỏng':'Broken',
+ 'Vé chơi game tư duy':'Logic game tickets','Tạm biệt bạn nhỏ':'Goodbye, little friend','Lá thư tạm biệt':'Goodbye letter','Bán thanh lý: được nửa giá, đồ càng cũ càng rẻ.':'Selling gives half price; older items are worth less.'});
+I18N_RE.push([/^Đảo nhà của (.+)$/,"$1's home isle"],[/^Mua (.+) · (\d+)$/,'Buy $1 · $2'],[/^Cần thêm (\d+)$/,'Need $1 more'],[/^Bán (\d+) xu$/,'Sell $1 coins'],[/^Độ mới (\d+)%$/,'Condition $1%'],[/^Đang nuôi (\d+)$/,'Raising $1'],[/^có (\d+)$/,'have $1'],[/^Ngày thứ (\d+) · đã cho ăn (\d+) lần · cưng nựng (\d+) lần$/,'Day $1 · fed $2 times · patted $3 times'],[/^Trứng \((\d+)\)$/,'Eggs ($1)'],[/^(\d+) xu$/,'$1 coins']);
+/* ===== Thanh dưới (thầy chốt 20/10): Bản đồ · Toán Jenny · Luyện lỗi · Nhà em · Cửa hàng =====
+   "Nhà em" mở trang gồm 3 ô: Đảo nhà (thú cưng), Sưu tập, Hồ sơ. "Cửa hàng" = Gian hàng Jenny. */
+Object.assign(PXS,{houseS:["....kk....","...krrk...","..krrrrk..",".krrrrrrk.","krrrrrrrrk","kkwwwwwwkk",".kwbbwnnk.",".kwbbwnnk.",".kwwwwnnk.",".kkkkkkkk."]});
+const NHA_TABS=['nha','album','hoso','isle'];
+function viewNha(st){petSim(st);const P=petsOf(st),need=P.list.some(p=>p.no<25||p.sick||p.sach<25||!p.name)||P.eggs.some(e=>!e.inc)||!!P.bye,p0=P.list[0];
+ const tile=(tab,ic,n,sub,bang)=>`<button type="button" class="nhat" onclick="go({k:'home',tab:'${tab}'})"><span class="nhic">${ic}${bang?'<i class="herbang">!</i>':''}</span><b>${n}</b><small>${sub}</small></button>`;
+ return`<div class="page nhapage"><section class="card"><h2 class="nhah">${spr('houseS',24)} Nhà của ${esc(st.name.split(' ').pop())}</h2>
+  <div class="nhagrid">${tile('isle',spr('island',54)+(p0?`<span class="nhpet">${petSpr(p0,28)}</span>`:''),'Đảo nhà',p0?`${esc(p0.name||PET_SP[p0.sp][0])} đang chờ em`:'Nuôi thú cưng',need)}
+  ${tile('album',spr('fish',44),'Sưu tập','Hộ chiếu, thẻ sinh vật')}${tile('hoso',spr('hoso',44),'Hồ sơ','Chuỗi ngày học, đăng xuất')}</div></section></div>`}
+{const _v=viewHome1t;viewHome1t=function(){const st=S.st[sid];let r;
+  if(scr.tab==='nha'){const t=scr.tab;scr.tab='map';r=_v.apply(this,arguments);scr.tab=t;const i=r.indexOf('<nav class="bnav"');r=viewNha(st)+(i>=0?r.slice(i):'').replace(/<button class="on([^"]*)" aria-current="page" onclick="go\(\{k:'home',tab:'map'\}\)"/,`<button class="$1" aria-current="false" onclick="go({k:'home',tab:'map'})"`)}
+  else{r=_v.apply(this,arguments);if(scr.tab==='album'||scr.tab==='hoso')r=`<div class="crumb nhacrumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← Nhà em</button></div>`+r}
+  const tab=scr.tab||'map',P=petsOf(st),need=P.list.some(p=>p.no<25||p.sick||p.sach<25)||!!P.bye;
+  const btn=(k,ic,n,on,b)=>`<button class="${on?'on':''}${b?' bnfix':''}" aria-current="${on?'page':'false'}" onclick="go({k:'home',tab:'${k}'})"><span aria-hidden="true" class="bnic">${ic}${b?'<i class="pxq-n bnn">!</i>':''}</span>${n}</button>`;
+  r=r.replace(/<button class="[^"]*" aria-current="\w+" onclick="go\(\{k:'home',tab:'album'\}\)"[^>]*>[\s\S]*?<\/button>/,btn('nha',spr('houseS',24),'Nhà em',NHA_TABS.includes(tab),need))
+   .replace(/<button class="[^"]*" aria-current="\w+" onclick="go\(\{k:'home',tab:'hoso'\}\)"[^>]*>[\s\S]*?<\/button>/,btn('shop',spr('shopI',24),'Cửa hàng',tab==='shop',false));
+  return r}}
+Object.assign(I18N,{'Nhà em':'My home','Cửa hàng':'Shop','← Nhà em':'← My home','Đảo nhà':'Home isle','Nuôi thú cưng':'Raise a pet','Hộ chiếu, thẻ sinh vật':'Passport, creature cards','Chuỗi ngày học, đăng xuất':'Study streak, log out'});
+I18N_RE.push([/^Nhà của (.+)$/,"$1's home"],[/^(.+) đang chờ em$/,'$1 is waiting for you'],[/^(\d+)–(\d+) ngày$/,'$1–$2 days']);
+document.head.insertAdjacentHTML('beforeend',`<style>
+.nhah{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:26px}.nhagrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.nhat{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;padding:12px 4px 10px;background:var(--surface,#fff);box-shadow:var(--f2),0 4px 0 0 #1F2A5A;cursor:pointer;color:inherit}.nhat:active{transform:translateY(3px);box-shadow:var(--f2)}
+.nhat:first-child{background:#DDF3FB}.nhic{position:relative;height:60px;display:grid;place-items:center}.nhpet{position:absolute;right:-6px;bottom:0}.nhat b{font-family:var(--f-display);font-size:21px;font-weight:400;line-height:1}.nhat small{font-size:11.5px;color:#566779;text-align:center;line-height:1.2}
+.nhacrumb{margin:0 0 8px}
+</style>`);
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 

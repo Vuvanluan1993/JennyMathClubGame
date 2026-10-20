@@ -1,5 +1,6 @@
-/* 49 — Gian hàng Jenny (tiêu xu) — BẢN MẪU chờ thầy duyệt
-   Học sinh tiểu học dùng xu mua: Trang phục, Mũ & kính, Thú cưng, Đảo nhà, Khung ảnh; Vé game tư duy (sắp có).
+/* 49 — Gian hàng Jenny (tiêu xu) — thầy duyệt mẫu và bảng giá 20/10
+   Học sinh tiểu học dùng xu mua: Trang phục, Mũ & kính, Khung ảnh, Đảo nhà, Thú cưng, Đồ nuôi; Vé game tư duy (sắp có).
+   Thú cưng và đồ nuôi: xem 49b (Đảo nhà của em).
    Chạm món đồ = thử miễn phí trên khung xem trước; bấm Mua để trừ xu. Đồ đã mua bấm Dùng/Bỏ.
    Lưu: st.shop = {own:[mã], acc:'', pet:'', frame:'', dec:[mã]} ; trang phục mua dùng chung st.outfit. */
 Object.assign(PXS,{
@@ -25,15 +26,16 @@ const GH_ACC={cap:['capS',1,-1],bow:['bowS',10,-1],glass:['glassS',2,6],flower:[
 const GH_SLOT={palm:[18,34],umb:[40,44],castle:[60,40],flag:[78,26],light:[8,62],boat:[90,78]};
 const FRAMES={wood:['#9A6234','#6B3F1D'],silver:['#E3E7F0','#9AA4C0'],gold:['#FCD655','#C97A00'],rainbow:null};
 const GH=[
- {k:'of',n:'Trang phục',ic:'jenny',it:[['s_lime','Áo Chanh tươi',120],['s_peach','Váy Hoa đào',150],['s_sky','Áo Bầu trời',180],['s_hero','Áo Siêu nhân Toán',300],['s_gold','Áo Hoàng kim',400]]},
- {k:'acc',n:'Mũ & kính',ic:'capS',it:[['bow','Nơ đỏ',60],['flower','Kẹp hoa',60],['cap','Mũ lưỡi trai',80],['glass','Kính tròn',100],['witch','Mũ phù thuỷ',150],['crown','Vương miện',250]]},
- {k:'pet',n:'Thú cưng',ic:'chick',it:[['chick','Gà con',150],['frog','Ếch xanh',200],['turtle','Rùa biển',250],['pengS','Chim cánh cụt',300],['octo','Bạch tuộc',350],['dragon','Rồng con',500]]},
+ {k:'of',n:'Áo váy',ic:'jenny',it:[['s_lime','Áo Chanh tươi',120],['s_peach','Váy Hoa đào',150],['s_sky','Áo Bầu trời',180],['s_hero','Áo Siêu nhân Toán',300],['s_gold','Áo Hoàng kim',400]]},
+ {k:'acc',n:'Mũ kính',ic:'capS',it:[['bow','Nơ đỏ',60],['flower','Kẹp hoa',60],['cap','Mũ lưỡi trai',80],['glass','Kính tròn',100],['witch','Mũ phù thuỷ',150],['crown','Vương miện',250]]},
+ {k:'frame',n:'Khung',ic:'medG',it:[['wood','Khung Gỗ',60],['silver','Khung Bạc',120],['gold','Khung Vàng',200],['rainbow','Khung Cầu vồng',300]]},
  {k:'dec',n:'Đảo nhà',ic:'palm',it:[['palm','Cây dừa',40],['umb','Ô che nắng',50],['castle','Lâu đài cát',70],['boat','Thuyền buồm',90],['flag','Cờ CLB Jenny',110],['light','Hải đăng',140]]},
- {k:'frame',n:'Khung ảnh',ic:'medG',it:[['wood','Khung Gỗ',60],['silver','Khung Bạc',120],['gold','Khung Vàng',200],['rainbow','Khung Cầu vồng',300]]},
+ {k:'pet',n:'Thú cưng',ic:'chick',it:[['chick','Gà con',150],['turtle','Rùa biển',250]]},
+ {k:'care',n:'Đồ nuôi',ic:'bowlS',it:[]},
  {k:'tk',n:'Vé game',ic:'tkS',it:[]},
 ];
 const TK_PRICE=30,TK_DAY=3,TK_MIN=5;
-const ghSt=st=>{st.shop=st.shop||{own:[],acc:'',pet:'',frame:'',dec:[]};return st.shop};
+const ghSt=st=>{st.shop=st.shop||{own:[],acc:'',frame:'',dec:[]};const s=st.shop;s.bag=s.bag||{};s.gear=s.gear||[];return s};
 const ghFind=id=>{for(const c of GH){const x=c.it.find(i=>i[0]===id);if(x)return{c,x}}return null};
 /* trang phục mua được tính là "đã có" trong tủ đồ */
 {const _o=ofOwn;ofOwn=function(st){const s=_o.apply(this,arguments);try{(st.shop&&st.shop.own||[]).forEach(k=>{if(OUTFIT[k])s.add(k)})}catch(e){}return s}}
@@ -42,12 +44,12 @@ function ghJenny(H,L){const u=H/19,of=L.of,body=spr(of?ofVariant('jenny',of):'je
  const a=L.acc&&GH_ACC[L.acc]?(()=>{const[nm,x,y]=GH_ACC[L.acc],d=pxURI(nm);return`<img class="px ghacc" src="${d.u}" alt="" style="left:${x*u}px;top:${y*u}px;width:${d.w*u}px;height:${d.h*u}px">`})():'';
  const p=L.pet?`<span class="ghpet">${spr(L.pet,Math.round(H*.42))}</span>`:'';
  return`<span class="ghj ${L.frame?'fr-'+L.frame:''}"><span class="ghjb" style="width:${16*u}px;height:${H}px">${body}${a}</span>${p}</span>`}
-function ghLook(st){const s=ghSt(st),T=scr.ghTry||{};return{of:'of' in T?T.of:(st.outfit||''),acc:'acc' in T?T.acc:s.acc,pet:'pet' in T?T.pet:s.pet,frame:'frame' in T?T.frame:s.frame}}
-function ghCard(c,x,st){const s=ghSt(st),[id,n,pr]=x,own=s.own.includes(id),T=scr.ghTry||{},use=c.k==='of'?st.outfit===id:c.k==='dec'?s.dec.includes(id):s[c.k]===id,sel=T.id===id;
+function ghLook(st){const s=ghSt(st),T=scr.ghTry||{};return{of:'of' in T?T.of:(st.outfit||''),acc:'acc' in T?T.acc:s.acc,pet:T.pet||'',frame:'frame' in T?T.frame:s.frame}}
+function ghCard(c,x,st){if((c.k==='pet'||c.k==='care')&&typeof petCard==='function')return petCard(c,x,st);const s=ghSt(st),[id,n,pr]=x,own=s.own.includes(id),T=scr.ghTry||{},use=c.k==='of'?st.outfit===id:c.k==='dec'?s.dec.includes(id):s[c.k]===id,sel=T.id===id;
  const pic=c.k==='of'?spr(ofVariant('jenny',id),54):c.k==='acc'?spr(GH_ACC[id][0],30):c.k==='frame'?`<span class="ghfr fr-${id}">${spr('jenny',38)}</span>`:spr(id,c.k==='pet'?44:46);
  return`<button type="button" class="ghit ${own?'own':''} ${use?'use':''} ${sel?'sel':''}" onclick="ghTry('${c.k}','${id}')" aria-label="${esc(n)}, ${own?'đã có':pr+' xu'}"><span class="ghpic">${pic}</span><b>${esc(n)}</b>${use?'<i class="ghtag on">Đang dùng</i>':own?'<i class="ghtag">Đã có</i>':`<i class="ghpr">${spr('coin',14)} ${pr}</i>`}</button>`}
 function ghTry(k,id){const T={k,id};if(k==='of')T.of=id;else if(k==='acc')T.acc=id;else if(k==='pet')T.pet=id;else if(k==='frame')T.frame=id;scr.ghTry=T;try{sfx('tap')}catch(e){}render()}
-function ghBuy(){const st=S.st[sid],s=ghSt(st),T=scr.ghTry;if(!T)return;const f=ghFind(T.id);if(!f)return;const pr=f.x[2];
+function ghBuy(){const st=S.st[sid],s=ghSt(st),T=scr.ghTry;if(!T)return;const f=ghFind(T.id);if(!f)return;if(T.k==='pet')return petBuy(T.id);if(T.k==='care')return careBuy(T.id);const pr=f.x[2];
  if(st.coins<pr){toast(`Em cần thêm ${pr-st.coins} xu. Làm bài để kiếm xu nhé!`);return}
  st.coins-=pr;s.own.push(T.id);ghUse(1);try{sfx('win')}catch(e){}toast(`Đã mua ${f.x[1]}!`)}
 function ghUse(silent){const st=S.st[sid],s=ghSt(st),T=scr.ghTry;if(!T||!s.own.includes(T.id))return;const k=T.k,id=T.id;
@@ -57,13 +59,14 @@ function ghIsle(st){const s=ghSt(st),T=scr.ghTry,list=s.dec.concat(T&&T.k==='dec
  return`<div class="ghisle">${spr('island',120)}${list.map(id=>{const p=GH_SLOT[id]||[50,50];return`<span class="ghdec ${T&&T.id===id&&!s.dec.includes(id)?'try':''}" style="left:${p[0]}%;top:${p[1]}%">${spr(id,id==='boat'?30:36)}</span>`}).join('')}</div>`}
 function viewShop(st){const s=ghSt(st),cat=scr.ghCat||'of',C=GH.find(c=>c.k===cat),T=scr.ghTry,f=T&&ghFind(T.id),L=ghLook(st);
  const tabs=GH.map(c=>`<button type="button" class="ghtab ${c.k===cat?'on':''}" onclick="scr.ghCat='${c.k}';scr.ghTry=null;render()" aria-pressed="${c.k===cat}"><span class="ghti">${spr(c.ic,c.k==='of'?22:c.k==='acc'?11:c.k==='tk'?14:20)}</span><span>${c.n}</span></button>`).join('');
- let act='';if(f){const own=s.own.includes(T.id),use=T.k==='of'?st.outfit===T.id:T.k==='dec'?s.dec.includes(T.id):s[T.k]===T.id,pr=f.x[2],short=Math.max(0,pr-st.coins);
+ const catB=cat==='care'?careGrid(st):'';
+ let act='';if(f&&(T.k==='pet'||T.k==='care')&&typeof petAct==='function')act=petAct(T,f,st);else if(f){const own=s.own.includes(T.id),use=T.k==='of'?st.outfit===T.id:T.k==='dec'?s.dec.includes(T.id):s[T.k]===T.id,pr=f.x[2],short=Math.max(0,pr-st.coins);
   act=own?`<button type="button" class="gobtn ghgo" onclick="ghUse()">${use?'Bỏ ra':'Dùng'} ${esc(f.x[1])}</button>`:short?`<button type="button" class="gobtn ghgo off" onclick="ghBuy()">Cần thêm ${spr('coin',16)} ${short}</button>`:`<button type="button" class="gobtn ghgo" onclick="ghBuy()">Mua ${esc(f.x[1])} · ${spr('coin',16)} ${pr}</button>`}
- const stage=cat==='dec'?ghIsle(st):ghJenny(112,L);
+ const stage=cat==='dec'?ghIsle(st):cat==='care'?careStage(st,T,f):ghJenny(112,L);
  const body=cat==='tk'?`<div class="ghtk">${spr('tkS',44)}<div><b>Vé chơi game tư duy</b><p>Mỗi vé <b>${TK_PRICE} xu</b> = <b>${TK_MIN} phút</b> chơi game tư duy (cờ, xếp hình, mê cung…). Mỗi ngày mua tối đa <b>${TK_DAY} vé</b>.</p><span class="pill">Sắp có — mở khi có game tư duy</span></div></div>`
-  :`<div class="ghgrid">${C.it.map(x=>ghCard(C,x,st)).join('')}</div>`;
+  :cat==='care'?catB:`<div class="ghgrid">${C.it.map(x=>ghCard(C,x,st)).join('')}</div>`;
  return`<div class="page ghpage"><section class="card ghtop"><div class="ghhead"><h2>${spr('shopI',26)} Gian hàng Jenny</h2><span class="ghcoin">${spr('coin',20)} <b>${st.coins}</b> xu</span></div>
-  <div class="ghstage ${cat==='dec'?'isle':''}">${stage}<div class="ghinfo">${f?`<b>${esc(f.x[1])}</b><small>${s.own.includes(T.id)?'Em đã có món này':'Đang thử — chưa mua'}</small>`:`<b>Chạm món đồ để thử</b><small>Thử miễn phí. Thích thì mua bằng xu.</small>`}${act}</div></div></section>
+  <div class="ghstage ${cat==='dec'?'isle':''}">${stage}<div class="ghinfo">${f?`<b>${esc(f.x[1])}</b><small>${T.k==='pet'?petNote(st,T.id):T.k==='care'?esc(careNote(T.id)):s.own.includes(T.id)?'Em đã có món này':'Đang thử — chưa mua'}</small>`:`<b>Chạm món đồ để thử</b><small>Thử miễn phí. Thích thì mua bằng xu.</small>`}${act}</div></div></section>
   <nav class="ghtabs" aria-label="Loại hàng">${tabs}</nav>${body}
   <p class="muted ghnote">Kiếm xu: qua màn +15 · luyện lỗi +5 mỗi câu · trò chơi tới +20 · trùm lớp +20–30.</p></div>`}
 /* gắn vào trang chính tiểu học: tab 'shop' + nút xu ở thẻ chào */
@@ -80,7 +83,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .ghj.fr-wood,.ghfr.fr-wood{box-shadow:0 0 0 4px #9A6234,0 0 0 7px #6B3F1D;background:#FFF4D6}.ghj.fr-silver,.ghfr.fr-silver{box-shadow:0 0 0 4px #E3E7F0,0 0 0 7px #9AA4C0;background:#fff}.ghj.fr-gold,.ghfr.fr-gold{box-shadow:0 0 0 4px #FCD655,0 0 0 7px #C97A00;background:#FFF4D6}
 .ghj.fr-rainbow,.ghfr.fr-rainbow{box-shadow:0 0 0 3px #F04A1B,0 0 0 6px #FCB40C,0 0 0 9px #2AB563,0 0 0 12px #12B5E8;background:#fff}
 .ghfr{display:inline-flex;padding:3px;margin:8px}
-.ghtabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 10px}.ghtab{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;border:0;padding:6px 2px 5px;background:var(--surface,#fff);box-shadow:var(--f2);font-family:var(--f-display);font-size:18px;line-height:1;white-space:nowrap;color:#1F2A5A;cursor:pointer;min-width:0}.ghti{height:22px;display:grid;place-items:center;flex:none}@media(max-width:360px){.ghtab{font-size:16px}}.ghtab.on{background:#FCB40C}
+.ghtabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:14px 0 10px}.ghtab{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;border:0;padding:6px 2px 5px;background:var(--surface,#fff);box-shadow:var(--f2);font-family:var(--f-display);font-size:16px;line-height:1;white-space:nowrap;color:#1F2A5A;cursor:pointer;min-width:0}.ghti{height:22px;display:grid;place-items:center;flex:none}@media(max-width:360px){.ghtab{font-size:14px}}.ghtab.on{background:#FCB40C}
 .ghgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .ghit{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;padding:8px 4px;background:var(--surface,#fff);box-shadow:var(--f2),0 4px 0 0 #1F2A5A;cursor:pointer;min-width:0}
 .ghit .ghpic{height:58px;display:grid;place-items:center}.ghit b{font-family:var(--f-body);font-size:13px;line-height:1.15;text-align:center;font-weight:700}

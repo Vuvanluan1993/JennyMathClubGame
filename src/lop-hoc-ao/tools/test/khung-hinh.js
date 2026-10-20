@@ -3,7 +3,7 @@
 const {chromium}=require('playwright');(async()=>{const b=await chromium.launch({executablePath:process.env.CHROME||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
 const css='';
 const grades=(process.argv[2]||'1,2,3,4,5').split(',').map(Number),REP=+(process.argv[3]||3);const all=[];
-for(const G of grades){const p=await b.newPage({viewport:{width:360,height:780}});await p.goto('file://'+require('path').resolve(__dirname,'..','..','dist','lop-hoc-ao-jenny.html'));await p.addStyleTag({content:css});await p.waitForTimeout(400);await p.evaluate(()=>document.fonts.ready);
+for(const G of grades){const p=await b.newPage({viewport:{width:360,height:780}});await p.goto('file://'+require('path').resolve(__dirname,'..','..','dist','lop-hoc-ao-jenny.html'));if(css)await p.addStyleTag({content:css});await p.waitForTimeout(400);await p.evaluate(()=>document.fonts.ready);
  const r=await p.evaluate(async([G,REP])=>{role='hs';muted=true;(0,eval)("sid=Object.keys(S.st).find(k=>S.st[k].grade=="+G+")");const bad={};const W=innerWidth;
   for(const x of PRIM[G].isl){for(let L=0;L<x.lv.length;L++)for(let gi=0;gi<x.lv[L].length;gi++){for(let t=0;t<REP;t++){let q;try{q=x.lv[L][gi]()}catch(e){continue}
    startG1(x.id,Math.min(L,2));scr.qs=[q];scr.j=0;scr.sheet=null;render();await new Promise(r=>requestAnimationFrame(r));

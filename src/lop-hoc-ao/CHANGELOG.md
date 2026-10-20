@@ -1,5 +1,18 @@
 # Lịch sử thay đổi
 
+## 20/10/2026 — Gian hàng Jenny, Đảo nhà & thú cưng, tiếng Anh lớp 1
+- **Gian hàng Jenny** (bảng giá thầy duyệt): Áo váy, Mũ kính, Khung, Đảo nhà, Thú cưng, Đồ nuôi, Vé game (sắp có). Chạm để thử miễn phí, Mua bằng xu. Vào bằng ô xu ở thẻ chào.
+- Jenny đội mũ/kính đã mua ở mọi nơi; khung ảnh hiện quanh ảnh Jenny ở thẻ chào.
+- **Đảo nhà của em**: chạm ảnh Jenny ở thẻ chào. Thú cưng sống trên đảo, chỉ số No/Vui/Sạch/Sức khoẻ theo ngày thật; cho ăn, tắm, chơi, chữa, mặc đồ, cưng nựng; đặt tên.
+  - Nuôi 1 loài, tối đa 2 con; vòng đời ~6 tuần (Bé → Lớn dần → Trưởng thành → Già); mất khi già, có Sổ kỷ niệm; chờ 3 ngày mới nuôi con mới.
+  - Bỏ đói/ốm nặng liên tục 3 ngày → thú bỏ đi (thư tạm biệt).
+  - 2 con trưởng thành + Ổ rơm → có thể đẻ trứng; Máy ấp 3 ngày cho nở; trứng không ấp hỏng sau 2 ngày; bán được trứng.
+  - Đồ dùng cũ dần; Túi đồ có bán thanh lý (nửa giá × độ mới). Máng ăn tự động cho ăn khi em vắng.
+  - Mỗi lần qua màn, thú cưng vui thêm. Dấu ! đỏ ở ảnh Jenny khi thú cần chăm.
+- **Thanh dưới mới**: Bản đồ · Toán Jenny · Luyện lỗi · **Nhà em** · **Cửa hàng**. "Nhà em" mở 3 ô: Đảo nhà, Sưu tập, Hồ sơ (Hồ sơ vẫn có nút Đăng xuất).
+- **Thú cưng bắt đầu 2 loài**, có mô tả và tuổi thọ: Gà con 40–50 ngày (150 xu), Rùa biển 100–200 ngày (250 xu). Các giai đoạn lớn tính theo tuổi thọ từng con.
+- **Tiếng Anh lớp 1** bật: đề, lời giải, hình, hướng dẫn, bài giảng, Jenny đọc giọng Anh – Anh. Công cụ rà `tools/test/tieng-anh.js`: 0 chuỗi sót.
+
 ## 20/10/2026 — Nút Đăng xuất hiện sẵn
 - Bản học sinh: bỏ ô chữ cái tên (J) và menu thả; nút **Đăng xuất** nằm ngay trên thanh trên cùng (EN: Log out).
 - Màn rất hẹp (≤440px): ẩn chữ "Toán cùng Jenny", giữ ngôi sao để vừa hàng.
