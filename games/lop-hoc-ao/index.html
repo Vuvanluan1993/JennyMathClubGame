@@ -7803,7 +7803,7 @@ function gdKind(q){if(!q||!q.sol)return null;const G=(typeof curG==='function'?c
  return null}
 function gdAnsOk(q,r){if(/%/.test(gdTxt(q.sol)))return false;let a=q.type==='num'?String(q.a):q.type==='opt'&&q.opts[q.a]?gdTxt(q.opts[q.a].h||q.opts[q.a]):'';if(/%|⁄|km|tấn|tạ|yến/.test(a))return false;const m=a.match(new RegExp(GD_NUM));if(!m)return q.type!=='num';return Math.abs(gdN(m[0])-gdN(r))<1e-9}
 /* các bước tính trong lời giải: "a op b (op c…) = r" */
-function gdSteps(q){if(/\bdư\b/.test(gdTxt(q.sol)))return null;const s=gdTxt(q.sol).replace(/\(([^()]*[a-zà-ỹ][^()]*)\)/gi,' ');const re=new RegExp(`(\\(?${GD_NUM}\\)?(?:\\s*[+−×:]\\s*\\(?${GD_NUM}\\)?)+)\\s*=\\s*(${GD_NUM})`,'g');const out=[];let m;
+function gdSteps(q){if(/(^|[\s(])dư[\s)]/.test(gdTxt(q.sol)))return null;const s=gdTxt(q.sol).replace(/\(([^()]*[a-zà-ỹ][^()]*)\)/gi,' ');const re=new RegExp(`(\\(?${GD_NUM}\\)?(?:\\s*[+−×:]\\s*\\(?${GD_NUM}\\)?)+)\\s*=\\s*(${GD_NUM})`,'g');const out=[];let m;
  while((m=re.exec(s))&&out.length<4){const e=m[1].replace(/\s+/g,' ').trim(),ops=(e.match(/[+−×:]/g)||[]);if(!ops.length)continue;let r=m[2],rest=s.slice(m.index+m[0].length);
   if(/^\s*⁄/.test(rest))return null;
   const ch=new RegExp(`^\\s*(?:[+−×:]\\s*${GD_NUM}\\s*)*=\\s*(${GD_NUM})`);let c;while((c=rest.match(ch))){r=c[1];rest=rest.slice(c[0].length);re.lastIndex=s.length-rest.length}
