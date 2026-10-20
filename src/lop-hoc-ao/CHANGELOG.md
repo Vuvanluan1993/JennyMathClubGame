@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 2026-10-20 — Số bản; đơn vị trong lời giải leo núi; câu tương tự đúng chiều; khung Lô 2a (chưa bật)
+- Thẻ chào trên bản đồ có dòng nhỏ "Bản ngày/tháng · giờ:phút" (thời điểm dựng), để biết đang mở bản mới hay cũ.
+- Leo núi: phép tính cuối của lời giải có đơn vị, ví dụ "29 + 24 = 53 (cái bánh)".
+- Hướng dẫn khi sai: câu tương tự giữ đúng chiều câu vừa sai (cùng phép tính, cùng chỗ trống, cùng kiểu thêm/bớt, nhiều hơn/ít hơn).
+- Lô 2a (đặt tính có nhớ, so sánh số, bảng nhân chia): đã dựng hoạt cảnh, đang chờ thầy duyệt nên chưa bật (GD_EXT .on = false).
+
 ## 2026-10-20 — Sơ đồ: tổng dùng móc nhọn dọc, hiệu dùng móc nhọn ngang
 - Hiệu – tỉ và tổng – hiệu: phần dài hơn của đoạn lớn tô hồng, phía trên có móc nhọn ngang ôm đúng phần đó, ghi "Hiệu: …".
 - Móc nhọn tổng khớp đúng mép trên đoạn lớn và mép dưới đoạn bé.

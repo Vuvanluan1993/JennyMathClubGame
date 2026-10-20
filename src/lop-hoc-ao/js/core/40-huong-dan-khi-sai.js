@@ -214,9 +214,13 @@ function gdFramesSD(g,q){const F=[],t=gdTxt(q.q),Y='#FCB40C',G='#1E9A52';const c
 
 /* ---------- khung xem hướng dẫn ---------- */
 let GD=null;
-function gdOpen(q,auto){const k=gdKind(q);if(!k)return false;
- const F=k.t==='hand'?gdFramesHand(k):k.t==='line'?(k.miss==='c'?gdFramesLine(k):gdFramesLineMiss(k)):k.t==='word'?gdFramesWord(q,k.steps):k.t==='sd'?gdFramesSD(k,q):gdFramesRatio(k,q);
- gdClose(true);GD={F,i:0,slow:false,tm:null,auto,done:false,kind:k.t};
+/* dạng mở rộng (Lô 2…): {t, on, kind(q)→k|null, frames(k,q)→F} */
+const GD_EXT=[];
+{const _k=gdKind;gdKind=function(q){if(!q||!q.sol)return null;for(const e of GD_EXT){if(!e.on)continue;let k=null;try{k=e.kind(q)}catch(x){}if(k)return{...k,t:e.t}}return _k(q)}}
+function gdFrames(q,k){const e=GD_EXT.find(e=>e.t===k.t);if(e)return e.frames(k,q);return k.t==='hand'?gdFramesHand(k):k.t==='line'?(k.miss==='c'?gdFramesLine(k):gdFramesLineMiss(k)):k.t==='word'?gdFramesWord(q,k.steps):k.t==='sd'?gdFramesSD(k,q):gdFramesRatio(k,q)}
+function gdOpen(q,auto){const k=gdKind(q);if(!k)return false;return gdOpenF(gdFrames(q,k),auto,k.t)}
+function gdOpenF(F,auto,kind){
+ gdClose(true);GD={F,i:0,slow:false,tm:null,auto,done:false,kind};
  const el=document.createElement('div');el.id='gdov';el.className='gdov';el.setAttribute('role','dialog');el.setAttribute('aria-label','Hướng dẫn');
  el.innerHTML=`<div class="gdbox"><div class="gdhd"><b>${spr('bulb',20)} Hướng dẫn</b><span class="gdstep"></span><button type="button" class="gdx" onclick="gdClose()" aria-label="Đóng">✕</button></div><div class="gdstage"></div><div class="gdsay">${spr('jennyHappy',40)}<div class="gdbub"></div></div><div class="gdmcq"></div><div class="gdctl"><button type="button" onclick="gdReplay()">↺ Xem lại</button><button type="button" class="gdslow" onclick="gdSlow()">🐢 Chậm hơn</button><button type="button" class="gdgo" onclick="gdFinish()" disabled>Em làm lại ▶</button></div></div>`;
  document.body.appendChild(el);try{pixelize(el)}catch(e){}gdShow();return true}
