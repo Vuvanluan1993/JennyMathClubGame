@@ -11,7 +11,7 @@ const EN_W=['zero','one','two','three','four','five','six','seven','eight','nine
 const EN_TENS=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
 function enWord(n){if(n<20)return EN_W[n];if(n<100)return EN_TENS[Math.floor(n/10)]+(n%10?'-'+EN_W[n%10]:'');return String(n)}
 /* số đọc bằng chữ: "hai mươi lăm", "mười một", "bảy" */
-const VI_NUMW_RE=/(^|[\s(“"'])((?:(?:một|hai|ba|bốn|năm|sáu|bảy|tám|chín) mươi(?: (?:mốt|hai|ba|tư|bốn|lăm|năm|sáu|bảy|tám|chín))?)|(?:mười(?: (?:một|hai|ba|bốn|lăm|năm|sáu|bảy|tám|chín))?)|không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín)(?=[\s.,?!:;)”"']|$)/g;
+const VI_NUMW_RE=/(^|[\s(“"'\u0001])((?:(?:một|hai|ba|bốn|năm|sáu|bảy|tám|chín) mươi(?: (?:mốt|hai|ba|tư|bốn|lăm|năm|sáu|bảy|tám|chín))?)|(?:mười(?: (?:một|hai|ba|bốn|lăm|năm|sáu|bảy|tám|chín))?)|không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín)(?=[\s.,?!:;)”"'\u0001]|$)/g;
 function viNumVal(w){const p=w.split(' ');if(p[0]==='mười')return 10+(p[1]?VI_DIG[p[1]]:0);if(p[1]==='mươi')return VI_DIG[p[0]]*10+(p[2]?VI_DIG[p[2]]:0);return VI_DIG[p[0]]}
 let EN_NOUN_RE=null;
 function enNounRe(){if(EN_NOUN_RE)return EN_NOUN_RE;const ks=Object.keys(EN_NOUN).sort((a,b)=>b.length-a.length).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));EN_NOUN_RE=ks.length?new RegExp('(?<![A-Za-zÀ-ỹ])('+ks.join('|')+')(?![A-Za-zÀ-ỹ])','gi'):/$^/;return EN_NOUN_RE}
@@ -28,20 +28,26 @@ function trKey(s){const tags=[],nums=[],words=[],nouns=[];
 const enNum=v=>{const n=Number(String(v).replace(/[  ]/g,'').replace(',','.'));return isNaN(n)?null:n};
 function enPlural(vi,n){const e=EN_NOUN[vi];if(!e)return vi;return n===1?e[0]:e[1]}
 function trFill(t,P){const it={'#':0,'{w}':0,'{o}':0,'<>':0};let last=null,out='';
- const re=/<>|#(\d+)?|\{w(\d+)?\}|\{o(\d+)?(?::([sp]))?\}|\{W(\d+)?\}/g;let m,i=0;
+ const re=/<>|#(\d+)?|\{w(\d+)?\}|\{o(\d+)?(?::([spSP]))?\}|\{W(\d+)?\}|\{be\}|\{a\}/g;let m,i=0;
  while((m=re.exec(t))){out+=t.slice(i,m.index);i=re.lastIndex;const tok=m[0];
   if(tok==='<>'){out+=P.tags[it['<>']++]??''}
+  else if(tok==='{a}'){out+='\u0005'}
+  else if(tok==='{be}'){/* is/are theo số đứng ngay sau */const r=t.slice(i),j=r.search(/#|\{w|\{W/);let v=null;if(j>=0){const n=r.slice(j).match(/^#(\d+)?|^\{[wW](\d+)?\}/);if(n&&n[0][0]==='#')v=enNum(P.nums[n[1]?n[1]-1:it['#']]);else if(n)v=P.words[n[2]?n[2]-1:it['{w}']]}out+=v===1?'is':'are'}
   else if(tok[0]==='#'){const v=P.nums[m[1]?m[1]-1:it['#']++];out+=v??'';last=enNum(v)}
   else if(tok.startsWith('{w')){const v=P.words[m[2]?m[2]-1:it['{w}']++];out+=v==null?'':enWord(v);last=v}
   else if(tok.startsWith('{W')){const v=P.words[m[5]?m[5]-1:it['{w}']++];out+=v==null?'':String(v);last=v}
-  else{const vi=P.nouns[m[3]?m[3]-1:it['{o}']++];const f=m[4];out+=vi==null?'':enPlural(vi,f==='s'?1:f==='p'?2:(last==null?1:last));}}
- out+=t.slice(i);return out}
+  else{const vi=P.nouns[m[3]?m[3]-1:it['{o}']++];const f=m[4];let w=vi==null?'':enPlural(vi,/[sS]/.test(f||'')?1:/[pP]/.test(f||'')?2:(last==null?1:last));if(f&&f===f.toUpperCase())w=w.charAt(0).toUpperCase()+w.slice(1);out+=w}}
+ out+=t.slice(i);
+ /* a/an theo chữ đứng sau (bỏ qua thẻ) */
+ out=out.replace(/\u0005(\s*(?:<[^>]*>\s*)*)([A-Za-z])?/g,(x,sp,c)=>(c&&/[aeiouAEIOU]/.test(c)?'an':'a')+sp+(c||''));
+ return out}
 function trOne(s){const P=trKey(s),t=EN_T[P.key];if(t==null)return null;let r=trFill(t,P);const a=String(s).replace(/<[^>]*>/g,'').trim().charAt(0),b=r.replace(/<[^>]*>/g,'').trim().charAt(0);if(a&&a===a.toUpperCase()&&a!==a.toLowerCase()&&b&&b!==b.toUpperCase()){const i=r.indexOf(b,r.search(/(?:^|>)[^<]/));r=r.slice(0,i)+b.toUpperCase()+r.slice(i+1)}return r}
-/* dịch một chuỗi (có thể có thẻ HTML); không thấy khuôn thì dịch từng câu */
-function trEN(s){if(s==null||typeof s!=='string'||!/[À-ỹđĐ]|[a-z]/i.test(s.replace(/<[^>]*>/g,'')))return s;let r=trOne(s);if(r!=null)return r;
- /* tách câu, giữ thẻ đi kèm */const parts=s.split(/(?<=[.?!:])\s+(?=[^\s])/);if(parts.length>1){const tr=parts.map(p=>{const x=trOne(p);return x==null?p:x});return tr.join(' ')}
- /* chuỗi có thẻ HTML: thử dịch từng đoạn chữ giữa các thẻ */if(/<[^>]+>/.test(s))return s.replace(/>([^<]+)</g,(m,txt)=>{const x=trOne(txt.trim());return x==null?m:'>'+txt.replace(txt.trim(),x)+'<'});
- return s}
+/* dịch một chuỗi (có thể có thẻ HTML): thử cả chuỗi → từng câu → từng đoạn chữ giữa các thẻ */
+function enSplit(s){const m=s.replace(/<[^>]*>/g,x=>'\u0001'.repeat(x.length)),re=/(?<=[.?!:])\s+(?=[^\s])/g,out=[];let i=0,k;while((k=re.exec(m))){out.push(s.slice(i,k.index));i=k.index+k[0].length}out.push(s.slice(i));return out}
+function trSeg(t){const s=t.trim();if(!s||!/[A-Za-zÀ-ỹđĐ]/.test(s))return t;let x=trOne(s);if(x==null){const ps=enSplit(s);if(ps.length>1){const tr=ps.map(trOne);if(tr.some(v=>v!=null))x=ps.map((p,i)=>tr[i]??p).join(' ')}}return x==null?t:t.replace(s,x)}
+function trEN(s){if(s==null||typeof s!=='string'||!/[À-ỹđĐ]|[a-z]/i.test(s.replace(/<[^>]*>/g,'')))return s;const r=trOne(s);if(r!=null)return r;
+ const tg=/<[^>]+>/.test(s),parts=enSplit(s);
+ return parts.map(p=>{const x=trOne(p);if(x!=null)return x;return tg&&/<[^>]+>/.test(p)?p.replace(/(^|>)([^<]+)(?=<|$)/g,(m,a,txt)=>a+trSeg(txt)):trSeg(p)}).join(' ')}
 const enOn=()=>LANG==='en'&&EN_GR.has(+(typeof curG==='function'?curG():0));
 const EN_GR=new Set();/* các lớp đã dịch xong (48b… tự thêm) */
 /* câu hỏi: dịch các trường khi sinh câu */

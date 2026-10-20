@@ -8061,8 +8061,13 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbr{font-family:var(--f-body);font-size:14px;line-height:1.25;color:#E0441A;align-self:center;white-space:nowrap}.gdbr b{font-size:16px}
 .gdbtn{display:inline-flex!important;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
 </style>`);
+/* Chế độ tối: hộp hướng dẫn luôn dùng màu sáng (nền kem, chữ xanh đậm) để chữ rõ */
+document.head.insertAdjacentHTML('beforeend',`<style>
+.gdbox{color-scheme:light;--ink:#13263a;--muted:#566779;--surface:#ffffff;--surface2:#f6f9fb;--sea-ink:#ffffff;--pxk:#1F2A5A;--bg:#EEF2F8;--sea:#0079C1;--sea-deep:#1F2A5A;--sea-soft:#DDF3FB;--leaf:#1E9A52;--leaf-soft:#E3F7EA;--sun:#FCB40C;--sun-soft:#FFF4D6;--sun-ink:#7A4E00;--coral:#E0441A;--coral-soft:#FDE6DE;--line:#C9D1E6;color:#13263a;background:#fff}
+.gdbox button{color:#1F2A5A}.gdbox .gdgo{color:#1F2A5A}
+</style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='20/10 · 13:08';
+const APP_VER='20/10 · 13:16';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -8427,7 +8432,7 @@ const EN_W=['zero','one','two','three','four','five','six','seven','eight','nine
 const EN_TENS=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
 function enWord(n){if(n<20)return EN_W[n];if(n<100)return EN_TENS[Math.floor(n/10)]+(n%10?'-'+EN_W[n%10]:'');return String(n)}
 /* số đọc bằng chữ: "hai mươi lăm", "mười một", "bảy" */
-const VI_NUMW_RE=/(^|[\s(“"'])((?:(?:một|hai|ba|bốn|năm|sáu|bảy|tám|chín) mươi(?: (?:mốt|hai|ba|tư|bốn|lăm|năm|sáu|bảy|tám|chín))?)|(?:mười(?: (?:một|hai|ba|bốn|lăm|năm|sáu|bảy|tám|chín))?)|không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín)(?=[\s.,?!:;)”"']|$)/g;
+const VI_NUMW_RE=/(^|[\s(“"'\u0001])((?:(?:một|hai|ba|bốn|năm|sáu|bảy|tám|chín) mươi(?: (?:mốt|hai|ba|tư|bốn|lăm|năm|sáu|bảy|tám|chín))?)|(?:mười(?: (?:một|hai|ba|bốn|lăm|năm|sáu|bảy|tám|chín))?)|không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín)(?=[\s.,?!:;)”"'\u0001]|$)/g;
 function viNumVal(w){const p=w.split(' ');if(p[0]==='mười')return 10+(p[1]?VI_DIG[p[1]]:0);if(p[1]==='mươi')return VI_DIG[p[0]]*10+(p[2]?VI_DIG[p[2]]:0);return VI_DIG[p[0]]}
 let EN_NOUN_RE=null;
 function enNounRe(){if(EN_NOUN_RE)return EN_NOUN_RE;const ks=Object.keys(EN_NOUN).sort((a,b)=>b.length-a.length).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));EN_NOUN_RE=ks.length?new RegExp('(?<![A-Za-zÀ-ỹ])('+ks.join('|')+')(?![A-Za-zÀ-ỹ])','gi'):/$^/;return EN_NOUN_RE}
@@ -8444,20 +8449,26 @@ function trKey(s){const tags=[],nums=[],words=[],nouns=[];
 const enNum=v=>{const n=Number(String(v).replace(/[  ]/g,'').replace(',','.'));return isNaN(n)?null:n};
 function enPlural(vi,n){const e=EN_NOUN[vi];if(!e)return vi;return n===1?e[0]:e[1]}
 function trFill(t,P){const it={'#':0,'{w}':0,'{o}':0,'<>':0};let last=null,out='';
- const re=/<>|#(\d+)?|\{w(\d+)?\}|\{o(\d+)?(?::([sp]))?\}|\{W(\d+)?\}/g;let m,i=0;
+ const re=/<>|#(\d+)?|\{w(\d+)?\}|\{o(\d+)?(?::([spSP]))?\}|\{W(\d+)?\}|\{be\}|\{a\}/g;let m,i=0;
  while((m=re.exec(t))){out+=t.slice(i,m.index);i=re.lastIndex;const tok=m[0];
   if(tok==='<>'){out+=P.tags[it['<>']++]??''}
+  else if(tok==='{a}'){out+='\u0005'}
+  else if(tok==='{be}'){/* is/are theo số đứng ngay sau */const r=t.slice(i),j=r.search(/#|\{w|\{W/);let v=null;if(j>=0){const n=r.slice(j).match(/^#(\d+)?|^\{[wW](\d+)?\}/);if(n&&n[0][0]==='#')v=enNum(P.nums[n[1]?n[1]-1:it['#']]);else if(n)v=P.words[n[2]?n[2]-1:it['{w}']]}out+=v===1?'is':'are'}
   else if(tok[0]==='#'){const v=P.nums[m[1]?m[1]-1:it['#']++];out+=v??'';last=enNum(v)}
   else if(tok.startsWith('{w')){const v=P.words[m[2]?m[2]-1:it['{w}']++];out+=v==null?'':enWord(v);last=v}
   else if(tok.startsWith('{W')){const v=P.words[m[5]?m[5]-1:it['{w}']++];out+=v==null?'':String(v);last=v}
-  else{const vi=P.nouns[m[3]?m[3]-1:it['{o}']++];const f=m[4];out+=vi==null?'':enPlural(vi,f==='s'?1:f==='p'?2:(last==null?1:last));}}
- out+=t.slice(i);return out}
+  else{const vi=P.nouns[m[3]?m[3]-1:it['{o}']++];const f=m[4];let w=vi==null?'':enPlural(vi,/[sS]/.test(f||'')?1:/[pP]/.test(f||'')?2:(last==null?1:last));if(f&&f===f.toUpperCase())w=w.charAt(0).toUpperCase()+w.slice(1);out+=w}}
+ out+=t.slice(i);
+ /* a/an theo chữ đứng sau (bỏ qua thẻ) */
+ out=out.replace(/\u0005(\s*(?:<[^>]*>\s*)*)([A-Za-z])?/g,(x,sp,c)=>(c&&/[aeiouAEIOU]/.test(c)?'an':'a')+sp+(c||''));
+ return out}
 function trOne(s){const P=trKey(s),t=EN_T[P.key];if(t==null)return null;let r=trFill(t,P);const a=String(s).replace(/<[^>]*>/g,'').trim().charAt(0),b=r.replace(/<[^>]*>/g,'').trim().charAt(0);if(a&&a===a.toUpperCase()&&a!==a.toLowerCase()&&b&&b!==b.toUpperCase()){const i=r.indexOf(b,r.search(/(?:^|>)[^<]/));r=r.slice(0,i)+b.toUpperCase()+r.slice(i+1)}return r}
-/* dịch một chuỗi (có thể có thẻ HTML); không thấy khuôn thì dịch từng câu */
-function trEN(s){if(s==null||typeof s!=='string'||!/[À-ỹđĐ]|[a-z]/i.test(s.replace(/<[^>]*>/g,'')))return s;let r=trOne(s);if(r!=null)return r;
- /* tách câu, giữ thẻ đi kèm */const parts=s.split(/(?<=[.?!:])\s+(?=[^\s])/);if(parts.length>1){const tr=parts.map(p=>{const x=trOne(p);return x==null?p:x});return tr.join(' ')}
- /* chuỗi có thẻ HTML: thử dịch từng đoạn chữ giữa các thẻ */if(/<[^>]+>/.test(s))return s.replace(/>([^<]+)</g,(m,txt)=>{const x=trOne(txt.trim());return x==null?m:'>'+txt.replace(txt.trim(),x)+'<'});
- return s}
+/* dịch một chuỗi (có thể có thẻ HTML): thử cả chuỗi → từng câu → từng đoạn chữ giữa các thẻ */
+function enSplit(s){const m=s.replace(/<[^>]*>/g,x=>'\u0001'.repeat(x.length)),re=/(?<=[.?!:])\s+(?=[^\s])/g,out=[];let i=0,k;while((k=re.exec(m))){out.push(s.slice(i,k.index));i=k.index+k[0].length}out.push(s.slice(i));return out}
+function trSeg(t){const s=t.trim();if(!s||!/[A-Za-zÀ-ỹđĐ]/.test(s))return t;let x=trOne(s);if(x==null){const ps=enSplit(s);if(ps.length>1){const tr=ps.map(trOne);if(tr.some(v=>v!=null))x=ps.map((p,i)=>tr[i]??p).join(' ')}}return x==null?t:t.replace(s,x)}
+function trEN(s){if(s==null||typeof s!=='string'||!/[À-ỹđĐ]|[a-z]/i.test(s.replace(/<[^>]*>/g,'')))return s;const r=trOne(s);if(r!=null)return r;
+ const tg=/<[^>]+>/.test(s),parts=enSplit(s);
+ return parts.map(p=>{const x=trOne(p);if(x!=null)return x;return tg&&/<[^>]+>/.test(p)?p.replace(/(^|>)([^<]+)(?=<|$)/g,(m,a,txt)=>a+trSeg(txt)):trSeg(p)}).join(' ')}
 const enOn=()=>LANG==='en'&&EN_GR.has(+(typeof curG==='function'?curG():0));
 const EN_GR=new Set();/* các lớp đã dịch xong (48b… tự thêm) */
 /* câu hỏi: dịch các trường khi sinh câu */
@@ -8487,7 +8498,16 @@ Object.assign(EN_NOUN,{
  'củ cà rốt':['carrot','carrots'],'cái cốc':['cup','cups'],'chiếc ô tô':['car','cars'],'chú bọ rùa':['ladybird','ladybirds'],'quả bóng':['ball','balls'],'quả trứng':['egg','eggs'],
  'chiếc lá':['leaf','leaves'],'con chim':['bird','birds'],'cái kẹo':['sweet','sweets'],'quyển truyện':['storybook','storybooks'],'quả cam':['orange','oranges'],'viên bi':['marble','marbles'],
  'chiếc lược':['comb','combs'],'cái thước':['ruler','rulers'],'cây bút':['pen','pens'],'que tính':['counting stick','counting sticks'],'bút chì':['pencil','pencils'],'bút màu':['crayon','crayons'],
- 'thước kẻ':['ruler','rulers'],'cục tẩy':['rubber','rubbers'],'quyển vở':['exercise book','exercise books']});
+ 'thước kẻ':['ruler','rulers'],'cục tẩy':['rubber','rubbers'],'quyển vở':['exercise book','exercise books'],
+ 'đồng xu':['coin','coins'],'ngón tay':['finger','fingers'],'ngón':['finger','fingers'],'hình tam giác':['triangle','triangles'],'hình vuông':['square','squares'],'hình tròn':['circle','circles'],'hình chữ nhật':['rectangle','rectangles'],
+ 'khối lập phương':['cube','cubes'],'khối hộp chữ nhật':['cuboid','cuboids'],'khối trụ':['cylinder','cylinders'],
+ 'chiếc đĩa ăn cơm':['dinner plate','dinner plates'],'viên gạch xây nhà':['building brick','building bricks'],'bánh xe đạp':['bicycle wheel','bicycle wheels'],'biển báo nguy hiểm':['warning sign','warning signs'],
+ 'cánh cửa ra vào':['front door','front doors'],'mặt bàn học':['desk top','desk tops'],'miếng bánh mì kẹp cắt chéo':['sandwich cut corner to corner','sandwiches cut corner to corner'],'mặt con xúc xắc':['face of a dice','faces of a dice'],
+ 'mặt chiếc đồng hồ treo tường':['face of a wall clock','faces of wall clocks'],'chiếc khăn tay vuông':['square handkerchief','square handkerchiefs'],'lá cờ đuôi nheo':['pennant flag','pennant flags'],
+ 'bao diêm':['matchbox','matchboxes'],'hộp bút':['pencil case','pencil cases'],'con xúc xắc':['dice','dice'],'viên gạch':['brick','bricks'],'hộp sữa tươi':['milk carton','milk cartons'],
+ 'khối ru-bích':['Rubik\'s cube',"Rubik's cubes"],'khối rubik':["Rubik's cube","Rubik's cubes"],'thùng các-tông đựng tủ lạnh':['fridge cardboard box','fridge cardboard boxes'],'cái tủ lạnh':['fridge','fridges'],
+ 'hộp quà hình vuông':['square gift box','square gift boxes'],'ô cửa sổ nhỏ hình bốn cạnh bằng nhau':['small window with four equal sides','small windows with four equal sides'],
+});
 EN_NOUN_RE=null;
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
