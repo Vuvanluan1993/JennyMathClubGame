@@ -737,3 +737,16 @@ u.hl{text-decoration:none;background:var(--sun);padding:0 2px}
 .hero[class*="ocean"]{box-shadow:var(--f3),0 6px 0 0 var(--pxk),inset 0 -6px 0 0 var(--oc)!important}
 .ocname{display:inline-block;margin-bottom:4px;padding:1px 8px;background:var(--oc);color:#1F2A5A;font-weight:800;font-size:12px;box-shadow:var(--f2)}
 .tstrip .tchip.on{background:var(--oc,var(--sun))!important}
+/* hai hàng ghép đôi thẳng cột; so sánh hai nhóm luôn nằm cạnh nhau */
+.g1cell{display:inline-flex;justify-content:center;align-items:center}
+.g1row:has(.g1cell){gap:0}
+.g1rows{max-width:100%;box-sizing:border-box;overflow:hidden}
+.g1vsn{flex-wrap:nowrap;gap:8px}.g1vsn .g1grp.sm{max-width:142px;gap:4px;padding:6px}.g1vsn>b{flex:none}
+/* bảng trong màn chơi: vừa khung điện thoại (bảng chung của trang giáo viên có min-width 640px) */
+.game table,.gdov table{min-width:0;width:auto;max-width:100%;margin:0 auto}
+.game th,.gdov th{text-transform:none;letter-spacing:0;font-size:13px}
+.game td,.game th{padding:6px 8px}
+.g1bub table{font-size:14px}.g1bub td,.g1bub th{padding:4px 6px}
+.game .lstab td img.px{width:auto!important;height:20px!important}.game .lstab td{white-space:normal}
+.game .g1grp:has(>table){display:block;max-width:calc(100% - 6px);box-sizing:border-box;overflow:visible}.game .g1grp>table.lstab{width:100%;margin:0}
+.game .lstab th,.game .lstab td,.lslide .lstab th,.lslide .lstab td{border:3px solid var(--ink)!important}

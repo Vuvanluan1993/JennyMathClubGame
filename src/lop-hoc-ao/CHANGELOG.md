@@ -1,5 +1,14 @@
 # Lịch sử thay đổi
 
+## 2026-10-20 — Rà soát khung hình và cân bằng hai chiều câu hỏi
+- So sánh qua hình ("Chọn dấu đúng: 5 … 4"): hai nhóm luôn nằm ngang hàng hai bên dấu "…", đồ vật tự thu nhỏ cho vừa.
+- Hai hàng ghép đôi (bóng bay – cá…): mỗi đồ vật nằm trong một ô cùng bề rộng nên thẳng cột từng cặp, cả khung luôn vừa màn hình 360px.
+- Bảng số liệu, biểu đồ tranh trong màn chơi (lớp 2–5): không còn tràn ra ngoài màn hình (trước bị bảng chung của trang giáo viên ép rộng 640px); đủ viền mọi ô; hình trong ô thu nhỏ cho vừa.
+- Lớp 1 "Chạm vào khung có … nhất": một nửa hỏi ít nhất, một nửa hỏi nhiều nhất. Lớp 2 "Loại đồ vật nào có …": nhiều nhất hoặc ít nhất.
+- Mọi bài sắp xếp (lớp 1–5, số, phân số, số thập phân, số đo): một nửa hỏi "từ bé đến lớn", một nửa "từ lớn đến bé".
+- Bài "… nào lớn nhất?" / "… nào bé nhất?" (kết quả phép tính, phân số, số…): một nửa đổi chiều khi tính được giá trị các phương án.
+- Thêm công cụ rà khung hình: mọi dạng câu của lớp 1–5 được dựng ở khổ 360px, kiểm tra phần tử tràn màn hình, tràn khung, hai nhóm so sánh không ngang hàng.
+
 ## 2026-10-20 — Hướng dẫn bài dùng tính chất
 - "Biết 1 + 7 = 8. Vậy 7 + 1 = ?" (lớp 1) và "a + b = b + ☐" (lớp 4): không hướng dẫn cách cộng nữa mà nhắc tính chất. Hai phép tính tô cùng màu cho cùng một số, mũi tên ⇄; Jenny nói "Đổi chỗ các số hạng thì tổng không đổi. Không cần tính lại!"; hỏi trắc nghiệm rồi chốt "7 cộng 1 cũng bằng 8".
 - "Biết 2 × 10 = 20. Vậy 20 : 2 = ?" (lớp 2): "Từ một phép nhân viết được hai phép chia — lấy tích chia cho thừa số này thì được thừa số kia".
