@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 2026-10-20 — Hướng dẫn chỉ có trong Luyện lỗi; lỗi trò chơi vào sổ; thêm 3 dạng đếm
+- Thống nhất với thầy: màn học và trò chơi không hiện hướng dẫn, học sinh làm/chơi bình thường; câu sai lần đầu được ghi vào sổ lỗi kèm đúng câu đó và đáp án em đã chọn/ghi.
+- Lỗi trong trò chơi (Ếch nhảy, Thả mồi, Trồng cây, Leo núi, Đập chuột…) cũng được ghi vào sổ lỗi, có tên trò.
+- Luyện lỗi: câu 1 là đúng câu em đã sai, có dòng "Lần trước em chọn 8, chưa đúng. Em làm lại nhé!"; câu 2 là câu giống vậy với số mới. Có nút "Xem cách làm" để xem trước. Sai thì hướng dẫn tự mở ngay; xem xong làm lại câu đó (không tính vào sửa lỗi). Đúng 2 lần liền thì lỗi ra khỏi sổ như cũ. Thẻ "Chưa đúng" trong Luyện lỗi không còn ghi "mất 1 tim".
+- Thêm hướng dẫn đếm lớp 1: tìm khung có đúng số lượng (đếm từng khung, ghi số dưới khung, khung đúng tô xanh); xếp hình bằng hình vuông (đánh số từng ô); đếm khối lập phương (đếm từng cột, từ dưới lên, ghi "2 + 2 = 4").
+- Chỉ lưu lại nguyên câu cũ cho 30 lỗi gần nhất để không đầy bộ nhớ máy; lỗi cũ hơn thì luyện bằng câu cùng dạng.
+
 ## 2026-10-20 — Hướng dẫn khi đếm sai (lớp 1)
 - Bài "Có mấy …?" và "Có mấy hình …?" trong phạm vi 10: hướng dẫn khoanh lần lượt từng đối tượng bằng vòng pixel đỏ, đánh số 1, 2, 3… ngay góc vòng, Jenny đếm to; đối tượng cuối cùng được khoanh là số cần tìm.
 - Jenny nhắc cách đếm: từ trái sang phải, từ trên xuống dưới, đếm cái nào khoanh cái đó để không sót, không đếm hai lần.

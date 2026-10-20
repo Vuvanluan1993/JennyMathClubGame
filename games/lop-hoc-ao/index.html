@@ -7968,19 +7968,19 @@ function gdSlow(){if(!GD)return;GD.slow=!GD.slow;const b=document.querySelector(
 function gdClose(silent){if(GD)clearTimeout(GD.tm);const el=document.getElementById('gdov');if(el)el.remove();if(!silent){try{speechSynthesis.cancel()}catch(e){}}GD=null}
 /* xem xong: làm lại câu vừa sai (không mất tim), đúng thì thêm 1 câu tương tự */
 function gdFinish(){const auto=GD&&GD.auto;gdClose();const g=scr;if(!g||g.k!=='game')return;
- if(g.sheet&&g.sheet.kind==='retry'){retry1();return}
- if(g.sheet&&g.sheet.kind==='bad'){g.gdRedo={stage:'same'};g.sheet=null;g.mad=0;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;render()}}
+ if(g.sheet&&(g.sheet.kind==='bad'||g.sheet.kind==='retry')){g.gdRedo={stage:'same'};g.sheet=null;g.mad=0;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;render()}}
 function gdSimilar(q){try{if(!q.src)return null;const x=isl1(q.src[0])||(typeof ju1==='function'&&ju1(q.src[0]));const gn=x&&x.lv&&x.lv[q.src[1]]&&x.lv[q.src[1]][q.src[2]];if(!gn)return null;
   /* câu tương tự: cùng dạng, cùng chiều (cùng phép tính, cùng chỗ trống, cùng kiểu thêm/bớt) */
   const qk=x=>gdTxt(x.q)+'|'+String(x.pic||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' '),t0=qk(q),k0=gdKind(q),sig=(qq,k)=>{if(!k)return'';const ops=k.t==='word'?k.steps.map(s=>s.op).join(''):(k.op||'');const w=gdTxt(qq.q);return [k.t,ops,k.miss||'',/thêm|nữa|tất cả|cả hai/.test(w)?'+':'',/bớt|còn lại|cho đi|bay đi|ăn/.test(w)?'-':'',/ít hơn|kém/.test(w)?'<':'',/nhiều hơn|hơn/.test(w)&&!/ít hơn/.test(w)?'>':''].join('|')};
   const want=sig(q,k0);let any=null;for(let n=0;n<40;n++){const c=gn();if(qk(c)===t0)continue;if(!any)any=c;if(!k0||sig(c,gdKind(c))===want)return c}return any}catch(e){}return null}
-const gdOn=()=>{const g=scr;return g&&g.k==='game'&&g.g1&&!g.race&&!g.tre&&!g.cbo&&role==='hs'};
+/* thầy thống nhất 20/10: màn học và trò chơi không hiện hướng dẫn; chỉ có trong Luyện lỗi (fix) */
+const gdOn=()=>{const g=scr;return g&&g.k==='game'&&g.g1&&g.fix&&!g.race&&!g.tre&&!g.cbo&&role==='hs'};
 
 /* ---------- gắn vào luồng trả lời ---------- */
 {const _q1=q1;q1=function(){return scr&&scr.gdPq?scr.gdPq:_q1()}}
 {const _ans=ans1;ans1=function(v){const g=scr;if(!gdOn()||!g.gdRedo)return _ans(v);
   const q=q1(),ok=right1(q,v);
-  if(g.gdRedo.stage==='same'){if(ok){sfx('ok');const sim=gdSimilar(q);g.sheet={kind:'gdok',msg:sim?'Em làm đúng rồi! Làm thêm 1 câu giống vậy nhé.':'Em làm đúng rồi!',sim};sayJ(sim?'Đúng rồi! Mình làm thêm một câu giống vậy nhé.':'Đúng rồi!')}
+  if(g.gdRedo.stage==='same'){if(ok){sfx('ok');const nx=g.qs&&g.qs[g.j+1],sim=nx&&nx.key&&nx.key===q.key?null:gdSimilar(q);g.sheet={kind:'gdok',msg:sim?'Em làm đúng rồi! Làm thêm 1 câu giống vậy nhé.':'Em làm đúng rồi!',sim};sayJ(sim?'Đúng rồi! Mình làm thêm một câu giống vậy nhé.':'Đúng rồi!')}
    else{sfx('bad');g.sheet={kind:'gdbad'};sayJ('Chưa đúng. Mình xem đáp án nhé.')}}
   else{if(ok){sfx('ok');const c=addCoins(sid,2,'self');g.sheet={kind:'gdok',msg:'Giỏi quá! Em đã hiểu cách làm.'+(c?` +${c} xu`:'')};sayJ('Giỏi quá! Em đã hiểu cách làm rồi.')}
    else{sfx('bad');g.sheet={kind:'gdbad'};sayJ('Chưa đúng. Mình xem đáp án nhé.')}}
@@ -7994,10 +7994,10 @@ function gdAfter(skip){const g=scr,s=g.sheet;if(!skip&&s&&s.sim&&g.gdRedo&&g.gdR
  g.gdRedo=null;g.gdPq=null;next1()}
 {const _n=next1;next1=function(){if(scr){scr.gdRedo=null;scr.gdPq=null}gdClose(true);return _n.apply(this,arguments)}}
 /* sai lần 2: tự mở hướng dẫn (một lần cho mỗi câu) */
-{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(gdOn()&&g.sheet&&g.sheet.kind==='bad'&&!g.gdRedo){const q=q1(),key=(g.id||'')+':'+g.lv+':'+g.j+':'+g.t0;if(g.gdAuto!==key&&gdKind(q)){g.gdAuto=key;setTimeout(()=>{if(scr===g&&g.sheet&&g.sheet.kind==='bad'&&!document.getElementById('gdov'))gdOpen(q,true)},1400)}}
+{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(gdOn()&&g.sheet&&(g.sheet.kind==='bad'||g.sheet.kind==='retry')&&!g.gdRedo){const q=q1(),key=(g.id||'')+':'+g.lv+':'+g.j+':'+g.t0;if(g.gdAuto!==key&&gdKind(q)){g.gdAuto=key;setTimeout(()=>{if(scr===g&&g.sheet&&(g.sheet.kind==='bad'||g.sheet.kind==='retry')&&!document.getElementById('gdov'))gdOpen(q,true)},1200)}}
   if(!(scr&&scr.k==='game'))gdClose(true)}catch(e){}return r}}
 /* đọc đề câu làm lại / câu tương tự */
-{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(gdOn()&&g.gdRedo&&!g.sheet){const key='gd'+g.gdRedo.stage+g.j;if(g.gdSaid!==key){g.gdSaid=key;const q=q1();if(curG()<=2)setTimeout(()=>sayJ((g.gdRedo.stage==='same'?'Em làm lại câu này nhé. ':'Câu giống vậy nè. ')+sayFull(q.say,q.q)),300)}}}catch(e){}return r}}
+{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(gdOn()&&g.gdRedo&&!g.sheet){const key='gd'+g.gdRedo.stage+g.j;if(g.gdSaid!==key){g.gdSaid=key;const q=q1(),stg=g.gdRedo.stage;if(curG()<=2)setTimeout(()=>sayJ((stg==='same'?'Em làm lại câu này nhé. ':'Câu giống vậy nè. ')+sayFull(q.say,q.q)),300)}}}catch(e){}return r}}
 
 document.head.insertAdjacentHTML('beforeend',`<style>
 .gdov{position:fixed;inset:0;z-index:80;background:rgba(31,42,90,.55);display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box}
@@ -8032,7 +8032,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbtn{display:inline-flex!important;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='20/10 · 10:56';
+const APP_VER='20/10 · 11:14';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -8155,7 +8155,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 const GD_SHAPE={tr:'tam giác',sq:'vuông',ci:'tròn',rc:'chữ nhật'};
 let GD_SHSRC=null;
 function gdShapeOf(src){if(!GD_SHSRC){GD_SHSRC={};try{for(const k in PXS)if(/^sh_(tr|sq|ci|rc)_/.test(k))GD_SHSRC[pxURI(k).u]=k.slice(3,5)}catch(e){}}return GD_SHSRC[src]||null}
-function gdCountParse(q){if(curG()!==1||q.type!=='opt'||!q.pic||!/Đếm số lượng|Đếm hình/.test(q.kind||''))return null;
+function gdCountParse(q){if(curG()!==1||q.type!=='opt'||!q.pic||!/Đếm số lượng|Đếm hình|Lắp ghép, xếp hình/.test(q.kind||''))return null;
  const ans=Number(gdTxt(q.opts[q.a]&&q.opts[q.a].h||''));if(!(ans>=0&&ans<=10))return null;
  const t=document.createElement('template');t.innerHTML=q.pic;const imgs=[...t.content.querySelectorAll('img')];if(!imgs.length||imgs.length>16)return null;
  const qt=gdTxt(q.q),m=qt.match(/mấy\s+(.+?)\s*\?/),noun=m?m[1].trim():'đồ vật';let tgt;
@@ -8175,8 +8175,30 @@ function gdFramesCount(k,q){const F=[],{ans,noun}=k;
  for(let i=1;i<=ans;i++)F.push({h:gdCountPic(q,k,i,i,k.mixed),say:`${i}`,dur:i===1?1300:900});
  F.push({h:gdCountPic(q,k,ans,0,k.mixed)+gdEq(`<em>${ans}</em>`),say:`${noun.replace(/^./,c=>c.toUpperCase())} cuối cùng được khoanh là số ${ans}. Vậy có ${ans} ${noun}.`,dur:3000});return F}
 GD_EXT.push({t:'count',on:true,kind:gdCountParse,frames:gdFramesCount});
+/* đếm khối lập phương: đếm từng cột, từ dưới lên */
+function gdCubeParse(q){if(curG()!==1||q.type!=='opt'||!/Đếm khối lập phương/.test(q.kind||'')||!/<svg/.test(q.pic||''))return null;const ans=Number(gdTxt(q.opts[q.a]&&q.opts[q.a].h||''));
+ const t=document.createElement('template');t.innerHTML=q.pic;const cubes=[...t.content.querySelectorAll('rect[stroke]')].map(r=>({x:+r.getAttribute('x'),y:+r.getAttribute('y'),w:+r.getAttribute('width'),h:+r.getAttribute('height')})).filter(r=>r.w>=16);
+ if(cubes.length!==ans||!ans||ans>12)return null;cubes.sort((a,b)=>a.x-b.x||b.y-a.y);const cols=[];cubes.forEach(c=>{let col=cols.find(k=>Math.abs(k.x-c.x)<4);if(!col)cols.push(col={x:c.x,n:0});col.n++});return{ans,cubes,cols:cols.map(c=>c.n)}}
+function gdCubePic(q,k,shown){const t=document.createElement('template');t.innerHTML=q.pic;const svg=t.content.querySelector('svg');if(!svg)return'';
+ k.cubes.slice(0,shown).forEach((c,i)=>{svg.insertAdjacentHTML('beforeend',`<rect x="${c.x+3}" y="${c.y+3}" width="${c.w-6}" height="${c.h-6}" fill="none" stroke="#E0441A" stroke-width="3"/><rect x="${c.x+c.w/2-6}" y="${c.y+c.h/2-6}" width="12" height="12" fill="${i===shown-1?'#1F2A5A':'#E0441A'}"/><text x="${c.x+c.w/2}" y="${c.y+c.h/2+4}" text-anchor="middle" font-family="VT323" font-size="12" fill="#fff">${i+1}</text>`)});
+ return `<div class="gdcntw">${t.innerHTML}</div>`}
+function gdFramesCube(k,q){const F=[];F.push({h:gdCubePic(q,k,0),say:`Mình đếm từng cột, mỗi cột đếm từ dưới lên. Đếm khối nào thì đánh dấu khối đó.`,dur:3000});
+ let n=0;k.cols.forEach((m,ci)=>{for(let j=0;j<m;j++){n++;F.push({h:gdCubePic(q,k,n),say:j===0&&ci>0?`Cột tiếp theo: ${n}`:`${n}`,dur:n===1?1300:900})}});
+ F.push({h:gdCubePic(q,k,k.ans)+gdEq(k.cols.length>1?`${k.cols.join(' + ')} = <em>${k.ans}</em>`:`<em>${k.ans}</em>`),say:`${k.cols.length>1?`Các cột có ${k.cols.join(', ')} khối. `:''}Tất cả có ${k.ans} khối lập phương.`,dur:3000});return F}
+GD_EXT.push({t:'cube',on:true,kind:gdCubeParse,frames:gdFramesCube});
+/* tìm khung có đúng số lượng: đếm từng khung, ghi số dưới khung */
+function gdBoxParse(q){if(curG()!==1||q.type!=='opt'||!/Tìm khung đúng số lượng/.test(q.kind||''))return null;const m=gdTxt(q.q).match(/có\s+(\d+)\s+(.+?)\.?$/);if(!m)return null;
+ const want=+m[1],noun=m[2].trim(),cnt=q.opts.map(o=>{const t=document.createElement('template');t.innerHTML=o.h;return t.content.querySelectorAll('img').length});if(cnt[q.a]!==want)return null;return{want,noun,cnt,a:q.a}}
+function gdBoxPic(q,k,upto,cur,shown){/* upto: số khung đã đếm xong; cur: khung đang đếm, shown: số đã khoanh trong khung đó */return `<div class="gdboxes">${q.opts.map((o,i)=>{const t=document.createElement('template');t.innerHTML=o.h;let n=0;
+  [...t.content.querySelectorAll('img')].forEach(im=>{const w=document.createElement('span');w.className='gdcnt';n++;const lim=i<upto?99:i===cur?shown:0;if(n<=lim){w.classList.add('on');if(i===cur&&n===shown)w.classList.add('cur');w.insertAdjacentHTML('beforeend',`<b>${n}</b>`)}im.replaceWith(w);w.prepend(im)});
+  const done=i<upto,ok=done&&k.cnt[i]===k.want;return `<div class="gdbx${ok?' ok':''}${i===cur?' cur':''}">${t.innerHTML}<i>${done?k.cnt[i]:''}</i></div>`}).join('')}</div>`}
+function gdFramesBox(k,q){const F=[];F.push({h:gdBoxPic(q,k,0,-1,0),say:`Cần tìm khung có ${k.want} ${k.noun}. Mình đếm lần lượt từng khung, khoanh từng ${k.noun.split(' ')[0]} một.`,dur:3000});
+ k.cnt.forEach((c,i)=>{for(let j=1;j<=c;j++)F.push({h:gdBoxPic(q,k,i,i,j),say:`${j}`,dur:650});F.push({h:gdBoxPic(q,k,i+1,-1,0),say:`Khung ${i+1} có ${c} ${k.noun}.${c===k.want?' Đúng rồi!':''}`,dur:1700})});
+ F.push({h:gdBoxPic(q,k,k.cnt.length,-1,0),say:`Khung thứ ${k.a+1} có đúng ${k.want} ${k.noun}.`,dur:2600});return F}
+GD_EXT.push({t:'box',on:true,kind:gdBoxParse,frames:gdFramesBox});
 document.head.insertAdjacentHTML('beforeend',`<style>
-.gdcntw .g1grp{max-width:300px}
+.gdcntw .g1grp{max-width:300px}.g1cellfig .gdcnt{padding:0}.g1cellfig .gdcnt.on::after{inset:0;background:rgba(255,255,255,.55)}.g1cellfig .gdcnt b{right:auto;top:50%;left:50%;transform:translate(-50%,-50%);min-width:20px;height:20px;line-height:20px;font-size:20px;background:#1F2A5A}.g1cellfig .gdcnt.cur b{background:#E0441A}
+.gdboxes{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.gdbx{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px;background:#fff;box-shadow:0 0 0 3px #C9D1E6}.gdbx.cur{box-shadow:0 0 0 3px #FCB40C}.gdbx.ok{box-shadow:0 0 0 3px #1E9A52;background:#E3F7EA}.gdbx>i{font-style:normal;font-family:var(--f-display);font-size:26px;line-height:1;min-height:26px;color:#1F2A5A}.gdbx .g1grp.sm{max-width:96px;padding:2px}.gdbx .gdcnt{padding:2px}.gdbx .gdcnt b{font-size:14px;min-width:14px;height:14px;line-height:14px;right:-4px;top:-6px}
 .gdcnt{position:relative;display:inline-block;padding:4px;line-height:0}
 .gdcnt.on::after{content:"";position:absolute;inset:-2px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' preserveAspectRatio='none' shape-rendering='crispEdges'%3E%3Cpath d='M3 0h6v1H3zM1 1h2v1H1zM9 1h2v1H9zM0 2h1v1H0zM11 2h1v1h-1zM0 3h1v6H0zM11 3h1v6h-1zM0 9h1v1H0zM11 9h1v1h-1zM1 10h2v1H1zM9 10h2v1H9zM3 11h6v1H3z' fill='%23E0441A'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
 .gdcnt.cur::after{filter:drop-shadow(0 0 0 #E0441A);animation:gdpop3 .25s steps(3)}
@@ -8184,6 +8206,40 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdcnt.cur b{background:#1F2A5A}
 .gdcnt.dim img{opacity:.25;filter:grayscale(1)}
 @keyframes gdpop3{from{transform:scale(1.3)}to{transform:none}}
+</style>`);
+/* 43 — Luyện lỗi có hướng dẫn (thống nhất với thầy 20/10)
+   - Màn học và trò chơi: học sinh làm, chơi bình thường; câu sai lần đầu được ghi vào sổ lỗi, kèm đúng câu đó và đáp án em đã chọn.
+   - Lỗi trong trò chơi (Ếch nhảy, Thả mồi, Trồng cây, Leo núi, Đập chuột…) cũng được ghi vào sổ.
+   - Luyện lỗi: nêu lại đúng câu em đã sai ("Lần trước em chọn …"), em làm lại; câu sau là câu tương tự với số mới.
+     Sai thì hướng dẫn tự mở; có nút "Xem cách làm" để xem trước khi làm. */
+const GD_GAME={frog:'Ếch nhảy',bait:'Thả mồi câu cá',plant:'Trồng cây',climb:'Leo núi',mole:'Đập chuột',pair:'Lật thẻ',star:'Hứng sao',tug:'Kéo co',clock:'Đồng hồ',scale:'Cân thăng bằng',shop:'Cửa hàng',train:'Tàu hoả',shape:'Ghép hình'};
+function gdSnap(q){try{const c=JSON.parse(JSON.stringify(q));return JSON.stringify(c).length<40000?c:null}catch(e){return null}}
+function gdShowAns(q,v){try{if(q.type==='opt'){const h=gdTxt(q.opts[v]&&q.opts[v].h||'');return h&&h.length<=24?h:''}if(q.type==='num')return String(v);if(q.type==='tf')return v?'Đúng':'Sai'}catch(e){}return''}
+function gdMistNote(q,extra){if(!q||!q.key)return;const M=mist(S.st[sid]),e=M[q.key];if(!e)return;const sn=gdSnap(q);if(sn)e.q=sn;Object.assign(e,extra);e.qt=Date.now();
+ /* giữ bản lưu câu cũ cho 30 lỗi gần nhất để bộ nhớ máy không đầy */const W=Object.values(M).filter(x=>x.q).sort((a,b)=>(b.qt||0)-(a.qt||0));W.slice(30).forEach(x=>{delete x.q})}
+/* màn học: ghi câu sai + đáp án đã chọn */
+{const _ans=ans1;ans1=function(v){const g=scr;let note=null;try{if(g&&g.k==='game'&&!g.fix&&!g.race&&g.part!==2&&!g.gdRedo){const q=q1();if(g.tries===0&&!right1(q,v))note={q,wa:gdShowAns(q,v),from:''}}}catch(e){}
+  const r=_ans.apply(this,arguments);if(note){gdMistNote(note.q,{wa:note.wa,from:note.from});try{save()}catch(e){}}return r}}
+/* trò chơi: câu sai lần đầu cũng vào sổ lỗi */
+{const _x=xgRec;xgRec=function(ok,q){const r=_x.apply(this,arguments);try{if(!ok&&q&&q.key&&q.src&&role==='hs'&&curG()<=5){mist1Add(q);gdMistNote(q,{wa:'',from:GD_GAME[scr&&scr.mode]||'trò chơi'});save()}}catch(e){}return r}}
+/* Luyện lỗi: câu 1 là đúng câu đã sai (nếu còn lưu), câu 2 là câu tương tự với số mới */
+startFix1=function(){const M=Object.values(mist(S.st[sid])).sort((a,b)=>a.day-b.day).slice(0,3);if(!M.length){toast('Sổ lỗi sai đang trống. Giỏi lắm!');return}
+ const mk=e=>{const x=isl1(e.id);const q=x.lv[e.lv][e.gi]();return{...q,src:[e.id,e.lv,e.gi],key:`${e.id}:${e.lv}:${e.gi}`,label:e.label}};
+ const old=e=>e.q?{...e.q,src:[e.id,e.lv,e.gi],key:`${e.id}:${e.lv}:${e.gi}`,label:e.label,gdWa:e.wa||'',gdFrom:e.from||'',gdOld:1}:{...mk(e),gdOld:0};
+ const sim=(e,a)=>{for(let t=0;t<12;t++){const b=mk(e);if(gdTxt(b.q)+String(b.pic||'')!==gdTxt(a.q)+String(a.pic||''))return b}return mk(e)};
+ v1Said='';go({k:'game',g1:1,fix:1,id:M[0].id,lv:0,qs:M.flatMap(e=>{const a=old(e);return[a,sim(e,a)]}),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,hp:0,fixed:0,t0:Date.now()})};
+/* nhắc câu cũ + nút xem cách làm */
+{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(g&&g.k==='game'&&g.fix&&!g.end&&!g.sheet){const q=q1(),mid=document.querySelector('.game .gmid'),bot=document.querySelector('.game .gbot');
+  if(mid&&!mid.querySelector('.gdprev')&&(q.gdOld||q.gdWa||q.gdFrom)&&!g.gdRedo){const t=q.gdOld?(q.gdWa?`Lần trước${q.gdFrom?` (trò ${q.gdFrom})`:''} em ${q.type==='num'?'ghi':'chọn'} <b>${esc(q.gdWa)}</b>, chưa đúng. Em làm lại nhé!`:`Lần trước${q.gdFrom?` (trò ${q.gdFrom})`:''} em làm sai câu này. Em làm lại nhé!`):`Câu giống vậy, số mới. Em làm nhé!`;
+   mid.insertAdjacentHTML('afterbegin',`<div class="gdprev">${spr('book',18)}<span>${t}</span></div>`)}
+  else if(mid&&!mid.querySelector('.gdprev')&&!q.gdOld&&!g.gdRedo&&g.j%2===1)mid.insertAdjacentHTML('afterbegin',`<div class="gdprev sim">${spr('book',18)}<span>Câu giống vậy, số mới. Em làm nhé!</span></div>`);
+  if(bot&&!bot.querySelector('.gdsee')&&gdKind(q))bot.insertAdjacentHTML('afterbegin',`<button type="button" class="gdsee" onclick="gdOpen(q1())">${spr('bulb',16)} Xem cách làm</button>`)}}catch(e){}return r}}
+/* trong Luyện lỗi không mất tim: sửa câu chữ của thẻ "Chưa đúng" */
+{const _sh=sheet1;sheet1=function(){let h=_sh();try{if(scr&&scr.fix)h=h.replace('Chưa đúng, mất 1 tim.','Chưa đúng.')}catch(e){}return h}}
+document.head.insertAdjacentHTML('beforeend',`<style>
+.gdprev{display:flex;gap:8px;align-items:center;font-family:var(--f-body);font-size:14px;line-height:1.35;background:#FFF4D6;color:#7A4E00;padding:6px 10px;box-shadow:0 0 0 2px #FCB40C}
+.gdprev.sim{background:#DDF3FB;color:#1F2A5A;box-shadow:0 0 0 2px #3FC1EC}.gdprev b{color:#E0441A}
+.gdsee{display:flex;align-items:center;gap:6px;margin:0 auto 10px;font-family:var(--f-body);font-weight:700;font-size:14px;padding:6px 12px;background:#fff;color:#1F2A5A;border:0;box-shadow:0 0 0 2px #1F2A5A,0 3px 0 2px #1F2A5A;cursor:pointer}
 </style>`);
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}

@@ -241,19 +241,19 @@ function gdSlow(){if(!GD)return;GD.slow=!GD.slow;const b=document.querySelector(
 function gdClose(silent){if(GD)clearTimeout(GD.tm);const el=document.getElementById('gdov');if(el)el.remove();if(!silent){try{speechSynthesis.cancel()}catch(e){}}GD=null}
 /* xem xong: làm lại câu vừa sai (không mất tim), đúng thì thêm 1 câu tương tự */
 function gdFinish(){const auto=GD&&GD.auto;gdClose();const g=scr;if(!g||g.k!=='game')return;
- if(g.sheet&&g.sheet.kind==='retry'){retry1();return}
- if(g.sheet&&g.sheet.kind==='bad'){g.gdRedo={stage:'same'};g.sheet=null;g.mad=0;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;render()}}
+ if(g.sheet&&(g.sheet.kind==='bad'||g.sheet.kind==='retry')){g.gdRedo={stage:'same'};g.sheet=null;g.mad=0;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;render()}}
 function gdSimilar(q){try{if(!q.src)return null;const x=isl1(q.src[0])||(typeof ju1==='function'&&ju1(q.src[0]));const gn=x&&x.lv&&x.lv[q.src[1]]&&x.lv[q.src[1]][q.src[2]];if(!gn)return null;
   /* câu tương tự: cùng dạng, cùng chiều (cùng phép tính, cùng chỗ trống, cùng kiểu thêm/bớt) */
   const qk=x=>gdTxt(x.q)+'|'+String(x.pic||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' '),t0=qk(q),k0=gdKind(q),sig=(qq,k)=>{if(!k)return'';const ops=k.t==='word'?k.steps.map(s=>s.op).join(''):(k.op||'');const w=gdTxt(qq.q);return [k.t,ops,k.miss||'',/thêm|nữa|tất cả|cả hai/.test(w)?'+':'',/bớt|còn lại|cho đi|bay đi|ăn/.test(w)?'-':'',/ít hơn|kém/.test(w)?'<':'',/nhiều hơn|hơn/.test(w)&&!/ít hơn/.test(w)?'>':''].join('|')};
   const want=sig(q,k0);let any=null;for(let n=0;n<40;n++){const c=gn();if(qk(c)===t0)continue;if(!any)any=c;if(!k0||sig(c,gdKind(c))===want)return c}return any}catch(e){}return null}
-const gdOn=()=>{const g=scr;return g&&g.k==='game'&&g.g1&&!g.race&&!g.tre&&!g.cbo&&role==='hs'};
+/* thầy thống nhất 20/10: màn học và trò chơi không hiện hướng dẫn; chỉ có trong Luyện lỗi (fix) */
+const gdOn=()=>{const g=scr;return g&&g.k==='game'&&g.g1&&g.fix&&!g.race&&!g.tre&&!g.cbo&&role==='hs'};
 
 /* ---------- gắn vào luồng trả lời ---------- */
 {const _q1=q1;q1=function(){return scr&&scr.gdPq?scr.gdPq:_q1()}}
 {const _ans=ans1;ans1=function(v){const g=scr;if(!gdOn()||!g.gdRedo)return _ans(v);
   const q=q1(),ok=right1(q,v);
-  if(g.gdRedo.stage==='same'){if(ok){sfx('ok');const sim=gdSimilar(q);g.sheet={kind:'gdok',msg:sim?'Em làm đúng rồi! Làm thêm 1 câu giống vậy nhé.':'Em làm đúng rồi!',sim};sayJ(sim?'Đúng rồi! Mình làm thêm một câu giống vậy nhé.':'Đúng rồi!')}
+  if(g.gdRedo.stage==='same'){if(ok){sfx('ok');const nx=g.qs&&g.qs[g.j+1],sim=nx&&nx.key&&nx.key===q.key?null:gdSimilar(q);g.sheet={kind:'gdok',msg:sim?'Em làm đúng rồi! Làm thêm 1 câu giống vậy nhé.':'Em làm đúng rồi!',sim};sayJ(sim?'Đúng rồi! Mình làm thêm một câu giống vậy nhé.':'Đúng rồi!')}
    else{sfx('bad');g.sheet={kind:'gdbad'};sayJ('Chưa đúng. Mình xem đáp án nhé.')}}
   else{if(ok){sfx('ok');const c=addCoins(sid,2,'self');g.sheet={kind:'gdok',msg:'Giỏi quá! Em đã hiểu cách làm.'+(c?` +${c} xu`:'')};sayJ('Giỏi quá! Em đã hiểu cách làm rồi.')}
    else{sfx('bad');g.sheet={kind:'gdbad'};sayJ('Chưa đúng. Mình xem đáp án nhé.')}}
@@ -267,10 +267,10 @@ function gdAfter(skip){const g=scr,s=g.sheet;if(!skip&&s&&s.sim&&g.gdRedo&&g.gdR
  g.gdRedo=null;g.gdPq=null;next1()}
 {const _n=next1;next1=function(){if(scr){scr.gdRedo=null;scr.gdPq=null}gdClose(true);return _n.apply(this,arguments)}}
 /* sai lần 2: tự mở hướng dẫn (một lần cho mỗi câu) */
-{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(gdOn()&&g.sheet&&g.sheet.kind==='bad'&&!g.gdRedo){const q=q1(),key=(g.id||'')+':'+g.lv+':'+g.j+':'+g.t0;if(g.gdAuto!==key&&gdKind(q)){g.gdAuto=key;setTimeout(()=>{if(scr===g&&g.sheet&&g.sheet.kind==='bad'&&!document.getElementById('gdov'))gdOpen(q,true)},1400)}}
+{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(gdOn()&&g.sheet&&(g.sheet.kind==='bad'||g.sheet.kind==='retry')&&!g.gdRedo){const q=q1(),key=(g.id||'')+':'+g.lv+':'+g.j+':'+g.t0;if(g.gdAuto!==key&&gdKind(q)){g.gdAuto=key;setTimeout(()=>{if(scr===g&&g.sheet&&(g.sheet.kind==='bad'||g.sheet.kind==='retry')&&!document.getElementById('gdov'))gdOpen(q,true)},1200)}}
   if(!(scr&&scr.k==='game'))gdClose(true)}catch(e){}return r}}
 /* đọc đề câu làm lại / câu tương tự */
-{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(gdOn()&&g.gdRedo&&!g.sheet){const key='gd'+g.gdRedo.stage+g.j;if(g.gdSaid!==key){g.gdSaid=key;const q=q1();if(curG()<=2)setTimeout(()=>sayJ((g.gdRedo.stage==='same'?'Em làm lại câu này nhé. ':'Câu giống vậy nè. ')+sayFull(q.say,q.q)),300)}}}catch(e){}return r}}
+{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(gdOn()&&g.gdRedo&&!g.sheet){const key='gd'+g.gdRedo.stage+g.j;if(g.gdSaid!==key){g.gdSaid=key;const q=q1(),stg=g.gdRedo.stage;if(curG()<=2)setTimeout(()=>sayJ((stg==='same'?'Em làm lại câu này nhé. ':'Câu giống vậy nè. ')+sayFull(q.say,q.q)),300)}}}catch(e){}return r}}
 
 document.head.insertAdjacentHTML('beforeend',`<style>
 .gdov{position:fixed;inset:0;z-index:80;background:rgba(31,42,90,.55);display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box}
