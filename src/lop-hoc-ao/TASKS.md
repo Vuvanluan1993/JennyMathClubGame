@@ -19,6 +19,8 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 - ☑ **T-15 Hướng dẫn khi làm sai · Lô 1** — lớp 1 hai bàn tay ngửa, lớp 2 tia số qua 10, toán lời văn câu hỏi gợi ý + sơ đồ tổng–hiệu, tổng–tỉ, hiệu–tỉ (20/10).
 - ☑ **T-16a Hướng dẫn khi làm sai · Lô 2a** — đặt tính có nhớ, so sánh số, bảng nhân chia (20/10).
 - ☐ **T-16b Hướng dẫn khi làm sai · Lô 2b** — chia có dư, đồng hồ, đo lường, phân số, chu vi, diện tích, tiền, số thập phân.
+- ☐ **T-17 Đầu trang gọn + nút VI/EN** — gộp thông tin trùng; tiếng Anh: giao diện, đề bài, Jenny đọc (thầy chọn mức đầy đủ).
+- ☐ **T-18 Dùng xu** — Cửa hàng Jenny (trang phục, trang trí, thú cưng, khung hồ sơ) và vé chơi game tư duy (có giới hạn mỗi ngày).
 - ☐ **T-14 Đánh giá cho giáo viên, phụ huynh** — dùng `st.dd`, `st.sk`, `st.skm`; thiết kế riêng sau.
 - ☐ **T-11 Chế độ ngoại tuyến (PWA)** — cài lên màn hình điện thoại, chơi khi không có mạng.
 - ☐ **T-12 Tối ưu dung lượng** — file ~1,1 MB; tách nội dung theo lớp, chỉ tải lớp của học sinh.

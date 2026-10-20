@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 2026-10-20 — Bắt buộc luyện lỗi trước khi chơi tiếp; bản đồ về "Đang học"
+- Câu sai trong màn học hoặc trò chơi được ghi lại. Xong màn/trò đó, muốn vào màn hay trò khác thì Jenny nhắc "Em vừa làm sai n câu. Mình luyện lại một lượt rồi chơi tiếp nhé!" kèm nút "Luyện ngay". Màn hình kết thúc có thêm dòng nhắc và nút "Luyện lỗi (n)" đứng đầu.
+- Lượt luyện chỉ gồm các câu vừa sai (≤ 3 lỗi: mỗi lỗi câu cũ + 1 câu giống vậy; nhiều hơn: mỗi lỗi 1 câu cũ). Làm hết lượt là mở khoá; có hướng dẫn khi sai như Luyện lỗi. Lỗi chưa đúng 2 lần liền vẫn nằm trong sổ để luyện tiếp sau.
+- Bản đồ: đi từ tab Toán Jenny, Luyện lỗi, Sưu tập, Hồ sơ về thì màn hình đặt đúng chỗ "Đang học"; từ trong đảo về thì về đúng đảo vừa vào.
+
 ## 2026-10-20 — Rà soát khung hình và cân bằng hai chiều câu hỏi
 - So sánh qua hình ("Chọn dấu đúng: 5 … 4"): hai nhóm luôn nằm ngang hàng hai bên dấu "…", đồ vật tự thu nhỏ cho vừa.
 - Hai hàng ghép đôi (bóng bay – cá…): mỗi đồ vật nằm trong một ô cùng bề rộng nên thẳng cột từng cặp, cả khung luôn vừa màn hình 360px.
