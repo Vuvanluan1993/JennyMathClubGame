@@ -240,7 +240,9 @@ function gdFinish(){const auto=GD&&GD.auto;gdClose();const g=scr;if(!g||g.k!=='g
  if(g.sheet&&g.sheet.kind==='retry'){retry1();return}
  if(g.sheet&&g.sheet.kind==='bad'){g.gdRedo={stage:'same'};g.sheet=null;g.mad=0;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;render()}}
 function gdSimilar(q){try{if(!q.src)return null;const x=isl1(q.src[0])||(typeof ju1==='function'&&ju1(q.src[0]));const gn=x&&x.lv&&x.lv[q.src[1]]&&x.lv[q.src[1]][q.src[2]];if(!gn)return null;
-  const t0=gdTxt(q.q);for(let k=0;k<12;k++){const n=gn();if(gdTxt(n.q)!==t0)return n}}catch(e){}return null}
+  /* câu tương tự: cùng dạng, cùng chiều (cùng phép tính, cùng chỗ trống, cùng kiểu thêm/bớt) */
+  const t0=gdTxt(q.q),k0=gdKind(q),sig=(qq,k)=>{if(!k)return'';const ops=k.t==='word'?k.steps.map(s=>s.op).join(''):(k.op||'');const w=gdTxt(qq.q);return [k.t,ops,k.miss||'',/thêm|nữa|tất cả|cả hai/.test(w)?'+':'',/bớt|còn lại|cho đi|bay đi|ăn/.test(w)?'-':'',/ít hơn|kém/.test(w)?'<':'',/nhiều hơn|hơn/.test(w)&&!/ít hơn/.test(w)?'>':''].join('|')};
+  const want=sig(q,k0);let any=null;for(let n=0;n<40;n++){const c=gn();if(gdTxt(c.q)===t0)continue;if(!any)any=c;if(!k0||sig(c,gdKind(c))===want)return c}return any}catch(e){}return null}
 const gdOn=()=>{const g=scr;return g&&g.k==='game'&&g.g1&&!g.race&&!g.tre&&!g.cbo&&role==='hs'};
 
 /* ---------- gắn vào luồng trả lời ---------- */

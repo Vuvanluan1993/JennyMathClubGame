@@ -12,6 +12,9 @@ def expand(text,depth=0):
 def main():
     src=open(os.path.join(ROOT,'app.template.html'),encoding='utf-8').read()
     out=expand(src)
+    import datetime
+    ver=(datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7)))).strftime('%d/%m · %H:%M')
+    out=out.replace('__APP_VER__',ver)
     os.makedirs(os.path.join(ROOT,'dist'),exist_ok=True)
     open(os.path.join(ROOT,'dist','lop-hoc-ao-jenny.html'),'w',encoding='utf-8').write(out)
     print('dist/lop-hoc-ao-jenny.html',len(out.encode()),'bytes')

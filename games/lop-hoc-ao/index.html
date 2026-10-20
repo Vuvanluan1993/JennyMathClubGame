@@ -7482,6 +7482,9 @@ function climbSol(q){const raw=String(q.sol||'').replace(/^\s*(<b>)?\s*(Bài gi�
   /* đáp số có đơn vị */
   if(!/[a-zà-ỹđ²³]/i.test(ans)){const last=ktClean(lines[lines.length-1]||''),u=last.match(/\(([^()\d]{1,20})\)\s*$/)||last.match(/\d\s*([a-zà-ỹđ²³]+(?:\s[a-zà-ỹđ²³]+)?)\s*$/i);
     if(u&&!/dư/.test(u[1]))ans=`${ans} ${u[1].trim()}`;else if(noun)ans=`${ans} ${noun}`}
+  /* phép tính cuối có đơn vị, ví dụ "29 + 24 = 53 (cái bánh)" */
+  {const um=ans.match(/^([\d  .,]+)\s+(.+)$/),i=lines.length-1;if(um&&i>=0){const last=lines[i],lt=ktClean(last).trim(),num=um[1].trim();
+    if(!/\)\s*$/.test(lt)&&new RegExp('=\\s*'+num.replace(/[.]/g,'\\.')+'$').test(lt)&&!/[a-zà-ỹđ²³%]\s*$/i.test(lt))lines[i]=last+` (${um[2].trim()})`}}
   const say=ktClean(`${lead} ${lines.join('. ')}.`);return{lead,lines,ans,say}}
 function climbGoOn(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end||g.ph!=='rest')return;try{speechSynthesis.cancel()}catch(e){}sfx('tap');climbNext(g)}
 function climbEnd(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end)return;stopXG();const st=S.st[sid];st.mg=st.mg||{};const key=`${g.id}:climb`;g.prev=st.mg[key]||0;st.mg[key]=Math.max(g.prev,g.score);
@@ -7964,7 +7967,9 @@ function gdFinish(){const auto=GD&&GD.auto;gdClose();const g=scr;if(!g||g.k!=='g
  if(g.sheet&&g.sheet.kind==='retry'){retry1();return}
  if(g.sheet&&g.sheet.kind==='bad'){g.gdRedo={stage:'same'};g.sheet=null;g.mad=0;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;render()}}
 function gdSimilar(q){try{if(!q.src)return null;const x=isl1(q.src[0])||(typeof ju1==='function'&&ju1(q.src[0]));const gn=x&&x.lv&&x.lv[q.src[1]]&&x.lv[q.src[1]][q.src[2]];if(!gn)return null;
-  const t0=gdTxt(q.q);for(let k=0;k<12;k++){const n=gn();if(gdTxt(n.q)!==t0)return n}}catch(e){}return null}
+  /* câu tương tự: cùng dạng, cùng chiều (cùng phép tính, cùng chỗ trống, cùng kiểu thêm/bớt) */
+  const t0=gdTxt(q.q),k0=gdKind(q),sig=(qq,k)=>{if(!k)return'';const ops=k.t==='word'?k.steps.map(s=>s.op).join(''):(k.op||'');const w=gdTxt(qq.q);return [k.t,ops,k.miss||'',/thêm|nữa|tất cả|cả hai/.test(w)?'+':'',/bớt|còn lại|cho đi|bay đi|ăn/.test(w)?'-':'',/ít hơn|kém/.test(w)?'<':'',/nhiều hơn|hơn/.test(w)&&!/ít hơn/.test(w)?'>':''].join('|')};
+  const want=sig(q,k0);let any=null;for(let n=0;n<40;n++){const c=gn();if(gdTxt(c.q)===t0)continue;if(!any)any=c;if(!k0||sig(c,gdKind(c))===want)return c}return any}catch(e){}return null}
 const gdOn=()=>{const g=scr;return g&&g.k==='game'&&g.g1&&!g.race&&!g.tre&&!g.cbo&&role==='hs'};
 
 /* ---------- gắn vào luồng trả lời ---------- */
@@ -8022,6 +8027,10 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbr{font-family:var(--f-body);font-size:14px;line-height:1.25;color:#E0441A;align-self:center;white-space:nowrap}.gdbr b{font-size:16px}
 .gdbtn{display:inline-flex!important;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
 </style>`);
+/* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
+const APP_VER='20/10 · 10:32';
+{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
+document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 

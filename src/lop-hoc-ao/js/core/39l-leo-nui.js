@@ -163,6 +163,9 @@ function climbSol(q){const raw=String(q.sol||'').replace(/^\s*(<b>)?\s*(Bài gi�
   /* đáp số có đơn vị */
   if(!/[a-zà-ỹđ²³]/i.test(ans)){const last=ktClean(lines[lines.length-1]||''),u=last.match(/\(([^()\d]{1,20})\)\s*$/)||last.match(/\d\s*([a-zà-ỹđ²³]+(?:\s[a-zà-ỹđ²³]+)?)\s*$/i);
     if(u&&!/dư/.test(u[1]))ans=`${ans} ${u[1].trim()}`;else if(noun)ans=`${ans} ${noun}`}
+  /* phép tính cuối có đơn vị, ví dụ "29 + 24 = 53 (cái bánh)" */
+  {const um=ans.match(/^([\d  .,]+)\s+(.+)$/),i=lines.length-1;if(um&&i>=0){const last=lines[i],lt=ktClean(last).trim(),num=um[1].trim();
+    if(!/\)\s*$/.test(lt)&&new RegExp('=\\s*'+num.replace(/[.]/g,'\\.')+'$').test(lt)&&!/[a-zà-ỹđ²³%]\s*$/i.test(lt))lines[i]=last+` (${um[2].trim()})`}}
   const say=ktClean(`${lead} ${lines.join('. ')}.`);return{lead,lines,ans,say}}
 function climbGoOn(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end||g.ph!=='rest')return;try{speechSynthesis.cancel()}catch(e){}sfx('tap');climbNext(g)}
 function climbEnd(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end)return;stopXG();const st=S.st[sid];st.mg=st.mg||{};const key=`${g.id}:climb`;g.prev=st.mg[key]||0;st.mg[key]=Math.max(g.prev,g.score);
