@@ -3,6 +3,7 @@
 ## 20/10/2026 — Nút Đăng xuất hiện sẵn
 - Bản học sinh: bỏ ô chữ cái tên (J) và menu thả; nút **Đăng xuất** nằm ngay trên thanh trên cùng (EN: Log out).
 - Màn rất hẹp (≤440px): ẩn chữ "Toán cùng Jenny", giữ ngôi sao để vừa hàng.
+- Sửa chế độ tối: hộp Hướng dẫn luôn nền sáng, chữ xanh đậm (trước đây chữ trắng trên nền kem, rất khó đọc).
 - Tên tạm **JennyClub** + logo đám mây pixel (chữ J ba màu logo Clb), chữ "Jenny" nhiều màu, nhãn "Club" xanh lá; điện thoại: chữ xếp 2 dòng.
 - Nút Đăng xuất kiểu pixel: khung viền khía góc, bóng đổ, chữ VT323, biểu tượng cánh cửa pixel; bấm lún xuống.
 - Thêm khung dịch tiếng Anh (48, 48b) — chưa bật, chờ dịch xong lớp 1.

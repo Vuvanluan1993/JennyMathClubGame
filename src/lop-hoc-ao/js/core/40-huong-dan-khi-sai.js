@@ -312,3 +312,8 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbr{font-family:var(--f-body);font-size:14px;line-height:1.25;color:#E0441A;align-self:center;white-space:nowrap}.gdbr b{font-size:16px}
 .gdbtn{display:inline-flex!important;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
 </style>`);
+/* Chế độ tối: hộp hướng dẫn luôn dùng màu sáng (nền kem, chữ xanh đậm) để chữ rõ */
+document.head.insertAdjacentHTML('beforeend',`<style>
+.gdbox{color-scheme:light;--ink:#13263a;--muted:#566779;--surface:#ffffff;--surface2:#f6f9fb;--sea-ink:#ffffff;--pxk:#1F2A5A;--bg:#EEF2F8;--sea:#0079C1;--sea-deep:#1F2A5A;--sea-soft:#DDF3FB;--leaf:#1E9A52;--leaf-soft:#E3F7EA;--sun:#FCB40C;--sun-soft:#FFF4D6;--sun-ink:#7A4E00;--coral:#E0441A;--coral-soft:#FDE6DE;--line:#C9D1E6;color:#13263a;background:#fff}
+.gdbox button{color:#1F2A5A}.gdbox .gdgo{color:#1F2A5A}
+</style>`);
