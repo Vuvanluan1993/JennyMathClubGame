@@ -44,10 +44,12 @@ function gdHand(f,mirror,nums,w){const key=f.join('')+(mirror?'m':'')+(nums||[])
   if(st===3)lab+=`<b class="gdarr" style="left:${L}%;top:${T}%">▼</b>`;
   else if(nums&&nums[i]&&st)lab+=`<b class="gdnum${st===2?' new':''}" style="left:${L}%;top:${T}%">${nums[i]}</b>`}
  return `<div class="gdhand" style="width:${w||'min(44vw,168px)'}">${svg}${lab}</div>`}
-/* 10 ngón: k = 0..9, tay trái trước. Thứ tự giơ mỗi tay: trỏ, giữa, áp út, út, cái */
-const GD_ORD=[3,2,1,0,4];
+/* 10 ngón: k = 0..9, tay trái trước, đi từ trái sang phải trên màn hình */
+/* giơ ngón và đếm lần lượt từ trái sang phải trên màn hình (thầy góp ý 20/10):
+   tay trái ngửa: cái, trỏ, giữa, áp út, út; tay phải ngửa: út, áp út, giữa, trỏ, cái */
+const GD_ORD_L=[4,3,2,1,0],GD_ORD_R=[0,1,2,3,4];
 function gdHands(st,nums){/* st[k]: 0 gập,1 duỗi,2 mới,3 đang gập ; nums[k] */const L=[0,0,0,0,0],R=[0,0,0,0,0],nl=[0,0,0,0,0],nr=[0,0,0,0,0];
- for(let k=0;k<10;k++){const h=k<5?L:R,n=k<5?nl:nr,i=GD_ORD[k%5];h[i]=st[k]||0;n[i]=nums&&nums[k]||0}
+ for(let k=0;k<10;k++){const h=k<5?L:R,n=k<5?nl:nr,i=(k<5?GD_ORD_L:GD_ORD_R)[k%5];h[i]=st[k]||0;n[i]=nums&&nums[k]||0}
  return `<div class="gdhands">${gdHand(L,true,nl)}${gdHand(R,false,nr)}</div>`}
 
 /* ---------- nhận dạng câu ---------- */
