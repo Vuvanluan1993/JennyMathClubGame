@@ -7772,9 +7772,8 @@ function gdHand(f,mirror,nums,w){const key=f.join('')+(mirror?'m':'')+(nums||[])
   else if(nums&&nums[i]&&st)lab+=`<b class="gdnum${st===2?' new':''}" style="left:${L}%;top:${T}%">${nums[i]}</b>`}
  return `<div class="gdhand" style="width:${w||'min(44vw,168px)'}">${svg}${lab}</div>`}
 /* 10 ngón: k = 0..9, tay trái trước, đi từ trái sang phải trên màn hình */
-/* giơ ngón và đếm lần lượt từ trái sang phải trên màn hình (thầy góp ý 20/10):
-   tay trái ngửa: cái, trỏ, giữa, áp út, út; tay phải ngửa: út, áp út, giữa, trỏ, cái */
-const GD_ORD_L=[4,3,2,1,0],GD_ORD_R=[0,1,2,3,4];
+/* thứ tự giơ ngón mỗi tay: trỏ, giữa, áp út, út, cái (thầy giữ như cũ); khi đếm thì đếm các ngón đã giơ từ trái sang phải (GD_SCR) */
+const GD_ORD_L=[3,2,1,0,4],GD_ORD_R=[3,2,1,0,4];
 function gdHands(st,nums){/* st[k]: 0 gập,1 duỗi,2 mới,3 đang gập ; nums[k] */const L=[0,0,0,0,0],R=[0,0,0,0,0],nl=[0,0,0,0,0],nr=[0,0,0,0,0];
  for(let k=0;k<10;k++){const h=k<5?L:R,n=k<5?nl:nr,i=(k<5?GD_ORD_L:GD_ORD_R)[k%5];h[i]=st[k]||0;n[i]=nums&&nums[k]||0}
  return `<div class="gdhands">${gdHand(L,true,nl)}${gdHand(R,false,nr)}</div>`}
@@ -7816,36 +7815,43 @@ function gdSteps(q){if(/(^|[\s(])dư[\s)]/.test(gdTxt(q.sol)))return null;const 
 /* ---------- dựng các khung hoạt cảnh ---------- */
 const gdEq=(h)=>`<div class="gdeq">${h}</div>`;
 const OPW={'+':'cộng','−':'trừ','×':'nhân',':':'chia'};
+/* thứ tự các ngón trên màn hình, từ trái sang phải (k theo thứ tự giơ ngón) */
+const GD_SCR=[4,0,1,2,3,8,7,6,5,9];
 function gdFramesHand(o){const F=[],st=Array(10).fill(0),nums=Array(10).fill(0),snap=(say,eq,dur)=>{if(eq)snap.e=eq;F.push({h:gdHands(st.slice(),nums.slice())+(snap.e?gdEq(snap.e):''),say,dur})};
+ /* đếm lần lượt các ngón thoả sel theo thứ tự từ trái sang phải */
+ const count=(sel,start,first)=>{let n=start;for(const k of GD_SCR)if(sel(k)){n++;nums[k]=n;snap(first&&n===start+1?`${first}${n}`:`${n}`,null,n===start+1?900:650)}return n};
  const {a,b,c,op,miss}=o;
  if(op==='+'&&miss==='c'&&a<=5&&b<=5&&b>0){/* cộng gộp: mỗi tay một số */
   snap(`Mình dùng hai bàn tay nhé. Ngửa hai tay ra, nắm hết các ngón lại.`,`${a} + ${b} = ?`,1400);
   for(let k=0;k<a;k++)st[k]=1;snap(`Tay trái giơ ${a} ngón.`,`${a} + ${b} = ?`,1700);
   for(let k=5;k<5+b;k++)st[k]=1;snap(`Tay phải giơ ${b} ngón.`,`${a} + ${b} = ?`,1700);
-  let n=0;for(let k=0;k<10;k++)if(st[k]){n++;nums[k]=n;snap(n===1?`Đếm tất cả nào: 1`:`${n}`,null,650)}
+  count(k=>st[k],0,'Đếm từ trái sang phải nào: ');
   snap(`${a} ngón với ${b} ngón là ${c} ngón. ${a} cộng ${b} bằng ${c}.`,`${a} + ${b} = <em>${c}</em>`,2600);return F}
- if(op==='+'&&miss==='c'){/* đếm thêm từ số lớn */const big=Math.max(a,b),sm=Math.min(a,b);
+ if(op==='+'&&miss==='c'){/* đếm thêm từ số lớn: giơ thêm các ngón mới rồi đếm tiếp từ trái sang phải */const big=Math.max(a,b),sm=Math.min(a,b);
   snap(sm===0?`Cộng với 0 thì không thêm ngón nào.`:big!==a?`Em lấy số lớn hơn là ${big}, rồi đếm thêm ${sm}.`:`Giơ ${big} ngón trước, rồi đếm thêm ${sm}.`,`${a} + ${b} = ?`,1700);
-  for(let k=0;k<big;k++)st[k]=1;nums[big-1]=big;snap(`Đây là ${big} ngón.`,`${a} + ${b} = ?`,1600);
-  for(let k=big;k<big+sm;k++){st[k]=2;nums[k]=k+1;snap(`${k+1}`,null,800)}
+  for(let k=0;k<big;k++)st[k]=1;snap(`Đây là ${big} ngón. Nhớ số ${big} trong đầu.`,`${a} + ${b} = ?`,1800);
+  if(sm){for(let k=big;k<big+sm;k++)st[k]=2;snap(`Giơ thêm ${sm} ngón, viền vàng.`,null,1500);count(k=>st[k]===2,big,`${big}, đếm tiếp: `)}
   snap(`${big} đếm thêm ${sm} là ${c}. ${a} cộng ${b} bằng ${c}.`,`${a} + ${b} = <em>${c}</em>`,2600);return F}
  if(op==='+'){/* tìm số hạng còn thiếu: giơ số đã biết, giơ thêm đến khi đủ tổng */const known=miss==='a'?b:a,need=c-known,eq=miss==='a'?`☐ + ${b} = ${c}`:`${a} + ☐ = ${c}`;
-  snap(`Cần ${c} ngón. Đã có ${known} ngón.`,eq,1800);for(let k=0;k<known;k++)st[k]=1;nums[known-1]=known;snap(`Giơ ${known} ngón.`,eq,1500);
-  for(let k=known;k<c;k++){st[k]=2;nums[k]=k+1;snap(`${k+1}`,null,800)}
+  snap(`Cần ${c} ngón. Đã có ${known} ngón.`,eq,1800);for(let k=0;k<known;k++)st[k]=1;snap(`Giơ ${known} ngón. Nhớ số ${known} trong đầu.`,eq,1600);
+  for(let k=known;k<c;k++)st[k]=2;snap(`Giơ thêm cho đủ ${c} ngón, viền vàng.`,null,1500);count(k=>st[k]===2,known,`${known}, đếm tiếp: `);
   snap(`Giơ thêm ${need} ngón nữa mới đủ ${c}. Ô trống là ${need}.`,eq.replace('☐',`<em>${need}</em>`),2600);return F}
- if(miss==='c'||miss==='a'&&false){/* trừ: giơ a ngón, gập bớt b ngón */
+ /* phép trừ: các ngón bị gập là các ngón giơ sau cùng; gập và đếm theo thứ tự từ trái sang phải */
+ const foldSet=(from,to)=>{const S=new Set();for(let k=from;k<to;k++)S.add(k);return S};
+ const foldCount=(S,say0)=>{let j=0;for(const k of GD_SCR)if(S.has(k)){j++;st[k]=3;snap(j===1?`${say0}1`:`${j}`,null,750);st[k]=0}};
+ if(miss==='c'){
   snap(`Giơ ${a} ngón trước nhé.`,`${a} − ${b} = ?`,1500);for(let k=0;k<a;k++)st[k]=1;snap(`Đây là ${a} ngón.`,`${a} − ${b} = ?`,1500);
   if(b===0){snap(`Bớt 0 ngón thì vẫn còn ${a} ngón.`,`${a} − 0 = <em>${a}</em>`,2400);return F}
-  for(let j=0;j<b;j++){const k=a-1-j;st[k]=3;snap(j===0?`Gập xuống ${b} ngón: 1`:`${j+1}`,null,750);st[k]=0}
-  snap(`Còn lại mấy ngón? Mình đếm nhé.`,null,1300);for(let k=0;k<c;k++){nums[k]=k+1;snap(`${k+1}`,null,600)}
+  foldCount(foldSet(a-b,a),`Gập xuống ${b} ngón: `);
+  snap(`Còn lại mấy ngón? Mình đếm từ trái sang phải nhé.`,null,1300);count(k=>st[k],0,'');
   snap(c===0?`Gập hết rồi, không còn ngón nào. ${a} trừ ${b} bằng 0.`:`Còn lại ${c} ngón. ${a} trừ ${b} bằng ${c}.`,`${a} − ${b} = <em>${c}</em>`,2600);return F}
  if(miss==='b'){/* a − ☐ = c: gập dần đến khi còn c ngón */const eq=`${a} − ☐ = ${c}`;
   snap(`Giơ ${a} ngón. Gập bớt đến khi còn ${c} ngón.`,eq,1800);for(let k=0;k<a;k++)st[k]=1;snap(`Đây là ${a} ngón.`,eq,1400);
-  for(let j=0;j<a-c;j++){const k=a-1-j;st[k]=3;snap(`${j+1}`,null,750);st[k]=0}
+  foldCount(foldSet(c,a),'Gập: ');count(k=>st[k],0,'Còn lại: ');
   snap(`Gập ${a-c} ngón thì còn ${c} ngón. Ô trống là ${a-c}.`,eq.replace('☐',`<em>${a-c}</em>`),2600);return F}
- /* ☐ − b = c: còn c ngón, giơ lại b ngón đã gập */const eq=`☐ − ${b} = ${c}`;
+ /* ☐ − b = c: còn c ngón, giơ lại b ngón đã gập rồi đếm tất cả */const eq=`☐ − ${b} = ${c}`;
  snap(`Sau khi gập ${b} ngón thì còn ${c} ngón. Lúc đầu có mấy ngón?`,eq,2000);for(let k=0;k<c;k++)st[k]=1;snap(`Đây là ${c} ngón còn lại.`,eq,1400);
- for(let k=c;k<c+b;k++){st[k]=2;nums[k]=k+1;snap(`Giơ lại: ${k+1}`,null,800)}
+ for(let k=c;k<c+b;k++)st[k]=2;snap(`Giơ lại ${b} ngón đã gập, viền vàng. Đếm tất cả từ trái sang phải.`,null,1800);count(k=>st[k],0,'');
  snap(`Lúc đầu có ${a} ngón. Ô trống là ${a}.`,eq.replace('☐',`<em>${a}</em>`),2600);return F}
 
 /* tia số 0–20 với ếch */
@@ -8034,7 +8040,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbtn{display:inline-flex!important;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='20/10 · 11:22';
+const APP_VER='20/10 · 11:27';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a

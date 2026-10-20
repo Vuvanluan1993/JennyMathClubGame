@@ -1,8 +1,7 @@
 # Lịch sử thay đổi
 
 ## 2026-10-20 — Bàn tay: đếm lần lượt từ trái sang phải
-- Hướng dẫn bằng bàn tay (lớp 1): ngón giơ và số đếm đi lần lượt từ trái sang phải trên màn hình. Tay trái: cái, trỏ, giữa, áp út, út (1–5); tay phải: út, áp út, giữa, trỏ, cái (6–10). Phép trừ gập từ ngón ngoài cùng bên phải.
-
+- Hướng dẫn bằng bàn tay (lớp 1): giơ ngón như cũ (trỏ, giữa, áp út, út, cái), nhưng khi đếm thì đếm các ngón đã giơ lần lượt từ trái sang phải trên màn hình. Đếm thêm: giơ các ngón mới cùng lúc (viền vàng) rồi đếm tiếp từ trái sang phải. Phép trừ: gập và đếm số ngón gập cũng từ trái sang phải, rồi đếm số ngón còn lại.
 ## 2026-10-20 — Hướng dẫn chỉ có trong Luyện lỗi; lỗi trò chơi vào sổ; thêm 3 dạng đếm
 - Thống nhất với thầy: màn học và trò chơi không hiện hướng dẫn, học sinh làm/chơi bình thường; câu sai lần đầu được ghi vào sổ lỗi kèm đúng câu đó và đáp án em đã chọn/ghi.
 - Lỗi trong trò chơi (Ếch nhảy, Thả mồi, Trồng cây, Leo núi, Đập chuột…) cũng được ghi vào sổ lỗi, có tên trò.
