@@ -87,3 +87,10 @@ Kỷ lục ở `st.mg['đảo:trò']`; ghi Hồ sơ qua `hsRec`.
 - Chia trò: chỉ đảo có bài lời văn (`climbHas`); "đúng nội dung" khi chính đảo có nhiều bài lời văn (`climbOwn`); `XG_BIAS.climb`.
 - Lưu: kỷ lục `st.mg['đảo:climb']`, xu tối đa 20, nhật kí "Leo núi · …", `st.dd`, `st.sk` qua `xgRec`.
 
+
+
+## Hướng dẫn khi làm sai (js/core/40-huong-dan-khi-sai.js)
+- `gdKind(q)` nhận dạng: `hand` (lớp 1, ≤10), `line` (lớp 2, ≤20), `word` (các bước tính trong `q.sol`), `sd` tổng–hiệu, `sr` tổng–tỉ, `dr` hiệu–tỉ. Không đọc chắc được thì trả `null` và không hiện nút.
+- `gdOpen(q,auto)` mở khung; các khung `{h,say,dur,mcq}`. `gdHand/gdHands` vẽ bàn tay ngửa pixel (có cache).
+- Gắn vào `sheet1`, `ans1`, `q1`, `next1`, `g1AfterRender`: `scr.gdRedo` ('same' → 'sim'), `scr.gdPq` là câu tương tự (sinh lại từ `q.src`).
+- Bản đồ: `moveTopicStars()` trong 39n đưa số sao vào cạnh nhãn vùng biển.

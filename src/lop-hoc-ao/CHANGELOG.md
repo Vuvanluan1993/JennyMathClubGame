@@ -1,5 +1,15 @@
 # Lịch sử thay đổi
 
+## 2026-10-20 — Hướng dẫn khi làm sai (Lô 1); số sao chủ đề cạnh tên vùng biển
+- Sai lần 1: thẻ "Chưa đúng" có thêm nút "Xem hướng dẫn". Sai lần 2: hướng dẫn tự mở. Xem xong, em làm lại đúng câu đó (không mất tim), đúng thì làm thêm 1 câu tương tự (+2 xu). Chỉ trong màn học và Luyện lỗi; Đua giờ, Kho báu, Trùm lớp không có.
+- Khung hướng dẫn: hoạt cảnh pixel chạy từng bước, Jenny đọc lời, nút Xem lại, Chậm hơn, Em làm lại.
+- Lớp 1, cộng/trừ trong phạm vi 10: hai bàn tay ngửa. Cộng gộp (mỗi tay một số, đếm hết), đếm thêm từ số lớn (ngón mới viền vàng, số đỏ), trừ gập bớt (ngón đang gập viền đỏ, ▼) rồi đếm số ngón còn lại, tìm số còn thiếu.
+- Lớp 2, cộng/trừ trong phạm vi 20: ếch nhảy trên tia số. Qua 10 thì hỏi trắc nghiệm "thêm/lùi mấy để về 10?", nhảy tới 10 rồi nhảy tiếp; có 2 khung 10 ô. Câu có ô trống thì đếm số bước nhảy.
+- Toán có lời văn (lớp 2–5, cả lớp 1 với số lớn hơn 10): tô vàng các số, gạch chân câu hỏi; từng bước hỏi trắc nghiệm "Cần làm phép tính gì?" và "Phép tính đúng là?", chọn sai thì Jenny gợi ý từ khoá.
+- Tổng – hiệu (lớp 4), tổng – tỉ, hiệu – tỉ (lớp 5): sơ đồ đoạn thẳng pixel và 3–4 câu trắc nghiệm theo các bước giải.
+- Chỉ hiện hướng dẫn khi đọc được chắc chắn phép tính trong lời giải (khoảng 3 000 dạng câu). Bài có %, phân số ở kết quả hoặc đổi đơn vị chưa có hướng dẫn (để Lô 2).
+- Bản đồ: dòng 2 của mỗi chủ đề là [vùng biển] [★ số sao]; dòng 3 là "Bài … · … đảo · trùm …". Đủ sao thì nhãn sao xanh lá.
+
 ## 2026-10-19 — Bỏ chữ "Hệ …" sau tên trùm
 - Tên trùm không còn đuôi "· Hệ Kẹo ngọt", "· Hệ Độc", "· Hệ Lửa"… (bản đồ, đảo, trận trùm). Màu trùm theo vùng biển vẫn giữ.
 
