@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-20 — Sơ đồ: tổng dùng móc nhọn dọc
+- Sơ đồ tổng – hiệu, tổng – tỉ: thay đường ngang bằng móc nhọn dọc "}" bên phải ôm cả hai đoạn, chữ "Tổng: …" đứng cạnh mũi móc, giống cách vẽ trong sách.
+
 ## 2026-10-20 — Hướng dẫn khi làm sai (Lô 1); số sao chủ đề cạnh tên vùng biển
 - Sai lần 1: thẻ "Chưa đúng" có thêm nút "Xem hướng dẫn". Sai lần 2: hướng dẫn tự mở. Xem xong, em làm lại đúng câu đó (không mất tim), đúng thì làm thêm 1 câu tương tự (+2 xu). Chỉ trong màn học và Luyện lỗi; Đua giờ, Kho báu, Trùm lớp không có.
 - Khung hướng dẫn: hoạt cảnh pixel chạy từng bước, Jenny đọc lời, nút Xem lại, Chậm hơn, Em làm lại.
