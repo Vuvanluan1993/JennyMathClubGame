@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 22/10/2026 — Màn "Vẽ hình" (vẽ tay)
+- Thêm **màn vẽ hình** ở các đảo hình học (không thay màn cũ): lớp 1 Bài 7, Bài 9; lớp 2 Bài 26, Bài 34; lớp 3 Bài 19, Bài 20; lớp 5 Bài 25, Bài 32.
+- Học sinh vẽ tay hình vuông, hình chữ nhật, hình tam giác (lớp 2–5 có thêm hình tứ giác) trên giấy chấm; 4 hình mỗi màn, 3 tim; sai 2 lần hiện chấm gợi ý.
+- Phản hồi chỉ "Đúng rồi!" / "Chưa đúng" + câu động viên; có tiếng Anh khi bật EN.
+- Màn này lưu sao riêng (`s.draw`), không ảnh hưởng mở khoá đảo, sao chủ đề, hộ chiếu.
+- Nhận dạng: bao lồi → khớp tam giác/tứ giác → kiểm tra khép kín → góc vuông, tỉ lệ cạnh (`js/core/50-ve-hinh.js`).
+
 ## 20/10/2026 — Sửa trò Lật thẻ ghép đôi
 - Lỗi: thẻ "phép tính" có thể là câu tìm số còn thiếu (ví dụ "6 + ☐ = 14" ghép với 8, "390 = 300 + ☐" ghép với 90, "33% × 4 = ?%" ghép với 132) — nhìn như hai thẻ không cùng giá trị.
 - Sửa: chỉ lấy phép tính trọn vẹn (không ô trống, không dấu =, không dấu ?) làm thẻ.

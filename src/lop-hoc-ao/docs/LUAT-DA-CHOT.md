@@ -46,6 +46,11 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - 2 con cùng loài trưởng thành + Ổ rơm → đẻ trứng; Máy ấp 3 ngày cho nở; trứng không ấp hỏng sau 2 ngày.
 - Đồ cũ dần theo thời gian; bán thanh lý = 50% giá × độ mới. Qua màn → thú vui thêm.
 
+## 6b. Màn Vẽ hình (chốt 22/10/2026)
+- Là màn THÊM ở đảo hình học, không thay màn cũ. 4 hình/màn, 3 tim.
+- Phản hồi chỉ "Đúng rồi!" / "Chưa đúng" kèm câu động viên — không giải thích lý do sai.
+- Hình vuông/chữ nhật lưng chừng: chấp nhận cả hai (không làm khó lớp 1).
+
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
 - `node tools/test/kien-thuc-tro-choi.js` — trò không vượt kiến thức.
