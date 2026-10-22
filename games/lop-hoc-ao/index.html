@@ -8069,7 +8069,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox button{color:#1F2A5A}.gdbox .gdgo{color:#1F2A5A}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='22/10 · 10:19';
+const APP_VER='22/10 · 10:32';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -10219,7 +10219,7 @@ function nhanHinh(strokes){const pts=[].concat(...strokes);if(pts.length<8)retur
  if(n===3)return{kind:'tri',poly:P,info};
  if(n===4){const s=P.map((p,i)=>dD(p,P[(i+1)%4]));const w=(s[0]+s[2])/2,h=(s[1]+s[3])/2,ratio=Math.max(w,h)/Math.min(w,h);const sqAng=angs.every(a=>Math.abs(a-90)<=25);info.ratio=+ratio.toFixed(2);
   if(!sqAng)return{kind:'quad',poly:P,info,why:'Hình có 4 cạnh nhưng các góc chưa vuông.'};
-  return{kind:ratio<1.3?'sq':ratio>1.42?'rect':'sqrect',poly:P,info,ratio}}
+  return{kind:ratio<1.15?'sq':ratio>1.3?'rect':'sqrect',poly:P,info,ratio}}
  if(e6<0.03&&angs.every(a=>a>100))return{kind:'round',poly:P,info,why:'Hình này tròn, không có góc.'};
  return{kind:'many',poly:P,info,why:'Hình em vẽ chưa rõ là hình gì.'}}
 

@@ -47,7 +47,7 @@ function nhanHinh(strokes){const pts=[].concat(...strokes);if(pts.length<8)retur
  if(n===3)return{kind:'tri',poly:P,info};
  if(n===4){const s=P.map((p,i)=>dD(p,P[(i+1)%4]));const w=(s[0]+s[2])/2,h=(s[1]+s[3])/2,ratio=Math.max(w,h)/Math.min(w,h);const sqAng=angs.every(a=>Math.abs(a-90)<=25);info.ratio=+ratio.toFixed(2);
   if(!sqAng)return{kind:'quad',poly:P,info,why:'Hình có 4 cạnh nhưng các góc chưa vuông.'};
-  return{kind:ratio<1.3?'sq':ratio>1.42?'rect':'sqrect',poly:P,info,ratio}}
+  return{kind:ratio<1.15?'sq':ratio>1.3?'rect':'sqrect',poly:P,info,ratio}}
  if(e6<0.03&&angs.every(a=>a>100))return{kind:'round',poly:P,info,why:'Hình này tròn, không có góc.'};
  return{kind:'many',poly:P,info,why:'Hình em vẽ chưa rõ là hình gì.'}}
 

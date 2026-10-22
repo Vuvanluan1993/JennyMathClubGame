@@ -6,6 +6,7 @@
 - Phản hồi chỉ "Đúng rồi!" / "Chưa đúng" + câu động viên; có tiếng Anh khi bật EN.
 - Màn này lưu sao riêng (`s.draw`), không ảnh hưởng mở khoá đảo, sao chủ đề, hộ chiếu.
 - Nhận dạng: bao lồi → khớp tam giác/tứ giác → kiểm tra khép kín → góc vuông, tỉ lệ cạnh (`js/core/50-ve-hinh.js`).
+- Sửa: hình chữ nhật hơi gần vuông (cạnh dài gấp 1,15–1,3 lần cạnh ngắn) giờ được chấp nhận là hình chữ nhật (trước đây bị chấm là hình vuông).
 
 ## 20/10/2026 — Sửa trò Lật thẻ ghép đôi
 - Lỗi: thẻ "phép tính" có thể là câu tìm số còn thiếu (ví dụ "6 + ☐ = 14" ghép với 8, "390 = 300 + ☐" ghép với 90, "33% × 4 = ?%" ghép với 132) — nhìn như hai thẻ không cùng giá trị.
