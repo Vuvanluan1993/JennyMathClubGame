@@ -1,7 +1,8 @@
 # Lịch sử thay đổi
 
 ## 23/10/2026 — Kho trò chơi (vé chơi game)
-- Cửa hàng › **Trò chơi**: 3 trò không cần Toán — **Bowling**, **Đẩy thùng** (8 màn, đã kiểm tra giải được), **Khủng long chạy**. Cũng vào được từ Nhà em › Trò chơi.
+- Cửa hàng › **Trò chơi**: 3 trò không cần Toán — **Bowling**, **Đẩy thùng** (8 màn, đã kiểm tra giải được), **Khủng long chạy**.
+- Nhà em: giữ 3 ô như cũ; thêm khung **Trò chơi** bên dưới, liệt kê các trò em đã mua để vào chơi.
 - Mua trò 150 xu (kèm 10 lượt); vé 10 lượt 60 xu; lượt dùng chung; mỗi lần vào chơi = 1 lượt; tối đa 5 lượt/ngày.
 - Cúp Đồng/Bạc/Vàng: Bowling 15/25/33 điểm · Khủng long 150/400/800 · Đẩy thùng theo số bước (Vàng ≤ ít nhất + 2).
 - 3 cúp Vàng ở một trò → đồ hiếm: Mũ vô địch Bowling, Mũ thợ mỏ (Jenny), Khăn khủng long (thú cưng, không cũ đi).

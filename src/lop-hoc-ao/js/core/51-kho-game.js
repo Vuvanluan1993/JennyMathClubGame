@@ -160,10 +160,16 @@ function arcLoop(g,step,draw){arcStop();let last=performance.now();const f=now=>
 {const _vh=viewHS;viewHS=function(){try{if(scr.k==='arc')return viewArc()}catch(e){console.error(e)}return _vh.apply(this,arguments)}}
 {const _r=render;render=function(){if(scr&&scr.k!=='arc')arcStop();const a=_r.apply(this,arguments);try{if(role==='hs'&&scr.k==='arc'){document.body.classList.add('gaming');if(!scr.end)({bowl:bowlInit,box:boxInit,dino:dinoInit})[scr.g](scr)}}catch(e){console.error(e)}return a}}
 try{addEventListener('resize',()=>{if(scr&&scr.k==='arc'&&!scr.end)({bowl:bowlInit,box:boxInit,dino:dinoInit})[scr.g](scr)})}catch(e){}
-/* Nhà em: thêm ô Trò chơi */
-{const _n=viewNha;viewNha=function(st){const r=_n.apply(this,arguments);const a=arcSt(st);const tile=`<button type="button" class="nhat" onclick="scr.ghCat='tk';go({k:'home',tab:'shop'})"><span class="nhic">${spr('joyS',40)}</span><b>${arcT('Trò chơi','Games')}</b><small>${arcT(`Còn ${a.plays} lượt`,`${a.plays} plays left`)}</small></button>`;const i=r.lastIndexOf('</div></section>');return i<0?r:r.slice(0,i)+tile+r.slice(i)}}
+/* Nhà em: giữ 3 ô như cũ; thêm khung "Trò chơi" bên dưới — các trò em đã mua */
+function arcHome(st){const a=arcSt(st),own=Object.keys(ARC).filter(k=>a.own[k]),left=arcLeftToday(a);
+ const rows=own.map(k=>{const g=ARC[k],c=a.cups[k]||{},can=a.plays>0&&left>0;return`<div class="arch"><span class="arcic">${spr(g.ic,34)}</span><div class="grow"><b>${arcT(g.n,g.en)}</b><span class="arccups">${spr('cupG',14)}${c.g||0} ${spr('cupS',14)}${c.s||0} ${spr('cupB',14)}${c.b||0}${a.best[k]!=null?` · ${arcT('kỷ lục','best')} ${a.best[k]}${k==='box'?arcT(' màn',' levels'):''}`:''}</span></div><button type="button" class="gobtn ${can?'':'off'}" onclick="arcPlay('${k}')">${arcT('Chơi','Play')} ▸</button></div>`}).join('');
+ return`<section class="card archome"><div class="archd"><h2>${spr('joyS',24)} ${arcT('Trò chơi','Games')}</h2><span class="grow"></span><span class="pill">${spr('tkS',16)} ${arcT(`${a.plays} lượt · hôm nay ${a.used}/${ARC_DAY}`,`${a.plays} plays · today ${a.used}/${ARC_DAY}`)}</span></div>
+  ${own.length?rows:`<p class="muted">${arcT('Em chưa có trò chơi nào. Mua trò ở Cửa hàng › Trò chơi nhé!','No games yet. Buy one in Shop › Games!')}</p>`}
+  <div class="archbtn"><button type="button" class="btn sm" onclick="go({k:'home',tab:'shop'});scr.ghCat='tk';render()">${own.length<3?arcT('Mua thêm trò chơi','Buy more games'):arcT('Mua thêm lượt','Buy more plays')} ▸</button></div></section>`}
+{const _n=viewNha;viewNha=function(st){const r=_n.apply(this,arguments);const i=r.lastIndexOf('</div>');return i<0?r:r.slice(0,i)+arcHome(st)+r.slice(i)}}
 document.head.insertAdjacentHTML('beforeend',`<style>
-.nhagrid{grid-template-columns:repeat(2,1fr)!important}
+.archome{margin-top:14px;padding:14px!important}.archd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}.archd h2{display:flex;align-items:center;gap:8px;margin:0;font-size:26px}
+.arch{display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:10px;background:var(--surface,#fff);box-shadow:var(--f2),0 4px 0 0 var(--pxk,#1F2A5A)}.arch .grow{min-width:0;display:flex;flex-direction:column;gap:4px}.arch b{font-family:var(--f-display);font-size:22px;font-weight:400;line-height:1}.arch .arcic{width:44px;height:44px}.arch .gobtn{margin:0;width:auto;flex:none;font-size:16px!important;padding:8px 12px!important}.arch .gobtn.off{opacity:.5}.archbtn{display:flex;justify-content:flex-end}
 .arcbox{display:flex;flex-direction:column;gap:12px}
 .arctop{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px;background:var(--sun-soft);box-shadow:var(--f2)}
 .arctop b{display:flex;align-items:center;gap:6px;font-family:var(--f-display);font-size:24px;font-weight:400}.arctop em{font-style:normal;color:var(--coral)}.arctop small{display:block;font-size:13px;color:var(--muted)}
