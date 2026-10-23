@@ -1,5 +1,13 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Bài về nhà bắt buộc trong bản GitHub
+- `js/core/60-bai-ve-nha.js`: bài cô giao (`a.bat=1`) phải làm xong trước mọi việc khác. Em chỉ thấy màn "★ BÀI VỀ NHÀ CÔ GIAO" (bài đầu tiên + nút Làm ngay/Làm tiếp/Làm lại, các bài tiếp theo xếp lần lượt). Chỉ Đăng xuất dùng được.
+- Hai loại: **Phiếu** (theo dạng yếu hoặc phiếu cả lớp) — đạt khi đúng từ 80%, chưa đạt thì làm phiếu mới; **Luyện lỗi có mục tiêu** — mỗi lỗi 2 câu số mới, đúng 2 lần liền mới ra khỏi sổ, còn lỗi thì làm lại.
+- Xong bài: +20 xu (thêm vào xu phiếu sẵn có).
+- Hồ sơ › Lỗi & bài về nhà: tích chọn lỗi, nút "Giao luyện tất cả" / "Giao các lỗi đã chọn"; bảng "Bài về nhà cô đã giao" có kết quả (còn x lỗi, chưa đạt, đạt…).
+- Phiếu cả lớp mới giao (thẻ Giao phiếu bài cho lớp) và phiếu theo dạng yếu đều là bài bắt buộc. Phiếu mẫu cũ không bắt buộc.
+- Sửa khóa lỗi mẫu cho khớp với luyện lỗi.
+
 ## 23/10/2026 — Hồ sơ học sinh: 4 thẻ, biểu đồ mạng nhện, giao phiếu tự động theo dạng yếu
 - Hồ sơ còn 4 thẻ: Tổng quan · **Hoạt động học tập** (gộp Học tập + Hoạt động: lịch học + khung giờ, tiến độ SGK, tỉ lệ đúng từng dạng, phần thưởng, hoạt động gần đây) · Lỗi & bài về nhà · Ghi chú & giao bài.
 - Tổng quan: **Sức mạnh Toán vẽ bằng biểu đồ mạng nhện** (SVG, tháng này + tháng trước nét đứt; mạch chưa đủ bài để xám, có ghi chú khi dưới 3 mạch). Bên phải: điểm từng mạch + Cảnh báo. Bỏ khung "Gợi ý cho cô"; các gợi ý còn lại thành nhãn trong Cảnh báo (Nhắc đọc kỹ đề, Ôn lại cách làm, Cần hỗ trợ nhiều, Nhắn phụ huynh, Khen em).

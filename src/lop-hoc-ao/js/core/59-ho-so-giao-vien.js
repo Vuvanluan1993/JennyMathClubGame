@@ -88,11 +88,19 @@ function gvTabHT(id,st){
 function gvBangDang(st){const D=gvDang(st);return D.length?`<div class="tablewrap"><table><tr><th>Dạng bài</th><th>Mạch</th><th>Đúng</th><th>Số lần</th><th>Lần cuối</th></tr>${D.map(x=>`<tr${x.n>=4&&x.p<GV_YEU?' class="gyeu"':''}><td>${esc(x.k)}</td><td>${HS_AXN[x.ax]||''}</td><td style="min-width:140px">${gvBar(x.p,x.p>=80?'var(--leaf)':x.p>=GV_YEU?'var(--sun)':'var(--coral)')} <b>${x.p}%</b></td><td>${x.n}</td><td>${x.t?gvNgay(hsKey(new Date(x.t))):''}</td></tr>`).join('')}</table></div>`:'<p class="muted">Chưa có dữ liệu.</p>'}
 
 function gvTabLoi(id,st){
-  const M=Object.entries(st.mist||{}).sort((a,b)=>b[1].n-a[1].n),A=asgMine(st);
+  const M=Object.entries(st.mist||{}).sort((a,b)=>b[1].n-a[1].n),A=asgMine(st),dang=A.find(a=>a.loai==='loi'&&!asgState(st,a).done),chon=scr.loiChon||[];
+  const kq=(a,s)=>{if(a.loai==='loi')return s.done?'<span class="pill ok">Đã sửa xong</span>':`<span class="pill ${s.doing?'acc':'warn'}">còn ${s.con}/${a.keys.length} lỗi</span>`;
+    const b=s.r.best;return s.done?`<span class="pill ${b.ok/b.n>=.8?'ok':'acc'}">${b.ok}/${b.n} đúng</span>`:s.chuaDat?`<span class="pill acc">chưa đạt ${b.ok}/${b.n}, làm lại</span>`:s.doing?'<span class="pill acc">đang làm</span>':'<span class="pill warn">chưa làm</span>'};
   return`<section class="card"><h2>Sổ lỗi sai <span class="pill">${M.length} lỗi</span></h2><p class="muted" style="margin:4px 0 0">Mỗi lỗi cần đúng 2 lần liền mới ra khỏi sổ.</p>
-   ${M.length?`<div class="tablewrap"><table><tr><th>Lỗi</th><th>Ở đảo</th><th>Sai</th><th>Đúng liền</th><th>Ghi ngày</th></tr>${M.map(([k,m])=>{const x=isl1(m.id);return`<tr><td>${esc(m.label||'')}</td><td>${x?esc(x.title):''}</td><td><b>${m.n}</b> lần</td><td>${m.streak||0}/2</td><td>Ngày ${m.day}</td></tr>`}).join('')}</table></div>`:'<p class="muted">Sổ đang trống.</p>'}</section>
-  <section class="card"><h2>Phiếu bài cô đã giao</h2>${A.length?`<div class="tablewrap"><table><tr><th>Phiếu</th><th>Giao · hạn</th><th>Kết quả</th></tr>${A.sort((p,q)=>q.t-p.t).map(a=>{const s=asgState(st,a),b=s.r.best;return`<tr><td><b>${esc(asgName(a))}</b><div class="muted">${a.n} câu · ${a.hs?'riêng cho em':'cả lớp'} · ${esc(a.by||'')}</div></td><td>${asgD(a.t)}${a.due?' · '+asgD(a.due):''}</td><td>${s.done?`<span class="pill ${b.ok/b.n>=.8?'ok':'acc'}">${b.ok}/${b.n} đúng</span>`:s.doing?'<span class="pill acc">đang làm</span>':'<span class="pill warn">chưa làm</span>'}${s.late?' <span class="pill bad">quá hạn</span>':''}</td></tr>`}).join('')}</table></div>`:'<p class="muted">Chưa có phiếu nào.</p>'}
-   <p class="muted" style="margin:10px 0 0">Bài về nhà bắt buộc (Luyện lỗi có mục tiêu, Phiếu luyện tập) và khóa/mở từng phần đang chạy ở bản thử trên claude.ai, sẽ đưa vào đây ở bước sau.</p></section>`}
+   ${M.length?`<div class="tablewrap"><table><tr><th></th><th>Lỗi</th><th>Ở đảo</th><th>Sai</th><th>Đúng liền</th><th>Ghi ngày</th></tr>${M.map(([k,m])=>{const x=isl1(m.id);return`<tr><td><input type="checkbox" aria-label="Chọn lỗi" ${chon.includes(k)?'checked':''} ${dang?'disabled':''} onchange="gvChonLoi('${k}',this.checked)"></td><td>${esc(m.label||'')}</td><td>${x?esc(x.title):''}</td><td><b>${m.n}</b> lần</td><td>${m.streak||0}/2</td><td>Ngày ${m.day}</td></tr>`}).join('')}</table></div>
+   ${dang?`<p class="hint" style="margin:10px 0 0">Đã giao Luyện lỗi ngày ${asgD(dang.t)}, em đang còn ${asgState(st,dang).con} lỗi. Giao tiếp khi em làm xong.</p>`
+     :`<div class="row" style="gap:8px;margin-top:10px"><button class="btn pri" onclick="gvGiaoLoi('${id}',0)">Giao luyện tất cả (${M.length} lỗi)</button><button class="btn" ${chon.length?'':'disabled'} onclick="gvGiaoLoi('${id}',1)">Giao các lỗi đã chọn (${chon.length})</button></div>
+      <p class="muted" style="margin:6px 0 0">Bài về nhà: mỗi lỗi 2 câu số mới, đúng 2 lần liền mới xong; còn lỗi thì em làm lại. Em phải làm xong trước mọi việc khác. Thưởng ${BVN_XU} xu.</p>`}`:'<p class="muted">Sổ đang trống.</p>'}</section>
+  <section class="card"><h2>Bài về nhà cô đã giao</h2>${A.length?`<div class="tablewrap"><table><tr><th>Bài</th><th>Giao · hạn</th><th>Kết quả</th></tr>${A.sort((p,q)=>q.t-p.t).map(a=>{const s=asgState(st,a);return`<tr><td><b>${esc(asgName(a))}</b><div class="muted">${a.loai==='loi'?'Luyện lỗi có mục tiêu':a.n+' câu'} · ${a.hs?'riêng cho em':'cả lớp'}${a.bat?' · bắt buộc':''} · ${esc(a.by||'')}</div></td><td>${asgD(a.t)}${a.due?' · '+asgD(a.due):''}</td><td>${kq(a,s)}${s.late?' <span class="pill bad">quá hạn</span>':''}</td></tr>`}).join('')}</table></div>`:'<p class="muted">Chưa có bài nào.</p>'}</section>`}
+window.gvChonLoi=(k,on)=>{const c=scr.loiChon=scr.loiChon||[];const i=c.indexOf(k);if(on&&i<0)c.push(k);if(!on&&i>=0)c.splice(i,1);render()};
+window.gvGiaoLoi=(id,chon)=>{const st=S.st[id],M=mist(st),keys=(chon?(scr.loiChon||[]):Object.keys(M)).filter(k=>M[k]&&isl1(M[k].id));if(!keys.length){toast('Chưa có lỗi để giao');return}
+  const now=Date.now();asgAll().push({id:'l'+now.toString(36),loai:'loi',bat:1,g:st.grade,lop:(S.org&&S.org.gd[id])||gvLop,hs:[id],keys,ten:`Luyện lỗi: ${keys.length} lỗi trong Sổ lỗi sai`,tiets:[...new Set(keys.map(k=>M[k].id))],n:keys.length*2,t:now,due:now+2*DAYMS,by:gvTen()});
+  scr.loiChon=[];log('gv','assigned','Luyện lỗi · '+st.name,0,{});save();render();toast(`Đã giao luyện ${keys.length} lỗi cho ${st.name}`)};
 
 function gvTabHD(id,st){
   const P=st.pets&&st.pets.list||[],ev=S.events.filter(e=>e.actor.account.name===id).slice(-20).reverse();
@@ -132,7 +140,7 @@ function gvTabGC(id,st){
     <div style="margin-top:8px"><button class="btn pri" onclick="gvNhanXet('${id}')">Gửi nhận xét</button></div>
     <p class="muted" style="margin:8px 0 0">Thẻ và nhận xét hiện trong báo cáo phụ huynh.</p></section></div>`}
 function gvPhieuMoi(id,kd){const st=S.st[id],src=gvNguon(st,kd),now=Date.now();
-  return{id:'k'+now.toString(36),g:st.grade,lop:(S.org&&S.org.gd[id])||gvLop,hs:[id],kinds:[kd],ten:`Luyện dạng: ${kd}`,tiets:[...new Set(src.map(s=>s[0]))],n:8,dat:80,t:now,due:now+2*DAYMS,by:gvTen()}}
+  return{id:'k'+now.toString(36),g:st.grade,lop:(S.org&&S.org.gd[id])||gvLop,hs:[id],bat:1,kinds:[kd],ten:`Luyện dạng: ${kd}`,tiets:[...new Set(src.map(s=>s[0]))],n:8,dat:80,t:now,due:now+2*DAYMS,by:gvTen()}}
 function gvXem(st,kd){const id=Object.keys(S.st).find(k=>S.st[k]===st),a=gvPhieuMoi(id,kd);let qs=[];try{qs=phQs(a,12345)}catch(e){}
   const tx=h=>String(h||'').replace(/<[^>]+>/g,' ').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
   return`<ol class="gxem">${qs.map((q,i)=>`<li><span class="pill">${q.src&&q.src[1]>Math.min(...gvNguon(st,kd).map(x=>x[1]))?'vừa':'dễ'}</span> ${esc(tx(q.q))}${q.sol?`<div class="muted">Đáp án: ${esc(tx(q.sol)).slice(0,140)}</div>`:''}</li>`).join('')}</ol><p class="muted" style="margin:4px 0 0">Đây là ví dụ. Khi làm, em nhận câu cùng dạng nhưng số khác.</p>`}
@@ -191,7 +199,7 @@ function gvMau(){
     const hoc=new Set(L.slice(0,ki).map(x=>x.id)),kinds=Object.entries(hsIndex(g).kinds).filter(([,v])=>v.src.some(s=>hoc.has(s[0])));
     kinds.forEach(([kd,v],j)=>{const kg=Math.min(.98,Math.max(.2,gioi+(rnd()-.55)*.5));st.sk[kd]={r:Array.from({length:5+Math.floor(rnd()*6)},()=>rnd()<kg?1:0),t:hsDayDate(NG-Math.floor(rnd()*10)).getTime(),ax:v.ax}});
     const sm={};HS_AX.forEach(a=>{const sc=hsScores(st)[a.k];if(sc.ok)sm[a.k]=Math.max(0,sc.s-Math.round(rnd()*18-3))});st.skm['2026-09']=sm;hsSnap(st);
-    const nmi=gioi<.7?3+Math.floor(rnd()*3):Math.floor(rnd()*3);kinds.slice(0,nmi*3).filter((_,j)=>j%3===0).forEach(([kd,v])=>{const s0=v.src.find(s=>hoc.has(s[0]));if(s0)mist(st)[`${s0[0]}|${s0[1]}|${s0[2]}`]={id:s0[0],lv:s0[1],gi:s0[2],label:kd,n:1+Math.floor(rnd()*3),streak:rnd()<.3?1:0,day:NG-Math.floor(rnd()*12)}});
+    const nmi=gioi<.7?3+Math.floor(rnd()*3):Math.floor(rnd()*3);kinds.slice(0,nmi*3).filter((_,j)=>j%3===0).forEach(([kd,v])=>{const s0=v.src.find(s=>hoc.has(s[0]));if(s0)mist(st)[`${s0[0]}:${s0[1]}:${s0[2]}`]={id:s0[0],lv:s0[1],gi:s0[2],label:kd,n:1+Math.floor(rnd()*3),streak:rnd()<.3?1:0,day:NG-Math.floor(rnd()*12)}});
     st.coins=60+Math.floor(rnd()*300);if(rnd()<.4)st.badges.push({t:'Cố gắng',day:NG-3,from:'cô'})});
   S.day=NG;save();
 }
