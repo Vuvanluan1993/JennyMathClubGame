@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Bỏ "Đang có: n" ở dạng Thêm cho đủ
+- Dạng "Thêm cho đủ … / Bớt" không còn hiện số đang có; Jenny cũng không đọc sẵn số đã có mà nhắc "Em đếm xem đang có mấy …" (cả màn đảo và phiếu bài).
+
 ## 23/10/2026 — Tủ đồ gọn hơn
 - Bỏ 3 ô "Mua ở Cửa hàng" lặp lại ở từng mục; mục chưa có đồ hiện dòng chữ nhỏ. Chỉ giữ nút "Mua thêm đồ" cuối trang và nút xu "Cửa hàng ▸" trên cùng.
 - Ô đồ không còn kéo giãn quá to trên máy tính.

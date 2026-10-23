@@ -104,6 +104,7 @@ Object.assign(EN_T,{
 "Chọn số đúng, thêm hình cho đủ số lượng": "Choose the right number, add pictures to make the amount",
 "Thêm cho đủ <>#<> {o}.": "Add more to make <>#<> {o}.",
 "Đã có {w} {o}.": "You have {w} {o} already.",
+"Em đếm xem đang có mấy {o}.": "Count how many {o} there are.",
 "Em bấm dấu cộng để thêm cho đủ {w} {o} nhé.": "Press the plus sign to add more until you have {w} {o}.",
 "Cần thêm # để có đủ #.": "Add # more to make #.",
 "Điền số còn thiếu (đếm lùi).": "Fill in the missing number (count back).",

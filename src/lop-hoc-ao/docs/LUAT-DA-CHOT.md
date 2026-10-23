@@ -22,6 +22,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Tên chủ đề: cùng cỡ 24px, tối đa 2 dòng, dòng 1 cạnh nhãn "CHỦ ĐỀ n". Dòng 2: [vùng biển][★ a/b]; dòng 3: "Bài … · n đảo · trùm …". Tên trùm không ghi "· Hệ …".
 - Câu hỏi hai chiều: "lớn nhất"/"bé nhất", "bé→lớn"/"lớn→bé" đều có (`45-hai-chieu-cau-hoi.js`).
 - Lời giải leo núi: chỉ lời dẫn + phép tính, đơn vị ở dòng cuối; không ghi "Bài giải", "Đáp số".
+- Không hiện sẵn số lượng ("Đang có: n") ở dạng câu mà học sinh phải tự đếm (23/10).
 - Trò "Lật thẻ ghép đôi": thẻ phép tính phải trọn vẹn (không ☐, không =, không ?); mỗi cặp cùng giá trị, không hai cặp trùng giá trị.
 
 ## 4. Hướng dẫn khi sai & luyện lỗi
