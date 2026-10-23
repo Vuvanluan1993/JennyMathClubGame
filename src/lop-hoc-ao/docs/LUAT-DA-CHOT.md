@@ -94,6 +94,8 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
   - 3 vai trò quản lý: **Quản trị hệ thống** (thầy: trung tâm, nội dung, mã gói) · **Quản lý trung tâm** (năm học, lớp, tài khoản, phân công, xếp/chuyển lớp, gắn gói, báo cáo) · **Giáo viên** (chỉ lớp được phân công).
   - Giáo viên không tạo lớp, không thêm em vào lớp. Màn đầu của giáo viên là **"Lớp của tôi"** (thẻ lớp xếp theo khối).
   - Không xóa hẳn, mọi thao tác quản lý có nhật ký.
+- **Hồ sơ học sinh (chốt 23/10/2026):** kiểu trang giáo viên (không pixel), 5 thẻ: Tổng quan · Học tập · Lỗi & bài về nhà · Hoạt động · Ghi chú & giao bài; có đủ số liệu của "Hồ sơ của em". Ghi thêm: đúng ngay lần đầu, thời gian mỗi câu, số lần mở hướng dẫn, ghi chú riêng của cô. Liên hệ phụ huynh để khi có máy chủ. Không lưu địa chỉ, số định danh, ảnh khuôn mặt, sức khỏe.
+- **Chỉ tiểu học (23/10/2026):** bỏ tài khoản lớp 6–9. Dữ liệu mẫu: khối 1 và 2 mỗi khối 2 lớp × 12 em.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.

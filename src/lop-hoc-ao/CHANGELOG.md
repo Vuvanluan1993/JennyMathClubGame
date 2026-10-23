@@ -1,5 +1,16 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Hồ sơ học sinh cho giáo viên; chỉ còn tài khoản tiểu học
+- Bấm tên em (bảng Tiến độ, Cần chú ý) → **Hồ sơ học sinh** kiểu trang giáo viên, 5 thẻ (`js/core/59-ho-so-giao-vien.js`):
+  - Tổng quan: chuỗi ngày, số ngày học, số câu, đúng ngay lần đầu, giây/câu (và % trả lời dưới 3 giây), số lần mở hướng dẫn; Sức mạnh Toán 6 mạch so tháng trước; Gợi ý cho cô; cảnh báo.
+  - Học tập: lịch học cả năm (bấm ô xem ngày), tiến độ SGK theo chủ đề + đảo bị kẹt, tỉ lệ đúng từng dạng bài.
+  - Lỗi & bài về nhà: Sổ lỗi sai, phiếu đã giao và kết quả.
+  - Hoạt động: sao, xu, thú cưng, thẻ, nhận xét, khung giờ học, hoạt động gần đây.
+  - Ghi chú & giao bài: ghi chú riêng của cô (em, phụ huynh không thấy), tặng thẻ, nhận xét, **giao phiếu riêng cho 1 em**.
+- Ghi thêm mỗi câu (mọi bản, kể cả bản học sinh): đúng ngay lần đầu, đúng sau khi sửa, trả lời dưới 3 giây, số lần mở hướng dẫn, khung giờ (`st.dd[ngày].f/fc/fx/fast/gd/h`).
+- Phiếu bài lọc theo lớp và theo em (`a.lop`, `a.hs`).
+- **Bỏ tài khoản lớp 6–9** (bản đầy đủ và bản học sinh `jenny06…09`). Dữ liệu mẫu: khối 1 (1A, 1B) và khối 2 (2A, 2B), mỗi lớp 12 em; Cô Jenny 1A, 1B · Cô Hoa 2B, 5A, 5B · Thầy Minh 2A, 3A, 4A. Dữ liệu học mẫu 5 tuần (ngày demo 36).
+
 ## 23/10/2026 — Nhiều lớp, nhiều giáo viên, trang Quản lý trung tâm
 - Dữ liệu mới (`js/core/58-lop-va-quan-ly.js`): Trung tâm → Năm học → Lớp (khối, tên, gói Toán Jenny) → Học sinh (ghi danh 1 lớp chính). Giáo viên ↔ lớp nhiều–nhiều. Dữ liệu mẫu: Cô Jenny (1A, 1B), Cô Hoa (1C, 5A, 5B), Thầy Minh (2A…9A); thêm 5 học sinh mẫu.
 - Giáo viên: màn đầu là **"Lớp của tôi"** (thẻ lớp theo khối: sĩ số, học hôm nay, cần chú ý, nhãn Toán Jenny). Vào lớp có nút "← Lớp của tôi" và đổi lớp nhanh. Bản thử có ô chọn tài khoản giáo viên.

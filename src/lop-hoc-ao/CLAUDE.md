@@ -28,7 +28,7 @@ Thầy chốt điều mới → ghi ngay vào `docs/LUAT-DA-CHOT.md`.
 - Khi đổi cấu trúc lưu trữ, phải giữ được tiến độ cũ của học sinh (xem `healAll()`).
 
 ## Các trang trên GitHub Pages
-- Học sinh: `games/lop-hoc-ao/` (đăng nhập jenny0x / jenny123; thử: lebaona / jenny123).
+- Học sinh: `games/lop-hoc-ao/` (đăng nhập jenny01…jenny05 / jenny123, chỉ tiểu học; thử: lebaona / jenny123).
 - Giáo viên (tạm, dữ liệu mẫu): `games/lop-hoc-ao/giao-vien/` — mật khẩu `giaovien123` (đổi ở `tools/_teacher.py`).
 
 ## Lưu ý kĩ thuật

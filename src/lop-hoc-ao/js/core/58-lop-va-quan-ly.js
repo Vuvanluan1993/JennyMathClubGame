@@ -5,16 +5,15 @@
    Chỉ chạy ở bản đầy đủ / trang giáo viên (ORG_ON). Bản học sinh giữ nguyên. */
 (function(){
 if(!ORG_ON)return;
-const HS_THEM=[['bao','Nguyễn Gia Bảo',1],['linh','Trần Khánh Linh',1],['khang','Vũ Minh Khang',1],['phuc','Lê Hoàng Phúc',5],['ngoc','Phạm Bảo Ngọc',5]];
-HS_THEM.forEach(s=>{if(!STUDENTS.some(x=>x[0]===s[0]))STUDENTS.push(s)});
+const HS_THEM=[['bao','Nguyễn Gia Bảo',1],['linh','Trần Khánh Linh',1],['khang','Vũ Minh Khang',1],['phuc','Lê Hoàng Phúc',5],['ngoc','Phạm Bảo Ngọc',5],['huy','Nguyễn Khánh Huy',1],['han','Bùi Đức Hân',1],['khoi','Mai Thanh Khôi',1],['vy','Vũ Bảo Vy',1],['phuc2','Phan Ngọc Phúc',1],['ngan','Phạm Quỳnh Ngân',1],['nam','Dương Gia Nam',1],['chau','Trần Hoàng Châu',1],['long','Đỗ Tuệ Long',1],['trang','Đinh Minh Trang',1],['dat','Đặng Anh Đạt',1],['mai','Trịnh Hải Mai',1],['son','Hoàng Diệu Sơn',1],['ha','Lý Thu Hà',1],['tung','Lê Phương Tùng',1],['lan','Ngô Nhật Lan',1],['kien','Nguyễn Khánh Kiên',1],['yen','Bùi Đức Yến',1],['quang','Mai Thanh Quang',2],['nhi','Vũ Bảo Nhi',2],['toan','Phan Ngọc Toàn',2],['thu','Phạm Quỳnh Thư',2],['hieu','Dương Gia Hiếu',2],['uyen','Trần Hoàng Uyên',2],['binh','Đỗ Tuệ Bình',2],['hang','Đinh Minh Hằng',2],['tam','Đặng Anh Tâm',2],['loan','Trịnh Hải Loan',2],['viet','Hoàng Diệu Việt',2],['hoa','Lý Thu Hoa',2],['dung','Lê Phương Dũng',2],['ly','Ngô Nhật Ly',2],['thinh','Nguyễn Khánh Thịnh',2],['nhu','Bùi Đức Như',2],['tien','Mai Thanh Tiến',2],['giang','Vũ Bảo Giang',2],['khang2','Phan Ngọc Khang',2],['oanh','Phạm Quỳnh Oanh',2],['phong','Dương Gia Phong',2],['thao2','Trần Hoàng Thảo',2],['loc','Đỗ Tuệ Lộc',2]];
 
 function orgMoi(){
   const L=(id,khoi,gv,tj)=>({id,khoi,ten:id,gv,tj:tj?{on:true,han:'31/05/2027'}:{on:false}});
   return{ten:'Clb Học Toán cùng Jenny',nam:'2026–2027',
     gv:[{id:'jenny',ten:'Cô Jenny'},{id:'hoa',ten:'Cô Hoa'},{id:'minh',ten:'Thầy Minh'}],
-    lop:[L('1A',1,['jenny'],1),L('1B',1,['jenny']),L('1C',1,['hoa']),L('2A',2,['minh']),L('3A',3,['minh']),L('4A',4,['minh']),L('5A',5,['hoa'],1),L('5B',5,['hoa']),L('6A',6,['minh']),L('7A',7,['minh']),L('8A',8,['minh']),L('9A',9,['minh'])],
-    gd:{na:'1A',tu:'1A',my:'1A',bao:'1B',linh:'1B',khang:'1C',lam:'2A',quan:'3A',thao:'4A',duc:'5A',phuc:'5A',ngoc:'5B',an:'6A',binh:'6A',chi:'6A',dung:'7A',ha:'8A',khoa:'9A'},
-    nl:{},nk:[],mo:{},hsMoi:[]};
+    lop:[L('1A',1,['jenny'],1),L('1B',1,['jenny']),L('2A',2,['minh']),L('2B',2,['hoa']),L('3A',3,['minh']),L('4A',4,['minh']),L('5A',5,['hoa'],1),L('5B',5,['hoa'])],
+    gd:{na:'1A',tu:'1A',my:'1A',bao:'1B',linh:'1B',khang:'1B',lam:'2A',quan:'3A',thao:'4A',duc:'5A',phuc:'5A',ngoc:'5B',huy:'1A',han:'1A',khoi:'1A',vy:'1A',phuc2:'1A',ngan:'1A',nam:'1A',chau:'1A',long:'1A',trang:'1B',dat:'1B',mai:'1B',son:'1B',ha:'1B',tung:'1B',lan:'1B',kien:'1B',yen:'1B',quang:'2A',nhi:'2A',toan:'2A',thu:'2A',hieu:'2A',uyen:'2A',binh:'2A',hang:'2A',tam:'2A',loan:'2A',viet:'2A',hoa:'2B',dung:'2B',ly:'2B',thinh:'2B',nhu:'2B',tien:'2B',giang:'2B',khang2:'2B',oanh:'2B',phong:'2B',thao2:'2B',loc:'2B'},
+    nl:{},nk:[],mo:{'1A':{j1:true,jg1b1:true},'5A':{}},hsMoi:[],v:2};
 }
 const O=()=>S.org;
 window.lopById=id=>O().lop.find(l=>l.id===id);
@@ -31,8 +30,10 @@ function ctxLop(){
 }
 function orgHeal(){
   if(!S)return;
-  if(!S.org)S.org=orgMoi();
-  O().hsMoi.forEach(s=>{if(!STUDENTS.some(x=>x[0]===s[0]))STUDENTS.push(s)});
+  if(!S.org||S.org.v!==2)S.org=orgMoi(); /* v2 (23/10): chỉ tiểu học, khối 1–2 mỗi khối 2 lớp × 12 em */
+  /* học sinh mẫu thêm chỉ nạp khi mở vai giáo viên/quản lý/phụ huynh (để bản học sinh và bài kiểm tra nhẹ) */
+  if(role!=='hs')O().hsOn=1;
+  if(O().hsOn)HS_THEM.concat(O().hsMoi).forEach(s=>{if(!STUDENTS.some(x=>x[0]===s[0]))STUDENTS.push(s)});
   STUDENTS.forEach(([id,n,g])=>{if(!S.st[id])S.st[id]=newStudent(n,g)});
   const d=Object.getOwnPropertyDescriptor(S,'open');
   if(!d||!d.get){

@@ -1,13 +1,13 @@
 /* ===================== Dữ liệu demo ===================== */
 const KEY='jennyVirtualDemo_v10';
-const STUDENTS=[['an','Nguyễn Minh An',6],['binh','Trần Gia Bình',6],['chi','Lê Bảo Chi',6],['dung','Phạm Tiến Dũng',7],['ha','Vũ Thu Hà',8],['khoa','Đỗ Minh Khoa',9],['na','Lê Bảo Na',1],['tu','Phạm Anh Tú',1],['my','Hoàng Trà My',1],['lam','Đỗ Gia Lâm',2],['quan','Trịnh Minh Quân',3],['thao','Ngô Phương Thảo',4],['duc','Bùi Anh Đức',5]];
-let gvGrade=6, gvLop=null, gvMe='jenny';
+const STUDENTS=[['na','Lê Bảo Na',1],['tu','Phạm Anh Tú',1],['my','Hoàng Trà My',1],['lam','Đỗ Gia Lâm',2],['quan','Trịnh Minh Quân',3],['thao','Ngô Phương Thảo',4],['duc','Bùi Anh Đức',5]]; /* 23/10/2026: bỏ tài khoản lớp 6–9, chỉ giữ tiểu học */
+let gvGrade=1, gvLop=null, gvMe='jenny';
 const ORG_ON=true; /* bản học sinh đặt false (tools/_student.py) */
 function gvCLS(){return STUDENTS.filter(s=>s[2]===gvGrade)}
 function gvHead(){return`<div class="row" style="justify-content:space-between"><div><h1 style="font-size:28px">Lớp ${gvGrade}A</h1><div class="muted">Sáng ngày ${S.day} · ${gvCLS().length} học sinh trong bản demo</div></div><div class="seg" role="group" aria-label="Chọn lớp">${[1,2,3,4,5,6,7,8,9].map(g=>`<button class="${g===gvGrade?'on':''}" aria-pressed="${g===gvGrade}" onclick="gvGrade=${g};render()">Lớp ${g}</button>`).join('')}</div></div>`}
 function gvTen(){return'Cô Jenny'}
 const DEMO_CODE='JENNY-DEMO';
-let S, role='hs', sid='an', scr={k:'home'}, player=null;
+let S, role='hs', sid='na', scr={k:'home'}, player=null;
 
 const blankP1=g=>Object.fromEntries(P1BY[g].map(x=>[x.id,{intro:false,m:Array(x.nm||3).fill(false),fails:Array(x.nm||3).fill(0)}]));
 const blankP2=()=>Object.fromEntries([...P2,...P2_1].map(x=>[x.id,{intro:false,ex:false,m:[false,false,false],fails:[0,0,0]}]));
