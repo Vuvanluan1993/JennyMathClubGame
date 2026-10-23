@@ -55,6 +55,9 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - 3 trò: Bowling, Đẩy thùng, Khủng long chạy (không gắn Toán). Mua trò 150 xu kèm 10 lượt; vé 10 lượt 60 xu; 1 lần vào chơi = 1 lượt; tối đa 5 lượt/ngày.
 - Thưởng: cúp Đồng/Bạc/Vàng; 3 cúp Vàng một trò → đồ hiếm cho Jenny/thú cưng.
 
+## 6d. Tủ đồ (23/10/2026)
+- Nhà em › khung **Tủ đồ** › Phối đồ: chạm món đã có là mặc ngay (áo, mũ/kính, khung). Đồ thú cưng mặc ở Đảo nhà.
+
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
 - `node tools/test/kien-thuc-tro-choi.js` — trò không vượt kiến thức.

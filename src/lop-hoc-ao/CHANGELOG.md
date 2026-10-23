@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Tủ đồ: phối đồ cho Jenny
+- Nhà em có khung mới **Tủ đồ** (dưới 3 ô, trên Trò chơi): xem Jenny đang mặc gì, số món đang có, nút **Phối đồ ▸**.
+- Trang Tủ đồ: Jenny lớn ở trên; 3 nhóm **Áo váy** (áo Hộ chiếu + áo mua), **Mũ & kính**, **Khung ảnh**. Chạm là mặc ngay và lưu; có ô "Không đội/Không khung", "Áo xanh gốc" để bỏ ra. Món đang dùng có viền xanh "Đang dùng". Chưa có món nào thì có ô "Mua ở Cửa hàng".
+- Đồ cho thú cưng vẫn mặc ở Đảo nhà.
+
 ## 23/10/2026 — Sửa theo góp ý: xà phòng, thanh mua, nút đóng hướng dẫn
 - Cửa hàng › Đồ nuôi: hiện **Xà phòng (5 lần)** trong nhóm "Thuốc & tắm" (trước bị ẩn vì sai nhóm).
 - Chọn món nào trong Cửa hàng thì **thanh mua nổi** hiện ngay trên thanh dưới (tên, mô tả, nút Mua/Dùng, nút bỏ chọn) — không phải kéo lên đầu trang.
