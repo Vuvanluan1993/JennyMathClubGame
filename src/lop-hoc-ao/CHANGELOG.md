@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Sửa theo góp ý: xà phòng, thanh mua, nút đóng hướng dẫn
+- Cửa hàng › Đồ nuôi: hiện **Xà phòng (5 lần)** trong nhóm "Thuốc & tắm" (trước bị ẩn vì sai nhóm).
+- Chọn món nào trong Cửa hàng thì **thanh mua nổi** hiện ngay trên thanh dưới (tên, mô tả, nút Mua/Dùng, nút bỏ chọn) — không phải kéo lên đầu trang.
+- Hộp Hướng dẫn: nút **"Đóng ✕"** nền vàng, nhìn rõ (trước đó nút bị cùng màu nền nên như không có).
+
 ## 23/10/2026 — Bowling mới, Đẩy thùng 48 màn
 - **Bowling** làm lại: nhìn từ sau người ném (phối cảnh), kéo bóng chọn chỗ đứng, **vuốt lên để lăn** (hướng + lực theo cú vuốt, vuốt cong = bóng xoáy), ki bay đổ dây chuyền, **STRIKE!/SPARE!** có pháo giấy, bảng điểm 5 lượt tính như bowling thật. Cúp 60/90/120 điểm (thử 240 ván giả lập ở 3 mức tay nghề).
 - **Đẩy thùng**: 48 màn (8 tự vẽ + 40 sinh tự động bằng cách "kéo ngược" thùng từ đích, đã giải lại bằng máy để chắc giải được và biết số bước ít nhất). Mỗi lượt chơi 3 màn liên tiếp; Vàng = xong 3 màn với tổng bước ≤ 1,25 × ít nhất + 2; Bạc = xong 3 màn; Đồng = xong ≥ 1 màn.

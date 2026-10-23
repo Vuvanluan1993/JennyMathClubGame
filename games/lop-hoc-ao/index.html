@@ -7981,7 +7981,7 @@ function gdOpen(q,auto){const k=gdKind(q);if(!k)return false;return gdOpenF(gdFr
 function gdOpenF(F,auto,kind){
  gdClose(true);GD={F,i:0,slow:false,tm:null,auto,done:false,kind};
  const el=document.createElement('div');el.id='gdov';el.className='gdov';el.setAttribute('role','dialog');el.setAttribute('aria-label','Hướng dẫn');
- el.innerHTML=`<div class="gdbox"><div class="gdhd"><b>${spr('bulb',20)} Hướng dẫn</b><span class="gdstep"></span><button type="button" class="gdx" onclick="gdClose()" aria-label="Đóng">✕</button></div><div class="gdstage"></div><div class="gdsay">${spr('jennyHappy',40)}<div class="gdbub"></div></div><div class="gdmcq"></div><div class="gdctl"><button type="button" onclick="gdReplay()">↺ Xem lại</button><button type="button" class="gdslow" onclick="gdSlow()">🐢 Chậm hơn</button><button type="button" class="gdgo" onclick="gdFinish()" disabled>Em làm lại ▶</button></div></div>`;
+ el.innerHTML=`<div class="gdbox"><div class="gdhd"><b>${spr('bulb',20)} Hướng dẫn</b><span class="gdstep"></span><button type="button" class="gdx" onclick="gdClose()" aria-label="Đóng hướng dẫn">Đóng ✕</button></div><div class="gdstage"></div><div class="gdsay">${spr('jennyHappy',40)}<div class="gdbub"></div></div><div class="gdmcq"></div><div class="gdctl"><button type="button" onclick="gdReplay()">↺ Xem lại</button><button type="button" class="gdslow" onclick="gdSlow()">🐢 Chậm hơn</button><button type="button" class="gdgo" onclick="gdFinish()" disabled>Em làm lại ▶</button></div></div>`;
  document.body.appendChild(el);try{pixelize(el)}catch(e){}gdShow();return true}
 function gdShow(){if(!GD)return;const el=document.getElementById('gdov');if(!el)return;const f=GD.F[GD.i];
  el.querySelector('.gdstage').innerHTML=f.h;el.querySelector('.gdbub').textContent=f.say||'';el.querySelector('.gdstep').textContent=`${GD.i+1}/${GD.F.length}`;
@@ -8067,9 +8067,10 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox{color-scheme:light;--ink:#13263a;--muted:#566779;--surface:#ffffff;--surface2:#f6f9fb;--sea-ink:#ffffff;--pxk:#1F2A5A;--bg:#EEF2F8;--sea:#0079C1;--sea-deep:#1F2A5A;--sea-soft:#DDF3FB;--leaf:#1E9A52;--leaf-soft:#E3F7EA;--sun:#FCB40C;--sun-soft:#FFF4D6;--sun-ink:#7A4E00;--coral:#E0441A;--coral-soft:#FDE6DE;--line:#C9D1E6;color:#13263a;background:#fff}
 .gdbox button{color:#1F2A5A}.gdbox .gdgo{color:#1F2A5A}
+.gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='23/10 · 10:35';
+const APP_VER='23/10 · 10:36';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -9935,6 +9936,20 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .ghtk{display:flex;gap:12px;align-items:flex-start;padding:14px;background:var(--sun-soft);box-shadow:var(--f2)}.ghtk p{margin:4px 0 8px;font-size:14px}
 .ghnote{font-size:13px;margin:14px 2px}
 </style>`);
+/* thanh mua nổi ở đáy màn hình (thầy góp ý 23/10): chọn món nào thì nút Mua/Dùng hiện ngay bên dưới, không phải kéo lên */
+{const _v=viewShop;viewShop=function(st){let r=_v.apply(this,arguments);try{const T=scr.ghTry,f=T&&ghFind(T.id);if(!f)return r;
+  const m=r.match(/<div class="ghinfo">[\s\S]*?(<button[^>]*class="gobtn ghgo[^"]*"[\s\S]*?<\/button>)<\/div><\/div><\/section>/);if(!m)return r;
+  const note=r.match(/<div class="ghinfo"><b>([\s\S]*?)<\/b><small>([\s\S]*?)<\/small>/);
+  const bar=`<div class="ghbar" role="region" aria-label="Mua món đã chọn"><div class="grow"><b>${note?note[1]:''}</b><small>${note?note[2]:''}</small></div>${m[1].replace('gobtn ghgo','gobtn ghgo ghbarbtn')}<button type="button" class="ghbarx" onclick="scr.ghTry=null;render()" aria-label="Bỏ chọn">✕</button></div>`;
+  const i=r.lastIndexOf('</div>');return r.slice(0,i)+bar+r.slice(i)}catch(e){return r}}}
+document.head.insertAdjacentHTML('beforeend',`<style>
+.ghbar{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(74px + env(safe-area-inset-bottom,0px));z-index:40;max-width:560px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--sun-soft);color:var(--ink);box-shadow:var(--f2),4px 4px 0 0 var(--pxk,#1F2A5A);animation:ghup .2s steps(3)}
+@keyframes ghup{from{transform:translateY(20px);opacity:0}}
+.ghbar .grow{min-width:0;display:flex;flex-direction:column;gap:2px}.ghbar b{font-family:var(--f-display);font-size:22px;font-weight:400;line-height:1}.ghbar small{font-size:12px;line-height:1.3;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ghbar .ghbarbtn{margin:0!important;flex:none;width:auto;max-width:48%;font-size:15px!important;padding:9px 10px!important;white-space:normal;line-height:1.1}
+.ghbarx{flex:none;border:0;background:none;color:var(--ink);font-size:18px;cursor:pointer;padding:4px}
+.ghpage{padding-bottom:96px}
+</style>`);
 /* 49b — Đảo nhà của em + Nuôi thú cưng (thầy chốt 20/10)
    - Vào đảo: chạm ảnh Jenny ở thẻ chào (trang chính). Không có nút riêng.
    - Nuôi 1 loài mỗi lần, tối đa 2 con. Thời gian tính theo ngày thật (cả cuối tuần).
@@ -10026,7 +10041,7 @@ function petCard(c,x,st){const[id,n,pr]=x,T=scr.ghTry||{},sel=T.id===id,s=ghSt(s
  if(c.k==='pet'){const have=P.list.filter(p=>p.sp===id).length,bl=petBlock(st,id);return`<button type="button" class="ghit ${sel?'sel':''} ${bl&&!have?'dim':''}" onclick="ghTry('pet','${id}')" aria-label="${esc(n)}, ${pr} xu"><span class="ghpic">${spr(id,44)}</span><b>${esc(n)}</b>${have?`<i class="ghtag on">Đang nuôi ${have}</i>`:`<i class="ghpr">${spr('coin',14)} ${pr}</i>`}<small class="ghlife">${PET_SP[id][2]}–${PET_SP[id][3]} ngày</small></button>`}
  const cc=careOf(id),q=cc[6]?(s.bag[id]||0):s.gear.filter(g=>g.id===id).length;
  return`<button type="button" class="ghit ${sel?'sel':''}" onclick="ghTry('care','${id}')" aria-label="${esc(n)}, ${pr} xu"><span class="ghpic">${spr(cc[5],cc[3]==='food'||cc[3]==='med'||cc[3]==='soap'?30:cc[3]==='wear'?20:34)}</span><b>${esc(n)}</b><i class="ghpr">${spr('coin',14)} ${pr}</i>${q?`<i class="ghq">có ${q}</i>`:''}</button>`}
-function careGrid(st){return CARE_GRP.map(([g,n])=>`<h3 class="ghgh">${n}</h3><div class="ghgrid">${CARE.filter(c=>c[3]===g).map(c=>petCard({k:'care'},[c[0],c[1],c[2]],st)).join('')}</div>`).join('')}
+function careGrid(st){return CARE_GRP.map(([g,n])=>`<h3 class="ghgh">${n}</h3><div class="ghgrid">${CARE.filter(c=>c[3]===g||(g==='med'&&c[3]==='soap')).map(c=>petCard({k:'care'},[c[0],c[1],c[2]],st)).join('')}</div>`).join('')}
 const careNote=id=>CARE_NOTE[id]||'';
 function careStage(st,T,f){const P=petsOf(st),p=P.list[0];return`<span class="ghcare">${p?petSpr(p,70):spr('bowlS',40)}${f?`<span class="ghcarei">${spr(careOf(T.id)[5],34)}</span>`:''}</span>`}
 function petAct(T,f,st){const pr=f.x[2],short=Math.max(0,pr-st.coins);

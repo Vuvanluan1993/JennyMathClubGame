@@ -89,7 +89,7 @@ function petCard(c,x,st){const[id,n,pr]=x,T=scr.ghTry||{},sel=T.id===id,s=ghSt(s
  if(c.k==='pet'){const have=P.list.filter(p=>p.sp===id).length,bl=petBlock(st,id);return`<button type="button" class="ghit ${sel?'sel':''} ${bl&&!have?'dim':''}" onclick="ghTry('pet','${id}')" aria-label="${esc(n)}, ${pr} xu"><span class="ghpic">${spr(id,44)}</span><b>${esc(n)}</b>${have?`<i class="ghtag on">Đang nuôi ${have}</i>`:`<i class="ghpr">${spr('coin',14)} ${pr}</i>`}<small class="ghlife">${PET_SP[id][2]}–${PET_SP[id][3]} ngày</small></button>`}
  const cc=careOf(id),q=cc[6]?(s.bag[id]||0):s.gear.filter(g=>g.id===id).length;
  return`<button type="button" class="ghit ${sel?'sel':''}" onclick="ghTry('care','${id}')" aria-label="${esc(n)}, ${pr} xu"><span class="ghpic">${spr(cc[5],cc[3]==='food'||cc[3]==='med'||cc[3]==='soap'?30:cc[3]==='wear'?20:34)}</span><b>${esc(n)}</b><i class="ghpr">${spr('coin',14)} ${pr}</i>${q?`<i class="ghq">có ${q}</i>`:''}</button>`}
-function careGrid(st){return CARE_GRP.map(([g,n])=>`<h3 class="ghgh">${n}</h3><div class="ghgrid">${CARE.filter(c=>c[3]===g).map(c=>petCard({k:'care'},[c[0],c[1],c[2]],st)).join('')}</div>`).join('')}
+function careGrid(st){return CARE_GRP.map(([g,n])=>`<h3 class="ghgh">${n}</h3><div class="ghgrid">${CARE.filter(c=>c[3]===g||(g==='med'&&c[3]==='soap')).map(c=>petCard({k:'care'},[c[0],c[1],c[2]],st)).join('')}</div>`).join('')}
 const careNote=id=>CARE_NOTE[id]||'';
 function careStage(st,T,f){const P=petsOf(st),p=P.list[0];return`<span class="ghcare">${p?petSpr(p,70):spr('bowlS',40)}${f?`<span class="ghcarei">${spr(careOf(T.id)[5],34)}</span>`:''}</span>`}
 function petAct(T,f,st){const pr=f.x[2],short=Math.max(0,pr-st.coins);

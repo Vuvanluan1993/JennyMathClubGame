@@ -94,3 +94,17 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .ghtk{display:flex;gap:12px;align-items:flex-start;padding:14px;background:var(--sun-soft);box-shadow:var(--f2)}.ghtk p{margin:4px 0 8px;font-size:14px}
 .ghnote{font-size:13px;margin:14px 2px}
 </style>`);
+/* thanh mua nổi ở đáy màn hình (thầy góp ý 23/10): chọn món nào thì nút Mua/Dùng hiện ngay bên dưới, không phải kéo lên */
+{const _v=viewShop;viewShop=function(st){let r=_v.apply(this,arguments);try{const T=scr.ghTry,f=T&&ghFind(T.id);if(!f)return r;
+  const m=r.match(/<div class="ghinfo">[\s\S]*?(<button[^>]*class="gobtn ghgo[^"]*"[\s\S]*?<\/button>)<\/div><\/div><\/section>/);if(!m)return r;
+  const note=r.match(/<div class="ghinfo"><b>([\s\S]*?)<\/b><small>([\s\S]*?)<\/small>/);
+  const bar=`<div class="ghbar" role="region" aria-label="Mua món đã chọn"><div class="grow"><b>${note?note[1]:''}</b><small>${note?note[2]:''}</small></div>${m[1].replace('gobtn ghgo','gobtn ghgo ghbarbtn')}<button type="button" class="ghbarx" onclick="scr.ghTry=null;render()" aria-label="Bỏ chọn">✕</button></div>`;
+  const i=r.lastIndexOf('</div>');return r.slice(0,i)+bar+r.slice(i)}catch(e){return r}}}
+document.head.insertAdjacentHTML('beforeend',`<style>
+.ghbar{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(74px + env(safe-area-inset-bottom,0px));z-index:40;max-width:560px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--sun-soft);color:var(--ink);box-shadow:var(--f2),4px 4px 0 0 var(--pxk,#1F2A5A);animation:ghup .2s steps(3)}
+@keyframes ghup{from{transform:translateY(20px);opacity:0}}
+.ghbar .grow{min-width:0;display:flex;flex-direction:column;gap:2px}.ghbar b{font-family:var(--f-display);font-size:22px;font-weight:400;line-height:1}.ghbar small{font-size:12px;line-height:1.3;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ghbar .ghbarbtn{margin:0!important;flex:none;width:auto;max-width:48%;font-size:15px!important;padding:9px 10px!important;white-space:normal;line-height:1.1}
+.ghbarx{flex:none;border:0;background:none;color:var(--ink);font-size:18px;cursor:pointer;padding:4px}
+.ghpage{padding-bottom:96px}
+</style>`);

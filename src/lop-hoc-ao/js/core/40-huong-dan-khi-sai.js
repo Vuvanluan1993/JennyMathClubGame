@@ -230,7 +230,7 @@ function gdOpen(q,auto){const k=gdKind(q);if(!k)return false;return gdOpenF(gdFr
 function gdOpenF(F,auto,kind){
  gdClose(true);GD={F,i:0,slow:false,tm:null,auto,done:false,kind};
  const el=document.createElement('div');el.id='gdov';el.className='gdov';el.setAttribute('role','dialog');el.setAttribute('aria-label','Hướng dẫn');
- el.innerHTML=`<div class="gdbox"><div class="gdhd"><b>${spr('bulb',20)} Hướng dẫn</b><span class="gdstep"></span><button type="button" class="gdx" onclick="gdClose()" aria-label="Đóng">✕</button></div><div class="gdstage"></div><div class="gdsay">${spr('jennyHappy',40)}<div class="gdbub"></div></div><div class="gdmcq"></div><div class="gdctl"><button type="button" onclick="gdReplay()">↺ Xem lại</button><button type="button" class="gdslow" onclick="gdSlow()">🐢 Chậm hơn</button><button type="button" class="gdgo" onclick="gdFinish()" disabled>Em làm lại ▶</button></div></div>`;
+ el.innerHTML=`<div class="gdbox"><div class="gdhd"><b>${spr('bulb',20)} Hướng dẫn</b><span class="gdstep"></span><button type="button" class="gdx" onclick="gdClose()" aria-label="Đóng hướng dẫn">Đóng ✕</button></div><div class="gdstage"></div><div class="gdsay">${spr('jennyHappy',40)}<div class="gdbub"></div></div><div class="gdmcq"></div><div class="gdctl"><button type="button" onclick="gdReplay()">↺ Xem lại</button><button type="button" class="gdslow" onclick="gdSlow()">🐢 Chậm hơn</button><button type="button" class="gdgo" onclick="gdFinish()" disabled>Em làm lại ▶</button></div></div>`;
  document.body.appendChild(el);try{pixelize(el)}catch(e){}gdShow();return true}
 function gdShow(){if(!GD)return;const el=document.getElementById('gdov');if(!el)return;const f=GD.F[GD.i];
  el.querySelector('.gdstage').innerHTML=f.h;el.querySelector('.gdbub').textContent=f.say||'';el.querySelector('.gdstep').textContent=`${GD.i+1}/${GD.F.length}`;
@@ -316,4 +316,5 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox{color-scheme:light;--ink:#13263a;--muted:#566779;--surface:#ffffff;--surface2:#f6f9fb;--sea-ink:#ffffff;--pxk:#1F2A5A;--bg:#EEF2F8;--sea:#0079C1;--sea-deep:#1F2A5A;--sea-soft:#DDF3FB;--leaf:#1E9A52;--leaf-soft:#E3F7EA;--sun:#FCB40C;--sun-soft:#FFF4D6;--sun-ink:#7A4E00;--coral:#E0441A;--coral-soft:#FDE6DE;--line:#C9D1E6;color:#13263a;background:#fff}
 .gdbox button{color:#1F2A5A}.gdbox .gdgo{color:#1F2A5A}
+.gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
