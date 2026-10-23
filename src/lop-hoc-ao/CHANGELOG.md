@@ -6,7 +6,7 @@
 ## 23/10/2026 — Tủ đồ gọn hơn
 - Bỏ 3 ô "Mua ở Cửa hàng" lặp lại ở từng mục; mục chưa có đồ hiện dòng chữ nhỏ. Chỉ giữ nút "Mua thêm đồ" cuối trang và nút xu "Cửa hàng ▸" trên cùng.
 - Ô đồ không còn kéo giãn quá to trên máy tính.
-- Màn hình đủ rộng (máy tính, máy tính bảng): 3 mục Áo váy · Mũ & kính · Khung ảnh nằm trên một hàng; điện thoại vẫn xếp dọc.
+- 3 mục **Áo váy · Mũ & kính · Khung ảnh** thành 3 nút trên một hàng (hiện món đang dùng và số món). Chạm nút nào thì chỉ hiện đồ của mục đó. "Mua thêm đồ" mở đúng mục đó trong Cửa hàng.
 
 ## 23/10/2026 — Chỉ dẫn thông báo
 - Nút thanh dưới có số/"!" đỏ → vào trang thấy khung vàng **"Jenny nhắc em"** nói rõ việc cần làm, có nút đi tới.

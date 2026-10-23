@@ -8070,7 +8070,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='23/10 · 15:27';
+const APP_VER='23/10 · 15:29';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -10534,11 +10534,15 @@ function viewTudo(st){const s=ghSt(st),own=ofOwn(st),L=tdLook(st),en=arcEN();
  return`<div class="page tdpage"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← ${arcT('Nhà em','My home')}</button><span class="grow"></span><button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})">🪙 <b>${st.coins}</b> <span>${arcT('Cửa hàng ▸','Shop ▸')}</span></button></div>
   <section class="card tdtop"><h2>${spr('jenny',24)} ${arcT('Tủ đồ của Jenny','Jenny’s wardrobe')}</h2><div class="tdstage">${ghJenny(150,L)}<div class="tdinfo"><b>${esc(L.of?OUTFIT[L.of].n:arcT('Áo xanh gốc','Original top'))}</b><small>${L.acc?esc((accs.find(a=>a[0]===L.acc)||['',''])[1]):arcT('Không đội mũ','No hat')} · ${L.frame?esc((frs.find(a=>a[0]===L.frame)||['',''])[1]):arcT('Không khung','No frame')}</small><small class="muted">${arcT('Chạm món đồ bên dưới để mặc thử. Đồ mặc lưu ngay.','Tap an item below to wear it. It saves right away.')}</small></div></div></section>
   <section class="card tdbody">
-   <div class="tdsecs">${sec(arcT('Áo váy','Outfits'),ofs,([k,n])=>tdCard(L.of===k,spr(k?ofVariant('jenny',k):'jenny',54),n,`tdSet('of','${k}')`),'of')}
-   ${sec(arcT('Mũ & kính','Hats & glasses'),accs,([k,n])=>tdCard(L.acc===k,k?spr(GH_ACC[k][0],28):`<span class="tdnone">∅</span>`,n,`tdSet('acc','${k}')`),'acc')}
-   ${sec(arcT('Khung ảnh','Frames'),frs,([k,n])=>tdCard(L.frame===k,k?`<span class="ghfr fr-${k}">${spr('jenny',34)}</span>`:`<span class="tdnone">∅</span>`,n,`tdSet('frame','${k}')`),'frame')}</div>
+   ${(()=>{const cat=scr.tdCat||'of';
+    const C={of:[arcT('Áo váy','Outfits'),ofs,L.of?spr(ofVariant('jenny',L.of),40):spr('jenny',40),([k,n])=>tdCard(L.of===k,spr(k?ofVariant('jenny',k):'jenny',54),n,`tdSet('of','${k}')`)],
+     acc:[arcT('Mũ & kính','Hats & glasses'),accs,L.acc?spr(GH_ACC[L.acc][0],26):`<span class="tdnone">∅</span>`,([k,n])=>tdCard(L.acc===k,k?spr(GH_ACC[k][0],28):`<span class="tdnone">∅</span>`,n,`tdSet('acc','${k}')`)],
+     frame:[arcT('Khung ảnh','Frames'),frs,L.frame?`<span class="ghfr fr-${L.frame}">${spr('jenny',26)}</span>`:`<span class="tdnone">∅</span>`,([k,n])=>tdCard(L.frame===k,k?`<span class="ghfr fr-${k}">${spr('jenny',34)}</span>`:`<span class="tdnone">∅</span>`,n,`tdSet('frame','${k}')`)]};
+    const tabs=Object.keys(C).map(k=>`<button type="button" class="tdcat ${k===cat?'on':''}" aria-pressed="${k===cat}" onclick="scr.tdCat='${k}';render()"><span class="tdcic">${C[k][2]}</span><b>${C[k][0]}</b><small>${C[k][1].length-1} ${arcT('món','items')}</small></button>`).join('');
+    const [t,list,,make]=C[cat];
+    return`<div class="tdcats" role="group" aria-label="${arcT('Chọn loại đồ','Choose a type')}">${tabs}</div><div class="tdgrid" aria-label="${t}" style="margin-top:12px">${list.map(make).join('')}</div>${list.length<=1?`<p class="tdempty">${arcT('Em chưa có món nào ở mục này.','Nothing here yet.')}</p>`:''}`})()}
    <p class="muted" style="font-size:13px;margin:12px 0 0">${arcT('Áo mới mở thêm khi em hạ trùm ở mỗi vùng biển (Hộ chiếu) hoặc mua ở Cửa hàng. Đồ cho thú cưng mặc ở Đảo nhà.','Unlock outfits by beating sea bosses (Passport) or buy them in the shop. Pet clothes are on your Home isle.')}</p>
-   <div class="archbtn"><button type="button" class="btn sm" onclick="go({k:'home',tab:'shop'})">${arcT('Mua thêm đồ','Buy more')} ▸</button></div></section></div>`}
+   <div class="archbtn"><button type="button" class="btn sm" onclick="const c=scr.tdCat||'of';go({k:'home',tab:'shop'});scr.ghCat=c;render()">${arcT('Mua thêm đồ','Buy more')} ▸</button></div></section></div>`}
 function tdSet(k,v){const st=S.st[sid],s=ghSt(st);if(k==='of'){if(v&&!ofOwn(st).has(v))return;st.outfit=v}else if(k==='acc'){if(v&&!s.own.includes(v))return;s.acc=v}else if(k==='frame'){if(v&&!s.own.includes(v))return;s.frame=v}save();try{sfx('card')}catch(e){}render()}
 NHA_TABS.push('tudo');
 {const _v=viewHome1t;viewHome1t=function(){if(scr.tab!=='tudo')return _v.apply(this,arguments);scr.tab='nha';let r;try{r=_v.apply(this,arguments)}finally{scr.tab='tudo'}const i=r.indexOf('<nav class="bnav"');return viewTudo(S.st[sid])+(i>=0?r.slice(i):'')}}
@@ -10553,7 +10557,8 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .tdtop{padding:12px!important}.tdtop h2{display:flex;align-items:center;gap:6px;margin:0 0 10px;font-size:26px}
 .tdstage{display:flex;gap:14px;align-items:flex-end;padding:12px;background:linear-gradient(#BDEBFA 0 62%,#F6D98B 62%);box-shadow:var(--f2);color:#13263a}
 .tdinfo{display:flex;flex-direction:column;gap:4px;align-self:center;min-width:0}.tdinfo b{font-family:var(--f-display);font-size:24px;font-weight:400;line-height:1}.tdinfo small{font-size:13px;color:#3D4A70}
-.tdbody{margin-top:14px;padding:12px!important}.tdsecs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:4px 18px}.tdsec .ghgh{margin-top:0}.tdsec{margin-bottom:14px}
+.tdbody{margin-top:14px;padding:12px!important}.tdcats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}.tdcat{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;padding:8px 4px;background:var(--surface,#fff);color:var(--ink);box-shadow:var(--f2),0 4px 0 0 var(--pxk,#1F2A5A);cursor:pointer;min-width:0}.tdcat.on{background:var(--sun-soft);box-shadow:0 0 0 3px #FCB40C,0 4px 0 0 var(--pxk,#1F2A5A)}.tdcat:active{transform:translateY(3px)}.tdcat b{font-family:var(--f-display);font-size:20px;font-weight:400;line-height:1}.tdcat small{font-size:12px;color:var(--muted)}.tdcic{height:44px;display:grid;place-items:center}
+.tdsecs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:4px 18px}.tdsec .ghgh{margin-top:0}.tdsec{margin-bottom:14px}
 .tdgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,150px));gap:10px}.tdempty{margin:6px 0 0;font-size:13px;color:var(--muted)}
 .tdit{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;padding:8px 4px;background:var(--surface,#fff);color:var(--ink);box-shadow:var(--f2),0 4px 0 0 var(--pxk,#1F2A5A);cursor:pointer;min-width:0}
 .tdit.on{background:var(--leaf-soft);box-shadow:0 0 0 3px #2AB563,0 4px 0 0 var(--pxk,#1F2A5A)}.tdit:active{transform:translateY(3px)}
