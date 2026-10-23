@@ -8051,7 +8051,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='23/10 · 16:35';
+const APP_VER='23/10 · 16:36';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -10798,6 +10798,7 @@ toggleUnl=function(){UNL_MAN=!UNL_MAN;try{localStorage.setItem('jennyUnlockAll',
 /* Bài cô giao mẫu chỉ có ở bản đầy đủ và tài khoản thử (học sinh thật chỉ thấy bài cô giao thật) */
 {const _s=asgSeed;asgSeed=function(){if(HS_BUILD()&&!isTestSt())return;return _s.apply(this,arguments)}}
 UNL=false;
+Object.assign(I18N,{'Sổ đang trống. Câu nào em làm sai lần đầu sẽ được ghi vào đây để luyện lại.':'Your book is empty. Any question you get wrong the first time will be saved here to practise again.','Sổ đang trống. Câu nào em làm sai sẽ được ghi vào đây để luyện lại.':'Your book is empty. Any question you get wrong will be saved here to practise again.'});
 /* 56 — Đảo nhà: bố cục mới (thầy yêu cầu 23/10/2026)
    Khung cảnh vẽ ở cỡ chuẩn 640×400 rồi phóng theo bề rộng màn hình (giữ tỉ lệ 16:10), nên vị trí luôn hợp lý ở mọi máy.
    Đảo cát to, bãi cỏ phía sau; mỗi đồ có chỗ riêng, đặt "đứng" trên mặt đất (neo ở chân):

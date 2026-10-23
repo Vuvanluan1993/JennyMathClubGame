@@ -14,3 +14,4 @@ toggleUnl=function(){UNL_MAN=!UNL_MAN;try{localStorage.setItem('jennyUnlockAll',
 /* Bài cô giao mẫu chỉ có ở bản đầy đủ và tài khoản thử (học sinh thật chỉ thấy bài cô giao thật) */
 {const _s=asgSeed;asgSeed=function(){if(HS_BUILD()&&!isTestSt())return;return _s.apply(this,arguments)}}
 UNL=false;
+Object.assign(I18N,{'Sổ đang trống. Câu nào em làm sai lần đầu sẽ được ghi vào đây để luyện lại.':'Your book is empty. Any question you get wrong the first time will be saved here to practise again.','Sổ đang trống. Câu nào em làm sai sẽ được ghi vào đây để luyện lại.':'Your book is empty. Any question you get wrong will be saved here to practise again.'});

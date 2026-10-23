@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Dịch "Sổ đang trống…" sang tiếng Anh
+- Sổ lỗi trống (tài khoản mới) có câu tiếng Anh.
+
 ## 23/10/2026 — Đảo nhà: bố cục mới
 - Khung cảnh vẽ lại: đảo cát to có bãi cỏ phía sau, mỏm đá ngoài biển, sóng, mây; giữ tỉ lệ 16:10 và phóng theo màn hình (điện thoại, máy tính đều cân).
 - Mỗi đồ có chỗ hợp lý, đứng trên mặt đất: cây dừa (cỏ trái), cờ CLB (cỏ phải), hải đăng (mỏm đá ngoài biển), lâu đài cát (cát trước), ô che nắng (cát trước phải), thuyền buồm (mặt nước phải); ổ rơm, máy ấp trên bãi cỏ giữa; máng ăn bên trái; thú cưng đi lại trên bãi cát giữa. Vật ở gần (thấp) che vật ở xa.
