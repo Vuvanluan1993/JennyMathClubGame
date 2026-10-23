@@ -31,4 +31,4 @@ Thầy chốt điều mới → ghi ngay vào `docs/LUAT-DA-CHOT.md`.
 - Tất cả file JS chung phạm vi toàn cục; file nội dung mới nên bọc IIFE.
 - `function` trùng tên: bản sau thắng.
 - Bàn phím số chỉ nhập số nguyên ≥ 0.
-- Hiện **mặc định mở khoá tất cả đảo** (`UNL`) để kiểm tra — trước khi học sinh học thật cần khoá lại (task T-01).
+- Đảo/màn **khoá mặc định**, mở dần theo tiến độ (`UNL` tính lại mỗi lần vẽ trong `55-khoa-dao-tai-khoan.js`). Tài khoản thử **Lê Bảo Na** (`na`, `lebaona`/jenny123, hoặc tên "Lê Bảo Na") mở tất cả + 10 000 xu. Muốn làm mới dữ liệu mọi máy: đổi khoá lưu (`KEY` ở 09, `jennyHS2_` ở tools/_student.py).

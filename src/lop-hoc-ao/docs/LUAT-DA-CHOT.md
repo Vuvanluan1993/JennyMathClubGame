@@ -74,6 +74,11 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 ## 6f. Thông báo (23/10/2026)
 - Có số/"!" đỏ trên thanh dưới thì trang đó phải có khung "Jenny nhắc em" (việc gì + nút đi tới) và chỗ cần chú ý nhấp nháy viền đỏ, nhãn "Mới". Tính năng mới có thông báo cũng phải làm như vậy.
 
+## 6g. Dùng thật (23/10/2026)
+- Mọi tài khoản học sinh: đảo, màn **khoá**, mở dần theo tiến độ. Đã làm mới toàn bộ tài khoản.
+- **Lê Bảo Na = tài khoản thử**: mở tất cả, 10 000 xu (bản học sinh: `lebaona` / `jenny123`, hoặc đặt tên "Lê Bảo Na"; bản đầy đủ: học sinh Lê Bảo Na).
+- Học sinh thật không có bài cô giao mẫu.
+
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
 - `node tools/test/kien-thuc-tro-choi.js` — trò không vượt kiến thức.

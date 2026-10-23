@@ -5,10 +5,11 @@ t=open(os.path.join(ROOT,'dist','lop-hoc-ao-jenny.html')).read()
 # accounts
 acc={}
 def h(u,p):return hashlib.sha256(f'{u.lower()}:{p}'.encode()).hexdigest()
+acc['lebaona']={'g':1,'h':h('lebaona','jenny123'),'name':'Lê Bảo Na'}
 for g in range(1,10):
     for suf in ['']+[f'-{i}' for i in range(1,6)]:
         u=f'jenny0{g}{suf}';acc[u]={'g':g,'h':h(u,'jenny123')}
-R=[("const STUDENTS=[","let STUDENTS=["),("const KEY='jennyVirtualDemo_v9'","let KEY='jennyHS'"),
+R=[("const STUDENTS=[","let STUDENTS=["),("const KEY='jennyVirtualDemo_v10'","let KEY='jennyHS'"),
 ("<div class=\"seg\" id=\"tabs\" role=\"group\" aria-label=\"Chọn vai trò\"></div>","<div class=\"seg\" id=\"tabs\" role=\"group\" aria-label=\"Chọn vai trò\"></div><div class=\"hsme\" id=\"hsme\"></div>")]
 for a,b in R:
     assert a in t,a; t=t.replace(a,b,1)
@@ -28,7 +29,7 @@ function hsMenu(e){e.stopPropagation();const m=document.getElementById('hsMenu')
 document.addEventListener('click',e=>{const m=document.getElementById('hsMenu');if(m&&!m.hidden&&!e.target.closest('#hsMenu'))m.hidden=true});
 {const _sl=setLang;setLang=function(l){const br=document.querySelector('.appbar .brand');if(br)br.classList.remove('nb-brand');const r=_sl.apply(this,arguments);header();return r}}
 function setRole(){}
-function bootUser(u,name){const a=ACC[u];STUDENTS=[[u,name||(u.charAt(0).toUpperCase()+u.slice(1)),a.g]];sid=u;role='hs';KEY='jennyHS_'+u;
+function bootUser(u,name){const a=ACC[u];STUDENTS=[[u,name||(u.charAt(0).toUpperCase()+u.slice(1)),a.g]];sid=u;role='hs';KEY='jennyHS2_'+u;try{Object.keys(localStorage).filter(k=>/^jennyHS_(?!last$)/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}if(!name&&a.name)name=a.name;
   if(!load()){S={day:dayNow(),events:[],open:{j1:true,j2:true,jg1b1:true,jg1b2:true},st:{},cbi:{}};S.st[u]=newStudent(name||(u.charAt(0).toUpperCase()+u.slice(1)),a.g);S.st[u].active=true}
   if(name&&name.trim())S.st[u].name=name.trim();STUDENTS[0][1]=S.st[u].name;S.day=dayNow();S.open=Object.assign({j1:true,j2:true,jg1b1:true,jg1b2:true},S.open||{});save();
   document.getElementById('login').hidden=true;document.body.classList.remove('locked');go({k:'home'})}

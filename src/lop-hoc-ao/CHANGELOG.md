@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Dùng thật: khoá đảo, làm mới tài khoản, tài khoản thử Lê Bảo Na
+- **Khoá đảo và màn** cho mọi học sinh: mở dần theo tiến độ (qua Màn 1 mở đảo sau; hạ trùm chủ đề mở chủ đề sau; màn sau mở khi qua màn trước). Xong T-01.
+- **Làm mới toàn bộ tài khoản**: bản học sinh lưu khoá mới `jennyHS2_…` (xoá dữ liệu cũ), bản đầy đủ `_v10`; mọi học sinh bắt đầu từ đầu (40 xu).
+- **Tài khoản thử Lê Bảo Na**: mở tất cả + 10 000 xu, có bài cô giao mẫu. Bản học sinh: đăng nhập `lebaona` / `jenny123` (hoặc tài khoản nào đặt tên đúng "Lê Bảo Na"). Bản đầy đủ: học sinh Lê Bảo Na.
+- Học sinh thật không còn bài cô giao mẫu. Nút "Mở khóa tất cả" chỉ còn ở thanh demo bản đầy đủ (mặc định khoá).
+
 ## 23/10/2026 — Tủ đồ: khung không tràn, khung hiện rõ, đeo nhiều phụ kiện
 - Khung ảnh vẽ vào phía trong (không tràn đè lên phần khác) ở Tủ đồ, Cửa hàng và ô chọn khung.
 - Chọn khung → cả khung cảnh Jenny trong Tủ đồ có viền khung đó; ảnh Jenny ở thẻ chào (Bản đồ) cũng có khung (trước bị CSS khác che mất).
