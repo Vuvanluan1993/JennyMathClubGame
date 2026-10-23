@@ -52,7 +52,7 @@ function seaOne(cv,run0){if(!cv.getContext)return;let ctx;try{ctx=cv.getContext(
     if(!noWeed)weeds.forEach(w=>blit('weed',w.x+((f>>2)%2),w.y));
     // sóng lấp lánh trôi
     sparks.forEach(s=>{s.x-=s.v;if(s.x<-4)s.x=W+2;const ph=(f+s.p)%16;if(ph<12){ctx.fillStyle=spark;const x=Math.round(s.x),y=Math.round(s.y);ctx.fillRect(x,y,ph<4||ph>8?2:3,1);if(ph>=4&&ph<=8)ctx.fillRect(x+1,y-1,1,1)}});
-    if(bfx)bfx(ctx,f);
+    if(bfx){const sc=cv.closest('.sea');bfx(ctx,f,sc?{x:sc.scrollLeft/Z,w:sc.clientWidth/Z}:{x:0,w:W})}
     // vòng bọt quanh mỗi đảo
     ctx.fillStyle=foam;isl.forEach(([cx,cy],k)=>{const r=15+((f+k*3)>>2)%2;for(let a=0;a<28;a++){if((a+(f>>1))%3===0)continue;const t=a/28*Math.PI*2;ctx.fillRect(Math.round(cx+Math.cos(t)*(r+3)),Math.round(cy+Math.sin(t)*(r*.55+2)+9),1,1)}});
     // đá ngầm có bọt
