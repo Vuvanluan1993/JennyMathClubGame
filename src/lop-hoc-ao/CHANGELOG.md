@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Hồ sơ học sinh: 4 thẻ, biểu đồ mạng nhện, giao phiếu tự động theo dạng yếu
+- Hồ sơ còn 4 thẻ: Tổng quan · **Hoạt động học tập** (gộp Học tập + Hoạt động: lịch học + khung giờ, tiến độ SGK, tỉ lệ đúng từng dạng, phần thưởng, hoạt động gần đây) · Lỗi & bài về nhà · Ghi chú & giao bài.
+- Tổng quan: **Sức mạnh Toán vẽ bằng biểu đồ mạng nhện** (SVG, tháng này + tháng trước nét đứt; mạch chưa đủ bài để xám, có ghi chú khi dưới 3 mạch). Bên phải: điểm từng mạch + Cảnh báo. Bỏ khung "Gợi ý cho cô"; các gợi ý còn lại thành nhãn trong Cảnh báo (Nhắc đọc kỹ đề, Ôn lại cách làm, Cần hỗ trợ nhiều, Nhắn phụ huynh, Khen em).
+- **Giao phiếu theo dạng bài em còn yếu**: dạng đúng dưới 50% (làm ít nhất 4 lần) có thẻ gợi ý; app tự soạn phiếu 8 câu (dễ trước, vừa sau) từ các đảo em đã học, hạn 2 ngày, đạt 80%. Cô chỉ bấm Giao / Xem trước câu hỏi / Bỏ qua (hiện lại được). Dạng đã giao chưa làm ghi "chờ em làm". Dạng 50–70% ghi "Nên luyện thêm". Bảng tỉ lệ đúng từng dạng ở mục mở rộng, dòng yếu tô đỏ. Bỏ cách cô tự chọn tiết.
+- Kết quả phiếu theo dạng tính vào tỉ lệ đúng của dạng đó (`a.kinds`, `a.ten`; `phQs`, `phSubmit` được bọc).
+- Sửa lỗi ô "Nhận xét" tràn khỏi khung; thanh thẻ hồ sơ không còn rơi xuống cuối trang trên điện thoại.
+
 ## 23/10/2026 — Hồ sơ học sinh cho giáo viên; chỉ còn tài khoản tiểu học
 - Bấm tên em (bảng Tiến độ, Cần chú ý) → **Hồ sơ học sinh** kiểu trang giáo viên, 5 thẻ (`js/core/59-ho-so-giao-vien.js`):
   - Tổng quan: chuỗi ngày, số ngày học, số câu, đúng ngay lần đầu, giây/câu (và % trả lời dưới 3 giây), số lần mở hướng dẫn; Sức mạnh Toán 6 mạch so tháng trước; Gợi ý cho cô; cảnh báo.

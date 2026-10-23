@@ -22,7 +22,7 @@ function asgMine(st){if(!st||st.grade>5)return[];return asgAll().filter(a=>a.g==
 function asgState(st,a){const r=asgR(st)[a.id]||{};const done=!!r.best;return{r,done,doing:!done&&!!r.cur,late:!done&&a.due&&Date.now()>a.due,neu:!r.seen&&!r.cur&&!done}}
 function asgTodo(st){return asgMine(st).filter(a=>!asgState(st,a).done).length}
 const asgD=t=>{const d=new Date(t);return`${d.getDate()}/${d.getMonth()+1}`};
-const asgName=a=>{const L=a.tiets.map(isl1).filter(Boolean);const t=L.map(x=>shortTitle(x.title));return t.length>2?`${t[0]} … ${t[t.length-1]} (${t.length} ${arcT('tiết','lessons')})`:t.join(' + ')};
+const asgName=a=>{if(a.ten)return a.ten;const L=a.tiets.map(isl1).filter(Boolean);const t=L.map(x=>shortTitle(x.title));return t.length>2?`${t[0]} … ${t[t.length-1]} (${t.length} ${arcT('tiết','lessons')})`:t.join(' + ')};
 const asgGoal=a=>{const L=a.tiets.map(isl1).filter(Boolean);return L.length===1?(L[0].goal||L[0].lesson||''):[...new Set(L.map(x=>x.lesson))].join(' · ')};
 /* dữ liệu mẫu: mỗi lớp 1–5 có 2 phiếu */
 function asgSeed(){if((S.asgSeed||0)>=2)return;S.asgSeed=2;const now=Date.now();
