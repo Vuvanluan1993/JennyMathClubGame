@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Sửa mặt trời Biển Hoàng hôn chớp nháy
+- Mặt trời bị đặt lại chỗ ngẫu nhiên mỗi khung hình nên nhảy lung tung, chớp nháy. Nay đặt 1 lần, đứng yên; vệt nắng dưới mặt trời lung linh chậm, nhẹ hơn. (Biển Hoàng hôn = chủ đề cuối năm mọi lớp.)
+
 ## 23/10/2026 — Dùng thật: khoá đảo, làm mới tài khoản, tài khoản thử Lê Bảo Na
 - **Khoá đảo và màn** cho mọi học sinh: mở dần theo tiến độ (qua Màn 1 mở đảo sau; hạ trùm chủ đề mở chủ đề sau; màn sau mở khi qua màn trước). Xong T-01.
 - **Làm mới toàn bộ tài khoản**: bản học sinh lưu khoá mới `jennyHS2_…` (xoá dữ liệu cũ), bản đầy đủ `_v10`; mọi học sinh bắt đầu từ đầu (40 xu).

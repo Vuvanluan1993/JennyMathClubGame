@@ -2313,9 +2313,10 @@ function biomeFx(kind,W,H,isl){let s=7;const rnd=()=>(s=(s*9301+49297)%233280)/2
    const sf=f%90;if(sf<10){const x0=(Math.floor(f/90)*137)%W,y0=2;ctx.fillStyle='#FFFFFF';for(let i=0;i<5;i++){ctx.globalAlpha=1-i*.18;ctx.fillRect(x0+sf*4-i*2,y0+sf*2-i,2,1)}ctx.globalAlpha=1}}}
  if(kind==='sun'){ /* Hoàng hôn: mặt trời lặn nửa vầng, vệt nắng, chim bóng tối, thuyền buồm bóng tối */
   const bi=N(per(70)),bt=N(per(160));bi.forEach(o=>{o.y=3+o.y*.25});bt.forEach(o=>{o.y=Math.round(H*.6+o.y*.3);o.v*=.4});
-  return(ctx,f)=>{const sp0=place(1,30,30,0,34)[0],cx=sp0.x+15,cy=sp0.y+14;ctx.fillStyle='rgba(255,240,184,.35)';for(let r=0;r<13;r++){const w=Math.round(Math.sqrt(169-r*r))*2;ctx.fillRect(cx-w/2,cy-r,w,1)}
+  const sp0=place(1,30,30,0,34)[0],cx=sp0.x+15,cy=sp0.y+14; /* đặt mặt trời 1 lần (trước đây đặt lại mỗi khung hình → nhảy chỗ, chớp nháy) */
+  return(ctx,f)=>{ctx.fillStyle='rgba(255,240,184,.35)';for(let r=0;r<13;r++){const w=Math.round(Math.sqrt(169-r*r))*2;ctx.fillRect(cx-w/2,cy-r,w,1)}
    ctx.fillStyle='#FFF0B8';for(let r=0;r<10;r++){const w=Math.round(Math.sqrt(100-r*r))*2;ctx.fillRect(cx-w/2,cy-r,w,1)}ctx.fillStyle='#FDB57E';ctx.fillRect(cx-12,cy+1,24,1);ctx.fillStyle='#F5926C';ctx.fillRect(cx-14,cy+2,28,1);
-   for(let i=0;i<10;i++){const y=cy+5+i*3,w=Math.max(2,20-i*2)+((f+i)>>2)%3;if(y<H){ctx.fillStyle=i%2?'#FFE08A':'#FFF0B8';ctx.fillRect(Math.round(cx-w/2+Math.sin((f+i*3)/5)),y,w,1)}}
+   for(let i=0;i<10;i++){const y=cy+5+i*3,w=Math.max(2,20-i*2)+((f+i*4)>>4)%2;if(y<H){ctx.fillStyle=i%2?'#FFE08A':'#FFF0B8';ctx.fillRect(Math.round(cx-w/2+Math.sin((f+i*3)/16)),y,w,1)}}
    bt.forEach(o=>{o.x+=o.v*.3;if(o.x>W+10)o.x=-10;blit(ctx,'boatH',o.x,o.y+((f>>3)%2))});
    bi.forEach(o=>{o.x+=o.v*.8;if(o.x>W+6)o.x=-6;const y=Math.round(o.y+Math.sin((f+o.p)/4));if((f+o.p)%6<3)blit(ctx,'birdH',o.x,y);else{ctx.fillStyle='#4B2A4A';ctx.fillRect(Math.round(o.x),y+1,5,1)}})}}
  return null}
@@ -8049,7 +8050,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='23/10 · 16:21';
+const APP_VER='23/10 · 16:23';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
