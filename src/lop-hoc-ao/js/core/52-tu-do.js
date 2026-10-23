@@ -16,7 +16,7 @@ function viewTudo(st){const s=ghSt(st),own=ofOwn(st),L=tdLook(st),en=arcEN();
   return`<div class="page tdpage"><div class="crumb"><button class="btn sm ghost" onclick="scr.tdCat='';render();scrollTo(0,0)">← ${arcT('Tủ đồ','Wardrobe')}</button>${coin}</div>
   <section class="card tdsub"><h2>${C[cat][2]} ${t}</h2><div class="tdstage tdmini ${L.frame?'fr-'+L.frame:''}">${ghJenny(96,{...L,frame:''})}<div class="tdinfo"><small>${arcT('Đang dùng','Wearing')}</small><b>${esc(curN)}</b><small>${arcT('Chạm một món để mặc thử, lưu ngay.','Tap an item to wear it.')}</small></div></div>
    <div class="tdgrid" style="margin-top:12px">${list.map(make).join('')}</div>${list.length<=1?`<p class="tdempty">${arcT('Em chưa có món nào ở mục này.','Nothing here yet.')}</p>`:''}
-   ${cat==='frame'?`<p class="tdhint">${arcT('Khung hiện quanh ảnh Jenny ở đây và ở thẻ chào trên trang Bản đồ.','The frame shows around Jenny here and on your welcome card.')}</p>`:''}
+   
    ${cat==='of'?`<p class="muted" style="font-size:13px;margin:12px 0 0">${arcT('Áo mới mở thêm khi em hạ trùm ở mỗi vùng biển (Hộ chiếu) hoặc mua ở Cửa hàng.','Unlock outfits by beating sea bosses (Passport) or buy them in the shop.')}</p>`:''}
    <div class="archbtn"><button type="button" class="btn sm" onclick="go({k:'home',tab:'shop'});scr.ghCat='${cat}';render()">${arcT('Mua thêm','Buy more')} ${t.toLowerCase()} ▸</button></div></section></div>`}
  return`<div class="page tdpage"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← ${arcT('Nhà em','My home')}</button>${coin}</div>

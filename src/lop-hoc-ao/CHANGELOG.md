@@ -1,7 +1,7 @@
 # Lịch sử thay đổi
 
-## 23/10/2026 — Bỏ dòng nhắc ở Mũ & kính
-- Bỏ dòng "Em đeo được nhiều món cùng lúc… Chạm lần nữa để bỏ ra." (vẫn đeo được nhiều món như cũ).
+## 23/10/2026 — Bỏ dòng nhắc ở Mũ & kính và Khung ảnh
+- Bỏ dòng "Em đeo được nhiều món cùng lúc…" và "Khung hiện quanh ảnh Jenny…" (chức năng giữ nguyên).
 
 ## 23/10/2026 — Mặt trời, mặt trăng trôi ngang trong tầm nhìn
 - Biển Hoàng hôn (mặt trời) và Biển Đêm sao (mặt trăng): mặt trời/trăng luôn nằm trong phần biển đang thấy và trôi ngang chậm từ trái sang phải (khoảng 50 giây một lượt), cả khi em kéo bản đồ sang ngang.
