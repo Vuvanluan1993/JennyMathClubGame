@@ -20,7 +20,7 @@ NHA_TABS.push('tudo');
 {const _v=viewHome1t;viewHome1t=function(){if(scr.tab!=='tudo')return _v.apply(this,arguments);scr.tab='nha';let r;try{r=_v.apply(this,arguments)}finally{scr.tab='tudo'}const i=r.indexOf('<nav class="bnav"');return viewTudo(S.st[sid])+(i>=0?r.slice(i):'')}}
 /* Nhà em: khung "Tủ đồ" ngay dưới 3 ô */
 {const _n=viewNha;viewNha=function(st){const r=_n.apply(this,arguments);try{const L=tdLook(st),s=ghSt(st),n=ofOwn(st).size+Object.keys(GH_ACC).filter(k=>s.own.includes(k)).length+['wood','silver','gold','rainbow'].filter(k=>s.own.includes(k)).length;
-  const box=`<section class="card tdhome"><div class="tdhrow">${ghJenny(84,L)}<div class="grow"><h2>${spr('jenny',22)} ${arcT('Tủ đồ','Wardrobe')}</h2><small>${arcT(`Em có ${n} món đồ. Phối đồ cho Jenny nhé!`,`You own ${n} items. Dress up Jenny!`)}</small><button type="button" class="gobtn tdgo" onclick="go({k:'home',tab:'tudo'})">${arcT('Phối đồ','Dress up')} ▸</button></div></div></section>`;
+  const box=`<section class="card tdhome"><div class="tdhrow">${ghJenny(84,L)}<div class="grow"><h2>${spr('jenny',22)} ${arcT('Tủ đồ','Wardrobe')}</h2><small>${arcT(`Em có ${n} món đồ. Phối đồ cho Jenny nhé!`,`You own ${n} items. Dress up Jenny!`)}</small></div></div><div class="archbtn"><button type="button" class="btn sm" onclick="go({k:'home',tab:'tudo'})">${arcT('Phối đồ','Dress up')} ▸</button></div></section>`;
   const i=r.indexOf('<section class="card archome">');return i<0?r:r.slice(0,i)+box+r.slice(i)}catch(e){return r}}}
 Object.assign(I18N,{'Tủ đồ':'Wardrobe','Phối đồ':'Dress up'});
 document.head.insertAdjacentHTML('beforeend',`<style>
