@@ -52,7 +52,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Hình vuông/chữ nhật lưng chừng: chấp nhận cả hai (không làm khó lớp 1).
 
 ## 6c. Kho trò chơi (chốt 23/10/2026)
-- 3 trò: Bowling, Đẩy thùng, Khủng long chạy (không gắn Toán). Mua trò 150 xu kèm 10 lượt; vé 10 lượt 60 xu; 1 lần vào chơi = 1 lượt; tối đa 5 lượt/ngày.
+- 3 trò: Bowling, Đẩy thùng, Khủng long chạy (không gắn Toán). Mua trò 150 xu kèm 10 lượt; vé 10 lượt 60 xu; 1 lần vào chơi = 1 lượt; tối đa **10 lượt/ngày** (đổi 23/10).
 - Thưởng: cúp Đồng/Bạc/Vàng; 3 cúp Vàng một trò → đồ hiếm cho Jenny/thú cưng.
 
 ## 6d. Tủ đồ (23/10/2026)
