@@ -2,7 +2,7 @@
 function viewGV(){
   const CLS=gvCLS();
   const allAl=CLS.flatMap(([id])=>alerts(id).map(a=>({...a,id}))).sort((a,b)=>(a.c==='bad'?0:1)-(b.c==='bad'?0:1));
-  const all=allAl.slice(0,5);
+  const all=allAl.slice(0,6);
   const today=CLS.filter(([id])=>dayStats(id,S.day).n>0).length;
   const avg=CLS.length?Math.round(CLS.reduce((a,[id])=>a+totalStars(S.st[id]),0)/CLS.length*10)/10:0;
   const act=CLS.filter(([id])=>S.st[id].active).length;
@@ -19,8 +19,8 @@ function viewGV(){
   return`<div class="grid">
   ${gvHead()}
   <div class="kpis"><div class="kpi"><span class="muted">Học hôm nay</span><span class="big">${today}/${CLS.length}</span></div><div class="kpi ${allAl.length?'alert':''}"><span class="muted">Cần chú ý</span><span class="big" style="color:${allAl.length?'var(--coral)':'inherit'}">${allAl.length}</span></div><div class="kpi"><span class="muted">Sao trung bình</span><span class="big">${avg}</span></div>${act?`<div class="kpi"><span class="muted">Đã kích hoạt Toán Jenny</span><span class="big">${act}/${CLS.length}</span></div>`:''}</div>
-  <section class="card"><h2>Cần chú ý sáng nay</h2>${all.length?`<div class="alertlist">${all.map(a=>`<div class="al ${a.c}"><span class="av">${initials(S.st[a.id].name)}</span><button class="lnk" onclick="go({k:'gvhs',id:'${a.id}'})">${esc(S.st[a.id].name)}</button><span>${esc(a.t)}</span></div>`).join('')}</div>${allAl.length>5?`<p class="muted" style="margin:8px 0 0">Còn ${allAl.length-5} mục khác trong bảng lớp.</p>`:''}`:'<p class="muted" style="margin:8px 0 0">Cả lớp đang ổn.</p>'}</section>
-  <section class="card"><h2>Tiến độ từng em</h2><p class="muted" style="margin:4px 0 0">Bấm tên em để mở hồ sơ.</p><div class="tablewrap"><table><tr><th>Học sinh</th><th>Tổng sao</th><th>Đang học (SGK)</th><th>Chăm (7 ngày)</th><th>Cảnh báo</th></tr>${rows}</table></div></section>
+  <section class="card"><h2>Cần chú ý sáng nay</h2>${all.length?`<div class="alertlist">${all.map(a=>`<div class="al ${a.c}"><span class="av">${initials(S.st[a.id].name)}</span><button class="lnk" onclick="go({k:'gvhs',id:'${a.id}'})">${esc(S.st[a.id].name)}</button><span>${esc(a.t)}</span></div>`).join('')}</div>${allAl.length>6?`<p class="muted" style="margin:8px 0 0">Còn ${allAl.length-6} mục khác trong bảng lớp.</p>`:''}`:'<p class="muted" style="margin:8px 0 0">Cả lớp đang ổn.</p>'}</section>
+  <section class="card"><h2>Tiến độ từng em</h2><p class="muted" style="margin:4px 0 0">Bấm tên em để mở hồ sơ.</p><div class="tablewrap"><table class="gvbang"><tr><th>Học sinh</th><th>Tổng sao</th><th>Đang học (SGK)</th><th>Chăm (7 ngày)</th><th>Cảnh báo</th></tr>${rows}</table></div></section>
   ${gvCB()}
   ${act?tjBox:''}
   ${actCard}

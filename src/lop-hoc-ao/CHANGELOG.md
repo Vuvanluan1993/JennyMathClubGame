@@ -1,5 +1,13 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Bố cục cân đối khi đổi độ rộng màn hình
+- `js/core/61-bo-cuc-can-doi.js`: dãy ô số liệu và thẻ lớp chọn số cột theo số ô — 6 ô = 3 cột × 2 hàng (điện thoại 2 × 3), 4 ô = 4 cột (máy nhỏ 2 × 2), 3 ô = 3 cột; không còn hàng cuối lẻ một ô.
+- Các cặp khung (Sức mạnh Toán / Điểm từng mạch, Phần thưởng / Hoạt động gần đây, Ghi chú / Nhận xét, Giáo viên / Nhật ký) chia đều 2 cột, dưới 900px xếp 1 cột.
+- Lịch học và Khung giờ học nằm cạnh nhau; bảng dạng bài hiện 10 dạng yếu nhất, còn lại ở "Xem thêm".
+- Trang lớp: "Cần chú ý" 2 cột, 6 mục; cột bảng tiến độ không xuống dòng lộn xộn.
+- Quản lý: lọc theo lớp, tìm tên, hiện 20 em mỗi lần ("Hiện thêm"); lọc khối và tạo lớp chỉ khối 1–5.
+- Dữ liệu mẫu: các đảo đã qua phần lớn hoàn thành (bớt "Kẹt" giả); tạo lại một lần.
+
 ## 23/10/2026 — Sức mạnh Toán 3 đường, nhận xét tự viết, trang phụ huynh đầy đủ, dữ liệu mẫu 8 tháng
 - Sức mạnh Toán (mạng nhện) có 3 đường: **em · 3 tháng gần nhất**, **em · 6 tháng gần nhất**, **trung bình học sinh Jenny cùng khối** (nét đứt). Điểm từng mạch: thanh = 3 tháng, vạch = TB khối, dòng phụ "6 tháng · khối (±)". Tính từ ảnh chụp điểm hằng tháng `st.skm`.
 - Bỏ thẻ "Ghi nhận và nhận xét" ở trang lớp. Hồ sơ › Ghi chú & giao bài: **"Nhận xét gửi phụ huynh"** — cô tự viết (ô chữ), xem lại 5 lời nhắn đã gửi; vẫn tặng thẻ được.

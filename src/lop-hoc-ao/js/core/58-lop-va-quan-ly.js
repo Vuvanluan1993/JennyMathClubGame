@@ -77,7 +77,7 @@ function viewLopCuaToi(){
 {const _t=toggleOpen;toggleOpen=function(id){_t(id);try{nk(`${S.open[id]?'Mở':'Đóng'} ${unit(2,id).title.split(' · ')[0]} Toán Jenny · lớp ${gvLop}`);save()}catch(e){}}}
 
 /* ---------- Quản lý trung tâm ---------- */
-let qlKhoi=0,qlXoa='';
+let qlKhoi=0,qlXoa='',qlLop='',qlTim='',qlMax=20;
 const qlMsg=t=>{save();render();toast(t)};
 window.qlTJ=(id,on)=>{const l=lopById(id);if(on){const c=(document.getElementById('tjMa')||{}).value;if(String(c||'').trim().toUpperCase()!==DEMO_CODE){toast('Mã gói chưa đúng (mã thử: '+DEMO_CODE+')');return}l.tj={on:true,han:'31/05/2027'};nk(`Gắn gói Toán Jenny cho lớp ${id}`)}else{l.tj={on:false};nk(`Tắt gói Toán Jenny của lớp ${id}`)}qlMsg(on?`Lớp ${id} đã có Toán Jenny`:`Đã tắt Toán Jenny của lớp ${id}`)};
 window.qlTJgan=()=>{const id=document.getElementById('tjLop').value;if(id)qlTJ(id,true)};
@@ -98,7 +98,7 @@ window.qlTaoGV=e=>{e.preventDefault();const n=document.getElementById('ngTen').v
   O().gv.push({id:u,ten:n});nk(`Tạo tài khoản giáo viên ${n}`);qlMsg('Đã tạo tài khoản giáo viên '+n)};
 
 function viewQL(){
-  const o=O(),LOP=[...o.lop].sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten)),HS=STUDENTS.filter(s=>!qlKhoi||s[2]===qlKhoi);
+  const o=O(),LOP=[...o.lop].sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten)),HS0=STUDENTS.filter(s=>(!qlKhoi||s[2]===qlKhoi)&&(!qlLop||o.gd[s[0]]===qlLop)&&(!qlTim||bo(s[1]).toLowerCase().includes(bo(qlTim).toLowerCase())||s[0].includes(qlTim.toLowerCase()))),HS=HS0.slice(0,qlMax);
   const chuaXep=STUDENTS.filter(s=>!o.gd[s[0]]).length;
   const rowsL=LOP.map(l=>{const hs=hsCuaLop(l.id),con=o.gv.filter(g=>!l.gv.includes(g.id));
     return`<tr><td><b>${esc(l.ten)}</b><div class="muted">Khối ${l.khoi}</div></td>
@@ -117,17 +117,21 @@ function viewQL(){
 
   <section class="card"><h2>Lớp học</h2><p class="muted" style="margin:4px 0 0">Mỗi lớp có thể có nhiều giáo viên. Một giáo viên dạy được nhiều lớp, khác khối cũng được.</p>
    <div class="tablewrap"><table><tr><th>Lớp</th><th>Giáo viên</th><th>Sĩ số</th><th>Toán Jenny</th></tr>${rowsL}</table></div>
-   <div class="grid g2" style="margin-top:14px">
-    <form class="task" onsubmit="qlTaoLop(event)"><b>Tạo lớp mới</b><div class="row" style="gap:8px;margin-top:8px"><select id="nlKhoi" aria-label="Khối">${[1,2,3,4,5,6,7,8,9].map(k=>`<option value="${k}">Khối ${k}</option>`).join('')}</select><input id="nlTen" placeholder="Tên lớp, ví dụ 1D" aria-label="Tên lớp" style="width:130px" maxlength="8"><select id="nlGV" aria-label="Giáo viên"><option value="">Chưa phân công</option>${o.gv.map(g=>`<option value="${g.id}">${esc(g.ten)}</option>`).join('')}</select><button class="btn pri">Tạo lớp</button></div></form>
+   <div class="grid gpair" style="margin-top:14px">
+    <form class="task" onsubmit="qlTaoLop(event)"><b>Tạo lớp mới</b><div class="row" style="gap:8px;margin-top:8px"><select id="nlKhoi" aria-label="Khối">${[1,2,3,4,5].map(k=>`<option value="${k}">Khối ${k}</option>`).join('')}</select><input id="nlTen" placeholder="Tên lớp, ví dụ 1D" aria-label="Tên lớp" style="width:130px" maxlength="8"><select id="nlGV" aria-label="Giáo viên"><option value="">Chưa phân công</option>${o.gv.map(g=>`<option value="${g.id}">${esc(g.ten)}</option>`).join('')}</select><button class="btn pri">Tạo lớp</button></div></form>
     <div class="task paidbox"><b>Gắn gói Toán Jenny cho lớp</b><div class="muted" style="margin-top:4px">Cả lớp cùng học. Mã thử: <b>${DEMO_CODE}</b></div>${chuaGoi.length?`<div class="row" style="gap:8px;margin-top:8px"><select id="tjLop" aria-label="Lớp">${chuaGoi.map(l=>`<option value="${l.id}">Lớp ${esc(l.ten)}</option>`).join('')}</select><input id="tjMa" placeholder="Mã gói" aria-label="Mã gói" autocomplete="off" style="width:130px"><button class="btn pri" onclick="qlTJgan()">Gắn gói</button></div>`:'<p class="muted">Mọi lớp đã có gói.</p>'}</div>
    </div></section>
 
-  <section class="card"><div class="row" style="justify-content:space-between"><h2>Học sinh</h2><div class="seg" role="group" aria-label="Lọc theo khối" style="flex-wrap:wrap">${[0,1,2,3,4,5,6,7,8,9].map(k=>`<button class="${k===qlKhoi?'on':''}" aria-pressed="${k===qlKhoi}" onclick="qlKhoi=${k};render()">${k?'Khối '+k:'Tất cả'}</button>`).join('')}</div></div>
+  <section class="card"><div class="row" style="justify-content:space-between"><h2>Học sinh</h2><div class="seg" role="group" aria-label="Lọc theo khối" style="flex-wrap:wrap">${[0,1,2,3,4,5].map(k=>`<button class="${k===qlKhoi?'on':''}" aria-pressed="${k===qlKhoi}" onclick="qlKhoi=${k};qlLop='';qlMax=20;render()">${k?'Khối '+k:'Tất cả'}</button>`).join('')}</div></div>
    <p class="muted" style="margin:4px 0 0">Mỗi em chỉ ở 1 lớp chính trong năm học. Chuyển lớp không mất sao, xu, Sổ lỗi sai. "Ngoại lệ" mở Toán Jenny riêng cho em khi lớp chưa có gói (học bù, chuyển lớp).</p>
+   <div class="row" style="gap:8px;margin-top:10px"><select aria-label="Lọc theo lớp" onchange="qlLop=this.value;qlMax=20;render()"><option value="">Tất cả lớp${qlKhoi?' khối '+qlKhoi:''}</option>${LOP.filter(l=>!qlKhoi||l.khoi===qlKhoi).map(l=>`<option value="${l.id}" ${qlLop===l.id?'selected':''}>Lớp ${esc(l.ten)}</option>`).join('')}</select>
+    <input type="search" placeholder="Tìm tên học sinh" aria-label="Tìm tên học sinh" value="${esc(qlTim)}" onkeydown="if(event.key==='Enter'){qlTim=this.value.trim();qlMax=20;render()}" onchange="qlTim=this.value.trim();qlMax=20;render()" style="flex:1;min-width:160px">
+    <span class="muted">${HS0.length} học sinh</span></div>
    <div class="tablewrap"><table><tr><th>Học sinh</th><th>Khối</th><th>Lớp</th><th>Toán Jenny</th></tr>${rowsH}</table></div>
+   ${HS0.length>HS.length?`<div style="margin-top:8px"><button class="btn sm" onclick="qlMax+=20;render()">Hiện thêm (còn ${HS0.length-HS.length})</button></div>`:''}
    <form class="task" onsubmit="qlTaoHS(event)" style="margin-top:14px"><b>Thêm học sinh</b><div class="row" style="gap:8px;margin-top:8px"><input id="nhTen" placeholder="Họ và tên" aria-label="Họ và tên" style="flex:1;min-width:160px" maxlength="40"><select id="nhLop" aria-label="Xếp vào lớp">${LOP.map(l=>`<option value="${l.id}">Lớp ${esc(l.ten)}</option>`).join('')}</select><button class="btn pri">Tạo tài khoản</button></div><div class="muted" style="margin-top:6px">Tên đăng nhập tự tạo, mật khẩu mặc định jenny123. Trẻ không cần email.</div></form></section>
 
-  <div class="grid g2">
+  <div class="grid gpair">
    <section class="card"><h2>Giáo viên</h2>${o.gv.map(g=>{const ls=o.lop.filter(l=>l.gv.includes(g.id));return`<div class="task"><b>${esc(g.ten)}</b><div class="row" style="gap:6px;margin-top:6px">${ls.length?ls.map(l=>`<span class="pill">${esc(l.ten)}</span>`).join(''):'<span class="muted">Chưa có lớp</span>'}</div></div>`}).join('')}
     <form class="row" onsubmit="qlTaoGV(event)" style="gap:8px;margin-top:12px"><input id="ngTen" placeholder="Tên giáo viên, ví dụ Cô Lan" aria-label="Tên giáo viên" style="flex:1;min-width:150px" maxlength="30"><button class="btn">Thêm giáo viên</button></form></section>
    <section class="card"><h2>Nhật ký thao tác</h2>${o.nk.length?`<div class="log" style="max-height:260px">${o.nk.slice(-30).reverse().map(x=>`Ngày ${x.d} · ${esc(x.ai||'')} · ${esc(x.t)}`).join('\n')}</div>`:'<p class="muted" style="margin:6px 0 0">Chưa có thao tác nào.</p>'}

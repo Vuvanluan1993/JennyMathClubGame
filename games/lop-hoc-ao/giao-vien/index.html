@@ -1637,7 +1637,7 @@ function nextQ(){
 function viewGV(){
   const CLS=gvCLS();
   const allAl=CLS.flatMap(([id])=>alerts(id).map(a=>({...a,id}))).sort((a,b)=>(a.c==='bad'?0:1)-(b.c==='bad'?0:1));
-  const all=allAl.slice(0,5);
+  const all=allAl.slice(0,6);
   const today=CLS.filter(([id])=>dayStats(id,S.day).n>0).length;
   const avg=CLS.length?Math.round(CLS.reduce((a,[id])=>a+totalStars(S.st[id]),0)/CLS.length*10)/10:0;
   const act=CLS.filter(([id])=>S.st[id].active).length;
@@ -1654,8 +1654,8 @@ function viewGV(){
   return`<div class="grid">
   ${gvHead()}
   <div class="kpis"><div class="kpi"><span class="muted">Học hôm nay</span><span class="big">${today}/${CLS.length}</span></div><div class="kpi ${allAl.length?'alert':''}"><span class="muted">Cần chú ý</span><span class="big" style="color:${allAl.length?'var(--coral)':'inherit'}">${allAl.length}</span></div><div class="kpi"><span class="muted">Sao trung bình</span><span class="big">${avg}</span></div>${act?`<div class="kpi"><span class="muted">Đã kích hoạt Toán Jenny</span><span class="big">${act}/${CLS.length}</span></div>`:''}</div>
-  <section class="card"><h2>Cần chú ý sáng nay</h2>${all.length?`<div class="alertlist">${all.map(a=>`<div class="al ${a.c}"><span class="av">${initials(S.st[a.id].name)}</span><button class="lnk" onclick="go({k:'gvhs',id:'${a.id}'})">${esc(S.st[a.id].name)}</button><span>${esc(a.t)}</span></div>`).join('')}</div>${allAl.length>5?`<p class="muted" style="margin:8px 0 0">Còn ${allAl.length-5} mục khác trong bảng lớp.</p>`:''}`:'<p class="muted" style="margin:8px 0 0">Cả lớp đang ổn.</p>'}</section>
-  <section class="card"><h2>Tiến độ từng em</h2><p class="muted" style="margin:4px 0 0">Bấm tên em để mở hồ sơ.</p><div class="tablewrap"><table><tr><th>Học sinh</th><th>Tổng sao</th><th>Đang học (SGK)</th><th>Chăm (7 ngày)</th><th>Cảnh báo</th></tr>${rows}</table></div></section>
+  <section class="card"><h2>Cần chú ý sáng nay</h2>${all.length?`<div class="alertlist">${all.map(a=>`<div class="al ${a.c}"><span class="av">${initials(S.st[a.id].name)}</span><button class="lnk" onclick="go({k:'gvhs',id:'${a.id}'})">${esc(S.st[a.id].name)}</button><span>${esc(a.t)}</span></div>`).join('')}</div>${allAl.length>6?`<p class="muted" style="margin:8px 0 0">Còn ${allAl.length-6} mục khác trong bảng lớp.</p>`:''}`:'<p class="muted" style="margin:8px 0 0">Cả lớp đang ổn.</p>'}</section>
+  <section class="card"><h2>Tiến độ từng em</h2><p class="muted" style="margin:4px 0 0">Bấm tên em để mở hồ sơ.</p><div class="tablewrap"><table class="gvbang"><tr><th>Học sinh</th><th>Tổng sao</th><th>Đang học (SGK)</th><th>Chăm (7 ngày)</th><th>Cảnh báo</th></tr>${rows}</table></div></section>
   ${gvCB()}
   ${act?tjBox:''}
   ${actCard}
@@ -8016,7 +8016,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='23/10 · 23:32';
+const APP_VER='23/10 · 23:43';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -10903,7 +10903,7 @@ function viewLopCuaToi(){
 {const _t=toggleOpen;toggleOpen=function(id){_t(id);try{nk(`${S.open[id]?'Mở':'Đóng'} ${unit(2,id).title.split(' · ')[0]} Toán Jenny · lớp ${gvLop}`);save()}catch(e){}}}
 
 /* ---------- Quản lý trung tâm ---------- */
-let qlKhoi=0,qlXoa='';
+let qlKhoi=0,qlXoa='',qlLop='',qlTim='',qlMax=20;
 const qlMsg=t=>{save();render();toast(t)};
 window.qlTJ=(id,on)=>{const l=lopById(id);if(on){const c=(document.getElementById('tjMa')||{}).value;if(String(c||'').trim().toUpperCase()!==DEMO_CODE){toast('Mã gói chưa đúng (mã thử: '+DEMO_CODE+')');return}l.tj={on:true,han:'31/05/2027'};nk(`Gắn gói Toán Jenny cho lớp ${id}`)}else{l.tj={on:false};nk(`Tắt gói Toán Jenny của lớp ${id}`)}qlMsg(on?`Lớp ${id} đã có Toán Jenny`:`Đã tắt Toán Jenny của lớp ${id}`)};
 window.qlTJgan=()=>{const id=document.getElementById('tjLop').value;if(id)qlTJ(id,true)};
@@ -10924,7 +10924,7 @@ window.qlTaoGV=e=>{e.preventDefault();const n=document.getElementById('ngTen').v
   O().gv.push({id:u,ten:n});nk(`Tạo tài khoản giáo viên ${n}`);qlMsg('Đã tạo tài khoản giáo viên '+n)};
 
 function viewQL(){
-  const o=O(),LOP=[...o.lop].sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten)),HS=STUDENTS.filter(s=>!qlKhoi||s[2]===qlKhoi);
+  const o=O(),LOP=[...o.lop].sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten)),HS0=STUDENTS.filter(s=>(!qlKhoi||s[2]===qlKhoi)&&(!qlLop||o.gd[s[0]]===qlLop)&&(!qlTim||bo(s[1]).toLowerCase().includes(bo(qlTim).toLowerCase())||s[0].includes(qlTim.toLowerCase()))),HS=HS0.slice(0,qlMax);
   const chuaXep=STUDENTS.filter(s=>!o.gd[s[0]]).length;
   const rowsL=LOP.map(l=>{const hs=hsCuaLop(l.id),con=o.gv.filter(g=>!l.gv.includes(g.id));
     return`<tr><td><b>${esc(l.ten)}</b><div class="muted">Khối ${l.khoi}</div></td>
@@ -10943,17 +10943,21 @@ function viewQL(){
 
   <section class="card"><h2>Lớp học</h2><p class="muted" style="margin:4px 0 0">Mỗi lớp có thể có nhiều giáo viên. Một giáo viên dạy được nhiều lớp, khác khối cũng được.</p>
    <div class="tablewrap"><table><tr><th>Lớp</th><th>Giáo viên</th><th>Sĩ số</th><th>Toán Jenny</th></tr>${rowsL}</table></div>
-   <div class="grid g2" style="margin-top:14px">
-    <form class="task" onsubmit="qlTaoLop(event)"><b>Tạo lớp mới</b><div class="row" style="gap:8px;margin-top:8px"><select id="nlKhoi" aria-label="Khối">${[1,2,3,4,5,6,7,8,9].map(k=>`<option value="${k}">Khối ${k}</option>`).join('')}</select><input id="nlTen" placeholder="Tên lớp, ví dụ 1D" aria-label="Tên lớp" style="width:130px" maxlength="8"><select id="nlGV" aria-label="Giáo viên"><option value="">Chưa phân công</option>${o.gv.map(g=>`<option value="${g.id}">${esc(g.ten)}</option>`).join('')}</select><button class="btn pri">Tạo lớp</button></div></form>
+   <div class="grid gpair" style="margin-top:14px">
+    <form class="task" onsubmit="qlTaoLop(event)"><b>Tạo lớp mới</b><div class="row" style="gap:8px;margin-top:8px"><select id="nlKhoi" aria-label="Khối">${[1,2,3,4,5].map(k=>`<option value="${k}">Khối ${k}</option>`).join('')}</select><input id="nlTen" placeholder="Tên lớp, ví dụ 1D" aria-label="Tên lớp" style="width:130px" maxlength="8"><select id="nlGV" aria-label="Giáo viên"><option value="">Chưa phân công</option>${o.gv.map(g=>`<option value="${g.id}">${esc(g.ten)}</option>`).join('')}</select><button class="btn pri">Tạo lớp</button></div></form>
     <div class="task paidbox"><b>Gắn gói Toán Jenny cho lớp</b><div class="muted" style="margin-top:4px">Cả lớp cùng học. Mã thử: <b>${DEMO_CODE}</b></div>${chuaGoi.length?`<div class="row" style="gap:8px;margin-top:8px"><select id="tjLop" aria-label="Lớp">${chuaGoi.map(l=>`<option value="${l.id}">Lớp ${esc(l.ten)}</option>`).join('')}</select><input id="tjMa" placeholder="Mã gói" aria-label="Mã gói" autocomplete="off" style="width:130px"><button class="btn pri" onclick="qlTJgan()">Gắn gói</button></div>`:'<p class="muted">Mọi lớp đã có gói.</p>'}</div>
    </div></section>
 
-  <section class="card"><div class="row" style="justify-content:space-between"><h2>Học sinh</h2><div class="seg" role="group" aria-label="Lọc theo khối" style="flex-wrap:wrap">${[0,1,2,3,4,5,6,7,8,9].map(k=>`<button class="${k===qlKhoi?'on':''}" aria-pressed="${k===qlKhoi}" onclick="qlKhoi=${k};render()">${k?'Khối '+k:'Tất cả'}</button>`).join('')}</div></div>
+  <section class="card"><div class="row" style="justify-content:space-between"><h2>Học sinh</h2><div class="seg" role="group" aria-label="Lọc theo khối" style="flex-wrap:wrap">${[0,1,2,3,4,5].map(k=>`<button class="${k===qlKhoi?'on':''}" aria-pressed="${k===qlKhoi}" onclick="qlKhoi=${k};qlLop='';qlMax=20;render()">${k?'Khối '+k:'Tất cả'}</button>`).join('')}</div></div>
    <p class="muted" style="margin:4px 0 0">Mỗi em chỉ ở 1 lớp chính trong năm học. Chuyển lớp không mất sao, xu, Sổ lỗi sai. "Ngoại lệ" mở Toán Jenny riêng cho em khi lớp chưa có gói (học bù, chuyển lớp).</p>
+   <div class="row" style="gap:8px;margin-top:10px"><select aria-label="Lọc theo lớp" onchange="qlLop=this.value;qlMax=20;render()"><option value="">Tất cả lớp${qlKhoi?' khối '+qlKhoi:''}</option>${LOP.filter(l=>!qlKhoi||l.khoi===qlKhoi).map(l=>`<option value="${l.id}" ${qlLop===l.id?'selected':''}>Lớp ${esc(l.ten)}</option>`).join('')}</select>
+    <input type="search" placeholder="Tìm tên học sinh" aria-label="Tìm tên học sinh" value="${esc(qlTim)}" onkeydown="if(event.key==='Enter'){qlTim=this.value.trim();qlMax=20;render()}" onchange="qlTim=this.value.trim();qlMax=20;render()" style="flex:1;min-width:160px">
+    <span class="muted">${HS0.length} học sinh</span></div>
    <div class="tablewrap"><table><tr><th>Học sinh</th><th>Khối</th><th>Lớp</th><th>Toán Jenny</th></tr>${rowsH}</table></div>
+   ${HS0.length>HS.length?`<div style="margin-top:8px"><button class="btn sm" onclick="qlMax+=20;render()">Hiện thêm (còn ${HS0.length-HS.length})</button></div>`:''}
    <form class="task" onsubmit="qlTaoHS(event)" style="margin-top:14px"><b>Thêm học sinh</b><div class="row" style="gap:8px;margin-top:8px"><input id="nhTen" placeholder="Họ và tên" aria-label="Họ và tên" style="flex:1;min-width:160px" maxlength="40"><select id="nhLop" aria-label="Xếp vào lớp">${LOP.map(l=>`<option value="${l.id}">Lớp ${esc(l.ten)}</option>`).join('')}</select><button class="btn pri">Tạo tài khoản</button></div><div class="muted" style="margin-top:6px">Tên đăng nhập tự tạo, mật khẩu mặc định jenny123. Trẻ không cần email.</div></form></section>
 
-  <div class="grid g2">
+  <div class="grid gpair">
    <section class="card"><h2>Giáo viên</h2>${o.gv.map(g=>{const ls=o.lop.filter(l=>l.gv.includes(g.id));return`<div class="task"><b>${esc(g.ten)}</b><div class="row" style="gap:6px;margin-top:6px">${ls.length?ls.map(l=>`<span class="pill">${esc(l.ten)}</span>`).join(''):'<span class="muted">Chưa có lớp</span>'}</div></div>`}).join('')}
     <form class="row" onsubmit="qlTaoGV(event)" style="gap:8px;margin-top:12px"><input id="ngTen" placeholder="Tên giáo viên, ví dụ Cô Lan" aria-label="Tên giáo viên" style="flex:1;min-width:150px" maxlength="30"><button class="btn">Thêm giáo viên</button></form></section>
    <section class="card"><h2>Nhật ký thao tác</h2>${o.nk.length?`<div class="log" style="max-height:260px">${o.nk.slice(-30).reverse().map(x=>`Ngày ${x.d} · ${esc(x.ai||'')} · ${esc(x.t)}`).join('\n')}</div>`:'<p class="muted" style="margin:6px 0 0">Chưa có thao tác nào.</p>'}
@@ -11051,7 +11055,7 @@ function gvTabTQ(id,st,ph){
   const sk=hsStreaks(st),T=gvTong(st),al=alerts(id),gy=gvGoiY(id,st,al).filter(g=>!ph||!/Nhắn phụ huynh/.test(g.t)),SM=gvSucManh(id,st);
   return`<div class="kpis">${gvKpi('Chuỗi ngày học',sk.cur+' ngày','dài nhất '+sk.best)}${gvKpi('Số ngày học',sk.days,'từ đầu năm học')}${gvKpi('Số câu',sk.n,T.n?`đúng ${pc(T.c,T.n)}%`:'')}
    ${gvKpi('Đúng ngay lần đầu',T.f>=10?pc(T.fc,T.f)+'%':'–',T.f>=10?`sửa rồi đúng ${T.fx} câu`:'chưa đủ dữ liệu')}${gvKpi('Thời gian mỗi câu',T.n?Math.round(T.sec/T.n)+' giây':'–',T.n?`trả lời dưới 3 giây: ${pc(T.fast,T.n)}%`:'')}${gvKpi('Mở hướng dẫn',T.gd+' lần',T.n?`${(T.gd/T.n*100).toFixed(0)} lần / 100 câu`:'')}</div>
-  <div class="grid g2">
+  <div class="grid gpair">
    <section class="card"><h2>Sức mạnh Toán</h2><p class="muted" style="margin:4px 0 0">Điểm 6 mạch, so với chính em và với các bạn cùng khối học Jenny.</p>${SM.radar}</section>
    <section class="card"><h2>Điểm từng mạch</h2><p class="muted" style="margin:4px 0 6px">Thanh: điểm 3 tháng gần nhất. Vạch mờ: trung bình khối.</p>${SM.bars}
     <h3 style="margin-top:14px">${ph?'Cần lưu ý':'Cảnh báo'}</h3><div class="row" style="gap:6px;margin-top:6px">${al.length||gy.length?al.map(a=>`<span class="pill ${a.c}">${esc(a.t)}</span>`).join('')+gy.map(g=>`<span class="pill ${g.c}" title="${esc(g.m)}">${esc(g.t)}</span>`).join(''):'<span class="pill ok">Ổn</span>'}</div></section>
@@ -11064,12 +11068,13 @@ function gvTabHT(id,st){
     if(!hoc)return`<tr class="muted"><td>Chủ đề ${ti+1}: ${esc(t[0])}</td><td>chưa học</td><td></td></tr>`;
     return`<tr><td><b>Chủ đề ${ti+1}: ${esc(t[0])}</b><div class="muted">${hoc}/${L.length} đảo đã vào</div></td><td style="min-width:150px">${gvBar(pc(a,b),'var(--sun)')} <span class="muted">${a}/${b} màn</span></td><td>${ket.length?[...new Set(ket)].slice(0,3).map(k=>`<span class="pill bad">Kẹt ${esc(k)}</span>`).join(' '):'<span class="pill ok">Ổn</span>'}</td></tr>`}).join('');
   const T=gvTong(st),hs=T.h[0]+T.h[1]+T.h[2];
-  return`<section class="card"><h2>Lịch học năm học</h2><p class="muted" style="margin:4px 0 0">Mỗi ô là một ngày, màu đậm là làm nhiều câu.</p>${gvLich(id,st)}
-   <h3 style="margin-top:14px">Khung giờ học</h3>${hs?['Sáng','Chiều','Tối'].map((t,i)=>`<div class="grow"><span>${t}</span>${gvBar(pc(T.h[i],hs))}<b>${pc(T.h[i],hs)}%</b></div>`).join(''):'<p class="muted">Chưa đủ dữ liệu.</p>'}
-   <p class="muted" style="margin:6px 0 0">Tổng thời gian học: ${Math.round(T.sec/60)} phút.</p></section>
+  return`<section class="card glichcard"><div><h2>Lịch học năm học</h2><p class="muted" style="margin:4px 0 0">Mỗi ô là một ngày, màu đậm là làm nhiều câu.</p>${gvLich(id,st)}</div>
+   <div><h3>Khung giờ học</h3>${hs?['Sáng','Chiều','Tối'].map((t,i)=>`<div class="grow"><span>${t}</span>${gvBar(pc(T.h[i],hs))}<b>${pc(T.h[i],hs)}%</b></div>`).join(''):'<p class="muted">Chưa đủ dữ liệu.</p>'}
+   <p class="muted" style="margin:6px 0 0">Tổng thời gian học: ${Math.round(T.sec/60)} phút (khoảng ${Math.round(T.sec/60/Math.max(1,Object.values(st.dd||{}).filter(o=>o.n).length))} phút mỗi ngày học).</p></div></section>
   <section class="card"><h2>Tiến độ SGK</h2><div class="tablewrap"><table><tr><th>Chủ đề</th><th>Màn đã qua</th><th>Đảo bị kẹt</th></tr>${chu}</table></div></section>
-  <section class="card"><h2>Tỉ lệ đúng từng dạng bài</h2><p class="muted" style="margin:4px 0 0">10 lần làm gần nhất mỗi dạng, dạng yếu xếp trước.</p>${gvBangDang(st)}</section>`}
-function gvBangDang(st){const D=gvDang(st);return D.length?`<div class="tablewrap"><table><tr><th>Dạng bài</th><th>Mạch</th><th>Đúng</th><th>Số lần</th><th>Lần cuối</th></tr>${D.map(x=>`<tr${x.n>=4&&x.p<GV_YEU?' class="gyeu"':''}><td>${esc(x.k)}</td><td>${HS_AXN[x.ax]||''}</td><td style="min-width:140px">${gvBar(x.p,x.p>=80?'var(--leaf)':x.p>=GV_YEU?'var(--sun)':'var(--coral)')} <b>${x.p}%</b></td><td>${x.n}</td><td>${x.t?gvNgay(hsKey(new Date(x.t))):''}</td></tr>`).join('')}</table></div>`:'<p class="muted">Chưa có dữ liệu.</p>'}
+  <section class="card"><h2>Tỉ lệ đúng từng dạng bài</h2><p class="muted" style="margin:4px 0 0">10 lần làm gần nhất mỗi dạng, dạng yếu xếp trước (10 dạng yếu nhất).</p>${gvBangDang(st,1)}</section>`}
+function gvBangDang(st,gon){const D=gvDang(st),top=gon?D.slice(0,10):D,con=gon?D.slice(10):[];const row=x=>`<tr${x.n>=4&&x.p<GV_YEU?' class="gyeu"':''}><td>${esc(x.k)}</td><td>${HS_AXN[x.ax]||''}</td><td style="min-width:140px">${gvBar(x.p,x.p>=80?'var(--leaf)':x.p>=GV_YEU?'var(--sun)':'var(--coral)')} <b>${x.p}%</b></td><td>${x.n}</td><td>${x.t?gvNgay(hsKey(new Date(x.t))):''}</td></tr>`;const bang=L=>`<div class="tablewrap"><table class="gdang"><tr><th>Dạng bài</th><th>Mạch</th><th>Đúng</th><th>Số lần</th><th>Lần cuối</th></tr>${L.map(row).join('')}</table></div>`;
+  return D.length?bang(top)+(con.length?`<details style="margin-top:8px"><summary>Xem thêm ${con.length} dạng (đều đúng từ ${con[0].p}% trở lên)</summary>${bang(con)}</details>`:''):'<p class="muted">Chưa có dữ liệu.</p>'}
 
 function gvTabLoi(id,st,ph){
   const M=Object.entries(st.mist||{}).sort((a,b)=>b[1].n-a[1].n),A=asgMine(st),dang=A.find(a=>a.loai==='loi'&&!asgState(st,a).done),chon=scr.loiChon||[];
@@ -11088,7 +11093,7 @@ window.gvGiaoLoi=(id,chon)=>{const st=S.st[id],M=mist(st),keys=(chon?(scr.loiCho
 
 function gvTabHD(id,st){
   const P=st.pets&&st.pets.list||[],ev=S.events.filter(e=>e.actor.account.name===id).slice(-20).reverse();
-  return`<div class="grid g2">
+  return`<div class="grid gpair">
    <section class="card"><h2>Phần thưởng</h2><div class="kpis" style="margin-top:8px">${gvKpi('Sao',totalStars(st),'SGK '+p1Stars(st)+' · Jenny '+p2Stars(st))}${gvKpi('Xu',st.coins,'')}</div>
     <p style="margin:12px 0 4px"><b>Thú cưng:</b> ${P.length?P.map(p=>esc(p.name||(PET_SP[p.sp]||[''])[0])).join(', '):'<span class="muted">chưa nuôi</span>'}</p>
     <p style="margin:4px 0"><b>Thẻ cô tặng:</b> ${(st.badges||[]).length?st.badges.slice(-6).map(b=>`<span class="pill acc">♥ ${esc(b.t)}</span>`).join(' '):'<span class="muted">chưa có</span>'}</p>
@@ -11115,7 +11120,7 @@ function gvTabGC(id,st){
    ${nen.length?`<p style="margin:12px 0 4px"><b>Nên luyện thêm</b> <span class="muted">(${GV_YEU}–${GV_NEN}%, chưa cần giao):</span> ${nen.slice(0,6).map(x=>`<span class="pill warn">${esc(x.k)} ${x.p}%</span>`).join(' ')}${nen.length>6?` <span class="muted">và ${nen.length-6} dạng khác (xem bảng bên dưới)</span>`:''}</p>`:''}
    ${bo.length?`<p class="muted" style="margin:8px 0 0">Đã bỏ qua: ${bo.map(x=>`${esc(x.k)} <button class="lnk" style="font-weight:600" onclick="gvBoQua('${id}',${gvKi(st,x.k)},0)">hiện lại</button>`).join(' · ')}</p>`:''}
    <details style="margin-top:12px"><summary><b>Tỉ lệ đúng từng dạng bài</b> <span class="muted">(dòng tô đỏ là dạng yếu)</span></summary>${gvBangDang(st)}</details></section>
-  <div class="grid g2">
+  <div class="grid gpair">
    <section class="card"><h2>Ghi chú riêng của cô</h2><p class="muted" style="margin:4px 0 8px">Em và phụ huynh không thấy phần này.</p>
     <form onsubmit="gvGhiChu(event,'${id}')" class="grid" style="gap:8px"><textarea id="gcT" class="gfit" rows="3" maxlength="300" placeholder="Ví dụ: Em hay quên đơn vị, nhắc kiểm tra lại." aria-label="Ghi chú"></textarea><div><button class="btn pri">Lưu ghi chú</button></div></form>
     ${N.slice().reverse().map((n,i)=>`<div class="task"><div class="row" style="justify-content:space-between"><span class="muted">Ngày ${n.d} · ${esc(n.by||'')}</span><button class="btn sm" onclick="gvXoaGC('${id}',${N.length-1-i})">Xóa</button></div><div>${esc(n.t)}</div></div>`).join('')}</section>
@@ -11199,7 +11204,7 @@ const GV_NX=[
  f=>`${f} nghỉ học mấy hôm. Bố mẹ giúp con giữ thói quen 15 phút mỗi ngày.`,
  (f,w,b)=>`${f} làm tốt phần ${b}, hay giúp bạn trong lớp. Cô tặng con thẻ "Giúp bạn".`];
 function gvMau(){
-  if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS2||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS2=1;
+  if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS3||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS3=1;
   try{window.orgHeal&&window.orgHeal()}catch(e){}
   const NG=GV_NG;S.day=NG;const thang=[];for(let d=1;d<=NG;d+=1){const m=hsMonth(hsDayDate(d));if(!thang.includes(m))thang.push(m)}
   S.asg=(S.asg||[]).filter(a=>!a.mau);
@@ -11211,7 +11216,7 @@ function gvMau(){
       if(d>NG-5)simDay(id,d,Math.min(q,8),ac,'Luyện tập')}
     const L=PRIM[g].isl,ki=Math.max(3,Math.min(L.length,Math.round(L.length*(.45+cham*.45))));
     for(let i=0;i<ki;i++){const x=L[i],s=st.p1[x.id]||(st.p1[x.id]={intro:false,m:Array(x.nm||3).fill(false),fails:Array(x.nm||3).fill(0)});s.intro=true;
-      s.m=s.m.map((_,j)=>i<ki-1?rnd()<gioi+.15:j===0&&rnd()<gioi);s.fails=s.m.map(v=>v?(rnd()<.3?1:0):(rnd()<.06?2:1))}
+      s.m=s.m.map((_,j)=>i<ki-1?rnd()<.94:j===0&&rnd()<gioi);s.fails=s.m.map(v=>v?(rnd()<.3?1:0):(rnd()<.06?2:1))}
     const pos={};L.slice(0,ki).forEach((x,i)=>pos[x.id]=i);
     const kinds=Object.entries(hsIndex(g).kinds).filter(([,v])=>v.src.some(sr=>pos[sr[0]]!=null));
     /* điểm từng mạch theo tháng: mạch bắt đầu khi em học tới đảo có mạch đó, rồi tăng dần */
@@ -11261,6 +11266,13 @@ tr.gyeu td{background:var(--coral-soft)}
 .gr-lb{font:600 12.5px var(--f-body);fill:var(--ink)}.gr-lb.dim{fill:var(--muted);font-weight:400}.gr-v{font-weight:800;font-size:13px}
 .gr-leg{display:flex;gap:16px;justify-content:center;font-size:12.5px}.gr-leg i{display:inline-block;width:18px;height:0;border-top:3px solid var(--sea);vertical-align:middle;margin-right:4px}.gr-leg{flex-wrap:wrap;gap:6px 14px}.gr-leg i.s6{border-top-color:#F37A1F}.gr-leg i.tb{border-top:2px dashed var(--muted)}
 .phmsg.moi{border-left:4px solid var(--sea)}
+.gpair{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}@media(max-width:900px){.gpair{grid-template-columns:minmax(0,1fr)}}
+.glichcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,320px);gap:12px 28px;align-items:start}@media(max-width:900px){.glichcard{grid-template-columns:minmax(0,1fr)}}
+.glichcard .grow{grid-template-columns:60px 1fr 44px}
+.grow .gbar{max-width:none}.grow{max-width:560px}
+table.gdang td:nth-child(2),table.gdang td:nth-child(4),table.gdang td:nth-child(5){white-space:nowrap}
+table.gvbang td:nth-child(2),table.gvbang td:nth-child(3),table.gvbang td:nth-child(4){white-space:nowrap}
+@media(min-width:900px){.alertlist{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .lnk{all:unset;cursor:pointer;font-weight:700;text-decoration:underline;text-underline-offset:3px}.lnk:focus-visible{outline:2px solid var(--sea)}
 </style>`);
 /* ===================== Bài về nhà bắt buộc (luật chốt 22/10/2026, đưa vào bản GitHub 23/10) =====================
@@ -11326,6 +11338,24 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .bvn-sau{display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--ink)}.bvn-li{display:flex;gap:8px;align-items:center}
 .bvn-note{margin:0;font-size:12.5px;color:var(--muted);text-align:center}
 body.bvnlock .bnav,body.bvnlock #bnav,body.bvnlock nav.botnav{display:none!important}
+</style>`);
+/* ===================== Bố cục cân đối (thầy yêu cầu 23/10/2026) =====================
+   Các dãy ô (số liệu, thẻ lớp) không để hàng cuối lẻ loi: số cột chọn theo số ô và độ rộng.
+   6 ô → 3 cột (2 hàng) · 4 ô → 4 cột hoặc 2 cột · 3 ô → 3 cột · 5 ô → 3 + 2 · điện thoại: 2 cột (3 ô thì 1 cột nếu quá hẹp).
+   Đánh dấu số ô vào data-n sau mỗi lần vẽ; CSS lo phần còn lại. */
+function bcCanDoi(){try{document.querySelectorAll('.kpis,.lopgrid').forEach(k=>{const n=k.children.length;if(k.dataset.n!=String(n))k.dataset.n=n})}catch(e){}}
+{const _r=render;render=function(){const r=_r.apply(this,arguments);bcCanDoi();return r}}
+document.head.insertAdjacentHTML('beforeend',`<style>
+.kpis[data-n]{grid-template-columns:repeat(var(--bc,3),minmax(0,1fr))}
+.kpis[data-n="1"]{--bc:1}.kpis[data-n="2"]{--bc:2}.kpis[data-n="3"]{--bc:3}.kpis[data-n="4"]{--bc:4}.kpis[data-n="5"],.kpis[data-n="6"],.kpis[data-n="9"]{--bc:3}.kpis[data-n="8"]{--bc:4}
+@media (max-width:860px){.kpis[data-n="4"],.kpis[data-n="8"]{--bc:2}}
+@media (max-width:640px){.kpis[data-n="5"],.kpis[data-n="6"],.kpis[data-n="9"]{--bc:2}}
+@media (max-width:420px){.kpis[data-n="3"]{--bc:1}.kpis[data-n="3"] .kpi{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}}
+.kpis[data-n] .kpi{min-width:0}
+.lopgrid[data-n]{grid-template-columns:repeat(var(--bc,3),minmax(0,1fr))}
+.lopgrid[data-n="1"],.lopgrid[data-n="2"]{--bc:2}.lopgrid[data-n="3"],.lopgrid[data-n="5"],.lopgrid[data-n="6"]{--bc:3}.lopgrid[data-n="4"]{--bc:4}
+@media (max-width:860px){.lopgrid[data-n="4"]{--bc:2}}
+@media (max-width:560px){.lopgrid[data-n]{--bc:1}}
 </style>`);
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
