@@ -5,6 +5,7 @@
 - Mua trò 150 xu (kèm 10 lượt); vé 10 lượt 60 xu; lượt dùng chung; mỗi lần vào chơi = 1 lượt; tối đa 5 lượt/ngày.
 - Cúp Đồng/Bạc/Vàng: Bowling 15/25/33 điểm · Khủng long 150/400/800 · Đẩy thùng theo số bước (Vàng ≤ ít nhất + 2).
 - 3 cúp Vàng ở một trò → đồ hiếm: Mũ vô địch Bowling, Mũ thợ mỏ (Jenny), Khăn khủng long (thú cưng, không cũ đi).
+- Bản đầy đủ: học sinh thử Lê Bảo Na có 10 000 xu để thầy kiểm tra (nạp một lần).
 
 ## 22/10/2026 — Màn "Vẽ hình" (vẽ tay)
 - Thêm **màn vẽ hình** ở các đảo hình học (không thay màn cũ): lớp 1 Bài 7, Bài 9; lớp 2 Bài 26, Bài 34; lớp 3 Bài 19, Bài 20; lớp 5 Bài 25, Bài 32.

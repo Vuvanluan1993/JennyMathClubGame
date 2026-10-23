@@ -182,3 +182,5 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .arcpad button{border:0;padding:12px 6px;font-family:var(--f-display);font-size:22px;background:var(--surface,#fff);color:var(--ink);box-shadow:var(--f2),0 4px 0 0 var(--pxk,#1F2A5A);cursor:pointer}.arcpad button:active{transform:translateY(3px)}
 .arcpad .u{font-size:24px}
 </style>`);
+/* thầy yêu cầu 23/10: học sinh thử Lê Bảo Na (bản đầy đủ) có 10 000 xu để kiểm tra — nạp một lần cho dữ liệu đã lưu */
+{const _r=render;render=function(){try{if(typeof S!=='undefined'&&S.st&&S.st.na&&!S.na10k){S.st.na.coins=Math.max(S.st.na.coins||0,10000);S.na10k=1;save()}}catch(e){}return _r.apply(this,arguments)}}

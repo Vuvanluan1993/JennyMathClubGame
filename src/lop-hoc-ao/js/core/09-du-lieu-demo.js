@@ -32,7 +32,7 @@ function fresh(){
   [['lam','g2b1t1'],['quan','g3b1t1'],['thao','g4b1t1'],['duc','g5b1t1']].forEach(([id,isl])=>{const s=S.st[id];s.p1[isl].m=[true,false];simDay(id,3,7,.75,'Ôn tập và bổ sung')});
   {const na=S.st.na;na.active=true;S.open.jg1b1=true;na.mist={};[['g1b1t1',0,0],['g1b1t2',0,1],['g1b1t1',1,0]].forEach(([id,L,gi])=>{const q=P1_1.find(x=>x.id===id).lv[L][gi]();na.mist[`${id}:${L}:${gi}`]={id,lv:L,gi,label:q.kind||'Câu hỏi',n:L?2:1,streak:0,day:2}})}
   {const b=S.st.binh;b.p1.b1.med=[1,1,0];b.mist={};[[0,0],[0,2],[1,0]].forEach(([L,gi])=>{const q=G6.b1.lv[L][gi]();b.mist[`b1:${L}:${gi}`]={id:'b1',lv:L,gi,label:qLabel('b1',q),n:R(1,3),streak:0,day:3}});S.st.an.p1.b2.med=[3,1,0];}
-  an.coins=185;bi.coins=110;chi.coins=55;
+  an.coins=185;bi.coins=110;chi.coins=55;S.st.na.coins=10000;S.na10k=1;
   an.badges.push({t:'Huy hiệu Bài 1',day:1,from:'máy'});
   bi.comments.push({day:3,t:'Con làm bài chăm, cần đọc kỹ đề hơn.'});
   S.day=4;save();
