@@ -128,7 +128,7 @@ function gvAsgBox(){const g=gvGrade;if(g>5||!PRIM[g])return'';asgSeed();const L=
   <button class="btn pri" onclick="gvAsgAdd()">Giao phiếu</button></div></div>
   <p class="muted" style="margin:0 0 8px">Pill: điểm lần đầu (→ điểm tốt nhất nếu em làm lại).</p>${list||'<p class="muted">Chưa giao phiếu nào.</p>'}</section>`}
 function gvAsgAdd(){const tiets=[...document.getElementById('asgIsl').selectedOptions].map(o=>o.value);if(!tiets.length){toast('Chọn ít nhất 1 tiết');return}
- const n=+document.getElementById('asgN').value,d=+document.getElementById('asgDue').value,now=Date.now();
+ const n=+document.getElementById('asgN').value,d=+document.getElementById('asgDue').value,now=(typeof gvNow==='function'?gvNow():Date.now());
  const a={id:'a'+now.toString(36),g:gvGrade,lop:gvLop,bat:1,dat:80,tiets,n,t:now,due:d?now+d*DAYMS:0,by:gvTen()};asgAll().push(a);log('gv','assigned',`Phiếu bài · ${asgName(a)}`,0,{});save();render();toast('Đã giao phiếu cho lớp '+(gvLop||gvGrade))}
 function gvAsgDel(id){S.asg=asgAll().filter(a=>a.id!==id);save();render();toast('Đã xoá phiếu')}
 {const _g=viewGV;viewGV=function(){const r=_g.apply(this,arguments);try{const b=gvAsgBox();if(!b)return r;const i=r.lastIndexOf('<section class="card"><details>');return i<0?r:r.slice(0,i)+b+r.slice(i)}catch(e){return r}}}

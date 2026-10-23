@@ -23,16 +23,7 @@ function viewGV(){
   <section class="card"><h2>Tiến độ từng em</h2><p class="muted" style="margin:4px 0 0">Bấm tên em để mở hồ sơ.</p><div class="tablewrap"><table><tr><th>Học sinh</th><th>Tổng sao</th><th>Đang học (SGK)</th><th>Chăm (7 ngày)</th><th>Cảnh báo</th></tr>${rows}</table></div></section>
   ${gvCB()}
   ${act?tjBox:''}
-  <div class="grid g2">
-   <div class="grid g2" style="grid-column:1/-1;align-content:start">
-    ${actCard}
-    <section class="card"><h3>Ghi nhận và nhận xét</h3>
-     <div class="grid" style="gap:8px;margin-top:10px"><select id="bWho" aria-label="Học sinh">${CLS.map(([id,n])=>`<option value="${id}">${esc(n)}</option>`).join('')}</select>
-     <div class="row" style="gap:6px">${['Cố gắng','Cách giải hay','Giúp bạn'].map(b=>`<button class="btn sm" onclick="award('${b}')">♥ ${b}</button>`).join('')}</div>
-     <select id="cTpl" aria-label="Mẫu nhận xét">${['Con làm bài chăm, cô rất vui.','Con cần đọc kỹ đề hơn.','Con nên ôn lại bài cũ 10 phút mỗi tối.','Hôm nay con tiến bộ rõ rệt.'].map(c=>`<option>${c}</option>`).join('')}</select><button class="btn pri" onclick="comment()">Gửi nhận xét</button></div>
-     <p class="muted" style="margin:10px 0 0">Thẻ và nhận xét hiện trong báo cáo phụ huynh tối nay.</p></section>
-   </div>
-  </div>
+  ${actCard}
   <section class="card"><details><summary>Nhật ký học tập (chuẩn xAPI) <span class="pill">${S.events.length} sự kiện</span></summary><div class="row" style="margin-top:10px"><button class="btn sm" onclick="exportLog()">Chép JSON</button></div><div class="log">${esc(feed)}</div><textarea id="jsonBox" hidden readonly aria-label="Nhật ký JSON"></textarea></details></section>
   </div>`;
 }

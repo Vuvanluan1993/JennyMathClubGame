@@ -98,6 +98,10 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Hồ sơ học sinh — chỉnh (23/10/2026):** 4 thẻ (Tổng quan · Hoạt động học tập · Lỗi & bài về nhà · Ghi chú & giao bài). Sức mạnh Toán = biểu đồ mạng nhện; bỏ khung "Gợi ý cho cô", gợi ý thành nhãn trong Cảnh báo.
 - **Giao phiếu tự động theo dạng yếu (23/10/2026):** dạng yếu = đúng dưới 50% và làm ít nhất 4 lần; app tự soạn phiếu 8 câu (dễ → vừa), từ đảo đã học, hạn 2 ngày, đạt 80%; **cô chỉ quyết định Giao hay Bỏ qua** (có Xem trước câu hỏi); không cho cô tự chọn tiết; kết quả phiếu tính vào tỉ lệ đúng của dạng.
 - **Bài về nhà bắt buộc đã có trong bản GitHub (23/10/2026):** phiếu theo dạng yếu, phiếu cả lớp mới và Luyện lỗi có mục tiêu đều bắt buộc; chặn toàn bộ app học sinh tới khi xong; xong được +20 xu. Lưu ý: trang giáo viên và app học sinh trên GitHub chưa chung dữ liệu (cần máy chủ) — thử trọn vòng ở bản demo (đổi vai Giáo viên ↔ Học sinh).
+- **Sức mạnh Toán (23/10/2026):** không so theo tháng; 3 đường: em 3 tháng gần nhất · em 6 tháng gần nhất · TB học sinh Jenny (cùng khối).
+- **Nhận xét (23/10/2026):** bỏ "Ghi nhận và nhận xét" ở trang lớp; giáo viên **tự viết** nhận xét gửi phụ huynh trong hồ sơ từng em.
+- **Trang phụ huynh (23/10/2026):** đủ thông tin như trang giáo viên (Tổng quan, Hoạt động học tập, Lỗi & bài về nhà) + **Lời nhắn của giáo viên** (mới nhất ở trên).
+- **Dữ liệu mẫu (23/10/2026):** giả định đã học 8 tháng; sẽ reset khi có dữ liệu thật.
 - **Chỉ tiểu học (23/10/2026):** bỏ tài khoản lớp 6–9. Dữ liệu mẫu: khối 1 và 2 mỗi khối 2 lớp × 12 em.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)

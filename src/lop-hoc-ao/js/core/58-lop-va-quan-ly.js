@@ -46,6 +46,7 @@ function orgHeal(){
   (S.asg||[]).forEach(a=>{if(!a.lop){const f=O().lop.find(l=>l.khoi===a.g);if(f)a.lop=f.id}});
   if(gvLop){const l=lopById(gvLop);if(!l||!l.gv.includes(gvMe))gvLop=null}
 }
+window.orgHeal=orgHeal;
 {const _r=render;render=function(){try{orgHeal()}catch(e){console.error(e)}return _r.apply(this,arguments)}}
 
 /* ---------- Giáo viên ---------- */

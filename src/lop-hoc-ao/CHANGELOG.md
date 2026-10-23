@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Sức mạnh Toán 3 đường, nhận xét tự viết, trang phụ huynh đầy đủ, dữ liệu mẫu 8 tháng
+- Sức mạnh Toán (mạng nhện) có 3 đường: **em · 3 tháng gần nhất**, **em · 6 tháng gần nhất**, **trung bình học sinh Jenny cùng khối** (nét đứt). Điểm từng mạch: thanh = 3 tháng, vạch = TB khối, dòng phụ "6 tháng · khối (±)". Tính từ ảnh chụp điểm hằng tháng `st.skm`.
+- Bỏ thẻ "Ghi nhận và nhận xét" ở trang lớp. Hồ sơ › Ghi chú & giao bài: **"Nhận xét gửi phụ huynh"** — cô tự viết (ô chữ), xem lại 5 lời nhắn đã gửi; vẫn tặng thẻ được.
+- **Trang phụ huynh** (lớp 1–5): đầu trang có tình hình hôm nay, số bài về nhà chưa xong; mục **Lời nhắn của giáo viên** (mới nhất ở trên, xem lời nhắn cũ, thẻ cô tặng); 3 thẻ như giáo viên: Tổng quan · Hoạt động học tập · Lỗi & bài về nhà (không có ghi chú riêng của cô, không có nút giao bài).
+- **Dữ liệu mẫu 8 tháng** (5/9/2026 → 2/5/2027, ngày demo 240) cho mọi học sinh trừ Lê Bảo Na: lịch học (nghỉ Tết ít học), điểm mạch tăng dần theo tháng, tiến độ đảo, dạng bài, Sổ lỗi sai, 3–6 bài về nhà đã làm (khoảng 1/4 em có 1 bài đang chờ), 3–7 lời nhắn của cô, thẻ, xu. Sẽ xóa khi có dữ liệu thật.
+- Bài giao mới trong bản demo lấy theo ngày demo (`gvNow`).
+
 ## 23/10/2026 — Bài về nhà bắt buộc trong bản GitHub
 - `js/core/60-bai-ve-nha.js`: bài cô giao (`a.bat=1`) phải làm xong trước mọi việc khác. Em chỉ thấy màn "★ BÀI VỀ NHÀ CÔ GIAO" (bài đầu tiên + nút Làm ngay/Làm tiếp/Làm lại, các bài tiếp theo xếp lần lượt). Chỉ Đăng xuất dùng được.
 - Hai loại: **Phiếu** (theo dạng yếu hoặc phiếu cả lớp) — đạt khi đúng từ 80%, chưa đạt thì làm phiếu mới; **Luyện lỗi có mục tiêu** — mỗi lỗi 2 câu số mới, đúng 2 lần liền mới ra khỏi sổ, còn lỗi thì làm lại.
