@@ -37,3 +37,11 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .ntftag{position:absolute;top:-8px;right:-6px;z-index:3;font-style:normal;font-family:var(--f-display);font-size:15px;line-height:1;padding:3px 6px 2px;background:#F04A1B;color:#fff;box-shadow:0 2px 0 #1F2A5A;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.ntf{animation:none;outline:3px solid #F04A1B;outline-offset:2px}}
 </style>`);
+/* Cửa hàng: hàng mục chính trượt ngang 1 dòng (23/10) */
+document.head.insertAdjacentHTML('beforeend',`<style>
+.ghtabs{display:flex!important;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding:4px 3px 9px;margin:10px -3px 6px!important;scrollbar-width:thin;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.ghtabs .ghtab{flex:1 0 auto;min-width:78px;scroll-snap-align:start}
+.ghtabs.end{-webkit-mask-image:none;mask-image:none}
+</style>`);
+{const _r=render;render=function(){const v=_r.apply(this,arguments);try{const t=document.querySelector('.ghtabs');if(t){const on=t.querySelector('.ghtab.on');if(on){const l=on.offsetLeft-t.offsetLeft;if(l<t.scrollLeft||l+on.offsetWidth>t.scrollLeft+t.clientWidth)t.scrollLeft=l-12}
+ const upd=()=>t.classList.toggle('end',t.scrollLeft+t.clientWidth>=t.scrollWidth-4);upd();t.addEventListener('scroll',upd,{passive:true})}}catch(e){}return v}}
