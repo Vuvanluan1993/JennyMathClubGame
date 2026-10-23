@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Nút chọn nhóm đồ nuôi
+- **Túi đồ** (Đảo nhà) và **Cửa hàng › Đồ nuôi** có 5 nút: Thức ăn · Thuốc & tắm · Đồ chơi · Đồ mặc · Nhà & máy. Chạm nút nào hiện đồ nhóm đó; Túi đồ ghi số món mỗi nhóm, nhóm trống có nút "Mua ở Cửa hàng".
+- Đảo nhà: nút xu ghi "Cửa hàng ▸" (thay "Gian hàng").
+
 ## 23/10/2026 — Bỏ "Đang có: n" ở dạng Thêm cho đủ
 - Dạng "Thêm cho đủ … / Bớt" không còn hiện số đang có; Jenny cũng không đọc sẵn số đã có mà nhắc "Em đếm xem đang có mấy …" (cả màn đảo và phiếu bài).
 
