@@ -44,7 +44,7 @@ CARE.push(['dscarf','Khăn khủng long',0,'wear',{},'dscarfS',0,'rare']);P_WEAR
 function arcShop(st){const a=arcSt(st),en=arcEN();
  const games=Object.entries(ARC).map(([k,g])=>{const own=a.own[k],cups=a.cups[k]||{},best=a.best[k],can=own&&a.plays>0&&arcLeftToday(a)>0,gold=a.gold[k]||0,got=a.rare.includes(g.rare[0]);
   return`<div class="arcg px2"><span class="arcic">${spr(g.ic,40)}</span><div class="grow"><b>${en?g.en:g.n}</b><small>${en?g.de:g.d}</small>
-   <span class="arccups">${spr('cupG',16)}${cups.g||0} ${spr('cupS',16)}${cups.s||0} ${spr('cupB',16)}${cups.b||0}${best!=null?` · ${en?'best':'kỷ lục'} ${best}${k==='box'?(en?' levels':' màn'):''}`:''}</span>
+   <span class="arccups">${spr('cupG',16)}${cups.g||0} ${spr('cupS',16)}${cups.s||0} ${spr('cupB',16)}${cups.b||0}</span>${best!=null?`<small class="arcbest">${en?'Best':'Kỷ lục'}: ${best}${k==='box'?(en?' levels':' màn'):''}</small>`:''}
    <span class="arcrare">${got?`✓ ${en?'Unlocked':'Đã nhận'}: ${esc(g.rare[1])}`:`${en?'Gold':'Vàng'} ${Math.min(gold,3)}/3 → ${esc(g.rare[1])}`}</span></div>
    ${own?`<button type="button" class="gobtn ${can?'':'off'}" onclick="arcPlay('${k}')">${en?'Play':'Chơi'} ▶</button>`:`<button type="button" class="gobtn sun" onclick="arcBuy('${k}')">${spr('coin',16)} ${ARC_PRICE}</button>`}</div>`}).join('');
  return`<div class="arcbox"><div class="arctop"><div><b>${spr('tkS',20)} ${en?'Plays left':'Lượt chơi'}: <em>${a.plays}</em></b><small>${en?`Today ${a.used}/${ARC_DAY}`:`Hôm nay đã chơi ${a.used}/${ARC_DAY} lượt`}</small></div><button type="button" class="gobtn" onclick="arcTicket()">${en?'Buy 10 plays':'Mua 10 lượt'} · ${spr('coin',16)} ${ARC_TK}</button></div>
@@ -188,14 +188,14 @@ function arcLoop(g,step,draw){arcStop();let last=performance.now();const f=now=>
 try{addEventListener('resize',()=>{if(scr&&scr.k==='arc'&&!scr.end)({bowl:bowlInit,box:boxInit,dino:dinoInit})[scr.g](scr)})}catch(e){}
 /* Nhà em: giữ 3 ô như cũ; thêm khung "Trò chơi" bên dưới — các trò em đã mua */
 function arcHome(st){const a=arcSt(st),own=Object.keys(ARC).filter(k=>a.own[k]),left=arcLeftToday(a);
- const rows=own.map(k=>{const g=ARC[k],c=a.cups[k]||{},can=a.plays>0&&left>0;return`<div class="arch"><span class="arcic">${spr(g.ic,34)}</span><div class="grow"><b>${arcT(g.n,g.en)}</b><span class="arccups">${spr('cupG',14)}${c.g||0} ${spr('cupS',14)}${c.s||0} ${spr('cupB',14)}${c.b||0}${a.best[k]!=null?` · ${arcT('kỷ lục','best')} ${a.best[k]}${k==='box'?arcT(' màn',' levels'):''}`:''}</span></div><button type="button" class="gobtn ${can?'':'off'}" onclick="arcPlay('${k}')">${arcT('Chơi','Play')} ▸</button></div>`}).join('');
+ const rows=own.map(k=>{const g=ARC[k],c=a.cups[k]||{},can=a.plays>0&&left>0;return`<div class="arch"><span class="arcic">${spr(g.ic,34)}</span><div class="grow"><b>${arcT(g.n,g.en)}</b><span class="arccups">${spr('cupG',14)}${c.g||0} ${spr('cupS',14)}${c.s||0} ${spr('cupB',14)}${c.b||0}</span>${a.best[k]!=null?`<small class="arcbest">${arcT('Kỷ lục','Best')}: ${a.best[k]}${k==='box'?arcT(' màn',' levels'):''}</small>`:''}</div><button type="button" class="gobtn ${can?'':'off'}" onclick="arcPlay('${k}')">${arcT('Chơi','Play')} ▸</button></div>`}).join('');
  return`<section class="card archome"><div class="archd"><h2>${spr('joyS',24)} ${arcT('Trò chơi','Games')}</h2><span class="grow"></span><span class="pill">${spr('tkS',16)} ${arcT(`${a.plays} lượt · hôm nay ${a.used}/${ARC_DAY}`,`${a.plays} plays · today ${a.used}/${ARC_DAY}`)}</span></div>
   ${own.length?rows:`<p class="muted">${arcT('Em chưa có trò chơi nào. Mua trò ở Cửa hàng › Trò chơi nhé!','No games yet. Buy one in Shop › Games!')}</p>`}
   <div class="archbtn"><button type="button" class="btn sm" onclick="go({k:'home',tab:'shop'});scr.ghCat='tk';render()">${own.length<3?arcT('Mua thêm trò chơi','Buy more games'):arcT('Mua thêm lượt','Buy more plays')} ▸</button></div></section>`}
 {const _n=viewNha;viewNha=function(st){const r=_n.apply(this,arguments);const i=r.lastIndexOf('</div>');return i<0?r:r.slice(0,i)+arcHome(st)+r.slice(i)}}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .archome{margin-top:14px;padding:14px!important}.archd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}.archd h2{display:flex;align-items:center;gap:8px;margin:0;font-size:26px}
-.arch{display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:10px;background:var(--surface,#fff);box-shadow:var(--f2),0 4px 0 0 var(--pxk,#1F2A5A)}.arch .grow{min-width:0;display:flex;flex-direction:column;gap:4px}.arch b{font-family:var(--f-display);font-size:22px;font-weight:400;line-height:1}.arch .arcic{width:44px;height:44px}.arch .gobtn{margin:0;width:auto;flex:none;font-size:16px!important;padding:8px 12px!important}.arch .gobtn.off{opacity:.5}.archbtn{display:flex;justify-content:flex-end}
+.arch{display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:10px;background:var(--surface,#fff);box-shadow:var(--f2),0 4px 0 0 var(--pxk,#1F2A5A)}.arch .grow{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px}.arch b{font-family:var(--f-display);font-size:22px;font-weight:400;line-height:1}.arch .arcic{width:44px;height:44px}.arch .gobtn{margin:0 0 0 auto;width:96px;flex:none;font-size:16px!important;padding:8px 6px!important;text-align:center}.arch .gobtn.off{opacity:.5}.archbtn{display:flex;justify-content:flex-end}
 .arcbox{display:flex;flex-direction:column;gap:12px}
 .arctop{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px;background:var(--sun-soft);box-shadow:var(--f2)}
 .arctop b{display:flex;align-items:center;gap:6px;font-family:var(--f-display);font-size:24px;font-weight:400}.arctop em{font-style:normal;color:var(--coral)}.arctop small{display:block;font-size:13px;color:var(--muted)}
@@ -203,10 +203,11 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .arcnote{margin:0;font-size:13px;color:var(--muted)}
 .px2{box-shadow:var(--f2),0 4px 0 0 var(--pxk,#1F2A5A)}
 .arcg{display:flex;gap:12px;align-items:center;padding:12px;background:var(--surface,#fff)}
-.arcg .grow{min-width:0;display:flex;flex-direction:column;gap:3px}.arcg b{font-family:var(--f-display);font-size:24px;font-weight:400;line-height:1}.arcg small{font-size:13px;line-height:1.35}
+.arcg .grow{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}.arcg b{font-family:var(--f-display);font-size:24px;font-weight:400;line-height:1}.arcg small{font-size:13px;line-height:1.35}
 .arcic{flex:none;width:52px;height:52px;display:grid;place-items:center;background:var(--sea-soft);box-shadow:var(--f2)}
-.arccups{display:flex;align-items:center;gap:3px;font-family:var(--f-display);font-size:17px}.arcrare{font-size:12px;color:var(--sun-ink);font-weight:600}
-.arcg .gobtn{margin:0;width:auto;flex:none;font-size:16px!important;padding:9px 10px!important}.arcg .gobtn.off{opacity:.5}.arcg .gobtn.sun{background:#FCB40C!important;color:#1F2A5A!important}
+.arccups{display:flex;align-items:center;gap:3px;font-family:var(--f-display);font-size:17px}.arcbest{font-size:12px!important;color:var(--muted)}.arccups{flex-wrap:nowrap;white-space:nowrap}.arch .gobtn,.arcg .gobtn{align-self:center}
+.arcrare{font-size:12px;color:var(--sun-ink);font-weight:600}
+.arcg .gobtn{margin:0 0 0 auto;width:96px;text-align:center;flex:none;font-size:16px!important;padding:9px 10px!important}.arcg .gobtn.off{opacity:.5}.arcg .gobtn.sun{background:#FCB40C!important;color:#1F2A5A!important}
 .ghit.rare{opacity:.85}.ghtag.rare{background:#FDE6DE;color:#B8320F}
 .arcgame .gmid{display:flex;align-items:center;justify-content:center}.arcwrap{width:100%;display:flex;justify-content:center}.arcwrap canvas{display:block;box-shadow:var(--f2);touch-action:none;image-rendering:pixelated}
 .arctip{text-align:center;font-family:var(--f-display);font-size:22px;margin:4px 0;min-height:26px}
