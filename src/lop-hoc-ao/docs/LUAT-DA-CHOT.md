@@ -85,6 +85,15 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 ## 6h. Trang giáo viên (23/10/2026)
 - Tạm thời (cách 1): bản demo có mật khẩu trên GitHub, dữ liệu mẫu. Cách 2 (máy chủ, kết quả thật) làm khi thầy có tài khoản Firebase/Supabase.
 - Bảng "Tiến độ từng em" **không có Toán Jenny**. Toán Jenny là phần riêng, chỉ hiện khi đã mở khóa (có em đã kích hoạt); chưa mở thì ẩn (chốt 23/10/2026).
+- **Lớp, giáo viên, quản lý (chốt 23/10/2026):**
+  - Mỗi khối có nhiều lớp (1A, 1B…). Một giáo viên dạy 1 hoặc nhiều lớp, khác khối cũng được; một lớp có thể có nhiều giáo viên.
+  - Tài khoản học sinh tách khỏi lớp: em ở lớp nào là bản ghi "ghi danh" theo năm học. Chuyển lớp, lên lớp không mất sao, xu, Sổ lỗi sai.
+  - Một em chỉ ở **1 lớp chính** trong một năm học.
+  - **Toán Jenny mở theo lớp** (gói gắn với lớp). Ngoại lệ từng em (học bù, chuyển lớp) chỉ quản lý làm, mặc định tắt.
+  - Khóa/mở 3 tầng: Gói (quản lý) → Lớp (giáo viên) → Từng em; tầng dưới không vượt tầng trên.
+  - 3 vai trò quản lý: **Quản trị hệ thống** (thầy: trung tâm, nội dung, mã gói) · **Quản lý trung tâm** (năm học, lớp, tài khoản, phân công, xếp/chuyển lớp, gắn gói, báo cáo) · **Giáo viên** (chỉ lớp được phân công).
+  - Giáo viên không tạo lớp, không thêm em vào lớp. Màn đầu của giáo viên là **"Lớp của tôi"** (thẻ lớp xếp theo khối).
+  - Không xóa hẳn, mọi thao tác quản lý có nhật ký.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.

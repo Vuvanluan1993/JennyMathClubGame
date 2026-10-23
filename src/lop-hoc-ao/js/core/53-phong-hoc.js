@@ -117,8 +117,8 @@ NHA_TABS.push('bai','baikq','fix');
 function gvAsgStats(a,CLS){const W={};let m=0;CLS.forEach(([id])=>{const r=asgR(S.st[id])[a.id];if(!r||!r.first)return;m++;r.first.ans.forEach(x=>{const k=x.label||'?';W[k]=W[k]||[0,0];W[k][1]++;if(!x.ok)W[k][0]++})});
  const top=Object.entries(W).filter(([,v])=>v[0]).sort((p,q)=>q[1][0]/q[1][1]-p[1][0]/p[1][1]).slice(0,3);
  return m?`<div class="muted" style="margin-top:6px">${top.length?`Dạng sai nhiều (lần đầu): ${top.map(([k,v])=>`<b>${esc(k)}</b> ${v[0]}/${v[1]} câu`).join(' · ')}`:'Lần đầu cả lớp chưa sai câu nào.'}</div>`:''}
-function gvAsgBox(){const g=gvGrade;if(g>5||!PRIM[g])return'';asgSeed();const L=PRIM[g].isl,CLS=STUDENTS.filter(s=>s[2]===g);
- const list=asgAll().filter(a=>a.g===g&&asgOk(a)).sort((p,q)=>q.t-p.t).map(a=>`<div class="task"><div class="row"><div style="flex:1;min-width:160px"><b>${esc(asgName(a))} · ${a.n} câu</b><div class="muted">Giao ${asgD(a.t)}${a.due?` · hạn ${asgD(a.due)}`:''}</div></div><button class="btn sm" onclick="gvAsgDel('${a.id}')">Xoá</button></div>
+function gvAsgBox(){const g=gvGrade;if(g>5||!PRIM[g])return'';asgSeed();const L=PRIM[g].isl,CLS=gvCLS();
+ const list=asgAll().filter(a=>a.g===g&&asgOk(a)&&(!a.lop||!gvLop||a.lop===gvLop)).sort((p,q)=>q.t-p.t).map(a=>`<div class="task"><div class="row"><div style="flex:1;min-width:160px"><b>${esc(asgName(a))} · ${a.n} câu</b><div class="muted">Giao ${asgD(a.t)}${a.due?` · hạn ${asgD(a.due)}`:''}</div></div><button class="btn sm" onclick="gvAsgDel('${a.id}')">Xoá</button></div>
   <div class="row" style="margin-top:8px;gap:6px">${CLS.map(([id,n])=>{const s=asgState(S.st[id],a),r=s.r;return`<span class="pill ${s.done?(r.best.ok/r.best.n>=.8?'ok':'acc'):'warn'}">${esc(n.split(' ').pop())}: ${s.done?`${r.first.ok}/${r.first.n}${r.tries>1?` → tốt nhất ${r.best.ok}/${r.best.n}`:''}`:s.doing?'đang làm':'chưa làm'}${s.late?' · quá hạn':''}</span>`}).join('')}</div>${gvAsgStats(a,CLS)}</div>`).join('');
  return`<section class="card"><div class="secthead"><h2>Giao phiếu bài cho lớp ${g}</h2></div>
   <p class="muted" style="margin:0 0 6px">Phiếu bài tách riêng khỏi đảo: không tính sao, không mở đảo. Mỗi em cùng dạng câu nhưng số khác nhau. Chọn 1 hay nhiều tiết (giữ Ctrl/⌘ để chọn nhiều).</p>
@@ -129,7 +129,7 @@ function gvAsgBox(){const g=gvGrade;if(g>5||!PRIM[g])return'';asgSeed();const L=
   <p class="muted" style="margin:0 0 8px">Pill: điểm lần đầu (→ điểm tốt nhất nếu em làm lại).</p>${list||'<p class="muted">Chưa giao phiếu nào.</p>'}</section>`}
 function gvAsgAdd(){const tiets=[...document.getElementById('asgIsl').selectedOptions].map(o=>o.value);if(!tiets.length){toast('Chọn ít nhất 1 tiết');return}
  const n=+document.getElementById('asgN').value,d=+document.getElementById('asgDue').value,now=Date.now();
- const a={id:'a'+now.toString(36),g:gvGrade,tiets,n,t:now,due:d?now+d*DAYMS:0,by:'Cô Jenny'};asgAll().push(a);log('gv','assigned',`Phiếu bài · ${asgName(a)}`,0,{});save();render();toast('Đã giao phiếu cho lớp '+gvGrade)}
+ const a={id:'a'+now.toString(36),g:gvGrade,lop:gvLop,tiets,n,t:now,due:d?now+d*DAYMS:0,by:gvTen()};asgAll().push(a);log('gv','assigned',`Phiếu bài · ${asgName(a)}`,0,{});save();render();toast('Đã giao phiếu cho lớp '+(gvLop||gvGrade))}
 function gvAsgDel(id){S.asg=asgAll().filter(a=>a.id!==id);save();render();toast('Đã xoá phiếu')}
 {const _g=viewGV;viewGV=function(){const r=_g.apply(this,arguments);try{const b=gvAsgBox();if(!b)return r;const i=r.lastIndexOf('<section class="card"><details>');return i<0?r:r.slice(0,i)+b+r.slice(i)}catch(e){return r}}}
 Object.assign(I18N,{'Phòng học của em':'My study room','Bài cô giao':'Homework','Tự luyện':'Self-practice'});

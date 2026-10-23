@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Nhiều lớp, nhiều giáo viên, trang Quản lý trung tâm
+- Dữ liệu mới (`js/core/58-lop-va-quan-ly.js`): Trung tâm → Năm học → Lớp (khối, tên, gói Toán Jenny) → Học sinh (ghi danh 1 lớp chính). Giáo viên ↔ lớp nhiều–nhiều. Dữ liệu mẫu: Cô Jenny (1A, 1B), Cô Hoa (1C, 5A, 5B), Thầy Minh (2A…9A); thêm 5 học sinh mẫu.
+- Giáo viên: màn đầu là **"Lớp của tôi"** (thẻ lớp theo khối: sĩ số, học hôm nay, cần chú ý, nhãn Toán Jenny). Vào lớp có nút "← Lớp của tôi" và đổi lớp nhanh. Bản thử có ô chọn tài khoản giáo viên.
+- Toán Jenny **theo lớp**: em được học khi lớp có gói hoặc quản lý bật ngoại lệ. Buổi mở theo từng lớp. Bỏ thẻ "Kích hoạt Toán Jenny" ở trang giáo viên. Phiếu bài giao theo lớp.
+- Vai mới **Quản lý**: tạo lớp, phân công/bỏ phân công giáo viên (bấm 2 lần), xếp và chuyển lớp (giữ dữ liệu), thêm học sinh (tự tạo tên đăng nhập), thêm giáo viên, gắn/tắt gói Toán Jenny, ngoại lệ từng em, nhật ký thao tác.
+- Bản học sinh không đổi (`ORG_ON=false` trong `tools/_student.py`).
+
 ## 23/10/2026 — Trang giáo viên: tách Toán Jenny khỏi bảng tiến độ
 - Bảng "Tiến độ từng em" bỏ cột Toán Jenny; cột Cảnh báo không còn mục "Chưa xong … Toán Jenny".
 - Toán Jenny thành phần riêng (mở buổi + tiến độ từng em đã kích hoạt), chỉ hiện khi lớp có ít nhất 1 em đã kích hoạt. Chưa ai kích hoạt thì ẩn cả phần này và ô số liệu Toán Jenny; thẻ "Kích hoạt Toán Jenny" vẫn còn để mở.

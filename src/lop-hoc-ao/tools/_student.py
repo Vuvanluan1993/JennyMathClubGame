@@ -9,7 +9,7 @@ acc['lebaona']={'g':1,'h':h('lebaona','jenny123'),'name':'Lê Bảo Na'}
 for g in range(1,10):
     for suf in ['']+[f'-{i}' for i in range(1,6)]:
         u=f'jenny0{g}{suf}';acc[u]={'g':g,'h':h(u,'jenny123')}
-R=[("const STUDENTS=[","let STUDENTS=["),("const KEY='jennyVirtualDemo_v10'","let KEY='jennyHS'"),
+R=[("const STUDENTS=[","let STUDENTS=["),("const ORG_ON=true;","const ORG_ON=false;"),("const KEY='jennyVirtualDemo_v10'","let KEY='jennyHS'"),
 ("<div class=\"seg\" id=\"tabs\" role=\"group\" aria-label=\"Chọn vai trò\"></div>","<div class=\"seg\" id=\"tabs\" role=\"group\" aria-label=\"Chọn vai trò\"></div><div class=\"hsme\" id=\"hsme\"></div>")]
 for a,b in R:
     assert a in t,a; t=t.replace(a,b,1)

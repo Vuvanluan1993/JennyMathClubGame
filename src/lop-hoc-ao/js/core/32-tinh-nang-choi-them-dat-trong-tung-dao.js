@@ -47,7 +47,7 @@ function raceBoard(id){const g=curG();return STUDENTS.filter(s=>s[2]===g).map(([
 function startCB(id){const x=isl1(id),b=cbI(id);if(b.won)return;const pool=islPool(x);v1Said='';go({k:'game',g1:1,cbo:1,id,qs:Array.from({length:5},()=>mkQ(pick(pool))),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,inp:'',t0:Date.now()})}
 function cbCard(){return''}
 function featRow(){return''}
-function gvCB(){if(gvGrade>5)return'';const isl=PRIM[gvGrade].isl,cls=STUDENTS.filter(s=>s[2]===gvGrade),act=isl.filter(x=>S.cbi&&S.cbi[x.id]&&Object.keys(S.cbi[x.id].hits).length);
+function gvCB(){if(gvGrade>5)return'';const isl=PRIM[gvGrade].isl,cls=gvCLS(),act=isl.filter(x=>S.cbi&&S.cbi[x.id]&&Object.keys(S.cbi[x.id].hits).length);
   return`<section class="card"><div class="secthead"><h2>Trùm lớp ở từng đảo</h2><span class="grow"></span><span class="pill">${act.filter(x=>S.cbi[x.id].won).length}/${isl.length} đảo đã hạ</span></div>
    <p class="muted" style="margin:4px 0 8px">Mỗi đảo có một trùm lớp. Trùm mở khi học sinh qua Màn 1 của đảo; mỗi câu đúng trừ 1 máu. Cả lớp hạ trùm thì mỗi em nhận thẻ sinh vật của đảo.</p>
    ${act.length?act.map(x=>{const b=S.cbi[x.id];return`<div class="task"><div class="row" style="justify-content:space-between"><b>${esc(x.short)} · ${esc(b.name)}</b><span class="pill ${b.won?'ok':'warn'}">${b.won?'Đã hạ':`${b.hp}/${b.max} máu`}</span></div><div class="cbbar"><i style="width:${b.hp/b.max*100}%"></i></div><div class="row" style="gap:6px;margin-top:6px">${cls.map(([id,n])=>`<span class="pill">${esc(n.split(' ').pop())}: ${b.hits[id]||0} đòn</span>`).join('')}</div></div>`}).join(''):'<p class="muted" style="margin:0">Chưa có đảo nào bắt đầu đánh trùm lớp.</p>'}</section>`}

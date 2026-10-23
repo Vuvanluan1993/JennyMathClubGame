@@ -1,6 +1,6 @@
 /* ===================== Giáo viên ===================== */
 function viewGV(){
-  const CLS=STUDENTS.filter(s=>s[2]===gvGrade);
+  const CLS=gvCLS();
   const allAl=CLS.flatMap(([id])=>alerts(id).map(a=>({...a,id}))).sort((a,b)=>(a.c==='bad'?0:1)-(b.c==='bad'?0:1));
   const all=allAl.slice(0,5);
   const today=CLS.filter(([id])=>dayStats(id,S.day).n>0).length;
@@ -13,9 +13,11 @@ function viewGV(){
     ${x.draft?'':`<div class="row" style="margin-top:8px;gap:6px">${CLS.filter(([id])=>S.st[id].active).map(([id,n])=>{const st=S.st[id];const m=st.p2[x.id].m.filter(Boolean).length;return`<span class="pill ${m===3?'ok':m?'acc':'warn'}">${esc(n.split(' ').pop())}: ${m}/3 màn</span>`}).join('')}</div>`}</div>`}).join('');
   const inactive=CLS.filter(([id])=>!S.st[id].active);
   const feed=S.events.slice(-60).reverse().map(e=>`Ngày ${evDay(e)} · ${e.actor.name.split(' ').pop()} ${e.verb.display.vi} · ${e.object.definition.name.vi}${e.result.success===true?' ✓':e.result.success===false?' ✗':''}`).join('\n');
+  const actCard=ORG_ON?'':`<section class="card"><h3>Kích hoạt Toán Jenny</h3>${inactive.length?`<p class="muted" style="margin:6px 0 10px">Nhập mã trung tâm đã mua cho từng em. Mã thử: <b>${DEMO_CODE}</b></p>
+      <div class="grid" style="gap:8px"><select id="actWho" aria-label="Học sinh">${inactive.map(([id,n])=>`<option value="${id}">${esc(n)}</option>`).join('')}</select><input id="actCode" placeholder="Mã kích hoạt" aria-label="Mã kích hoạt" autocomplete="off"><button class="btn pri" onclick="activate()">Kích hoạt</button></div><div id="actMsg"></div>`:'<p class="muted" style="margin:6px 0 0">Cả lớp đã được kích hoạt.</p>'}</section>`;
   const tjBox=`<section class="card paidbox"><div class="secthead"><h2>Toán Jenny · mở buổi</h2><span class="tag paid">2 buổi/tuần</span></div>${gvGrade===6||(gvGrade<=5&&P2_1.some(x=>x.grade===gvGrade))?`<p class="muted" style="margin:0">Học sinh chỉ vào được buổi cô đã mở. Mỗi buổi được tới 9 sao.</p>${buoi}`:`<p class="muted" style="margin:0">Nội dung Toán Jenny lớp ${gvGrade} đang được soạn.</p>`}</section>`;
   return`<div class="grid">
-  <div class="row" style="justify-content:space-between"><div><h1 style="font-size:28px">Lớp ${gvGrade}A</h1><div class="muted">Sáng ngày ${S.day} · ${CLS.length} học sinh trong bản demo</div></div><div class="seg" role="group" aria-label="Chọn lớp">${[1,2,3,4,5,6,7,8,9].map(g=>`<button class="${g===gvGrade?'on':''}" aria-pressed="${g===gvGrade}" onclick="gvGrade=${g};render()">Lớp ${g}</button>`).join('')}</div></div>
+  ${gvHead()}
   <div class="kpis"><div class="kpi"><span class="muted">Học hôm nay</span><span class="big">${today}/${CLS.length}</span></div><div class="kpi ${allAl.length?'alert':''}"><span class="muted">Cần chú ý</span><span class="big" style="color:${allAl.length?'var(--coral)':'inherit'}">${allAl.length}</span></div><div class="kpi"><span class="muted">Sao trung bình</span><span class="big">${avg}</span></div>${act?`<div class="kpi"><span class="muted">Đã kích hoạt Toán Jenny</span><span class="big">${act}/${CLS.length}</span></div>`:''}</div>
   <section class="card"><h2>Cần chú ý sáng nay</h2>${all.length?`<div class="alertlist">${all.map(a=>`<div class="al ${a.c}"><span class="av">${initials(S.st[a.id].name)}</span><b>${esc(S.st[a.id].name)}</b><span>${esc(a.t)}</span></div>`).join('')}</div>${allAl.length>5?`<p class="muted" style="margin:8px 0 0">Còn ${allAl.length-5} mục khác trong bảng lớp.</p>`:''}`:'<p class="muted" style="margin:8px 0 0">Cả lớp đang ổn.</p>'}</section>
   <section class="card"><h2>Tiến độ từng em</h2><div class="tablewrap"><table><tr><th>Học sinh</th><th>Tổng sao</th><th>Đang học (SGK)</th><th>Chăm (7 ngày)</th><th>Cảnh báo</th></tr>${rows}</table></div></section>
@@ -23,8 +25,7 @@ function viewGV(){
   ${act?tjBox:''}
   <div class="grid g2">
    <div class="grid g2" style="grid-column:1/-1;align-content:start">
-    <section class="card"><h3>Kích hoạt Toán Jenny</h3>${inactive.length?`<p class="muted" style="margin:6px 0 10px">Nhập mã trung tâm đã mua cho từng em. Mã thử: <b>${DEMO_CODE}</b></p>
-      <div class="grid" style="gap:8px"><select id="actWho" aria-label="Học sinh">${inactive.map(([id,n])=>`<option value="${id}">${esc(n)}</option>`).join('')}</select><input id="actCode" placeholder="Mã kích hoạt" aria-label="Mã kích hoạt" autocomplete="off"><button class="btn pri" onclick="activate()">Kích hoạt</button></div><div id="actMsg"></div>`:'<p class="muted" style="margin:6px 0 0">Cả lớp đã được kích hoạt.</p>'}</section>
+    ${actCard}
     <section class="card"><h3>Ghi nhận và nhận xét</h3>
      <div class="grid" style="gap:8px;margin-top:10px"><select id="bWho" aria-label="Học sinh">${CLS.map(([id,n])=>`<option value="${id}">${esc(n)}</option>`).join('')}</select>
      <div class="row" style="gap:6px">${['Cố gắng','Cách giải hay','Giúp bạn'].map(b=>`<button class="btn sm" onclick="award('${b}')">♥ ${b}</button>`).join('')}</div>

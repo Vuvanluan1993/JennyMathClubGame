@@ -1417,7 +1417,11 @@ const P2=[
 /* ===================== Dữ liệu demo ===================== */
 let KEY='jennyHS';
 let STUDENTS=[['an','Nguyễn Minh An',6],['binh','Trần Gia Bình',6],['chi','Lê Bảo Chi',6],['dung','Phạm Tiến Dũng',7],['ha','Vũ Thu Hà',8],['khoa','Đỗ Minh Khoa',9],['na','Lê Bảo Na',1],['tu','Phạm Anh Tú',1],['my','Hoàng Trà My',1],['lam','Đỗ Gia Lâm',2],['quan','Trịnh Minh Quân',3],['thao','Ngô Phương Thảo',4],['duc','Bùi Anh Đức',5]];
-let gvGrade=6;
+let gvGrade=6, gvLop=null, gvMe='jenny';
+const ORG_ON=false; /* bản học sinh đặt false (tools/_student.py) */
+function gvCLS(){return STUDENTS.filter(s=>s[2]===gvGrade)}
+function gvHead(){return`<div class="row" style="justify-content:space-between"><div><h1 style="font-size:28px">Lớp ${gvGrade}A</h1><div class="muted">Sáng ngày ${S.day} · ${gvCLS().length} học sinh trong bản demo</div></div><div class="seg" role="group" aria-label="Chọn lớp">${[1,2,3,4,5,6,7,8,9].map(g=>`<button class="${g===gvGrade?'on':''}" aria-pressed="${g===gvGrade}" onclick="gvGrade=${g};render()">Lớp ${g}</button>`).join('')}</div></div>`}
+function gvTen(){return'Cô Jenny'}
 const DEMO_CODE='JENNY-DEMO';
 let S, role='hs', sid='an', scr={k:'home'}, player=null;
 
@@ -1663,7 +1667,7 @@ function nextQ(){
 
 /* ===================== Giáo viên ===================== */
 function viewGV(){
-  const CLS=STUDENTS.filter(s=>s[2]===gvGrade);
+  const CLS=gvCLS();
   const allAl=CLS.flatMap(([id])=>alerts(id).map(a=>({...a,id}))).sort((a,b)=>(a.c==='bad'?0:1)-(b.c==='bad'?0:1));
   const all=allAl.slice(0,5);
   const today=CLS.filter(([id])=>dayStats(id,S.day).n>0).length;
@@ -1676,9 +1680,11 @@ function viewGV(){
     ${x.draft?'':`<div class="row" style="margin-top:8px;gap:6px">${CLS.filter(([id])=>S.st[id].active).map(([id,n])=>{const st=S.st[id];const m=st.p2[x.id].m.filter(Boolean).length;return`<span class="pill ${m===3?'ok':m?'acc':'warn'}">${esc(n.split(' ').pop())}: ${m}/3 màn</span>`}).join('')}</div>`}</div>`}).join('');
   const inactive=CLS.filter(([id])=>!S.st[id].active);
   const feed=S.events.slice(-60).reverse().map(e=>`Ngày ${evDay(e)} · ${e.actor.name.split(' ').pop()} ${e.verb.display.vi} · ${e.object.definition.name.vi}${e.result.success===true?' ✓':e.result.success===false?' ✗':''}`).join('\n');
+  const actCard=ORG_ON?'':`<section class="card"><h3>Kích hoạt Toán Jenny</h3>${inactive.length?`<p class="muted" style="margin:6px 0 10px">Nhập mã trung tâm đã mua cho từng em. Mã thử: <b>${DEMO_CODE}</b></p>
+      <div class="grid" style="gap:8px"><select id="actWho" aria-label="Học sinh">${inactive.map(([id,n])=>`<option value="${id}">${esc(n)}</option>`).join('')}</select><input id="actCode" placeholder="Mã kích hoạt" aria-label="Mã kích hoạt" autocomplete="off"><button class="btn pri" onclick="activate()">Kích hoạt</button></div><div id="actMsg"></div>`:'<p class="muted" style="margin:6px 0 0">Cả lớp đã được kích hoạt.</p>'}</section>`;
   const tjBox=`<section class="card paidbox"><div class="secthead"><h2>Toán Jenny · mở buổi</h2><span class="tag paid">2 buổi/tuần</span></div>${gvGrade===6||(gvGrade<=5&&P2_1.some(x=>x.grade===gvGrade))?`<p class="muted" style="margin:0">Học sinh chỉ vào được buổi cô đã mở. Mỗi buổi được tới 9 sao.</p>${buoi}`:`<p class="muted" style="margin:0">Nội dung Toán Jenny lớp ${gvGrade} đang được soạn.</p>`}</section>`;
   return`<div class="grid">
-  <div class="row" style="justify-content:space-between"><div><h1 style="font-size:28px">Lớp ${gvGrade}A</h1><div class="muted">Sáng ngày ${S.day} · ${CLS.length} học sinh trong bản demo</div></div><div class="seg" role="group" aria-label="Chọn lớp">${[1,2,3,4,5,6,7,8,9].map(g=>`<button class="${g===gvGrade?'on':''}" aria-pressed="${g===gvGrade}" onclick="gvGrade=${g};render()">Lớp ${g}</button>`).join('')}</div></div>
+  ${gvHead()}
   <div class="kpis"><div class="kpi"><span class="muted">Học hôm nay</span><span class="big">${today}/${CLS.length}</span></div><div class="kpi ${allAl.length?'alert':''}"><span class="muted">Cần chú ý</span><span class="big" style="color:${allAl.length?'var(--coral)':'inherit'}">${allAl.length}</span></div><div class="kpi"><span class="muted">Sao trung bình</span><span class="big">${avg}</span></div>${act?`<div class="kpi"><span class="muted">Đã kích hoạt Toán Jenny</span><span class="big">${act}/${CLS.length}</span></div>`:''}</div>
   <section class="card"><h2>Cần chú ý sáng nay</h2>${all.length?`<div class="alertlist">${all.map(a=>`<div class="al ${a.c}"><span class="av">${initials(S.st[a.id].name)}</span><b>${esc(S.st[a.id].name)}</b><span>${esc(a.t)}</span></div>`).join('')}</div>${allAl.length>5?`<p class="muted" style="margin:8px 0 0">Còn ${allAl.length-5} mục khác trong bảng lớp.</p>`:''}`:'<p class="muted" style="margin:8px 0 0">Cả lớp đang ổn.</p>'}</section>
   <section class="card"><h2>Tiến độ từng em</h2><div class="tablewrap"><table><tr><th>Học sinh</th><th>Tổng sao</th><th>Đang học (SGK)</th><th>Chăm (7 ngày)</th><th>Cảnh báo</th></tr>${rows}</table></div></section>
@@ -1686,8 +1692,7 @@ function viewGV(){
   ${act?tjBox:''}
   <div class="grid g2">
    <div class="grid g2" style="grid-column:1/-1;align-content:start">
-    <section class="card"><h3>Kích hoạt Toán Jenny</h3>${inactive.length?`<p class="muted" style="margin:6px 0 10px">Nhập mã trung tâm đã mua cho từng em. Mã thử: <b>${DEMO_CODE}</b></p>
-      <div class="grid" style="gap:8px"><select id="actWho" aria-label="Học sinh">${inactive.map(([id,n])=>`<option value="${id}">${esc(n)}</option>`).join('')}</select><input id="actCode" placeholder="Mã kích hoạt" aria-label="Mã kích hoạt" autocomplete="off"><button class="btn pri" onclick="activate()">Kích hoạt</button></div><div id="actMsg"></div>`:'<p class="muted" style="margin:6px 0 0">Cả lớp đã được kích hoạt.</p>'}</section>
+    ${actCard}
     <section class="card"><h3>Ghi nhận và nhận xét</h3>
      <div class="grid" style="gap:8px;margin-top:10px"><select id="bWho" aria-label="Học sinh">${CLS.map(([id,n])=>`<option value="${id}">${esc(n)}</option>`).join('')}</select>
      <div class="row" style="gap:6px">${['Cố gắng','Cách giải hay','Giúp bạn'].map(b=>`<button class="btn sm" onclick="award('${b}')">♥ ${b}</button>`).join('')}</div>
@@ -5383,7 +5388,7 @@ function openCB(g){const n=STUDENTS.filter(s=>s[2]===g).length;const b=PRIM[g].b
 function startCB(){const st=S.st[sid],b=cb(curG());if(!b||!b.on||b.won)return;const pool=openGens(st);v1Said='';go({k:'game',g1:1,cbo:1,qs:Array.from({length:5},()=>mkQ(pick(pool))),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,inp:'',hp:b.hp,t0:Date.now()})}
 function cbCard(st){const b=cb(curG());if(!b||!b.on)return'';if(b.won){if(!b.claimed[sid]){b.claimed[sid]=1;st.coins+=30;giveCard(st,'dragon');save();toast('Cả lớp đã hạ trùm! Em nhận 30 xu và thẻ Rồng Biển.')}return`<div class="pxq" style="--pq:#2AB563;--pq2:#1E8A4A"><span class="pxq-ic">${spr('medG',38)}</span><span class="pxq-tx"><b>Cả lớp đã hạ trùm!</b><span>Mỗi bạn nhận 30 xu và thẻ hiếm Rồng Biển</span></span></div>`}
   const mine=b.hits[sid]||0;return`<button class="pxq storm" onclick="startCB()"><span class="pxq-ic">${spr(b.spr,40)}</span><span class="pxq-tx"><b>Trùm lớp: ${esc(b.name)}</b><span class="cbbar"><i style="width:${b.hp/b.max*100}%"></i></span><span>Còn ${b.hp}/${b.max} máu · em đã đánh ${mine} đòn</span></span><span class="pxq-go">Góp sức ▶</span></button>`}
-function gvCB(){if(gvGrade>5)return'';const b=cb(gvGrade),cls=STUDENTS.filter(s=>s[2]===gvGrade);
+function gvCB(){if(gvGrade>5)return'';const b=cb(gvGrade),cls=gvCLS();
   return`<section class="card"><div class="secthead"><h2>Trùm lớp tuần</h2><span class="grow"></span>${b&&b.on?`<span class="pill ${b.won?'ok':'warn'}">${b.won?'Đã hạ':'Đang đánh'}</span>`:''}</div>
    ${b&&b.on?`<p class="muted" style="margin:4px 0 8px">${esc(b.name)} · còn ${b.hp}/${b.max} máu. Mỗi câu đúng của học sinh trừ 1 máu.</p><div class="cbbar big"><i style="width:${b.hp/b.max*100}%"></i></div><div class="row" style="gap:6px;margin-top:10px">${cls.map(([id,n])=>`<span class="pill">${esc(n.split(' ').pop())}: ${b.hits[id]||0} đòn</span>`).join('')}</div>`:'<p class="muted" style="margin:4px 0 0">Cả lớp cùng góp sức hạ một trùm lớn trong tuần. Hạ được thì mọi em nhận thưởng.</p>'}
    <button class="btn sm ${b&&b.on&&!b.won?'':'pri'}" type="button" style="margin-top:10px" onclick="openCB(${gvGrade})">${b&&b.on?'Mở trùm mới':'Mở trùm tuần này'}</button></section>`}
@@ -5448,7 +5453,7 @@ function raceBoard(id){const g=curG();return STUDENTS.filter(s=>s[2]===g).map(([
 function startCB(id){const x=isl1(id),b=cbI(id);if(b.won)return;const pool=islPool(x);v1Said='';go({k:'game',g1:1,cbo:1,id,qs:Array.from({length:5},()=>mkQ(pick(pool))),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,inp:'',t0:Date.now()})}
 function cbCard(){return''}
 function featRow(){return''}
-function gvCB(){if(gvGrade>5)return'';const isl=PRIM[gvGrade].isl,cls=STUDENTS.filter(s=>s[2]===gvGrade),act=isl.filter(x=>S.cbi&&S.cbi[x.id]&&Object.keys(S.cbi[x.id].hits).length);
+function gvCB(){if(gvGrade>5)return'';const isl=PRIM[gvGrade].isl,cls=gvCLS(),act=isl.filter(x=>S.cbi&&S.cbi[x.id]&&Object.keys(S.cbi[x.id].hits).length);
   return`<section class="card"><div class="secthead"><h2>Trùm lớp ở từng đảo</h2><span class="grow"></span><span class="pill">${act.filter(x=>S.cbi[x.id].won).length}/${isl.length} đảo đã hạ</span></div>
    <p class="muted" style="margin:4px 0 8px">Mỗi đảo có một trùm lớp. Trùm mở khi học sinh qua Màn 1 của đảo; mỗi câu đúng trừ 1 máu. Cả lớp hạ trùm thì mỗi em nhận thẻ sinh vật của đảo.</p>
    ${act.length?act.map(x=>{const b=S.cbi[x.id];return`<div class="task"><div class="row" style="justify-content:space-between"><b>${esc(x.short)} · ${esc(b.name)}</b><span class="pill ${b.won?'ok':'warn'}">${b.won?'Đã hạ':`${b.hp}/${b.max} máu`}</span></div><div class="cbbar"><i style="width:${b.hp/b.max*100}%"></i></div><div class="row" style="gap:6px;margin-top:6px">${cls.map(([id,n])=>`<span class="pill">${esc(n.split(' ').pop())}: ${b.hits[id]||0} đòn</span>`).join('')}</div></div>`}).join(''):'<p class="muted" style="margin:0">Chưa có đảo nào bắt đầu đánh trùm lớp.</p>'}</section>`}
@@ -8052,7 +8057,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='23/10 · 19:25';
+const APP_VER='23/10 · 20:17';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -10711,8 +10716,8 @@ NHA_TABS.push('bai','baikq','fix');
 function gvAsgStats(a,CLS){const W={};let m=0;CLS.forEach(([id])=>{const r=asgR(S.st[id])[a.id];if(!r||!r.first)return;m++;r.first.ans.forEach(x=>{const k=x.label||'?';W[k]=W[k]||[0,0];W[k][1]++;if(!x.ok)W[k][0]++})});
  const top=Object.entries(W).filter(([,v])=>v[0]).sort((p,q)=>q[1][0]/q[1][1]-p[1][0]/p[1][1]).slice(0,3);
  return m?`<div class="muted" style="margin-top:6px">${top.length?`Dạng sai nhiều (lần đầu): ${top.map(([k,v])=>`<b>${esc(k)}</b> ${v[0]}/${v[1]} câu`).join(' · ')}`:'Lần đầu cả lớp chưa sai câu nào.'}</div>`:''}
-function gvAsgBox(){const g=gvGrade;if(g>5||!PRIM[g])return'';asgSeed();const L=PRIM[g].isl,CLS=STUDENTS.filter(s=>s[2]===g);
- const list=asgAll().filter(a=>a.g===g&&asgOk(a)).sort((p,q)=>q.t-p.t).map(a=>`<div class="task"><div class="row"><div style="flex:1;min-width:160px"><b>${esc(asgName(a))} · ${a.n} câu</b><div class="muted">Giao ${asgD(a.t)}${a.due?` · hạn ${asgD(a.due)}`:''}</div></div><button class="btn sm" onclick="gvAsgDel('${a.id}')">Xoá</button></div>
+function gvAsgBox(){const g=gvGrade;if(g>5||!PRIM[g])return'';asgSeed();const L=PRIM[g].isl,CLS=gvCLS();
+ const list=asgAll().filter(a=>a.g===g&&asgOk(a)&&(!a.lop||!gvLop||a.lop===gvLop)).sort((p,q)=>q.t-p.t).map(a=>`<div class="task"><div class="row"><div style="flex:1;min-width:160px"><b>${esc(asgName(a))} · ${a.n} câu</b><div class="muted">Giao ${asgD(a.t)}${a.due?` · hạn ${asgD(a.due)}`:''}</div></div><button class="btn sm" onclick="gvAsgDel('${a.id}')">Xoá</button></div>
   <div class="row" style="margin-top:8px;gap:6px">${CLS.map(([id,n])=>{const s=asgState(S.st[id],a),r=s.r;return`<span class="pill ${s.done?(r.best.ok/r.best.n>=.8?'ok':'acc'):'warn'}">${esc(n.split(' ').pop())}: ${s.done?`${r.first.ok}/${r.first.n}${r.tries>1?` → tốt nhất ${r.best.ok}/${r.best.n}`:''}`:s.doing?'đang làm':'chưa làm'}${s.late?' · quá hạn':''}</span>`}).join('')}</div>${gvAsgStats(a,CLS)}</div>`).join('');
  return`<section class="card"><div class="secthead"><h2>Giao phiếu bài cho lớp ${g}</h2></div>
   <p class="muted" style="margin:0 0 6px">Phiếu bài tách riêng khỏi đảo: không tính sao, không mở đảo. Mỗi em cùng dạng câu nhưng số khác nhau. Chọn 1 hay nhiều tiết (giữ Ctrl/⌘ để chọn nhiều).</p>
@@ -10723,7 +10728,7 @@ function gvAsgBox(){const g=gvGrade;if(g>5||!PRIM[g])return'';asgSeed();const L=
   <p class="muted" style="margin:0 0 8px">Pill: điểm lần đầu (→ điểm tốt nhất nếu em làm lại).</p>${list||'<p class="muted">Chưa giao phiếu nào.</p>'}</section>`}
 function gvAsgAdd(){const tiets=[...document.getElementById('asgIsl').selectedOptions].map(o=>o.value);if(!tiets.length){toast('Chọn ít nhất 1 tiết');return}
  const n=+document.getElementById('asgN').value,d=+document.getElementById('asgDue').value,now=Date.now();
- const a={id:'a'+now.toString(36),g:gvGrade,tiets,n,t:now,due:d?now+d*DAYMS:0,by:'Cô Jenny'};asgAll().push(a);log('gv','assigned',`Phiếu bài · ${asgName(a)}`,0,{});save();render();toast('Đã giao phiếu cho lớp '+gvGrade)}
+ const a={id:'a'+now.toString(36),g:gvGrade,lop:gvLop,tiets,n,t:now,due:d?now+d*DAYMS:0,by:gvTen()};asgAll().push(a);log('gv','assigned',`Phiếu bài · ${asgName(a)}`,0,{});save();render();toast('Đã giao phiếu cho lớp '+(gvLop||gvGrade))}
 function gvAsgDel(id){S.asg=asgAll().filter(a=>a.id!==id);save();render();toast('Đã xoá phiếu')}
 {const _g=viewGV;viewGV=function(){const r=_g.apply(this,arguments);try{const b=gvAsgBox();if(!b)return r;const i=r.lastIndexOf('<section class="card"><details>');return i<0?r:r.slice(0,i)+b+r.slice(i)}catch(e){return r}}}
 Object.assign(I18N,{'Phòng học của em':'My study room','Bài cô giao':'Homework','Tự luyện':'Self-practice'});
@@ -10860,6 +10865,158 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .hero .herochips .chip{justify-content:center;margin:0;min-width:84px}.hcarr{font-style:normal;opacity:.8}
 .hero .grow{min-width:0}.hero:has(.herochips){padding-bottom:24px;flex-wrap:nowrap}@media (max-width:360px){.hero .herochips .chip{min-width:70px;padding-left:6px;padding-right:6px}}
 </style>`);
+/* ===================== Lớp, giáo viên, quản lý trung tâm (chốt 23/10/2026) =====================
+   Trung tâm → Năm học → Lớp (khối, tên, gói Toán Jenny) → Học sinh (ghi danh 1 lớp chính/năm).
+   Giáo viên ↔ Lớp: nhiều–nhiều. Toán Jenny mở theo lớp; ngoại lệ từng em do quản lý bật.
+   Buổi Toán Jenny mở theo từng lớp: S.open là thuộc tính ảo trỏ tới S.org.mo[lớp đang xem].
+   Chỉ chạy ở bản đầy đủ / trang giáo viên (ORG_ON). Bản học sinh giữ nguyên. */
+(function(){
+if(!ORG_ON)return;
+const HS_THEM=[['bao','Nguyễn Gia Bảo',1],['linh','Trần Khánh Linh',1],['khang','Vũ Minh Khang',1],['phuc','Lê Hoàng Phúc',5],['ngoc','Phạm Bảo Ngọc',5]];
+HS_THEM.forEach(s=>{if(!STUDENTS.some(x=>x[0]===s[0]))STUDENTS.push(s)});
+
+function orgMoi(){
+  const L=(id,khoi,gv,tj)=>({id,khoi,ten:id,gv,tj:tj?{on:true,han:'31/05/2027'}:{on:false}});
+  return{ten:'Clb Học Toán cùng Jenny',nam:'2026–2027',
+    gv:[{id:'jenny',ten:'Cô Jenny'},{id:'hoa',ten:'Cô Hoa'},{id:'minh',ten:'Thầy Minh'}],
+    lop:[L('1A',1,['jenny'],1),L('1B',1,['jenny']),L('1C',1,['hoa']),L('2A',2,['minh']),L('3A',3,['minh']),L('4A',4,['minh']),L('5A',5,['hoa'],1),L('5B',5,['hoa']),L('6A',6,['minh']),L('7A',7,['minh']),L('8A',8,['minh']),L('9A',9,['minh'])],
+    gd:{na:'1A',tu:'1A',my:'1A',bao:'1B',linh:'1B',khang:'1C',lam:'2A',quan:'3A',thao:'4A',duc:'5A',phuc:'5A',ngoc:'5B',an:'6A',binh:'6A',chi:'6A',dung:'7A',ha:'8A',khoa:'9A'},
+    nl:{},nk:[],mo:{},hsMoi:[]};
+}
+const O=()=>S.org;
+window.lopById=id=>O().lop.find(l=>l.id===id);
+window.lopCua=id=>lopById(O().gd[id]||'');
+window.hsCuaLop=lid=>STUDENTS.filter(s=>O().gd[s[0]]===lid);
+const gvById=id=>O().gv.find(g=>g.id===id);
+const nk=t=>{O().nk.push({d:S.day,ai:role==='gv'?(gvById(gvMe)||{}).ten:'Quản lý trung tâm',t});if(O().nk.length>200)O().nk.shift()};
+let ctxO=null;
+function ctxLop(){
+  if(ctxO)return ctxO;
+  if(role==='gv'&&gvLop)return gvLop;
+  const l=O().gd[sid];if(l)return l;
+  const st=S.st[sid],f=st&&O().lop.find(x=>x.khoi===st.grade);return f?f.id:'_';
+}
+function orgHeal(){
+  if(!S)return;
+  if(!S.org)S.org=orgMoi();
+  O().hsMoi.forEach(s=>{if(!STUDENTS.some(x=>x[0]===s[0]))STUDENTS.push(s)});
+  STUDENTS.forEach(([id,n,g])=>{if(!S.st[id])S.st[id]=newStudent(n,g)});
+  const d=Object.getOwnPropertyDescriptor(S,'open');
+  if(!d||!d.get){
+    const old=(d&&d.value)||{};delete S.open;
+    O().lop.forEach(l=>{if(!O().mo[l.id])O().mo[l.id]=l.khoi===1&&l.id!=='1A'?{}:Object.assign({},old)});
+    Object.defineProperty(S,'open',{configurable:true,enumerable:false,get(){const k=ctxLop();return O().mo[k]||(O().mo[k]={})}});
+  }
+  /* Toán Jenny theo lớp: kích hoạt = lớp có gói, hoặc ngoại lệ của em */
+  STUDENTS.forEach(([id])=>{const l=lopCua(id);S.st[id].active=!!((l&&l.tj.on)||O().nl[id])});
+  (S.asg||[]).forEach(a=>{if(!a.lop){const f=O().lop.find(l=>l.khoi===a.g);if(f)a.lop=f.id}});
+  if(gvLop){const l=lopById(gvLop);if(!l||!l.gv.includes(gvMe))gvLop=null}
+}
+{const _r=render;render=function(){try{orgHeal()}catch(e){console.error(e)}return _r.apply(this,arguments)}}
+
+/* ---------- Giáo viên ---------- */
+gvCLS=function(){return gvLop?hsCuaLop(gvLop):STUDENTS.filter(s=>s[2]===gvGrade)};
+gvTen=function(){return(gvById(gvMe)||{ten:'Cô giáo'}).ten};
+const lopCuaToi=()=>O().lop.filter(l=>l.gv.includes(gvMe)).sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten));
+const chonGV=()=>`<div class="field" style="min-width:0;max-width:360px"><label for="gvMe" class="muted" style="font-size:12.5px">Đang xem với tài khoản (chỉ có ở bản thử)</label><select id="gvMe" style="width:100%" onchange="gvMe=this.value;gvLop=null;go({k:'home'})">${O().gv.map(g=>`<option value="${g.id}" ${g.id===gvMe?'selected':''}>${esc(g.ten)} · ${O().lop.filter(l=>l.gv.includes(g.id)).map(l=>l.ten).join(', ')||'chưa có lớp'}</option>`).join('')}</select></div>`;
+window.vaoLop=id=>{const l=lopById(id);if(!l)return;gvLop=id;gvGrade=l.khoi;go({k:'home'})};
+gvHead=function(){
+  const l=lopById(gvLop),mine=lopCuaToi(),co=l.gv.filter(g=>g!==gvMe).map(g=>gvById(g)).filter(Boolean);
+  return`<div class="row" style="justify-content:space-between;align-items:flex-end"><div><button class="btn sm" onclick="gvLop=null;go({k:'home'})">← Lớp của tôi</button>
+   <h1 style="font-size:28px;margin:8px 0 0">Lớp ${esc(l.ten)}</h1><div class="muted">Khối ${l.khoi} · ${gvCLS().length} học sinh · ${esc(O().nam)}${co.length?' · dạy cùng '+co.map(g=>esc(g.ten)).join(', '):''}</div></div>
+   ${mine.length>1?`<div class="seg" role="group" aria-label="Đổi lớp">${mine.map(x=>`<button class="${x.id===gvLop?'on':''}" aria-pressed="${x.id===gvLop}" onclick="vaoLop('${x.id}')">${esc(x.ten)}</button>`).join('')}</div>`:''}</div>`;
+};
+function viewLopCuaToi(){
+  const mine=lopCuaToi(),khoi=[...new Set(mine.map(l=>l.khoi))];
+  const the=l=>{const hs=hsCuaLop(l.id),hn=hs.filter(([id])=>dayStats(id,S.day).n>0).length;ctxO=l.id;let cy=0;try{cy=hs.filter(([id])=>alerts(id).length).length}finally{ctxO=null}
+    return`<button class="lopthe" onclick="vaoLop('${l.id}')"><span class="lt-ten">${esc(l.ten)}</span><span class="muted">${hs.length} học sinh</span>
+      <span class="lt-so"><span>Học hôm nay <b>${hn}/${hs.length}</b></span><span class="${cy?'bad':''}">Cần chú ý <b>${cy}</b></span></span>
+      ${l.tj.on?'<span class="tag paid">Toán Jenny</span>':''}</button>`};
+  return`<div class="grid">
+   <div style="min-width:0"><h1 style="font-size:28px">Lớp của tôi</h1><div class="muted">${esc(gvTen())} · ${esc(O().ten)} · năm học ${esc(O().nam)} · ngày ${S.day}</div></div>${chonGV()}
+   ${mine.length?khoi.map(k=>`<section class="card"><h2>Khối ${k}</h2><div class="lopgrid">${mine.filter(l=>l.khoi===k).map(the).join('')}</div></section>`).join('')
+     :'<section class="card"><h2>Chưa có lớp</h2><p class="muted" style="margin:6px 0 0">Quản lý trung tâm chưa phân công lớp cho tài khoản này.</p></section>'}
+   <p class="muted" style="margin:0">Lớp và học sinh do quản lý trung tâm xếp. Toán Jenny mở theo gói của từng lớp.</p></div>`;
+}
+{const _vg=viewGV;viewGV=function(){orgHeal();if(!gvLop)return viewLopCuaToi();gvGrade=lopById(gvLop).khoi;return _vg.apply(this,arguments)}}
+{const _t=toggleOpen;toggleOpen=function(id){_t(id);try{nk(`${S.open[id]?'Mở':'Đóng'} ${unit(2,id).title.split(' · ')[0]} Toán Jenny · lớp ${gvLop}`);save()}catch(e){}}}
+
+/* ---------- Quản lý trung tâm ---------- */
+let qlKhoi=0,qlXoa='';
+const qlMsg=t=>{save();render();toast(t)};
+window.qlTJ=(id,on)=>{const l=lopById(id);if(on){const c=(document.getElementById('tjMa')||{}).value;if(String(c||'').trim().toUpperCase()!==DEMO_CODE){toast('Mã gói chưa đúng (mã thử: '+DEMO_CODE+')');return}l.tj={on:true,han:'31/05/2027'};nk(`Gắn gói Toán Jenny cho lớp ${id}`)}else{l.tj={on:false};nk(`Tắt gói Toán Jenny của lớp ${id}`)}qlMsg(on?`Lớp ${id} đã có Toán Jenny`:`Đã tắt Toán Jenny của lớp ${id}`)};
+window.qlTJgan=()=>{const id=document.getElementById('tjLop').value;if(id)qlTJ(id,true)};
+window.qlPhan=id=>{const g=document.getElementById('pc-'+id).value;const l=lopById(id);if(!g||l.gv.includes(g))return;l.gv.push(g);nk(`Phân công ${gvById(g).ten} dạy lớp ${id}`);qlMsg(`Đã phân công ${gvById(g).ten} dạy lớp ${id}`)};
+window.qlBo=(id,g)=>{const k=id+'|'+g;if(qlXoa!==k){qlXoa=k;render();return}qlXoa='';const l=lopById(id);l.gv=l.gv.filter(x=>x!==g);nk(`Bỏ phân công ${gvById(g).ten} khỏi lớp ${id}`);qlMsg(`${gvById(g).ten} không còn dạy lớp ${id}`)};
+window.qlChuyen=(sidx,lid)=>{const cu=O().gd[sidx]||'';if(lid)O().gd[sidx]=lid;else delete O().gd[sidx];const n=S.st[sidx].name;nk(lid?`Chuyển ${n}: ${cu||'chưa xếp lớp'} → ${lid}`:`Đưa ${n} ra khỏi lớp ${cu}`);qlMsg(lid?`${n} đã sang lớp ${lid}. Sao, xu, Sổ lỗi sai giữ nguyên.`:`${n} đang chưa xếp lớp`)};
+window.qlNgoaiLe=(sidx,on)=>{if(on)O().nl[sidx]=1;else delete O().nl[sidx];nk(`${on?'Bật':'Tắt'} ngoại lệ Toán Jenny cho ${S.st[sidx].name}`);qlMsg(on?'Đã mở Toán Jenny riêng cho em':'Đã tắt ngoại lệ')};
+const bo=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D');
+window.qlTaoLop=e=>{e.preventDefault();const k=+document.getElementById('nlKhoi').value,t=document.getElementById('nlTen').value.trim().toUpperCase(),g=document.getElementById('nlGV').value;
+  if(!/^[0-9A-Z.\- ]{1,8}$/.test(t)){toast('Tên lớp ngắn, ví dụ 1D');return}if(lopById(t)){toast('Đã có lớp '+t);return}
+  O().lop.push({id:t,khoi:k,ten:t,gv:g?[g]:[],tj:{on:false}});O().mo[t]={};nk(`Tạo lớp ${t} (khối ${k})${g?' · '+gvById(g).ten:''}`);qlMsg('Đã tạo lớp '+t)};
+window.qlTaoHS=e=>{e.preventDefault();const n=document.getElementById('nhTen').value.trim().replace(/\s+/g,' '),lid=document.getElementById('nhLop').value,l=lopById(lid);
+  if(n.split(' ').length<2){toast('Nhập đủ họ và tên');return}if(!l)return;
+  const goc=bo(n.split(' ').pop()).toLowerCase().replace(/[^a-z]/g,'')||'hs';let u=goc,i=2;while(S.st[u])u=goc+(i++);
+  const r=[u,n,l.khoi];O().hsMoi.push(r);STUDENTS.push(r);S.st[u]=newStudent(n,l.khoi);O().gd[u]=lid;nk(`Tạo tài khoản ${n} (${u}) · lớp ${lid}`);qlMsg(`Đã tạo tài khoản ${u} / jenny123 cho ${n}`)};
+window.qlTaoGV=e=>{e.preventDefault();const n=document.getElementById('ngTen').value.trim();if(n.length<3){toast('Nhập tên giáo viên');return}
+  const goc=bo(n.split(' ').pop()).toLowerCase().replace(/[^a-z]/g,'')||'gv';let u=goc,i=2;while(gvById(u))u=goc+(i++);
+  O().gv.push({id:u,ten:n});nk(`Tạo tài khoản giáo viên ${n}`);qlMsg('Đã tạo tài khoản giáo viên '+n)};
+
+function viewQL(){
+  const o=O(),LOP=[...o.lop].sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten)),HS=STUDENTS.filter(s=>!qlKhoi||s[2]===qlKhoi);
+  const chuaXep=STUDENTS.filter(s=>!o.gd[s[0]]).length;
+  const rowsL=LOP.map(l=>{const hs=hsCuaLop(l.id),con=o.gv.filter(g=>!l.gv.includes(g.id));
+    return`<tr><td><b>${esc(l.ten)}</b><div class="muted">Khối ${l.khoi}</div></td>
+     <td><div class="row" style="gap:6px">${l.gv.length?l.gv.map(g=>{const k=l.id+'|'+g;return`<span class="pill">${esc((gvById(g)||{ten:g}).ten)} <button class="xbtn ${qlXoa===k?'arm':''}" aria-label="Bỏ phân công" onclick="qlBo('${l.id}','${g}')">${qlXoa===k?'Bỏ?':'×'}</button></span>`}).join(''):'<span class="pill bad">Chưa có giáo viên</span>'}</div>
+      ${con.length?`<div class="row" style="gap:6px;margin-top:6px"><select id="pc-${l.id}" aria-label="Thêm giáo viên cho lớp ${l.ten}" style="max-width:150px">${con.map(g=>`<option value="${g.id}">${esc(g.ten)}</option>`).join('')}</select><button class="btn sm" onclick="qlPhan('${l.id}')">Phân công</button></div>`:''}</td>
+     <td><b>${hs.length}</b></td>
+     <td>${l.tj.on?`<span class="pill ok">Đang mở · hạn ${l.tj.han}</span> <button class="btn sm" onclick="qlTJ('${l.id}',false)">Tắt</button>`:'<span class="muted">Chưa có</span>'}</td></tr>`}).join('');
+  const rowsH=HS.map(([id,n,g])=>{const l=lopCua(id),cung=LOP.filter(x=>x.khoi===g),st=S.st[id];
+    const tj=l&&l.tj.on?'<span class="pill ok">Theo lớp</span>':`<label class="row" style="gap:6px;font-size:13px"><input type="checkbox" ${o.nl[id]?'checked':''} onchange="qlNgoaiLe('${id}',this.checked)"> Ngoại lệ</label>`;
+    return`<tr><td><b>${esc(n)}</b><div class="muted">${id} · ${totalStars(st)} sao · ${st.coins} xu</div></td><td>Khối ${g}</td>
+     <td><select aria-label="Lớp của ${esc(n)}" onchange="qlChuyen('${id}',this.value)"><option value="">Chưa xếp lớp</option>${cung.map(x=>`<option value="${x.id}" ${l&&l.id===x.id?'selected':''}>${esc(x.ten)}</option>`).join('')}</select></td><td>${tj}</td></tr>`}).join('');
+  const chuaGoi=LOP.filter(l=>!l.tj.on);
+  return`<div class="grid">
+  <div><h1 style="font-size:28px">Quản lý trung tâm</h1><div class="muted">${esc(o.ten)} · năm học ${esc(o.nam)} · ngày ${S.day}</div></div>
+  <div class="kpis"><div class="kpi"><span class="muted">Lớp</span><span class="big">${o.lop.length}</span></div><div class="kpi"><span class="muted">Giáo viên</span><span class="big">${o.gv.length}</span></div><div class="kpi ${chuaXep?'alert':''}"><span class="muted">Học sinh${chuaXep?` · ${chuaXep} chưa xếp lớp`:''}</span><span class="big">${STUDENTS.length}</span></div><div class="kpi"><span class="muted">Lớp có Toán Jenny</span><span class="big">${o.lop.filter(l=>l.tj.on).length}</span></div></div>
+
+  <section class="card"><h2>Lớp học</h2><p class="muted" style="margin:4px 0 0">Mỗi lớp có thể có nhiều giáo viên. Một giáo viên dạy được nhiều lớp, khác khối cũng được.</p>
+   <div class="tablewrap"><table><tr><th>Lớp</th><th>Giáo viên</th><th>Sĩ số</th><th>Toán Jenny</th></tr>${rowsL}</table></div>
+   <div class="grid g2" style="margin-top:14px">
+    <form class="task" onsubmit="qlTaoLop(event)"><b>Tạo lớp mới</b><div class="row" style="gap:8px;margin-top:8px"><select id="nlKhoi" aria-label="Khối">${[1,2,3,4,5,6,7,8,9].map(k=>`<option value="${k}">Khối ${k}</option>`).join('')}</select><input id="nlTen" placeholder="Tên lớp, ví dụ 1D" aria-label="Tên lớp" style="width:130px" maxlength="8"><select id="nlGV" aria-label="Giáo viên"><option value="">Chưa phân công</option>${o.gv.map(g=>`<option value="${g.id}">${esc(g.ten)}</option>`).join('')}</select><button class="btn pri">Tạo lớp</button></div></form>
+    <div class="task paidbox"><b>Gắn gói Toán Jenny cho lớp</b><div class="muted" style="margin-top:4px">Cả lớp cùng học. Mã thử: <b>${DEMO_CODE}</b></div>${chuaGoi.length?`<div class="row" style="gap:8px;margin-top:8px"><select id="tjLop" aria-label="Lớp">${chuaGoi.map(l=>`<option value="${l.id}">Lớp ${esc(l.ten)}</option>`).join('')}</select><input id="tjMa" placeholder="Mã gói" aria-label="Mã gói" autocomplete="off" style="width:130px"><button class="btn pri" onclick="qlTJgan()">Gắn gói</button></div>`:'<p class="muted">Mọi lớp đã có gói.</p>'}</div>
+   </div></section>
+
+  <section class="card"><div class="row" style="justify-content:space-between"><h2>Học sinh</h2><div class="seg" role="group" aria-label="Lọc theo khối" style="flex-wrap:wrap">${[0,1,2,3,4,5,6,7,8,9].map(k=>`<button class="${k===qlKhoi?'on':''}" aria-pressed="${k===qlKhoi}" onclick="qlKhoi=${k};render()">${k?'Khối '+k:'Tất cả'}</button>`).join('')}</div></div>
+   <p class="muted" style="margin:4px 0 0">Mỗi em chỉ ở 1 lớp chính trong năm học. Chuyển lớp không mất sao, xu, Sổ lỗi sai. "Ngoại lệ" mở Toán Jenny riêng cho em khi lớp chưa có gói (học bù, chuyển lớp).</p>
+   <div class="tablewrap"><table><tr><th>Học sinh</th><th>Khối</th><th>Lớp</th><th>Toán Jenny</th></tr>${rowsH}</table></div>
+   <form class="task" onsubmit="qlTaoHS(event)" style="margin-top:14px"><b>Thêm học sinh</b><div class="row" style="gap:8px;margin-top:8px"><input id="nhTen" placeholder="Họ và tên" aria-label="Họ và tên" style="flex:1;min-width:160px" maxlength="40"><select id="nhLop" aria-label="Xếp vào lớp">${LOP.map(l=>`<option value="${l.id}">Lớp ${esc(l.ten)}</option>`).join('')}</select><button class="btn pri">Tạo tài khoản</button></div><div class="muted" style="margin-top:6px">Tên đăng nhập tự tạo, mật khẩu mặc định jenny123. Trẻ không cần email.</div></form></section>
+
+  <div class="grid g2">
+   <section class="card"><h2>Giáo viên</h2>${o.gv.map(g=>{const ls=o.lop.filter(l=>l.gv.includes(g.id));return`<div class="task"><b>${esc(g.ten)}</b><div class="row" style="gap:6px;margin-top:6px">${ls.length?ls.map(l=>`<span class="pill">${esc(l.ten)}</span>`).join(''):'<span class="muted">Chưa có lớp</span>'}</div></div>`}).join('')}
+    <form class="row" onsubmit="qlTaoGV(event)" style="gap:8px;margin-top:12px"><input id="ngTen" placeholder="Tên giáo viên, ví dụ Cô Lan" aria-label="Tên giáo viên" style="flex:1;min-width:150px" maxlength="30"><button class="btn">Thêm giáo viên</button></form></section>
+   <section class="card"><h2>Nhật ký thao tác</h2>${o.nk.length?`<div class="log" style="max-height:260px">${o.nk.slice(-30).reverse().map(x=>`Ngày ${x.d} · ${esc(x.ai||'')} · ${esc(x.t)}`).join('\n')}</div>`:'<p class="muted" style="margin:6px 0 0">Chưa có thao tác nào.</p>'}
+    <p class="muted" style="margin:10px 0 0">Không xóa hẳn: em chưa xếp lớp vẫn giữ tài khoản và dữ liệu.</p></section>
+  </div>
+  <p class="muted" style="margin:0">Sắp có: lên lớp cả lớp cuối năm, đặt lại mật khẩu, khóa tài khoản, xuất dữ liệu. Trang Quản trị hệ thống (thầy) làm khi có máy chủ.</p>
+  </div>`;
+}
+window.viewQL=viewQL;
+{const _p=viewPH;viewPH=function(){if(role==='ql'){orgHeal();return viewQL()}return _p.apply(this,arguments)}}
+{const _h=header;header=function(){_h();try{const t=document.getElementById('tabs');if(!t.querySelector('[data-ql]'))t.insertAdjacentHTML('beforeend',`<button data-ql class="${role==='ql'?'on':''}" aria-pressed="${role==='ql'}" onclick="setRole('ql')">Quản lý</button>`);
+  document.getElementById('whoBox').hidden=role==='gv'||role==='ql';
+  [...document.getElementById('who').options].forEach(op=>{const s=STUDENTS.find(x=>x[0]===op.value),l=s&&lopCua(s[0]);if(s)op.textContent=`${s[1]} · ${l?'lớp '+l.ten:'khối '+s[2]+' (chưa xếp lớp)'}`})}catch(e){}}}
+document.head.insertAdjacentHTML('beforeend',`<style>
+.lopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:10px}
+.lopthe{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:14px;background:var(--surface2);color:var(--ink);box-shadow:var(--f2),0 4px 0 0 var(--ink);min-height:120px}
+.lopthe:hover,.lopthe:focus-visible{transform:translateY(-2px);outline:3px solid var(--sun,#FFC83D)}
+.lt-ten{font-family:var(--f-display);font-size:30px;line-height:1}
+.lt-so{display:flex;gap:12px;flex-wrap:wrap;font-size:13.5px}.lt-so .bad{color:var(--coral)}
+.lopthe .tag{align-self:flex-start}
+.lopgrid{grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr))}
+.xbtn{all:unset;cursor:pointer;padding:0 4px;font-weight:700}.xbtn.arm{color:var(--coral)}
+</style>`);
+})();
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 
