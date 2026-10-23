@@ -60,7 +60,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Thưởng: cúp Đồng/Bạc/Vàng; 3 cúp Vàng một trò → đồ hiếm cho Jenny/thú cưng.
 
 ## 6d. Tủ đồ (23/10/2026)
-- Nhà em › khung **Tủ đồ** › Phối đồ: 3 nút Áo váy · Mũ & kính · Khung ảnh, chạm nút nào hiện đồ mục đó; chạm món đã có là mặc ngay. Đồ thú cưng mặc ở Đảo nhà.
+- Nhà em › khung **Tủ đồ** › Phối đồ: 3 nút Áo váy · Mũ & kính · Khung ảnh, chạm nút nào sang trang riêng của mục đó (← Tủ đồ để quay lại); chạm món đã có là mặc ngay. Đồ thú cưng mặc ở Đảo nhà.
 
 ## 6e. Phòng học của em (23/10/2026)
 - Nhà em: khung Nhà (3 ô) → **Phòng học của em** → Tủ đồ → Trò chơi.

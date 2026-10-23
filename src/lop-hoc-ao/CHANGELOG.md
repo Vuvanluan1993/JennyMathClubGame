@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Tủ đồ: mỗi loại đồ là một trang riêng
+- Trang Tủ đồ: Jenny lớn + 3 nút Áo váy · Mũ & kính · Khung ảnh. Chạm nút → sang trang riêng của loại đó (Jenny nhỏ ở trên để xem ngay, lưới đồ, "Mua thêm …"); nút "← Tủ đồ" để quay lại.
+
 ## 23/10/2026 — Đổi tên "Gian hàng" thành "Cửa hàng"
 - Tiêu đề "Cửa hàng Jenny" và mọi chỗ nhắc (Đảo nhà, máy ấp, thẻ chào…) thống nhất với nút "Cửa hàng" ở thanh dưới.
 
