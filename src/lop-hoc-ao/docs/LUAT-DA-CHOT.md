@@ -14,7 +14,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Chế độ tối** (MacBook để tối): mọi màu chữ/nền dùng biến (`--ink`, `--surface`, `--muted`, `--sun-soft`…). Chỗ nền sáng cố định (khung trời/cát, hộp Hướng dẫn) thì ghi màu chữ đậm cố định. Luôn chụp thử cả chế độ tối.
 - Kiểm tra giao diện ở khổ 320, 375, 414px (và 900px máy tính): không tràn ngang.
 - Thanh trên (bản học sinh): logo đám mây pixel + chữ **JennyClub** (tên tạm) · VI|EN · nhạc · nút **Đăng xuất** pixel hiện sẵn.
-- Thanh dưới (tiểu học): Bản đồ · Toán Jenny · Luyện lỗi · **Nhà em** · **Cửa hàng**. "Nhà em" mở 3 ô: Đảo nhà, Sưu tập, Hồ sơ.
+- Thanh dưới (tiểu học): Bản đồ · Toán Jenny · **Nhà em** · **Cửa hàng** (Luyện lỗi chuyển vào Phòng học, 23/10). "Nhà em" mở 3 ô: Đảo nhà, Sưu tập, Hồ sơ.
 
 ## 3. Nội dung
 - Bám từng tiết Vở BT-TH Toán 1–5 (Kết nối tri thức); **viết lại đề, không chép sách**, không để chữ gốc của sách trong repo.
@@ -57,6 +57,12 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 
 ## 6d. Tủ đồ (23/10/2026)
 - Nhà em › khung **Tủ đồ** › Phối đồ: chạm món đã có là mặc ngay (áo, mũ/kính, khung). Đồ thú cưng mặc ở Đảo nhà.
+
+## 6e. Phòng học của em (23/10/2026)
+- Nhà em: khung Nhà (3 ô) → **Phòng học của em** → Tủ đồ → Trò chơi.
+- Phòng học: Bài cô giao · Luyện lỗi (không còn ở thanh dưới) · Tự luyện (thầy đang nghĩ thêm).
+- Bài cô giao: bài mới lên đầu, gắn "Mới · Chưa làm"; lưu kết quả lần đầu và lần tốt nhất; trạng thái Chưa làm / Chưa đạt / Đã xong / Quá hạn (quá hạn vẫn làm được).
+- Thanh dưới: Bản đồ · Toán Jenny · Nhà em · Cửa hàng.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.

@@ -40,5 +40,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 - ☑ **T-18 Chơi thêm không vượt kiến thức** — dòng kiến thức từng đảo; trò chỉ mở khi đủ kiến thức, nội dung nắn theo bài; kiểm tra `tools/test/kien-thuc-tro-choi.js` (19/10).
 - ☑ **T-19 Thả mồi câu cá** — trò chuyển cảnh như Ếch nhảy; sai 2 lần cá chạy mất, thả lại mồi (19/10).
 - ☑ **T-20 Trồng cây** — trò chuyển cảnh: mỗi câu đúng tưới cây một lần, cây lớn 8 bậc tới khi ra quả; sai 2 lần ốc sên gặm lá (19/10).
+- ☑ **T-23 Phòng học của em** — Bài cô giao, Luyện lỗi, Tự luyện (chờ thầy) (23/10).
+- ☐ **T-24 Tự luyện** — chờ thầy chốt ý tưởng.
 - ☑ **T-22 Tủ đồ** — phối đồ cho Jenny trong Nhà em (23/10).
 - ☑ **T-21 Leo núi tìm kho báu** — trò cho tiết toán có lời văn: mỗi bài đúng leo 1 chặng, 6 chặng lên đỉnh mở rương; sai 2 lần xem lời giải (19/10).

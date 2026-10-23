@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Phòng học của em
+- Nhà em có khung **Phòng học của em** (dưới khung Nhà, trên Tủ đồ) với 3 ô: **Bài cô giao**, **Luyện lỗi**, **Tự luyện** (sắp có).
+- **Luyện lỗi** bỏ khỏi thanh dưới; thanh dưới còn 4 nút. Nút Nhà em báo số bài chưa làm (hoặc "!" khi có lỗi cần sửa).
+- **Bài cô giao**: cô giao 1 màn của 1 tiết cho cả lớp, có hạn nộp. Học sinh thấy 2 phần: "Cần làm" (bài mới nhất lên đầu, gắn Mới/Chưa làm/Chưa đạt/Quá hạn) và "Đã làm" (kết quả tốt nhất, số lần làm, kết quả lần đầu, ngày nộp). Được làm lại để cải thiện.
+- Trang giáo viên (bản đầy đủ): khung **Giao bài** — chọn tiết, màn, hạn; xem kết quả từng em; xoá bài giao.
+
 ## 23/10/2026 — Trò chơi: 10 lượt/ngày
 - Mỗi ngày chơi tối đa **10 lượt** (trước 5). Giá giữ nguyên.
 
