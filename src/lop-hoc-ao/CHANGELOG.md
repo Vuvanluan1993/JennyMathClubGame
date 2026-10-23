@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Trang giáo viên tạm trên GitHub (cách 1)
+- Trang mới `games/lop-hoc-ao/giao-vien/` = bản demo đầy đủ + màn mật khẩu (`giaovien123`), mở sẵn vai Giáo viên, Lớp 1. Không cho máy tìm kiếm lập chỉ mục.
+- Dữ liệu là dữ liệu mẫu, lưu trên máy người xem; chưa xem được kết quả thật của học sinh (cần máy chủ — cách 2).
+- `tools/build.py` tự tạo trang này cùng trang học sinh (`tools/_teacher.py`).
+
 ## 23/10/2026 — Thẻ chào gọn
 - Bỏ nút "Nghe Jenny" và chữ "Đảo nhà" dưới hình Jenny (chạm hình vẫn vào Đảo nhà).
 - Ô sao và ô xu thành cột 2 hàng, đặt ngay sát bên phải "Vịnh … · Lớp n" / "Chào …!" (không đẩy ra mép phải). Ô xu chỉ còn "🪙 số ▸", chạm vẫn mở Cửa hàng. Giữ dòng "Bản …".

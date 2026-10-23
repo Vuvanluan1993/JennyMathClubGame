@@ -82,6 +82,9 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Lê Bảo Na = tài khoản thử**: mở tất cả, 10 000 xu (bản học sinh: `lebaona` / `jenny123`, hoặc đặt tên "Lê Bảo Na"; bản đầy đủ: học sinh Lê Bảo Na).
 - Học sinh thật không có bài cô giao mẫu.
 
+## 6h. Trang giáo viên (23/10/2026)
+- Tạm thời (cách 1): bản demo có mật khẩu trên GitHub, dữ liệu mẫu. Cách 2 (máy chủ, kết quả thật) làm khi thầy có tài khoản Firebase/Supabase.
+
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
 - `node tools/test/kien-thuc-tro-choi.js` — trò không vượt kiến thức.

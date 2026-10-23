@@ -20,4 +20,5 @@ def main():
     print('dist/lop-hoc-ao-jenny.html',len(out.encode()),'bytes')
     runpy.run_path(os.path.join(ROOT,'tools','_student.py'),run_name='__main__')
     print('games/lop-hoc-ao/index.html đã cập nhật')
+    runpy.run_path(os.path.join(ROOT,'tools','_teacher.py'),run_name='__main__')
 if __name__=='__main__':main()
