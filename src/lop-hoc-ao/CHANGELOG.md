@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Đổi tên "Gian hàng" thành "Cửa hàng"
+- Tiêu đề "Cửa hàng Jenny" và mọi chỗ nhắc (Đảo nhà, máy ấp, thẻ chào…) thống nhất với nút "Cửa hàng" ở thanh dưới.
+
 ## 23/10/2026 — Cửa hàng: thử 1 dòng trượt ngang rồi bỏ
 - Thầy thấy dạng trượt không ổn → trở lại 2 dòng như trước.
 

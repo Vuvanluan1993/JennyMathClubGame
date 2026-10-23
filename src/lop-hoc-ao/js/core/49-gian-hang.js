@@ -1,4 +1,4 @@
-/* 49 — Gian hàng Jenny (tiêu xu) — thầy duyệt mẫu và bảng giá 20/10
+/* 49 — Cửa hàng Jenny (tiêu xu) — thầy duyệt mẫu và bảng giá 20/10
    Học sinh tiểu học dùng xu mua: Trang phục, Mũ & kính, Khung ảnh, Đảo nhà, Thú cưng, Đồ nuôi; Vé game tư duy (sắp có).
    Thú cưng và đồ nuôi: xem 49b (Đảo nhà của em).
    Chạm món đồ = thử miễn phí trên khung xem trước; bấm Mua để trừ xu. Đồ đã mua bấm Dùng/Bỏ.
@@ -65,13 +65,13 @@ function viewShop(st){const s=ghSt(st),cat=scr.ghCat||'of',C=GH.find(c=>c.k===ca
  const stage=cat==='dec'?ghIsle(st):cat==='care'?careStage(st,T,f):ghJenny(112,L);
  const body=cat==='tk'?`<div class="ghtk">${spr('tkS',44)}<div><b>Vé chơi game tư duy</b><p>Mỗi vé <b>${TK_PRICE} xu</b> = <b>${TK_MIN} phút</b> chơi game tư duy (cờ, xếp hình, mê cung…). Mỗi ngày mua tối đa <b>${TK_DAY} vé</b>.</p><span class="pill">Sắp có — mở khi có game tư duy</span></div></div>`
   :cat==='care'?catB:`<div class="ghgrid">${C.it.map(x=>ghCard(C,x,st)).join('')}</div>`;
- return`<div class="page ghpage"><section class="card ghtop"><div class="ghhead"><h2>${spr('shopI',26)} Gian hàng Jenny</h2><span class="ghcoin">${spr('coin',20)} <b>${st.coins}</b> xu</span></div>
+ return`<div class="page ghpage"><section class="card ghtop"><div class="ghhead"><h2>${spr('shopI',26)} Cửa hàng Jenny</h2><span class="ghcoin">${spr('coin',20)} <b>${st.coins}</b> xu</span></div>
   <div class="ghstage ${cat==='dec'?'isle':''}">${stage}<div class="ghinfo">${f?`<b>${esc(f.x[1])}</b><small>${T.k==='pet'?petNote(st,T.id):T.k==='care'?esc(careNote(T.id)):s.own.includes(T.id)?'Em đã có món này':'Đang thử — chưa mua'}</small>`:`<b>Chạm món đồ để thử</b><small>Thử miễn phí. Thích thì mua bằng xu.</small>`}${act}</div></div></section>
   <nav class="ghtabs" aria-label="Loại hàng">${tabs}</nav>${body}
   <p class="muted ghnote">Kiếm xu: qua màn +15 · luyện lỗi +5 mỗi câu · trò chơi tới +20 · trùm lớp +20–30.</p></div>`}
 /* gắn vào trang chính tiểu học: tab 'shop' + nút xu ở thẻ chào */
 {const _v=viewHome1t;viewHome1t=function(){const r=_v.apply(this,arguments);if(scr.tab!=='shop')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewShop(st)+(i>=0?r.slice(i):'')}}
-{const _h=viewHome1;viewHome1=function(){return _h.apply(this,arguments).replace(/<span class="chip">🪙 <b>(\d+)<\/b><\/span>/,`<button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})" aria-label="$1 xu, mở Gian hàng">🪙 <b>$1</b> <span>Gian hàng ▸</span></button>`)}}
+{const _h=viewHome1;viewHome1=function(){return _h.apply(this,arguments).replace(/<span class="chip">🪙 <b>(\d+)<\/b><\/span>/,`<button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})" aria-label="$1 xu, mở Cửa hàng">🪙 <b>$1</b> <span>Cửa hàng ▸</span></button>`)}}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .ghchip{cursor:pointer;background:#FFF4D6!important;color:#7A4E00}.ghchip span{font-family:var(--f-display);font-size:16px;margin-left:2px}
 .ghtop{padding:12px!important}.ghhead{display:flex;align-items:center;gap:8px}.ghhead h2{display:flex;align-items:center;gap:6px;margin:0;font-size:24px}.ghcoin{margin-left:auto;display:flex;align-items:center;gap:4px;font-family:var(--f-display);font-size:22px;background:#FFF4D6;color:#7A4E00;padding:2px 8px;box-shadow:var(--f2)}

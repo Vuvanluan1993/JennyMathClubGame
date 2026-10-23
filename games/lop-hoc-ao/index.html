@@ -8070,7 +8070,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='23/10 · 16:07';
+const APP_VER='23/10 · 16:11';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -9841,7 +9841,7 @@ Object.assign(EN_T,{
 
 /* bật tiếng Anh cho lớp 1 */
 EN_GR.add(1);try{enSwapAll()}catch(e){}
-/* 49 — Gian hàng Jenny (tiêu xu) — thầy duyệt mẫu và bảng giá 20/10
+/* 49 — Cửa hàng Jenny (tiêu xu) — thầy duyệt mẫu và bảng giá 20/10
    Học sinh tiểu học dùng xu mua: Trang phục, Mũ & kính, Khung ảnh, Đảo nhà, Thú cưng, Đồ nuôi; Vé game tư duy (sắp có).
    Thú cưng và đồ nuôi: xem 49b (Đảo nhà của em).
    Chạm món đồ = thử miễn phí trên khung xem trước; bấm Mua để trừ xu. Đồ đã mua bấm Dùng/Bỏ.
@@ -9908,13 +9908,13 @@ function viewShop(st){const s=ghSt(st),cat=scr.ghCat||'of',C=GH.find(c=>c.k===ca
  const stage=cat==='dec'?ghIsle(st):cat==='care'?careStage(st,T,f):ghJenny(112,L);
  const body=cat==='tk'?`<div class="ghtk">${spr('tkS',44)}<div><b>Vé chơi game tư duy</b><p>Mỗi vé <b>${TK_PRICE} xu</b> = <b>${TK_MIN} phút</b> chơi game tư duy (cờ, xếp hình, mê cung…). Mỗi ngày mua tối đa <b>${TK_DAY} vé</b>.</p><span class="pill">Sắp có — mở khi có game tư duy</span></div></div>`
   :cat==='care'?catB:`<div class="ghgrid">${C.it.map(x=>ghCard(C,x,st)).join('')}</div>`;
- return`<div class="page ghpage"><section class="card ghtop"><div class="ghhead"><h2>${spr('shopI',26)} Gian hàng Jenny</h2><span class="ghcoin">${spr('coin',20)} <b>${st.coins}</b> xu</span></div>
+ return`<div class="page ghpage"><section class="card ghtop"><div class="ghhead"><h2>${spr('shopI',26)} Cửa hàng Jenny</h2><span class="ghcoin">${spr('coin',20)} <b>${st.coins}</b> xu</span></div>
   <div class="ghstage ${cat==='dec'?'isle':''}">${stage}<div class="ghinfo">${f?`<b>${esc(f.x[1])}</b><small>${T.k==='pet'?petNote(st,T.id):T.k==='care'?esc(careNote(T.id)):s.own.includes(T.id)?'Em đã có món này':'Đang thử — chưa mua'}</small>`:`<b>Chạm món đồ để thử</b><small>Thử miễn phí. Thích thì mua bằng xu.</small>`}${act}</div></div></section>
   <nav class="ghtabs" aria-label="Loại hàng">${tabs}</nav>${body}
   <p class="muted ghnote">Kiếm xu: qua màn +15 · luyện lỗi +5 mỗi câu · trò chơi tới +20 · trùm lớp +20–30.</p></div>`}
 /* gắn vào trang chính tiểu học: tab 'shop' + nút xu ở thẻ chào */
 {const _v=viewHome1t;viewHome1t=function(){const r=_v.apply(this,arguments);if(scr.tab!=='shop')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewShop(st)+(i>=0?r.slice(i):'')}}
-{const _h=viewHome1;viewHome1=function(){return _h.apply(this,arguments).replace(/<span class="chip">🪙 <b>(\d+)<\/b><\/span>/,`<button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})" aria-label="$1 xu, mở Gian hàng">🪙 <b>$1</b> <span>Gian hàng ▸</span></button>`)}}
+{const _h=viewHome1;viewHome1=function(){return _h.apply(this,arguments).replace(/<span class="chip">🪙 <b>(\d+)<\/b><\/span>/,`<button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})" aria-label="$1 xu, mở Cửa hàng">🪙 <b>$1</b> <span>Cửa hàng ▸</span></button>`)}}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .ghchip{cursor:pointer;background:#FFF4D6!important;color:#7A4E00}.ghchip span{font-family:var(--f-display);font-size:16px;margin-left:2px}
 .ghtop{padding:12px!important}.ghhead{display:flex;align-items:center;gap:8px}.ghhead h2{display:flex;align-items:center;gap:6px;margin:0;font-size:24px}.ghcoin{margin-left:auto;display:flex;align-items:center;gap:4px;font-family:var(--f-display);font-size:22px;background:#FFF4D6;color:#7A4E00;padding:2px 8px;box-shadow:var(--f2)}
@@ -10080,7 +10080,7 @@ function viewIsle(st){petSim(st);const P=petsOf(st),s=ghSt(st),now=pNow();
    ${p.ng>24?`<div class="iev warn">${esc(p.name||'Bạn ấy')} bị bỏ đói đã ${Math.floor(p.ng/24)} ngày. Quá 3 ngày bạn ấy sẽ bỏ đi!</div>`:''}
    <div class="pact"><button type="button" class="pbtn" onclick="petPick(${i},'food')">${spr('bowlS',18)}Cho ăn</button><button type="button" class="pbtn" onclick="petPick(${i},'soap')">${spr('soapS',18)}Tắm</button><button type="button" class="pbtn" onclick="petPick(${i},'toy')">${spr('ball',18)}Chơi</button><button type="button" class="pbtn ${p.sick?'hot':''}" onclick="petPick(${i},'med')">${spr('medS',18)}Chữa</button><button type="button" class="pbtn" onclick="petPick(${i},'wear')">${spr('beanieS',12)}Mặc đồ</button><button type="button" class="pbtn" onclick="petPat(${i})">${spr('heartS',16)}Cưng nựng</button></div>
    ${scr.pk&&scr.pk.i===i?petPicker(st,p,i,scr.pk.g):''}</section>`}).join('');
- const none=!P.list.length?`<section class="card pcard"><div class="pchd">${spr('eggCS',40)}<div class="grow"><h3>Em chưa có thú cưng</h3><div class="muted">${P.wait>now?`Còn ${Math.ceil((P.wait-now)/P_D)} ngày nữa em mới nuôi bạn mới được.`:'Mua một bạn ở Gian hàng. Mỗi lần nuôi 1 loài, tối đa 2 bạn.'}</div></div></div>${P.wait>now?'':`<button type="button" class="gobtn" onclick="scr.ghCat='pet';go({k:'home',tab:'shop'})">Chọn thú cưng ▶</button>`}</section>`:'';
+ const none=!P.list.length?`<section class="card pcard"><div class="pchd">${spr('eggCS',40)}<div class="grow"><h3>Em chưa có thú cưng</h3><div class="muted">${P.wait>now?`Còn ${Math.ceil((P.wait-now)/P_D)} ngày nữa em mới nuôi bạn mới được.`:'Mua một bạn ở Cửa hàng. Mỗi lần nuôi 1 loài, tối đa 2 bạn.'}</div></div></div>${P.wait>now?'':`<button type="button" class="gobtn" onclick="scr.ghCat='pet';go({k:'home',tab:'shop'})">Chọn thú cưng ▶</button>`}</section>`:'';
  const eggs=P.eggs.length?`<section class="card pcard"><h3 class="ghgh">Trứng (${P.eggs.length})</h3>${P.eggs.map(e=>`<div class="egrow">${spr('eggCS',26)}<span class="grow">${PET_SP[e.sp][0]} · ${e.inc?`đang ấp, còn ${Math.max(0,Math.ceil((3*P_D-(now-e.inc))/P_D))} ngày${P.list.length>=2?' (nở khi đảo còn chỗ)':''}`:`chưa ấp — hỏng sau ${Math.max(0,Math.ceil((2*P_D-(now-e.laid))/P_D))} ngày`}</span>${!e.inc?`<button type="button" class="btn sm" onclick="eggInc('${e.u}')">Đặt vào máy ấp</button>`:''}<button type="button" class="btn sm ghost" onclick="eggSell('${e.u}')">Bán ${Math.round(PET_SP[e.sp][1]*.4)} xu</button></div>`).join('')}</section>`:'';
  const bag=bagHTML(st);
  const mem=P.mem.length?`<section class="card pcard"><h3 class="ghgh">Sổ kỷ niệm</h3>${P.mem.map(m=>`<div class="memrow">${spr(m.sp,30)}<div class="grow"><b>${esc(m.name)}</b> · ${PET_SP[m.sp][0]}<div class="muted">${m.how==='old'?`Sống ${m.days} ngày, ra đi khi về già.`:`Bỏ đi sau ${m.days} ngày vì bị bỏ đói.`} Cho ăn ${m.fed} lần · cưng nựng ${m.pats} lần</div></div></div>`).join('')}</section>`:'';
@@ -10102,14 +10102,14 @@ function bagHTML(st){const s=ghSt(st),P=petsOf(st);
  return`<section class="card pcard"><h3 class="ghgh">${spr('bag',18)} Túi đồ</h3>${grpBtns(CARE_GRP.map(([g,n])=>[g,n,cnt(g)+' món']),cur,'bagG')}<div style="margin-top:10px">${list||`<p class="muted">Chưa có đồ ở mục này. <button type="button" class="btn sm" onclick="scr.careG='${cur}';go({k:'home',tab:'shop'});scr.ghCat='care';scr.careG='${cur}';render()">Mua ở Cửa hàng ▸</button></p>`}</div><p class="muted" style="font-size:12px;margin:8px 0 0">Bán thanh lý: được nửa giá, đồ càng cũ càng rẻ.</p></section>`}
 function bagSell(id){const st=S.st[sid],s=ghSt(st),c=careOf(id);if(!(s.bag[id]>0))return;s.bag[id]--;st.coins+=Math.max(1,Math.floor(c[2]/c[6]*.5));save();render()}
 function gearSell(u){const st=S.st[sid],s=ghSt(st),g=s.gear.find(x=>x.u===u);if(!g)return;st.coins+=g.dur>0?sellPrice(st,g):0;s.gear=s.gear.filter(x=>x!==g);petsOf(st).list.forEach(p=>{if(p.wear===u)p.wear=''});save();toast(g.dur>0?`Đã bán ${careOf(g.id)[1]}.`:'Đã bỏ đồ hỏng.');render()}
-function eggInc(u){const st=S.st[sid],P=petsOf(st);if(!gearHas(st,'inc')){toast('Em cần mua Máy ấp trứng ở Gian hàng › Đồ nuôi.');return}if(P.eggs.some(e=>e.inc)){toast('Máy ấp chỉ ấp được 1 quả mỗi lần.');return}const e=P.eggs.find(x=>x.u===u);if(e){e.inc=pNow();save();toast('Đã đặt trứng vào máy ấp. 3 ngày nữa trứng nở!');render()}}
+function eggInc(u){const st=S.st[sid],P=petsOf(st);if(!gearHas(st,'inc')){toast('Em cần mua Máy ấp trứng ở Cửa hàng › Đồ nuôi.');return}if(P.eggs.some(e=>e.inc)){toast('Máy ấp chỉ ấp được 1 quả mỗi lần.');return}const e=P.eggs.find(x=>x.u===u);if(e){e.inc=pNow();save();toast('Đã đặt trứng vào máy ấp. 3 ngày nữa trứng nở!');render()}}
 function eggSell(u){const st=S.st[sid],P=petsOf(st),e=P.eggs.find(x=>x.u===u);if(!e)return;st.coins+=Math.round(PET_SP[e.sp][1]*.4);P.eggs=P.eggs.filter(x=>x!==e);save();render()}
 /* chăm sóc */
 function petPick(i,g){const st=S.st[sid],s=ghSt(st);scr.pk=scr.pk&&scr.pk.i===i&&scr.pk.g===g?null:{i,g};render()}
 function petPicker(st,p,i,g){const s=ghSt(st);let it=[];
  if(g==='food'||g==='med'||g==='soap')it=CARE.filter(c=>c[3]===g&&(s.bag[c[0]]||0)>0).map(c=>`<button type="button" class="pkit" onclick="petUse(${i},'${c[0]}')">${spr(c[5],24)}<b>${c[1].replace(/ \(.*\)/,'')}</b><small>còn ${s.bag[c[0]]}</small></button>`);
  else it=s.gear.filter(x=>careOf(x.id)[3]===g&&x.dur>0).map(x=>{const c=careOf(x.id);return`<button type="button" class="pkit ${p.wear===x.u?'on':''}" onclick="petUse(${i},'${x.u}')">${spr(c[5],g==='wear'?16:24)}<b>${c[1]}</b><small>${p.wear===x.u?'đang mặc · bấm để cởi':Math.round(x.dur)+'%'}</small></button>`});
- return`<div class="pkbox">${it.length?it.join(''):`<span class="muted">Túi đồ chưa có ${({food:'thức ăn',med:'thuốc',soap:'xà phòng',toy:'đồ chơi',wear:'đồ mặc'})[g]}.</span><button type="button" class="btn sm" onclick="scr.ghCat='care';go({k:'home',tab:'shop'})">Mua ở Gian hàng</button>`}</div>`}
+ return`<div class="pkbox">${it.length?it.join(''):`<span class="muted">Túi đồ chưa có ${({food:'thức ăn',med:'thuốc',soap:'xà phòng',toy:'đồ chơi',wear:'đồ mặc'})[g]}.</span><button type="button" class="btn sm" onclick="scr.ghCat='care';go({k:'home',tab:'shop'})">Mua ở Cửa hàng</button>`}</div>`}
 function petFx(i,sp){const sc=document.getElementById('iscene');if(!sc)return;const b=sc.querySelectorAll('.ipet')[i];if(!b)return;for(let k=0;k<3;k++){const e=document.createElement('i');e.className='pfx';e.style.left=(20+k*25)+'%';e.style.animationDelay=(k*.15)+'s';e.innerHTML=spr(sp,14);b.appendChild(e);setTimeout(()=>e.remove(),1400)}b.classList.remove('hop');void b.offsetWidth;b.classList.add('hop')}
 function petUse(i,k){const st=S.st[sid],s=ghSt(st),P=petsOf(st),p=P.list[i];if(!p)return;
  const c=careOf(k);if(c){/* đồ tiêu hao */if(!(s.bag[k]>0))return;const e=c[4];
@@ -10162,16 +10162,16 @@ html[lang="en"] .bnav button{font-size:12px!important;letter-spacing:-.4px}
 #pnIn{font:inherit;font-size:20px;padding:8px;border:0;box-shadow:var(--f2);width:100%;max-width:200px}
 </style>`);
 
-/* tiếng Anh cho Gian hàng và Đảo nhà */
-Object.assign(I18N,{'Gian hàng Jenny':"Jenny's shop",'Chạm món đồ để thử':'Tap an item to try it','Thử miễn phí. Thích thì mua bằng xu.':'Try for free. Buy with coins if you like it.','Đang thử — chưa mua':'Trying — not bought yet','Em đã có món này':'You already own this','Áo váy':'Outfits','Mũ kính':'Hats','Khung':'Frames','Đảo nhà':'Home isle','Thú cưng':'Pets','Đồ nuôi':'Pet care','Vé game':'Tickets','Đã có':'Owned','Đang dùng':'In use','Chưa mua được':'Not available','Gian hàng ▸':'Shop ▸',
+/* tiếng Anh cho Cửa hàng và Đảo nhà */
+Object.assign(I18N,{'Cửa hàng Jenny':"Jenny's shop",'Chạm món đồ để thử':'Tap an item to try it','Thử miễn phí. Thích thì mua bằng xu.':'Try for free. Buy with coins if you like it.','Đang thử — chưa mua':'Trying — not bought yet','Em đã có món này':'You already own this','Áo váy':'Outfits','Mũ kính':'Hats','Khung':'Frames','Đảo nhà':'Home isle','Thú cưng':'Pets','Đồ nuôi':'Pet care','Vé game':'Tickets','Đã có':'Owned','Đang dùng':'In use','Chưa mua được':'Not available','Cửa hàng ▸':'Shop ▸',
  'Áo Chanh tươi':'Lime top','Váy Hoa đào':'Peach dress','Áo Bầu trời':'Sky top','Áo Siêu nhân Toán':'Maths hero suit','Áo Hoàng kim':'Golden suit','Nơ đỏ':'Red bow','Kẹp hoa':'Flower clip','Mũ lưỡi trai':'Cap','Kính tròn':'Round glasses','Mũ phù thuỷ':'Wizard hat','Vương miện':'Crown','Khung Gỗ':'Wood frame','Khung Bạc':'Silver frame','Khung Vàng':'Gold frame','Khung Cầu vồng':'Rainbow frame',
  'Cây dừa':'Palm tree','Ô che nắng':'Sunshade','Lâu đài cát':'Sandcastle','Thuyền buồm':'Sailing boat','Cờ CLB Jenny':'Jenny Club flag','Hải đăng':'Lighthouse','Gà con':'Chick','Ếch xanh':'Frog','Rùa biển':'Sea turtle','Chim cánh cụt':'Penguin','Bạch tuộc':'Octopus','Rồng con':'Baby dragon',
  'Hạt dinh dưỡng':'Pet food','Cá khô':'Dried fish','Bánh thưởng':'Treat','Thuốc':'Medicine','Xà phòng (5 lần)':'Soap (5 baths)','Xà phòng':'Soap','Bóng':'Ball','Gấu bông':'Teddy','Nơ cổ':'Bow tie','Mũ len':'Woolly hat','Khăn quàng':'Scarf','Ổ rơm':'Straw nest','Máng ăn tự động':'Auto feeder','Máy ấp trứng':'Incubator',
- 'Thức ăn':'Food','Thuốc & tắm':'Medicine & bath','Đồ chơi':'Toys','Đồ mặc':'Clothes','Nhà & máy':'Home & machines','Cho ăn':'Feed','Tắm':'Bath','Chữa':'Heal','Mặc đồ':'Dress','Cưng nựng':'Pat','No':'Full','Vui':'Happy','Sạch':'Clean','Sức khoẻ':'Health','Đổi tên':'Rename','Đặt tên':'Name','Túi đồ':'Bag','Sổ kỷ niệm':'Memory book','Đặt vào máy ấp':'Put in incubator','Em hiểu rồi':'I understand','Xong ▶':'Done ▶','Chọn thú cưng ▶':'Choose a pet ▶','Mua ở Gian hàng':'Buy at the shop','Em chưa có thú cưng':"You don't have a pet yet",'Bỏ đi':'Throw away','Đã hỏng':'Broken',
+ 'Thức ăn':'Food','Thuốc & tắm':'Medicine & bath','Đồ chơi':'Toys','Đồ mặc':'Clothes','Nhà & máy':'Home & machines','Cho ăn':'Feed','Tắm':'Bath','Chữa':'Heal','Mặc đồ':'Dress','Cưng nựng':'Pat','No':'Full','Vui':'Happy','Sạch':'Clean','Sức khoẻ':'Health','Đổi tên':'Rename','Đặt tên':'Name','Túi đồ':'Bag','Sổ kỷ niệm':'Memory book','Đặt vào máy ấp':'Put in incubator','Em hiểu rồi':'I understand','Xong ▶':'Done ▶','Chọn thú cưng ▶':'Choose a pet ▶','Mua ở Cửa hàng':'Buy at the shop','Em chưa có thú cưng':"You don't have a pet yet",'Bỏ đi':'Throw away','Đã hỏng':'Broken',
  'Vé chơi game tư duy':'Logic game tickets','Tạm biệt bạn nhỏ':'Goodbye, little friend','Lá thư tạm biệt':'Goodbye letter','Bán thanh lý: được nửa giá, đồ càng cũ càng rẻ.':'Selling gives half price; older items are worth less.'});
 I18N_RE.push([/^Đảo nhà của (.+)$/,"$1's home isle"],[/^Mua (.+) · (\d+)$/,'Buy $1 · $2'],[/^Cần thêm (\d+)$/,'Need $1 more'],[/^Bán (\d+) xu$/,'Sell $1 coins'],[/^Độ mới (\d+)%$/,'Condition $1%'],[/^Đang nuôi (\d+)$/,'Raising $1'],[/^có (\d+)$/,'have $1'],[/^Ngày thứ (\d+) · đã cho ăn (\d+) lần · cưng nựng (\d+) lần$/,'Day $1 · fed $2 times · patted $3 times'],[/^Trứng \((\d+)\)$/,'Eggs ($1)'],[/^(\d+) xu$/,'$1 coins']);
 /* ===== Thanh dưới (thầy chốt 20/10): Bản đồ · Toán Jenny · Luyện lỗi · Nhà em · Cửa hàng =====
-   "Nhà em" mở trang gồm 3 ô: Đảo nhà (thú cưng), Sưu tập, Hồ sơ. "Cửa hàng" = Gian hàng Jenny. */
+   "Nhà em" mở trang gồm 3 ô: Đảo nhà (thú cưng), Sưu tập, Hồ sơ. "Cửa hàng" = Cửa hàng Jenny. */
 Object.assign(PXS,{houseS:["....kk....","...krrk...","..krrrrk..",".krrrrrrk.","krrrrrrrrk","kkwwwwwwkk",".kwbbwnnk.",".kwbbwnnk.",".kwwwwnnk.",".kkkkkkkk."]});
 const NHA_TABS=['nha','album','hoso','isle'];
 function viewNha(st){petSim(st);const P=petsOf(st),need=P.list.some(p=>p.no<25||p.sick||p.sach<25||!p.name)||P.eggs.some(e=>!e.inc)||!!P.bye,p0=P.list[0];
