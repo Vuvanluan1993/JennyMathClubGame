@@ -61,7 +61,10 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 ## 6e. Phòng học của em (23/10/2026)
 - Nhà em: khung Nhà (3 ô) → **Phòng học của em** → Tủ đồ → Trò chơi.
 - Phòng học: Bài cô giao · Luyện lỗi (không còn ở thanh dưới) · Tự luyện (thầy đang nghĩ thêm).
-- Bài cô giao: bài mới lên đầu, gắn "Mới · Chưa làm"; lưu kết quả lần đầu và lần tốt nhất; trạng thái Chưa làm / Chưa đạt / Đã xong / Quá hạn (quá hạn vẫn làm được).
+- Bài cô giao = **Phiếu bài tách riêng khỏi đảo** (thầy chọn hướng 1): cô chọn tiết (1 hay nhiều), số câu, hạn; câu lấy từ kho có sẵn, mỗi em số khác.
+- Làm như vở bài tập: không tim/trùm, không báo đúng sai từng câu, có "Để sau", "Nộp bài"; nộp xong mới xem điểm và đáp án. Không cộng sao, không mở đảo; nộp lần đầu +10 xu; câu sai vào Sổ lỗi (không bắt luyện ngay).
+- Danh sách: bài mới lên đầu, nhãn Mới / Chưa làm / Đang làm / Quá hạn (vẫn làm được); phần Đã nộp ở dưới. Lưu lần đầu + tốt nhất; làm lại là số mới.
+- Hướng 2 (cô tự soạn câu hỏi): làm khi có máy chủ.
 - Thanh dưới: Bản đồ · Toán Jenny · Nhà em · Cửa hàng.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)

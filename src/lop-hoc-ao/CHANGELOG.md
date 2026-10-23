@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Bài cô giao thành Phiếu bài, tách riêng khỏi đảo
+- Cô chọn **1 hay nhiều tiết**, **số câu** (5–20), **hạn nộp**. Câu lấy từ kho câu các tiết đó; mỗi em cùng dạng nhưng số khác (đề lưu bằng seed, xem lại được).
+- Làm kiểu vở bài tập: không tim, không trùm, không báo đúng/sai từng câu; nút **Để sau**, **Nộp bài** (hỏi lại nếu còn câu chưa làm). Thoát giữa chừng vẫn giữ bài đang làm ("Đang làm x/n" → "Làm tiếp").
+- Nộp xong: trang kết quả (điểm, lời khen, từng câu đúng/sai + đáp án, cả đáp án dạng hình). Câu sai vào Sổ lỗi, không bắt luyện ngay. Nộp lần đầu +10 xu. **Không** cộng sao, không mở đảo.
+- Làm lại = số mới; lưu lần đầu, lần gần nhất, lần tốt nhất.
+- Trang giáo viên: khung **Giao phiếu bài** (chọn nhiều tiết, số câu, hạn); pill điểm lần đầu → tốt nhất; dòng "Dạng sai nhiều".
+
 ## 23/10/2026 — Phòng học của em
 - Nhà em có khung **Phòng học của em** (dưới khung Nhà, trên Tủ đồ) với 3 ô: **Bài cô giao**, **Luyện lỗi**, **Tự luyện** (sắp có).
 - **Luyện lỗi** bỏ khỏi thanh dưới; thanh dưới còn 4 nút. Nút Nhà em báo số bài chưa làm (hoặc "!" khi có lỗi cần sửa).
