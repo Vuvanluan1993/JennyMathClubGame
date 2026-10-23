@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Tủ đồ gọn hơn
+- Bỏ 3 ô "Mua ở Cửa hàng" lặp lại ở từng mục; mục chưa có đồ hiện dòng chữ nhỏ. Chỉ giữ nút "Mua thêm đồ" cuối trang và nút xu "Cửa hàng ▸" trên cùng.
+- Ô đồ không còn kéo giãn quá to trên máy tính.
+
 ## 23/10/2026 — Chỉ dẫn thông báo
 - Nút thanh dưới có số/"!" đỏ → vào trang thấy khung vàng **"Jenny nhắc em"** nói rõ việc cần làm, có nút đi tới.
 - Chỗ cần chú ý **nhấp nháy viền đỏ** + nhãn **Mới**: đảo mới mở (Bản đồ), buổi Toán Jenny mới, ô Bài cô giao / Luyện lỗi / Đảo nhà (Nhà em), từng bài chưa làm (Bài cô giao). Đảo nhà liệt kê thú cưng cần gì (đói, ốm, bẩn, chưa đặt tên, trứng chưa ấp).

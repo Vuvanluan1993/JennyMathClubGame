@@ -6,7 +6,7 @@ function viewTudo(st){const s=ghSt(st),own=ofOwn(st),L=tdLook(st),en=arcEN();
  const ofs=[['',arcT('Áo xanh gốc','Original top')]].concat(Object.keys(OUTFIT).filter(k=>own.has(k)).map(k=>[k,OUTFIT[k].n]));
  const accs=[['',arcT('Không đội','None')]].concat(Object.keys(GH_ACC).filter(k=>s.own.includes(k)).map(k=>{const it=(GH.find(c=>c.k==='acc')||{it:[]}).it.find(x=>x[0]===k);return[k,it?it[1]:k]}));
  const frs=[['',arcT('Không khung','None')]].concat(['wood','silver','gold','rainbow'].filter(k=>s.own.includes(k)).map(k=>[k,(GH.find(c=>c.k==='frame').it.find(x=>x[0]===k)||[k,k])[1]]));
- const sec=(title,list,make,emptyCat)=>`<h3 class="ghgh">${title}</h3><div class="tdgrid">${list.map(make).join('')}${list.length<=1?`<button type="button" class="tdit tdmore" onclick="go({k:'home',tab:'shop'});scr.ghCat='${emptyCat}';render()"><span class="tdpic">${spr('shopI',30)}</span><b>${arcT('Mua ở Cửa hàng','Buy in the shop')}</b></button>`:''}</div>`;
+ const sec=(title,list,make,emptyCat)=>`<h3 class="ghgh">${title}</h3><div class="tdgrid">${list.map(make).join('')}</div>${list.length<=1?`<p class="tdempty">${arcT('Em chưa có món nào ở mục này.','Nothing here yet.')}</p>`:''}`;
  return`<div class="page tdpage"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← ${arcT('Nhà em','My home')}</button><span class="grow"></span><button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})">🪙 <b>${st.coins}</b> <span>${arcT('Cửa hàng ▸','Shop ▸')}</span></button></div>
   <section class="card tdtop"><h2>${spr('jenny',24)} ${arcT('Tủ đồ của Jenny','Jenny’s wardrobe')}</h2><div class="tdstage">${ghJenny(150,L)}<div class="tdinfo"><b>${esc(L.of?OUTFIT[L.of].n:arcT('Áo xanh gốc','Original top'))}</b><small>${L.acc?esc((accs.find(a=>a[0]===L.acc)||['',''])[1]):arcT('Không đội mũ','No hat')} · ${L.frame?esc((frs.find(a=>a[0]===L.frame)||['',''])[1]):arcT('Không khung','No frame')}</small><small class="muted">${arcT('Chạm món đồ bên dưới để mặc thử. Đồ mặc lưu ngay.','Tap an item below to wear it. It saves right away.')}</small></div></div></section>
   <section class="card tdbody">
@@ -30,7 +30,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .tdstage{display:flex;gap:14px;align-items:flex-end;padding:12px;background:linear-gradient(#BDEBFA 0 62%,#F6D98B 62%);box-shadow:var(--f2);color:#13263a}
 .tdinfo{display:flex;flex-direction:column;gap:4px;align-self:center;min-width:0}.tdinfo b{font-family:var(--f-display);font-size:24px;font-weight:400;line-height:1}.tdinfo small{font-size:13px;color:#3D4A70}
 .tdbody{margin-top:14px;padding:12px!important}.tdbody .ghgh:first-child{margin-top:0}
-.tdgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tdgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,150px));gap:10px}.tdempty{margin:6px 0 0;font-size:13px;color:var(--muted)}
 .tdit{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;padding:8px 4px;background:var(--surface,#fff);color:var(--ink);box-shadow:var(--f2),0 4px 0 0 var(--pxk,#1F2A5A);cursor:pointer;min-width:0}
 .tdit.on{background:var(--leaf-soft);box-shadow:0 0 0 3px #2AB563,0 4px 0 0 var(--pxk,#1F2A5A)}.tdit:active{transform:translateY(3px)}
 .tdit .tdpic{height:58px;display:grid;place-items:center}.tdit b{font-family:var(--f-body);font-size:13px;line-height:1.15;text-align:center;font-weight:700}
