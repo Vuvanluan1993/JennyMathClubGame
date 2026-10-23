@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Chỉ dẫn thông báo
+- Nút thanh dưới có số/"!" đỏ → vào trang thấy khung vàng **"Jenny nhắc em"** nói rõ việc cần làm, có nút đi tới.
+- Chỗ cần chú ý **nhấp nháy viền đỏ** + nhãn **Mới**: đảo mới mở (Bản đồ), buổi Toán Jenny mới, ô Bài cô giao / Luyện lỗi / Đảo nhà (Nhà em), từng bài chưa làm (Bài cô giao). Đảo nhà liệt kê thú cưng cần gì (đói, ốm, bẩn, chưa đặt tên, trứng chưa ấp).
+
 ## 23/10/2026 — Sửa lỗi "Làm tiếp" phiếu bài
 - Bấm Làm tiếp/Làm bài bị lỗi khi câu đầu là dạng kéo số vào ô (Bài 1 Tiết 3 lớp 1). Đã sửa; thử 280 lần mở/làm tiếp ở lớp 1–5 không lỗi.
 
