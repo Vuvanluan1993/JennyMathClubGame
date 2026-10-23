@@ -47,7 +47,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - 2 con cùng loài trưởng thành + Ổ rơm → đẻ trứng; Máy ấp 3 ngày cho nở; trứng không ấp hỏng sau 2 ngày.
 - Đồ cũ dần theo thời gian; bán thanh lý = 50% giá × độ mới. Qua màn → thú vui thêm.
 
-- Nhiều loại đồ thì dùng **nút chọn nhóm** (chạm nút hiện đồ nhóm đó), không xếp chồng tất cả: Tủ đồ, Túi đồ, Cửa hàng › Đồ nuôi (23/10).
+- Nhiều loại đồ thì dùng **nút chọn nhóm** (chạm nút hiện đồ nhóm đó), không xếp chồng tất cả: Tủ đồ, Túi đồ, Cửa hàng › Đồ nuôi (23/10). Không dùng hàng nút trượt ngang; hàng mục Cửa hàng giữ 2 dòng.
 
 ## 6b. Màn Vẽ hình (chốt 22/10/2026)
 - Là màn THÊM ở đảo hình học, không thay màn cũ. 4 hình/màn, 3 tim.

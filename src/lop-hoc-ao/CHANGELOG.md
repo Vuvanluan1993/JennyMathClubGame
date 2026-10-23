@@ -1,7 +1,7 @@
 # Lịch sử thay đổi
 
-## 23/10/2026 — Cửa hàng: mục chính 1 dòng trượt ngang
-- 7 mục (Áo váy … Trò chơi) nằm 1 dòng; điện thoại vuốt ngang, mép phải mờ báo còn mục; mục đang chọn tự cuộn vào giữa tầm nhìn. Máy tính: các nút giãn đều cả hàng.
+## 23/10/2026 — Cửa hàng: thử 1 dòng trượt ngang rồi bỏ
+- Thầy thấy dạng trượt không ổn → trở lại 2 dòng như trước.
 
 ## 23/10/2026 — Nút chọn nhóm đồ nuôi
 - **Túi đồ** (Đảo nhà) và **Cửa hàng › Đồ nuôi** có 5 nút: Thức ăn · Thuốc & tắm · Đồ chơi · Đồ mặc · Nhà & máy. Chạm nút nào hiện đồ nhóm đó; Túi đồ ghi số món mỗi nhóm, nhóm trống có nút "Mua ở Cửa hàng".
