@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Sửa lỗi "Làm tiếp" phiếu bài
+- Bấm Làm tiếp/Làm bài bị lỗi khi câu đầu là dạng kéo số vào ô (Bài 1 Tiết 3 lớp 1). Đã sửa; thử 280 lần mở/làm tiếp ở lớp 1–5 không lỗi.
+
 ## 23/10/2026 — Bài cô giao thành Phiếu bài, tách riêng khỏi đảo
 - Cô chọn **1 hay nhiều tiết**, **số câu** (5–20), **hạn nộp**. Câu lấy từ kho câu các tiết đó; mỗi em cùng dạng nhưng số khác (đề lưu bằng seed, xem lại được).
 - Làm kiểu vở bài tập: không tim, không trùm, không báo đúng/sai từng câu; nút **Để sau**, **Nộp bài** (hỏi lại nếu còn câu chưa làm). Thoát giữa chừng vẫn giữ bài đang làm ("Đang làm x/n" → "Làm tiếp").

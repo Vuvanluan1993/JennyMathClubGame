@@ -8070,7 +8070,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='23/10 · 11:59';
+const APP_VER='23/10 · 12:23';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -10605,7 +10605,7 @@ function phBlank(g){Object.assign(g,{sheet:null,tries:0,inp:'',picks:[],seq:[],f
 function asgGo(aid){const st=S.st[sid],a=asgAll().find(x=>x.id===aid);if(!a)return;const r=asgR(st)[aid]||(asgR(st)[aid]={});r.seen=1;
  if(!r.cur)r.cur={seed:(Math.random()*2**31)|0,ans:[]};save();try{speechSynthesis.cancel()}catch(e){}
  const qs=phQs(a,r.cur.seed);const ans=r.cur.ans.slice();while(ans.length<qs.length)ans.push(null);const j=Math.max(0,ans.findIndex(x=>!x));
- v1Said='';go({k:'game',g1:1,ph:aid,id:qs[0].src[0],lv:0,qs,ans,j,hearts:3,ok:0,res:[],hp:0});phBlank(scr);render()}
+ v1Said='';const g0={k:'game',g1:1,ph:aid,id:qs[0].src[0],lv:0,qs,ans,j,hearts:3,ok:0,res:[],hp:0};phBlank(g0);go(g0);phBlank(scr);render()}
 function phNext(){const g=scr,n=g.qs.length;for(let d=1;d<=n;d++){const k=(g.j+d)%n;if(!g.ans[k]){g.j=k;phBlank(g);return true}}return false}
 function phLater(){if(!phNext())toast(arcT('Đây là câu cuối còn lại.','This is the last one left.'));sfx('tap');render()}
 function phSubmitAsk(){const g=scr,left=g.ans.filter(x=>!x).length;g.sheet={kind:left?'phask':'phall',left};render()}
