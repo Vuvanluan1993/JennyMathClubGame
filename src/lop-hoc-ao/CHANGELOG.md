@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Thẻ chào gọn
+- Bỏ nút "Nghe Jenny" và chữ "Đảo nhà" dưới hình Jenny (chạm hình vẫn vào Đảo nhà).
+- Ô sao và ô xu thành cột bên phải, 2 hàng, cạnh "Vịnh … · Lớp n" / "Chào …!". Ô xu chỉ còn "🪙 số ▸", chạm vẫn mở Cửa hàng. Giữ dòng "Bản …".
+
 ## 23/10/2026 — Dịch "Sổ đang trống…" sang tiếng Anh
 - Sổ lỗi trống (tài khoản mới) có câu tiếng Anh.
 

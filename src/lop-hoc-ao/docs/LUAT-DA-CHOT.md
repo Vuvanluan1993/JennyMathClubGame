@@ -15,6 +15,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Mặt trời/mặt trăng trên biển: luôn trong tầm nhìn, trôi ngang chậm; không vật thể nào được đổi chỗ ngẫu nhiên mỗi khung hình (gây chớp nháy) (23/10).
 - Kiểm tra giao diện ở khổ 320, 375, 414px (và 900px máy tính): không tràn ngang.
 - Thanh trên (bản học sinh): logo đám mây pixel + chữ **JennyClub** (tên tạm) · VI|EN · nhạc · nút **Đăng xuất** pixel hiện sẵn.
+- Thẻ chào (trang Bản đồ): [hình Jenny] [Vịnh · Lớp / Chào …!] [cột phải: ô sao trên, ô xu "🪙 số ▸" dưới]; không có nút "Nghe Jenny", không chữ "Đảo nhà" (23/10).
 - Thanh dưới (tiểu học): Bản đồ · Toán Jenny · **Nhà em** · **Cửa hàng** (Luyện lỗi chuyển vào Phòng học, 23/10). "Nhà em" mở 3 ô: Đảo nhà, Sưu tập, Hồ sơ.
 
 ## 3. Nội dung
