@@ -47,6 +47,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Thời gian theo **ngày thật** (cả cuối tuần). Chỉ số No/Vui/Sạch/Sức khoẻ; ốm cần Thuốc.
 - Bỏ đói/ốm nặng liên tục 3 ngày → thú **bỏ đi** (thư tạm biệt). Già thì mất, ghi vào Sổ kỷ niệm. Sau đó **chờ 3 ngày** mới nuôi con mới.
 - 2 con cùng loài trưởng thành + Ổ rơm → đẻ trứng; Máy ấp 3 ngày cho nở; trứng không ấp hỏng sau 2 ngày.
+- Đảo nhà bố cục cố định (56-dao-nha-bo-cuc.js): cây dừa cỏ trái, cờ cỏ phải, hải đăng mỏm đá ngoài biển, lâu đài cát trước, ô che nắng cát trước phải, thuyền trên nước; ổ rơm/máy ấp bãi cỏ giữa; thú cưng trên bãi cát. Đồ mới phải có chỗ đặt hợp lý (23/10).
 - Đồ cũ dần theo thời gian; bán thanh lý = 50% giá × độ mới. Qua màn → thú vui thêm.
 
 - Nhiều loại đồ thì dùng **nút chọn nhóm** (chạm nút hiện đồ nhóm đó), không xếp chồng tất cả: Tủ đồ, Túi đồ, Cửa hàng › Đồ nuôi (23/10). Không dùng hàng nút trượt ngang; hàng mục Cửa hàng giữ 2 dòng.

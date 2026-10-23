@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Đảo nhà: bố cục mới
+- Khung cảnh vẽ lại: đảo cát to có bãi cỏ phía sau, mỏm đá ngoài biển, sóng, mây; giữ tỉ lệ 16:10 và phóng theo màn hình (điện thoại, máy tính đều cân).
+- Mỗi đồ có chỗ hợp lý, đứng trên mặt đất: cây dừa (cỏ trái), cờ CLB (cỏ phải), hải đăng (mỏm đá ngoài biển), lâu đài cát (cát trước), ô che nắng (cát trước phải), thuyền buồm (mặt nước phải); ổ rơm, máy ấp trên bãi cỏ giữa; máng ăn bên trái; thú cưng đi lại trên bãi cát giữa. Vật ở gần (thấp) che vật ở xa.
+- Cửa hàng › Đảo nhà xem trước bằng đúng bố cục này.
+
 ## 23/10/2026 — Bỏ dòng nhắc ở Mũ & kính và Khung ảnh
 - Bỏ dòng "Em đeo được nhiều món cùng lúc…" và "Khung hiện quanh ảnh Jenny…" (chức năng giữ nguyên).
 
