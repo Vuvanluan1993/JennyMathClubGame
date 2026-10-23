@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Tủ đồ: khung không tràn, khung hiện rõ, đeo nhiều phụ kiện
+- Khung ảnh vẽ vào phía trong (không tràn đè lên phần khác) ở Tủ đồ, Cửa hàng và ô chọn khung.
+- Chọn khung → cả khung cảnh Jenny trong Tủ đồ có viền khung đó; ảnh Jenny ở thẻ chào (Bản đồ) cũng có khung (trước bị CSS khác che mất).
+- **Đeo nhiều món cùng lúc**: 1 mũ (lưỡi trai, phù thuỷ, vương miện…) + 1 kính + 1 nơ/kẹp tóc. Chạm món đang đeo để bỏ ra; chọn mũ khác thì thay mũ cũ. Ô "Bỏ hết". Jenny ở mọi nơi (thẻ chào, câu hỏi, Cửa hàng) đeo đủ các món. Tiến độ cũ (1 món) được giữ.
+
 ## 23/10/2026 — Tủ đồ: mỗi loại đồ là một trang riêng
 - Trang Tủ đồ: Jenny lớn + 3 nút Áo váy · Mũ & kính · Khung ảnh. Chạm nút → sang trang riêng của loại đó (Jenny nhỏ ở trên để xem ngay, lưới đồ, "Mua thêm …"); nút "← Tủ đồ" để quay lại.
 
