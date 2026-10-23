@@ -21,7 +21,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 - ☐ **T-16b Hướng dẫn khi làm sai · Lô 2b** — chia có dư, đồng hồ, đo lường, phân số, chu vi, diện tích, tiền, số thập phân.
 - ☑ **T-17a Đầu trang gọn + nút VI/EN, dịch giao diện** (20/10).
 - ◐ **T-17b Tiếng Anh đầy đủ** — lớp 1 xong (48b, kiểm tra `tools/test/tieng-anh.js`), chờ thầy duyệt; tiếp lớp 2→5. Còn: buổi Toán Jenny hằng tuần (27-chu-de-2-lop-1-5.js).
-- ◐ **T-18 Dùng xu** — Gian hàng Jenny (49) + Đảo nhà & nuôi thú cưng (49b) đã làm; còn: vé game tư duy (khi có game tư duy).
+- ◐ **T-18 Dùng xu** — Gian hàng Jenny (49) + Đảo nhà & nuôi thú cưng (49b) đã làm; kho trò chơi 3 trò + vé lượt chơi đã làm (51-kho-game.js).
 - ☐ **T-14 Đánh giá cho giáo viên, phụ huynh** — dùng `st.dd`, `st.sk`, `st.skm`; thiết kế riêng sau.
 - ☐ **T-11 Chế độ ngoại tuyến (PWA)** — cài lên màn hình điện thoại, chơi khi không có mạng.
 - ☐ **T-12 Tối ưu dung lượng** — file ~1,1 MB; tách nội dung theo lớp, chỉ tải lớp của học sinh.
