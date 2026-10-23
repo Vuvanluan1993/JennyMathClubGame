@@ -13,8 +13,8 @@ function alerts(id){
   if(st.grade<=5){const nm=Object.keys(st.mist||{}).length;if(nm>=3)out.push({t:`Sổ lỗi sai: ${nm} dạng`,c:'warn'})}
   if(st.grade===6){const nm=Object.keys(st.mist||{}).length;if(nm>=3)out.push({t:`Sổ lỗi sai: ${nm} dạng`,c:'warn'});const w=P1_6.filter(x=>st.p1[x.id]&&st.p1[x.id].med&&st.p1[x.id].med.some((m,i)=>st.p1[x.id].m[i]&&m===1));if(w.length)out.push({t:`Đạt Đồng: ${w.map(x=>x.title.split('.')[0]).join(', ')}`,c:'warn'})}
   if(S.day>1&&!dayStats(id,S.day).n&&!dayStats(id,S.day-1).n)out.push({t:'Không học 2 ngày',c:'warn'});
-  if(st.active&&st.grade<=5)P2_1.filter(x=>x.grade===st.grade).forEach(x=>{if(!x.draft&&S.open[x.id]&&!j1s(st,x.id).m.every(Boolean))out.push({t:`Chưa xong ${x.title.split(' · ')[0]} Toán Jenny`,c:'warn'})});
-  if(st.active&&st.grade===6)P2.forEach(x=>{if(S.open[x.id]&&!st.p2[x.id].m.every(Boolean))out.push({t:`Chưa xong ${x.title.split(' · ')[0]} Toán Jenny`,c:'warn'})});
+  if(st.active&&st.grade<=5)P2_1.filter(x=>x.grade===st.grade).forEach(x=>{if(!x.draft&&S.open[x.id]&&!j1s(st,x.id).m.every(Boolean))out.push({t:`Chưa xong ${x.title.split(' · ')[0]} Toán Jenny`,c:'warn',tj:1})});
+  if(st.active&&st.grade===6)P2.forEach(x=>{if(S.open[x.id]&&!st.p2[x.id].m.every(Boolean))out.push({t:`Chưa xong ${x.title.split(' · ')[0]} Toán Jenny`,c:'warn',tj:1})});
   return out;
 }
 

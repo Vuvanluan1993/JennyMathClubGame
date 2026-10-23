@@ -11,7 +11,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 
 ## Tiếp theo
 - ☐ **T-06 Đồng bộ tiến độ qua máy chủ** — hiện tiến độ chỉ nằm trong trình duyệt từng máy; cần lưu chung để giáo viên xem báo cáo thật.
-- ☐ **T-07 Trang giáo viên cho lớp 1–5** — báo cáo theo chủ đề, dạng lỗi hay sai, giao bài.
+- ◐ **T-07 Trang giáo viên cho lớp 1–5** — (23/10: tách Toán Jenny khỏi bảng tiến độ) báo cáo theo chủ đề, dạng lỗi hay sai, giao bài.
 - ☐ **T-08 Toán Jenny (nâng cao) lớp 2–5** — hiện mới có lớp 1 và lớp 6.
 - ☐ **T-09 Lớp 6–9 theo mô hình đảo** — làm các chương còn lại như tiểu học.
 - ☑ **T-10 Âm thanh, hiệu ứng** — nhạc nền 8-bit theo màn, hiệu ứng từng trò chơi, nút bật/tắt (19/10).

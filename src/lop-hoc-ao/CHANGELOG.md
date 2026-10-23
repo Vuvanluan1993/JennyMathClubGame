@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 23/10/2026 — Trang giáo viên: tách Toán Jenny khỏi bảng tiến độ
+- Bảng "Tiến độ từng em" bỏ cột Toán Jenny; cột Cảnh báo không còn mục "Chưa xong … Toán Jenny".
+- Toán Jenny thành phần riêng (mở buổi + tiến độ từng em đã kích hoạt), chỉ hiện khi lớp có ít nhất 1 em đã kích hoạt. Chưa ai kích hoạt thì ẩn cả phần này và ô số liệu Toán Jenny; thẻ "Kích hoạt Toán Jenny" vẫn còn để mở.
+
 ## 23/10/2026 — Trang giáo viên tạm trên GitHub (cách 1)
 - Trang mới `games/lop-hoc-ao/giao-vien/` = bản demo đầy đủ + màn mật khẩu (`giaovien123`), mở sẵn vai Giáo viên, Lớp 1. Không cho máy tìm kiếm lập chỉ mục.
 - Dữ liệu là dữ liệu mẫu, lưu trên máy người xem; chưa xem được kết quả thật của học sinh (cần máy chủ — cách 2).

@@ -84,6 +84,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 
 ## 6h. Trang giáo viên (23/10/2026)
 - Tạm thời (cách 1): bản demo có mật khẩu trên GitHub, dữ liệu mẫu. Cách 2 (máy chủ, kết quả thật) làm khi thầy có tài khoản Firebase/Supabase.
+- Bảng "Tiến độ từng em" **không có Toán Jenny**. Toán Jenny là phần riêng, chỉ hiện khi đã mở khóa (có em đã kích hoạt); chưa mở thì ẩn (chốt 23/10/2026).
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
