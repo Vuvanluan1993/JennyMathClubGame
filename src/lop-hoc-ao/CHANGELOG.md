@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Thêm 18 mặt hàng Cửa hàng
+- Áo váy: Áo Bạc hà 130, Áo Sô-cô-la 160, Váy Dâu tây 180 (nữ), Váy Oải hương 200 (nữ), Áo Cướp biển 220 (nam), Áo Bác sĩ nhí 260.
+- Mũ kính: Kẹp ngôi sao 60 (nữ, tóc), Khăn quàng đỏ 70 (cổ), Bờm tai mèo 90 (nữ, mũ), Mặt nạ siêu nhân 120 (mặt), Mũ đầu bếp 140, Mũ cướp biển 160 (nam).
+- Khung: Khung Hoa 150, Khung Kẹo ngọt 180, Khung Đêm sao 250 (hiện cả ở Tủ đồ và thẻ chào).
+- Đảo nhà: Hoa hướng dương 40 (cỏ trái), Lửa trại 60 (cát trái), Rương kho báu 100 (cát phải) — có chỗ đặt riêng.
+
 ## 24/10/2026 — Nhân vật Nam, đồ cho bạn nam
 - Giữ phong cách pixel cũ (thầy chốt không đổi cỡ ô).
 - **Bạn nam**: tóc ngắn dựng, không búi, không nơ; dùng chung thân, biểu cảm, áo, mũ kính với Jenny.

@@ -8052,7 +8052,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 13:53';
+const APP_VER='24/10 · 13:56';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -10522,7 +10522,7 @@ function tdCard(on,pic,name,click,tag){return`<button type="button" class="tdit 
 function viewTudo(st){const s=ghSt(st),own=ofOwn(st),L=tdLook(st),en=arcEN();
  const ofs=[['',arcT('Áo xanh gốc','Original top')]].concat(Object.keys(OUTFIT).filter(k=>own.has(k)).map(k=>[k,OUTFIT[k].n]));
  const accs=[['',arcT('Bỏ hết','Remove all')]].concat(Object.keys(GH_ACC).filter(k=>s.own.includes(k)).map(k=>{const it=(GH.find(c=>c.k==='acc')||{it:[]}).it.find(x=>x[0]===k);return[k,it?it[1]:k]}));
- const frs=[['',arcT('Không khung','None')]].concat(['wood','silver','gold','rainbow'].filter(k=>s.own.includes(k)).map(k=>[k,(GH.find(c=>c.k==='frame').it.find(x=>x[0]===k)||[k,k])[1]]));
+ const frs=[['',arcT('Không khung','None')]].concat(GH.find(c=>c.k==='frame').it.map(x=>x[0]).filter(k=>s.own.includes(k)).map(k=>[k,(GH.find(c=>c.k==='frame').it.find(x=>x[0]===k)||[k,k])[1]]));
  const sec=(title,list,make,emptyCat)=>`<div class="tdsec"><h3 class="ghgh">${title}</h3><div class="tdgrid">${list.map(make).join('')}</div>${list.length<=1?`<p class="tdempty">${arcT('Em chưa có món nào ở mục này.','Nothing here yet.')}</p>`:''}</div>`;
  const C={of:[arcT('Áo váy','Outfits'),ofs,L.of?spr(ofVariant('jenny',L.of),40):spr('jenny',40),([k,n])=>tdCard(L.of===k,spr(k?ofVariant('jenny',k):'jenny',54),n,`tdSet('of','${k}')`),L.of?OUTFIT[L.of].n:arcT('Áo xanh gốc','Original top')],
   acc:[arcT('Mũ & kính','Hats & glasses'),accs,L.accs.length?`<span class="tdaccs">${L.accs.map(k=>spr(GH_ACC[k][0],L.accs.length>1?18:26)).join('')}</span>`:`<span class="tdnone">∅</span>`,([k,n])=>tdCard(k?L.accs.includes(k):!L.accs.length,k?spr(GH_ACC[k][0],28):`<span class="tdnone">∅</span>`,n,`tdSet('acc','${k}')`,k?ACC_SN[ACC_SLOT[k]||'head']():''),L.accs.length?L.accs.map(k=>(accs.find(a=>a[0]===k)||['',k])[1]).join(' + '):arcT('Không đội mũ','No hat')],
@@ -10564,7 +10564,7 @@ ghLook=function(st){const s=ghSt(st),T=scr.ghTry||{},cur=accsOf(s);return{of:'of
  return r.replace('<span class="jbody">',`<span class="jbody">${accImgs(list,u,'jsacc')}`)}catch(e){return _j.apply(this,arguments)}}}
 {const _v=viewHome1t;viewHome1t=function(){if(scr.tab!=='tudo')return _v.apply(this,arguments);scr.tab='nha';let r;try{r=_v.apply(this,arguments)}finally{scr.tab='tudo'}const i=r.indexOf('<nav class="bnav"');return viewTudo(S.st[sid])+(i>=0?r.slice(i):'')}}
 /* Nhà em: khung "Tủ đồ" ngay dưới 3 ô */
-{const _n=viewNha;viewNha=function(st){const r=_n.apply(this,arguments);try{const L=tdLook(st),s=ghSt(st),n=ofOwn(st).size+Object.keys(GH_ACC).filter(k=>s.own.includes(k)).length+['wood','silver','gold','rainbow'].filter(k=>s.own.includes(k)).length;
+{const _n=viewNha;viewNha=function(st){const r=_n.apply(this,arguments);try{const L=tdLook(st),s=ghSt(st),n=ofOwn(st).size+Object.keys(GH_ACC).filter(k=>s.own.includes(k)).length+GH.find(c=>c.k==='frame').it.map(x=>x[0]).filter(k=>s.own.includes(k)).length;
   const box=`<section class="card tdhome"><div class="tdhrow">${ghJenny(84,L)}<div class="grow"><h2>${spr('jenny',22)} ${arcT('Tủ đồ','Wardrobe')}</h2><small>${arcT(`Em có ${n} món đồ. Phối đồ cho Jenny nhé!`,`You own ${n} items. Dress up Jenny!`)}</small></div></div><div class="archbtn"><button type="button" class="btn sm" onclick="go({k:'home',tab:'tudo'})">${arcT('Phối đồ','Dress up')} ▸</button></div></section>`;
   const i=r.indexOf('<section class="card archome">');return i<0?r:r.slice(0,i)+box+r.slice(i)}catch(e){return r}}}
 Object.assign(I18N,{'Tủ đồ':'Wardrobe','Phối đồ':'Dress up'});
@@ -11690,6 +11690,45 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gensm .genpic{height:56px}.gensm .genpic img{height:52px!important;width:auto!important}.gensm .genb{flex-direction:row;justify-content:center;padding:8px}
 .ghpic img,.tdpic img,.tdcic img{max-width:80px!important;height:auto!important}.tdaccs img{max-width:28px!important;height:auto!important}.tdsub h2 img{max-width:44px!important;height:auto!important}
 .genbox .genq{margin:6px 0 0;color:#1F2A5A}
+</style>`);
+/* 68 — Thêm mặt hàng Cửa hàng (thầy yêu cầu 24/10/2026). Giá trong bảng đã duyệt:
+   Áo 120–400 · Mũ kính 60–250 · Khung 60–300 · Đảo nhà 40–140. Đồ riêng bạn nữ/nam ghi ở GH_GEN. */
+Object.assign(OUTFIT,{
+ s_mint:{n:'Áo Bạc hà',m:{g:'x',G:'b',y:'w'}},
+ s_choco:{n:'Áo Sô-cô-la',m:{g:'n',G:'N',y:'t',o:'N'}},
+ s_berry:{n:'Váy Dâu tây',m:{g:'r',G:'R',y:'g',o:'r'}},
+ s_lav:{n:'Váy Oải hương',m:{g:'p',G:'P',y:'w',o:'p'}},
+ s_pirate:{n:'Áo Cướp biển',m:{g:'w',G:'B',y:'r',o:'N'}},
+ s_doctor:{n:'Áo Bác sĩ nhí',m:{g:'w',G:'e',y:'r',o:'b'}}});
+Object.assign(PXS,{
+ catS:["e............e","ee..........ee","ece........ece","ecce......ecce","eeeeeeeeeeeeee"],
+ pirS:["....kkkkkk....","..kkkkkkkkkk..",".kkkkkwwkkkkk.",".kkkkwkkwkkkk.","kkkkkkwwkkkkkk","yyyyyyyyyyyyyy"],
+ chefS:["..wwwwwwww..",".wwwwwwwwww.","wwwwwwwwwwww",".wwwwwwwwww.","..eeeeeeee..","..eeeeeeee.."],
+ scarfS:["rrrrrrrrrr","RrrrrrrrrR","...rR.....","...rR.....","...R......"],
+ maskS:["kkkkkkkkkkkkkk","kBBBBBBBBBBBBk","kBwwBBBBBBwwBk","kBBBBkkkkBBBBk",".kkkk....kkkk."],
+ starclS:["..y..","yyyyy",".yay.","y...y"],
+ sunfl:["..yyyy..",".yyaayy.","yyaNNayy","yyaNNayy",".yyaayy.","..yyyy..","...gg...",".g.gg.g.","..ggggg.","...gg...","...gg..."],
+ chestD:PXS.climbChest,
+ campf:["....r.....","...rr..r..","..rror.rr.","..royorrr.",".rroyyorr.",".royyyyor.","NnNnNNnNnN","nNnNnnNnNn"]});
+Object.assign(GH_ACC,{cat:['catS',1,-3],pirate:['pirS',1,-3],chef:['chefS',2,-4],scarf:['scarfS',3,11],mask:['maskS',1,5],starcl:['starclS',11,-1]});
+Object.assign(ACC_SLOT,{cat:'head',pirate:'head',chef:'head',scarf:'neck',mask:'face',starcl:'hair'});
+['jenny','jennyBlink','jennyHappy','jennySad','jennyCheer','boy','boyBlink','boyHappy','boySad','boyCheer'].forEach(n=>['s_mint','s_choco','s_berry','s_lav','s_pirate','s_doctor'].forEach(o=>ofVariant(n,o)));
+{const C=k=>GH.find(c=>c.k===k);
+ C('of').it.push(['s_mint','Áo Bạc hà',130],['s_choco','Áo Sô-cô-la',160],['s_berry','Váy Dâu tây',180],['s_lav','Váy Oải hương',200],['s_pirate','Áo Cướp biển',220],['s_doctor','Áo Bác sĩ nhí',260]);
+ C('acc').it.push(['starcl','Kẹp ngôi sao',60],['scarf','Khăn quàng đỏ',70],['cat','Bờm tai mèo',90],['mask','Mặt nạ siêu nhân',120],['chef','Mũ đầu bếp',140],['pirate','Mũ cướp biển',160]);
+ C('frame').it.push(['flower','Khung Hoa',150],['candy','Khung Kẹo ngọt',180],['night','Khung Đêm sao',250]);
+ C('dec').it.push(['sunfl','Hoa hướng dương',40],['campf','Lửa trại',60],['chestD','Rương kho báu',100]);}
+Object.assign(GH_GEN,{s_berry:'nu',s_lav:'nu',cat:'nu',starcl:'nu',s_pirate:'nam',pirate:'nam'});
+Object.assign(IS2_POS,{sunfl:[100,232,44],campf:[128,350,40],chestD:[520,346,40]});
+Object.assign(I18N,{'Áo Bạc hà':'Mint top','Áo Sô-cô-la':'Chocolate top','Váy Dâu tây':'Strawberry dress','Váy Oải hương':'Lavender dress','Áo Cướp biển':'Pirate shirt','Áo Bác sĩ nhí':'Little doctor coat',
+ 'Kẹp ngôi sao':'Star clip','Khăn quàng đỏ':'Red scarf','Bờm tai mèo':'Cat-ear headband','Mặt nạ siêu nhân':'Hero mask','Mũ đầu bếp':'Chef hat','Mũ cướp biển':'Pirate hat',
+ 'Khung Hoa':'Flower frame','Khung Kẹo ngọt':'Candy frame','Khung Đêm sao':'Starry-night frame','Hoa hướng dương':'Sunflower','Lửa trại':'Campfire','Rương kho báu':'Treasure chest'});
+document.head.insertAdjacentHTML('beforeend',`<style>
+.ghj.fr-flower,.ghfr.fr-flower,.tdstage.fr-flower{box-shadow:inset 0 0 0 3px #F26249,inset 0 0 0 6px #FCD655,inset 0 0 0 9px #2AB563!important}
+.ghj.fr-candy,.ghfr.fr-candy,.tdstage.fr-candy{box-shadow:inset 0 0 0 3px #F04A1B,inset 0 0 0 6px #fff,inset 0 0 0 9px #F26249,inset 0 0 0 12px #fff!important}
+.ghj.fr-night,.ghfr.fr-night,.tdstage.fr-night{box-shadow:inset 0 0 0 3px #FCD655,inset 0 0 0 9px #1F2A5A,inset 0 0 0 11px #8656A8!important}
+.ghfr.fr-candy,.ghfr.fr-night{padding:13px!important}.tdstage.fr-candy,.tdstage.fr-night{padding:20px}
+.herojav.fr-flower .jav.jav{box-shadow:0 0 0 3px #FCD655,0 0 0 6px #F26249!important}.herojav.fr-candy .jav.jav{box-shadow:0 0 0 2px #fff,0 0 0 4px #F04A1B,0 0 0 6px #fff,0 0 0 8px #F04A1B!important}.herojav.fr-night .jav.jav{box-shadow:0 0 0 3px #FCD655,0 0 0 7px #1F2A5A!important}
 </style>`);
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
