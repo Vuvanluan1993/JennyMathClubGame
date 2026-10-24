@@ -14,6 +14,13 @@ body.px input[type=checkbox]:checked::before{content:"";width:9px;height:5px;bor
 body.px input[type=checkbox]:focus-visible{outline:2px solid #FFBD47;outline-offset:2px}
 body.px .muted{color:#A7B6C8}
 body.px .pgtag{background:#3B4A8C}
+body.px .gdbox input:not([type=checkbox]):not([type=radio]):not([type=range]),body.px .gdbox select,body.px .gdbox textarea{background:#fff;color:#13263a}
+body.px .gdbox .btn:not(.pri):not(.ghost):not(.on){background:#fff;color:#13263a}
+body.px .gdbox input[type=checkbox]{background:#fff!important;box-shadow:inset 0 0 0 2px #1F2A5A!important}
+body.px .gdbox input[type=checkbox]:checked{background:#0079C1!important;box-shadow:inset 0 0 0 2px #0079C1!important}
+body.px .gdbox input[type=checkbox]:checked::before{border-color:#fff}
+body.px .gdbox .muted{color:#566779}
+body.px .gdbox input::placeholder{color:#7A8799}
 body.px .qlok{color:#6EDC9A}body.px .qlw{color:#FFB070}`;
 const sc=pre=>R.replace(/(^|\})\s*([^{}]+)\{/g,(m,a,sel)=>a+'\n'+sel.split(',').map(x=>pre+x.trim()).join(',')+'{');
 document.head.insertAdjacentHTML('beforeend',`<style>@media (prefers-color-scheme: dark){${sc(':root:not([data-theme="light"]) ')}}${sc(':root[data-theme="dark"] ')}</style>`);

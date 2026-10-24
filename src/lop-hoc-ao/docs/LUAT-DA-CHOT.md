@@ -140,6 +140,11 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Khung "Thêm học sinh vào lớp" chỉ **gợi ý 5 em chưa xếp lớp**; muốn em khác thì gõ tên để tìm (tối đa 15 kết quả). Bỏ nút "Xếp lớp" ở trang Học sinh (trùng với ô chọn lớp).
 - Danh sách ở trang Quản lý dùng hàng thẳng cột; trên điện thoại mỗi em là 1 thẻ gọn (tên + Sửa, dưới là ô lớp, phụ huynh).
 - **Chế độ tối** (24/10/2026): mọi nút, ô nhập, ô chọn, ô tích phải tách rõ khỏi nền (file `74-che-do-toi.js`); kiểm tra bằng đo tương phản tự động trước khi đăng.
+- **Nhập danh sách từ Excel** (24/10/2026, Quản lý › Học sinh › ⬆ Nhập từ Excel): tải file mẫu .xlsx (Họ và đệm, Tên, Giới tính, Ngày sinh, Lớp, Họ tên PH, ĐT PH, Gmail PH, Tên đăng nhập tuỳ chọn); nhận cả .csv. Xem trước từng dòng: + Tạo mới / ↻ Cập nhật / ✕ lỗi (thiếu họ/tên/giới tính, ngày sinh sai, SĐT/Gmail sai, lớp chưa tạo, trùng trong file, trùng tên nhiều em, khác khối). Dòng lỗi bị bỏ qua.
+- Nhập lại file đã sửa: em đã có (cùng tên đăng nhập, hoặc cùng họ tên + ngày sinh) được cập nhật, không tạo trùng.
+- Gom phụ huynh: các em cùng SĐT hoặc cùng Gmail phụ huynh → 1 tài khoản phụ huynh (tên đăng nhập `ph` + 6 số cuối SĐT); trùng với phụ huynh đã có thì gắn thêm con. Mật khẩu ban đầu học sinh và phụ huynh: jenny123.
+- **In phiếu đăng nhập** đen trắng, 8 phiếu/A4, xếp theo lớp: sau khi nhập, ở trang một Lớp (in cả lớp), khi chọn nhiều em, và ở trang Phụ huynh. Mật khẩu chỉ in được khi vừa tạo trong phiên; còn lại để dòng chấm cho thầy cô ghi tay.
+- ⬇ Tải danh sách: xuất toàn bộ học sinh ra .xlsx đúng mẫu, sửa xong nhập lại được.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.

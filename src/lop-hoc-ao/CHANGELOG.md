@@ -28,6 +28,7 @@
 - File mới: `js/core/72-tu-luyen.js`.
 
 ## 2026-10-24
+- Quản lý: Nhập danh sách từ Excel/CSV (file mẫu, xem trước, báo lỗi từng dòng, cập nhật không trùng, gom anh chị em chung phụ huynh), Tải danh sách .xlsx, In phiếu đăng nhập học sinh/phụ huynh (đen trắng, 8 phiếu/A4). Bảng nhập luôn nền sáng ở chế độ tối.
 - Chế độ tối: nút phụ nền sáng hơn, ô nhập/ô chọn nền tối riêng, ô tích viền sáng, nút bị khoá rõ chữ, khung pixel sáng hơn; nhãn mờ ở Sức mạnh Toán đậm hơn. Quản lý: "+ Tạo tài khoản học sinh" thành nút như các nút khác.
 - Quản lý: Thêm học sinh vào lớp chỉ gợi ý 5 em chưa xếp lớp, gõ tên để tìm thêm; bỏ nút Xếp lớp ở trang Học sinh; sửa lệch khung mọi danh sách (máy tính, điện thoại 320–414px, chế độ tối).
 - Quản lý: xếp lớp ngay ở trang Học sinh (ô chọn lớp từng em) và ngay trong trang Lớp (khung Thêm học sinh vào lớp: tìm, tích chọn, Đưa vào lớp).
