@@ -22,7 +22,8 @@ const okDt=d=>!d||/^(\+?84|0)\d{8,10}$/.test(d),okMail=m=>!m||/^[^\s@]+@[^\s@]+\
 /* ---------- Thêm học sinh ---------- */
 window.qlMoHS=function(){const L=LOPS();if(!L.length){toast('Chưa có lớp. Thêm lớp trước.');return}
  modal('Thêm học sinh',`<div class="qs2"><label>Họ và đệm<input id="mHo" maxlength="30" placeholder="Nguyễn Minh" required></label><label>Tên<input id="mTen" maxlength="12" placeholder="An" required></label></div>
- <div class="qs3"><label>Giới tính${gtSel('mGt','')}</label><label>Ngày sinh${nsSel()}</label><label>Năm sinh<input id="mNam" type="number" min="2010" max="2025" placeholder="2019"></label></div>
+ <div class="qs2"><label>Giới tính${gtSel('mGt','')}</label><label>Năm sinh<input id="mNam" type="number" min="2010" max="2025" placeholder="2019"></label></div>
+ <label>Ngày sinh (ngày, tháng)${nsSel()}</label>
  <label>Lớp<select id="mLop">${L.map(l=>`<option value="${l.id}">Lớp ${esc(l.ten)} (khối ${l.khoi})</option>`).join('')}</select></label>
  <div class="qs2"><label>Điện thoại phụ huynh<input id="mDt" type="tel" maxlength="15" placeholder="0912345678"></label><label>Gmail phụ huynh<input id="mMail" type="email" maxlength="60" placeholder="ten@gmail.com"></label></div>
  ${cloud()?`<div class="qs2"><label>Tên đăng nhập <small>(bỏ trống = tự tạo)</small><input id="mTk" maxlength="24" autocapitalize="off" spellcheck="false"></label><label>Mật khẩu<input id="mPw" value="jenny123" maxlength="30"></label></div>`:''}`,'qlLuuHS()','Tạo tài khoản')};
@@ -39,7 +40,8 @@ window.qlLuuHS=async function(){const ho=v('mHo').replace(/\s+/g,' '),ten=v('mTe
  qlDong();render()};
 /* ---------- Thêm giáo viên ---------- */
 window.qlMoGV=function(){modal('Thêm giáo viên',`<label>Họ và tên<input id="mGvTen" maxlength="30" placeholder="Cô Nguyễn Thu Lan" required></label>
- <div class="qs3"><label>Giới tính${gtSel('mGvGt','')}</label><label>Điện thoại<input id="mGvDt" type="tel" maxlength="15"></label><label>Gmail<input id="mGvMail" type="email" maxlength="60"></label></div>
+ <div class="qs2"><label>Giới tính${gtSel('mGvGt','')}</label><label>Điện thoại<input id="mGvDt" type="tel" maxlength="15" placeholder="0912345678"></label></div>
+ <label>Gmail<input id="mGvMail" type="email" maxlength="60" placeholder="ten@gmail.com"></label>
  ${cloud()?`<div class="qs2"><label>Tên đăng nhập<input id="mGvTk" maxlength="24" autocapitalize="off" spellcheck="false" required></label><label>Mật khẩu<input id="mGvPw" maxlength="30" required></label></div>`:''}`,'qlLuuGV()','Thêm giáo viên')};
 window.qlLuuGV=async function(){const n=v('mGvTen').replace(/\s+/g,' '),dt=v('mGvDt').replace(/[^\d+]/g,''),mail=v('mGvMail').toLowerCase();
  if(n.length<3){toast('Nhập tên giáo viên');return}if(!okDt(dt)){toast('Số điện thoại chưa đúng');return}if(!okMail(mail)){toast('Gmail chưa đúng');return}
@@ -96,6 +98,7 @@ function phCard(){const ds=phDs(),info=O().phInfo||{},tks=Object.keys(ds).sort()
 document.head.insertAdjacentHTML('beforeend',`<style>
 form[onsubmit="qlTaoHS(event)"],form[onsubmit="qlTaoGV(event)"],form[onsubmit="qlTaoLop(event)"],form[onsubmit="qlTaoPH(event)"]{display:none!important}
 .qlhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.qlhead h2{margin:0}
+.qsform label{min-width:0}.qsform input,.qsform select{width:100%;box-sizing:border-box;min-width:0}.qs2,.qs3{grid-template-columns:repeat(var(--c,2),minmax(0,1fr))!important}.qs3{--c:3}
 .qlmbox{max-width:520px;max-height:92vh;overflow:auto}.qlck{display:flex;flex-direction:column;gap:2px;max-height:300px;overflow:auto;padding:6px;box-shadow:var(--f2);background:#fff}
 .qlckr{flex-direction:row!important;align-items:center;gap:8px!important;font-weight:400!important;font-size:14px!important;padding:4px 2px}.qlckr input{box-shadow:none!important;padding:0!important;width:18px;height:18px}.qlckr small{color:#3D4A70;font-weight:400}
 .qlbo{padding:2px 8px!important;font-size:12px!important;margin-top:4px}.qlphcard{margin:0 0 16px}

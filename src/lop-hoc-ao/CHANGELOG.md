@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Sửa lệch ô trong bảng nhập Quản lý
+- Các bảng Thêm giáo viên, Thêm học sinh, Sửa tài khoản: ô không còn tràn ra ngoài khung; xếp 2 cột đều (Giới tính · Điện thoại/Năm sinh), Gmail và Ngày sinh (ngày, tháng) một hàng riêng.
+
 ## 24/10/2026 — Quản lý: nút + bảng nhập; xếp lớp; 1 phụ huynh nhiều con
 - Bỏ các ô nhập dài trên trang Quản lý; thay bằng nút **+ Thêm lớp**, **+ Thêm học sinh**, **+ Thêm giáo viên**, **⇄ Xếp lớp**, **👪 Tài khoản phụ huynh**. Bấm nút → bảng nhập.
 - Thêm học sinh: Họ và đệm, Tên, Giới tính (bắt buộc — để chọn nhân vật), Ngày/Tháng/Năm sinh, Lớp, Điện thoại & Gmail phụ huynh (+ tên đăng nhập, mật khẩu khi có máy chủ).
