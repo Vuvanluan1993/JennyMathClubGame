@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Bỏ ô "Tên của em" khi đăng nhập; quản lý sửa thông tin học sinh
+- Trang đăng nhập học sinh chỉ còn Tên đăng nhập + Mật khẩu. Tên hiển thị do quản lý nhập.
+- Quản lý › Học sinh: mỗi em có nút **✎ Sửa**: Họ tên, Khối, Nhân vật (nữ/nam/em tự chọn), Xu, Kích hoạt Toán Jenny, **Làm lại tiến độ** (bấm 2 lần mới xoá). Đổi khối thì em ra khỏi lớp khác khối. Mọi thay đổi ghi Nhật ký thao tác.
+- Bản có máy chủ: lưu cả lên máy chủ (hồ sơ học sinh, tên trong tài khoản); máy chủ từ chối thì báo lỗi.
+
 ## 24/10/2026 — Thú cưng mới, các giai đoạn lớn lên
 - Thêm **Ếch xanh** 180 xu (60–80 ngày, đẻ trứng), **Mèo con** 280 xu (110–150 ngày), **Cún con** 300 xu (120–160 ngày). Mèo, Cún không đẻ trứng.
 - Mọi loài có **4 hình theo giai đoạn**: Bé → Lớn dần → Trưởng thành → Già. Gà: gà con → gà choai → gà mái; Ếch: nòng nọc → ếch con còn đuôi → ếch lớn; Rùa: mai lớn dần; Mèo, Cún: con nhỏ → lớn. Già: màu nhạt, lông mày bạc.

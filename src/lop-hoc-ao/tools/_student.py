@@ -34,7 +34,7 @@ function bootUser(u,name){const a=ACC[u];STUDENTS=[[u,name||(u.charAt(0).toUpper
   if(name&&name.trim())S.st[u].name=name.trim();STUDENTS[0][1]=S.st[u].name;S.day=dayNow();S.open=Object.assign({j1:true,j2:true,jg1b1:true,jg1b2:true},S.open||{});save();
   document.getElementById('login').hidden=true;document.body.classList.remove('locked');go({k:'home'})}
 function logoutHS(){if(CLOUD){try{speechSynthesis.cancel()}catch(e){}fbDangXuat();return}try{save();speechSynthesis.cancel()}catch(e){}try{localStorage.removeItem('jennyHS_last')}catch(e){}location.reload()}
-async function doLogin(e){e.preventDefault();const u=document.getElementById('lgU').value.trim().toLowerCase(),p=document.getElementById('lgP').value,n=document.getElementById('lgN').value,msg=document.getElementById('lgMsg');
+async function doLogin(e){e.preventDefault();const u=document.getElementById('lgU').value.trim().toLowerCase(),p=document.getElementById('lgP').value,n='',msg=document.getElementById('lgMsg');
   const nho=document.getElementById('lgR').checked;
   if(!(ACC[u]&&!navigator.onLine)){msg.textContent='Đang đăng nhập…';try{await fbDangNhap(u,p,nho);
     if(CLOUD.me.role!=='hs'){msg.textContent='Đây là tài khoản '+(CLOUD.me.role==='ph'?'phụ huynh':'giáo viên')+'. Hãy vào trang giáo viên & phụ huynh.';try{await FB.auth.signOut()}catch(x){}CLOUD=null;return}
@@ -61,7 +61,6 @@ overlay='''<div id="login" class="login"><form id="lgForm" class="lgcard" autoco
  <div class="lghead"><span class="lgjen"></span><div><h1>Lớp học ảo Jenny</h1><p>Clb Học Toán cùng Jenny</p></div></div>
  <label for="lgU">Tên đăng nhập</label><input id="lgU" name="u" placeholder="Ví dụ: Jenny01" autocapitalize="off" spellcheck="false" required>
  <label for="lgP">Mật khẩu</label><input id="lgP" name="p" type="password" required>
- <label for="lgN">Tên của em <small>(lần đầu đăng nhập, có thể bỏ trống)</small></label><input id="lgN" name="n" placeholder="Ví dụ: Lê Bảo Na" maxlength="40">
  <label class="lgrem"><input id="lgR" type="checkbox"> Ghi nhớ trên máy này (máy ở nhà)</label>
  <button class="gobtn" type="submit">Vào học</button><p id="lgMsg" class="lgmsg" role="alert"></p>
  <p class="lgnote">Dùng tài khoản trung tâm cấp: tiến độ lưu trên máy chủ, cô giáo và bố mẹ xem được. Ở phòng máy, em nhớ bấm <b>Đăng xuất</b> khi học xong.</p></form></div>

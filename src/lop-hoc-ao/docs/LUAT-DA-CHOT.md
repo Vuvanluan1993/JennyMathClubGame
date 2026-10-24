@@ -120,6 +120,10 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Bấm logo Clb ở thanh trên → về trang chủ (mọi trang) (24/10/2026).
 - **Tự luyện = Vở bài tập Jenny (chốt 24/10/2026):** mỗi đảo đã qua mở 1 trang vở 4–5 bài trộn dạng (số mới mỗi lần) + 1 bài ★ Thử thách cuối trang; em tự chọn, không bắt buộc. Cô **không giao**, chỉ ⭐ gợi ý trang và xem kết quả. Xu lấy từ quỹ tự luyện (150 xu/ngày); sai vào Sổ lỗi sai; không tính sao, không mở đảo. VBT tham khảo (Chân trời sáng tạo) chỉ là nguồn **dạng bài**, ghép theo kiến thức với KNTT, không chép chữ/số/hình. Bảng dạng bài: `docs/tu-luyen-dang-bai-lop1-tap1.md`. Làm thử lớp 1 trước (10 trang), rồi lớp 2. Chờ thầy duyệt ảnh mẫu.
 
+## 6i. Đăng nhập và sửa thông tin học sinh (24/10/2026)
+- Học sinh đăng nhập chỉ bằng tên đăng nhập + mật khẩu, không tự nhập tên.
+- Quản lý sửa được: họ tên, khối, nhân vật, xu, kích hoạt Toán Jenny, làm lại tiến độ (Quản lý › Học sinh › ✎ Sửa); có ghi Nhật ký.
+
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
 - `node tools/test/kien-thuc-tro-choi.js` — trò không vượt kiến thức.
