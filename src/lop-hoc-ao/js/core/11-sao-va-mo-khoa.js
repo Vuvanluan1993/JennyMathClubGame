@@ -4,5 +4,5 @@ const p2Stars=st=>(st.grade<=5?P2_1.filter(x=>x.grade===st.grade):P2).reduce((a,
 const totalStars=st=>p1Stars(st)+p2Stars(st);
 const islandOpen=(st,k)=>st.grade<=5?open1(st,k):totalStars(st)>=NEED(k);
 const curIsland=st=>{const P=L1(st);for(let k=0;k<P.length;k++){if(islandOpen(st,k)&&st.p1[P[k].id].m.some(v=>!v))return k}return -1};
-function addCoins(id,n,kind){const st=S.st[id];if(kind==='self'){const used=st.selfCoins[S.day]||0;n=Math.max(0,Math.min(n,SELF_CAP-used));st.selfCoins[S.day]=used+n}st.coins+=n;return n}
+function addCoins(id,n,kind){const st=S.st[id];if(kind==='self'){st.selfCoins=st.selfCoins||{};st.selfCoins[S.day]=(st.selfCoins[S.day]||0)+n}st.coins+=n;return n}
 

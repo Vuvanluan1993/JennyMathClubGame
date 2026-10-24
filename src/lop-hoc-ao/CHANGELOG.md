@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Bỏ giới hạn xu trong ngày
+- Thầy chốt: không giới hạn số xu em kiếm được trong ngày. Bỏ giới hạn 150 xu/ngày (câu đúng trong màn, Tự luyện) và 100 xu/ngày (trò chơi). Bỏ các dòng "đã đủ xu hôm nay".
+- Giữ nguyên: xu mỗi ván trò chơi theo luật từng trò (tối đa 20 xu/ván), giới hạn lượt chơi (vé, Khủng long 10 ván/ngày), Thử thách hôm nay 1 lượt/ngày.
+- Vẫn ghi số xu theo ngày (`selfCoins`, `gameCoins`) để thống kê. Sửa ở `01`, `11`, `14`, `18`, `49`, `64`, `72`.
+
 ## 24/10/2026 — Tự luyện · Vở bài tập Jenny (lớp 1, 2)
 - Nhà em › Phòng học › **Tự luyện** đã dùng được (trước là "Sắp có"). Mỗi đảo qua Màn 1 mở 1 **trang vở**: 5 bài trộn dạng, số mới mỗi lần, + 1 bài **★ Thử thách**. Làm dở thoát ra vẫn giữ.
 - Mỗi bài: sai lần 1 được thử lại (không mất tim; ô sai tự xoá), sai lần 2 xem đáp án. Câu của đảo sai lần đầu vào Sổ lỗi sai. +5 xu/bài đúng, ★ +15 xu (quỹ tự luyện 150 xu/ngày). Không tính sao, không mở đảo.

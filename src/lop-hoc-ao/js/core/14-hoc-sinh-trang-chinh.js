@@ -40,7 +40,7 @@ function viewHS(){
   <aside class="grid" style="align-content:start">
     <section class="card"><h3>Mèo Mướp của em</h3>
       <div class="row" style="margin-top:10px;flex-wrap:nowrap"><span class="pet" aria-hidden="true">${petFace(st.energy)}</span><div style="flex:1;min-width:0"><div class="muted">Năng lượng ${st.energy}/100</div><div class="bar leaf"><i style="width:${st.energy}%"></i></div></div></div>
-      <p class="muted" style="margin:10px 0 6px">Xu tự luyện hôm nay: ${self}/${SELF_CAP}</p>
+      <p class="muted" style="margin:10px 0 6px">Xu tự luyện hôm nay: ${self}</p>
       <div class="row"><button class="btn sm" onclick="buy(20,25,'Cá khô')">Cá khô · 20 xu</button><button class="btn sm" onclick="buy(40,50,'Bát sữa')">Bát sữa · 40 xu</button></div>
       ${st.items.length?`<p class="muted" style="margin:10px 0 0">Đồ hiếm: ${st.items.map(esc).join(', ')}</p>`:''}</section>
     <section class="card"><h3>Huy hiệu</h3><div class="badges" style="margin-top:10px">${st.badges.length?st.badges.map(b=>`<span class="badge ${b.from==='cô'?'t':''}"><i>${b.from==='cô'?'♥':'✓'}</i>${esc(b.t)}</span>`).join(''):'<p class="muted" style="margin:0">Qua đủ 3 màn của một đảo để nhận huy hiệu đầu tiên.</p>'}</div></section>

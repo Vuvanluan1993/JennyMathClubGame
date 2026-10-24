@@ -2,7 +2,7 @@
    - Nhà em › Phòng học › Tự luyện. Mỗi đảo đã qua Màn 1 mở 1 "trang vở" (Trang n = thứ tự đảo trong lớp).
    - Trang = 5 bài trộn dạng (số mới mỗi lần) + 1 bài ★ Thử thách. Em tự chọn, không bắt buộc, làm dở thoát ra vẫn giữ.
    - Mỗi bài: sai lần 1 được thử lại (không mất tim), sai lần 2 xem đáp án. Câu của đảo sai lần đầu → Sổ lỗi sai.
-   - Xu: 5 xu/bài đúng, ★ đúng 15 xu, tính vào quỹ tự luyện (SELF_CAP/ngày). Không tính sao, không mở đảo.
+   - Xu: 5 xu/bài đúng, ★ đúng 15 xu, không giới hạn xu trong ngày (thầy chốt 24/10/2026). Không tính sao, không mở đảo.
    - Thử thách hôm nay: 1 lượt/ngày, +15 xu.
    - Dạng bài mới (kiểu 'cells', viết lại từ dạng bài của VBT tham khảo, không chép sách):
      Nhà số · Gia đình phép tính · Tháp số · Tam giác số. Xem docs/tu-luyen-dang-bai-lop1-tap1.md.
@@ -121,7 +121,7 @@ function tlSave(){const g=scr,st=S.st[sid];if(g.tlDay)return;const r=tlR(st)[g.i
  if(!ok&&first&&fromIsl){try{mist1Add(q);gdMistNote(q,{wa:gdShowAns(q,v),from:T('Tự luyện','Self-practice')})}catch(e){}}
  log(sid,'answered',`Tự luyện · ${x.title}`,0,{success:ok,duration:`PT${Math.round((Date.now()-g.t0)/1000)}S`});
  if(ok){g.ok++;if(g.res[g.j]===undefined)g.res[g.j]=true;const c=addCoins(sid,q.tt?TL_TT:TL_XU,'self');sfx('ok');
-  g.sheet={kind:'ok',msg:(c?`+${c} ${T('xu','coins')}`:T('(đã đủ xu tự luyện hôm nay)','(daily practice coins reached)'))};sayJ(pick(T('Giỏi quá!|Đúng rồi!|Tuyệt vời!','Brilliant!|Correct!|Well done!').split('|')))}
+  g.sheet={kind:'ok',msg:`+${c} ${T('xu','coins')}`};sayJ(pick(T('Giỏi quá!|Đúng rồi!|Tuyệt vời!','Brilliant!|Correct!|Well done!').split('|')))}
  else{g.tries++;sfx('bad');
   if(g.tries===1){if(q.type==='cells'){g.cbad=[];g.cv=g.cv.map((x,i)=>{if(Number(x)===q.a[i])return x;g.cbad.push(i);return''});g.cc=g.cbad[0]||0}
    g.sheet={kind:'tlretry'};sayJ(T('Chưa đúng rồi. Em thử lại nhé.','Not quite. Try again.'))}
@@ -186,7 +186,7 @@ function viewTL(st){const g=curG(),back=`<div class="crumb"><button class="btn s
  const secs=[...new Set(P.map(x=>x.ti||0))].sort((a,b)=>b-a).map(sec).join('');
  return`<div class="page pgpage vbt">${back}<section class="card"><h2 class="nhah">${spr('selfS',26)} ${T('Tự luyện','Self-practice')}</h2>
   <p class="vsub">${T('Vở bài tập Jenny · em tự chọn trang, làm khi em muốn. Mỗi lần làm là số mới.','Jenny’s workbook · pick a page and practise when you like. New numbers every time.')}</p>
-  <div class="vstat"><span class="pill acc">${T(`Xu tự luyện hôm nay ${self}/${SELF_CAP}`,`Practice coins today ${self}/${SELF_CAP}`)}</span><span class="pill ok">${T(`Đã làm ${tlDone(st)} trang`,`${tlDone(st)} pages done`)}</span></div>
+  <div class="vstat"><span class="pill acc">${T(`Xu tự luyện hôm nay: ${self}`,`Practice coins today: ${self}`)}</span><span class="pill ok">${T(`Đã làm ${tlDone(st)} trang`,`${tlDone(st)} pages done`)}</span></div>
   ${goiRows?`<div class="vsec">⭐ ${T('Cô gợi ý','Teacher suggests')}</div>${goiRows}`:''}
   ${dx?`<div class="vtt"><span class="vtrophy">${spr('star',30)}</span><div class="grow"><b>${T('Thử thách hôm nay','Today’s challenge')}</b><div style="font-size:13px">${tlDayOk(st)?T('Đã làm hôm nay · mai có thử thách mới','Done today · new one tomorrow'):T(`+${TL_TT} xu · còn 1 lượt`,`+${TL_TT} coins · 1 try left`)}</div></div><button class="btn sm ${tlDayOk(st)?'ghost':'pri'}" type="button" onclick="tlDayGo()">${tlDayOk(st)?'✓':T('Thử','Try')}</button></div>`:''}
   ${secs||`<p class="muted">${T('Em qua Màn 1 của đảo đầu tiên là mở được trang vở đầu tiên.','Pass Level 1 of your first island to open your first page.')}</p>`}

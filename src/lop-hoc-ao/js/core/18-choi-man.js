@@ -29,7 +29,7 @@ function submitQ(){
   const v=document.getElementById('ans').value.trim();if(v==='')return;
   const {part,id,qs,j}=scr,q=qs[j],ok=isCorrect(v,q),u=unit(part,id),sec=Math.round((Date.now()-scr.t0)/1000);scr.t0=Date.now();
   log(sid,'answered',u.title,0,{success:ok,duration:`PT${sec}S`});
-  let msg='';if(ok){scr.ok++;const g=part===1?addCoins(sid,5,'self'):addCoins(sid,10,'jenny');msg=g?`+${g} xu`:'(đã đủ xu tự luyện hôm nay)'}
+  let msg='';if(ok){scr.ok++;const g=part===1?addCoins(sid,5,'self'):addCoins(sid,10,'jenny');msg=g?`+${g} xu`:''}
   scr.res[j]=ok;scr.fb={ok,msg};save();render();setTimeout(()=>{const b=document.getElementById('nextBtn');b&&b.focus()},20);
 }
 function nextQ(){
