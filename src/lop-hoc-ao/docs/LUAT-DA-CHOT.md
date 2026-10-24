@@ -113,6 +113,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 
 - Sức mạnh Toán 6 trục: Số · Phép tính · Tư duy – Logic · Hình học · Đo lường · Thống kê. Bài lời văn tính vào trục nội dung của nó; tỉ lệ đúng bài lời văn hiện riêng (24/10/2026).
 - Điểm Logic = A 40% bài thuần logic + B 40% bài suy luận ở các mạch (tìm thành phần chưa biết, nhiều bước, so sánh kết quả, ước lượng, đúng/sai) + C 20% thói quen (đúng ngay lần đầu, không bấm bừa); thiếu phần nào thì chia lại trọng số; cần A + B ≥ 5 câu (24/10/2026).
+- Khủng long chạy miễn phí từ đầu: không mua, không tốn lượt; riêng 10 ván/ngày (24/10/2026).
 - Bấm logo Clb ở thanh trên → về trang chủ (mọi trang) (24/10/2026).
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)

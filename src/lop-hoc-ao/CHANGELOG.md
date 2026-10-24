@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Khủng long chạy miễn phí từ đầu
+- Em nào cũng có sẵn trò **Khủng long chạy** ở Cửa hàng › Trò chơi và Nhà em, không cần mua (trước đây 150 xu), không tốn lượt chơi.
+- Giới hạn riêng 10 ván/ngày, không trừ vào 10 lượt/ngày của Bowling, Đẩy thùng. Cúp và đồ hiếm (Khăn khủng long) vẫn như cũ.
+- File mới: `js/core/66-dino-mien-phi.js`.
+
 ## 24/10/2026 — Giọng đọc: dùng Gemini TTS miễn phí (không cần thẻ)
 - Thầy không gắn thanh toán Google Cloud. `tools/giong/tao-giong.py` thêm nguồn **Gemini TTS** (khóa AI Studio `GEMINI_API_KEY`), giọng Despina; tự thử các tên mô hình TTS, đổi âm thanh sang mp3 bằng ffmpeg.
 - Gói miễn phí: nghỉ 7 giây giữa các câu, lỗi 429 thì chờ rồi thử lại, hết lượt trong ngày thì lưu phần đã thu và dừng. Bước lưu vào repo chạy cả khi bước thu dừng giữa chừng.
