@@ -131,6 +131,9 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **1 tài khoản phụ huynh – nhiều con** (anh chị em cùng bố mẹ).
 - **Tạo học sinh không chọn lớp** (24/10/2026). Em mới ở trạng thái "Chưa xếp lớp" (khối —). Xếp vào lớp nào thì khối theo lớp đó.
 - **Chưa xếp lớp thì chưa đăng nhập được** app học sinh: báo "Tài khoản của em chưa được xếp lớp. Em nhờ cô giáo nhé!"
+- **Trang chính Quản lý = 4 nút lớn** (24/10/2026): 🎒 Học sinh · 👪 Phụ huynh · 👩‍🏫 Giáo viên · 🏫 Lớp, mỗi nút có số và cảnh báo (em chưa xếp lớp, em chưa có phụ huynh, giáo viên chưa có lớp, lớp chưa có giáo viên); thêm 2 nút nhỏ Nhật ký thao tác, Năm học · Lên lớp. Mỗi nút mở trang con có "← Quản lý".
+- Trang Học sinh: lọc khối, lớp (có "Chưa xếp lớp"), tìm tên/tên đăng nhập/SĐT phụ huynh; chọn nhiều em để chuyển lớp hoặc bỏ khỏi lớp; 20 em một trang.
+- Trang một lớp: thêm học sinh vào lớp, phân công giáo viên, gói Toán Jenny, danh sách lớp (Sửa, Bỏ khỏi lớp, "Toán Jenny riêng" khi lớp chưa có gói).
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.

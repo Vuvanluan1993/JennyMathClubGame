@@ -16,6 +16,7 @@
 - File mới: `js/core/72-tu-luyen.js`.
 
 ## 2026-10-24
+- Quản lý: trang chính 4 nút lớn (Học sinh, Phụ huynh, Giáo viên, Lớp) + trang con, Nhật ký, Năm học (sắp có lên lớp). Trang Học sinh có lọc, tìm, chọn nhiều em, phân trang; trang Lớp có thêm học sinh, phân công GV, gói Toán Jenny.
 - Quản lý: bỏ ô Lớp khi tạo học sinh; em mới "Chưa xếp lớp", xếp lớp nào thì khối theo lớp đó; chưa xếp lớp thì chưa đăng nhập được.
 - Đảo nhà: bỏ khung tiền "🪙 n Cửa hàng ▸" ở thanh trên.
 
