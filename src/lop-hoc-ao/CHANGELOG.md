@@ -1,5 +1,15 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Tự luyện · Vở bài tập Jenny (lớp 1, 2)
+- Nhà em › Phòng học › **Tự luyện** đã dùng được (trước là "Sắp có"). Mỗi đảo qua Màn 1 mở 1 **trang vở**: 5 bài trộn dạng, số mới mỗi lần, + 1 bài **★ Thử thách**. Làm dở thoát ra vẫn giữ.
+- Mỗi bài: sai lần 1 được thử lại (không mất tim; ô sai tự xoá), sai lần 2 xem đáp án. Câu của đảo sai lần đầu vào Sổ lỗi sai. +5 xu/bài đúng, ★ +15 xu (quỹ tự luyện 150 xu/ngày). Không tính sao, không mở đảo.
+- **Thử thách hôm nay**: 1 lượt/ngày, +15 xu.
+- 4 dạng bài mới (kiểu ô điền số, bàn phím số): **Nhà số**, **Gia đình phép tính** (sơ đồ tách–gộp → 2 phép cộng, 2 phép trừ), **Tháp số**, **Tam giác số**. Gắn theo bài KNTT: lớp 1 bài 5–6, 10–13, 18, 20, 29–33, 38–39; lớp 2 bài 3, 5–14, 19–24, 33, 69. Trang khác: ★ là câu mức trùm của đảo.
+- Trang giáo viên (trang lớp, lớp 1–2): khung **Tự luyện** — cô ⭐ gợi ý trang (không giao, không bắt buộc), bảng từng em: số trang 7 ngày, tổng trang, % đúng, số ★. Gợi ý lưu trong `S.asg` (`loai:'goiy'`, không lẫn vào Bài cô giao, đồng bộ máy chủ như bài cô giao).
+- Lớp 3–5: ô Tự luyện vẫn "Sắp có".
+- Kiểm tra mới: `node tools/test/tu-luyen.js` (mọi trang lớp 1–2 đủ 5 bài + ★, đáp án dạng mới đúng luật, làm thử trọn 1 trang, Thử thách hôm nay, gợi ý của cô, không tràn 320px).
+- File mới: `js/core/72-tu-luyen.js`.
+
 ## 2026-10-24
 - Đảo nhà: bỏ khung tiền "🪙 n Cửa hàng ▸" ở thanh trên.
 

@@ -118,7 +118,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Điểm Logic = A 40% bài thuần logic + B 40% bài suy luận ở các mạch (tìm thành phần chưa biết, nhiều bước, so sánh kết quả, ước lượng, đúng/sai) + C 20% thói quen (đúng ngay lần đầu, không bấm bừa); thiếu phần nào thì chia lại trọng số; cần A + B ≥ 5 câu (24/10/2026).
 - Khủng long chạy miễn phí từ đầu: không mua, không tốn lượt; riêng 10 ván/ngày (24/10/2026).
 - Bấm logo Clb ở thanh trên → về trang chủ (mọi trang) (24/10/2026).
-- **Tự luyện = Vở bài tập Jenny (chốt 24/10/2026):** mỗi đảo đã qua mở 1 trang vở 4–5 bài trộn dạng (số mới mỗi lần) + 1 bài ★ Thử thách cuối trang; em tự chọn, không bắt buộc. Cô **không giao**, chỉ ⭐ gợi ý trang và xem kết quả. Xu lấy từ quỹ tự luyện (150 xu/ngày); sai vào Sổ lỗi sai; không tính sao, không mở đảo. VBT tham khảo (Chân trời sáng tạo) chỉ là nguồn **dạng bài**, ghép theo kiến thức với KNTT, không chép chữ/số/hình. Bảng dạng bài: `docs/tu-luyen-dang-bai-lop1-tap1.md`. Làm thử lớp 1 trước (10 trang), rồi lớp 2. Chờ thầy duyệt ảnh mẫu.
+- **Tự luyện = Vở bài tập Jenny (chốt 24/10/2026):** mỗi đảo đã qua mở 1 trang vở 4–5 bài trộn dạng (số mới mỗi lần) + 1 bài ★ Thử thách cuối trang; em tự chọn, không bắt buộc. Cô **không giao**, chỉ ⭐ gợi ý trang và xem kết quả. Xu lấy từ quỹ tự luyện (150 xu/ngày); sai vào Sổ lỗi sai; không tính sao, không mở đảo. VBT tham khảo (Chân trời sáng tạo) chỉ là nguồn **dạng bài**, ghép theo kiến thức với KNTT, không chép chữ/số/hình. Bảng dạng bài: `docs/tu-luyen-dang-bai-lop1-tap1.md`. Thầy duyệt ảnh mẫu 24/10: mỗi trang 5 bài + 1 ★, làm từng bài một; 5 xu/bài, ★ 15 xu, trong quỹ 150 xu/ngày; Thử thách hôm nay 1 lượt/ngày. Đã có lớp 1, 2.
 
 ## 6i. Đăng nhập và sửa thông tin học sinh (24/10/2026)
 - Học sinh đăng nhập chỉ bằng tên đăng nhập + mật khẩu, không tự nhập tên.
@@ -135,6 +135,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - `node tools/test/khung-hinh.js` — không lỗi khung hình.
 - `node tools/test/tieng-anh.js` — 0 chuỗi tiếng Việt sót khi bật EN.
 - `node tools/test/the-ghep-doi.js` — thẻ ghép đôi đúng giá trị.
+- `node tools/test/tu-luyen.js` — Tự luyện lớp 1–2 ĐẠT.
 
 ## 8. Video giới thiệu
 - Công cụ ở `tools/video/` (quay bằng Playwright + CDP screencast 2×, thu tiếng app qua Web Audio, bàn tay pixel chạm, ghép bằng ffmpeg). Xem `tools/video/README.md`.
