@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Rà lệch khung các bảng nhập Quản lý
+- Bỏ chữ phụ trong nhãn (đưa vào chữ mờ trong ô) để nhãn 1 dòng; ô trong cùng hàng canh đáy, cao bằng nhau (42px).
+- Rà tự động 6 bảng (Thêm HS, Thêm GV, Thêm lớp, Xếp lớp, Phụ huynh, Sửa tài khoản) × 4 khổ (320, 390, 600, 1100) × sáng/tối × có/không máy chủ: không ô nào lệch hay tràn.
+
 ## 24/10/2026 — Sửa lọc học sinh theo Khối ở trang Quản lý
 - Bấm Khối 1…5, chọn lớp, tìm tên, "Hiện thêm" trước không có tác dụng (biến lọc bị khoá trong hàm). Nay lọc đúng; bỏ chọn Phân công cũng hoạt động.
 

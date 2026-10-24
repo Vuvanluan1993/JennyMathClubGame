@@ -18,7 +18,7 @@ window.qlSua=function(id){const st=S.st[id];if(!st)return;const H=hoSo(id);const
    <label>Ngày sinh (ngày, tháng)<span class="qsns"><select id="qsNg" aria-label="Ngày"><option value="">Ngày</option>${Array.from({length:31},(_,i)=>`<option ${+H.ng===i+1?'selected':''}>${i+1}</option>`).join('')}</select><select id="qsTh" aria-label="Tháng"><option value="">Tháng</option>${Array.from({length:12},(_,i)=>`<option ${+H.th===i+1?'selected':''}>${i+1}</option>`).join('')}</select></span></label>
   <div class="qs2"><label>Điện thoại phụ huynh<input id="qsDt" type="tel" value="${esc(H.dt||'')}" placeholder="0912345678" maxlength="15"></label>
    <label>Gmail phụ huynh<input id="qsMail" type="email" value="${esc(H.mail||'')}" placeholder="tenphuhuynh@gmail.com" maxlength="60"></label></div>
-  <label>Mật khẩu mới <small>(để trống nếu không đổi)</small><input id="qsPw" type="text" minlength="6" maxlength="40" autocomplete="off" placeholder="${cloud()?'Ít nhất 6 kí tự':'Chỉ đổi được khi dùng máy chủ'}" ${cloud()?'':'disabled'}></label>
+  <label>Mật khẩu mới<input id="qsPw" type="text" minlength="6" maxlength="40" autocomplete="off" placeholder="${cloud()?'Để trống nếu không đổi':'Chỉ đổi được khi dùng máy chủ'}" ${cloud()?'':'disabled'}></label>
   <p class="muted" style="margin:0;font-size:12.5px">Chỉ sửa thông tin tài khoản và hồ sơ. Sao, xu, đồ, tiến độ của em giữ nguyên.</p>
   <div class="qsbtn"><span style="flex:1"></span><button class="btn pri" type="submit">Lưu</button></div>
  </form></div>`;document.body.appendChild(el);setTimeout(()=>{const i=document.getElementById('qsTen');if(i)i.focus()},30)};

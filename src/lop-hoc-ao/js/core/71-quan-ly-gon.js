@@ -26,7 +26,7 @@ window.qlMoHS=function(){const L=LOPS();if(!L.length){toast('Chưa có lớp. Th
  <label>Ngày sinh (ngày, tháng)${nsSel()}</label>
  <label>Lớp<select id="mLop">${L.map(l=>`<option value="${l.id}">Lớp ${esc(l.ten)} (khối ${l.khoi})</option>`).join('')}</select></label>
  <div class="qs2"><label>Điện thoại phụ huynh<input id="mDt" type="tel" maxlength="15" placeholder="0912345678"></label><label>Gmail phụ huynh<input id="mMail" type="email" maxlength="60" placeholder="ten@gmail.com"></label></div>
- ${cloud()?`<div class="qs2"><label>Tên đăng nhập <small>(bỏ trống = tự tạo)</small><input id="mTk" maxlength="24" autocapitalize="off" spellcheck="false"></label><label>Mật khẩu<input id="mPw" value="jenny123" maxlength="30"></label></div>`:''}`,'qlLuuHS()','Tạo tài khoản')};
+ ${cloud()?`<div class="qs2"><label>Tên đăng nhập<input id="mTk" maxlength="24" autocapitalize="off" spellcheck="false" placeholder="Bỏ trống = tự tạo"></label><label>Mật khẩu<input id="mPw" value="jenny123" maxlength="30"></label></div>`:''}`,'qlLuuHS()','Tạo tài khoản')};
 window.qlLuuHS=async function(){const ho=v('mHo').replace(/\s+/g,' '),ten=v('mTen').replace(/\s+/g,' '),n=(ho+' '+ten).trim();
  if(!ho||!ten){toast('Nhập họ và tên');return}const H={gt:v('mGt'),ng:v('mNg'),th:v('mTh'),nam:v('mNam'),dt:v('mDt').replace(/[^\d+]/g,''),mail:v('mMail').toLowerCase()};
  if(!H.gt){toast('Chọn giới tính (để chọn nhân vật cho em)');return}
@@ -66,7 +66,7 @@ window.qlMoPH=function(tk0){const ds=phDs(),tks=Object.keys(ds).sort(),info=O().
  const hs=[...STUDENTS].sort((a,b)=>a[1].localeCompare(b[1]));const cua=tk0?ds[tk0]||[]:[];
  qlDong();modal('Tài khoản phụ huynh',`<label>Phụ huynh<select id="mPhTk" onchange="qlMoPH(this.value)"><option value="">+ Tạo tài khoản phụ huynh mới</option>${tks.map(t=>`<option value="${t}" ${t===tk0?'selected':''}>${esc((info[t]||{}).ten||t)} (${t}) · ${ds[t].length} con</option>`).join('')}</select></label>
  ${tk0?'':`<div class="qs2"><label>Họ tên phụ huynh<input id="mPhTen" maxlength="40" placeholder="Nguyễn Văn Bình"></label><label>Điện thoại<input id="mPhDt" type="tel" maxlength="15"></label></div>
- <div class="qs2"><label>Tên đăng nhập<input id="mPhTk2" maxlength="24" autocapitalize="off" spellcheck="false" placeholder="ph.binh"></label><label>Mật khẩu${cloud()?'':' <small>(cần máy chủ)</small>'}<input id="mPhPw" maxlength="30" ${cloud()?'':'disabled placeholder="Chỉ có khi dùng máy chủ"'}></label></div>`}
+ <div class="qs2"><label>Tên đăng nhập<input id="mPhTk2" maxlength="24" autocapitalize="off" spellcheck="false" placeholder="ph.binh"></label><label>Mật khẩu<input id="mPhPw" maxlength="30" ${cloud()?'':'disabled placeholder="Chỉ có khi dùng máy chủ"'}></label></div>`}
  <p class="muted" style="margin:0;font-size:12.5px">Chọn các con (anh chị em cùng bố mẹ chọn chung 1 tài khoản). Phụ huynh xem được tình hình học của từng con.</p>
  <input type="search" placeholder="Tìm tên học sinh" oninput="const q=this.value.toLowerCase();document.querySelectorAll('.qlck .qlckr').forEach(r=>r.hidden=q&&!r.textContent.toLowerCase().includes(q))" style="font:inherit;padding:8px;border:0;box-shadow:var(--f2)">
  <div class="qlck">${hs.map(([id,n,g])=>{const p=(O().ph||{})[id],cua1=cua.includes(id);return`<label class="qlckr"><input type="checkbox" value="${id}" ${cua1?'checked':''} ${p&&p!==tk0?'disabled':''}> <b>${esc(n)}</b> <small>khối ${g}${p&&p!==tk0?' · đã có PH '+esc(p):''}</small></label>`}).join('')}</div>`,`qlLuuPH()`,'Lưu')};
@@ -98,7 +98,7 @@ function phCard(){const ds=phDs(),info=O().phInfo||{},tks=Object.keys(ds).sort()
 document.head.insertAdjacentHTML('beforeend',`<style>
 form[onsubmit="qlTaoHS(event)"],form[onsubmit="qlTaoGV(event)"],form[onsubmit="qlTaoLop(event)"],form[onsubmit="qlTaoPH(event)"]{display:none!important}
 .qlhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.qlhead h2{margin:0}
-.qsform label{min-width:0}.qsform input,.qsform select{width:100%;box-sizing:border-box;min-width:0}.qs2,.qs3{grid-template-columns:repeat(var(--c,2),minmax(0,1fr))!important}.qs3{--c:3}
+.qsform label{min-width:0;justify-content:flex-end}.qsform .qs2,.qsform .qs3{align-items:end}.qsform input,.qsform select{height:42px;line-height:normal}.qsform input[type=checkbox]{height:auto}.qsform input,.qsform select{width:100%;box-sizing:border-box;min-width:0}.qs2,.qs3{grid-template-columns:repeat(var(--c,2),minmax(0,1fr))!important}.qs3{--c:3}
 .qlmbox{max-width:520px;max-height:92vh;overflow:auto}.qlck{display:flex;flex-direction:column;gap:2px;max-height:300px;overflow:auto;padding:6px;box-shadow:var(--f2);background:#fff}
 .qlckr{flex-direction:row!important;align-items:center;gap:8px!important;font-weight:400!important;font-size:14px!important;padding:4px 2px}.qlckr input{box-shadow:none!important;padding:0!important;width:18px;height:18px}.qlckr small{color:#3D4A70;font-weight:400}
 .qlbo{padding:2px 8px!important;font-size:12px!important;margin-top:4px}.qlphcard{margin:0 0 16px}
