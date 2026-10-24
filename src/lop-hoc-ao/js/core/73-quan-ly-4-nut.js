@@ -12,7 +12,9 @@ const gvTen=g=>((O().gv||[]).find(x=>x.id===g)||{ten:g}).ten;
 const phOf=id=>(O().ph||{})[id];
 const phTen=tk=>((O().phInfo||{})[tk]||{}).ten||tk;
 const hs=id=>((O().hoso||{})[id])||{};
-const lopSel=(id,l)=>{const L=LOP().filter(x=>!l||x.khoi===l.khoi);return`<select class="qllop ${l?'':'qlchua'}" aria-label="Lớp của em" onchange="qlVaoLop('${id}',this.value)"><option value="">${l?'— Bỏ khỏi lớp':'⚠ Chọn lớp…'}</option>${L.map(x=>`<option value="${x.id}" ${l&&l.id===x.id?'selected':''}>Lớp ${e(x.ten)}${l?'':' (khối '+x.khoi+')'}</option>`).join('')}</select>`};
+const NGHI=id=>((O().nghi||{})[id]);
+const lopSel=(id,l)=>{const ng=NGHI(id);if(ng&&!l)return`<span class="pill qlwarn">${ng.ly==='xong'?'🎓 Đã học xong':'⏸ Nghỉ học'}</span> <button type="button" class="btn sm" onclick="qlMoLai('${id}')">Mở lại</button>`;const L=LOP().filter(x=>!l||x.khoi===l.khoi);return`<select class="qllop ${l?'':'qlchua'}" aria-label="Lớp của em" onchange="qlVaoLop('${id}',this.value)"><option value="">${l?'— Bỏ khỏi lớp':'⚠ Chọn lớp…'}</option>${L.map(x=>`<option value="${x.id}" ${l&&l.id===x.id?'selected':''}>Lớp ${e(x.ten)}${l?'':' (khối '+x.khoi+')'}</option>`).join('')}</select>`};
+window.qlMoLai=function(id){const o=O();if(!o.nghi||!o.nghi[id])return;delete o.nghi[id];(o.nk=o.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Mở lại tài khoản ${(S.st[id]||{}).name||id}`});save();if(o.cloud&&typeof fbDayNgay==='function'){try{fbDayNgay()}catch(x){}}render();toast('Đã mở lại. Hãy xếp lớp cho em.')};
 window.qlVaoLop=function(id,lid){const cu=(O().gd||{})[id]||'';if(cu===lid)return;const n=(S.st[id]||{}).name||id;
  if(!lid&&!confirm(`Bỏ ${n} khỏi lớp? Em sẽ chưa đăng nhập được cho đến khi được xếp lớp mới.`)){render();return}
  window.qlChuyen(id,lid);if(O().cloud&&typeof fbDayNgay==='function'){try{fbDayNgay()}catch(x){}}};
@@ -26,7 +28,7 @@ const head=(ic,t,extra)=>`<div class="qlhd">${back('','','Quản lý')}<h1>${ic}
 /* ---------- số liệu ---------- */
 function so(){const o=O(),H=STUDENTS,gv=o.gv||[],L=o.lop||[];
  const phTk=new Set(Object.values(o.ph||{}));
- return{hs:H.length,chuaXep:H.filter(s=>!(o.gd||{})[s[0]]).length,ph:phTk.size,chuaPH:H.filter(s=>!phOf(s[0])).length,
+ return{hs:H.length,chuaXep:H.filter(s=>!(o.gd||{})[s[0]]&&!NGHI(s[0])).length,ph:phTk.size,chuaPH:H.filter(s=>!phOf(s[0])).length,
   gv:gv.length,gvTrong:gv.filter(g=>!L.some(l=>(l.gv||[]).includes(g.id))).length,lop:L.length,lopTrong:L.filter(l=>!(l.gv||[]).length).length}}
 
 /* ---------- trang chính ---------- */
@@ -45,12 +47,12 @@ function home(){const o=O(),n=so();
 const ckAll=ids=>`<input type="checkbox" aria-label="Chọn cả trang" ${ids.length&&ids.every(i=>qlChon[i])?'checked':''} onchange="${ids.map(i=>`qlChon['${i}']=this.checked;`).join('')}render()">`;
 function trangHS(){const o=O(),L=LOP(),q=bo(qlHsTim);
  const ds0=STUDENTS.filter(([id,n,g])=>{const l=lopOf(id);
-  if(qlHsLop==='-'&&l)return false;if(qlHsLop&&qlHsLop!=='-'&&(!l||l.id!==qlHsLop))return false;
+  if(qlHsLop==='-'&&(l||NGHI(id)))return false;if(qlHsLop==='x'&&!NGHI(id))return false;if(qlHsLop&&qlHsLop!=='-'&&qlHsLop!=='x'&&(!l||l.id!==qlHsLop))return false;
   if(qlHsKhoi&&g!==qlHsKhoi)return false;
   if(q){const h=hs(id),p=phOf(id);if(!(bo(n).includes(q)||id.includes(q)||(h.dt||'').includes(q)||(p&&bo(phTen(p)).includes(q))))return false}
   return true}).sort((a,b)=>(lopOf(a[0])?1:0)-(lopOf(b[0])?1:0)||a[1].split(' ').pop().localeCompare(b[1].split(' ').pop())||a[1].localeCompare(b[1]));
  const per=20,trang=Math.max(1,Math.ceil(ds0.length/per));if(qlTrangSo>=trang)qlTrangSo=trang-1;const ds=ds0.slice(qlTrangSo*per,qlTrangSo*per+per);
- const chon=Object.keys(qlChon).filter(k=>qlChon[k]),nChua=STUDENTS.filter(s=>!lopOf(s[0])).length;
+ const chon=Object.keys(qlChon).filter(k=>qlChon[k]),nChua=STUDENTS.filter(s=>!lopOf(s[0])&&!NGHI(s[0])).length;
  const rows=ds.map(([id,n])=>{const l=lopOf(id),h=hs(id),p=phOf(id);
   const ns=[h.gt==='nam'?'Nam':h.gt==='nu'?'Nữ':'',h.ng&&h.th?`${h.ng}/${h.th}${h.nam?'/'+h.nam:''}`:(h.nam||'')].filter(Boolean).join(' · ');
   return`<div class="qlr qhs"><span class="a-ck"><input type="checkbox" aria-label="Chọn ${e(n)}" ${qlChon[id]?'checked':''} onchange="qlChon['${id}']=this.checked;render()"></span>
@@ -64,7 +66,7 @@ function trangHS(){const o=O(),L=LOP(),q=bo(qlHsTim);
  ${nChua?`<div class="qlnote"><span>⚠ ${nChua} em chưa xếp lớp — các em <b>chưa đăng nhập được</b>.</span><button type="button" class="btn sm" onclick="qlHsLop='-';qlTrangSo=0;render()">Xem các em này</button></div>`:''}
  <section class="card"><div class="qlfil">
   <select aria-label="Lọc theo khối" onchange="qlHsKhoi=+this.value;qlTrangSo=0;render()"><option value="0">Tất cả khối</option>${[1,2,3,4,5].map(k=>`<option value="${k}" ${qlHsKhoi===k?'selected':''}>Khối ${k}</option>`).join('')}</select>
-  <select aria-label="Lọc theo lớp" onchange="qlHsLop=this.value;qlTrangSo=0;render()"><option value="">Tất cả lớp</option><option value="-" ${qlHsLop==='-'?'selected':''}>Chưa xếp lớp (${nChua})</option>${lopOpt}</select>
+  <select aria-label="Lọc theo lớp" onchange="qlHsLop=this.value;qlTrangSo=0;render()"><option value="">Tất cả lớp</option><option value="-" ${qlHsLop==='-'?'selected':''}>Chưa xếp lớp (${nChua})</option>${Object.keys(O().nghi||{}).length?`<option value="x" ${qlHsLop==='x'?'selected':''}>Nghỉ học / Đã học xong (${Object.keys(O().nghi).length})</option>`:''}${lopOpt}</select>
   <input type="search" placeholder="Tìm tên, tên đăng nhập, SĐT phụ huynh" aria-label="Tìm học sinh" value="${e(qlHsTim)}" onkeydown="if(event.key==='Enter'){qlHsTim=this.value.trim();qlTrangSo=0;render()}" onchange="qlHsTim=this.value.trim();qlTrangSo=0;render()">
  </div>
  <div class="qlli"><div class="qlr qhs qlrh"><span class="a-ck">${ckAll(ds.map(s=>s[0]))}</span><div class="a-ten">Học sinh</div><div class="a-lop">Lớp</div><div class="a-ph">Phụ huynh</div><div class="a-act"></div></div>
@@ -120,10 +122,10 @@ function trangLopCT(){const o=O(),l=(o.lop||[]).find(x=>x.id===qlLopId);if(!l){q
 
 /* Thêm học sinh vào lớp: gợi ý vài em chưa xếp lớp; gõ tên để tìm thêm */
 function themBox(l){const o=O(),q=bo(qlThemTim),GOI=5,TIM=15;
- const chua=STUDENTS.filter(s=>!(o.gd||{})[s[0]]);
+ const chua=STUDENTS.filter(s=>!(o.gd||{})[s[0]]&&!NGHI(s[0]));
  const by=(a,b)=>a[1].split(' ').pop().localeCompare(b[1].split(' ').pop())||a[1].localeCompare(b[1]);
  let ds;
- if(q)ds=STUDENTS.filter(([id,n,g])=>{const c=(o.gd||{})[id];if(c===l.id)return false;if(c&&g!==l.khoi)return false;return bo(n).includes(q)||id.includes(q)}).sort((a,b)=>((o.gd||{})[a[0]]?1:0)-((o.gd||{})[b[0]]?1:0)||by(a,b));
+ if(q)ds=STUDENTS.filter(([id,n,g])=>{const c=(o.gd||{})[id];if(c===l.id||NGHI(id))return false;if(c&&g!==l.khoi)return false;return bo(n).includes(q)||id.includes(q)}).sort((a,b)=>((o.gd||{})[a[0]]?1:0)-((o.gd||{})[b[0]]?1:0)||by(a,b));
  else ds=[...chua].sort((a,b)=>(qlThemChon[b[0]]?1:0)-(qlThemChon[a[0]]?1:0)||by(a,b));
  const max=q?TIM:GOI,show=ds.slice(0,max),n=Object.keys(qlThemChon).filter(k=>qlThemChon[k]).length;
  const list=show.map(([id,nm])=>{const c=(o.gd||{})[id],cl=c&&(o.lop||[]).find(x=>x.id===c);return`<label class="qlckr"><input type="checkbox" ${qlThemChon[id]?'checked':''} onchange="qlThemChon['${id}']=this.checked;render()"><span><b>${e(nm)}</b> <small>${e(id)} · ${cl?'đang ở lớp '+e(cl.ten):'<span class="qlw">chưa xếp lớp</span>'}</small></span></label>`}).join('');

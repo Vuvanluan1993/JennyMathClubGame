@@ -145,6 +145,9 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Gom phụ huynh: các em cùng SĐT hoặc cùng Gmail phụ huynh → 1 tài khoản phụ huynh (tên đăng nhập `ph` + 6 số cuối SĐT); trùng với phụ huynh đã có thì gắn thêm con. Mật khẩu ban đầu học sinh và phụ huynh: jenny123.
 - **In phiếu đăng nhập** đen trắng, 8 phiếu/A4, xếp theo lớp: sau khi nhập, ở trang một Lớp (in cả lớp), khi chọn nhiều em, và ở trang Phụ huynh. Mật khẩu chỉ in được khi vừa tạo trong phiên; còn lại để dòng chấm cho thầy cô ghi tay.
 - ⬇ Tải danh sách: xuất toàn bộ học sinh ra .xlsx đúng mẫu, sửa xong nhập lại được.
+- **Kết thúc năm học · Lên lớp** (24/10/2026, Quản lý › 🎓 Năm học · Lên lớp), 3 bước: (1) lớp cũ → lớp mới, tự gợi ý 1A→2A, sửa được tên, tick "Giữ giáo viên", lớp 5 → Đã học xong, nhập năm học mới; (2) từng em: ⬆ Lên lớp (mặc định) · ↺ Ở lại lớp · ⏸ Nghỉ học (lớp 5: 🎓 Học xong); (3) xem lại, nhắc tải danh sách Excel, xác nhận (không hoàn tác).
+- Khi lên lớp: xu, đồ, thú cưng, tủ đồ, Sổ lỗi sai giữ nguyên; sao + tiến độ đảo năm cũ cất vào Hồ sơ năm học (st.namHoc, org.hosoNam); bản đồ mở chương trình khối mới. Ở lại lớp → "Chưa xếp lớp" giữ khối cũ. Nghỉ học / Học xong → khoá đăng nhập (có lời báo riêng), giữ hồ sơ, "Mở lại" được. Bài cô giao năm cũ chuyển lưu trữ. Năm cũ lưu ở "Các năm học trước".
+- Bản máy chủ: học sinh tự được lên lớp khi đăng nhập lần đầu sau khi trung tâm chuyển năm (theo khối của lớp mới).
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
