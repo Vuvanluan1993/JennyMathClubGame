@@ -1,0 +1,4 @@
+2026-10-24 05:05 UTC
+Nguồn gemini · mô hình gemini-2.5-flash-preview-tts · giọng Despina
+Thu mới 4, giữ nguyên 1, lỗi 1 · HẾT LƯỢT NGÀY
+02-doc-so: Không có âm thanh trả về: {"candidates": [{"finishReason": "OTHER", "index": 0}], "usageMetadata": {"promptTokenCount": 28, "totalTokenCount": 28, "promptTokensDetails": [{"modality": "TEXT", "tokenCount": 28}], "serviceTier": "standard"}, "modelVersion": "gemini-2.5-flash-preview-tts", "responseId": "Szzcau_uAf-sz7IPjMOP0AM
