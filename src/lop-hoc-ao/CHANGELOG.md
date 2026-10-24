@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Giọng đọc: dùng Gemini TTS miễn phí (không cần thẻ)
+- Thầy không gắn thanh toán Google Cloud. `tools/giong/tao-giong.py` thêm nguồn **Gemini TTS** (khóa AI Studio `GEMINI_API_KEY`), giọng Despina; tự thử các tên mô hình TTS, đổi âm thanh sang mp3 bằng ffmpeg.
+- Gói miễn phí: nghỉ 7 giây giữa các câu, lỗi 429 thì chờ rồi thử lại, hết lượt trong ngày thì lưu phần đã thu và dừng. Bước lưu vào repo chạy cả khi bước thu dừng giữa chừng.
+- Vẫn giữ nguồn Cloud Chirp 3 HD (`GOOGLE_TTS_KEY`) cho sau này.
+
 ## 24/10/2026 — Chốt giọng đọc Google Chirp 3 HD · Despina; công cụ thu sẵn
 - Thầy chọn giọng **Chirp 3 HD · Tiếng Việt · Despina**. Ghi vào `docs/LUAT-DA-CHOT.md` mục 5.
 - `tools/giong/tao-giong.py`: gọi Google Text-to-Speech, ghi mp3 theo danh sách JSON; có lưu đệm (`_ma.json`) nên chỉ thu lại câu đã sửa.

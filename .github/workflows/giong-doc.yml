@@ -1,4 +1,4 @@
-name: Thu giọng đọc (Google Chirp 3 HD)
+name: Thu giọng đọc (Despina)
 
 on:
   workflow_dispatch:
@@ -20,9 +20,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Tạo file tiếng
         env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_TTS_KEY: ${{ secrets.GOOGLE_TTS_KEY }}
-        run: python3 tools/giong/tao-giong.py "${{ inputs.danh_sach }}" "${{ inputs.thu_muc }}"
+        run: |
+          which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+          python3 tools/giong/tao-giong.py "${{ inputs.danh_sach }}" "${{ inputs.thu_muc }}"
       - name: Lưu vào repo
+        if: always()
         run: |
           git config user.name "jenny-giong-doc"
           git config user.email "actions@users.noreply.github.com"
