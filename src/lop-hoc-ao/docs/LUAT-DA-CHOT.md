@@ -111,6 +111,8 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Thử nghiệm dùng tài khoản thử, chưa nhập tên thật của học sinh.
 - **3 trang tách riêng** (24/10/2026): Giáo viên, Phụ huynh, Quản lý — mỗi trang một vai; app học sinh riêng.
 
+- Bấm logo Clb ở thanh trên → về trang chủ (mọi trang) (24/10/2026).
+
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
 - `node tools/test/kien-thuc-tro-choi.js` — trò không vượt kiến thức.

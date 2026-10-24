@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Bấm logo Clb để về trang chủ
+- Thanh trên cùng: bấm (hoặc chạm) logo "JennyClub / Clb Học Toán cùng Jenny" là về trang chủ (Bản đồ), từ bất cứ tab nào (Cửa hàng, Nhà em, Sổ lỗi sai…). Trang giáo viên, phụ huynh, quản lý: về màn đầu của vai đó.
+- Trong màn chơi, thanh trên được ẩn nên không lỡ tay thoát. Nếu đang có bài về nhà bắt buộc thì vẫn hiện màn bài về nhà.
+- File mới: `js/core/65-logo-ve-trang-chu.js`.
+
 ## 24/10/2026 — Sửa: chơi trò chơi xong không được xu
 - Nguyên nhân: mỗi câu đúng trong màn +5 xu và trò chơi dùng **chung** giới hạn 150 xu/ngày. Học vài màn (khoảng 30 câu đúng) là hết giới hạn → trò chơi kết thúc được 0 xu mà không báo gì (test01, test02 đều đã chạm 150 hôm nay).
 - Sửa (`64-xu.js`): trò chơi (trò chơi đảo, câu cá, bóng bay, đua giờ, kéo co) có **giới hạn riêng 100 xu/ngày**, mỗi lượt tối đa 20 xu; câu đúng trong màn vẫn giới hạn 150/ngày. Hết giới hạn trò chơi thì màn kết thúc báo "Hôm nay em đã nhận đủ 100 xu từ trò chơi".

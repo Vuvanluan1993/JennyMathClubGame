@@ -8048,7 +8048,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 09:01';
+const APP_VER='24/10 · 09:09';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -11611,6 +11611,14 @@ const xuTroChoi=()=>{const g=scr;return!!(g&&(g.k==='xg'||g.k==='mini'||g.race||
     Object.keys(st.gameCoins).forEach(d=>{if(+d<S.day-14)delete st.gameCoins[d]});if(n>0&&m===0)scr.xuHet=1;st.coins+=m;return m}return _a.apply(this,arguments)}}
 {const _r=render;render=function(){const r=_r.apply(this,arguments);try{const g=scr;if(g&&g.end&&g.xuHet&&!document.querySelector('.xuhet')){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');
   if(box)box.insertAdjacentHTML('beforebegin',`<p class="earn xuhet" style="opacity:.85">${LANG==='en'?`You've earned the ${GAME_CAP} game coins for today. Come back tomorrow!`:`Hôm nay em đã nhận đủ ${GAME_CAP} xu từ trò chơi. Mai chơi tiếp nhé!`}</p>`)}}catch(e){}return r}}
+/* ===================== Bấm logo ở thanh trên → về trang chủ (thầy yêu cầu 24/10/2026) =====================
+   Học sinh: về Bản đồ. Giáo viên/phụ huynh/quản lý: về màn đầu của vai đó. Đang chơi dở thì hỏi trước khi thoát. */
+function veTrangChu(){try{const g=scr;const dangChoi=g&&(g.k==='game'||g.k==='xg'||g.k==='mini')&&!g.end;
+  if(dangChoi&&!confirm(LANG==='en'?'Leave this game and go to the home page?':'Thoát màn đang chơi và về trang chủ?'))return;
+  if(role!=='hs'){try{gvLop=null}catch(e){}}go({k:'home'})}catch(e){}}
+document.addEventListener('click',e=>{const b=e.target.closest('.appbar .brand');if(!b||e.target.closest('button,a,select,input'))return;e.preventDefault();veTrangChu()});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('.appbar .brand')){e.preventDefault();veTrangChu()}});
+{const _r=render;render=function(){const r=_r.apply(this,arguments);try{const b=document.querySelector('.appbar .brand');if(b&&!b.dataset.home){b.dataset.home=1;b.setAttribute('role','link');b.tabIndex=0;b.title=LANG==='en'?'Home':'Về trang chủ';b.style.cursor='pointer'}}catch(e){}return r}}
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 
