@@ -39,7 +39,7 @@ async function doLogin(e){e.preventDefault();const u=document.getElementById('lg
   if(!(ACC[u]&&!navigator.onLine)){msg.textContent='Đang đăng nhập…';try{await fbDangNhap(u,p,nho);
     if(CLOUD.me.role!=='hs'){msg.textContent='Đây là tài khoản '+(CLOUD.me.role==='ph'?'phụ huynh':'giáo viên')+'. Hãy vào trang giáo viên & phụ huynh.';try{await FB.auth.signOut()}catch(x){}CLOUD=null;return}
     await fbHsBoot();document.getElementById('login').hidden=true;document.body.classList.remove('locked');go({k:'home'});return}
-   catch(err){msg.textContent='';if(!ACC[u]){msg.textContent=fbLoi(err);CLOUD=null;return}CLOUD=null}}
+   catch(err){msg.textContent='';if(err&&err.code==='chua-lop'){msg.textContent=fbLoi(err);try{await FB.auth.signOut()}catch(x){}CLOUD=null;return}if(!ACC[u]){msg.textContent=fbLoi(err);CLOUD=null;return}CLOUD=null}}
   if(!ACC[u]){msg.textContent='Tên đăng nhập không đúng. Ví dụ: Jenny01';return}
   let ok=false;try{ok=(await sha(u+':'+p))===ACC[u].h}catch(err){msg.textContent='Trình duyệt không hỗ trợ đăng nhập. Hãy mở bằng Chrome hoặc Edge.';return}
   if(!ok){msg.textContent='Mật khẩu chưa đúng, em thử lại nhé.';return}

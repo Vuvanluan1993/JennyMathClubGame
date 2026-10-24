@@ -11,6 +11,7 @@
 - File mới: `js/core/72-tu-luyen.js`.
 
 ## 2026-10-24
+- Quản lý: bỏ ô Lớp khi tạo học sinh; em mới "Chưa xếp lớp", xếp lớp nào thì khối theo lớp đó; chưa xếp lớp thì chưa đăng nhập được.
 - Đảo nhà: bỏ khung tiền "🪙 n Cửa hàng ▸" ở thanh trên.
 
 ## 24/10/2026 — Rà lệch khung các bảng nhập Quản lý

@@ -85,16 +85,16 @@ window.qlTJ=(id,on)=>{const l=lopById(id);if(on){const c=(document.getElementByI
 window.qlTJgan=()=>{const id=document.getElementById('tjLop').value;if(id)qlTJ(id,true)};
 window.qlPhan=id=>{const g=document.getElementById('pc-'+id).value;const l=lopById(id);if(!g||l.gv.includes(g))return;l.gv.push(g);nk(`Phân công ${gvById(g).ten} dạy lớp ${id}`);qlMsg(`Đã phân công ${gvById(g).ten} dạy lớp ${id}`)};
 window.qlBo=(id,g)=>{const k=id+'|'+g;if(qlXoa!==k){qlXoa=k;render();return}qlXoa='';const l=lopById(id);l.gv=l.gv.filter(x=>x!==g);nk(`Bỏ phân công ${gvById(g).ten} khỏi lớp ${id}`);qlMsg(`${gvById(g).ten} không còn dạy lớp ${id}`)};
-window.qlChuyen=(sidx,lid)=>{const cu=O().gd[sidx]||'';if(lid)O().gd[sidx]=lid;else delete O().gd[sidx];const n=S.st[sidx].name;nk(lid?`Chuyển ${n}: ${cu||'chưa xếp lớp'} → ${lid}`:`Đưa ${n} ra khỏi lớp ${cu}`);qlMsg(lid?`${n} đã sang lớp ${lid}. Sao, xu, Sổ lỗi sai giữ nguyên.`:`${n} đang chưa xếp lớp`)};
+window.qlChuyen=(sidx,lid)=>{const cu=O().gd[sidx]||'';{const L=lid&&lopById(lid);if(L&&!cu){[STUDENTS,O().hs||[],O().hsMoi||[]].forEach(a=>a.forEach(r=>{if(r[0]===sidx)r[2]=L.khoi}));const st=S.st[sidx];if(st&&st.grade!==L.khoi&&!(S.events||[]).some(e=>e.actor&&e.actor.account&&e.actor.account.name===sidx)){const gt=st.gender,ns=newStudent(st.name,L.khoi);if(gt)ns.gender=gt;S.st[sidx]=ns}}}if(lid)O().gd[sidx]=lid;else delete O().gd[sidx];const n=S.st[sidx].name;nk(lid?`Chuyển ${n}: ${cu||'chưa xếp lớp'} → ${lid}`:`Đưa ${n} ra khỏi lớp ${cu}`);qlMsg(lid?`${n} đã sang lớp ${lid}. Sao, xu, Sổ lỗi sai giữ nguyên.`:`${n} đang chưa xếp lớp`)};
 window.qlNgoaiLe=(sidx,on)=>{if(on)O().nl[sidx]=1;else delete O().nl[sidx];nk(`${on?'Bật':'Tắt'} ngoại lệ Toán Jenny cho ${S.st[sidx].name}`);qlMsg(on?'Đã mở Toán Jenny riêng cho em':'Đã tắt ngoại lệ')};
 const bo=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D');
 window.qlTaoLop=e=>{e.preventDefault();const k=+document.getElementById('nlKhoi').value,t=document.getElementById('nlTen').value.trim().toUpperCase(),g=document.getElementById('nlGV').value;
   if(!/^[0-9A-Z.\- ]{1,8}$/.test(t)){toast('Tên lớp ngắn, ví dụ 1D');return}if(lopById(t)){toast('Đã có lớp '+t);return}
   O().lop.push({id:t,khoi:k,ten:t,gv:g?[g]:[],tj:{on:false}});O().mo[t]={};nk(`Tạo lớp ${t} (khối ${k})${g?' · '+gvById(g).ten:''}`);qlMsg('Đã tạo lớp '+t)};
 window.qlTaoHS=e=>{e.preventDefault();const n=document.getElementById('nhTen').value.trim().replace(/\s+/g,' '),lid=document.getElementById('nhLop').value,l=lopById(lid);
-  if(n.split(' ').length<2){toast('Nhập đủ họ và tên');return}if(!l)return;
+  if(n.split(' ').length<2){toast('Nhập đủ họ và tên');return}
   const goc=bo(n.split(' ').pop()).toLowerCase().replace(/[^a-z]/g,'')||'hs';let u=goc,i=2;while(S.st[u])u=goc+(i++);
-  const r=[u,n,l.khoi];O().hsMoi.push(r);STUDENTS.push(r);S.st[u]=newStudent(n,l.khoi);O().gd[u]=lid;nk(`Tạo tài khoản ${n} (${u}) · lớp ${lid}`);qlMsg(`Đã tạo tài khoản ${u} / jenny123 cho ${n}`)};
+  const r=[u,n,l?l.khoi:0];O().hsMoi.push(r);STUDENTS.push(r);S.st[u]=newStudent(n,l?l.khoi:1);if(l)O().gd[u]=lid;nk(`Tạo tài khoản ${n} (${u})`+(l?` · lớp ${lid}`:' · chưa xếp lớp'));qlMsg(`Đã tạo tài khoản ${u} / jenny123 cho ${n}`)};
 window.qlTaoGV=e=>{e.preventDefault();const n=document.getElementById('ngTen').value.trim();if(n.length<3){toast('Nhập tên giáo viên');return}
   const goc=bo(n.split(' ').pop()).toLowerCase().replace(/[^a-z]/g,'')||'gv';let u=goc,i=2;while(gvById(u))u=goc+(i++);
   O().gv.push({id:u,ten:n});nk(`Tạo tài khoản giáo viên ${n}`);qlMsg('Đã tạo tài khoản giáo viên '+n)};
@@ -108,9 +108,9 @@ function viewQL(){
       ${con.length?`<div class="row" style="gap:6px;margin-top:6px"><select id="pc-${l.id}" aria-label="Thêm giáo viên cho lớp ${l.ten}" style="max-width:150px">${con.map(g=>`<option value="${g.id}">${esc(g.ten)}</option>`).join('')}</select><button class="btn sm" onclick="qlPhan('${l.id}')">Phân công</button></div>`:''}</td>
      <td><b>${hs.length}</b></td>
      <td>${l.tj.on?`<span class="pill ok">Đang mở · hạn ${l.tj.han}</span> <button class="btn sm" onclick="qlTJ('${l.id}',false)">Tắt</button>`:'<span class="muted">Chưa có</span>'}</td></tr>`}).join('');
-  const rowsH=HS.map(([id,n,g])=>{const l=lopCua(id),cung=LOP.filter(x=>x.khoi===g),st=S.st[id];
+  const rowsH=HS.map(([id,n,g])=>{const l=lopCua(id),cung=g?LOP.filter(x=>x.khoi===g):LOP,st=S.st[id];
     const tj=l&&l.tj.on?'<span class="pill ok">Theo lớp</span>':`<label class="row" style="gap:6px;font-size:13px"><input type="checkbox" ${o.nl[id]?'checked':''} onchange="qlNgoaiLe('${id}',this.checked)"> Ngoại lệ</label>`;
-    return`<tr><td><b>${esc(n)}</b><div class="muted">${id} · ${totalStars(st)} sao · ${st.coins} xu${o.cloud&&o.ph&&o.ph[id]?` · PH: ${esc(o.ph[id])}`:''}</div></td><td>Khối ${g}</td>
+    return`<tr><td><b>${esc(n)}</b><div class="muted">${id} · ${totalStars(st)} sao · ${st.coins} xu${o.cloud&&o.ph&&o.ph[id]?` · PH: ${esc(o.ph[id])}`:''}</div></td><td>${g?'Khối '+g:'—'}</td>
      <td><select aria-label="Lớp của ${esc(n)}" onchange="qlChuyen('${id}',this.value)"><option value="">Chưa xếp lớp</option>${cung.map(x=>`<option value="${x.id}" ${l&&l.id===x.id?'selected':''}>${esc(x.ten)}</option>`).join('')}</select></td><td>${tj}</td></tr>`}).join('');
   const chuaGoi=LOP.filter(l=>!l.tj.on);
   return`<div class="grid">

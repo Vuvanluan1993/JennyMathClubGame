@@ -125,9 +125,11 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Quản lý › Học sinh › ✎ Sửa: Họ tên, Tên đăng nhập, Mật khẩu + hồ sơ (Giới tính, Ngày sinh, Năm sinh, Điện thoại phụ huynh, Gmail phụ huynh). Không sửa khối, xu, sao, đồ, tiến độ. Có ghi Nhật ký.
 
 ## 6j. Trang Quản lý (24/10/2026)
-- Thêm lớp/học sinh/giáo viên bằng **nút → bảng nhập** (không để ô nhập dài trên trang). Học sinh: họ, tên, giới tính, ngày tháng năm sinh, lớp, điện thoại & gmail phụ huynh.
+- Thêm lớp/học sinh/giáo viên bằng **nút → bảng nhập** (không để ô nhập dài trên trang). Học sinh: họ, tên, giới tính, ngày tháng năm sinh, điện thoại & gmail phụ huynh.
 - Có nút bỏ khỏi lớp, chuyển lớp, xếp nhiều em vào lớp.
 - **1 tài khoản phụ huynh – nhiều con** (anh chị em cùng bố mẹ).
+- **Tạo học sinh không chọn lớp** (24/10/2026). Em mới ở trạng thái "Chưa xếp lớp" (khối —). Xếp vào lớp nào thì khối theo lớp đó.
+- **Chưa xếp lớp thì chưa đăng nhập được** app học sinh: báo "Tài khoản của em chưa được xếp lớp. Em nhờ cô giáo nhé!"
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.

@@ -20,11 +20,10 @@ const gtSel=(id,cur)=>`<select id="${id}"><option value="">—</option><option v
 const nsSel=()=>`<span class="qsns"><select id="mNg" aria-label="Ngày"><option value="">Ngày</option>${Array.from({length:31},(_,i)=>`<option>${i+1}</option>`).join('')}</select><select id="mTh" aria-label="Tháng"><option value="">Tháng</option>${Array.from({length:12},(_,i)=>`<option>${i+1}</option>`).join('')}</select></span>`;
 const okDt=d=>!d||/^(\+?84|0)\d{8,10}$/.test(d),okMail=m=>!m||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m);
 /* ---------- Thêm học sinh ---------- */
-window.qlMoHS=function(){const L=LOPS();if(!L.length){toast('Chưa có lớp. Thêm lớp trước.');return}
+window.qlMoHS=function(){
  modal('Thêm học sinh',`<div class="qs2"><label>Họ và đệm<input id="mHo" maxlength="30" placeholder="Nguyễn Minh" required></label><label>Tên<input id="mTen" maxlength="12" placeholder="An" required></label></div>
  <div class="qs2"><label>Giới tính${gtSel('mGt','')}</label><label>Năm sinh<input id="mNam" type="number" min="2010" max="2025" placeholder="2019"></label></div>
  <label>Ngày sinh (ngày, tháng)${nsSel()}</label>
- <label>Lớp<select id="mLop">${L.map(l=>`<option value="${l.id}">Lớp ${esc(l.ten)} (khối ${l.khoi})</option>`).join('')}</select></label>
  <div class="qs2"><label>Điện thoại phụ huynh<input id="mDt" type="tel" maxlength="15" placeholder="0912345678"></label><label>Gmail phụ huynh<input id="mMail" type="email" maxlength="60" placeholder="ten@gmail.com"></label></div>
  ${cloud()?`<div class="qs2"><label>Tên đăng nhập<input id="mTk" maxlength="24" autocapitalize="off" spellcheck="false" placeholder="Bỏ trống = tự tạo"></label><label>Mật khẩu<input id="mPw" value="jenny123" maxlength="30"></label></div>`:''}`,'qlLuuHS()','Tạo tài khoản')};
 window.qlLuuHS=async function(){const ho=v('mHo').replace(/\s+/g,' '),ten=v('mTen').replace(/\s+/g,' '),n=(ho+' '+ten).trim();
@@ -33,7 +32,7 @@ window.qlLuuHS=async function(){const ho=v('mHo').replace(/\s+/g,' '),ten=v('mTe
  if(H.nam&&!(+H.nam>=2010&&+H.nam<=2025)){toast('Năm sinh chưa đúng');return}
  if(H.ng&&H.th&&H.nam&&new Date(+H.nam,+H.th-1,+H.ng).getDate()!==+H.ng){toast('Ngày sinh chưa đúng');return}
  if(!okDt(H.dt)){toast('Số điện thoại chưa đúng');return}if(!okMail(H.mail)){toast('Gmail chưa đúng');return}
- setv('nhTen',n);setv('nhLop',v('mLop'));setv('nhGt',H.gt);if(cloud()){setv('nhTk',v('mTk'));setv('nhPw',v('mPw'))}
+ setv('nhTen',n);setv('nhLop','');setv('nhGt',H.gt);if(cloud()){setv('nhTk',v('mTk'));setv('nhPw',v('mPw'))}
  const truoc=new Set(Object.keys(S.st));await window.qlTaoHS({preventDefault(){}});
  const moi=Object.keys(S.st).filter(k=>!truoc.has(k));if(!moi.length)return;
  const o=O();o.hoso=o.hoso||{};moi.forEach(id=>{o.hoso[id]=Object.fromEntries(Object.entries(H).filter(([k,x])=>x));S.st[id].gender=H.gt});save();if(cloud()){try{await fbDayNgay()}catch(e){}}
@@ -54,9 +53,9 @@ window.qlMoLop=function(){modal('Thêm lớp',`<div class="qs2"><label>Khối<se
 window.qlLuuLop=function(){setv('nlKhoi',v('mKhoi'));setv('nlTen',v('mLopTen'));setv('nlGV',v('mLopGV'));const truoc=O().lop.length;window.qlTaoLop({preventDefault(){}});if(O().lop.length>truoc){qlDong();render()}};
 /* ---------- Xếp lớp: chọn nhiều em vào 1 lớp ---------- */
 window.qlMoXep=function(lid){const L=LOPS();if(!L.length){toast('Chưa có lớp');return}lid=lid||L[0].id;
- const l=L.find(x=>x.id===lid),ds=STUDENTS.filter(s=>s[2]===l.khoi&&O().gd[s[0]]!==lid).sort((a,b)=>(O().gd[a[0]]?1:0)-(O().gd[b[0]]?1:0)||a[1].localeCompare(b[1]));
+ const l=L.find(x=>x.id===lid),ds=STUDENTS.filter(s=>O().gd[s[0]]!==lid&&(!O().gd[s[0]]||s[2]===l.khoi)).sort((a,b)=>(O().gd[a[0]]?1:0)-(O().gd[b[0]]?1:0)||a[1].localeCompare(b[1]));
  qlDong();modal('Xếp học sinh vào lớp',`<label>Lớp<select id="mXLop" onchange="qlMoXep(this.value)">${L.map(x=>`<option value="${x.id}" ${x.id===lid?'selected':''}>Lớp ${esc(x.ten)} (khối ${x.khoi})</option>`).join('')}</select></label>
- <p class="muted" style="margin:0;font-size:12.5px">Học sinh khối ${l.khoi} chưa ở lớp ${esc(l.ten)}. Chọn các em cần đưa vào lớp.</p>
+ <p class="muted" style="margin:0;font-size:12.5px">Các em chưa xếp lớp và các em khối ${l.khoi} ở lớp khác. Chọn các em cần đưa vào lớp ${esc(l.ten)}.</p>
  <div class="qlck">${ds.length?ds.map(([id,n])=>{const c=O().gd[id];return`<label class="qlckr"><input type="checkbox" value="${id}"> <b>${esc(n)}</b> <small>${c?'đang ở lớp '+esc((O().lop.find(x=>x.id===c)||{ten:c}).ten):'chưa xếp lớp'}</small></label>`}).join(''):'<p class="muted">Không còn em nào khối này ngoài lớp.</p>'}</div>`,`qlLuuXep('${lid}')`,'Đưa vào lớp')};
 window.qlLuuXep=function(lid){const ids=[...document.querySelectorAll('.qlck input:checked')].map(x=>x.value);if(!ids.length){toast('Chưa chọn em nào');return}
  ids.forEach(id=>{try{window.qlChuyen(id,lid)}catch(e){}});qlDong();render();toast(`Đã xếp ${ids.length} em vào lớp ${lid}`)};

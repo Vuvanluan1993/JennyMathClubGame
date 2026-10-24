@@ -8078,7 +8078,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 14:36';
+const APP_VER='24/10 · 14:48';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -10974,16 +10974,16 @@ window.qlTJ=(id,on)=>{const l=lopById(id);if(on){const c=(document.getElementByI
 window.qlTJgan=()=>{const id=document.getElementById('tjLop').value;if(id)qlTJ(id,true)};
 window.qlPhan=id=>{const g=document.getElementById('pc-'+id).value;const l=lopById(id);if(!g||l.gv.includes(g))return;l.gv.push(g);nk(`Phân công ${gvById(g).ten} dạy lớp ${id}`);qlMsg(`Đã phân công ${gvById(g).ten} dạy lớp ${id}`)};
 window.qlBo=(id,g)=>{const k=id+'|'+g;if(qlXoa!==k){qlXoa=k;render();return}qlXoa='';const l=lopById(id);l.gv=l.gv.filter(x=>x!==g);nk(`Bỏ phân công ${gvById(g).ten} khỏi lớp ${id}`);qlMsg(`${gvById(g).ten} không còn dạy lớp ${id}`)};
-window.qlChuyen=(sidx,lid)=>{const cu=O().gd[sidx]||'';if(lid)O().gd[sidx]=lid;else delete O().gd[sidx];const n=S.st[sidx].name;nk(lid?`Chuyển ${n}: ${cu||'chưa xếp lớp'} → ${lid}`:`Đưa ${n} ra khỏi lớp ${cu}`);qlMsg(lid?`${n} đã sang lớp ${lid}. Sao, xu, Sổ lỗi sai giữ nguyên.`:`${n} đang chưa xếp lớp`)};
+window.qlChuyen=(sidx,lid)=>{const cu=O().gd[sidx]||'';{const L=lid&&lopById(lid);if(L&&!cu){[STUDENTS,O().hs||[],O().hsMoi||[]].forEach(a=>a.forEach(r=>{if(r[0]===sidx)r[2]=L.khoi}));const st=S.st[sidx];if(st&&st.grade!==L.khoi&&!(S.events||[]).some(e=>e.actor&&e.actor.account&&e.actor.account.name===sidx)){const gt=st.gender,ns=newStudent(st.name,L.khoi);if(gt)ns.gender=gt;S.st[sidx]=ns}}}if(lid)O().gd[sidx]=lid;else delete O().gd[sidx];const n=S.st[sidx].name;nk(lid?`Chuyển ${n}: ${cu||'chưa xếp lớp'} → ${lid}`:`Đưa ${n} ra khỏi lớp ${cu}`);qlMsg(lid?`${n} đã sang lớp ${lid}. Sao, xu, Sổ lỗi sai giữ nguyên.`:`${n} đang chưa xếp lớp`)};
 window.qlNgoaiLe=(sidx,on)=>{if(on)O().nl[sidx]=1;else delete O().nl[sidx];nk(`${on?'Bật':'Tắt'} ngoại lệ Toán Jenny cho ${S.st[sidx].name}`);qlMsg(on?'Đã mở Toán Jenny riêng cho em':'Đã tắt ngoại lệ')};
 const bo=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D');
 window.qlTaoLop=e=>{e.preventDefault();const k=+document.getElementById('nlKhoi').value,t=document.getElementById('nlTen').value.trim().toUpperCase(),g=document.getElementById('nlGV').value;
   if(!/^[0-9A-Z.\- ]{1,8}$/.test(t)){toast('Tên lớp ngắn, ví dụ 1D');return}if(lopById(t)){toast('Đã có lớp '+t);return}
   O().lop.push({id:t,khoi:k,ten:t,gv:g?[g]:[],tj:{on:false}});O().mo[t]={};nk(`Tạo lớp ${t} (khối ${k})${g?' · '+gvById(g).ten:''}`);qlMsg('Đã tạo lớp '+t)};
 window.qlTaoHS=e=>{e.preventDefault();const n=document.getElementById('nhTen').value.trim().replace(/\s+/g,' '),lid=document.getElementById('nhLop').value,l=lopById(lid);
-  if(n.split(' ').length<2){toast('Nhập đủ họ và tên');return}if(!l)return;
+  if(n.split(' ').length<2){toast('Nhập đủ họ và tên');return}
   const goc=bo(n.split(' ').pop()).toLowerCase().replace(/[^a-z]/g,'')||'hs';let u=goc,i=2;while(S.st[u])u=goc+(i++);
-  const r=[u,n,l.khoi];O().hsMoi.push(r);STUDENTS.push(r);S.st[u]=newStudent(n,l.khoi);O().gd[u]=lid;nk(`Tạo tài khoản ${n} (${u}) · lớp ${lid}`);qlMsg(`Đã tạo tài khoản ${u} / jenny123 cho ${n}`)};
+  const r=[u,n,l?l.khoi:0];O().hsMoi.push(r);STUDENTS.push(r);S.st[u]=newStudent(n,l?l.khoi:1);if(l)O().gd[u]=lid;nk(`Tạo tài khoản ${n} (${u})`+(l?` · lớp ${lid}`:' · chưa xếp lớp'));qlMsg(`Đã tạo tài khoản ${u} / jenny123 cho ${n}`)};
 window.qlTaoGV=e=>{e.preventDefault();const n=document.getElementById('ngTen').value.trim();if(n.length<3){toast('Nhập tên giáo viên');return}
   const goc=bo(n.split(' ').pop()).toLowerCase().replace(/[^a-z]/g,'')||'gv';let u=goc,i=2;while(gvById(u))u=goc+(i++);
   O().gv.push({id:u,ten:n});nk(`Tạo tài khoản giáo viên ${n}`);qlMsg('Đã tạo tài khoản giáo viên '+n)};
@@ -10997,9 +10997,9 @@ function viewQL(){
       ${con.length?`<div class="row" style="gap:6px;margin-top:6px"><select id="pc-${l.id}" aria-label="Thêm giáo viên cho lớp ${l.ten}" style="max-width:150px">${con.map(g=>`<option value="${g.id}">${esc(g.ten)}</option>`).join('')}</select><button class="btn sm" onclick="qlPhan('${l.id}')">Phân công</button></div>`:''}</td>
      <td><b>${hs.length}</b></td>
      <td>${l.tj.on?`<span class="pill ok">Đang mở · hạn ${l.tj.han}</span> <button class="btn sm" onclick="qlTJ('${l.id}',false)">Tắt</button>`:'<span class="muted">Chưa có</span>'}</td></tr>`}).join('');
-  const rowsH=HS.map(([id,n,g])=>{const l=lopCua(id),cung=LOP.filter(x=>x.khoi===g),st=S.st[id];
+  const rowsH=HS.map(([id,n,g])=>{const l=lopCua(id),cung=g?LOP.filter(x=>x.khoi===g):LOP,st=S.st[id];
     const tj=l&&l.tj.on?'<span class="pill ok">Theo lớp</span>':`<label class="row" style="gap:6px;font-size:13px"><input type="checkbox" ${o.nl[id]?'checked':''} onchange="qlNgoaiLe('${id}',this.checked)"> Ngoại lệ</label>`;
-    return`<tr><td><b>${esc(n)}</b><div class="muted">${id} · ${totalStars(st)} sao · ${st.coins} xu${o.cloud&&o.ph&&o.ph[id]?` · PH: ${esc(o.ph[id])}`:''}</div></td><td>Khối ${g}</td>
+    return`<tr><td><b>${esc(n)}</b><div class="muted">${id} · ${totalStars(st)} sao · ${st.coins} xu${o.cloud&&o.ph&&o.ph[id]?` · PH: ${esc(o.ph[id])}`:''}</div></td><td>${g?'Khối '+g:'—'}</td>
      <td><select aria-label="Lớp của ${esc(n)}" onchange="qlChuyen('${id}',this.value)"><option value="">Chưa xếp lớp</option>${cung.map(x=>`<option value="${x.id}" ${l&&l.id===x.id?'selected':''}>${esc(x.ten)}</option>`).join('')}</select></td><td>${tj}</td></tr>`}).join('');
   const chuaGoi=LOP.filter(l=>!l.tj.on);
   return`<div class="grid">
@@ -11474,7 +11474,7 @@ function fbNap(){if(window.firebase&&firebase.firestore&&firebase.auth)return Pr
   const one=n=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-${n}-compat.js`;s.onload=ok;s.onerror=()=>no({code:'network',message:'Không tải được Firebase. Kiểm tra mạng.'});document.head.appendChild(s)});
   return one('app').then(()=>one('auth')).then(()=>one('firestore'))}
 async function fbInit(){await fbNap();if(!FB){const app=firebase.apps.length?firebase.app():firebase.initializeApp(FB_CFG);FB={app,auth:app.auth(),db:app.firestore()}}return FB}
-function fbLoi(e){const c=(e&&e.code)||'';return({'auth/invalid-credential':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/invalid-login-credentials':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/wrong-password':'Mật khẩu chưa đúng.','auth/user-not-found':'Không có tài khoản này.','auth/too-many-requests':'Thử sai nhiều lần. Đợi vài phút rồi thử lại.','auth/network-request-failed':'Không kết nối được mạng.','auth/email-already-in-use':'Tên đăng nhập này đã có người dùng.','auth/weak-password':'Mật khẩu cần ít nhất 6 kí tự.','auth/invalid-email':'Tên đăng nhập không hợp lệ.','permission-denied':'Tài khoản không có quyền làm việc này.','no-profile':'Tài khoản chưa được gán vai trò. Hỏi quản lý trung tâm.','network':e.message})[c]||('Có lỗi: '+((e&&e.message)||e))}
+function fbLoi(e){const c=(e&&e.code)||'';return({'chua-lop':'Tài khoản của em chưa được xếp lớp. Em nhờ cô giáo nhé!','auth/invalid-credential':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/invalid-login-credentials':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/wrong-password':'Mật khẩu chưa đúng.','auth/user-not-found':'Không có tài khoản này.','auth/too-many-requests':'Thử sai nhiều lần. Đợi vài phút rồi thử lại.','auth/network-request-failed':'Không kết nối được mạng.','auth/email-already-in-use':'Tên đăng nhập này đã có người dùng.','auth/weak-password':'Mật khẩu cần ít nhất 6 kí tự.','auth/invalid-email':'Tên đăng nhập không hợp lệ.','permission-denied':'Tài khoản không có quyền làm việc này.','no-profile':'Tài khoản chưa được gán vai trò. Hỏi quản lý trung tâm.','network':e.message})[c]||('Có lỗi: '+((e&&e.message)||e))}
 const fbJ=s=>{try{return JSON.parse(s)}catch(e){return null}};
 const fbTach=st=>{const a={},b={};Object.keys(st||{}).forEach(k=>(GV_F.includes(k)?b:a)[k]=st[k]);GV_F.forEach(k=>{if(b[k]===undefined)b[k]=k==='gvSkip'?{}:[]});return{hs:a,gv:b}};
 const fbTS=()=>firebase.firestore.FieldValue.serverTimestamp();
@@ -11522,7 +11522,9 @@ function fbTrangThai(t,loi){const el=document.getElementById('fbSt');if(el){el.t
 async function fbHsBoot(){const me=CLOUD.me,tk=me.tk,db=FB.db;
   const [h,o]=await Promise.all([db.doc('hs/'+tk).get(),db.doc('org/main').get()]);
   const org=o.exists?fbJ(o.data().j)||{}:{},lop=(org.gd||{})[tk]||'',L=(org.lop||[]).find(l=>l.id===lop),khoi=(L&&L.khoi)||me.khoi||1;
+  if(!L)throw{code:'chua-lop'};
   let st=h.exists?fbJ(h.data().j):null;const ev=h.exists?fbJ(h.data().ev||'[]')||[]:[];
+  if(st&&st.grade!==khoi&&!ev.length){const gt=st.gender;st=newStudent(me.ten||tk,khoi);if(gt)st.gender=gt}
   if(!st)st=newStudent(me.ten||tk,khoi);if(me.ten)st.name=me.ten;
   st.active=!!((L&&L.tj&&L.tj.on)||(org.nl||{})[tk]);
   S={day:fbNgay(),events:ev,open:Object.assign({},(org.mo||{})[lop]||{}),st:{[tk]:st},cbi:{},asg:[],asgSeed:2,lopHS:lop};
@@ -11563,15 +11565,15 @@ function fbNgheHS(tk){if(fbDaNghe.has(tk))return;fbDaNghe.add(tk);const db=FB.db
 const fbKhongDau=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase();
 async function fbQLTaoHS(e){e.preventDefault();const o=S.org,n=document.getElementById('nhTen').value.trim().replace(/\s+/g,' '),lid=document.getElementById('nhLop').value,l=lopById(lid);
   let tk=(document.getElementById('nhTk').value||'').trim().toLowerCase();const pw=document.getElementById('nhPw').value;
-  if(n.split(' ').length<2){toast('Nhập đủ họ và tên');return}if(!l){toast('Chưa có lớp. Tạo lớp trước.');return}
+  if(n.split(' ').length<2){toast('Nhập đủ họ và tên');return}
   if(!tk){const g=fbKhongDau(n).split(' ');tk=(g.pop()+g.map(x=>x[0]).join('')).replace(/[^a-z0-9]/g,'');let t=tk,i=2;while((o.hs||[]).some(r=>r[0]===t))t=tk+(i++);tk=t}
   if(!fbTkOk(tk)){toast('Tên đăng nhập 3–24 kí tự: chữ thường không dấu, số, dấu chấm');return}if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
   if((o.hs||[]).some(r=>r[0]===tk)){toast('Tên đăng nhập đã có');return}
   toast('Đang tạo tài khoản…');
-  try{const uid=await fbTaoTK(tk,pw),db=FB.db,st=newStudent(n,l.khoi);
-    await db.doc('users/'+uid).set({role:'hs',tk,ten:n,khoi:l.khoi});
-    await db.doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:lid,t:fbTS()});
-    (o.hs=o.hs||[]).push([tk,n,l.khoi]);o.gd[tk]=lid;(o.nk=o.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Tạo tài khoản ${n} (${tk}) · lớp ${lid}`});
+  try{const uid=await fbTaoTK(tk,pw),db=FB.db,st=newStudent(n,l?l.khoi:1);
+    await db.doc('users/'+uid).set({role:'hs',tk,ten:n,khoi:l?l.khoi:0});
+    await db.doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:l?lid:'',t:fbTS()});
+    (o.hs=o.hs||[]).push([tk,n,l?l.khoi:0]);if(l)o.gd[tk]=lid;(o.nk=o.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Tạo tài khoản ${n} (${tk})`+(l?` · lớp ${lid}`:' · chưa xếp lớp')});
     S.st[tk]=st;fbDanhSach();save();await fbDayNgay();render();toast(`Đã tạo: ${tk} / ${pw}`)}catch(err){toast(fbLoi(err))}}
 async function fbQLTaoGV(e){e.preventDefault();const o=S.org,n=document.getElementById('ngTen').value.trim(),tk=(document.getElementById('ngTk').value||'').trim().toLowerCase(),pw=document.getElementById('ngPw').value||'';
   if(n.length<3){toast('Nhập tên giáo viên');return}if(!fbTkOk(tk)){toast('Tên đăng nhập 3–24 kí tự: chữ thường không dấu, số, dấu chấm');return}if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
@@ -11900,11 +11902,10 @@ const gtSel=(id,cur)=>`<select id="${id}"><option value="">—</option><option v
 const nsSel=()=>`<span class="qsns"><select id="mNg" aria-label="Ngày"><option value="">Ngày</option>${Array.from({length:31},(_,i)=>`<option>${i+1}</option>`).join('')}</select><select id="mTh" aria-label="Tháng"><option value="">Tháng</option>${Array.from({length:12},(_,i)=>`<option>${i+1}</option>`).join('')}</select></span>`;
 const okDt=d=>!d||/^(\+?84|0)\d{8,10}$/.test(d),okMail=m=>!m||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m);
 /* ---------- Thêm học sinh ---------- */
-window.qlMoHS=function(){const L=LOPS();if(!L.length){toast('Chưa có lớp. Thêm lớp trước.');return}
+window.qlMoHS=function(){
  modal('Thêm học sinh',`<div class="qs2"><label>Họ và đệm<input id="mHo" maxlength="30" placeholder="Nguyễn Minh" required></label><label>Tên<input id="mTen" maxlength="12" placeholder="An" required></label></div>
  <div class="qs2"><label>Giới tính${gtSel('mGt','')}</label><label>Năm sinh<input id="mNam" type="number" min="2010" max="2025" placeholder="2019"></label></div>
  <label>Ngày sinh (ngày, tháng)${nsSel()}</label>
- <label>Lớp<select id="mLop">${L.map(l=>`<option value="${l.id}">Lớp ${esc(l.ten)} (khối ${l.khoi})</option>`).join('')}</select></label>
  <div class="qs2"><label>Điện thoại phụ huynh<input id="mDt" type="tel" maxlength="15" placeholder="0912345678"></label><label>Gmail phụ huynh<input id="mMail" type="email" maxlength="60" placeholder="ten@gmail.com"></label></div>
  ${cloud()?`<div class="qs2"><label>Tên đăng nhập<input id="mTk" maxlength="24" autocapitalize="off" spellcheck="false" placeholder="Bỏ trống = tự tạo"></label><label>Mật khẩu<input id="mPw" value="jenny123" maxlength="30"></label></div>`:''}`,'qlLuuHS()','Tạo tài khoản')};
 window.qlLuuHS=async function(){const ho=v('mHo').replace(/\s+/g,' '),ten=v('mTen').replace(/\s+/g,' '),n=(ho+' '+ten).trim();
@@ -11913,7 +11914,7 @@ window.qlLuuHS=async function(){const ho=v('mHo').replace(/\s+/g,' '),ten=v('mTe
  if(H.nam&&!(+H.nam>=2010&&+H.nam<=2025)){toast('Năm sinh chưa đúng');return}
  if(H.ng&&H.th&&H.nam&&new Date(+H.nam,+H.th-1,+H.ng).getDate()!==+H.ng){toast('Ngày sinh chưa đúng');return}
  if(!okDt(H.dt)){toast('Số điện thoại chưa đúng');return}if(!okMail(H.mail)){toast('Gmail chưa đúng');return}
- setv('nhTen',n);setv('nhLop',v('mLop'));setv('nhGt',H.gt);if(cloud()){setv('nhTk',v('mTk'));setv('nhPw',v('mPw'))}
+ setv('nhTen',n);setv('nhLop','');setv('nhGt',H.gt);if(cloud()){setv('nhTk',v('mTk'));setv('nhPw',v('mPw'))}
  const truoc=new Set(Object.keys(S.st));await window.qlTaoHS({preventDefault(){}});
  const moi=Object.keys(S.st).filter(k=>!truoc.has(k));if(!moi.length)return;
  const o=O();o.hoso=o.hoso||{};moi.forEach(id=>{o.hoso[id]=Object.fromEntries(Object.entries(H).filter(([k,x])=>x));S.st[id].gender=H.gt});save();if(cloud()){try{await fbDayNgay()}catch(e){}}
@@ -11934,9 +11935,9 @@ window.qlMoLop=function(){modal('Thêm lớp',`<div class="qs2"><label>Khối<se
 window.qlLuuLop=function(){setv('nlKhoi',v('mKhoi'));setv('nlTen',v('mLopTen'));setv('nlGV',v('mLopGV'));const truoc=O().lop.length;window.qlTaoLop({preventDefault(){}});if(O().lop.length>truoc){qlDong();render()}};
 /* ---------- Xếp lớp: chọn nhiều em vào 1 lớp ---------- */
 window.qlMoXep=function(lid){const L=LOPS();if(!L.length){toast('Chưa có lớp');return}lid=lid||L[0].id;
- const l=L.find(x=>x.id===lid),ds=STUDENTS.filter(s=>s[2]===l.khoi&&O().gd[s[0]]!==lid).sort((a,b)=>(O().gd[a[0]]?1:0)-(O().gd[b[0]]?1:0)||a[1].localeCompare(b[1]));
+ const l=L.find(x=>x.id===lid),ds=STUDENTS.filter(s=>O().gd[s[0]]!==lid&&(!O().gd[s[0]]||s[2]===l.khoi)).sort((a,b)=>(O().gd[a[0]]?1:0)-(O().gd[b[0]]?1:0)||a[1].localeCompare(b[1]));
  qlDong();modal('Xếp học sinh vào lớp',`<label>Lớp<select id="mXLop" onchange="qlMoXep(this.value)">${L.map(x=>`<option value="${x.id}" ${x.id===lid?'selected':''}>Lớp ${esc(x.ten)} (khối ${x.khoi})</option>`).join('')}</select></label>
- <p class="muted" style="margin:0;font-size:12.5px">Học sinh khối ${l.khoi} chưa ở lớp ${esc(l.ten)}. Chọn các em cần đưa vào lớp.</p>
+ <p class="muted" style="margin:0;font-size:12.5px">Các em chưa xếp lớp và các em khối ${l.khoi} ở lớp khác. Chọn các em cần đưa vào lớp ${esc(l.ten)}.</p>
  <div class="qlck">${ds.length?ds.map(([id,n])=>{const c=O().gd[id];return`<label class="qlckr"><input type="checkbox" value="${id}"> <b>${esc(n)}</b> <small>${c?'đang ở lớp '+esc((O().lop.find(x=>x.id===c)||{ten:c}).ten):'chưa xếp lớp'}</small></label>`}).join(''):'<p class="muted">Không còn em nào khối này ngoài lớp.</p>'}</div>`,`qlLuuXep('${lid}')`,'Đưa vào lớp')};
 window.qlLuuXep=function(lid){const ids=[...document.querySelectorAll('.qlck input:checked')].map(x=>x.value);if(!ids.length){toast('Chưa chọn em nào');return}
  ids.forEach(id=>{try{window.qlChuyen(id,lid)}catch(e){}});qlDong();render();toast(`Đã xếp ${ids.length} em vào lớp ${lid}`)};
@@ -12262,7 +12263,7 @@ async function doLogin(e){e.preventDefault();const u=document.getElementById('lg
   if(!(ACC[u]&&!navigator.onLine)){msg.textContent='Đang đăng nhập…';try{await fbDangNhap(u,p,nho);
     if(CLOUD.me.role!=='hs'){msg.textContent='Đây là tài khoản '+(CLOUD.me.role==='ph'?'phụ huynh':'giáo viên')+'. Hãy vào trang giáo viên & phụ huynh.';try{await FB.auth.signOut()}catch(x){}CLOUD=null;return}
     await fbHsBoot();document.getElementById('login').hidden=true;document.body.classList.remove('locked');go({k:'home'});return}
-   catch(err){msg.textContent='';if(!ACC[u]){msg.textContent=fbLoi(err);CLOUD=null;return}CLOUD=null}}
+   catch(err){msg.textContent='';if(err&&err.code==='chua-lop'){msg.textContent=fbLoi(err);try{await FB.auth.signOut()}catch(x){}CLOUD=null;return}if(!ACC[u]){msg.textContent=fbLoi(err);CLOUD=null;return}CLOUD=null}}
   if(!ACC[u]){msg.textContent='Tên đăng nhập không đúng. Ví dụ: Jenny01';return}
   let ok=false;try{ok=(await sha(u+':'+p))===ACC[u].h}catch(err){msg.textContent='Trình duyệt không hỗ trợ đăng nhập. Hãy mở bằng Chrome hoặc Edge.';return}
   if(!ok){msg.textContent='Mật khẩu chưa đúng, em thử lại nhé.';return}
