@@ -8062,7 +8062,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 15:00';
+const APP_VER='24/10 · 15:17';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -12232,7 +12232,14 @@ const gvTen=g=>((O().gv||[]).find(x=>x.id===g)||{ten:g}).ten;
 const phOf=id=>(O().ph||{})[id];
 const phTen=tk=>((O().phInfo||{})[tk]||{}).ten||tk;
 const hs=id=>((O().hoso||{})[id])||{};
-window.qlDi=(t,l)=>{qlTrang=t||'';qlLopId=l||'';qlTrangSo=0;qlChon={};render();scrollTo(0,0)};
+const lopSel=(id,l)=>{const L=LOP().filter(x=>!l||x.khoi===l.khoi);return`<select class="qllop ${l?'':'qlchua'}" aria-label="Lớp của em" onchange="qlVaoLop('${id}',this.value)"><option value="">${l?'— Bỏ khỏi lớp':'⚠ Chọn lớp…'}</option>${L.map(x=>`<option value="${x.id}" ${l&&l.id===x.id?'selected':''}>Lớp ${e(x.ten)}${l?'':' (khối '+x.khoi+')'}</option>`).join('')}</select>`};
+window.qlVaoLop=function(id,lid){const cu=(O().gd||{})[id]||'';if(cu===lid)return;const n=(S.st[id]||{}).name||id;
+ if(!lid&&!confirm(`Bỏ ${n} khỏi lớp? Em sẽ chưa đăng nhập được cho đến khi được xếp lớp mới.`)){render();return}
+ window.qlChuyen(id,lid);if(O().cloud&&typeof fbDayNgay==='function'){try{fbDayNgay()}catch(x){}}};
+window.qlThemTim='';window.qlThemChon={};
+window.qlThemVao=function(lid){const ids=Object.keys(qlThemChon).filter(k=>qlThemChon[k]);if(!ids.length){toast('Chưa chọn em nào');return}
+ ids.forEach(id=>{try{window.qlChuyen(id,lid)}catch(x){}});qlThemChon={};save();if(O().cloud&&typeof fbDayNgay==='function'){try{fbDayNgay()}catch(x){}}render();toast(`Đã đưa ${ids.length} em vào lớp ${lid}`)};
+window.qlDi=(t,l)=>{qlTrang=t||'';qlLopId=l||'';qlTrangSo=0;qlChon={};qlThemTim='';qlThemChon={};render();scrollTo(0,0)};
 const back=(t,l,lab)=>`<button type="button" class="btn sm ghost" onclick="qlDi('${t}','${l||''}')">← ${lab}</button>`;
 const head=(ic,t,extra)=>`<div class="qlhd">${back('','','Quản lý')}<h1>${ic} ${t}</h1>${extra||''}</div>`;
 
@@ -12267,7 +12274,7 @@ function trangHS(){const o=O(),L=LOP(),q=bo(qlHsTim);
   const ns=[h.gt==='nam'?'Nam':h.gt==='nu'?'Nữ':'',h.ng&&h.th?`${h.ng}/${h.th}${h.nam?'/'+h.nam:''}`:(h.nam||'')].filter(Boolean).join(' · ');
   return`<tr><td><input type="checkbox" aria-label="Chọn ${e(n)}" ${qlChon[id]?'checked':''} onchange="qlChon['${id}']=this.checked;render()"></td>
   <td><b>${e(n)}</b><div class="muted">${e(id)}${ns?' · '+e(ns):''}</div></td>
-  <td>${l?`<button type="button" class="lnk" onclick="qlDi('lopct','${l.id}')">${e(l.ten)}</button>`:'<span class="pill qlwarn">Chưa xếp lớp</span>'}</td>
+  <td>${lopSel(id,l)}</td>
   <td>${p?e(phTen(p)):(h.dt?`<span class="muted">${e(h.dt)}</span>`:'<span class="muted">—</span>')}</td>
   <td class="qlact"><button type="button" class="btn sm" onclick="qlSua('${id}')">✎ Sửa</button></td></tr>`}).join('');
  const lopOpt=L.map(l=>`<option value="${l.id}" ${qlHsLop===l.id?'selected':''}>Lớp ${e(l.ten)}</option>`).join('');
@@ -12322,10 +12329,18 @@ function trangLopCT(){const o=O(),l=(o.lop||[]).find(x=>x.id===qlLopId);if(!l){q
  const tj=l.tj&&l.tj.on?`<span class="pill ok">Đang mở · hạn ${e(l.tj.han)}</span> <button type="button" class="btn sm" onclick="qlTJ('${l.id}',false)">Tắt</button>`
   :`<div class="row" style="gap:6px"><input id="tjMa" placeholder="Mã gói" aria-label="Mã gói" autocomplete="off" style="width:130px"><button type="button" class="btn sm pri" onclick="qlTJ('${l.id}',true)">Gắn gói</button></div><div class="muted" style="font-size:12px;margin-top:4px">Mã thử: <b>${e(typeof DEMO_CODE!=='undefined'?DEMO_CODE:'')}</b></div>`;
  return`<div class="grid"><div class="qlhd">${back('lop','','Lớp')}<h1>🏫 Lớp ${e(l.ten)}</h1><span class="pill">Khối ${l.khoi} · ${ds.length} em</span></div>
- <div class="row" style="gap:8px;flex-wrap:wrap"><button type="button" class="btn pri" onclick="qlMoXep('${l.id}')">+ Thêm học sinh vào lớp</button><button type="button" class="btn" onclick="qlMoHS()">+ Tạo tài khoản học sinh mới</button></div>
+ <div class="row" style="gap:8px;flex-wrap:wrap"><button type="button" class="btn pri" onclick="document.getElementById('qlThem').scrollIntoView({behavior:'smooth'});document.getElementById('qlThemQ').focus()">+ Thêm học sinh vào lớp</button></div>
  <div class="grid gpair"><section class="card"><h2>Giáo viên</h2>${gvBox}</section><section class="card"><h2>Toán Jenny</h2>${tj}</section></div>
- <section class="card"><h2>Danh sách lớp (${ds.length})</h2>${ds.length?`<div class="tablewrap"><table class="qltb"><tr><th>#</th><th>Học sinh</th><th>Phụ huynh</th><th></th></tr>${ds.map(([id,n],i)=>{const p=phOf(id);return`<tr><td>${i+1}</td><td><b>${e(n)}</b><div class="muted">${e(id)}</div></td><td>${p?e(phTen(p)):'<span class="muted">—</span>'}</td><td class="qlact"><button type="button" class="btn sm" onclick="qlSua('${id}')">✎ Sửa</button><button type="button" class="btn sm" onclick="qlChuyen('${id}','')">Bỏ khỏi lớp</button>${l.tj&&l.tj.on?'':`<label class="qlnl"><input type="checkbox" ${(o.nl||{})[id]?'checked':''} onchange="qlNgoaiLe('${id}',this.checked)"> Toán Jenny riêng (học bù, chuyển lớp)</label>`}</td></tr>`}).join('')}</table></div>`:'<p class="muted">Lớp chưa có em nào. Bấm "+ Thêm học sinh vào lớp".</p>'}</section></div>`}
+ ${themBox(l)}<section class="card"><h2>Danh sách lớp (${ds.length})</h2>${ds.length?`<div class="tablewrap"><table class="qltb"><tr><th>#</th><th>Học sinh</th><th>Phụ huynh</th><th></th></tr>${ds.map(([id,n],i)=>{const p=phOf(id);return`<tr><td>${i+1}</td><td><b>${e(n)}</b><div class="muted">${e(id)}</div></td><td>${p?e(phTen(p)):'<span class="muted">—</span>'}</td><td class="qlact"><button type="button" class="btn sm" onclick="qlSua('${id}')">✎ Sửa</button><button type="button" class="btn sm" onclick="qlVaoLop('${id}','')">Bỏ khỏi lớp</button>${l.tj&&l.tj.on?'':`<label class="qlnl"><input type="checkbox" ${(o.nl||{})[id]?'checked':''} onchange="qlNgoaiLe('${id}',this.checked)"> Toán Jenny riêng</label>`}</td></tr>`}).join('')}</table></div>`:'<p class="muted">Lớp chưa có em nào. Bấm "+ Thêm học sinh vào lớp".</p>'}</section></div>`}
 
+function themBox(l){const o=O(),q=bo(qlThemTim);
+ const ngoai=STUDENTS.filter(([id,n,g])=>{const c=(o.gd||{})[id];if(c===l.id)return false;if(c&&g!==l.khoi)return false;return !q||bo(n).includes(q)||id.includes(q)})
+  .sort((a,b)=>((o.gd||{})[a[0]]?1:0)-((o.gd||{})[b[0]]?1:0)||a[1].split(' ').pop().localeCompare(b[1].split(' ').pop()));
+ const n=Object.keys(qlThemChon).filter(k=>qlThemChon[k]).length,show=ngoai.slice(0,50);
+ return`<section class="card" id="qlThem"><h2>Thêm học sinh vào lớp ${e(l.ten)}</h2><p class="muted" style="margin:4px 0 8px">Các em chưa xếp lớp (ở trên) và các em khối ${l.khoi} đang ở lớp khác. Tích chọn rồi bấm "Đưa vào lớp".</p>
+ <input id="qlThemQ" type="search" placeholder="Tìm tên hoặc tên đăng nhập" aria-label="Tìm học sinh để thêm" value="${e(qlThemTim)}" oninput="clearTimeout(window._qlT);window._qlT=setTimeout(()=>{qlThemTim=this.value.trim();render();const x=document.getElementById('qlThemQ');if(x){x.focus();x.setSelectionRange(x.value.length,x.value.length)}},250)" style="width:100%;box-sizing:border-box">
+ <div class="qlck" style="margin-top:8px">${show.length?show.map(([id,nm])=>{const c=(o.gd||{})[id],cl=c&&(o.lop||[]).find(x=>x.id===c);return`<label class="qlckr"><input type="checkbox" ${qlThemChon[id]?'checked':''} onchange="qlThemChon['${id}']=this.checked;render()"> <b>${e(nm)}</b> <small>${e(id)} · ${cl?'đang ở lớp '+e(cl.ten):'<span class="qlw">chưa xếp lớp</span>'}</small></label>`}).join('')+(ngoai.length>50?`<p class="muted">… còn ${ngoai.length-50} em, gõ tên để tìm.</p>`:''):'<p class="muted">Không có em nào phù hợp.</p>'}</div>
+ <div class="row" style="gap:8px;margin-top:8px;align-items:center"><button type="button" class="btn pri" ${n?'':'disabled'} onclick="qlThemVao('${l.id}')">Đưa ${n||''} em vào lớp</button><span class="muted">Chưa có tài khoản? <button type="button" class="btn sm" onclick="qlMoHS()">+ Tạo tài khoản học sinh</button></span></div></section>`}
 /* ---------- Nhật ký, Năm học ---------- */
 function trangNK(){const o=O();return`<div class="grid">${head('📒','Nhật ký thao tác')}<section class="card">${(o.nk||[]).length?`<div class="log" style="max-height:70vh">${o.nk.slice(-200).reverse().map(x=>`Ngày ${x.d} · ${e(x.ai||'')} · ${e(x.t)}`).join('\n')}</div>`:'<p class="muted">Chưa có thao tác.</p>'}</section></div>`}
 function trangNam(){const o=O();return`<div class="grid">${head('🎓','Năm học · Lên lớp')}<section class="card"><h2>Năm học ${e(o.nam)}</h2><p class="muted">Sắp có: Kết thúc năm học — lên lớp cả trung tâm (1A → 2A…), chọn em ở lại lớp, nghỉ học; lớp 5 thành "Đã học xong". Xu, đồ, thú cưng giữ nguyên; sao và kết quả lưu vào Hồ sơ năm học.</p></section></div>`}
@@ -12354,7 +12369,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .qlbar{gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}.qlbar select{max-width:160px}
 .pill.qlwarn{background:#FFF1D6;color:#8A4B00}.qlnote{background:#FFF7E6;color:#6B3A00;padding:10px 12px;box-shadow:var(--f2);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .lnk{all:unset;cursor:pointer;text-decoration:underline;font-weight:700}.pill.lnk{text-decoration:none}
-.qlchips{display:flex;flex-wrap:wrap;gap:6px}
+.qllop{max-width:170px}.qllop.qlchua{background:#FFF1D6;color:#8A4B00;font-weight:700}:root[data-theme="dark"] .qllop.qlchua{background:#3A2A10;color:#FFE2B0}.qlchips{display:flex;flex-wrap:wrap;gap:6px}
 :root[data-theme="dark"] .qlnote{background:#3A2A10;color:#FFE2B0}
 </style>`);
 })();

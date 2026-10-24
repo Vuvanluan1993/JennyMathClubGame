@@ -136,6 +136,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Trang chính Quản lý = 4 nút lớn** (24/10/2026): 🎒 Học sinh · 👪 Phụ huynh · 👩‍🏫 Giáo viên · 🏫 Lớp, mỗi nút có số và cảnh báo (em chưa xếp lớp, em chưa có phụ huynh, giáo viên chưa có lớp, lớp chưa có giáo viên); thêm 2 nút nhỏ Nhật ký thao tác, Năm học · Lên lớp. Mỗi nút mở trang con có "← Quản lý".
 - Trang Học sinh: lọc khối, lớp (có "Chưa xếp lớp"), tìm tên/tên đăng nhập/SĐT phụ huynh; chọn nhiều em để chuyển lớp hoặc bỏ khỏi lớp; 20 em một trang.
 - Trang một lớp: thêm học sinh vào lớp, phân công giáo viên, gói Toán Jenny, danh sách lớp (Sửa, Bỏ khỏi lớp, "Toán Jenny riêng" khi lớp chưa có gói).
+- **2 cách xếp học sinh vào lớp** (24/10/2026): (1) trang Học sinh — cột Lớp là ô chọn, em chưa xếp lớp hiện "⚠ Chọn lớp…" (chọn được mọi lớp); em đã có lớp chỉ đổi sang lớp cùng khối hoặc bỏ khỏi lớp (có hỏi lại). (2) trang một Lớp — khung "Thêm học sinh vào lớp": tìm, tích chọn các em chưa xếp lớp hoặc đang ở lớp khác cùng khối, bấm "Đưa vào lớp".
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
