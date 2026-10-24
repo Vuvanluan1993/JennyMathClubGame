@@ -71,7 +71,10 @@ def doc_gemini(text, f):
                 continue
             raise
         MO_HINH_DUNG = m
-        pcm = base64.b64decode(kq["candidates"][0]["content"]["parts"][0]["inlineData"]["data"])
+        try:
+            pcm = base64.b64decode(kq["candidates"][0]["content"]["parts"][0]["inlineData"]["data"])
+        except (KeyError, IndexError):
+            raise RuntimeError("Không có âm thanh trả về: " + json.dumps(kq, ensure_ascii=False)[:300])
         pcm_sang_mp3(pcm, f)
         return
     raise RuntimeError("Không tìm thấy mô hình Gemini TTS nào trong: " + ", ".join(MO_HINH))
@@ -96,6 +99,7 @@ def main():
     cu = json.load(open(p_ma, encoding="utf-8")) if os.path.exists(p_ma) else {}
     moi = bo_qua = ky_tu = 0
     het_luot = False
+    loi = []
     try:
         for c in ds:
             f = os.path.join(ra, c["id"] + ".mp3")
@@ -103,7 +107,20 @@ def main():
             if cu.get(c["id"]) == m and os.path.exists(f):
                 bo_qua += 1
                 continue
-            (doc_gemini if NGUON == "gemini" else doc_cloud)(c["text"], f)
+            for lan in range(3):
+                try:
+                    (doc_gemini if NGUON == "gemini" else doc_cloud)(c["text"], f)
+                    break
+                except Exception as e:
+                    print(f"  {c['id']} lần {lan + 1}: {e}")
+                    if lan == 2:
+                        loi.append(f"{c['id']}: {e}")
+                    else:
+                        time.sleep(15)
+            else:
+                continue
+            if c["id"] in [x.split(":")[0] for x in loi]:
+                continue
             cu[c["id"]] = m
             moi += 1
             ky_tu += len(c["text"])
@@ -116,10 +133,18 @@ def main():
         het_luot = True
     finally:
         json.dump(cu, open(p_ma, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        open(os.path.join(ra, "_nhat-ky.txt"), "w", encoding="utf-8").write(
+            time.strftime("%Y-%m-%d %H:%M UTC\n", time.gmtime())
+            + f"Nguồn {NGUON} · mô hình {MO_HINH_DUNG} · giọng {GIONG}\n"
+            + f"Thu mới {moi}, giữ nguyên {bo_qua}, lỗi {len(loi)}"
+            + (" · HẾT LƯỢT NGÀY" if het_luot else "") + "\n" + "\n".join(loi) + "\n")
     print(f"Xong: thu mới {moi}, giữ nguyên {bo_qua}, {ky_tu} ký tự. Nguồn {NGUON}"
           f"{' · ' + MO_HINH_DUNG if MO_HINH_DUNG else ''} · giọng {GIONG}.")
     if het_luot:
         print("Hết lượt miễn phí hôm nay — phần đã thu được lưu, ngày mai chạy lại để làm tiếp.")
+    if loi:
+        print("Câu lỗi:\n" + "\n".join(loi))
+        sys.exit(1)
 
 
 if __name__ == "__main__":
