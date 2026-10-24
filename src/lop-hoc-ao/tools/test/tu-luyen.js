@@ -17,7 +17,11 @@ const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME||'/opt
      if(q.lay==='fam'){const [n,a,b]=q.head;const ev=r=>r[1]==='+'?r[0]+r[2]===r[4]:r[0]-r[2]===r[4];if(!R.every(ev)||a+b!==n)bad.push(where+' gia đình phép tính sai')}
      if(q.lay==='tower'&&!(R[1][0]===R[2][0]+R[2][1]&&R[1][1]===R[2][1]+R[2][2]&&R[0][0]===R[1][0]+R[1][1]))bad.push(where+' tháp số sai');
      if(q.lay==='tri'){const [x]=R[0],[m1,m2]=R[1],[y,m3,z]=R[2];if(x+m1+y!==q.sum||x+m2+z!==q.sum||y+m3+z!==q.sum)bad.push(where+' tam giác số sai')}
+     if(q.lay==='grid'){const [A,,B,,C]=R[0],D=R[2][0],E=R[2][4],[F,,G,,H]=R[4];if(A+B!==C||A+D!==F||C-E!==H||F-G!==H)bad.push(where+' lưới phép tính sai')}
+     if(q.lay==='color'){const ev=t=>{const m=t.match(/(\d+) ([+−]) (\d+)/);return m[2]==='+'?+m[1]+ +m[3]:m[1]-m[3]};q.cells.forEach((t,i)=>{if(ev(t)!==q.vals[q.a[i]])bad.push(where+' tô màu sai '+t)});if(new Set(q.vals).size!==3)bad.push(where+' trùng số màu')}
+     if(q.lay==='ds'){q.st.forEach((t,i)=>{const u=t.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/−/g,'-');let v;if(/=/.test(u)){const [l,r]=u.split('=');v=eval(l)===+r}else v=eval(u);if(!!v!==!!q.a[i])bad.push(where+' Đ/S sai: '+t)})}
      if(g===1&&R.flat().some(c=>typeof c==='number'&&c>100))bad.push(where+' số quá lớn lớp 1')}
+    if(q.type==='cells'){window.__lay=window.__lay||{};__lay[q.lay]=(__lay[q.lay]||0)+1}
     if(!right1(q,q.a))bad.push(where+' right1 sai '+q.kind);if(/NaN|undefined/.test(JSON.stringify(q)))bad.push(where+' NaN '+q.kind)};
    const tlQs=window.__tlQs;
    PRIM[g].isl.forEach((x,i)=>{for(let s=0;s<6;s++){go({k:'home',tab:'tl'});tlGo(x.id);const qs=scr.qs;
@@ -27,18 +31,18 @@ const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME||'/opt
    /* làm 1 trang từ đầu đến cuối */
    const x=PRIM[g].isl.find(x=>/Phép cộng|Mấy và mấy/.test(x.lesson))||PRIM[g].isl[0];const c0=st.coins;go({k:'home',tab:'tl'});tlGo(x.id);
    for(let j=0;j<scr.qs.length;j++){const q=q1();if(j===1){/* sai rồi thử lại */const w=q.type==='cells'?q.a.map(v=>v+1):q.type==='num'?q.a+1:q.type==='opt'?(q.a+1)%q.opts.length:null;if(w!==null){ans1(w);if(scr.sheet.kind!=='tlretry')bad.push('sai lần 1 không cho thử lại');retry1()}}
-    if(q.type==='cells'){scr.cv=q.a.map(String);tlKey('✓')}else ans1(q.a);if(!scr.sheet||scr.sheet.kind!=='ok')bad.push('câu '+(j+1)+' trả lời đúng mà không báo đúng ('+q.type+')');next1()}
+    if(q.type==='cells'){scr.cv=q.a.map(String);tlXong()}else ans1(q.a);if(!scr.sheet||scr.sheet.kind!=='ok')bad.push('câu '+(j+1)+' trả lời đúng mà không báo đúng ('+q.type+')');next1()}
    if(!scr.end)bad.push('không kết thúc trang');render();if(!document.querySelector('.tlend'))bad.push('không có màn xong trang');
    const rr=st.tl[x.id];if(!rr||!rr.best||rr.n!==1)bad.push('không lưu kết quả trang');if(st.coins<=c0)bad.push('không cộng xu');
    /* Thử thách hôm nay */
    go({k:'home',tab:'tl'});render();if(!document.querySelector('.vtt'))bad.push('thiếu ô Thử thách hôm nay');tlDayGo();const q=q1();if(!q.tt)bad.push('thử thách không phải câu ★');
-   if(q.type==='cells'){scr.cv=q.a.map(String);tlKey('✓')}else ans1(q.a);next1();if(!st.tlDay||!st.tlDay.ok)bad.push('không lưu thử thách hôm nay');
+   if(q.type==='cells'){scr.cv=q.a.map(String);tlXong()}else ans1(q.a);next1();if(!st.tlDay||!st.tlDay.ok)bad.push('không lưu thử thách hôm nay');
    /* gợi ý của cô */
    S.asg=(S.asg||[]).concat([{id:'gtest',loai:'goiy',g,isl:[PRIM[g].isl[1].id],t:Date.now(),by:'Cô'}]);go({k:'home',tab:'tl'});render();
    if(!document.querySelector('.vrow.gy'))bad.push('không hiện trang cô gợi ý');if(asgMine(st).some(a=>a.loai==='goiy'))bad.push('gợi ý lẫn vào Bài cô giao');
    if(document.documentElement.scrollWidth>320)lay.push('tràn trang Tự luyện');
    go({k:'home',tab:'nha'});render();const tile=[...document.querySelectorAll('.pghome .nhat')][2];if(!tile||!/tab:'tl'/.test(tile.getAttribute('onclick')))bad.push('ô Tự luyện chưa mở trang');
-   return{nq,nNew,bad:[...new Set(bad)].slice(0,30),lay:[...new Set(lay)]}},[g,SID]);
+   return{nq,nNew,lays:JSON.stringify(window.__lay||{}),bad:[...new Set(bad)].slice(0,30),lay:[...new Set(lay)]}},[g,SID]);
   const ok=!r.bad.length&&!r.lay.length&&!er.length;if(!ok)fail++;
-  console.log(`Lớp ${g}: ${ok?'ĐẠT':'CHƯA ĐẠT'} · ${r.nq} câu · ${r.nNew} bài dạng mới`);[...r.bad,...r.lay,...er.slice(0,5)].forEach(s=>console.log('   - '+s));await p.close()}
+  console.log(`Lớp ${g}: ${ok?'ĐẠT':'CHƯA ĐẠT'} · ${r.nq} câu · ${r.nNew} bài dạng mới ${r.lays}`);[...r.bad,...r.lay,...er.slice(0,5)].forEach(s=>console.log('   - '+s));await p.close()}
  fs.unlinkSync(tmp);await b.close();process.exit(fail?1:0)})();

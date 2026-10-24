@@ -57,14 +57,51 @@ function tamGiac(g,M){let S0,x,y,z;for(;;){S0=g===1?RR(6,10):RR(12,Math.min(20,M
   say:T(`Tam giác số. Ba số trên mỗi cạnh cộng lại được ${S0}.`,`Number triangle. The three numbers on each side add up to ${S0}.`),
   sol:`${x} + ${m1} + ${y} = ${S0} · ${x} + ${m2} + ${z} = ${S0} · ${y} + ${m3} + ${z} = ${S0}`})}
 
+/* Lưới phép tính: hàng trên A + B = C, cột trái A + D = F, cột phải C − E = H, hàng dưới F − G = H; ẩn vài ô, giải được lần lượt */
+function luoiPT(g){const M=g===1?10:20;let A,B,C,D,E,F,G,H;
+ for(;;){A=RR(1,M-2);B=RR(1,M-1-A);C=A+B;D=RR(1,M-A);F=A+D;E=RR(0,C-1);H=C-E;G=F-H;if(G>=0&&new Set([A,B,D,E,G]).size>=4)break}
+ const V={A,B,C,D,E,F,G,H},EQ=[['A','B','C','+'],['A','D','F','+'],['C','E','H','−'],['F','G','H','−']];
+ const ok=bl=>{const k=new Set(Object.keys(V).filter(x=>!bl.includes(x)));for(let t=0;t<4;t++)EQ.forEach(e=>{const m=e.slice(0,3).filter(x=>!k.has(x));if(m.length===1)k.add(m[0])});return k.size===8};
+ let bl;for(let t=0;t<200;t++){bl=shuf(Object.keys(V)).slice(0,g===1?3:4);if(ok(bl))break}
+ const c=x=>bl.includes(x)?null:V[x];
+ const rows=[[c('A'),'+',c('B'),'=',c('C')],['+','','','','−'],[c('D'),'','','',c('E')],['=','','','','='],[c('F'),'−',c('G'),'=',c('H')]];
+ const order=['A','B','C','D','E','F','G','H'].filter(x=>bl.includes(x));/* thứ tự đọc: hàng 1 (A,B,C), hàng 3 (D,E), hàng 5 (F,G,H) */
+ return cq({lay:'grid',rows,a:order.map(x=>V[x]),kind:'Lưới phép tính',label:'Lưới phép tính',
+  q:T('<b>Lưới phép tính</b>: mỗi hàng ngang và mỗi cột dọc là một phép tính. Điền số vào ô trống.','<b>Number grid</b>: each row and each column is a sum. Fill in the boxes.'),
+  say:T('Lưới phép tính. Mỗi hàng ngang và mỗi cột dọc là một phép tính. Em điền số vào ô trống nhé.','Number grid. Each row and each column is a sum. Fill in the boxes.'),
+  sol:`${A} + ${B} = ${C} · ${A} + ${D} = ${F} · ${C} − ${E} = ${H} · ${F} − ${G} = ${H}`})}
+/* Tô màu theo kết quả: 12 ô (4×3), mỗi ô một phép tính; tô đúng màu thì hiện hình */
+const TL_HINH=[["0110","1221","0110"],["1001","0220","1001"],["2112","0110","2112"],["0200","2121","0200"],["1111","0220","0220"],["0120","1221","0120"]];
+const TL_MAU=[['#0079C1','xanh','blue'],['#FCB40C','vàng','yellow'],['#E0441A','đỏ','red']];
+function toMau(g,M){M=M||(g===1?10:20);const vs=shuf(Array.from({length:M-2},(_,i)=>i+3)).slice(0,3);const H=pick(TL_HINH).join('').split('').map(Number);
+ const ex=v=>{for(let t=0;t<30;t++){if(Math.random()<.5){const a=RR(0,v);return`${a} + ${v-a}`}const b=RR(v,M),c=b-v;if(c>=0)return`${b} − ${c}`}return`${v} + 0`};
+ const cells=H.map(k=>ex(vs[k]));
+ return cq({lay:'color',cells,vals:vs,rows:[],a:H,kind:'Tô màu theo kết quả',label:'Tô màu theo kết quả',
+  q:T('<b>Tô màu theo kết quả</b>: chọn màu rồi chạm vào ô có phép tính bằng số của màu đó.','<b>Colour by answer</b>: pick a colour, then tap each box whose answer matches it.'),
+  say:T('Tô màu theo kết quả. Em chọn màu rồi chạm vào ô có kết quả bằng số của màu đó.','Colour by answer. Pick a colour, then tap each box whose answer matches it.'),
+  sol:vs.map((v,i)=>`${v} → ${T(TL_MAU[i][1],TL_MAU[i][2])}`).join(' · ')})}
+/* Đúng ghi Đ, sai ghi S: 4 ý */
+function dungSai(g,mode){const M=g===1?10:mode==='100'?100:20,L=[],a=[];const seen=new Set();
+ while(L.length<4){let t,ok;const k=RR(0,2);
+  if(mode==='so'||k===0){const x=RR(0,M),y=RR(0,M);if(x===y)continue;const s=pick(['>','<']);ok=s==='>'?x>y:x<y;if(Math.random()<.5){t=`${x} ${s==='>'?'&gt;':'&lt;'} ${y}`}else{ok=!ok;t=`${x} ${s==='>'?'&lt;':'&gt;'} ${y}`}}
+  else if(k===1){const x=RR(0,M);const y=RR(0,M-x),r=x+y,d=Math.random()<.5?0:pick([-1,1]);const w=r+d;if(w<0)continue;ok=d===0;t=`${x} + ${y} = ${w}`}
+  else{const x=RR(1,M),y=RR(0,x),r=x-y,d=Math.random()<.5?0:pick([-1,1]);const w=r+d;if(w<0)continue;ok=d===0;t=`${x} − ${y} = ${w}`}
+  if(seen.has(t))continue;seen.add(t);L.push(t);a.push(ok?1:0)}
+ if(a.every(v=>v===a[0]))return dungSai(g,mode);
+ return cq({lay:'ds',st:L,rows:[],a,kind:'Đúng hay sai',label:'Đúng hay sai',
+  q:T('<b>Đúng ghi Đ, sai ghi S</b> cho từng ý.','<b>True or false?</b> Mark each line T or F.'),
+  say:T('Đúng ghi Đ, sai ghi S cho từng ý.','True or false? Mark each line.'),
+  sol:L.map((t,i)=>`${t.replace(/&gt;/g,'>').replace(/&lt;/g,'<')}: ${a[i]?T('Đ','T'):T('S','F')}`).join(' · ')})}
+
 /* dạng mới hợp với từng bài (theo số bài KNTT) */
 function tlNew(x){const g=curG(),b=x.b;
- if(g===1){if(b===5||b===6)return[()=>nhaSo(1)];if(b>=10&&b<=13||b===18||b===20||b===38)return[()=>giaDinh(1),()=>nhaSo(1)];if(b>=29&&b<=33||b===39)return[()=>giaDinh(1,'100')];return[]}
- if(g===2){if(b>=7&&b<=14)return[()=>giaDinh(2,'20'),()=>nhaSo(2)];if(b===3||b===5||b===6)return[()=>giaDinh(2,'100')];if(b>=19&&b<=24||b===33||b===69)return[()=>giaDinh(2,'nho')];return[]}
+ if(g===1){if(b===4)return[()=>dungSai(1,'so')];if(b===5||b===6)return[()=>nhaSo(1),()=>dungSai(1,'so')];if(b===10||b===11)return[()=>giaDinh(1),()=>nhaSo(1),()=>dungSai(1)];if(b>=12&&b<=13||b===18||b===20||b===38)return[()=>giaDinh(1),()=>nhaSo(1),()=>toMau(1),()=>dungSai(1)];if(b>=29&&b<=33||b===39)return[()=>giaDinh(1,'100'),()=>dungSai(1,'100')];if(b===22)return[()=>dungSai(1,'so')];return[]}
+ if(g===2){if(b>=7&&b<=14)return[()=>giaDinh(2,'20'),()=>nhaSo(2),()=>toMau(2),()=>dungSai(2)];if(b===3||b===5||b===6)return[()=>giaDinh(2,'100'),()=>dungSai(2,'100')];if(b>=19&&b<=24||b===33||b===69)return[()=>giaDinh(2,'nho'),()=>dungSai(2,'100')];return[]}
  return[]}
 function tlChal(x){const g=curG(),b=x.b;
- if(g===1&&(b>=10&&b<=13||b===18||b===20||b===38))return[()=>thapSo(1,10),()=>tamGiac(1,10)];
- if(g===2&&(b>=7&&b<=14))return[()=>thapSo(2,20),()=>tamGiac(2,20)];
+ if(g===1&&(b>=10&&b<=11))return[()=>thapSo(1,10),()=>tamGiac(1,10)];
+ if(g===1&&(b>=12&&b<=13||b===18||b===20||b===38))return[()=>thapSo(1,10),()=>tamGiac(1,10),()=>luoiPT(1)];
+ if(g===2&&(b>=7&&b<=14))return[()=>thapSo(2,20),()=>tamGiac(2,20),()=>luoiPT(2)];
  if(g===2&&(b>=19&&b<=24||b===33||b===69))return[()=>thapSo(2,100)];
  return[]}
 
@@ -97,12 +134,17 @@ window.tlDayGo=function(){const st=S.st[sid];if(tlDayOk(st)){toast(T('Hôm nay e
 function tlFig(q){const g=scr;let b=0;
  const cell=c=>{if(c===null){const i=b++,v=(g.cv&&g.cv[i])||'';return`<button type="button" class="tc e ${i===g.cc?'cur':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" onclick="tlCell(${i})" aria-label="${T('Ô trống','Blank')} ${i+1}">${esc(v)}</button>`}
   if(c==='')return`<span class="tc gap"></span>`;if(typeof c==='string')return`<span class="tc op">${c}</span>`;return`<span class="tc">${fmt(c)}</span>`};
+ if(q.lay==='color'){const c=(g.cv||[]);return`<div class="tlcol">${q.cells.map((t,i)=>{const v=c[i],col=v!==''&&v!=null?TL_MAU[+v][0]:'';return`<button type="button" class="cc ${col?'on':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" ${col?`style="background:${col}"`:''} onclick="tlCell(${i})">${t.replace(/ /g,'')}</button>`}).join('')}</div>`}
+ if(q.lay==='ds'){const c=(g.cv||[]);return`<div class="tlds">${q.st.map((t,i)=>`<div class="dsr ${g.cbad&&g.cbad.includes(i)?'bad':''}"><span class="dst">${t}</span><button type="button" class="dsb ${c[i]==='1'?'on':''}" onclick="tlDS(${i},1)" aria-pressed="${c[i]==='1'}">${T('Đ','T')}</button><button type="button" class="dsb ${c[i]==='0'?'on':''}" onclick="tlDS(${i},0)" aria-pressed="${c[i]==='0'}">${T('S','F')}</button></div>`).join('')}</div>`}
  if(q.lay==='house')return`<div class="tlhouse"><div class="roof"><span>${q.roof}</span></div><div class="floors">${q.rows.map(r=>`<div class="fl">${r.map(cell).join('')}</div>`).join('')}</div></div>`;
  if(q.lay==='fam')return`<div class="tlfam"><div class="tlsd"><span class="tc">${q.head[0]}</span><i class="l1"></i><i class="l2"></i><span class="tc">${q.head[1]}</span><span class="tc">${q.head[2]}</span></div>${q.rows.map(r=>`<div class="eq">${r.map(cell).join('')}</div>`).join('')}</div>`;
  return`<div class="tlrows ${q.lay}">${q.lay==='tri'?`<div class="trisum">${T('Mỗi cạnh','Each side')} = ${q.sum}</div>`:''}${q.rows.map(r=>`<div class="rw">${r.map(cell).join('')}</div>`).join('')}</div>`}
 const nBl=q=>q.a.length;
-window.tlCell=function(i){const g=scr;if(g.sheet)return;g.cc=i;sfx('tap');render()};
-window.tlKey=function(k){const g=scr,q=q1();if(g.sheet||!q||q.type!=='cells')return;g.cv=g.cv||q.a.map(()=>'');const v=g.cv[g.cc]||'';
+window.tlCell=function(i){const g=scr,q=q1();if(g.sheet)return;if(q&&q.lay==='color'){g.cv=g.cv||q.a.map(()=>'');g.cv[i]=g.cv[i]===String(g.pc||0)?'':String(g.pc||0);g.cbad=null}else g.cc=i;sfx('tap');render()};
+window.tlPC=function(k){scr.pc=k;sfx('tap');render()};
+window.tlDS=function(i,v){const g=scr,q=q1();if(g.sheet)return;g.cv=g.cv||q.a.map(()=>'');g.cv[i]=String(v);g.cbad=null;sfx('tap');render()};
+window.tlXong=function(){const g=scr,q=q1();g.cv=g.cv||q.a.map(()=>'');if(g.cv.every(v=>v!==''&&v!=null))ans1(g.cv.map(Number));else toast(q.lay==='color'?T('Em tô hết các ô nhé.','Colour every box first.'):q.lay==='ds'?T('Em chọn Đ hoặc S cho mọi ý nhé.','Mark every line first.'):T('Em điền hết các ô trống nhé.','Fill in every box first.'))};
+window.tlKey=function(k){const g=scr,q=q1();if(g.sheet||!q||q.type!=='cells'||q.lay==='color'||q.lay==='ds')return;g.cv=g.cv||q.a.map(()=>'');const v=g.cv[g.cc]||'';
  if(k==='⌫'){g.cv[g.cc]=v.slice(0,-1)}
  else if(k==='✓'){if(g.cv.every(Boolean))ans1(g.cv.map(Number));else{toast(T('Em điền hết các ô trống nhé.','Fill in every box first.'));return}}
  else{const mx=Math.max(...q.a).toString().length;if(v.length>=mx)g.cv[g.cc]=k;else g.cv[g.cc]=v+k;
@@ -111,8 +153,10 @@ window.tlKey=function(k){const g=scr,q=q1();if(g.sheet||!q||q.type!=='cells')ret
 
 /* ---------- nối vào bộ chơi ---------- */
 {const _r=right1;right1=function(q,v){if(q&&q.type==='cells')return Array.isArray(v)&&v.length===q.a.length&&v.every((x,i)=>Number(x)===q.a[i]);return _r.apply(this,arguments)}}
-{const _s=show1;show1=function(q){if(q&&q.type==='cells')return q.a.join(', ');return _s.apply(this,arguments)}}
+{const _s=show1;show1=function(q){if(q&&q.type==='cells')return q.lay==='color'||q.lay==='ds'?'':q.a.join(', ');return _s.apply(this,arguments)}}
 {const _i=input1;input1=function(q){if(!(q&&q.type==='cells'))return _i.apply(this,arguments);
+ if(q.lay==='color')return`<div class="tlpal">${q.vals.map((v,k)=>`<button type="button" class="pc ${(scr.pc||0)===k?'on':''}" onclick="tlPC(${k})" aria-pressed="${(scr.pc||0)===k}" aria-label="${T(TL_MAU[k][1],TL_MAU[k][2])} ${v}"><i style="background:${TL_MAU[k][0]}"></i>= ${v}</button>`).join('')}</div><button class="gobtn" type="button" onclick="tlXong()">${T('Xong','Done')}</button>`;
+ if(q.lay==='ds')return`<button class="gobtn" type="button" onclick="tlXong()">${T('Xong','Done')}</button>`;
  return`<div class="pad">${['1','2','3','4','5','6','7','8','9','⌫','0','✓'].map(k=>`<button type="button" class="${k==='✓'?'go':k==='⌫'?'del':''}" onclick="tlKey('${k}')" aria-label="${k==='⌫'?T('Xóa','Delete'):k==='✓'?T('Xong','Done'):k}">${k==='✓'?T('Xong','Done'):k}</button>`).join('')}</div>`}}
 function tlSave(){const g=scr,st=S.st[sid];if(g.tlDay)return;const r=tlR(st)[g.id];if(r&&r.cur){r.cur.j=g.j;r.cur.res=g.res.slice()}}
 {const _a=ans1;ans1=function(v){const g=scr;if(!(g&&g.tl))return _a.apply(this,arguments);if(g.sheet||g.end)return;
@@ -218,7 +262,7 @@ window.gvTLAdd=function(){const isl=[...document.getElementById('tlIsl').selecte
 window.gvTLDel=function(id){S.asg=(S.asg||[]).filter(a=>a.id!==id);save();render();toast('Đã bỏ gợi ý')};
 {const _g=viewGV;viewGV=function(){const r=_g.apply(this,arguments);try{const b=gvTLBox();if(!b)return r;const i=r.lastIndexOf('<section class="card"><details>');return i<0?r:r.slice(0,i)+b+r.slice(i)}catch(e){return r}}}
 
-Object.assign(I18N,{'Nhà số':'Number house','Gia đình phép tính':'Fact family','Tháp số':'Number pyramid','Tam giác số':'Number triangle'});
+Object.assign(I18N,{'Lưới phép tính':'Number grid','Tô màu theo kết quả':'Colour by answer','Đúng hay sai':'True or false','Nhà số':'Number house','Gia đình phép tính':'Fact family','Tháp số':'Number pyramid','Tam giác số':'Number triangle'});
 document.head.insertAdjacentHTML('beforeend',`<style>
 .vbt h2{margin:0}.vsub{font-size:13px;color:var(--muted);margin:2px 0 10px}.vstat{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px}
 .vsec{font-family:var(--f-display);font-size:20px;margin:16px 0 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--ink);line-height:1.15}
@@ -247,6 +291,17 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .tlrows{display:flex;flex-direction:column;align-items:center;gap:6px}.tlrows .rw{display:flex;gap:6px}
 .tlrows.tri{gap:8px}.tlrows.tri .rw{gap:24px}.tlrows.tri .tc{border-radius:50%}
 .trisum{font-family:var(--f-display);font-size:20px;color:var(--ink);margin-bottom:2px}
+.tlrows.grid{display:grid;grid-template-columns:repeat(5,42px);gap:4px;justify-content:center}.tlrows.grid .rw{display:contents}.tlrows.grid .tc{width:42px;height:40px;font-size:26px}.tlrows.grid .tc.op{width:42px}
+.tlcol{display:grid;grid-template-columns:repeat(4,minmax(0,70px));gap:6px;justify-content:center}
+.tlcol .cc{height:48px;border:0;background:#fff;color:#1F2A5A;font-family:var(--f-display);font-size:clamp(17px,5vw,21px);line-height:1;white-space:nowrap;box-shadow:inset 0 0 0 2px #1F2A5A;cursor:pointer;padding:0 2px;overflow:hidden}
+.tlcol .cc.on{color:#fff;text-shadow:0 1px 0 #1F2A5A}.tlcol .cc.bad{box-shadow:inset 0 0 0 4px #E0441A}
+.tlpal{display:flex;gap:6px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+.tlpal .pc{display:flex;align-items:center;gap:5px;border:0;background:var(--surface);color:var(--ink);font-family:var(--f-display);font-size:24px;padding:5px 8px;white-space:nowrap;box-shadow:var(--f2),0 3px 0 0 var(--pxk);cursor:pointer}
+.tlpal .pc i{width:22px;height:22px;display:inline-block;box-shadow:0 0 0 2px var(--pxk)}.tlpal .pc.on{outline:4px solid var(--sun);outline-offset:2px}
+.tlds{display:flex;flex-direction:column;gap:8px;width:100%;max-width:340px}
+.dsr{display:flex;align-items:center;gap:8px;background:var(--surface);padding:6px 8px;box-shadow:var(--f2)}.dsr.bad{background:var(--coral-soft)}
+.dst{flex:1;font-family:var(--f-display);font-size:26px;color:var(--ink);line-height:1}
+.dsb{width:44px;height:40px;border:0;background:#fff;color:#1F2A5A;font-family:var(--f-display);font-size:26px;box-shadow:inset 0 0 0 2px #1F2A5A;cursor:pointer}.dsb.on{background:#0079C1;color:#fff}
 .tlend{text-align:center}.tlend .big{font-family:var(--f-display);font-size:48px;color:var(--leaf);line-height:1.1}
 </style>`);
 })();

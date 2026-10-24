@@ -31,7 +31,7 @@ Ký hiệu cột "App": ✓ đã có dạng tương tự trong đảo · ◐ có
 | Khoanh số lớn nhất / bé nhất | ✓ |
 | Bằng nhau, nhiều hơn, ít hơn: nối cặp, gạch bớt, vẽ thêm cho bằng | ◐ |
 | Điền >, <, = ; một ô trống nối tới nhiều số (ví dụ ☐ < 3) | ◐ |
-| Đúng ghi Đ, sai ghi S nhiều ý | ◐ (có đúng/sai 1 ý) |
+| Đúng ghi Đ, sai ghi S nhiều ý | ✓ Tự luyện |
 
 ## 3. Tách – gộp số (sơ đồ ba vòng tròn)
 | Dạng bài | App |
@@ -39,7 +39,7 @@ Ký hiệu cột "App": ✓ đã có dạng tương tự trong đảo · ◐ có
 | Nhìn tranh, điền sơ đồ tách–gộp | ◐ |
 | Nối sơ đồ với tranh | ✗ |
 | Khoanh các cặp số tạo thành một số trong bảng số | ✗ |
-| "Nhà số": mái ghi số, các tầng ghi cặp tách | ✗ |
+| "Nhà số": mái ghi số, các tầng ghi cặp tách | ✓ Tự luyện |
 
 ## 4. Cộng, trừ trong 10 (ứng với KNTT chủ đề 3)
 | Dạng bài | App |
@@ -47,13 +47,13 @@ Ký hiệu cột "App": ✓ đã có dạng tương tự trong đảo · ◐ có
 | Nhìn tranh viết phép cộng / trừ (thêm vào, bớt đi, gộp hai nhóm) | ✓ |
 | Tính nhẩm theo cột; tính 3 số | ✓ |
 | Tìm số trong ô trống ở phép tính | ✓ |
-| Từ một sơ đồ tách–gộp viết đủ 4 phép tính (cộng, trừ) | ✗ |
+| Từ một sơ đồ tách–gộp viết đủ 4 phép tính (cộng, trừ) | ✓ Tự luyện |
 | Đếm thêm / đếm bớt bằng ngón tay, bảng đếm | ✓ (hướng dẫn hai bàn tay) |
 | Nối phép tính với kết quả | ✓ |
-| Tháp số (ô trên = tổng hai ô dưới) | ✗ |
-| Lưới phép tính ngang–dọc điền số, điền dấu | ✗ |
-| Tam giác số (tổng mỗi cạnh) | ✗ |
-| Tô màu tranh theo kết quả phép tính | ✗ |
+| Tháp số (ô trên = tổng hai ô dưới) | ✓ Tự luyện |
+| Lưới phép tính ngang–dọc điền số, điền dấu | ✓ Tự luyện (điền số) |
+| Tam giác số (tổng mỗi cạnh) | ✓ Tự luyện |
+| Tô màu tranh theo kết quả phép tính | ✓ Tự luyện |
 | Xếp phép tính theo kết quả từ bé đến lớn | ✗ |
 | So sánh phép tính với phép tính (7+2 … 7+1) | ✓ |
 | Bảng cộng, bảng trừ: điền phần thiếu, tô theo kết quả | ✓ |

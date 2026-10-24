@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Tự luyện: thêm 3 dạng bài (T-26)
+- **Lưới phép tính**: hàng ngang, cột dọc là 4 phép cộng/trừ đan nhau; ẩn 3 ô (lớp 1) hoặc 4 ô (lớp 2), luôn giải được lần lượt. Dùng làm ★ Thử thách.
+- **Tô màu theo kết quả**: 12 ô phép tính, 3 màu ứng với 3 kết quả; chọn màu rồi chạm ô, tô đúng hiện hình. Ô sai được đánh dấu để tô lại.
+- **Đúng hay sai (Đ/S nhiều ý)**: 4 ý so sánh số, phép cộng, phép trừ; chạm Đ hoặc S từng ý.
+- Gắn theo bài: lớp 1 bài 4–6, 10–13, 18, 20, 22, 29–33, 38–39; lớp 2 bài 3, 5–14, 19–24, 33, 69. `tools/test/tu-luyen.js` kiểm tra luật cả 7 dạng.
+
 ## 24/10/2026 — Sức mạnh Toán: tính chặt hơn, hiện mức thay số
 - Điểm mỗi dạng co về 50% theo số câu (thêm 2 câu "nửa đúng"): làm ít câu không còn được 100. Điểm mạch tính theo số câu, cần ≥ 10 câu (trước là 5).
 - Bỏ số chi tiết: hiện **mức** Mới bắt đầu · Đang tập · Khá · Tốt · Vững ở hồ sơ học sinh, trang giáo viên, phụ huynh, kết quả màn Luyện. So với khối ghi "cao hơn / ngang / thấp hơn".
