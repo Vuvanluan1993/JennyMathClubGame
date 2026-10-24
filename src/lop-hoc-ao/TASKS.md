@@ -7,7 +7,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 - ☐ **T-02 Rà soát nội dung học kì 2** — giáo viên chơi thử mỗi lớp 1–2 chủ đề; sửa câu, slide chưa hợp (nội dung do máy soạn hàng loạt).
 - ☐ **T-03 Dạng "Nối cặp"** — kéo dây nối nhiều cặp (đang chỉ hỏi từng cặp).
 - ☐ **T-04 Dạng "Điền bảng"** — điền nhiều ô một lúc (hoàn thành bảng).
-- ☐ **T-05 Dạng "Đặt tính từng hàng"** — nhập từng chữ số theo cột, có nhớ.
+- ☑ **T-05 Dạng "Đặt tính từng hàng"** — "Đặt tính rồi tính" lớp 2 có nhớ: đảo, phiếu bài, Luyện lỗi, Tự luyện (24/10). Lớp 3–4 dùng sau.
 
 ## Tiếp theo
 - ☐ **T-07b Quản lý trung tâm (tiếp)** — lên lớp cả lớp cuối năm, đặt lại mật khẩu, khóa tài khoản, xuất dữ liệu; trang Quản trị hệ thống khi có máy chủ.

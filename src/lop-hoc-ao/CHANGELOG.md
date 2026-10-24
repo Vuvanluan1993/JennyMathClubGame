@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Đặt tính rồi tính trong đảo, phiếu bài, Luyện lỗi (T-05)
+- Lớp 2, các bài có nhớ (19–24, 33, 60, 62, 63, 69, 70): thêm dạng "Đặt tính rồi tính" vào Màn 1 và Màn 2 của đảo. Phiếu bài (Bài cô giao), Luyện lỗi, Tự luyện lấy câu từ đảo nên cũng có.
+- Ngoài Tự luyện: câu sai lần 1 chỉ xoá chữ số sai, giữ chữ số đúng; vẫn mất 1 tim như câu khác của màn.
+- Hướng dẫn khi sai (đặt tính có nhớ, từng hàng, số nhớ đỏ) đọc được dạng mới.
+
 ## 24/10/2026 — Tự luyện: dạng "Đặt tính rồi tính" (lớp 2, có nhớ)
 - Hai số viết thẳng cột, có dấu và vạch kẻ; em điền từng chữ số kết quả **từ phải sang trái** (ô tự lùi sang trái). Ô nhỏ màu đỏ trên đầu cột để em tự ghi "nhớ 1" (không chấm).
 - Luôn có nhớ. Phép theo bài: bài 19 (2 chữ số + 1 chữ số), 20 (2 + 2), 21 cộng; 22 (2 − 1), 23 (2 − 2) trừ; 24, 33, 69 trộn; bài 60 cộng, 62 trừ trong 1000; 63, 70 trộn.

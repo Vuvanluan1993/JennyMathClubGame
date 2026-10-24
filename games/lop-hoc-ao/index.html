@@ -8088,7 +8088,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 17:04';
+const APP_VER='24/10 · 17:05';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -12103,7 +12103,7 @@ function datTinh(mode,OP,kb){const big=mode==='1000';let a,b,op,r;
  for(let k=n-1;k>=0;k--){const x=+A[k]||0,y=+B[k]||0,h=PL[n-1-k];if(A[k]===''&&B[k]===''&&!c)break;
   if(op==='+'){const s0=x+y+c;st.push(T(`Hàng ${h}: ${x} + ${y}${c?' + 1 (nhớ)':''} = ${s0}, viết ${s0%10}${s0>=10&&k>0?', nhớ 1':''}.`,`${h}: ${x} + ${y}${c?' + 1 (carried)':''} = ${s0}, write ${s0%10}${s0>=10&&k>0?', carry 1':''}.`));c=s0>=10?1:0}
   else{const y2=y+c,mu=x<y2;const top=mu?x+10:x;st.push(T(`Hàng ${h}: ${mu?`${x} không trừ được ${y2}, lấy ${top} − ${y2}`:`${x} − ${y2}`} = ${top-y2}, viết ${top-y2}${mu?', nhớ 1':''}.`,`${h}: ${mu?`${x} is less than ${y2}, so ${top} − ${y2}`:`${x} − ${y2}`} = ${top-y2}, write ${top-y2}${mu?', carry 1':''}.`));c=mu?1:0}}
- return cq({lay:'vert',rows:[A,B,rr],op,n,a:ra,kind:'Đặt tính rồi tính',label:'Đặt tính rồi tính',
+ return cq({lay:'vert',rows:[A,B,rr],op,n,a:ra,va:a,vb:b,kind:'Đặt tính rồi tính',label:'Đặt tính rồi tính',
   q:T(`<b>Đặt tính rồi tính</b>: ${fmt(a)} ${op} ${fmt(b)}. Điền kết quả từ phải sang trái.`,`<b>Column ${op==='+'?'addition':'subtraction'}</b>: ${fmt(a)} ${op} ${fmt(b)}. Fill in the answer from right to left.`),
   say:T(`Đặt tính rồi tính: ${a} ${op==='+'?'cộng':'trừ'} ${b}. Em tính từ hàng đơn vị nhé.`,`Work out ${a} ${op==='+'?'plus':'minus'} ${b} in columns. Start with the ones.`),
   sol:st.join(' ')})}
@@ -12225,6 +12225,20 @@ function tlEndView(){const g=scr,x=isl1(g.id),R=g.tlRes||{},st=S.st[sid];
   .replace(/<button class="gx" onclick="[^"]*"/,`<button class="gx" onclick="try{speechSynthesis.cancel()}catch(e){};go({k:'home',tab:'tl'})"`)
   .replace(/<div class="g1pic">@@TLFIG@@<\/div>/,q.type==='cells'?`<div class="g1pic tlfig">${tlFig(q)}</div>`:'');
  return h}}
+
+/* ---------- Đặt tính rồi tính trong đảo và phiếu bài (T-05, thầy chốt 24/10/2026) ----------
+   Lớp 2, các bài có nhớ: thêm bộ sinh "Đặt tính rồi tính" vào Màn 1 và Màn 2 của đảo. Phiếu bài, Luyện lỗi lấy câu từ đảo nên cũng có. */
+const TL_DT={19:['100','+',1],20:['100','+',2],21:['100','+'],22:['100','−',1],23:['100','−',2],24:['100'],33:['100'],60:['1000','+'],62:['1000','−'],63:['1000'],69:['100'],70:['1000']};
+try{(PRIM[2]?PRIM[2].isl:[]).forEach(x=>{const d=TL_DT[x.b];if(!d||x.dt)return;x.dt=1;[0,1].forEach(L=>{if(x.lv[L])x.lv[L].push(()=>datTinh(...d))})})}catch(e){}
+/* ngoài Tự luyện: vẽ ô, khởi tạo ô theo câu, câu sai lần 1 xoá chữ số sai */
+{const _v=viewGame1;viewGame1=function(){const g=scr;if(!g||g.tl||g.end||!g.qs)return _v.apply(this,arguments);const q=q1();
+ if(q&&q.type==='cells'&&(g.cvj!==g.j||!g.cv||g.cv.length!==nBl(q))){g.cvj=g.j;g.cv=q.a.map(()=>'');g.cc=q.lay==='vert'?q.a.length-1:0;g.nho=[];g.cbad=null}
+ let h=_v.apply(this,arguments);if(q&&q.type==='cells')h=h.replace(/<div class="g1pic">@@TLFIG@@<\/div>/,`<div class="g1pic tlfig">${tlFig(q)}</div>`);return h}}
+{const _a=ans1;ans1=function(v){const g=scr,q=g&&g.qs&&!g.tl?q1():null;const r=_a.apply(this,arguments);
+ try{if(q&&q.type==='cells'&&g.sheet&&g.sheet.kind==='retry'&&Array.isArray(v)){g.cbad=[];g.cv=v.map((x,i)=>{if(Number(x)===q.a[i])return String(x);g.cbad.push(i);return''});g.cc=q.lay==='vert'?g.cbad[g.cbad.length-1]:g.cbad[0]||0;render()}}catch(e){}return r}}
+{const _r=retry1;retry1=function(){const g=scr;if(!g||g.tl)return _r.apply(this,arguments);const cv=g.cv,cc=g.cc,cb=g.cbad,nho=g.nho,r=_r.apply(this,arguments);if(cv){g.cv=cv;g.cc=cc;g.cbad=cb;g.nho=nho;render()}return r}}
+/* hướng dẫn khi sai (đặt tính có nhớ) đọc được dạng ô */
+if(typeof gdColParse==='function'){const _p=gdColParse;gdColParse=function(q){if(q&&q.lay==='vert')return _p({...q,pic:`g1col"><span>${q.va}</span><span><em>${q.op}</em>${q.vb}</span>`});return _p.apply(this,arguments)}}
 
 /* ---------- gợi ý của cô ---------- */
 function tlGoiY(st){const id=Object.keys(S.st).find(k=>S.st[k]===st);const l=(typeof ORG_ON!=='undefined'&&ORG_ON&&S.org)?S.org.gd[id]:null;
