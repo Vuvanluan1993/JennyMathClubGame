@@ -149,6 +149,10 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Kết thúc năm học · Lên lớp** (24/10/2026, Quản lý › 🎓 Năm học · Lên lớp), 3 bước: (1) lớp cũ → lớp mới, tự gợi ý 1A→2A, sửa được tên, tick "Giữ giáo viên", lớp 5 → Đã học xong, nhập năm học mới; (2) từng em: ⬆ Lên lớp (mặc định) · ↺ Ở lại lớp · ⏸ Nghỉ học (lớp 5: 🎓 Học xong); (3) xem lại, nhắc tải danh sách Excel, xác nhận (không hoàn tác).
 - Khi lên lớp: xu, đồ, thú cưng, tủ đồ, Sổ lỗi sai giữ nguyên; sao + tiến độ đảo năm cũ cất vào Hồ sơ năm học (st.namHoc, org.hosoNam); bản đồ mở chương trình khối mới. Ở lại lớp → "Chưa xếp lớp" giữ khối cũ. Nghỉ học / Học xong → khoá đăng nhập (có lời báo riêng), giữ hồ sơ, "Mở lại" được. Bài cô giao năm cũ chuyển lưu trữ. Năm cũ lưu ở "Các năm học trước".
 - Bản máy chủ: học sinh tự được lên lớp khi đăng nhập lần đầu sau khi trung tâm chuyển năm (theo khối của lớp mới).
+- **Tài khoản phụ huynh tự động** (24/10/2026): mỗi khi tạo học sinh (nút Thêm hoặc Excel), app tìm phụ huynh theo SĐT trước rồi Gmail. Đã có → hỏi rồi gắn em vào tài khoản đó (anh chị em). Chưa có, hoặc không có SĐT/Gmail → tạo tài khoản phụ huynh mới tên **ph.<tên đăng nhập của em>** (ví dụ ph.an, ph.an2), mật khẩu jenny123. SĐT khớp phụ huynh A mà Gmail khớp phụ huynh B → hỏi chọn.
+- Nhận anh chị em theo SĐT/Gmail, không theo tên, nên trùng họ tên + ngày sinh không bị gộp nhầm.
+- Sửa học sinh, bổ sung SĐT/Gmail trùng phụ huynh khác → hỏi gộp; tài khoản ph.… tạm không còn con thì bỏ. Trang Phụ huynh có nút "Tạo tài khoản phụ huynh cho n em" (các em chưa có).
+- Bảng Thêm học sinh có thêm ô "Họ tên phụ huynh".
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.

@@ -103,7 +103,7 @@ function phanTich(rows){let hi=rows.findIndex(r=>(r||[]).filter(c=>cotOf(c)).len
   const k=tenKey(x.hoten)+'|'+(x.d&&x.d.nam||'')+'|'+(x.d&&x.d.ng||'');if(seen[k])x.loi.push('trùng với dòng '+seen[k]);else seen[k]=x.dong;
   if(!x.loi.length){const c=hsCu(x);if(c==='?')x.loi.push('trùng tên với nhiều em — thêm ngày sinh hoặc tên đăng nhập');else if(c){x.cu=c;const l=(O().lop||[]).find(z=>z.id===(O().gd||{})[c]);if(x.lop&&l&&l.id!==x.lop.id&&l.khoi!==x.lop.khoi)x.loi.push(`đang ở lớp ${l.ten} (khác khối) — dùng Lên lớp`)}}
   if(!x.loi.length&&!x.lop&&!x.cu)x.canh.push('chưa có lớp — em chưa đăng nhập được');
-  if(!x.loi.length&&!x.dt&&!x.mail)x.canh.push('không có SĐT/Gmail — chưa gom được phụ huynh');
+  if(!x.loi.length&&!x.dt&&!x.mail)x.canh.push('không có SĐT/Gmail — tạo tài khoản phụ huynh riêng (ph.tên đăng nhập)');
   ds.push(x)}
  return ds}
 
@@ -118,11 +118,15 @@ const buoc1=()=>`<ol class="qlnstep"><li><button type="button" class="btn sm" on
 window.qlDocFile=async function(f){if(!f)return;const bd=document.getElementById('qlnbd');bd.innerHTML='<p>Đang đọc file…</p>';
  try{const rows=/\.csv$/i.test(f.name)?docCsv(await f.text()):await docXlsx(await f.arrayBuffer());qlNhap.ds=phanTich(rows);qlNhap.ten=f.name;bd.innerHTML=xemTruoc()}
  catch(x){console.error(x);bd.innerHTML=`<p class="qlnerr">⚠ ${e(x.message||x)}</p>`+buoc1()}};
-function nhomPH(ds){const g={},o=O(),info=o.phInfo||{};const tim=x=>Object.keys(info).find(t=>(x.dt&&dtChuan(info[t].dt)===x.dt)||(x.mail&&(info[t].mail||'')===x.mail));
- ds.filter(x=>!x.loi.length&&(x.dt||x.mail)).forEach(x=>{const cu=tim(x);const k=cu?'tk:'+cu:(x.dt?'dt:'+x.dt:'m:'+x.mail);
-  const kk=Object.keys(g).find(z=>g[z].xs.some(y=>(x.dt&&y.dt===x.dt)||(x.mail&&y.mail===x.mail)))||k;(g[kk]=g[kk]||{cu,xs:[]}).xs.push(x)});return g}
+function nhomPH(ds){const g={},o=O(),info=o.phInfo||{};
+ const tim=x=>(x.dt&&Object.keys(info).find(t=>dtChuan(info[t].dt)===x.dt))||(x.mail&&Object.keys(info).find(t=>(info[t].mail||'')===x.mail))||(x.cu&&(o.ph||{})[x.cu])||null;
+ ds.filter(x=>!x.loi.length).forEach(x=>{const cu=tim(x);let kk;
+  if(!x.dt&&!x.mail)kk=cu?'tk:'+cu:'solo:'+x.dong;
+  else kk=Object.keys(g).find(z=>!z.startsWith('solo:')&&g[z].xs.some(y=>(x.dt&&y.dt===x.dt)||(x.mail&&y.mail===x.mail)))||(cu?'tk:'+cu:(x.dt?'dt:'+x.dt:'m:'+x.mail));
+  (g[kk]=g[kk]||{cu,xs:[]}).xs.push(x);if(cu&&!g[kk].cu)g[kk].cu=cu});return g}
 function xemTruoc(){const ds=qlNhap.ds,ok=ds.filter(x=>!x.loi.length),loi=ds.length-ok.length,moi=ok.filter(x=>!x.cu).length,cap=ok.length-moi,G=nhomPH(ds),nPH=Object.keys(G).length,phMoi=Object.values(G).filter(g=>!g.cu).length,anhEm=Object.values(G).filter(g=>g.xs.length>1).length;
- const rows=ds.map(x=>{const d=x.d&&!x.d.loi?[x.d.ng,x.d.th,x.d.nam].filter(Boolean).join('/'):'';return`<tr class="${x.loi.length?'qlnbad':''}"><td>${x.dong}</td><td><b>${e(x.hoten||'—')}</b><div class="muted">${x.gt==='nam'?'Nam':x.gt==='nu'?'Nữ':''}${d?' · '+d:''}</div></td><td>${x.lop?e(x.lop.ten):(x.lopTen?e(x.lopTen):'—')}</td><td>${e(x.phten||'')}<div class="muted">${e(x.dt||'')}${x.mail?' '+e(x.mail):''}</div></td><td>${x.loi.length?`<span class="qlnl1">✕ ${e(x.loi.join('; '))}</span>`:(x.cu?`<span class="qlnl2">↻ Cập nhật ${e(x.cu)}</span>`:'<span class="qlnl3">+ Tạo mới</span>')}${x.canh.map(c=>`<div class="qlnl4">⚠ ${e(c)}</div>`).join('')}</td></tr>`}).join('');
+ const ganCu={};Object.values(G).forEach(g=>{if(g.cu)g.xs.forEach(x=>ganCu[x.dong]=g.cu)});const phT=t=>((O().phInfo||{})[t]||{}).ten||t;
+ const rows=ds.map(x=>{const d=x.d&&!x.d.loi?[x.d.ng,x.d.th,x.d.nam].filter(Boolean).join('/'):'';return`<tr class="${x.loi.length?'qlnbad':''}"><td>${x.dong}</td><td><b>${e(x.hoten||'—')}</b><div class="muted">${x.gt==='nam'?'Nam':x.gt==='nu'?'Nữ':''}${d?' · '+d:''}</div></td><td>${x.lop?e(x.lop.ten):(x.lopTen?e(x.lopTen):'—')}</td><td>${e(x.phten||'')}<div class="muted">${e(x.dt||'')}${x.mail?' '+e(x.mail):''}</div></td><td>${x.loi.length?`<span class="qlnl1">✕ ${e(x.loi.join('; '))}</span>`:(x.cu?`<span class="qlnl2">↻ Cập nhật ${e(x.cu)}</span>`:'<span class="qlnl3">+ Tạo mới</span>')}${x.canh.map(c=>`<div class="qlnl4">⚠ ${e(c)}</div>`).join('')}${ganCu[x.dong]?`<div class="qlnl2" style="font-size:12.5px">👪 gắn với phụ huynh đã có: ${e(phT(ganCu[x.dong]))} (${e(ganCu[x.dong])})</div>`:''}</td></tr>`}).join('');
  return`<p><b>${e(qlNhap.ten)}</b> · ${ds.length} dòng</p>
  <div class="qlnsum"><span class="qlnl3">+ ${moi} em mới</span><span class="qlnl2">↻ ${cap} em cập nhật</span><span class="${loi?'qlnl1':'muted'}">✕ ${loi} dòng lỗi</span><span>👪 ${nPH} phụ huynh (${phMoi} tài khoản mới${anhEm?`, ${anhEm} nhà có anh chị em`:''})</span></div>
  ${loi?'<p class="qlnerr">Dòng lỗi (đỏ) sẽ bị bỏ qua. Sửa trong Excel rồi chọn lại file, hoặc nhập các dòng đúng trước.</p>':''}
@@ -132,6 +136,8 @@ function xemTruoc(){const ds=qlNhap.ds,ok=ds.filter(x=>!x.loi.length),loi=ds.len
 
 /* ---------- chạy nhập ---------- */
 const setv=(i,x)=>{const el=document.getElementById(i);if(el)el.value=x};
+window.tkPH0=function(id){const o=O(),dung=new Set([...Object.values(o.ph||{}),...Object.keys(o.phInfo||{}),...STUDENTS.map(s=>s[0]),...(o.gv||[]).map(g=>g.tk||g.id)]);const base=('ph.'+id).slice(0,24);let t=base,i=2;while(dung.has(t))t=base.slice(0,22)+(i++);return t};
+const tkPH0=window.tkPH0;
 function tkPH(x){const base=x.dt?'ph'+x.dt.slice(-6):(bo(x.mail.split('@')[0]).replace(/[^a-z0-9]/g,'').slice(0,14)||'phuhuynh');const o=O(),dung=new Set([...Object.values(o.ph||{}),...STUDENTS.map(s=>s[0]),...(o.gv||[]).map(g=>g.tk||g.id)]);let t=base,i=2;while(dung.has(t))t=base+(i++);return t}
 window.qlChayNhap=async function(){const ds=qlNhap.ds.filter(x=>!x.loi.length);if(!ds.length)return;const bd=document.getElementById('qlnbd');const o=O();o.hoso=o.hoso||{};o.ph=o.ph||{};o.phInfo=o.phInfo||{};
  const _toast=window.toast,_render=window.render;let im=true;window.toast=function(){if(!im)return _toast.apply(this,arguments)};window.render=function(){};
@@ -148,9 +154,9 @@ window.qlChayNhap=async function(){const ds=qlNhap.ds.filter(x=>!x.loi.length);i
  const G=nhomPH(ds.filter(x=>x.id));
  for(const k in G){const g=G[k],con=g.xs.map(x=>x.id),x0={phten:(g.xs.find(x=>x.phten)||{}).phten||'',dt:(g.xs.find(x=>x.dt)||{}).dt||'',mail:(g.xs.find(x=>x.mail)||{}).mail||''};step('Đang gom phụ huynh…');
   try{let tk=g.cu;
-   if(!tk){tk=tkPH(x0);if(cloud()){const uid=await fbTaoTK(tk,MK0);await FB.db.doc('users/'+uid).set({role:'ph',tk,ten:x0.phten||('Phụ huynh '+g.xs.map(x=>x.hoten.split(' ').pop()).join(', ')),con})}
+   if(!tk){tk=tkPH0(g.xs[0].id);if(cloud()){const uid=await fbTaoTK(tk,MK0);await FB.db.doc('users/'+uid).set({role:'ph',tk,ten:x0.phten||('Phụ huynh '+g.xs.map(x=>x.hoten.split(' ').pop()).join(', ')),con})}
     o.phInfo[tk]={ten:x0.phten||'',dt:x0.dt||'',mail:x0.mail||''};qlMK[tk]=MK0}
-   else{const pi=o.phInfo[tk];if(!pi.ten&&x0.phten)pi.ten=x0.phten;if(!pi.dt&&x0.dt)pi.dt=x0.dt;if(!pi.mail&&x0.mail)pi.mail=x0.mail}
+   else{const pi=o.phInfo[tk]=o.phInfo[tk]||{};if(!pi.ten&&x0.phten)pi.ten=x0.phten;if(!pi.dt&&x0.dt)pi.dt=x0.dt;if(!pi.mail&&x0.mail)pi.mail=x0.mail}
    con.forEach(c=>o.ph[c]=tk);
    if(cloud()&&g.cu){const all=Object.entries(o.ph).filter(([c,t])=>t===tk).map(([c])=>c);const q=await FB.db.collection('users').where('tk','==',tk).get();await Promise.all(q.docs.map(d=>FB.db.doc('users/'+d.id).set({con:all},{merge:true})))}
    kq.ph.push(tk)}catch(err){kq.loi.push([{hoten:'Phụ huynh của '+g.xs.map(x=>x.hoten).join(', '),dong:g.xs[0].dong},err.message||String(err)])}}
