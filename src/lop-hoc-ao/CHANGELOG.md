@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Làm xong bài Luyện lỗi cô giao thì bỏ các lỗi đó khỏi Sổ lỗi sai
+- Bài Luyện lỗi cô giao: em luyện xong **một lượt** (mỗi lỗi 2 câu số mới) là xong bài; các lỗi trong bài **ra khỏi Sổ lỗi sai** (không cần đúng 2 lần liền nữa). Lỗi khác cô không giao vẫn giữ (tự bỏ sau 7 ngày).
+- Dữ liệu cũ: bài đã xong trước đây cũng được dọn các lỗi tương ứng (ghi trước/trong ngày làm xong).
+- Sửa chữ ở màn bài về nhà, màn kết thúc, trang giáo viên và phụ huynh cho khớp luật mới.
+
 ## 24/10/2026 — Sửa: bài Luyện lỗi cô giao bị mở lại khi em sai lại
 - Lỗi: bài "Luyện lỗi" đã xong lại thành "chưa xong" khi em sai lại đúng dạng đó → app chặn bắt làm lại (gặp ở tài khoản test01).
 - Sửa: sửa hết các lỗi cô giao một lần là bài **xong hẳn** (`asgR.xong`); sai lại sau đó chỉ ghi vào Sổ lỗi sai (tự luyện, tự bỏ sau 7 ngày). Lỗi của bài đã xong không còn được giữ khỏi việc tự bỏ.

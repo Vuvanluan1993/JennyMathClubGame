@@ -2,7 +2,7 @@
    - Bài cô giao (a.bat=1) phải làm xong trước mọi việc khác; app học sinh chỉ còn màn "Bài về nhà" và Đăng xuất.
    - Hai loại: Phiếu (theo dạng yếu a.kinds, hoặc theo tiết) và Luyện lỗi có mục tiêu (a.loai='loi', a.keys = lỗi trong Sổ lỗi sai).
    - Phiếu: đạt khi đúng từ a.dat% (mặc định 80); chưa đạt thì làm phiếu mới.
-     Luyện lỗi: mỗi lỗi 2 câu số mới, đúng 2 lần liền mới ra khỏi sổ; còn lỗi thì làm lại.
+     Luyện lỗi: mỗi lỗi 2 câu số mới; em luyện xong một lượt là xong bài, các lỗi cô giao ra khỏi Sổ lỗi sai (thầy chốt 24/10/2026).
    - Xong bài: +a.xu xu (mặc định 20). Nhiều bài thì làm lần lượt theo thứ tự cô giao.
    - Phiếu mẫu cũ (không có a.bat) vẫn như trước, không bắt buộc. */
 const BVN_XU=20;
@@ -25,17 +25,17 @@ function bvnThuong(st,a){const r=asgR(st)[a.id]||(asgR(st)[a.id]={});if(r.thuong
   const mk=e=>{const x=isl1(e.id);const q=x.lv[e.lv][e.gi]();return{...q,src:[e.id,e.lv,e.gi],key:`${e.id}:${e.lv}:${e.gi}`,label:e.label}};
   const E=con.map(k=>M[k]).filter(e=>isl1(e.id));if(!E.length){toast('Các lỗi này không còn bài tương ứng.');return}
   save();v1Said='';go({k:'game',g1:1,fix:1,bvn:aid,id:E[0].id,lv:0,qs:E.flatMap(e=>[mk(e),mk(e)]),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,hp:0,fixed:0,t0:Date.now()})}}
-{const _e=endFix1;endFix1=function(){const g=scr,r=_e.apply(this,arguments);try{if(g&&g.bvn){const st=S.st[sid],a=asgAll().find(x=>x.id===g.bvn);if(a){const xong=bvnThuong(st,a);g.bvnKq=xong?'xong':bvnLoiCon(st,a).length;save();render()}}}catch(e){}return r}}
+{const _e=endFix1;endFix1=function(){const g=scr,r=_e.apply(this,arguments);try{if(g&&g.bvn){const st=S.st[sid],a=asgAll().find(x=>x.id===g.bvn);if(a){const M=mist(st);(a.keys||[]).forEach(k=>delete M[k]);const r0=asgR(st)[a.id]||(asgR(st)[a.id]={});r0.xong=r0.xong||Date.now();bvnThuong(st,a);g.bvnKq='xong';save();render()}}}catch(e){}return r}}
 /* Phiếu: xong thì thưởng */
 {const _p=phSubmit;phSubmit=function(){const g=scr,aid=g&&g.ph,r=_p.apply(this,arguments);try{const st=S.st[sid],a=asgAll().find(x=>x.id===aid);if(a&&a.bat)bvnThuong(st,a)}catch(e){}return r}}
 /* màn kết thúc luyện lỗi (bài về nhà): thêm dòng kết quả + nút quay về */
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(g&&g.end&&g.bvn&&!document.querySelector('.bvnend')){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');
-  if(box)box.insertAdjacentHTML('afterbegin',`<div class="gatenote bvnend">${g.bvnKq==='xong'?'Em đã sửa xong mọi lỗi cô giao. Giỏi quá!':`Còn ${g.bvnKq} lỗi chưa đúng 2 lần liền. Mình luyện lại nhé!`}</div><button type="button" class="gobtn" onclick="go({k:'home'})">${g.bvnKq==='xong'?'Xong ▶':'Về bài về nhà ▶'}</button>`)}}catch(e){}return r}}
+  if(box)box.insertAdjacentHTML('afterbegin',`<div class="gatenote bvnend">${g.bvnKq==='xong'?'Em đã luyện xong các lỗi cô giao. Các lỗi này đã ra khỏi Sổ lỗi sai. Giỏi quá!':`Còn ${g.bvnKq} lỗi chưa đúng 2 lần liền. Mình luyện lại nhé!`}</div><button type="button" class="gobtn" onclick="go({k:'home'})">${g.bvnKq==='xong'?'Xong ▶':'Về bài về nhà ▶'}</button>`)}}catch(e){}return r}}
 
 /* ---------- chặn: chưa xong bài về nhà thì không làm gì khác ---------- */
 function bvnTrongBai(){const g=scr;return!!(g&&((g.k==='game'&&(g.ph||g.bvn))||(g.k==='home'&&g.tab==='baikq')))}
 function viewBVN(st,L){const a=L[0],s=asgState(st,a),nx=L.slice(1);
-  const mo=a.loai==='loi'?`Luyện ${a.keys.length} lỗi trong Sổ lỗi sai. Mỗi lỗi 2 câu số mới, đúng 2 lần liền là xong.${s.con<a.keys.length?` Còn ${s.con} lỗi.`:''}`
+  const mo=a.loai==='loi'?`Luyện ${a.keys.length} lỗi trong Sổ lỗi sai, mỗi lỗi 2 câu số mới. Luyện xong một lượt là xong bài, các lỗi này ra khỏi sổ.`
     :`${a.n} câu${a.kinds?` dạng "${esc(a.kinds.join(', '))}"`:''}. Đúng từ ${a.dat||80}% là đạt.${s.chuaDat?` Lần trước em đúng ${s.r.best.ok}/${s.r.best.n}, mình làm phiếu mới nhé.`:''}`;
   return`<div class="bvn"><div class="bvn-hd">${jenny(72)}<div><div class="bvn-tag">★ BÀI VỀ NHÀ CÔ GIAO</div><h1>${L.length>1?`Em có ${L.length} bài cần làm`:'Em có 1 bài cần làm'}</h1>
     <p>Làm xong bài về nhà rồi mới chơi tiếp được nhé!</p></div></div>

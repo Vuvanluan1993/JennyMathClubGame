@@ -8021,7 +8021,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 08:14';
+const APP_VER='24/10 · 08:26';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -11093,7 +11093,7 @@ function gvTabLoi(id,st,ph){
    ${M.length?`<div class="tablewrap"><table><tr>${ph?'':'<th></th>'}<th>Lỗi</th><th>Ở đảo</th><th>Sai</th><th>Đúng liền</th><th>Tự bỏ sau</th></tr>${M.map(([k,m])=>{const x=isl1(m.id);return`<tr>${ph?'':`<td><input type="checkbox" aria-label="Chọn lỗi" ${chon.includes(k)?'checked':''} ${dang?'disabled':''} onchange="gvChonLoi('${k}',this.checked)"></td>`}<td>${esc(m.label||'')}</td><td>${x?esc(x.title):''}</td><td><b>${m.n}</b> lần</td><td>${m.streak||0}/2</td><td>${loiGiu(id).has(k)?'<span class="pill acc">cô đã giao</span>':loiConNgay(m)+' ngày'}</td></tr>`}).join('')}</table></div>
    ${ph?'':dang?`<p class="hint" style="margin:10px 0 0">Đã giao Luyện lỗi ngày ${asgD(dang.t)}, em đang còn ${asgState(st,dang).con} lỗi. Giao tiếp khi em làm xong.</p>`
      :`<div class="row" style="gap:8px;margin-top:10px"><button class="btn pri" onclick="gvGiaoLoi('${id}',0)">Giao luyện tất cả (${M.length} lỗi)</button><button class="btn" ${chon.length?'':'disabled'} onclick="gvGiaoLoi('${id}',1)">Giao các lỗi đã chọn (${chon.length})</button></div>
-      <p class="muted" style="margin:6px 0 0">Bài về nhà: mỗi lỗi 2 câu số mới, đúng 2 lần liền mới xong; còn lỗi thì em làm lại. Em phải làm xong trước mọi việc khác. Thưởng ${BVN_XU} xu.</p>`}`:'<p class="muted">Sổ đang trống.</p>'}</section>
+      <p class="muted" style="margin:6px 0 0">Bài về nhà: mỗi lỗi 2 câu số mới (có hướng dẫn khi sai). Em luyện xong một lượt là xong bài và các lỗi đó ra khỏi Sổ lỗi sai. Em phải làm xong trước mọi việc khác. Thưởng ${BVN_XU} xu.</p>`}`:'<p class="muted">Sổ đang trống.</p>'}</section>
   <section class="card"><h2>Bài về nhà ${ph?'cô giao cho con':'cô đã giao'}</h2>${A.length?`<div class="tablewrap"><table><tr><th>Bài</th><th>Giao · hạn</th><th>Kết quả</th></tr>${A.sort((p,q)=>q.t-p.t).map(a=>{const s=asgState(st,a);return`<tr><td><b>${esc(asgName(a))}</b><div class="muted">${a.loai==='loi'?'Luyện lỗi có mục tiêu':a.n+' câu'} · ${a.hs?'riêng cho em':'cả lớp'}${a.bat?' · bắt buộc':''} · ${esc(a.by||'')}</div></td><td>${asgD(a.t)}${a.due?' · '+asgD(a.due):''}</td><td>${kq(a,s)}${s.late?' <span class="pill bad">quá hạn</span>':''}</td></tr>`}).join('')}</table></div>`:'<p class="muted">Chưa có bài nào.</p>'}</section>`}
 window.gvChonLoi=(k,on)=>{const c=scr.loiChon=scr.loiChon||[];const i=c.indexOf(k);if(on&&i<0)c.push(k);if(!on&&i>=0)c.splice(i,1);render()};
 window.gvGiaoLoi=(id,chon)=>{const st=S.st[id],M=mist(st),keys=(chon?(scr.loiChon||[]):Object.keys(M)).filter(k=>M[k]&&isl1(M[k].id));if(!keys.length){toast('Chưa có lỗi để giao');return}
@@ -11198,7 +11198,7 @@ function viewPHHS(id){const st=S.st[id];hsHeal(st,id);const l=typeof lopCua==='f
    ${(()=>{const M=Object.values(st.mist||{}),giu=loiGiu(id),tu=Object.entries(st.mist||{}).filter(([k])=>!giu.has(k)),sap=tu.filter(([,e])=>loiConNgay(e)<=2).length;
      return M.length?`<section class="card phnhac"><h2>Nhắc bố mẹ</h2><p style="margin:6px 0 0">${esc(first)} đang có <b>${M.length} lỗi</b> trong Sổ lỗi sai${M.length>tu.length?`, trong đó ${M.length-tu.length} lỗi cô đã giao làm bài về nhà`:''}.</p>
       ${tu.length?`<p style="margin:6px 0 0">${tu.length} lỗi cô chưa giao sẽ <b>tự bỏ sau ${LOI_NGAY} ngày</b>${sap?` (${sap} lỗi chỉ còn 1–2 ngày)`:''}. Bố mẹ nhắc con vào mục <b>Luyện lỗi</b> trong app, mỗi ngày 5 phút, để sửa hết trước khi lỗi bị bỏ.</p>`:''}
-      <p class="muted" style="margin:6px 0 0">Mỗi lỗi cần đúng 2 lần liền mới ra khỏi sổ. Xem chi tiết ở thẻ "Lỗi &amp; bài về nhà".</p></section>`:''})()}
+      <p class="muted" style="margin:6px 0 0">Lỗi ra khỏi sổ khi con đúng 2 lần liền, hoặc khi con làm xong bài luyện lỗi cô giao. Xem chi tiết ở thẻ "Lỗi &amp; bài về nhà".</p></section>`:''})()}
    <div class="seg gtabs" role="tablist" aria-label="Kết quả học tập">${PH_TABS.map(([k,t])=>`<button role="tab" class="${k===tab?'on':''}" aria-selected="${k===tab}" onclick="scr.phTab='${k}';render()">${t}</button>`).join('')}</div>
    ${body}</div>`}
 {const _p=viewPH;viewPH=function(){try{if(role==='ph'&&typeof ORG_ON!=='undefined'&&ORG_ON&&S.st[sid]&&S.st[sid].grade<=5)return viewPHHS(sid)}catch(e){console.error(e)}return _p.apply(this,arguments)}}
@@ -11293,7 +11293,7 @@ table.gvbang td:nth-child(2),table.gvbang td:nth-child(3),table.gvbang td:nth-ch
    - Bài cô giao (a.bat=1) phải làm xong trước mọi việc khác; app học sinh chỉ còn màn "Bài về nhà" và Đăng xuất.
    - Hai loại: Phiếu (theo dạng yếu a.kinds, hoặc theo tiết) và Luyện lỗi có mục tiêu (a.loai='loi', a.keys = lỗi trong Sổ lỗi sai).
    - Phiếu: đạt khi đúng từ a.dat% (mặc định 80); chưa đạt thì làm phiếu mới.
-     Luyện lỗi: mỗi lỗi 2 câu số mới, đúng 2 lần liền mới ra khỏi sổ; còn lỗi thì làm lại.
+     Luyện lỗi: mỗi lỗi 2 câu số mới; em luyện xong một lượt là xong bài, các lỗi cô giao ra khỏi Sổ lỗi sai (thầy chốt 24/10/2026).
    - Xong bài: +a.xu xu (mặc định 20). Nhiều bài thì làm lần lượt theo thứ tự cô giao.
    - Phiếu mẫu cũ (không có a.bat) vẫn như trước, không bắt buộc. */
 const BVN_XU=20;
@@ -11316,17 +11316,17 @@ function bvnThuong(st,a){const r=asgR(st)[a.id]||(asgR(st)[a.id]={});if(r.thuong
   const mk=e=>{const x=isl1(e.id);const q=x.lv[e.lv][e.gi]();return{...q,src:[e.id,e.lv,e.gi],key:`${e.id}:${e.lv}:${e.gi}`,label:e.label}};
   const E=con.map(k=>M[k]).filter(e=>isl1(e.id));if(!E.length){toast('Các lỗi này không còn bài tương ứng.');return}
   save();v1Said='';go({k:'game',g1:1,fix:1,bvn:aid,id:E[0].id,lv:0,qs:E.flatMap(e=>[mk(e),mk(e)]),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,hp:0,fixed:0,t0:Date.now()})}}
-{const _e=endFix1;endFix1=function(){const g=scr,r=_e.apply(this,arguments);try{if(g&&g.bvn){const st=S.st[sid],a=asgAll().find(x=>x.id===g.bvn);if(a){const xong=bvnThuong(st,a);g.bvnKq=xong?'xong':bvnLoiCon(st,a).length;save();render()}}}catch(e){}return r}}
+{const _e=endFix1;endFix1=function(){const g=scr,r=_e.apply(this,arguments);try{if(g&&g.bvn){const st=S.st[sid],a=asgAll().find(x=>x.id===g.bvn);if(a){const M=mist(st);(a.keys||[]).forEach(k=>delete M[k]);const r0=asgR(st)[a.id]||(asgR(st)[a.id]={});r0.xong=r0.xong||Date.now();bvnThuong(st,a);g.bvnKq='xong';save();render()}}}catch(e){}return r}}
 /* Phiếu: xong thì thưởng */
 {const _p=phSubmit;phSubmit=function(){const g=scr,aid=g&&g.ph,r=_p.apply(this,arguments);try{const st=S.st[sid],a=asgAll().find(x=>x.id===aid);if(a&&a.bat)bvnThuong(st,a)}catch(e){}return r}}
 /* màn kết thúc luyện lỗi (bài về nhà): thêm dòng kết quả + nút quay về */
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(g&&g.end&&g.bvn&&!document.querySelector('.bvnend')){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');
-  if(box)box.insertAdjacentHTML('afterbegin',`<div class="gatenote bvnend">${g.bvnKq==='xong'?'Em đã sửa xong mọi lỗi cô giao. Giỏi quá!':`Còn ${g.bvnKq} lỗi chưa đúng 2 lần liền. Mình luyện lại nhé!`}</div><button type="button" class="gobtn" onclick="go({k:'home'})">${g.bvnKq==='xong'?'Xong ▶':'Về bài về nhà ▶'}</button>`)}}catch(e){}return r}}
+  if(box)box.insertAdjacentHTML('afterbegin',`<div class="gatenote bvnend">${g.bvnKq==='xong'?'Em đã luyện xong các lỗi cô giao. Các lỗi này đã ra khỏi Sổ lỗi sai. Giỏi quá!':`Còn ${g.bvnKq} lỗi chưa đúng 2 lần liền. Mình luyện lại nhé!`}</div><button type="button" class="gobtn" onclick="go({k:'home'})">${g.bvnKq==='xong'?'Xong ▶':'Về bài về nhà ▶'}</button>`)}}catch(e){}return r}}
 
 /* ---------- chặn: chưa xong bài về nhà thì không làm gì khác ---------- */
 function bvnTrongBai(){const g=scr;return!!(g&&((g.k==='game'&&(g.ph||g.bvn))||(g.k==='home'&&g.tab==='baikq')))}
 function viewBVN(st,L){const a=L[0],s=asgState(st,a),nx=L.slice(1);
-  const mo=a.loai==='loi'?`Luyện ${a.keys.length} lỗi trong Sổ lỗi sai. Mỗi lỗi 2 câu số mới, đúng 2 lần liền là xong.${s.con<a.keys.length?` Còn ${s.con} lỗi.`:''}`
+  const mo=a.loai==='loi'?`Luyện ${a.keys.length} lỗi trong Sổ lỗi sai, mỗi lỗi 2 câu số mới. Luyện xong một lượt là xong bài, các lỗi này ra khỏi sổ.`
     :`${a.n} câu${a.kinds?` dạng "${esc(a.kinds.join(', '))}"`:''}. Đúng từ ${a.dat||80}% là đạt.${s.chuaDat?` Lần trước em đúng ${s.r.best.ok}/${s.r.best.n}, mình làm phiếu mới nhé.`:''}`;
   return`<div class="bvn"><div class="bvn-hd">${jenny(72)}<div><div class="bvn-tag">★ BÀI VỀ NHÀ CÔ GIAO</div><h1>${L.length>1?`Em có ${L.length} bài cần làm`:'Em có 1 bài cần làm'}</h1>
     <p>Làm xong bài về nhà rồi mới chơi tiếp được nhé!</p></div></div>
@@ -11545,7 +11545,10 @@ body[class*="trang-"] #tabs{display:none!important}body.trang-gv #whoBox,body.tr
 const LOI_NGAY=7;
 function loiGiu(id){const g=new Set(),st=S.st&&S.st[id],R=(st&&st.asgR)||{};(S.asg||[]).forEach(a=>{const r=R[a.id]||{};if(a.loai==='loi'&&(!a.hs||a.hs.includes(id))&&!r.xong&&!r.thuong)(a.keys||[]).forEach(k=>g.add(k))});return g}
 function loiConNgay(e){return Math.max(0,LOI_NGAY-(S.day-(e.day||S.day)))}
-function loiDon(id,st){const M=st&&st.mist;if(!M)return 0;const giu=loiGiu(id);let n=0;Object.keys(M).forEach(k=>{if(!giu.has(k)&&loiConNgay(M[k])<=0){delete M[k];n++}});return n}
+/* bài luyện lỗi cô giao đã xong: bỏ các lỗi đó nếu ghi trước hoặc trong ngày làm xong (dữ liệu cũ trước khi đổi luật) */
+function loiBaiXong(id,st,M){let n=0;if(typeof CLOUD==='undefined'||!CLOUD)return 0;const R=st.asgR||{},ngay=t=>Math.floor((t-Date.UTC(2026,8,5))/864e5)+1;
+  (S.asg||[]).forEach(a=>{const r=R[a.id];if(a.loai!=='loi'||!r||!(r.xong||r.thuong))return;const d=ngay(Math.min(r.xong||Infinity,r.thuong||Infinity));(a.keys||[]).forEach(k=>{if(M[k]&&(M[k].day||0)<=d){delete M[k];n++}})});return n}
+function loiDon(id,st){const M=st&&st.mist;if(!M)return 0;const giu=loiGiu(id);let n=loiBaiXong(id,st,M);Object.keys(M).forEach(k=>{if(!giu.has(k)&&loiConNgay(M[k])<=0){delete M[k];n++}});return n}
 {const _r=render;render=function(){try{if(S&&S.st){if(role==='hs'){if(S.st[sid]&&loiDon(sid,S.st[sid]))save()}else STUDENTS.forEach(([id])=>loiDon(id,S.st[id]))}}catch(e){}return _r.apply(this,arguments)}}
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}

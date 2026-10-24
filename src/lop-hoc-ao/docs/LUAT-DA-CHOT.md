@@ -30,7 +30,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 ## 4. Hướng dẫn khi sai & luyện lỗi
 - **Không** hiện hướng dẫn khi đang làm màn hay chơi trò. Lỗi được ghi lại (cả lỗi trong trò chơi).
 - Luyện lỗi: hiện lại đúng câu cũ kèm "Lần trước em chọn/ghi X"; sai nữa → hướng dẫn tự mở; luôn có nút "Xem cách làm"; sau đó 1 câu tương tự số mới.
-- ~~Bắt buộc luyện lỗi sau mỗi màn~~ → **thay bằng (24/10/2026):** sai thì ghi vào Sổ lỗi sai, em **tự luyện nếu muốn** (không bắt buộc; màn kết thúc có nút "Luyện lại câu sai"). Chỉ khi **cô giao Luyện lỗi** ở trang giáo viên thì mới bắt buộc (bài về nhà). Lỗi cô **không giao** thì **tự bỏ sau 7 ngày** kể từ lần sai gần nhất.
+- ~~Bắt buộc luyện lỗi sau mỗi màn~~ → **thay bằng (24/10/2026):** sai thì ghi vào Sổ lỗi sai, em **tự luyện nếu muốn** (không bắt buộc; màn kết thúc có nút "Luyện lại câu sai"). Chỉ khi **cô giao Luyện lỗi** ở trang giáo viên thì mới bắt buộc (bài về nhà). Lỗi cô **không giao** thì **tự bỏ sau 7 ngày** kể từ lần sai gần nhất. Em **làm xong bài Luyện lỗi cô giao** (một lượt, mỗi lỗi 2 câu số mới) thì các lỗi đó **ra khỏi Sổ lỗi sai**.
 - Hướng dẫn theo dạng: lớp 1 cộng/trừ trong 10 = **hai bàn tay ngửa** (giơ ngón theo thứ tự trỏ, giữa, áp út, út, cái; **đếm trái → phải**); đếm = khoanh lần lượt; lớp 2 = tia số; lời văn = trắc nghiệm dẫn dắt; tổng = móc nhọn dọc, hiệu = móc ngang; so sánh = chỉ bảng hàng; nhân/chia = dãy đếm cách đều, hàng cân bằng, tách rời; giao hoán = nhắc tính chất (không dạy lại phép cộng).
 - Bản đồ: từ tab khác về → vị trí "Đang học"; từ đảo về → đúng đảo đó.
 
