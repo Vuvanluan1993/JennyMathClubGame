@@ -1,5 +1,7 @@
 /* 73 — Trang Quản lý gọn: trang chính 4 nút lớn (Học sinh · Phụ huynh · Giáo viên · Lớp) + trang con.
    Dùng lại các bảng nhập ở 70/71 (qlMoHS, qlMoGV, qlMoLop, qlMoXep, qlMoPH, qlSua) và các hàm ở 58 (qlChuyen, qlPhan, qlBo, qlTJ, qlNgoaiLe). */
+/* em chưa xếp lớp có khối 0: tạo dữ liệu học theo khối 1 cho tới khi được xếp lớp (tránh lỗi blankP1(0) làm treo đăng nhập máy chủ) */
+if(typeof newStudent==='function'){const _ns=newStudent;newStudent=function(n,g){return _ns(n,(+g>=1&&+g<=9)?+g:1)}}
 (function(){
 if(typeof viewPH==='undefined')return;
 window.qlTrang='';window.qlLopId='';window.qlTrangSo=0;window.qlChon=window.qlChon||{};
