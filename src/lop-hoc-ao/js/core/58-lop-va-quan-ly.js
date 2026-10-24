@@ -138,7 +138,7 @@ function viewQL(){
    <section class="card"><h2>Nhật ký thao tác</h2>${o.nk.length?`<div class="log" style="max-height:260px">${o.nk.slice(-30).reverse().map(x=>`Ngày ${x.d} · ${esc(x.ai||'')} · ${esc(x.t)}`).join('\n')}</div>`:'<p class="muted" style="margin:6px 0 0">Chưa có thao tác nào.</p>'}
     <p class="muted" style="margin:10px 0 0">Không xóa hẳn: em chưa xếp lớp vẫn giữ tài khoản và dữ liệu.</p></section>
   </div>
-  <p class="muted" style="margin:0">Sắp có: lên lớp cả lớp cuối năm, đặt lại mật khẩu, khóa tài khoản, xuất dữ liệu. Trang Quản trị hệ thống (thầy) làm khi có máy chủ.</p>
+  <p class="muted" style="margin:0">Sắp có: lên lớp cả lớp cuối năm, khóa tài khoản, xuất dữ liệu. Trang Quản trị hệ thống (thầy) làm khi có máy chủ.</p>
   </div>`;
 }
 window.viewQL=viewQL;

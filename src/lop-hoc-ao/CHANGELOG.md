@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Quản lý: danh sách tài khoản + đặt lại mật khẩu
+- Trang Quản lý có mục **Tài khoản**: họ tên, vai trò, tên đăng nhập, lớp/con của mọi giáo viên, học sinh, phụ huynh; nút **Đặt lại mật khẩu** (gợi ý mật khẩu mới, hiện lại "Vừa đặt lại: tk / mật khẩu").
+- Gói miễn phí không đổi được mật khẩu người khác, nên đặt lại = tạo tài khoản đăng nhập mới cho **cùng tên đăng nhập**, chuyển vai trò sang, bỏ tài khoản cũ; bảng `login/{tk}` cho biết tên đăng nhập dùng email ẩn nào. Dữ liệu học, nhận xét, bài về nhà giữ nguyên (gắn theo tên đăng nhập).
+- Quy tắc Firestore thêm `login/{tk}` (ai cũng đọc được để đăng nhập; chỉ quản lý ghi) — cần dán lại quy tắc.
+
 ## 24/10/2026 — Làm xong bài Luyện lỗi cô giao thì bỏ các lỗi đó khỏi Sổ lỗi sai
 - Bài Luyện lỗi cô giao: em luyện xong **một lượt** (mỗi lỗi 2 câu số mới) là xong bài; các lỗi trong bài **ra khỏi Sổ lỗi sai** (không cần đúng 2 lần liền nữa). Lỗi khác cô không giao vẫn giữ (tự bỏ sau 7 ngày).
 - Dữ liệu cũ: bài đã xong trước đây cũng được dọn các lỗi tương ứng (ghi trước/trong ngày làm xong).

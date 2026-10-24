@@ -38,6 +38,10 @@ service cloud.firestore {
       allow read: if isSelf(tk) || isQL() || gvLop(tk) || isPH(tk);
       allow write: if isQL() || gvLop(tk);
     }
+    match /login/{tk} {
+      allow read: if true;
+      allow write: if isQL();
+    }
     match /asg/{id} {
       allow read: if signed();
       allow write: if isQL() || isGV();

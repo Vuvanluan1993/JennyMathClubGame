@@ -23,7 +23,8 @@ const fbTS=()=>firebase.firestore.FieldValue.serverTimestamp();
 const fbNgay=()=>Math.max(1,Math.floor((Date.now()-Date.UTC(2026,8,5))/864e5)+1);
 
 async function fbDangNhap(tk,pw,nho){const{auth}=await fbInit();try{await auth.setPersistence(nho===false?firebase.auth.Auth.Persistence.SESSION:firebase.auth.Auth.Persistence.LOCAL)}catch(e){}
-  const c=await auth.signInWithEmailAndPassword(fbEmail(tk),pw);return fbNapMe(c.user)}
+  tk=String(tk).trim().toLowerCase();let em=fbEmail(tk);try{const L=await FB.db.doc('login/'+tk).get();if(L.exists&&L.data().email)em=L.data().email}catch(e){}
+  const c=await auth.signInWithEmailAndPassword(em,pw);return fbNapMe(c.user)}
 async function fbNapMe(user){const d=await FB.db.doc('users/'+user.uid).get();if(!d.exists)throw{code:'no-profile'};CLOUD={uid:user.uid,me:d.data()};return CLOUD}
 async function fbDangXuat(){fbSub.forEach(f=>{try{f()}catch(e){}});fbSub=[];try{await fbDayNgay()}catch(e){}try{await FB.auth.signOut()}catch(e){}CLOUD=null;location.reload()}
 async function fbDoiMK(){const p=prompt('Mật khẩu mới (ít nhất 6 kí tự):');if(!p)return;if(p.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
@@ -125,6 +126,28 @@ async function fbQLTaoPH(e){e.preventDefault();const o=S.org,con=document.getEle
   try{const uid=await fbTaoTK(tk,pw);await FB.db.doc('users/'+uid).set({role:'ph',tk,ten:'Phụ huynh '+r[1],con:[con]});
     (o.ph=o.ph||{})[con]=tk;o.nk.push({d:S.day,ai:'Quản lý trung tâm',t:`Tạo tài khoản phụ huynh ${tk} cho ${r[1]}`});save();await fbDayNgay();render();toast(`Đã tạo: ${tk} / ${pw}`)}catch(err){toast(fbLoi(err))}}
 {const _h=window.qlTaoHS,_g=window.qlTaoGV;window.qlTaoHS=e=>S.org&&S.org.cloud?fbQLTaoHS(e):_h(e);window.qlTaoGV=e=>S.org&&S.org.cloud?fbQLTaoGV(e):_g(e);window.qlTaoPH=fbQLTaoPH}
+
+/* ---------- quản lý đặt lại mật khẩu (gói miễn phí không đổi được mật khẩu người khác,
+   nên tạo tài khoản đăng nhập mới cho cùng tên đăng nhập, chuyển vai trò sang, bỏ tài khoản cũ; dữ liệu học giữ nguyên) ---------- */
+function fbMKGoiY(){return 'jenny'+String(Math.floor(1000+Math.random()*9000))}
+async function fbDatLaiMK(tk){const pw=prompt(`Mật khẩu mới cho "${tk}" (ít nhất 6 kí tự):`,fbMKGoiY());if(pw===null)return;if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
+  const db=FB.db;toast('Đang đặt lại…');
+  try{const q=await db.collection('users').where('tk','==',tk).get();if(q.empty){toast('Không tìm thấy tài khoản '+tk);return}
+    const L=await db.doc('login/'+tk).get(),cu=L.exists?L.data().uid:null,docCu=q.docs.find(d=>d.id===cu)||q.docs[0],du=docCu.data();
+    const em=`${tk}.r${Date.now().toString(36)}@jenny-lop-hoc-ao.firebaseapp.com`;
+    await fbInit();const app2=firebase.apps.find(a=>a.name==='tao')||firebase.initializeApp(FB_CFG,'tao');const c=await app2.auth().createUserWithEmailAndPassword(em,pw);const uid=c.user.uid;await app2.auth().signOut();
+    await db.doc('users/'+uid).set(du);await db.doc('login/'+tk).set({email:em,uid,t:fbTS()});await Promise.all(q.docs.map(d=>db.doc('users/'+d.id).delete()));
+    (S.org.nk=S.org.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Đặt lại mật khẩu cho ${tk}`});save();
+    fbMKVua={tk,pw};render();toast(`Đã đặt lại: ${tk} / ${pw}`)}catch(e){console.error(e);toast(fbLoi(e))}}
+let fbMKVua=null;
+function fbTaiKhoanBox(){const o=S.org;if(!o||!o.cloud)return'';const lopTen=tk=>{const l=(o.lop||[]).find(x=>x.id===(o.gd||{})[tk]);return l?'Lớp '+l.ten:'chưa xếp lớp'};
+  const R=[...(o.gv||[]).map(g=>({ten:g.ten,vai:(g.tk||g.id)===CLOUD.me.tk&&CLOUD.me.role==='ql'?'Quản lý · Giáo viên':'Giáo viên',tk:g.tk||g.id,them:(o.lop||[]).filter(l=>(l.gv||[]).includes(g.id)).map(l=>l.ten).join(', ')||'chưa có lớp'})),
+    ...(o.hs||[]).map(([tk,ten])=>({ten,vai:'Học sinh',tk,them:lopTen(tk)})),
+    ...Object.entries(o.ph||{}).map(([con,tk])=>{const h=(o.hs||[]).find(x=>x[0]===con);return{ten:'Phụ huynh '+(h?h[1]:con),vai:'Phụ huynh',tk,them:'con: '+(h?h[1]:con)}})];
+  return`<section class="card"><h2>Tài khoản</h2><p class="muted" style="margin:4px 0 0">Tên đăng nhập của mọi người. Ai quên mật khẩu thì bấm "Đặt lại mật khẩu", rồi báo mật khẩu mới cho người đó. Dữ liệu học không mất.</p>
+   ${fbMKVua?`<div class="task" style="margin-top:10px;border-left:4px solid var(--leaf)"><b>Vừa đặt lại:</b> ${esc(fbMKVua.tk)} / <code>${esc(fbMKVua.pw)}</code> <span class="muted">· ghi lại rồi báo cho người dùng</span></div>`:''}
+   <div class="tablewrap"><table><tr><th>Họ tên</th><th>Vai trò</th><th>Tên đăng nhập</th><th>Lớp / con</th><th></th></tr>${R.map(r=>`<tr><td><b>${esc(r.ten)}</b></td><td>${r.vai}</td><td><code>${esc(r.tk)}</code></td><td>${esc(r.them)}</td><td>${r.tk===CLOUD.me.tk?'<span class="muted">dùng "Đổi mật khẩu"</span>':`<button class="btn sm" onclick="fbDatLaiMK('${esc(r.tk)}')">Đặt lại mật khẩu</button>`}</td></tr>`).join('')}</table></div></section>`}
+{const _p=viewPH;viewPH=function(){const r=_p.apply(this,arguments);try{if(role==='ql'&&CLOUD&&S.org&&S.org.cloud){const m='<p class="muted" style="margin:0">Sắp có:';const i=r.lastIndexOf(m);const box=fbTaiKhoanBox();return i<0?r.replace(/<\/div>\s*$/,box+'</div>'):r.slice(0,i)+box+r.slice(i)}}catch(e){console.error(e)}return r}}
 
 /* ---------- giao diện khi dùng máy chủ ---------- */
 {const _h=header;header=function(){try{if(CLOUD&&S&&S.st&&!S.st[sid]){const f=STUDENTS.find(r=>S.st[r[0]]);if(f)sid=f[0];else S.st[sid]=newStudent('Chưa có học sinh',1)}}catch(e){}_h();try{if(!CLOUD||CLOUD.me.role==='hs')return;const me=CLOUD.me,t=document.getElementById('tabs');
