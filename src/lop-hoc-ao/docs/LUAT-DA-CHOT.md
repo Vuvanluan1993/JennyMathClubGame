@@ -115,6 +115,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Điểm Logic = A 40% bài thuần logic + B 40% bài suy luận ở các mạch (tìm thành phần chưa biết, nhiều bước, so sánh kết quả, ước lượng, đúng/sai) + C 20% thói quen (đúng ngay lần đầu, không bấm bừa); thiếu phần nào thì chia lại trọng số; cần A + B ≥ 5 câu (24/10/2026).
 - Khủng long chạy miễn phí từ đầu: không mua, không tốn lượt; riêng 10 ván/ngày (24/10/2026).
 - Bấm logo Clb ở thanh trên → về trang chủ (mọi trang) (24/10/2026).
+- **Tự luyện = Vở bài tập Jenny (chốt 24/10/2026):** mỗi đảo đã qua mở 1 trang vở 4–5 bài trộn dạng (số mới mỗi lần) + 1 bài ★ Thử thách cuối trang; em tự chọn, không bắt buộc. Cô **không giao**, chỉ ⭐ gợi ý trang và xem kết quả. Xu lấy từ quỹ tự luyện (150 xu/ngày); sai vào Sổ lỗi sai; không tính sao, không mở đảo. VBT tham khảo (Chân trời sáng tạo) chỉ là nguồn **dạng bài**, ghép theo kiến thức với KNTT, không chép chữ/số/hình. Bảng dạng bài: `docs/tu-luyen-dang-bai-lop1-tap1.md`. Làm thử lớp 1 trước (10 trang), rồi lớp 2. Chờ thầy duyệt ảnh mẫu.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.

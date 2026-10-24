@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Tự luyện: chốt ý tưởng Vở bài tập Jenny
+- Thầy chốt: Tự luyện là trang vở theo đảo đã qua + bài ★ Thử thách; cô chỉ gợi ý, không giao (ghi ở `docs/LUAT-DA-CHOT.md`).
+- Thêm bảng dạng bài lớp 1 tập 1 rà từ VBT tham khảo: `docs/tu-luyen-dang-bai-lop1-tap1.md` (chỉ ghi dạng bài, không chép sách).
+
 ## 24/10/2026 — Khủng long chạy miễn phí từ đầu
 - Em nào cũng có sẵn trò **Khủng long chạy** ở Cửa hàng › Trò chơi và Nhà em, không cần mua (trước đây 150 xu), không tốn lượt chơi.
 - Giới hạn riêng 10 ván/ngày, không trừ vào 10 lượt/ngày của Bowling, Đẩy thùng. Cúp và đồ hiếm (Khăn khủng long) vẫn như cũ.
