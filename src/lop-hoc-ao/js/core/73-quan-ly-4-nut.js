@@ -57,7 +57,7 @@ function trangHS(){const o=O(),L=LOP(),q=bo(qlHsTim);
  const chon=Object.keys(qlChon).filter(k=>qlChon[k]),nChua=STUDENTS.filter(s=>!lopOf(s[0])&&!NGHI(s[0])).length;
  const rows=ds.map(([id,n])=>{const l=lopOf(id),h=hs(id),p=phOf(id);
   const ns=[h.gt==='nam'?'Nam':h.gt==='nu'?'Nữ':'',h.ng&&h.th?`${h.ng}/${h.th}${h.nam?'/'+h.nam:''}`:(h.nam||'')].filter(Boolean).join(' · ');
-  return`<div class="qlr qhs"><span class="a-ck"><input type="checkbox" aria-label="Chọn ${e(n)}" ${qlChon[id]?'checked':''} onchange="qlChon['${id}']=this.checked;render()"></span>
+  return`<div class="qlr qhs">
   <div class="a-ten"><b>${e(n)}</b><div class="muted">${e(id)}${ns?' · '+e(ns):''}</div></div>
   <div class="a-lop">${lopSel(id,l)}</div>
   <div class="a-ph"><span class="mlab">Phụ huynh: </span>${p?e(phTen(p)):(h.dt?`<span class="muted">${e(h.dt)}</span>`:'<span class="muted">—</span>')}</div>
@@ -71,8 +71,8 @@ function trangHS(){const o=O(),L=LOP(),q=bo(qlHsTim);
   <select aria-label="Lọc theo lớp" onchange="qlHsLop=this.value;qlTrangSo=0;render()"><option value="">Tất cả lớp</option><option value="-" ${qlHsLop==='-'?'selected':''}>Chưa xếp lớp (${nChua})</option>${Object.keys(O().nghi||{}).length?`<option value="x" ${qlHsLop==='x'?'selected':''}>Nghỉ học / Đã học xong (${Object.keys(O().nghi).length})</option>`:''}${lopOpt}</select>
   <input type="search" placeholder="Tìm tên, tên đăng nhập, SĐT phụ huynh" aria-label="Tìm học sinh" value="${e(qlHsTim)}" onkeydown="if(event.key==='Enter'){qlHsTim=this.value.trim();qlTrangSo=0;render()}" onchange="qlHsTim=this.value.trim();qlTrangSo=0;render()">
  </div>
- <div class="qlli"><div class="qlr qhs qlrh"><span class="a-ck">${ckAll(ds.map(s=>s[0]))}</span><div class="a-ten">Học sinh</div><div class="a-lop">Lớp</div><div class="a-ph">Phụ huynh</div><div class="a-act"></div></div>
- <label class="qlmall">${ckAll(ds.map(s=>s[0]))} Chọn cả trang</label>
+ <div class="qlli"><div class="qlr qhs qlrh"><div class="a-ten">Học sinh</div><div class="a-lop">Lớp</div><div class="a-ph">Phụ huynh</div><div class="a-act"></div></div>
+ 
  ${rows||'<p class="muted">Không có em nào.</p>'}</div>
  ${chon.length?`<div class="qlbar"><b>Đã chọn ${chon.length} em:</b><select id="qlChLop" aria-label="Chuyển đến lớp">${L.map(l=>`<option value="${l.id}">Lớp ${e(l.ten)}</option>`).join('')}</select><button type="button" class="btn sm pri" onclick="qlChuyenNhieu(document.getElementById('qlChLop').value)">Chuyển vào lớp</button><button type="button" class="btn sm" onclick="qlChuyenNhieu('')">Bỏ khỏi lớp</button><button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button></div>`:''}
  <div class="qlpg"><span class="muted">${ds0.length} em</span>${trang>1?`<span class="grow"></span><button type="button" class="btn sm" ${qlTrangSo?'':'disabled'} onclick="qlTrangSo--;render()">◂</button><span>Trang ${qlTrangSo+1}/${trang}</span><button type="button" class="btn sm" ${qlTrangSo<trang-1?'':'disabled'} onclick="qlTrangSo++;render()">▸</button>`:''}</div>
@@ -174,7 +174,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .qlr{display:grid;gap:8px 12px;align-items:center;padding:10px 2px;border-bottom:1px solid rgba(120,130,170,.28)}
 .qlr:last-child{border-bottom:0}.qlrh{font-size:12px;font-weight:700;text-transform:uppercase;color:#5A6488;padding-top:0}
 .qlr .a-act{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}.qlr .a-ten{min-width:0;overflow-wrap:anywhere}
-.qhs{grid-template-columns:24px minmax(0,2fr) minmax(130px,1.2fr) minmax(0,1.4fr) auto}
+.qhs{grid-template-columns:minmax(0,2fr) minmax(130px,1.2fr) minmax(0,1.4fr) auto}
 .qph{grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) auto}.qgv{grid-template-columns:minmax(0,1fr) minmax(0,2fr)}
 .qlp{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1.3fr) auto}.qds{grid-template-columns:28px minmax(0,1fr) auto}
 .qlr .a-con{display:flex;flex-wrap:wrap;gap:6px}.qlr select{width:100%;max-width:200px}
@@ -190,7 +190,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 @media(max-width:640px){
  .qlrh{display:none}.mlab{display:inline;color:#5A6488;font-size:12px}
  .qlmall{display:flex;gap:8px;align-items:center;font-size:13px;padding:4px 2px 6px;border-bottom:1px solid rgba(120,130,170,.28)}
- .qhs{grid-template-columns:24px minmax(0,1fr) auto;grid-template-areas:"ck ten act" ". lop lop" ". ph ph"}
+ .qhs{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"ten act" "lop lop" "ph ph"}
  .qhs .a-ck{grid-area:ck;align-self:start;padding-top:2px}.qhs .a-ten{grid-area:ten}.qhs .a-act{grid-area:act;align-self:start}.qhs .a-lop{grid-area:lop}.qhs .a-ph{grid-area:ph;font-size:13px}
  .qhs select{max-width:none}
  .qph,.qgv{grid-template-columns:minmax(0,1fr) auto}.qph .a-con,.qgv .a-con{grid-column:1/-1}
