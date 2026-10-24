@@ -8062,7 +8062,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 16:51';
+const APP_VER='24/10 · 16:55';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -12575,15 +12575,15 @@ function xlsxBlob(rows,widths){const L=i=>{let s='';i++;while(i){const m=(i-1)%2
  ['xl/_rels/workbook.xml.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'],
  ['xl/styles.xml','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFFFF2CC"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="2"><xf/><xf fontId="1" fillId="2" applyFont="1" applyFill="1"/></cellXfs></styleSheet>'],
  ['xl/worksheets/sheet1.xml',sh]])}
-const COT=['Họ và đệm','Tên','Giới tính (Nam/Nữ)','Ngày sinh (ngày/tháng/năm)','Lớp','Họ tên phụ huynh','Điện thoại phụ huynh','Gmail phụ huynh','Tên đăng nhập (để trống = tự tạo)'];
+const COT=['Họ và đệm','Tên','Giới tính (Nam/Nữ)','Ngày sinh (ngày/tháng/năm)','Lớp','Điện thoại phụ huynh','Gmail phụ huynh','Tên đăng nhập (để trống = tự tạo)'];
 function taiFile(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
 window.qlTaiMau=function(){const L=[...(O().lop||[])].sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten));const l1=(L[0]||{ten:'1A'}).ten;
- taiFile(xlsxBlob([COT,['Nguyễn Minh','An','Nữ','12/03/2019',l1,'Nguyễn Văn Bình','0912345678','binh.nguyen@gmail.com',''],['Nguyễn Gia','Bảo','Nam','05/09/2017','','Nguyễn Văn Bình','0912345678','binh.nguyen@gmail.com','']],[18,10,18,24,8,22,20,26,30]),'mau-danh-sach-hoc-sinh.xlsx');
+ taiFile(xlsxBlob([COT,['Nguyễn Minh','An','Nữ','12/03/2019',l1,'0912345678','binh.nguyen@gmail.com',''],['Nguyễn Gia','Bảo','Nam','05/09/2017','','0912345678','binh.nguyen@gmail.com','']],[18,10,18,24,8,20,26,30]),'mau-danh-sach-hoc-sinh.xlsx');
  toast('Đã tải file mẫu. Xoá 2 dòng ví dụ rồi điền danh sách.')};
 window.qlTaiDS=function(){const o=O(),H=o.hoso||{},L=id=>((o.lop||[]).find(l=>l.id===(o.gd||{})[id])||{}).ten||'';
- const rows=[COT.slice(0,8).concat(['Tên đăng nhập'])];STUDENTS.forEach(([id,n])=>{const h=H[id]||{},p=(o.ph||{})[id],pi=(o.phInfo||{})[p]||{},a=n.split(' ');const ten=a.pop();
-  rows.push([a.join(' '),ten,h.gt==='nam'?'Nam':h.gt==='nu'?'Nữ':'',h.ng&&h.th&&h.nam?`${String(h.ng).padStart(2,'0')}/${String(h.th).padStart(2,'0')}/${h.nam}`:(h.nam||''),L(id),pi.ten||'',h.dt||pi.dt||'',h.mail||pi.mail||'',id])});
- taiFile(xlsxBlob(rows,[18,10,18,24,8,22,20,26,16]),'danh-sach-hoc-sinh.xlsx')};
+ const rows=[COT.slice(0,7).concat(['Tên đăng nhập'])];STUDENTS.forEach(([id,n])=>{const h=H[id]||{},p=(o.ph||{})[id],pi=(o.phInfo||{})[p]||{},a=n.split(' ');const ten=a.pop();
+  rows.push([a.join(' '),ten,h.gt==='nam'?'Nam':h.gt==='nu'?'Nữ':'',h.ng&&h.th&&h.nam?`${String(h.ng).padStart(2,'0')}/${String(h.th).padStart(2,'0')}/${h.nam}`:(h.nam||''),L(id),h.dt||pi.dt||'',h.mail||pi.mail||'',id])});
+ taiFile(xlsxBlob(rows,[18,10,18,24,8,20,26,16]),'danh-sach-hoc-sinh.xlsx')};
 
 /* ---------- hiểu dữ liệu ---------- */
 function cotOf(h){const x=bo(h);if(!x)return'';
@@ -12627,7 +12627,7 @@ window.qlNhap={ds:[],ten:''};
 window.qlMoNhap=function(){const el=document.createElement('div');el.className='gdov';el.id='qlnhap';
  el.innerHTML=`<div class="gdbox qsbox qlnbox"><div class="gdhd"><b>Nhập danh sách từ Excel</b><button type="button" class="gdx" onclick="document.getElementById('qlnhap').remove()">Đóng ✕</button></div><div class="qlnbd" id="qlnbd">${buoc1()}</div></div>`;
  document.body.appendChild(el)};
-const buoc1=()=>`<ol class="qlnstep"><li><button type="button" class="btn sm" onclick="qlTaiMau()">⬇ Tải file mẫu (.xlsx)</button><div class="muted">Cột: Họ và đệm · Tên · Giới tính · Ngày sinh · Lớp · Họ tên PH · ĐT PH · Gmail PH · Tên đăng nhập (tuỳ chọn).</div></li>
+const buoc1=()=>`<ol class="qlnstep"><li><button type="button" class="btn sm" onclick="qlTaiMau()">⬇ Tải file mẫu (.xlsx)</button><div class="muted">Cột: Họ và đệm · Tên · Giới tính · Ngày sinh · Lớp · ĐT phụ huynh · Gmail phụ huynh · Tên đăng nhập (tuỳ chọn).</div></li>
  <li>Điền danh sách. Cột <b>Lớp</b> ghi tên lớp đã tạo (ví dụ 1A); để trống nếu chưa xếp. Anh chị em <b>cùng SĐT hoặc Gmail phụ huynh</b> sẽ chung 1 tài khoản phụ huynh.</li>
  <li><label class="btn pri qlfile">⬆ Chọn file Excel hoặc CSV<input type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onchange="qlDocFile(this.files[0])"></label><div class="muted">Nhập lại file đã sửa: em đã có (cùng họ tên + ngày sinh, hoặc cùng tên đăng nhập) sẽ được <b>cập nhật</b>, không tạo trùng.</div></li></ol>`;
 window.qlDocFile=async function(f){if(!f)return;const bd=document.getElementById('qlnbd');bd.innerHTML='<p>Đang đọc file…</p>';
@@ -12641,7 +12641,7 @@ function nhomPH(ds){const g={},o=O(),info=o.phInfo||{};
   (g[kk]=g[kk]||{cu,xs:[]}).xs.push(x);if(cu&&!g[kk].cu)g[kk].cu=cu});return g}
 function xemTruoc(){const ds=qlNhap.ds,ok=ds.filter(x=>!x.loi.length),loi=ds.length-ok.length,moi=ok.filter(x=>!x.cu).length,cap=ok.length-moi,G=nhomPH(ds),nPH=Object.keys(G).length,phMoi=Object.values(G).filter(g=>!g.cu).length,anhEm=Object.values(G).filter(g=>g.xs.length>1).length;
  const ganCu={};Object.values(G).forEach(g=>{if(g.cu)g.xs.forEach(x=>ganCu[x.dong]=g.cu)});const phT=t=>((O().phInfo||{})[t]||{}).ten||t;
- const rows=ds.map(x=>{const d=x.d&&!x.d.loi?[x.d.ng,x.d.th,x.d.nam].filter(Boolean).join('/'):'';return`<tr class="${x.loi.length?'qlnbad':''}"><td>${x.dong}</td><td><b>${e(x.hoten||'—')}</b><div class="muted">${x.gt==='nam'?'Nam':x.gt==='nu'?'Nữ':''}${d?' · '+d:''}</div></td><td>${x.lop?e(x.lop.ten):(x.lopTen?e(x.lopTen):'—')}</td><td>${e(x.phten||'')}<div class="muted">${e(x.dt||'')}${x.mail?' '+e(x.mail):''}</div></td><td>${x.loi.length?`<span class="qlnl1">✕ ${e(x.loi.join('; '))}</span>`:(x.cu?`<span class="qlnl2">↻ Cập nhật ${e(x.cu)}</span>`:'<span class="qlnl3">+ Tạo mới</span>')}${x.canh.map(c=>`<div class="qlnl4">⚠ ${e(c)}</div>`).join('')}${ganCu[x.dong]?`<div class="qlnl2" style="font-size:12.5px">👪 gắn với phụ huynh đã có: ${e(phT(ganCu[x.dong]))} (${e(ganCu[x.dong])})</div>`:''}</td></tr>`}).join('');
+ const rows=ds.map(x=>{const d=x.d&&!x.d.loi?[x.d.ng,x.d.th,x.d.nam].filter(Boolean).join('/'):'';return`<tr class="${x.loi.length?'qlnbad':''}"><td>${x.dong}</td><td><b>${e(x.hoten||'—')}</b><div class="muted">${x.gt==='nam'?'Nam':x.gt==='nu'?'Nữ':''}${d?' · '+d:''}</div></td><td>${x.lop?e(x.lop.ten):(x.lopTen?e(x.lopTen):'—')}</td><td>${e(x.dt||'')}${x.mail?'<div class="muted">'+e(x.mail)+'</div>':''}</td><td>${x.loi.length?`<span class="qlnl1">✕ ${e(x.loi.join('; '))}</span>`:(x.cu?`<span class="qlnl2">↻ Cập nhật ${e(x.cu)}</span>`:'<span class="qlnl3">+ Tạo mới</span>')}${x.canh.map(c=>`<div class="qlnl4">⚠ ${e(c)}</div>`).join('')}${ganCu[x.dong]?`<div class="qlnl2" style="font-size:12.5px">👪 gắn với phụ huynh đã có: ${e(phT(ganCu[x.dong]))} (${e(ganCu[x.dong])})</div>`:''}</td></tr>`}).join('');
  return`<p><b>${e(qlNhap.ten)}</b> · ${ds.length} dòng</p>
  <div class="qlnsum"><span class="qlnl3">+ ${moi} em mới</span><span class="qlnl2">↻ ${cap} em cập nhật</span><span class="${loi?'qlnl1':'muted'}">✕ ${loi} dòng lỗi</span><span>👪 ${nPH} phụ huynh (${phMoi} tài khoản mới${anhEm?`, ${anhEm} nhà có anh chị em`:''})</span></div>
  ${loi?'<p class="qlnerr">Dòng lỗi (đỏ) sẽ bị bỏ qua. Sửa trong Excel rồi chọn lại file, hoặc nhập các dòng đúng trước.</p>':''}
@@ -12862,8 +12862,8 @@ function hoi(dt,mail,boQua){const f=phTim(dt,mail,boQua);
  return''}
 const val=i=>((document.getElementById(i)||{}).value||'').trim();
 
-/* 1) Thêm học sinh: thêm ô "Họ tên phụ huynh" và tự gắn/tạo phụ huynh */
-{const _m=window.qlMoHS;window.qlMoHS=function(){const r=_m.apply(this,arguments);try{const dt=document.getElementById('mDt');const row=dt&&dt.closest('.qs2');if(row&&!document.getElementById('mPhTen0'))row.insertAdjacentHTML('beforebegin','<label>Họ tên phụ huynh<input id="mPhTen0" maxlength="40" placeholder="Nguyễn Văn Bình"></label>');
+/* 1) Thêm học sinh: tự gắn/tạo phụ huynh */
+{const _m=window.qlMoHS;window.qlMoHS=function(){const r=_m.apply(this,arguments);try{const dt=document.getElementById('mDt');const row=dt&&dt.closest('.qs2');
   const f=document.querySelector('#qlm .qsform');if(f&&!document.getElementById('mPhNote'))f.querySelector('.qsbtn').insertAdjacentHTML('beforebegin','<p id="mPhNote" class="muted" style="margin:0;font-size:12.5px">Tài khoản phụ huynh: trùng SĐT/Gmail với phụ huynh đã có thì gắn chung (anh chị em); chưa có thì tạo mới "ph.tên đăng nhập của em", mật khẩu jenny123.</p>')}catch(x){}return r}}
 {const _l=window.qlLuuHS;window.qlLuuHS=async function(){const dt=val('mDt'),mail=val('mMail').toLowerCase(),phTen=val('mPhTen0');
  if(!val('mHo')||!val('mTen')||!val('mGt'))return _l.apply(this,arguments);
@@ -12896,6 +12896,52 @@ window.phTaoThieu=async function(){const ds=STUDENTS.filter(s=>!(O().ph||{})[s[0
  save();if(cloud()){try{await fbDayNgay()}catch(x){}}render();toast(`Đã tạo ${n} tài khoản, gắn chung ${g} em${l?`, ${l} lỗi`:''}`)};
 {const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='ph'){const n=STUDENTS.filter(s=>!(O().ph||{})[s[0]]).length;
  if(n)r=r.replace(/(<h2>Em chưa có phụ huynh \(\d+\)<\/h2>)/,`$1<div class="qlin" style="margin-bottom:10px"><button type="button" class="btn pri" onclick="phTaoThieu()">+ Tạo tài khoản phụ huynh cho ${n} em</button></div>`)}return r}}
+})();
+/* 78 — Xoá học sinh (Quản lý). Xoá hẳn tài khoản và dữ liệu học của em; không hoàn tác.
+   Muốn giữ dữ liệu thì dùng "Nghỉ học" (Lên lớp) thay vì xoá. Phụ huynh ph.… không còn con thì xoá theo. */
+(function(){
+if(typeof viewPH==='undefined')return;
+const O=()=>S.org;
+const cloud=()=>!!(O()&&O().cloud&&typeof CLOUD!=='undefined'&&CLOUD);
+const ten=id=>(STUDENTS.find(s=>s[0]===id)||[id,id])[1];
+async function xoaMay(id,phBo,phCon){const db=FB.db;
+ const q=await db.collection('users').where('tk','==',id).get();await Promise.all(q.docs.filter(d=>(d.data()||{}).role==='hs').map(d=>db.doc('users/'+d.id).delete()));
+ await Promise.all([db.doc('hs/'+id).delete(),db.doc('hsgv/'+id).delete(),db.doc('login/'+id).delete()].map(p=>p.catch(()=>{})));
+ for(const [tk,con] of phCon){const u=await db.collection('users').where('tk','==',tk).get();
+  await Promise.all(u.docs.map(d=>phBo.includes(tk)?db.doc('users/'+d.id).delete():db.doc('users/'+d.id).set({con},{merge:true})));
+  if(phBo.includes(tk))await db.doc('login/'+tk).delete().catch(()=>{})}}
+window.qlXoaHS=async function(ids){ids=(ids||[]).filter(id=>S.st[id]||STUDENTS.some(s=>s[0]===id));if(!ids.length)return;
+ const ds=ids.map(ten);
+ const hoi=ids.length===1?`Xoá hẳn học sinh ${ds[0]} (${ids[0]})?\n\nTài khoản, sao, xu, đồ, thú cưng, kết quả học của em sẽ mất và KHÔNG khôi phục được.\nNếu em chỉ tạm nghỉ, hãy dùng "Nghỉ học" để giữ dữ liệu.\n\nGõ XOA để xác nhận:`
+  :`Xoá hẳn ${ids.length} học sinh: ${ds.slice(0,6).join(', ')}${ids.length>6?'…':''}?\n\nToàn bộ dữ liệu của các em sẽ mất và KHÔNG khôi phục được.\n\nGõ XOA để xác nhận:`;
+ const t=prompt(hoi,'');if(t===null)return;if(String(t).trim().toUpperCase().replace('Á','A')!=='XOA'){toast('Chưa xoá: cần gõ XOA để xác nhận');return}
+ const o=O(),phCu={};ids.forEach(id=>{const p=(o.ph||{})[id];if(p)phCu[p]=1});
+ o.xoa=o.xoa||[];ids.forEach(id=>{if(!o.xoa.includes(id))o.xoa.push(id)});
+ ids.forEach(id=>{[STUDENTS,o.hs||[],o.hsMoi||[]].forEach(a=>{for(let i=a.length-1;i>=0;i--)if(a[i][0]===id)a.splice(i,1)});
+  delete S.st[id];['gd','nl','hoso','ph','hosoNam','nghi'].forEach(k=>{if(o[k])delete o[k][id]});
+  if(window.qlChon)delete qlChon[id];if(window.qlThemChon)delete qlThemChon[id];
+  (S.asg||[]).forEach(a=>{if(Array.isArray(a.hs)&&a.hs.includes(id))a.hs=a.hs.filter(x=>x!==id)})});
+ if(Array.isArray(S.events))S.events=S.events.filter(e=>!(e.actor&&e.actor.account&&ids.includes(e.actor.account.name)));
+ const phBo=[],phCon=[];Object.keys(phCu).forEach(tk=>{const con=Object.entries(o.ph||{}).filter(([c,t])=>t===tk).map(([c])=>c);phCon.push([tk,con]);if(!con.length&&/^ph\./.test(tk)){phBo.push(tk);if(o.phInfo)delete o.phInfo[tk]}});
+ if(typeof sid!=='undefined'&&!S.st[sid]){const f=Object.keys(S.st)[0];if(f)sid=f}
+ (o.nk=o.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Xoá học sinh: ${ds.join(', ')}${phBo.length?` (và tài khoản phụ huynh ${phBo.join(', ')})`:''}`});
+ if(cloud()){toast('Đang xoá trên máy chủ…');try{for(const id of ids)await xoaMay(id,phBo,phCon);await fbDayNgay()}catch(x){toast('Máy chủ chưa xoá hết: '+(typeof fbLoi==='function'?fbLoi(x):x.message))}}
+ save();const m=document.getElementById('qlsua');if(m)m.remove();render();toast(`Đã xoá ${ids.length} học sinh`)};
+
+/* bản demo tự nạp lại học sinh mẫu — bỏ các em đã xoá */
+if(typeof orgHeal==='function'){const _h=orgHeal;orgHeal=function(){const r=_h.apply(this,arguments);try{const x=(S.org&&S.org.xoa)||[];if(x.length){for(let i=STUDENTS.length-1;i>=0;i--)if(x.includes(STUDENTS[i][0]))STUDENTS.splice(i,1);x.forEach(id=>{delete S.st[id]})}}catch(e){}return r};window.orgHeal=orgHeal}
+/* tạo lại tài khoản trùng tên đã xoá thì bỏ khỏi danh sách xoá */
+{const _t=window.qlTaoHS;window.qlTaoHS=async function(){const truoc=new Set(Object.keys(S.st));const r=await _t.apply(this,arguments);try{const x=(S.org&&S.org.xoa)||[];Object.keys(S.st).filter(k=>!truoc.has(k)).forEach(k=>{const i=x.indexOf(k);if(i>=0)x.splice(i,1)})}catch(e){}return r}}
+/* nút Xoá trong bảng Sửa học sinh */
+{const _s=window.qlSua;window.qlSua=function(id){const r=_s.apply(this,arguments);try{const f=document.querySelector('#qlsua form');if(f&&!f.querySelector('.qlxoa')){
+  f.insertAdjacentHTML('beforeend',`<div class="qlxoa"><span class="muted">Không học nữa? Dùng Nghỉ học (Năm học · Lên lớp) để giữ dữ liệu.</span><button type="button" class="btn sm qlxbtn" onclick="qlXoaHS(['${id}'])">🗑 Xoá học sinh</button></div>`)}}catch(x){}return r}}
+/* nút Xoá ở thanh chọn nhiều em */
+{const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='hs')
+  r=r.replace(`<button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`,`<button type="button" class="btn sm qlxbtn" onclick="qlXoaHS(Object.keys(qlChon).filter(k=>qlChon[k]))">🗑 Xoá</button><button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`);return r}}
+document.head.insertAdjacentHTML('beforeend',`<style>
+.qlxoa{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed #C9D1E6}.qlxoa .muted{font-size:12.5px;flex:1 1 200px}
+body.px .btn.qlxbtn,.btn.qlxbtn{color:#B3261E!important;background:#fff!important}
+</style>`);
 })();
 /* 74 — Chế độ tối: tăng độ tương phản cho nút, ô nhập, ô chọn, ô tích và nút bị khoá (24/10/2026).
    Chỉ tác động khi máy để chế độ tối (hoặc data-theme="dark"); chế độ sáng giữ nguyên. */

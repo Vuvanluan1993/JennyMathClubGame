@@ -30,8 +30,8 @@ function hoi(dt,mail,boQua){const f=phTim(dt,mail,boQua);
  return''}
 const val=i=>((document.getElementById(i)||{}).value||'').trim();
 
-/* 1) Thêm học sinh: thêm ô "Họ tên phụ huynh" và tự gắn/tạo phụ huynh */
-{const _m=window.qlMoHS;window.qlMoHS=function(){const r=_m.apply(this,arguments);try{const dt=document.getElementById('mDt');const row=dt&&dt.closest('.qs2');if(row&&!document.getElementById('mPhTen0'))row.insertAdjacentHTML('beforebegin','<label>Họ tên phụ huynh<input id="mPhTen0" maxlength="40" placeholder="Nguyễn Văn Bình"></label>');
+/* 1) Thêm học sinh: tự gắn/tạo phụ huynh */
+{const _m=window.qlMoHS;window.qlMoHS=function(){const r=_m.apply(this,arguments);try{const dt=document.getElementById('mDt');const row=dt&&dt.closest('.qs2');
   const f=document.querySelector('#qlm .qsform');if(f&&!document.getElementById('mPhNote'))f.querySelector('.qsbtn').insertAdjacentHTML('beforebegin','<p id="mPhNote" class="muted" style="margin:0;font-size:12.5px">Tài khoản phụ huynh: trùng SĐT/Gmail với phụ huynh đã có thì gắn chung (anh chị em); chưa có thì tạo mới "ph.tên đăng nhập của em", mật khẩu jenny123.</p>')}catch(x){}return r}}
 {const _l=window.qlLuuHS;window.qlLuuHS=async function(){const dt=val('mDt'),mail=val('mMail').toLowerCase(),phTen=val('mPhTen0');
  if(!val('mHo')||!val('mTen')||!val('mGt'))return _l.apply(this,arguments);

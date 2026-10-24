@@ -41,6 +41,7 @@
 - File mới: `js/core/72-tu-luyen.js`.
 
 ## 2026-10-24
+- Quản lý: bỏ Họ tên phụ huynh (bảng Thêm học sinh, file Excel mẫu); thêm Xoá học sinh (từng em trong bảng Sửa, hoặc chọn nhiều em; gõ XOA để xác nhận; xoá cả tài khoản trên máy chủ và phụ huynh ph.… không còn con).
 - Quản lý: tài khoản phụ huynh tự động khi tạo học sinh (gắn theo SĐT/Gmail có sẵn, hoặc tạo ph.<tên đăng nhập em>); gộp khi bổ sung SĐT sau; nút tạo cho các em chưa có; ô Họ tên phụ huynh ở bảng Thêm học sinh. Nhập Excel dùng cùng luật.
 - Quản lý: Kết thúc năm học · Lên lớp (3 bước: lớp mới, từng học sinh, xác nhận); Ở lại lớp / Nghỉ học / Học xong; lọc "Nghỉ học / Đã học xong" + Mở lại; lưu Các năm học trước; máy chủ tự lên lớp khi em đăng nhập.
 - Quản lý: Nhập danh sách từ Excel/CSV (file mẫu, xem trước, báo lỗi từng dòng, cập nhật không trùng, gom anh chị em chung phụ huynh), Tải danh sách .xlsx, In phiếu đăng nhập học sinh/phụ huynh (đen trắng, 8 phiếu/A4). Bảng nhập luôn nền sáng ở chế độ tối.

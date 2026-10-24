@@ -141,7 +141,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Khung "Thêm học sinh vào lớp" chỉ **gợi ý 5 em chưa xếp lớp**; muốn em khác thì gõ tên để tìm (tối đa 15 kết quả). Bỏ nút "Xếp lớp" ở trang Học sinh (trùng với ô chọn lớp).
 - Danh sách ở trang Quản lý dùng hàng thẳng cột; trên điện thoại mỗi em là 1 thẻ gọn (tên + Sửa, dưới là ô lớp, phụ huynh).
 - **Chế độ tối** (24/10/2026): mọi nút, ô nhập, ô chọn, ô tích phải tách rõ khỏi nền (file `74-che-do-toi.js`); kiểm tra bằng đo tương phản tự động trước khi đăng.
-- **Nhập danh sách từ Excel** (24/10/2026, Quản lý › Học sinh › ⬆ Nhập từ Excel): tải file mẫu .xlsx (Họ và đệm, Tên, Giới tính, Ngày sinh, Lớp, Họ tên PH, ĐT PH, Gmail PH, Tên đăng nhập tuỳ chọn); nhận cả .csv. Xem trước từng dòng: + Tạo mới / ↻ Cập nhật / ✕ lỗi (thiếu họ/tên/giới tính, ngày sinh sai, SĐT/Gmail sai, lớp chưa tạo, trùng trong file, trùng tên nhiều em, khác khối). Dòng lỗi bị bỏ qua.
+- **Nhập danh sách từ Excel** (24/10/2026, Quản lý › Học sinh › ⬆ Nhập từ Excel): tải file mẫu .xlsx (Họ và đệm, Tên, Giới tính, Ngày sinh, Lớp, ĐT PH, Gmail PH, Tên đăng nhập tuỳ chọn); nhận cả .csv. Xem trước từng dòng: + Tạo mới / ↻ Cập nhật / ✕ lỗi (thiếu họ/tên/giới tính, ngày sinh sai, SĐT/Gmail sai, lớp chưa tạo, trùng trong file, trùng tên nhiều em, khác khối). Dòng lỗi bị bỏ qua.
 - Nhập lại file đã sửa: em đã có (cùng tên đăng nhập, hoặc cùng họ tên + ngày sinh) được cập nhật, không tạo trùng.
 - Gom phụ huynh: các em cùng SĐT hoặc cùng Gmail phụ huynh → 1 tài khoản phụ huynh (tên đăng nhập `ph` + 6 số cuối SĐT); trùng với phụ huynh đã có thì gắn thêm con. Mật khẩu ban đầu học sinh và phụ huynh: jenny123.
 - **In phiếu đăng nhập** đen trắng, 8 phiếu/A4, xếp theo lớp: sau khi nhập, ở trang một Lớp (in cả lớp), khi chọn nhiều em, và ở trang Phụ huynh. Mật khẩu chỉ in được khi vừa tạo trong phiên; còn lại để dòng chấm cho thầy cô ghi tay.
@@ -152,7 +152,8 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Tài khoản phụ huynh tự động** (24/10/2026): mỗi khi tạo học sinh (nút Thêm hoặc Excel), app tìm phụ huynh theo SĐT trước rồi Gmail. Đã có → hỏi rồi gắn em vào tài khoản đó (anh chị em). Chưa có, hoặc không có SĐT/Gmail → tạo tài khoản phụ huynh mới tên **ph.<tên đăng nhập của em>** (ví dụ ph.an, ph.an2), mật khẩu jenny123. SĐT khớp phụ huynh A mà Gmail khớp phụ huynh B → hỏi chọn.
 - Nhận anh chị em theo SĐT/Gmail, không theo tên, nên trùng họ tên + ngày sinh không bị gộp nhầm.
 - Sửa học sinh, bổ sung SĐT/Gmail trùng phụ huynh khác → hỏi gộp; tài khoản ph.… tạm không còn con thì bỏ. Trang Phụ huynh có nút "Tạo tài khoản phụ huynh cho n em" (các em chưa có).
-- Bảng Thêm học sinh có thêm ô "Họ tên phụ huynh".
+- **Không dùng họ tên phụ huynh** (24/10/2026): bỏ ô này ở Thêm học sinh và ở file Excel mẫu; phụ huynh nhận diện bằng SĐT/Gmail và tên đăng nhập.
+- **Xoá học sinh** (24/10/2026): trong bảng ✎ Sửa (nút 🗑 Xoá học sinh) hoặc chọn nhiều em › 🗑 Xoá; phải gõ XOA để xác nhận; xoá hẳn tài khoản và dữ liệu học, không khôi phục; tài khoản phụ huynh ph.… không còn con thì xoá theo. Em chỉ tạm nghỉ thì dùng Nghỉ học để giữ dữ liệu.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.

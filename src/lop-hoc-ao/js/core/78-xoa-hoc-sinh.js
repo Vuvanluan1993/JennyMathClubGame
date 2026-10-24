@@ -1,0 +1,46 @@
+/* 78 — Xoá học sinh (Quản lý). Xoá hẳn tài khoản và dữ liệu học của em; không hoàn tác.
+   Muốn giữ dữ liệu thì dùng "Nghỉ học" (Lên lớp) thay vì xoá. Phụ huynh ph.… không còn con thì xoá theo. */
+(function(){
+if(typeof viewPH==='undefined')return;
+const O=()=>S.org;
+const cloud=()=>!!(O()&&O().cloud&&typeof CLOUD!=='undefined'&&CLOUD);
+const ten=id=>(STUDENTS.find(s=>s[0]===id)||[id,id])[1];
+async function xoaMay(id,phBo,phCon){const db=FB.db;
+ const q=await db.collection('users').where('tk','==',id).get();await Promise.all(q.docs.filter(d=>(d.data()||{}).role==='hs').map(d=>db.doc('users/'+d.id).delete()));
+ await Promise.all([db.doc('hs/'+id).delete(),db.doc('hsgv/'+id).delete(),db.doc('login/'+id).delete()].map(p=>p.catch(()=>{})));
+ for(const [tk,con] of phCon){const u=await db.collection('users').where('tk','==',tk).get();
+  await Promise.all(u.docs.map(d=>phBo.includes(tk)?db.doc('users/'+d.id).delete():db.doc('users/'+d.id).set({con},{merge:true})));
+  if(phBo.includes(tk))await db.doc('login/'+tk).delete().catch(()=>{})}}
+window.qlXoaHS=async function(ids){ids=(ids||[]).filter(id=>S.st[id]||STUDENTS.some(s=>s[0]===id));if(!ids.length)return;
+ const ds=ids.map(ten);
+ const hoi=ids.length===1?`Xoá hẳn học sinh ${ds[0]} (${ids[0]})?\n\nTài khoản, sao, xu, đồ, thú cưng, kết quả học của em sẽ mất và KHÔNG khôi phục được.\nNếu em chỉ tạm nghỉ, hãy dùng "Nghỉ học" để giữ dữ liệu.\n\nGõ XOA để xác nhận:`
+  :`Xoá hẳn ${ids.length} học sinh: ${ds.slice(0,6).join(', ')}${ids.length>6?'…':''}?\n\nToàn bộ dữ liệu của các em sẽ mất và KHÔNG khôi phục được.\n\nGõ XOA để xác nhận:`;
+ const t=prompt(hoi,'');if(t===null)return;if(String(t).trim().toUpperCase().replace('Á','A')!=='XOA'){toast('Chưa xoá: cần gõ XOA để xác nhận');return}
+ const o=O(),phCu={};ids.forEach(id=>{const p=(o.ph||{})[id];if(p)phCu[p]=1});
+ o.xoa=o.xoa||[];ids.forEach(id=>{if(!o.xoa.includes(id))o.xoa.push(id)});
+ ids.forEach(id=>{[STUDENTS,o.hs||[],o.hsMoi||[]].forEach(a=>{for(let i=a.length-1;i>=0;i--)if(a[i][0]===id)a.splice(i,1)});
+  delete S.st[id];['gd','nl','hoso','ph','hosoNam','nghi'].forEach(k=>{if(o[k])delete o[k][id]});
+  if(window.qlChon)delete qlChon[id];if(window.qlThemChon)delete qlThemChon[id];
+  (S.asg||[]).forEach(a=>{if(Array.isArray(a.hs)&&a.hs.includes(id))a.hs=a.hs.filter(x=>x!==id)})});
+ if(Array.isArray(S.events))S.events=S.events.filter(e=>!(e.actor&&e.actor.account&&ids.includes(e.actor.account.name)));
+ const phBo=[],phCon=[];Object.keys(phCu).forEach(tk=>{const con=Object.entries(o.ph||{}).filter(([c,t])=>t===tk).map(([c])=>c);phCon.push([tk,con]);if(!con.length&&/^ph\./.test(tk)){phBo.push(tk);if(o.phInfo)delete o.phInfo[tk]}});
+ if(typeof sid!=='undefined'&&!S.st[sid]){const f=Object.keys(S.st)[0];if(f)sid=f}
+ (o.nk=o.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Xoá học sinh: ${ds.join(', ')}${phBo.length?` (và tài khoản phụ huynh ${phBo.join(', ')})`:''}`});
+ if(cloud()){toast('Đang xoá trên máy chủ…');try{for(const id of ids)await xoaMay(id,phBo,phCon);await fbDayNgay()}catch(x){toast('Máy chủ chưa xoá hết: '+(typeof fbLoi==='function'?fbLoi(x):x.message))}}
+ save();const m=document.getElementById('qlsua');if(m)m.remove();render();toast(`Đã xoá ${ids.length} học sinh`)};
+
+/* bản demo tự nạp lại học sinh mẫu — bỏ các em đã xoá */
+if(typeof orgHeal==='function'){const _h=orgHeal;orgHeal=function(){const r=_h.apply(this,arguments);try{const x=(S.org&&S.org.xoa)||[];if(x.length){for(let i=STUDENTS.length-1;i>=0;i--)if(x.includes(STUDENTS[i][0]))STUDENTS.splice(i,1);x.forEach(id=>{delete S.st[id]})}}catch(e){}return r};window.orgHeal=orgHeal}
+/* tạo lại tài khoản trùng tên đã xoá thì bỏ khỏi danh sách xoá */
+{const _t=window.qlTaoHS;window.qlTaoHS=async function(){const truoc=new Set(Object.keys(S.st));const r=await _t.apply(this,arguments);try{const x=(S.org&&S.org.xoa)||[];Object.keys(S.st).filter(k=>!truoc.has(k)).forEach(k=>{const i=x.indexOf(k);if(i>=0)x.splice(i,1)})}catch(e){}return r}}
+/* nút Xoá trong bảng Sửa học sinh */
+{const _s=window.qlSua;window.qlSua=function(id){const r=_s.apply(this,arguments);try{const f=document.querySelector('#qlsua form');if(f&&!f.querySelector('.qlxoa')){
+  f.insertAdjacentHTML('beforeend',`<div class="qlxoa"><span class="muted">Không học nữa? Dùng Nghỉ học (Năm học · Lên lớp) để giữ dữ liệu.</span><button type="button" class="btn sm qlxbtn" onclick="qlXoaHS(['${id}'])">🗑 Xoá học sinh</button></div>`)}}catch(x){}return r}}
+/* nút Xoá ở thanh chọn nhiều em */
+{const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='hs')
+  r=r.replace(`<button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`,`<button type="button" class="btn sm qlxbtn" onclick="qlXoaHS(Object.keys(qlChon).filter(k=>qlChon[k]))">🗑 Xoá</button><button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`);return r}}
+document.head.insertAdjacentHTML('beforeend',`<style>
+.qlxoa{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed #C9D1E6}.qlxoa .muted{font-size:12.5px;flex:1 1 200px}
+body.px .btn.qlxbtn,.btn.qlxbtn{color:#B3261E!important;background:#fff!important}
+</style>`);
+})();
