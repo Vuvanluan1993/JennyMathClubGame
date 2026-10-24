@@ -1,5 +1,14 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Đồng bộ tiến độ an toàn hơn (T-06)
+- Dữ liệu học của em (đảo, Tự luyện, Sổ lỗi, bài về nhà, số liệu hồ sơ, xu…) vốn đã lưu lên máy chủ `hs/{tk}` mỗi lần lưu. Sửa 4 chỗ dễ mất dữ liệu:
+  - Ghi lỗi (mất mạng) thì tự thử lại sau 20 giây và lần lưu sau vẫn ghi (trước: bỏ qua vì tưởng đã ghi).
+  - Làm bài lúc mất mạng rồi tải lại trang: so dấu thời gian `st._t` giữa bản trên máy và bản máy chủ, bản mới hơn được giữ và đẩy lên.
+  - Học trên 2 máy: máy này nghe thay đổi của chính em trên máy chủ, bản mới hơn thì nhận ngay, không ghi đè lên bản mới bằng bản cũ.
+  - Đăng xuất lúc mất mạng không bị treo (chờ tối đa 4 giây).
+- Dữ liệu gần giới hạn 1 MB thì bỏ bản lưu câu cũ trong Sổ lỗi sai. Thử đo: em mẫu học 8 tháng ≈ 40 KB.
+- Kiểm tra mới `node tools/test/dong-bo.js` (giả lập máy chủ, không cần mạng). File mới `js/core/79-dong-bo.js`.
+
 ## 24/10/2026 — Đặt tính rồi tính trong đảo, phiếu bài, Luyện lỗi (T-05)
 - Lớp 2, các bài có nhớ (19–24, 33, 60, 62, 63, 69, 70): thêm dạng "Đặt tính rồi tính" vào Màn 1 và Màn 2 của đảo. Phiếu bài (Bài cô giao), Luyện lỗi, Tự luyện lấy câu từ đảo nên cũng có.
 - Ngoài Tự luyện: câu sai lần 1 chỉ xoá chữ số sai, giữ chữ số đúng; vẫn mất 1 tim như câu khác của màn.

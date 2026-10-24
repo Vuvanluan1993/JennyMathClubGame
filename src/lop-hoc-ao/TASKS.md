@@ -11,7 +11,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 
 ## Tiếp theo
 - ☐ **T-07b Quản lý trung tâm (tiếp)** — lên lớp cả lớp cuối năm, đặt lại mật khẩu, khóa tài khoản, xuất dữ liệu; trang Quản trị hệ thống khi có máy chủ.
-- ☐ **T-06 Đồng bộ tiến độ qua máy chủ** — hiện tiến độ chỉ nằm trong trình duyệt từng máy; cần lưu chung để giáo viên xem báo cáo thật.
+- ☑ **T-06 Đồng bộ tiến độ qua máy chủ** — đã lưu lên `hs/{tk}`; thêm thử lại khi lỗi, giữ bài làm lúc mất mạng, nhận cập nhật từ máy khác (24/10). Còn: chạy thử với tài khoản thật trên 2 máy.
 - ◐ **T-07 Trang giáo viên cho lớp 1–5** — (23/10: tách Toán Jenny khỏi bảng tiến độ; Lớp của tôi nhiều lớp; trang Quản lý trung tâm bản thử; hồ sơ học sinh 4 thẻ; giao phiếu tự động theo dạng yếu; bài về nhà bắt buộc) báo cáo theo chủ đề, dạng lỗi hay sai, giao bài.
 - ☐ **T-08 Toán Jenny (nâng cao) lớp 2–5** — hiện mới có lớp 1 và lớp 6.
 - ☐ **T-09 Lớp 6–9 theo mô hình đảo** — làm các chương còn lại như tiểu học.

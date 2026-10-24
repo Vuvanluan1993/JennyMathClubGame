@@ -164,6 +164,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - `node tools/test/tieng-anh.js` — 0 chuỗi tiếng Việt sót khi bật EN.
 - `node tools/test/the-ghep-doi.js` — thẻ ghép đôi đúng giá trị.
 - `node tools/test/tu-luyen.js` — Tự luyện lớp 1–2 ĐẠT.
+- `node tools/test/dong-bo.js` — đồng bộ máy chủ ĐẠT (giả lập).
 
 ## 8. Video giới thiệu
 - Công cụ ở `tools/video/` (quay bằng Playwright + CDP screencast 2×, thu tiếng app qua Web Audio, bàn tay pixel chạm, ghép bằng ffmpeg). Xem `tools/video/README.md`.
