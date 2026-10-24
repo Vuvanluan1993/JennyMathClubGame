@@ -55,6 +55,7 @@
 - File mới: `js/core/72-tu-luyen.js`.
 
 ## 2026-10-24
+- Luôn nền sáng trắng ở mọi trang (học sinh, giáo viên, phụ huynh, quản lý), không đổi theo chế độ tối của máy; nhãn Mới/Chưa làm/Đã làm đậm màu hơn.
 - Quản lý: chống bấm nhiều lần khi tạo/lưu (khoá nút, không tạo trùng); hỏi lại khi tạo em trùng họ tên; trang Phụ huynh bỏ nút tạo tay, "Sửa con" → "✎ Sửa".
 - Sửa lỗi không vào được trang Quản lý/Giáo viên/Phụ huynh (máy chủ) khi có em chưa xếp lớp (khối 0 làm lỗi tạo dữ liệu học).
 - Quản lý: bỏ Họ tên phụ huynh (bảng Thêm học sinh, file Excel mẫu); thêm Xoá học sinh (từng em trong bảng Sửa, hoặc chọn nhiều em; gõ XOA để xác nhận; xoá cả tài khoản trên máy chủ và phụ huynh ph.… không còn con).

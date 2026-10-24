@@ -2,6 +2,30 @@
 <html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Lớp học ảo Jenny</title>
+<meta name="color-scheme" content="light">
+<script>/* thầy chốt 24/10/2026: luôn nền sáng, không theo chế độ tối của máy */document.documentElement.setAttribute('data-theme','light')</script>
+<style>:root{color-scheme:light}
+/* ===== bản học sinh ===== */
+[hidden]{display:none!important}
+.demo,#tabs,#whoBox{display:none!important}
+.hsme{display:flex;align-items:center;min-width:0;order:9;position:relative}
+.appbar .wrap{flex-wrap:nowrap!important;gap:8px!important}.appbar .brand{margin-right:auto!important}
+.appbar .nb-lang{margin-left:auto}.appbar #sndBtn{margin-left:0!important}.nb-brand{display:flex!important;align-items:center;gap:4px;flex:none}.nb-logo{flex:none;image-rendering:pixelated}.nb-word{display:flex;align-items:center;font-family:var(--f-display);font-size:24px;line-height:1;letter-spacing:0}.nb-word i{font-style:normal;text-shadow:1px 1px 0 #1F2A5A}.nb-word em{font-style:normal;margin-left:3px;padding:1px 4px 2px;background:#28B568;color:#fff;font-size:18px;box-shadow:0 -2px 0 0 #1F2A5A,0 2px 0 0 #1F2A5A,-2px 0 0 0 #1F2A5A,2px 0 0 0 #1F2A5A}@media(max-width:440px){.nb-word{flex-direction:column;align-items:flex-start;font-size:20px;line-height:.8}.nb-word span{display:flex}.nb-word em{margin:3px 0 0 2px;font-size:14px;padding:0 3px 1px;line-height:1}.nb-logo{width:30px;height:21px}.appbar .wrap{gap:6px!important;padding-left:8px!important;padding-right:8px!important}.nb-lang button{padding:5px 5px!important;font-size:16px!important}#sndBtn{min-width:32px!important;padding:4px 6px!important}}@media(max-width:345px){.nb-outtop{font-size:16px!important;padding:3px 4px!important;gap:3px}.nb-door{width:12px;height:15px}.nb-logo{width:26px;height:18px}.nb-lang button{padding:4px 4px!important}.appbar .wrap{gap:5px!important;padding-left:6px!important;padding-right:6px!important}}.nb-brand b{font-family:var(--f-display);font-weight:400;font-size:20px;line-height:.85;color:var(--ink)}
+.nb-car{position:absolute;right:1px;bottom:0;font-style:normal;font-size:12px;line-height:1;color:var(--ink)}.nb-av{position:relative;width:38px;height:38px;border:0;cursor:pointer;background:var(--sea-soft);color:var(--ink);font-family:var(--f-display);font-size:26px;line-height:1;box-shadow:var(--f2),0 3px 0 2px var(--pxk)}
+.nb-menu{position:absolute;right:0;top:46px;z-index:40;background:var(--surface);box-shadow:var(--f3),4px 4px 0 3px var(--pxk);padding:10px 12px;min-width:210px}.nb-menu b{display:block;font-size:16px}.nb-menu small{display:block;color:var(--muted);margin:2px 0 10px}
+.hsout{max-width:420px;margin:16px auto 8px}.nb-outtop{width:auto!important;flex:none;order:9;display:flex!important;align-items:center;gap:4px;white-space:nowrap;padding:3px 5px!important;margin:0 4px 3px 2px;font-family:var(--f-display)!important;font-weight:400!important;font-size:18px!important;line-height:1!important;background:#FFE3D8!important;color:#B8320F!important;box-shadow:0 -2px 0 0 #1F2A5A,0 2px 0 0 #1F2A5A,-2px 0 0 0 #1F2A5A,2px 0 0 0 #1F2A5A,2px 4px 0 0 #1F2A5A,4px 2px 0 0 #1F2A5A!important}.nb-outtop:active{transform:translate(2px,2px);box-shadow:0 -2px 0 0 #1F2A5A,0 2px 0 0 #1F2A5A,-2px 0 0 0 #1F2A5A,2px 0 0 0 #1F2A5A!important}.nb-door{image-rendering:pixelated;flex:none}@media(max-width:440px){}@media(max-width:400px){.nb-brand b,.nb-brand span{font-size:15px!important}.nb-lang button{padding:5px 6px!important;font-size:17px!important}}.nb-out{width:100%;border:0;padding:8px;font:inherit;font-weight:700;cursor:pointer;background:var(--coral-soft);color:var(--coral);box-shadow:0 0 0 2px var(--coral)}
+.login{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:#3FC1EC radial-gradient(#BDEBFA 2px,transparent 3px) 0 0/46px 34px;overflow:auto}
+.lgcard{width:100%;max-width:400px;background:var(--surface);color:var(--ink);padding:22px;display:grid;gap:8px;box-shadow:var(--f3),0 8px 0 0 var(--pxk)}
+.lghead{display:flex;gap:12px;align-items:center;margin-bottom:6px}.lghead h1{font-size:34px}.lghead p{margin:0;color:var(--muted)}
+.lgcard label{font-weight:700;font-size:14px}.lgcard label small{font-weight:400;color:var(--muted)}
+.lgcard input:not([type=checkbox]){font:inherit;font-size:17px;padding:10px 12px;border:0;background:var(--surface2);color:var(--ink);box-shadow:var(--f2)}
+.lgrem{display:flex;gap:8px;align-items:center;font-weight:400!important;margin:4px 0}
+.lgmsg{color:var(--coral);min-height:1.2em;margin:0;font-weight:600}.lgnote{margin:0;color:var(--muted);font-size:12.5px}
+body.locked .appbar,body.locked main,body.locked .bnav{visibility:hidden}
+</style>
+</head>
+<body class="locked px">
+
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=VT323&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
 <style>
@@ -1103,28 +1127,7 @@ body.px .bnav:has(> button:nth-child(5)) button{font-size:16px}
 @keyframes bsway2{0%,100%{margin-left:-3px}50%{margin-left:3px}}
 .mgi.pop .mgsp,.mgi.wrong .mgsp{animation:none}
 @media (prefers-reduced-motion:reduce){.fishi .mgsp.flip,.balloi .mgsp,.balloi .mgt,.fishi::after{animation:none}}
-
-/* ===== bản học sinh ===== */
-[hidden]{display:none!important}
-.demo,#tabs,#whoBox{display:none!important}
-.hsme{display:flex;align-items:center;min-width:0;order:9;position:relative}
-.appbar .wrap{flex-wrap:nowrap!important;gap:8px!important}.appbar .brand{margin-right:auto!important}
-.appbar .nb-lang{margin-left:auto}.appbar #sndBtn{margin-left:0!important}.nb-brand{display:flex!important;align-items:center;gap:4px;flex:none}.nb-logo{flex:none;image-rendering:pixelated}.nb-word{display:flex;align-items:center;font-family:var(--f-display);font-size:24px;line-height:1;letter-spacing:0}.nb-word i{font-style:normal;text-shadow:1px 1px 0 #1F2A5A}.nb-word em{font-style:normal;margin-left:3px;padding:1px 4px 2px;background:#28B568;color:#fff;font-size:18px;box-shadow:0 -2px 0 0 #1F2A5A,0 2px 0 0 #1F2A5A,-2px 0 0 0 #1F2A5A,2px 0 0 0 #1F2A5A}@media(max-width:440px){.nb-word{flex-direction:column;align-items:flex-start;font-size:20px;line-height:.8}.nb-word span{display:flex}.nb-word em{margin:3px 0 0 2px;font-size:14px;padding:0 3px 1px;line-height:1}.nb-logo{width:30px;height:21px}.appbar .wrap{gap:6px!important;padding-left:8px!important;padding-right:8px!important}.nb-lang button{padding:5px 5px!important;font-size:16px!important}#sndBtn{min-width:32px!important;padding:4px 6px!important}}@media(max-width:345px){.nb-outtop{font-size:16px!important;padding:3px 4px!important;gap:3px}.nb-door{width:12px;height:15px}.nb-logo{width:26px;height:18px}.nb-lang button{padding:4px 4px!important}.appbar .wrap{gap:5px!important;padding-left:6px!important;padding-right:6px!important}}.nb-brand b{font-family:var(--f-display);font-weight:400;font-size:20px;line-height:.85;color:var(--ink)}
-.nb-car{position:absolute;right:1px;bottom:0;font-style:normal;font-size:12px;line-height:1;color:var(--ink)}.nb-av{position:relative;width:38px;height:38px;border:0;cursor:pointer;background:var(--sea-soft);color:var(--ink);font-family:var(--f-display);font-size:26px;line-height:1;box-shadow:var(--f2),0 3px 0 2px var(--pxk)}
-.nb-menu{position:absolute;right:0;top:46px;z-index:40;background:var(--surface);box-shadow:var(--f3),4px 4px 0 3px var(--pxk);padding:10px 12px;min-width:210px}.nb-menu b{display:block;font-size:16px}.nb-menu small{display:block;color:var(--muted);margin:2px 0 10px}
-.hsout{max-width:420px;margin:16px auto 8px}.nb-outtop{width:auto!important;flex:none;order:9;display:flex!important;align-items:center;gap:4px;white-space:nowrap;padding:3px 5px!important;margin:0 4px 3px 2px;font-family:var(--f-display)!important;font-weight:400!important;font-size:18px!important;line-height:1!important;background:#FFE3D8!important;color:#B8320F!important;box-shadow:0 -2px 0 0 #1F2A5A,0 2px 0 0 #1F2A5A,-2px 0 0 0 #1F2A5A,2px 0 0 0 #1F2A5A,2px 4px 0 0 #1F2A5A,4px 2px 0 0 #1F2A5A!important}.nb-outtop:active{transform:translate(2px,2px);box-shadow:0 -2px 0 0 #1F2A5A,0 2px 0 0 #1F2A5A,-2px 0 0 0 #1F2A5A,2px 0 0 0 #1F2A5A!important}.nb-door{image-rendering:pixelated;flex:none}@media(max-width:440px){}@media(max-width:400px){.nb-brand b,.nb-brand span{font-size:15px!important}.nb-lang button{padding:5px 6px!important;font-size:17px!important}}.nb-out{width:100%;border:0;padding:8px;font:inherit;font-weight:700;cursor:pointer;background:var(--coral-soft);color:var(--coral);box-shadow:0 0 0 2px var(--coral)}
-.login{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:#3FC1EC radial-gradient(#BDEBFA 2px,transparent 3px) 0 0/46px 34px;overflow:auto}
-.lgcard{width:100%;max-width:400px;background:var(--surface);color:var(--ink);padding:22px;display:grid;gap:8px;box-shadow:var(--f3),0 8px 0 0 var(--pxk)}
-.lghead{display:flex;gap:12px;align-items:center;margin-bottom:6px}.lghead h1{font-size:34px}.lghead p{margin:0;color:var(--muted)}
-.lgcard label{font-weight:700;font-size:14px}.lgcard label small{font-weight:400;color:var(--muted)}
-.lgcard input:not([type=checkbox]){font:inherit;font-size:17px;padding:10px 12px;border:0;background:var(--surface2);color:var(--ink);box-shadow:var(--f2)}
-.lgrem{display:flex;gap:8px;align-items:center;font-weight:400!important;margin:4px 0}
-.lgmsg{color:var(--coral);min-height:1.2em;margin:0;font-weight:600}.lgnote{margin:0;color:var(--muted);font-size:12.5px}
-body.locked .appbar,body.locked main,body.locked .bnav{visibility:hidden}
 </style>
-</head>
-<body class="locked px">
-
 <header class="appbar"><div class="wrap">
   <div class="brand"><span class="jav" style="width:40px;height:40px" aria-hidden="true"><svg viewBox="0 0 64 64" width="40" height="40"><circle cx="16" cy="16" r="9" fill="#3a2a22"/><circle cx="48" cy="16" r="9" fill="#3a2a22"/><circle cx="32" cy="36" r="20" fill="#3a2a22"/><circle cx="32" cy="38" r="16" fill="#f6d2b6"/><path d="M16 32 Q32 14 48 32 Q40 24 32 25 Q24 24 16 32Z" fill="#3a2a22"/><circle cx="26" cy="39" r="2.2" fill="#13263a"/><circle cx="38" cy="39" r="2.2" fill="#13263a"/><path d="M27 46 Q32 50 37 46" stroke="#c4553c" stroke-width="2" fill="none" stroke-linecap="round"/></svg></span><div><b>Học Toán cùng Jenny</b><small>Lớp học ảo · Tiểu học và THCS</small></div></div>
   <div class="seg" id="tabs" role="group" aria-label="Chọn vai trò"></div><div class="hsme" id="hsme"></div>
@@ -8088,7 +8091,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 17:20';
+const APP_VER='24/10 · 17:21';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -13006,7 +13009,7 @@ const val=i=>((document.getElementById(i)||{}).value||'').trim();
 {const f=window.qlLuu;if(f){let busy=false;window.qlLuu=async function(e){if(e&&e.preventDefault)e.preventDefault();if(busy)return;busy=true;const b=document.querySelector('#qlsua button[type=submit]');if(b){b.disabled=true}
  try{return await f.apply(this,arguments)}finally{busy=false;if(b&&document.body.contains(b))b.disabled=false}}}}
 })();
-/* 74 — Chế độ tối: tăng độ tương phản cho nút, ô nhập, ô chọn, ô tích và nút bị khoá (24/10/2026).
+/* 74 — (24/10/2026 thầy chốt: app luôn nền sáng — data-theme=light ở app.template.html, nên phần tối dưới đây không còn dùng; giữ để sau này nếu bật lại.) Chế độ tối: tăng độ tương phản cho nút, ô nhập, ô chọn, ô tích và nút bị khoá (24/10/2026).
    Chỉ tác động khi máy để chế độ tối (hoặc data-theme="dark"); chế độ sáng giữ nguyên. */
 (function(){
 const R=`
@@ -13032,7 +13035,7 @@ body.px .gdbox input::placeholder{color:#7A8799}
 body.px .qlok{color:#6EDC9A}body.px .qlw{color:#FFB070}`;
 const sc=pre=>R.replace(/(^|\})\s*([^{}]+)\{/g,(m,a,sel)=>a+'\n'+sel.split(',').map(x=>pre+x.trim()).join(',')+'{');
 document.head.insertAdjacentHTML('beforeend',`<style>@media (prefers-color-scheme: dark){${sc(':root:not([data-theme="light"]) ')}}${sc(':root[data-theme="dark"] ')}</style>`);
-document.head.insertAdjacentHTML('beforeend','<style>.hs-lb.dim,.hs-lb.dim b{color:#666F8E}</style>');
+document.head.insertAdjacentHTML('beforeend','<style>.hs-lb.dim,.hs-lb.dim b{color:#666F8E}.pgtag.new{background:#0B76A8}.pgtag.no{background:#C9380F}.pill.ok{color:#15703A}</style>');
 })();
 /* 79 — Đồng bộ tiến độ học sinh với máy chủ: an toàn khi mất mạng, khi học trên 2 máy (T-06, thầy duyệt 24/10/2026)
    Trước đây (62): mỗi lần lưu, cả dữ liệu học của em (S.st[tk], trừ phần của cô) được ghi lên hs/{tk}.

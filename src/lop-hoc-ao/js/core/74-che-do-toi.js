@@ -1,4 +1,4 @@
-/* 74 — Chế độ tối: tăng độ tương phản cho nút, ô nhập, ô chọn, ô tích và nút bị khoá (24/10/2026).
+/* 74 — (24/10/2026 thầy chốt: app luôn nền sáng — data-theme=light ở app.template.html, nên phần tối dưới đây không còn dùng; giữ để sau này nếu bật lại.) Chế độ tối: tăng độ tương phản cho nút, ô nhập, ô chọn, ô tích và nút bị khoá (24/10/2026).
    Chỉ tác động khi máy để chế độ tối (hoặc data-theme="dark"); chế độ sáng giữ nguyên. */
 (function(){
 const R=`
@@ -24,5 +24,5 @@ body.px .gdbox input::placeholder{color:#7A8799}
 body.px .qlok{color:#6EDC9A}body.px .qlw{color:#FFB070}`;
 const sc=pre=>R.replace(/(^|\})\s*([^{}]+)\{/g,(m,a,sel)=>a+'\n'+sel.split(',').map(x=>pre+x.trim()).join(',')+'{');
 document.head.insertAdjacentHTML('beforeend',`<style>@media (prefers-color-scheme: dark){${sc(':root:not([data-theme="light"]) ')}}${sc(':root[data-theme="dark"] ')}</style>`);
-document.head.insertAdjacentHTML('beforeend','<style>.hs-lb.dim,.hs-lb.dim b{color:#666F8E}</style>');
+document.head.insertAdjacentHTML('beforeend','<style>.hs-lb.dim,.hs-lb.dim b{color:#666F8E}.pgtag.new{background:#0B76A8}.pgtag.no{background:#C9380F}.pill.ok{color:#15703A}</style>');
 })();

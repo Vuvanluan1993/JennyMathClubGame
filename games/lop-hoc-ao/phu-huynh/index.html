@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex"><title>Phụ huynh · Lớp học ảo Jenny</title>
+<meta name="color-scheme" content="light">
+<script>/* thầy chốt 24/10/2026: luôn nền sáng, không theo chế độ tối của máy */document.documentElement.setAttribute('data-theme','light')</script>
+<style>:root{color-scheme:light}</style>
+</head>
+<body class="px">
+
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=VT323&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
 <style>
@@ -1103,9 +1109,6 @@ body.px .bnav:has(> button:nth-child(5)) button{font-size:16px}
 .mgi.pop .mgsp,.mgi.wrong .mgsp{animation:none}
 @media (prefers-reduced-motion:reduce){.fishi .mgsp.flip,.balloi .mgsp,.balloi .mgt,.fishi::after{animation:none}}
 </style>
-</head>
-<body class="px">
-
 <header class="appbar"><div class="wrap">
   <div class="brand"><span class="jav" style="width:40px;height:40px" aria-hidden="true"><svg viewBox="0 0 64 64" width="40" height="40"><circle cx="16" cy="16" r="9" fill="#3a2a22"/><circle cx="48" cy="16" r="9" fill="#3a2a22"/><circle cx="32" cy="36" r="20" fill="#3a2a22"/><circle cx="32" cy="38" r="16" fill="#f6d2b6"/><path d="M16 32 Q32 14 48 32 Q40 24 32 25 Q24 24 16 32Z" fill="#3a2a22"/><circle cx="26" cy="39" r="2.2" fill="#13263a"/><circle cx="38" cy="39" r="2.2" fill="#13263a"/><path d="M27 46 Q32 50 37 46" stroke="#c4553c" stroke-width="2" fill="none" stroke-linecap="round"/></svg></span><div><b>Học Toán cùng Jenny</b><small>Lớp học ảo · Tiểu học và THCS</small></div></div>
   <div class="seg" id="tabs" role="group" aria-label="Chọn vai trò"></div>
@@ -8062,7 +8065,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 17:20';
+const APP_VER='24/10 · 17:21';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -12980,7 +12983,7 @@ const val=i=>((document.getElementById(i)||{}).value||'').trim();
 {const f=window.qlLuu;if(f){let busy=false;window.qlLuu=async function(e){if(e&&e.preventDefault)e.preventDefault();if(busy)return;busy=true;const b=document.querySelector('#qlsua button[type=submit]');if(b){b.disabled=true}
  try{return await f.apply(this,arguments)}finally{busy=false;if(b&&document.body.contains(b))b.disabled=false}}}}
 })();
-/* 74 — Chế độ tối: tăng độ tương phản cho nút, ô nhập, ô chọn, ô tích và nút bị khoá (24/10/2026).
+/* 74 — (24/10/2026 thầy chốt: app luôn nền sáng — data-theme=light ở app.template.html, nên phần tối dưới đây không còn dùng; giữ để sau này nếu bật lại.) Chế độ tối: tăng độ tương phản cho nút, ô nhập, ô chọn, ô tích và nút bị khoá (24/10/2026).
    Chỉ tác động khi máy để chế độ tối (hoặc data-theme="dark"); chế độ sáng giữ nguyên. */
 (function(){
 const R=`
@@ -13006,7 +13009,7 @@ body.px .gdbox input::placeholder{color:#7A8799}
 body.px .qlok{color:#6EDC9A}body.px .qlw{color:#FFB070}`;
 const sc=pre=>R.replace(/(^|\})\s*([^{}]+)\{/g,(m,a,sel)=>a+'\n'+sel.split(',').map(x=>pre+x.trim()).join(',')+'{');
 document.head.insertAdjacentHTML('beforeend',`<style>@media (prefers-color-scheme: dark){${sc(':root:not([data-theme="light"]) ')}}${sc(':root[data-theme="dark"] ')}</style>`);
-document.head.insertAdjacentHTML('beforeend','<style>.hs-lb.dim,.hs-lb.dim b{color:#666F8E}</style>');
+document.head.insertAdjacentHTML('beforeend','<style>.hs-lb.dim,.hs-lb.dim b{color:#666F8E}.pgtag.new{background:#0B76A8}.pgtag.no{background:#C9380F}.pill.ok{color:#15703A}</style>');
 })();
 /* 79 — Đồng bộ tiến độ học sinh với máy chủ: an toàn khi mất mạng, khi học trên 2 máy (T-06, thầy duyệt 24/10/2026)
    Trước đây (62): mỗi lần lưu, cả dữ liệu học của em (S.st[tk], trừ phần của cô) được ghi lên hs/{tk}.
