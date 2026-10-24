@@ -46,6 +46,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Tên gọi thống nhất: **Cửa hàng** / "Cửa hàng Jenny" (không dùng "Gian hàng", 23/10).
 - Bảng giá: Áo 120–400 · Mũ kính 60–250 · Khung 60–300 · Đảo nhà 40–140 · Đồ nuôi 5–200 · Vé game tư duy 30 xu = 5 phút, tối đa 3 vé/ngày (chờ có game tư duy).
 - Vào Đảo nhà: chạm ảnh Jenny ở thẻ chào, hoặc Nhà em › Đảo nhà. Trên đảo **không có hình học sinh**, chỉ có thú cưng và đồ trang trí.
+- Loài thêm 24/10: Ếch xanh 180 xu (60–80 ngày), Mèo con 280 (110–150), Cún con 300 (120–160); mỗi loài có 4 hình giai đoạn lớn lên; Mèo, Cún không đẻ trứng.
 - Thú cưng: nuôi **1 loài**, tối đa **2 con**; bắt đầu 2 loài: **Gà con 40–50 ngày (150 xu)**, **Rùa biển 100–200 ngày (250 xu)**; có mô tả khi mua.
 - Thời gian theo **ngày thật** (cả cuối tuần). Chỉ số No/Vui/Sạch/Sức khoẻ; ốm cần Thuốc.
 - Bỏ đói/ốm nặng liên tục 3 ngày → thú **bỏ đi** (thư tạm biệt). Già thì mất, ghi vào Sổ kỷ niệm. Sau đó **chờ 3 ngày** mới nuôi con mới.

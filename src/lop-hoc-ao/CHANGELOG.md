@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Thú cưng mới, các giai đoạn lớn lên
+- Thêm **Ếch xanh** 180 xu (60–80 ngày, đẻ trứng), **Mèo con** 280 xu (110–150 ngày), **Cún con** 300 xu (120–160 ngày). Mèo, Cún không đẻ trứng.
+- Mọi loài có **4 hình theo giai đoạn**: Bé → Lớn dần → Trưởng thành → Già. Gà: gà con → gà choai → gà mái; Ếch: nòng nọc → ếch con còn đuôi → ếch lớn; Rùa: mai lớn dần; Mèo, Cún: con nhỏ → lớn. Già: màu nhạt, lông mày bạc.
+- Đổi mã phụ kiện Khăn quàng đỏ, Bờm tai mèo để không trùng đồ thú cưng (khăn của thú cưng hiện đúng như cũ).
+
 ## 24/10/2026 — Thêm 18 mặt hàng Cửa hàng
 - Áo váy: Áo Bạc hà 130, Áo Sô-cô-la 160, Váy Dâu tây 180 (nữ), Váy Oải hương 200 (nữ), Áo Cướp biển 220 (nam), Áo Bác sĩ nhí 260.
 - Mũ kính: Kẹp ngôi sao 60 (nữ, tóc), Khăn quàng đỏ 70 (cổ), Bờm tai mèo 90 (nữ, mũ), Mặt nạ siêu nhân 120 (mặt), Mũ đầu bếp 140, Mũ cướp biển 160 (nam).

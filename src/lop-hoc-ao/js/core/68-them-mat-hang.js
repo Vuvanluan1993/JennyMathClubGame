@@ -8,24 +8,24 @@ Object.assign(OUTFIT,{
  s_pirate:{n:'Áo Cướp biển',m:{g:'w',G:'B',y:'r',o:'N'}},
  s_doctor:{n:'Áo Bác sĩ nhí',m:{g:'w',G:'e',y:'r',o:'b'}}});
 Object.assign(PXS,{
- catS:["e............e","ee..........ee","ece........ece","ecce......ecce","eeeeeeeeeeeeee"],
+ catearS:["e............e","ee..........ee","ece........ece","ecce......ecce","eeeeeeeeeeeeee"],
  pirS:["....kkkkkk....","..kkkkkkkkkk..",".kkkkkwwkkkkk.",".kkkkwkkwkkkk.","kkkkkkwwkkkkkk","yyyyyyyyyyyyyy"],
  chefS:["..wwwwwwww..",".wwwwwwwwww.","wwwwwwwwwwww",".wwwwwwwwww.","..eeeeeeee..","..eeeeeeee.."],
- scarfS:["rrrrrrrrrr","RrrrrrrrrR","...rR.....","...rR.....","...R......"],
+ rscarfS:["rrrrrrrrrr","RrrrrrrrrR","...rR.....","...rR.....","...R......"],
  maskS:["kkkkkkkkkkkkkk","kBBBBBBBBBBBBk","kBwwBBBBBBwwBk","kBBBBkkkkBBBBk",".kkkk....kkkk."],
  starclS:["..y..","yyyyy",".yay.","y...y"],
  sunfl:["..yyyy..",".yyaayy.","yyaNNayy","yyaNNayy",".yyaayy.","..yyyy..","...gg...",".g.gg.g.","..ggggg.","...gg...","...gg..."],
  chestD:PXS.climbChest,
  campf:["....r.....","...rr..r..","..rror.rr.","..royorrr.",".rroyyorr.",".royyyyor.","NnNnNNnNnN","nNnNnnNnNn"]});
-Object.assign(GH_ACC,{cat:['catS',1,-3],pirate:['pirS',1,-3],chef:['chefS',2,-4],scarf:['scarfS',3,11],mask:['maskS',1,5],starcl:['starclS',11,-1]});
-Object.assign(ACC_SLOT,{cat:'head',pirate:'head',chef:'head',scarf:'neck',mask:'face',starcl:'hair'});
+Object.assign(GH_ACC,{catear:['catearS',1,-3],pirate:['pirS',1,-3],chef:['chefS',2,-4],rscarf:['rscarfS',3,11],mask:['maskS',1,5],starcl:['starclS',11,-1]});
+Object.assign(ACC_SLOT,{catear:'head',pirate:'head',chef:'head',rscarf:'neck',mask:'face',starcl:'hair'});
 ['jenny','jennyBlink','jennyHappy','jennySad','jennyCheer','boy','boyBlink','boyHappy','boySad','boyCheer'].forEach(n=>['s_mint','s_choco','s_berry','s_lav','s_pirate','s_doctor'].forEach(o=>ofVariant(n,o)));
 {const C=k=>GH.find(c=>c.k===k);
  C('of').it.push(['s_mint','Áo Bạc hà',130],['s_choco','Áo Sô-cô-la',160],['s_berry','Váy Dâu tây',180],['s_lav','Váy Oải hương',200],['s_pirate','Áo Cướp biển',220],['s_doctor','Áo Bác sĩ nhí',260]);
- C('acc').it.push(['starcl','Kẹp ngôi sao',60],['scarf','Khăn quàng đỏ',70],['cat','Bờm tai mèo',90],['mask','Mặt nạ siêu nhân',120],['chef','Mũ đầu bếp',140],['pirate','Mũ cướp biển',160]);
+ C('acc').it.push(['starcl','Kẹp ngôi sao',60],['rscarf','Khăn quàng đỏ',70],['catear','Bờm tai mèo',90],['mask','Mặt nạ siêu nhân',120],['chef','Mũ đầu bếp',140],['pirate','Mũ cướp biển',160]);
  C('frame').it.push(['flower','Khung Hoa',150],['candy','Khung Kẹo ngọt',180],['night','Khung Đêm sao',250]);
  C('dec').it.push(['sunfl','Hoa hướng dương',40],['campf','Lửa trại',60],['chestD','Rương kho báu',100]);}
-Object.assign(GH_GEN,{s_berry:'nu',s_lav:'nu',cat:'nu',starcl:'nu',s_pirate:'nam',pirate:'nam'});
+Object.assign(GH_GEN,{s_berry:'nu',s_lav:'nu',catear:'nu',starcl:'nu',s_pirate:'nam',pirate:'nam'});
 Object.assign(IS2_POS,{sunfl:[100,232,44],campf:[128,350,40],chestD:[520,346,40]});
 Object.assign(I18N,{'Áo Bạc hà':'Mint top','Áo Sô-cô-la':'Chocolate top','Váy Dâu tây':'Strawberry dress','Váy Oải hương':'Lavender dress','Áo Cướp biển':'Pirate shirt','Áo Bác sĩ nhí':'Little doctor coat',
  'Kẹp ngôi sao':'Star clip','Khăn quàng đỏ':'Red scarf','Bờm tai mèo':'Cat-ear headband','Mặt nạ siêu nhân':'Hero mask','Mũ đầu bếp':'Chef hat','Mũ cướp biển':'Pirate hat',
