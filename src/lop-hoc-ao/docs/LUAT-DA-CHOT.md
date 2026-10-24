@@ -109,6 +109,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Trang vẫn đặt trên GitHub Pages (chưa cần tên miền riêng).
 - Quy tắc bảo mật ở `firebase/firestore.rules` (dán vào Firestore › Rules mỗi khi đổi). Em chỉ xem dữ liệu của mình; cô chỉ xem lớp được phân công; phụ huynh chỉ xem con; chỉ quản lý tạo tài khoản.
 - Thử nghiệm dùng tài khoản thử, chưa nhập tên thật của học sinh.
+- **3 trang tách riêng** (24/10/2026): Giáo viên, Phụ huynh, Quản lý — mỗi trang một vai; app học sinh riêng.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.

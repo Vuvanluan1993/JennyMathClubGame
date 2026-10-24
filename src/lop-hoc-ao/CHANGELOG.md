@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Tách 3 trang: Giáo viên, Phụ huynh, Quản lý
+- `tools/_teacher.py` tạo 3 trang riêng: `games/lop-hoc-ao/giao-vien/` (tài khoản giáo viên; quản lý cũng vào được để dạy), `phu-huynh/` (chỉ phụ huynh), `quan-ly/` (chỉ quản lý, có "Thiết lập lần đầu"). Mỗi trang chỉ một vai, không còn thanh chọn vai.
+- Đăng nhập sai trang → báo "Đây là tài khoản …" kèm link đúng trang. Mỗi trang vẫn có "Xem bản demo" của vai đó (mật khẩu `giaovien123`).
+
 ## 24/10/2026 — Nối máy chủ Firebase (dữ liệu dùng chung thật)
 - `js/core/62-may-chu.js` + quy tắc `firebase/firestore.rules` (đã dán vào Firestore). Dự án Firebase `jenny-lop-hoc-ao`, vùng asia-southeast1, gói miễn phí.
 - **Trang giáo viên & phụ huynh** (`games/lop-hoc-ao/giao-vien/`): đăng nhập bằng tài khoản thật; vẫn có "Xem bản demo" (mật khẩu `giaovien123`) và "Thiết lập lần đầu". Vai trò theo tài khoản: Quản lý (Giáo viên + Quản lý + xem như phụ huynh), Giáo viên (chỉ lớp được phân công), Phụ huynh (chỉ con mình). Có Đổi mật khẩu, Đăng xuất, trạng thái "Đã lưu lên máy chủ".

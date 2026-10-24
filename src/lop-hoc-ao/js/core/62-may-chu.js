@@ -82,7 +82,7 @@ const fbDaNghe=new Set();
 async function fbGvBoot(){const me=CLOUD.me,db=FB.db;document.body.classList.add('cloud');
   window.dayNow=fbNgay;
   S={day:fbNgay(),events:[],st:{},cbi:{},asg:[],asgSeed:2,mk2:1,org:null};STUDENTS.length=0;
-  role=me.role==='ph'?'ph':me.role==='ql'?'gv':'gv';gvMe=me.gvId||me.tk;gvLop=null;scr={k:'home'};
+  role=window.TRANG||(me.role==='ph'?'ph':'gv');gvMe=me.gvId||me.tk;gvLop=null;scr={k:'home'};
   await new Promise(ok=>{let lan=0;
     fbSub.push(db.doc('org/main').onSnapshot(d=>{const j=d.exists?d.data().j:null;if(!j){ok();return}
       if(j!==fbLast['org/main']||!S.org){fbLast['org/main']=j;const o=fbJ(j);o.cloud=1;o.v=2;['mauHS','mauHS2','mauHS3','mauHS4'].forEach(k=>o[k]=1);
@@ -130,13 +130,14 @@ async function fbQLTaoPH(e){e.preventDefault();const o=S.org,con=document.getEle
 {const _h=header;header=function(){try{if(CLOUD&&S&&S.st&&!S.st[sid]){const f=STUDENTS.find(r=>S.st[r[0]]);if(f)sid=f[0];else S.st[sid]=newStudent('Chưa có học sinh',1)}}catch(e){}_h();try{if(!CLOUD||CLOUD.me.role==='hs')return;const me=CLOUD.me,t=document.getElementById('tabs');
   t.querySelectorAll('button').forEach(b=>{const r=b.dataset.ql!==undefined?'ql':(b.getAttribute('onclick')||'').match(/setRole\('(\w+)'\)/);const k=r==='ql'?'ql':r&&r[1];
     const cho=me.role==='ql'?['gv','ql','ph']:me.role==='gv'?['gv']:['ph'];b.hidden=!cho.includes(k)||cho.length<2});
-  const wb=document.getElementById('whoBox');wb.style.display=(me.role==='ph'&&STUDENTS.length>1)||(me.role==='ql'&&role==='ph')?'':'none';
-  t.style.display=[...t.querySelectorAll('button')].some(b=>!b.hidden)?'':'none';
+  const wb=document.getElementById('whoBox');wb.style.display=(role==='ph'&&STUDENTS.length>1)?'':'none';
+  t.style.display=window.TRANG||![...t.querySelectorAll('button')].some(b=>!b.hidden)?'none':'';
   if(!document.getElementById('fbMe'))t.insertAdjacentHTML('afterend',`<div id="fbMe" class="fbme"><span class="pill">${esc(me.ten||me.tk)} · ${({ql:'Quản lý',gv:'Giáo viên',ph:'Phụ huynh'})[me.role]||''}</span><span id="fbSt" class="muted fbst"></span><button class="btn sm" onclick="fbDoiMK()">Đổi mật khẩu</button><button class="btn sm" onclick="fbDangXuat()">Đăng xuất</button></div>`)}catch(e){}}}
 {const _g=gvMau;gvMau=function(){if(S&&S.org&&S.org.cloud)return;return _g.apply(this,arguments)}}
 {const _a=asgSeed;asgSeed=function(){if(CLOUD){S.asgSeed=2;return}return _a.apply(this,arguments)}}
 {const _n=gvNow;gvNow=function(){return CLOUD?Date.now():_n()}}
 document.head.insertAdjacentHTML('beforeend',`<style>
 body.cloud .demo{display:none!important}
+body[class*="trang-"] #tabs{display:none!important}body.trang-gv #whoBox,body.trang-ql #whoBox{display:none!important}
 .fbme{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.fbst{font-size:12px}.fbst.loi{color:var(--coral)}
 </style>`);
