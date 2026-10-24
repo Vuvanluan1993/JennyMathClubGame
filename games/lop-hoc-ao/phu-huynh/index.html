@@ -8062,7 +8062,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 16:03';
+const APP_VER='24/10 · 16:26';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -12102,7 +12102,7 @@ window.tlDayGo=function(){const st=S.st[sid];if(tlDayOk(st)){toast(T('Hôm nay e
 function tlFig(q){const g=scr;let b=0;
  const cell=c=>{if(c===null){const i=b++,v=(g.cv&&g.cv[i])||'';return`<button type="button" class="tc e ${i===g.cc?'cur':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" onclick="tlCell(${i})" aria-label="${T('Ô trống','Blank')} ${i+1}">${esc(v)}</button>`}
   if(c==='')return`<span class="tc gap"></span>`;if(typeof c==='string')return`<span class="tc op">${c}</span>`;return`<span class="tc">${fmt(c)}</span>`};
- if(q.lay==='color'){const c=(g.cv||[]);return`<div class="tlcol">${q.cells.map((t,i)=>{const v=c[i],col=v!==''&&v!=null?TL_MAU[+v][0]:'';return`<button type="button" class="cc ${col?'on':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" ${col?`style="background:${col}"`:''} onclick="tlCell(${i})">${t.replace(/ /g,'')}</button>`}).join('')}</div>`}
+ if(q.lay==='color'){const c=(g.cv||[]);return`<div class="tlcol">${q.cells.map((t,i)=>{const v=c[i],col=v!==''&&v!=null?TL_MAU[+v][0]:'';return`<button type="button" class="cc ${col?'on':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" ${col?`style="background:${col}"`:''} onclick="tlCell(${i})"><span class="cct">${t}</span></button>`}).join('')}</div>`}
  if(q.lay==='ds'){const c=(g.cv||[]);return`<div class="tlds">${q.st.map((t,i)=>`<div class="dsr ${g.cbad&&g.cbad.includes(i)?'bad':''}"><span class="dst">${t}</span><button type="button" class="dsb ${c[i]==='1'?'on':''}" onclick="tlDS(${i},1)" aria-pressed="${c[i]==='1'}">${T('Đ','T')}</button><button type="button" class="dsb ${c[i]==='0'?'on':''}" onclick="tlDS(${i},0)" aria-pressed="${c[i]==='0'}">${T('S','F')}</button></div>`).join('')}</div>`}
  if(q.lay==='house')return`<div class="tlhouse"><div class="roof"><span>${q.roof}</span></div><div class="floors">${q.rows.map(r=>`<div class="fl">${r.map(cell).join('')}</div>`).join('')}</div></div>`;
  if(q.lay==='fam')return`<div class="tlfam"><div class="tlsd"><span class="tc">${q.head[0]}</span><i class="l1"></i><i class="l2"></i><span class="tc">${q.head[1]}</span><span class="tc">${q.head[2]}</span></div>${q.rows.map(r=>`<div class="eq">${r.map(cell).join('')}</div>`).join('')}</div>`;
@@ -12230,6 +12230,9 @@ window.gvTLAdd=function(){const isl=[...document.getElementById('tlIsl').selecte
 window.gvTLDel=function(id){S.asg=(S.asg||[]).filter(a=>a.id!==id);save();render();toast('Đã bỏ gợi ý')};
 {const _g=viewGV;viewGV=function(){const r=_g.apply(this,arguments);try{const b=gvTLBox();if(!b)return r;const i=r.lastIndexOf('<section class="card"><details>');return i<0?r:r.slice(0,i)+b+r.slice(i)}catch(e){return r}}}
 
+/* phép tính trong ô Tô màu luôn nằm trên 1 dòng: chữ to quá thì tự nhỏ lại */
+function tlFitCol(){const B=[...document.querySelectorAll('.tlcol .cc')];if(!B.length)return;B.forEach(b=>b.style.fontSize='');let f=parseFloat(getComputedStyle(B[0]).fontSize);const over=()=>B.some(b=>{const t=b.querySelector('.cct');return t&&t.offsetWidth>b.clientWidth-4});while(over()&&f>11){f-=1;B.forEach(b=>b.style.fontSize=f+'px')}}/* cả lưới cùng một cỡ chữ */
+{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{if(scr&&scr.tl)tlFitCol()}catch(e){}return r}}
 Object.assign(I18N,{'Lưới phép tính':'Number grid','Tô màu theo kết quả':'Colour by answer','Đúng hay sai':'True or false','Nhà số':'Number house','Gia đình phép tính':'Fact family','Tháp số':'Number pyramid','Tam giác số':'Number triangle'});
 document.head.insertAdjacentHTML('beforeend',`<style>
 .vbt h2{margin:0}.vsub{font-size:13px;color:var(--muted);margin:2px 0 10px}.vstat{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px}
@@ -12261,7 +12264,8 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .trisum{font-family:var(--f-display);font-size:20px;color:var(--ink);margin-bottom:2px}
 .tlrows.grid{display:grid;grid-template-columns:repeat(5,42px);gap:4px;justify-content:center}.tlrows.grid .rw{display:contents}.tlrows.grid .tc{width:42px;height:40px;font-size:26px}.tlrows.grid .tc.op{width:42px}
 .tlcol{display:grid;grid-template-columns:repeat(4,minmax(0,70px));gap:6px;justify-content:center}
-.tlcol .cc{height:48px;border:0;background:#fff;color:#1F2A5A;font-family:var(--f-display);font-size:clamp(17px,5vw,21px);line-height:1;white-space:nowrap;box-shadow:inset 0 0 0 2px #1F2A5A;cursor:pointer;padding:0 2px;overflow:hidden}
+.tlcol .cc{height:48px;border:0;background:#fff;color:#1F2A5A;font-family:var(--f-display);font-size:22px;line-height:1;white-space:nowrap;box-shadow:inset 0 0 0 2px #1F2A5A;cursor:pointer;padding:0 2px;overflow:hidden}
+.tlcol .cct{display:inline-block;white-space:nowrap}
 .tlcol .cc.on{color:#fff;text-shadow:0 1px 0 #1F2A5A}.tlcol .cc.bad{box-shadow:inset 0 0 0 4px #E0441A}
 .tlpal{display:flex;gap:6px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
 .tlpal .pc{display:flex;align-items:center;gap:5px;border:0;background:var(--surface);color:var(--ink);font-family:var(--f-display);font-size:24px;padding:5px 8px;white-space:nowrap;box-shadow:var(--f2),0 3px 0 0 var(--pxk);cursor:pointer}

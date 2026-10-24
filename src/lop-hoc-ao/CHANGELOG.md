@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Tô màu theo kết quả: phép tính luôn một dòng
+- Phép tính trong ô không còn bị xuống dòng (trước: "10 −" / "4"). Ô chật thì cả lưới thu nhỏ cùng một cỡ chữ. Đã thử 320/375/414px.
+
 ## 24/10/2026 — Tự luyện: thêm 3 dạng bài (T-26)
 - **Lưới phép tính**: hàng ngang, cột dọc là 4 phép cộng/trừ đan nhau; ẩn 3 ô (lớp 1) hoặc 4 ô (lớp 2), luôn giải được lần lượt. Dùng làm ★ Thử thách.
 - **Tô màu theo kết quả**: 12 ô phép tính, 3 màu ứng với 3 kết quả; chọn màu rồi chạm ô, tô đúng hiện hình. Ô sai được đánh dấu để tô lại.
