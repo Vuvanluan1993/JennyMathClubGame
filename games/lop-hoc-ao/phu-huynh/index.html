@@ -8021,7 +8021,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 08:38';
+const APP_VER='24/10 · 08:41';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -10682,8 +10682,8 @@ function gvAsgStats(a,CLS){const W={};let m=0;CLS.forEach(([id])=>{const r=asgR(
  const top=Object.entries(W).filter(([,v])=>v[0]).sort((p,q)=>q[1][0]/q[1][1]-p[1][0]/p[1][1]).slice(0,3);
  return m?`<div class="muted" style="margin-top:6px">${top.length?`Dạng sai nhiều (lần đầu): ${top.map(([k,v])=>`<b>${esc(k)}</b> ${v[0]}/${v[1]} câu`).join(' · ')}`:'Lần đầu cả lớp chưa sai câu nào.'}</div>`:''}
 function gvAsgBox(){const g=gvGrade;if(g>5||!PRIM[g])return'';asgSeed();const L=PRIM[g].isl,CLS=gvCLS();
- const list=asgAll().filter(a=>a.g===g&&asgOk(a)&&(!a.lop||!gvLop||a.lop===gvLop)).sort((p,q)=>q.t-p.t).map(a=>`<div class="task"><div class="row"><div style="flex:1;min-width:160px"><b>${esc(asgName(a))} · ${a.n} câu</b><div class="muted">Giao ${asgD(a.t)}${a.due?` · hạn ${asgD(a.due)}`:''}</div></div><button class="btn sm" onclick="gvAsgDel('${a.id}')">Xoá</button></div>
-  <div class="row" style="margin-top:8px;gap:6px">${CLS.map(([id,n])=>{const s=asgState(S.st[id],a),r=s.r;return`<span class="pill ${s.done?(r.best.ok/r.best.n>=.8?'ok':'acc'):'warn'}">${esc(n.split(' ').pop())}: ${s.done?`${r.first.ok}/${r.first.n}${r.tries>1?` → tốt nhất ${r.best.ok}/${r.best.n}`:''}`:s.doing?'đang làm':'chưa làm'}${s.late?' · quá hạn':''}</span>`}).join('')}</div>${gvAsgStats(a,CLS)}</div>`).join('');
+ const list=asgAll().filter(a=>a.g===g&&asgOk(a)&&!a.hs&&a.loai!=='loi'&&(!a.lop||!gvLop||a.lop===gvLop)).sort((p,q)=>q.t-p.t).map(a=>`<div class="task"><div class="row"><div style="flex:1;min-width:160px"><b>${esc(asgName(a))} · ${a.n} câu</b><div class="muted">Giao ${asgD(a.t)}${a.due?` · hạn ${asgD(a.due)}`:''}</div></div><button class="btn sm" onclick="gvAsgDel('${a.id}')">Xoá</button></div>
+  <div class="row" style="margin-top:8px;gap:6px">${CLS.map(([id,n])=>{const s=asgState(S.st[id],a),r=s.r;return`<span class="pill ${s.done?(r.best.ok/r.best.n>=.8?'ok':'acc'):'warn'}">${esc(n.split(' ').pop())}: ${s.done?`${r.first.ok}/${r.first.n}${r.tries>1?` → tốt nhất ${r.best?r.best.ok+'/'+r.best.n:'xong'}`:''}`:s.doing?'đang làm':'chưa làm'}${s.late?' · quá hạn':''}</span>`}).join('')}</div>${gvAsgStats(a,CLS)}</div>`).join('');
  return`<section class="card"><div class="secthead"><h2>Giao phiếu bài cho lớp ${g}</h2></div>
   <p class="muted" style="margin:0 0 6px">Phiếu bài tách riêng khỏi đảo: không tính sao, không mở đảo. Mỗi em cùng dạng câu nhưng số khác nhau. Chọn 1 hay nhiều tiết (giữ Ctrl/⌘ để chọn nhiều).</p>
   <div class="row" style="gap:8px;flex-wrap:wrap;margin:6px 0 10px;align-items:flex-start"><select id="asgIsl" multiple size="6" aria-label="Chọn tiết" style="min-width:280px;flex:1">${L.map((x,i)=>`<option value="${x.id}" ${i===0?'selected':''}>${esc(shortTitle(x.title))} — ${esc((x.goal||'').slice(0,50))}</option>`).join('')}</select>

@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Sửa: lớp 1A không hiện "Giao phiếu bài cho lớp"
+- Nguyên nhân: khung phiếu cả lớp đọc cả bài Luyện lỗi riêng của em (chưa có kết quả) nên bị lỗi và không vẽ ra (gặp ở lớp 1A của cô Thử).
+- Sửa: khung "Giao phiếu bài cho lớp" chỉ liệt kê phiếu cả lớp; bài riêng từng em xem ở hồ sơ em. Thêm chặn lỗi khi bài chưa có kết quả.
+- Đã thử đặt lại mật khẩu thật cho test02: mật khẩu cũ bị từ chối, mật khẩu mới vào được, dữ liệu giữ nguyên.
+
 ## 24/10/2026 — Quản lý: danh sách tài khoản + đặt lại mật khẩu
 - Trang Quản lý có mục **Tài khoản**: họ tên, vai trò, tên đăng nhập, lớp/con của mọi giáo viên, học sinh, phụ huynh; nút **Đặt lại mật khẩu** (gợi ý mật khẩu mới, hiện lại "Vừa đặt lại: tk / mật khẩu").
 - Gói miễn phí không đổi được mật khẩu người khác, nên đặt lại = tạo tài khoản đăng nhập mới cho **cùng tên đăng nhập**, chuyển vai trò sang, bỏ tài khoản cũ; bảng `login/{tk}` cho biết tên đăng nhập dùng email ẩn nào. Dữ liệu học, nhận xét, bài về nhà giữ nguyên (gắn theo tên đăng nhập).
