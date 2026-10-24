@@ -5,6 +5,7 @@
 - Luôn có nhớ. Phép theo bài: bài 19 (2 chữ số + 1 chữ số), 20 (2 + 2), 21 cộng; 22 (2 − 1), 23 (2 − 2) trừ; 24, 33, 69 trộn; bài 60 cộng, 62 trừ trong 1000; 63, 70 trộn.
 - Lời giải theo từng hàng: "Hàng đơn vị: 8 + 4 = 12, viết 2, nhớ 1. Hàng chục: …".
 - `tools/test/tu-luyen.js` kiểm tra kết quả, có nhớ, đúng phép của bài.
+
 ## 24/10/2026 — Khủng long chạy: 30 ván/ngày, không hiện số ván
 - Mức chơi miễn phí tăng lên **30 ván/ngày**. Không hiện số ván đã chơi cho em (chỉ đếm ngầm).
 - Chơi tới 30 ván thì báo: "Hôm nay em đã chơi nhiều lần, hẹn em ngày mai nhé!"
