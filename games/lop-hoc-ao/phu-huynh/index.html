@@ -8021,7 +8021,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 08:41';
+const APP_VER='24/10 · 09:01';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -9863,7 +9863,7 @@ function viewShop(st){const s=ghSt(st),cat=scr.ghCat||'of',C=GH.find(c=>c.k===ca
  return`<div class="page ghpage"><section class="card ghtop"><div class="ghhead"><h2>${spr('shopI',26)} Cửa hàng Jenny</h2><span class="ghcoin">${spr('coin',20)} <b>${st.coins}</b> xu</span></div>
   <div class="ghstage ${cat==='dec'?'isle':''}">${stage}<div class="ghinfo">${f?`<b>${esc(f.x[1])}</b><small>${T.k==='pet'?petNote(st,T.id):T.k==='care'?esc(careNote(T.id)):s.own.includes(T.id)?'Em đã có món này':'Đang thử — chưa mua'}</small>`:`<b>Chạm món đồ để thử</b><small>Thử miễn phí. Thích thì mua bằng xu.</small>`}${act}</div></div></section>
   <nav class="ghtabs" aria-label="Loại hàng">${tabs}</nav>${body}
-  <p class="muted ghnote">Kiếm xu: qua màn +15 · luyện lỗi +5 mỗi câu · trò chơi tới +20 · trùm lớp +20–30.</p></div>`}
+  <p class="muted ghnote">${LANG==='en'?'Earn coins: each correct answer +5 (up to 150/day) · pass a level +10, island boss +30 · fix a mistake +5 · games up to +20 each (up to 100/day) · class boss +20–30 · homework +20.':'Kiếm xu: mỗi câu đúng +5 (tối đa 150/ngày) · qua màn +10, trùm đảo +30 · sửa xong 1 lỗi +5 · trò chơi tới +20 mỗi lượt (tối đa 100/ngày) · trùm lớp +20–30 · bài về nhà +20.'}</p></div>`}
 /* gắn vào trang chính tiểu học: tab 'shop' + nút xu ở thẻ chào */
 {const _v=viewHome1t;viewHome1t=function(){const r=_v.apply(this,arguments);if(scr.tab!=='shop')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewShop(st)+(i>=0?r.slice(i):'')}}
 {const _h=viewHome1;viewHome1=function(){return _h.apply(this,arguments).replace(/<span class="chip">🪙 <b>(\d+)<\/b><\/span>/,`<button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})" aria-label="$1 xu, mở Cửa hàng">🪙 <b>$1</b> <span>Cửa hàng ▸</span></button>`)}}
@@ -11573,6 +11573,17 @@ function loiBaiXong(id,st,M){let n=0;if(typeof CLOUD==='undefined'||!CLOUD)retur
   (S.asg||[]).forEach(a=>{const r=R[a.id];if(a.loai!=='loi'||!r||!(r.xong||r.thuong))return;const d=ngay(Math.min(r.xong||Infinity,r.thuong||Infinity));(a.keys||[]).forEach(k=>{if(M[k]&&(M[k].day||0)<=d){delete M[k];n++}})});return n}
 function loiDon(id,st){const M=st&&st.mist;if(!M)return 0;const giu=loiGiu(id);let n=loiBaiXong(id,st,M);Object.keys(M).forEach(k=>{if(!giu.has(k)&&loiConNgay(M[k])<=0){delete M[k];n++}});return n}
 {const _r=render;render=function(){try{if(S&&S.st){if(role==='hs'){if(S.st[sid]&&loiDon(sid,S.st[sid]))save()}else STUDENTS.forEach(([id])=>loiDon(id,S.st[id]))}}catch(e){}return _r.apply(this,arguments)}}
+/* ===================== Xu: tách giới hạn ngày cho trò chơi (sửa 24/10/2026) =====================
+   Lỗi cũ: mỗi câu đúng trong màn +5 xu và trò chơi dùng CHUNG giới hạn 150 xu/ngày (selfCoins),
+   nên học xong vài màn là trò chơi không còn xu (gặp ở test01, test02).
+   Nay: câu đúng trong màn vẫn tính vào selfCoins (150/ngày); trò chơi (trò chơi đảo, câu cá, bóng bay, đua giờ, kéo co)
+   có giới hạn riêng GAME_CAP/ngày (st.gameCoins). Hết giới hạn thì màn kết thúc báo rõ. */
+const GAME_CAP=100;
+const xuTroChoi=()=>{const g=scr;return!!(g&&(g.k==='xg'||g.k==='mini'||g.race||g.tug))};
+{const _a=addCoins;addCoins=function(id,n,kind){const st=S.st[id];if(kind==='self'&&st&&xuTroChoi()){st.gameCoins=st.gameCoins||{};const used=st.gameCoins[S.day]||0,m=Math.max(0,Math.min(n,GAME_CAP-used));st.gameCoins[S.day]=used+m;
+    Object.keys(st.gameCoins).forEach(d=>{if(+d<S.day-14)delete st.gameCoins[d]});if(n>0&&m===0)scr.xuHet=1;st.coins+=m;return m}return _a.apply(this,arguments)}}
+{const _r=render;render=function(){const r=_r.apply(this,arguments);try{const g=scr;if(g&&g.end&&g.xuHet&&!document.querySelector('.xuhet')){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');
+  if(box)box.insertAdjacentHTML('beforebegin',`<p class="earn xuhet" style="opacity:.85">${LANG==='en'?`You've earned the ${GAME_CAP} game coins for today. Come back tomorrow!`:`Hôm nay em đã nhận đủ ${GAME_CAP} xu từ trò chơi. Mai chơi tiếp nhé!`}</p>`)}}catch(e){}return r}}
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 if(!load())fresh();

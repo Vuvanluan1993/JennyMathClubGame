@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Sửa: chơi trò chơi xong không được xu
+- Nguyên nhân: mỗi câu đúng trong màn +5 xu và trò chơi dùng **chung** giới hạn 150 xu/ngày. Học vài màn (khoảng 30 câu đúng) là hết giới hạn → trò chơi kết thúc được 0 xu mà không báo gì (test01, test02 đều đã chạm 150 hôm nay).
+- Sửa (`64-xu.js`): trò chơi (trò chơi đảo, câu cá, bóng bay, đua giờ, kéo co) có **giới hạn riêng 100 xu/ngày**, mỗi lượt tối đa 20 xu; câu đúng trong màn vẫn giới hạn 150/ngày. Hết giới hạn trò chơi thì màn kết thúc báo "Hôm nay em đã nhận đủ 100 xu từ trò chơi".
+- Đã chạy thử 13 trò chơi đảo + câu cá, bóng bay, đua giờ: trò nào cũng cộng xu đúng.
+- Sửa dòng "Kiếm xu" ở Cửa hàng cho đúng thực tế: mỗi câu đúng +5 (tối đa 150/ngày) · qua màn +10, trùm đảo +30 · sửa xong 1 lỗi +5 · trò chơi tới +20 mỗi lượt (tối đa 100/ngày) · trùm lớp +20–30 · bài về nhà +20 (có bản tiếng Anh).
+
 ## 24/10/2026 — Sửa: lớp 1A không hiện "Giao phiếu bài cho lớp"
 - Nguyên nhân: khung phiếu cả lớp đọc cả bài Luyện lỗi riêng của em (chưa có kết quả) nên bị lỗi và không vẽ ra (gặp ở lớp 1A của cô Thử).
 - Sửa: khung "Giao phiếu bài cho lớp" chỉ liệt kê phiếu cả lớp; bài riêng từng em xem ở hồ sơ em. Thêm chặn lỗi khi bài chưa có kết quả.
