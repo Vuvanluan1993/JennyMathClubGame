@@ -8062,7 +8062,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 16:47';
+const APP_VER='24/10 · 16:51';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -12061,10 +12061,31 @@ function dungSai(g,mode){const M=g===1?10:mode==='100'?100:20,L=[],a=[];const se
   say:T('Đúng ghi Đ, sai ghi S cho từng ý.','True or false? Mark each line.'),
   sol:L.map((t,i)=>`${t.replace(/&gt;/g,'>').replace(/&lt;/g,'<')}: ${a[i]?T('Đ','T'):T('S','F')}`).join(' · ')})}
 
+/* Đặt tính rồi tính (lớp 2, cộng/trừ có nhớ): hai số viết thẳng cột, em điền từng chữ số của kết quả từ phải sang trái.
+   Ô "nhớ" nhỏ trên đầu cột để em tự ghi nhớ 1 (không chấm). */
+function datTinh(mode,OP,kb){const big=mode==='1000';let a,b,op,r;
+ for(let t=0;t<500;t++){op=OP||(Math.random()<.5?'+':'−');const mot=kb===1||(!kb&&Math.random()<.4);
+  if(!big){if(op==='+'){a=RR(11,89);b=mot?RR(2,9):RR(11,89);r=a+b;if(r>100||a%10+b%10<10)continue}
+   else{a=RR(21,99);b=mot?RR(2,9):RR(11,a-1);r=a-b;if(r<0||a%10>=b%10)continue}}
+  else{if(op==='+'){a=RR(101,899);b=RR(11,Math.max(11,999-a));r=a+b;if(r>1000||(a%10+b%10<10&&Math.floor(a/10)%10+Math.floor(b/10)%10<10))continue}
+   else{a=RR(200,999);b=RR(11,a-10);r=a-b;if(r<10||(a%10>=b%10&&Math.floor(a/10)%10>=Math.floor(b/10)%10))continue}}
+  break}
+ const n=Math.max(String(a).length,String(b).length,String(r).length),dg=x=>String(x).padStart(n,' ').split('').map(c=>c===' '?'':+c);
+ const ra=String(r).split('').map(Number),rr=dg(r).map((c,i)=>i<n-ra.length?'':null);
+ /* lời giải theo từng hàng */
+ const A=dg(a),B=dg(b),PL=[T('đơn vị','ones'),T('chục','tens'),T('trăm','hundreds')],st=[];let c=0;
+ for(let k=n-1;k>=0;k--){const x=+A[k]||0,y=+B[k]||0,h=PL[n-1-k];if(A[k]===''&&B[k]===''&&!c)break;
+  if(op==='+'){const s0=x+y+c;st.push(T(`Hàng ${h}: ${x} + ${y}${c?' + 1 (nhớ)':''} = ${s0}, viết ${s0%10}${s0>=10&&k>0?', nhớ 1':''}.`,`${h}: ${x} + ${y}${c?' + 1 (carried)':''} = ${s0}, write ${s0%10}${s0>=10&&k>0?', carry 1':''}.`));c=s0>=10?1:0}
+  else{const y2=y+c,mu=x<y2;const top=mu?x+10:x;st.push(T(`Hàng ${h}: ${mu?`${x} không trừ được ${y2}, lấy ${top} − ${y2}`:`${x} − ${y2}`} = ${top-y2}, viết ${top-y2}${mu?', nhớ 1':''}.`,`${h}: ${mu?`${x} is less than ${y2}, so ${top} − ${y2}`:`${x} − ${y2}`} = ${top-y2}, write ${top-y2}${mu?', carry 1':''}.`));c=mu?1:0}}
+ return cq({lay:'vert',rows:[A,B,rr],op,n,a:ra,kind:'Đặt tính rồi tính',label:'Đặt tính rồi tính',
+  q:T(`<b>Đặt tính rồi tính</b>: ${fmt(a)} ${op} ${fmt(b)}. Điền kết quả từ phải sang trái.`,`<b>Column ${op==='+'?'addition':'subtraction'}</b>: ${fmt(a)} ${op} ${fmt(b)}. Fill in the answer from right to left.`),
+  say:T(`Đặt tính rồi tính: ${a} ${op==='+'?'cộng':'trừ'} ${b}. Em tính từ hàng đơn vị nhé.`,`Work out ${a} ${op==='+'?'plus':'minus'} ${b} in columns. Start with the ones.`),
+  sol:st.join(' ')})}
+
 /* dạng mới hợp với từng bài (theo số bài KNTT) */
 function tlNew(x){const g=curG(),b=x.b;
  if(g===1){if(b===4)return[()=>dungSai(1,'so')];if(b===5||b===6)return[()=>nhaSo(1),()=>dungSai(1,'so')];if(b===10||b===11)return[()=>giaDinh(1),()=>nhaSo(1),()=>dungSai(1)];if(b>=12&&b<=13||b===18||b===20||b===38)return[()=>giaDinh(1),()=>nhaSo(1),()=>toMau(1),()=>dungSai(1)];if(b>=29&&b<=33||b===39)return[()=>giaDinh(1,'100'),()=>dungSai(1,'100')];if(b===22)return[()=>dungSai(1,'so')];return[]}
- if(g===2){if(b>=7&&b<=14)return[()=>giaDinh(2,'20'),()=>nhaSo(2),()=>toMau(2),()=>dungSai(2)];if(b===3||b===5||b===6)return[()=>giaDinh(2,'100'),()=>dungSai(2,'100')];if(b>=19&&b<=24||b===33||b===69)return[()=>giaDinh(2,'nho'),()=>dungSai(2,'100')];return[]}
+ if(g===2){if(b>=7&&b<=14)return[()=>giaDinh(2,'20'),()=>nhaSo(2),()=>toMau(2),()=>dungSai(2)];if(b===3||b===5||b===6)return[()=>giaDinh(2,'100'),()=>dungSai(2,'100')];if(b>=19&&b<=24||b===33||b===69){const D={19:['+',1],20:['+',2],21:['+'],22:['−',1],23:['−',2]}[b]||[];return[()=>datTinh('100',...D),()=>datTinh('100',...D),()=>giaDinh(2,'nho'),()=>dungSai(2,'100')]}if(b===60||b===62||b===63||b===70){const o=b===60?'+':b===62?'−':undefined;return[()=>datTinh('1000',o),()=>datTinh('1000',o)]}return[]}
  return[]}
 function tlChal(x){const g=curG(),b=x.b;
  if(g===1&&(b>=10&&b<=11))return[()=>thapSo(1,10),()=>tamGiac(1,10)];
@@ -12104,11 +12125,17 @@ function tlFig(q){const g=scr;let b=0;
   if(c==='')return`<span class="tc gap"></span>`;if(typeof c==='string')return`<span class="tc op">${c}</span>`;return`<span class="tc">${fmt(c)}</span>`};
  if(q.lay==='color'){const c=(g.cv||[]);return`<div class="tlcol">${q.cells.map((t,i)=>{const v=c[i],col=v!==''&&v!=null?TL_MAU[+v][0]:'';return`<button type="button" class="cc ${col?'on':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" ${col?`style="background:${col}"`:''} onclick="tlCell(${i})"><span class="cct">${t}</span></button>`}).join('')}</div>`}
  if(q.lay==='ds'){const c=(g.cv||[]);return`<div class="tlds">${q.st.map((t,i)=>`<div class="dsr ${g.cbad&&g.cbad.includes(i)?'bad':''}"><span class="dst">${t}</span><button type="button" class="dsb ${c[i]==='1'?'on':''}" onclick="tlDS(${i},1)" aria-pressed="${c[i]==='1'}">${T('Đ','T')}</button><button type="button" class="dsb ${c[i]==='0'?'on':''}" onclick="tlDS(${i},0)" aria-pressed="${c[i]==='0'}">${T('S','F')}</button></div>`).join('')}</div>`}
+ if(q.lay==='vert'){const [A,B,R]=q.rows;let bi=0;const n=q.n,col=`grid-template-columns:repeat(${n+1},44px)`;
+  const nho=`<span class="tc gap"></span>`+A.map((_,k)=>k<n-1?`<button type="button" class="vn ${(g.nho||[]).includes(k)?'on':''}" onclick="tlNho(${k})" aria-label="${T('Ghi nhớ','Carry')}">${(g.nho||[]).includes(k)?'1':''}</button>`:`<span class="tc gap"></span>`).join('');
+  const dg=c=>c===''?`<span class="tc gap"></span>`:`<span class="tc vd">${c}</span>`;
+  const res=R.map(c=>c===''?`<span class="tc gap"></span>`:(()=>{const i=bi++,v=(g.cv&&g.cv[i])||'';return`<button type="button" class="tc e ${i===g.cc?'cur':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" onclick="tlCell(${i})" aria-label="${T('Chữ số kết quả','Answer digit')} ${i+1}">${esc(v)}</button>`})()).join('');
+  return`<div class="tlvert" style="${col}">${nho}<span class="tc gap"></span>${A.map(dg).join('')}<span class="tc op vop">${q.op}</span>${B.map(dg).join('')}<i class="vline" style="grid-column:1/-1"></i><span class="tc gap"></span>${res}</div>`}
  if(q.lay==='house')return`<div class="tlhouse"><div class="roof"><span>${q.roof}</span></div><div class="floors">${q.rows.map(r=>`<div class="fl">${r.map(cell).join('')}</div>`).join('')}</div></div>`;
  if(q.lay==='fam')return`<div class="tlfam"><div class="tlsd"><span class="tc">${q.head[0]}</span><i class="l1"></i><i class="l2"></i><span class="tc">${q.head[1]}</span><span class="tc">${q.head[2]}</span></div>${q.rows.map(r=>`<div class="eq">${r.map(cell).join('')}</div>`).join('')}</div>`;
  return`<div class="tlrows ${q.lay}">${q.lay==='tri'?`<div class="trisum">${T('Mỗi cạnh','Each side')} = ${q.sum}</div>`:''}${q.rows.map(r=>`<div class="rw">${r.map(cell).join('')}</div>`).join('')}</div>`}
 const nBl=q=>q.a.length;
 window.tlCell=function(i){const g=scr,q=q1();if(g.sheet)return;if(q&&q.lay==='color'){g.cv=g.cv||q.a.map(()=>'');g.cv[i]=g.cv[i]===String(g.pc||0)?'':String(g.pc||0);g.cbad=null}else g.cc=i;sfx('tap');render()};
+window.tlNho=function(k){const g=scr;g.nho=g.nho||[];g.nho=g.nho.includes(k)?g.nho.filter(x=>x!==k):[...g.nho,k];sfx('tap');render()};
 window.tlPC=function(k){scr.pc=k;sfx('tap');render()};
 window.tlDS=function(i,v){const g=scr,q=q1();if(g.sheet)return;g.cv=g.cv||q.a.map(()=>'');g.cv[i]=String(v);g.cbad=null;sfx('tap');render()};
 window.tlXong=function(){const g=scr,q=q1();g.cv=g.cv||q.a.map(()=>'');if(g.cv.every(v=>v!==''&&v!=null))ans1(g.cv.map(Number));else toast(q.lay==='color'?T('Em tô hết các ô nhé.','Colour every box first.'):q.lay==='ds'?T('Em chọn Đ hoặc S cho mọi ý nhé.','Mark every line first.'):T('Em điền hết các ô trống nhé.','Fill in every box first.'))};
@@ -12116,12 +12143,13 @@ window.tlKey=function(k){const g=scr,q=q1();if(g.sheet||!q||q.type!=='cells'||q.
  if(k==='⌫'){g.cv[g.cc]=v.slice(0,-1)}
  else if(k==='✓'){if(g.cv.every(Boolean))ans1(g.cv.map(Number));else{toast(T('Em điền hết các ô trống nhé.','Fill in every box first.'));return}}
  else{const mx=Math.max(...q.a).toString().length;if(v.length>=mx)g.cv[g.cc]=k;else g.cv[g.cc]=v+k;
-  if(g.cv[g.cc].length>=mx){const nx=g.cv.findIndex((x,i)=>i>g.cc&&!x);const n0=g.cv.findIndex(x=>!x);if(nx>=0)g.cc=nx;else if(n0>=0)g.cc=n0}}
+  if(g.cv[g.cc].length>=mx&&q.lay==='vert'){let p=-1;for(let i=g.cc-1;i>=0;i--)if(!g.cv[i]){p=i;break}if(p<0)p=g.cv.lastIndexOf('');if(p>=0)g.cc=p}
+  else if(g.cv[g.cc].length>=mx){const nx=g.cv.findIndex((x,i)=>i>g.cc&&!x);const n0=g.cv.findIndex(x=>!x);if(nx>=0)g.cc=nx;else if(n0>=0)g.cc=n0}}
  g.cbad=null;sfx('tap');render()};
 
 /* ---------- nối vào bộ chơi ---------- */
 {const _r=right1;right1=function(q,v){if(q&&q.type==='cells')return Array.isArray(v)&&v.length===q.a.length&&v.every((x,i)=>Number(x)===q.a[i]);return _r.apply(this,arguments)}}
-{const _s=show1;show1=function(q){if(q&&q.type==='cells')return q.lay==='color'||q.lay==='ds'?'':q.a.join(', ');return _s.apply(this,arguments)}}
+{const _s=show1;show1=function(q){if(q&&q.type==='cells')return q.lay==='color'||q.lay==='ds'?'':q.lay==='vert'?q.a.join(''):q.a.join(', ');return _s.apply(this,arguments)}}
 {const _i=input1;input1=function(q){if(!(q&&q.type==='cells'))return _i.apply(this,arguments);
  if(q.lay==='color')return`<div class="tlpal">${q.vals.map((v,k)=>`<button type="button" class="pc ${(scr.pc||0)===k?'on':''}" onclick="tlPC(${k})" aria-pressed="${(scr.pc||0)===k}" aria-label="${T(TL_MAU[k][1],TL_MAU[k][2])} ${v}"><i style="background:${TL_MAU[k][0]}"></i>= ${v}</button>`).join('')}</div><button class="gobtn" type="button" onclick="tlXong()">${T('Xong','Done')}</button>`;
  if(q.lay==='ds')return`<button class="gobtn" type="button" onclick="tlXong()">${T('Xong','Done')}</button>`;
@@ -12135,7 +12163,7 @@ function tlSave(){const g=scr,st=S.st[sid];if(g.tlDay)return;const r=tlR(st)[g.i
  if(ok){g.ok++;if(g.res[g.j]===undefined)g.res[g.j]=true;const c=addCoins(sid,q.tt?TL_TT:TL_XU,'self');sfx('ok');
   g.sheet={kind:'ok',msg:`+${c} ${T('xu','coins')}`};sayJ(pick(T('Giỏi quá!|Đúng rồi!|Tuyệt vời!','Brilliant!|Correct!|Well done!').split('|')))}
  else{g.tries++;sfx('bad');
-  if(g.tries===1){if(q.type==='cells'){g.cbad=[];g.cv=g.cv.map((x,i)=>{if(Number(x)===q.a[i])return x;g.cbad.push(i);return''});g.cc=g.cbad[0]||0}
+  if(g.tries===1){if(q.type==='cells'){g.cbad=[];g.cv=g.cv.map((x,i)=>{if(Number(x)===q.a[i])return x;g.cbad.push(i);return''});g.cc=q.lay==='vert'?g.cbad[g.cbad.length-1]:g.cbad[0]||0}
    g.sheet={kind:'tlretry'};sayJ(T('Chưa đúng rồi. Em thử lại nhé.','Not quite. Try again.'))}
   else{g.res[g.j]=false;g.sheet={kind:'bad'};sayJ(String(q.sol||'').replace(/<[^>]+>/g,' ').replace(/−/g,' trừ ').replace(/=/g,' bằng '))}}
  tlSave();save();render()}}
@@ -12163,7 +12191,7 @@ function tlEndView(){const g=scr,x=isl1(g.id),R=g.tlRes||{},st=S.st[sid];
   ${R.wrong?`<p class="muted" style="font-size:13px;margin:6px 0 0">${T('Câu làm sai đã ghi vào Sổ lỗi sai.','Mistakes were saved to your mistake book.')}</p>`:''}
   <div class="row" style="justify-content:center;gap:8px;margin-top:12px"><button class="btn sm ghost" type="button" onclick="go({k:'home',tab:'tl'})">${T('Về Tự luyện','Back to practice')}</button>${nx?`<button class="btn sm pri" type="button" onclick="tlGo('${nx.id}')">${T('Trang tiếp','Next page')}</button>`:`<button class="btn sm pri" type="button" onclick="tlGo('${g.id}')">${T('Làm lại (số mới)','Again (new numbers)')}</button>`}</div></section></div></div>`}
 {const _v=viewGame1;viewGame1=function(){const g=scr;if(!(g&&g.tl))return _v.apply(this,arguments);if(g.end)return tlEndView();
- const q=q1();if(q.type==='cells'&&(!g.cv||g.cv.length!==nBl(q))){g.cv=q.a.map(()=>'');g.cc=0}
+ const q=q1();if(q.type==='cells'&&(!g.cv||g.cv.length!==nBl(q))){g.cv=q.a.map(()=>'');g.cc=q.lay==='vert'?q.a.length-1:0;g.nho=[]}
  let h=_v.apply(this,arguments);const n=g.qs.length,nb=g.qs.filter(x=>!x.tt).length;
  h=h.replace('<div class="game g1"','<div class="game g1 tlgame"')
   .replace(/<div class="planks"[^>]*>(?:<i[^>]*><\/i>)*<\/div>/,`<div class="planks tlpl">${g.qs.map((x,k)=>`<i class="${g.res[k]===true?'ok':g.res[k]===false?'bad':k===g.j?'cur':''} ${x.tt?'tt':''}"></i>`).join('')}</div>`)
@@ -12233,7 +12261,7 @@ window.gvTLDel=function(id){S.asg=(S.asg||[]).filter(a=>a.id!==id);save();render
 /* phép tính trong ô Tô màu luôn nằm trên 1 dòng: chữ to quá thì tự nhỏ lại */
 function tlFitCol(){const B=[...document.querySelectorAll('.tlcol .cc')];if(!B.length)return;B.forEach(b=>b.style.fontSize='');let f=parseFloat(getComputedStyle(B[0]).fontSize);const over=()=>B.some(b=>{const t=b.querySelector('.cct');return t&&t.offsetWidth>b.clientWidth-4});while(over()&&f>11){f-=1;B.forEach(b=>b.style.fontSize=f+'px')}}/* cả lưới cùng một cỡ chữ */
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{if(scr&&scr.tl)tlFitCol()}catch(e){}return r}}
-Object.assign(I18N,{'Lưới phép tính':'Number grid','Tô màu theo kết quả':'Colour by answer','Đúng hay sai':'True or false','Nhà số':'Number house','Gia đình phép tính':'Fact family','Tháp số':'Number pyramid','Tam giác số':'Number triangle'});
+Object.assign(I18N,{'Đặt tính rồi tính':'Column method','Lưới phép tính':'Number grid','Tô màu theo kết quả':'Colour by answer','Đúng hay sai':'True or false','Nhà số':'Number house','Gia đình phép tính':'Fact family','Tháp số':'Number pyramid','Tam giác số':'Number triangle'});
 document.head.insertAdjacentHTML('beforeend',`<style>
 .vbt h2{margin:0}.vsub{font-size:13px;color:var(--muted);margin:2px 0 10px}.vstat{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px}
 .vsec{font-family:var(--f-display);font-size:20px;margin:16px 0 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--ink);line-height:1.15}
@@ -12274,6 +12302,10 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .dsr{display:flex;align-items:center;gap:8px;background:var(--surface);padding:6px 8px;box-shadow:var(--f2)}.dsr.bad{background:var(--coral-soft)}
 .dst{flex:1;font-family:var(--f-display);font-size:26px;color:var(--ink);line-height:1}
 .dsb{width:44px;height:40px;border:0;background:#fff;color:#1F2A5A;font-family:var(--f-display);font-size:26px;box-shadow:inset 0 0 0 2px #1F2A5A;cursor:pointer}.dsb.on{background:#0079C1;color:#fff}
+.tlvert{display:grid;gap:4px;justify-content:center;align-items:center}
+.tlvert .tc{width:44px;height:46px;font-size:32px}.tlvert .tc.vd{background:transparent;box-shadow:none;color:var(--ink)}.tlvert .tc.vop{font-size:32px;width:44px}
+.tlvert .vline{display:block;height:4px;background:var(--pxk,#1F2A5A);margin:2px 0}
+.tlvert .vn{width:30px;height:24px;justify-self:center;border:0;background:transparent;color:#E0441A;font-family:var(--f-display);font-size:22px;line-height:1;box-shadow:inset 0 0 0 2px var(--muted);opacity:.7;cursor:pointer;padding:0}.tlvert .vn.on{opacity:1;box-shadow:inset 0 0 0 2px #E0441A;background:#FDE6DE}
 .tlend{text-align:center}.tlend .big{font-family:var(--f-display);font-size:48px;color:var(--leaf);line-height:1.1}
 </style>`);
 })();
