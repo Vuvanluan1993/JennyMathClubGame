@@ -9,6 +9,8 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Mỗi lần xong việc: build → test → cập nhật `CHANGELOG.md`, `TASKS.md` → commit, push → đăng lại artifact bản đầy đủ.
 
 ## 2. Phong cách
+- Giữ cỡ ô pixel hiện tại (Jenny 16 ô ngang) — thầy không chọn bản mịn (24/10).
+- Nhân vật: **Bạn nữ (Jenny)** và **Bạn nam**; học sinh chọn khi vào lần đầu, đổi ở Tủ đồ. Cửa hàng có đồ riêng cho từng bạn và đồ chung (24/10).
 - **Pixel ở mọi nơi**: khung khía góc (`var(--f2)`), bóng đổ cứng, chữ VT323 cho tiêu đề/nút, Be Vietnam Pro cho chữ thường; bảng màu logo Clb (`PXC` trong `22-do-hoa-pixel…`).
 - Hình vẽ là sprite pixel tự vẽ (`PXS`), không dùng ảnh ngoài, không vẽ nhân vật có bản quyền.
 - **Chế độ tối** (MacBook để tối): mọi màu chữ/nền dùng biến (`--ink`, `--surface`, `--muted`, `--sun-soft`…). Chỗ nền sáng cố định (khung trời/cát, hộp Hướng dẫn) thì ghi màu chữ đậm cố định. Luôn chụp thử cả chế độ tối.

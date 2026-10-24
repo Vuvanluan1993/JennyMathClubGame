@@ -1,5 +1,13 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Nhân vật Nam, đồ cho bạn nam
+- Giữ phong cách pixel cũ (thầy chốt không đổi cỡ ô).
+- **Bạn nam**: tóc ngắn dựng, không búi, không nơ; dùng chung thân, biểu cảm, áo, mũ kính với Jenny.
+- Lần đầu vào, học sinh chọn **Bạn nữ / Bạn nam**; đổi lại ở Tủ đồ (hàng "Nhân vật"). Nhân vật đã chọn hiện ở thẻ chào, khi làm bài, Tủ đồ, Cửa hàng. "Tủ đồ của Jenny" → "Tủ đồ của em".
+- Cửa hàng thêm: Áo cầu thủ 150, Áo Ninja 200, Áo phi hành gia 250; Nơ cổ 60, Băng đô ninja 80, Kính râm 100, Tai nghe 150, Mũ bảo hiểm 180.
+- Đồ riêng (Váy Hoa đào, Nơ đỏ, Kẹp hoa cho bạn nữ; Áo cầu thủ, Áo Ninja, Nơ cổ, Băng đô cho bạn nam) chỉ hiện với bạn đó; đồ chung hiện cho cả hai.
+- Phụ kiện thêm chỗ đeo "Tai" (tai nghe) và "Cổ" (nơ cổ): đeo cùng lúc được mũ + kính + tóc + tai + cổ.
+
 ## 24/10/2026 — Tự luyện: chốt ý tưởng Vở bài tập Jenny
 - Thầy chốt: Tự luyện là trang vở theo đảo đã qua + bài ★ Thử thách; cô chỉ gợi ý, không giao (ghi ở `docs/LUAT-DA-CHOT.md`).
 - Thêm bảng dạng bài lớp 1 tập 1 rà từ VBT tham khảo: `docs/tu-luyen-dang-bai-lop1-tap1.md` (chỉ ghi dạng bài, không chép sách).
