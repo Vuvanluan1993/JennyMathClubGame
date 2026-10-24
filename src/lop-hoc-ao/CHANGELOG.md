@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Quản lý: nút + bảng nhập; xếp lớp; 1 phụ huynh nhiều con
+- Bỏ các ô nhập dài trên trang Quản lý; thay bằng nút **+ Thêm lớp**, **+ Thêm học sinh**, **+ Thêm giáo viên**, **⇄ Xếp lớp**, **👪 Tài khoản phụ huynh**. Bấm nút → bảng nhập.
+- Thêm học sinh: Họ và đệm, Tên, Giới tính (bắt buộc — để chọn nhân vật), Ngày/Tháng/Năm sinh, Lớp, Điện thoại & Gmail phụ huynh (+ tên đăng nhập, mật khẩu khi có máy chủ).
+- Thêm giáo viên: Họ tên, Giới tính, Điện thoại, Gmail (+ tên đăng nhập, mật khẩu). Thêm lớp: Khối, Tên lớp, Giáo viên.
+- Bảng Học sinh: nút **Bỏ khỏi lớp** từng em (chuyển lớp vẫn bằng ô chọn lớp). **Xếp lớp**: chọn lớp, tích nhiều em cùng khối để đưa vào.
+- **Phụ huynh**: 1 tài khoản gắn nhiều con (anh chị em cùng bố mẹ); thẻ "Phụ huynh" liệt kê tài khoản và các con, nút "Sửa con". Máy chủ: danh sách con lưu trong tài khoản phụ huynh.
+
 ## 24/10/2026 — Nhân vật theo giới tính quản lý nhập
 - Học sinh **không còn tự chọn** bạn nữ/bạn nam: bỏ hàng "Nhân vật" trong Tủ đồ và bỏ ô hỏi khi vào lần đầu. Tủ đồ chỉ có nhân vật của em.
 - Quản lý chọn **Giới tính** khi tạo tài khoản (ô "Thêm học sinh") hoặc khi ✎ Sửa → em đăng nhập là nhân vật tương ứng (Nam = bạn nam, Nữ hoặc chưa nhập = bạn nữ). Cửa hàng hiện đồ theo giới tính đó.

@@ -124,6 +124,11 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Học sinh đăng nhập chỉ bằng tên đăng nhập + mật khẩu, không tự nhập tên.
 - Quản lý › Học sinh › ✎ Sửa: Họ tên, Tên đăng nhập, Mật khẩu + hồ sơ (Giới tính, Ngày sinh, Năm sinh, Điện thoại phụ huynh, Gmail phụ huynh). Không sửa khối, xu, sao, đồ, tiến độ. Có ghi Nhật ký.
 
+## 6j. Trang Quản lý (24/10/2026)
+- Thêm lớp/học sinh/giáo viên bằng **nút → bảng nhập** (không để ô nhập dài trên trang). Học sinh: họ, tên, giới tính, ngày tháng năm sinh, lớp, điện thoại & gmail phụ huynh.
+- Có nút bỏ khỏi lớp, chuyển lớp, xếp nhiều em vào lớp.
+- **1 tài khoản phụ huynh – nhiều con** (anh chị em cùng bố mẹ).
+
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
 - `node tools/test/kien-thuc-tro-choi.js` — trò không vượt kiến thức.
