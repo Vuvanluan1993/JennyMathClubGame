@@ -1,5 +1,13 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Nối máy chủ Firebase (dữ liệu dùng chung thật)
+- `js/core/62-may-chu.js` + quy tắc `firebase/firestore.rules` (đã dán vào Firestore). Dự án Firebase `jenny-lop-hoc-ao`, vùng asia-southeast1, gói miễn phí.
+- **Trang giáo viên & phụ huynh** (`games/lop-hoc-ao/giao-vien/`): đăng nhập bằng tài khoản thật; vẫn có "Xem bản demo" (mật khẩu `giaovien123`) và "Thiết lập lần đầu". Vai trò theo tài khoản: Quản lý (Giáo viên + Quản lý + xem như phụ huynh), Giáo viên (chỉ lớp được phân công), Phụ huynh (chỉ con mình). Có Đổi mật khẩu, Đăng xuất, trạng thái "Đã lưu lên máy chủ".
+- **Quản lý** tạo tài khoản thật: giáo viên (tên đăng nhập + mật khẩu), học sinh (tự gợi ý tên đăng nhập, mật khẩu mặc định jenny123), phụ huynh (gắn với con).
+- **App học sinh**: đăng nhập tài khoản trung tâm cấp → tiến độ lưu lên máy chủ; bài về nhà cô giao hiện ngay (thời gian thực); tài khoản thử cũ (jenny01…05, lebaona) vẫn chạy kiểu lưu trên máy.
+- Dữ liệu: `users/{uid}`, `org/main`, `hs/{tk}` (em ghi), `hsgv/{tk}` (cô ghi: nhận xét, thẻ, ghi chú), `asg/{id}` (bài về nhà). Tên đăng nhập đổi thành email ẩn `tk@jenny-lop-hoc-ao.firebaseapp.com`.
+- Đã thử trọn vòng trên máy chủ thật: quản lý tạo lớp/giáo viên/học sinh/phụ huynh → em làm bài → cô giao luyện lỗi → em bị chặn ngay, làm xong → cô thấy "Đã sửa xong" → phụ huynh đọc lời nhắn. Phụ huynh và em khác không đọc được dữ liệu em khác (bị chặn đúng).
+
 ## 23/10/2026 — Bố cục cân đối khi đổi độ rộng màn hình
 - `js/core/61-bo-cuc-can-doi.js`: dãy ô số liệu và thẻ lớp chọn số cột theo số ô — 6 ô = 3 cột × 2 hàng (điện thoại 2 × 3), 4 ô = 4 cột (máy nhỏ 2 × 2), 3 ô = 3 cột; không còn hàng cuối lẻ một ô.
 - Các cặp khung (Sức mạnh Toán / Điểm từng mạch, Phần thưởng / Hoạt động gần đây, Ghi chú / Nhận xét, Giáo viên / Nhật ký) chia đều 2 cột, dưới 900px xếp 1 cột.

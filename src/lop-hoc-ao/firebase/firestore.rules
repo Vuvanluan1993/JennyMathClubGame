@@ -1,0 +1,46 @@
+rules_version = '2';
+// Quy tắc bảo mật Firestore — Lớp học ảo Jenny (bản thử nghiệm 24/10/2026)
+// users/{uid}: vai trò (ql | gv | hs | ph), tk (tên đăng nhập), gvId (giáo viên), con (phụ huynh: danh sách tk của con)
+// org/main  : dữ liệu trung tâm (j = JSON), gd = {tk: lớp}, pc = {gvId: [lớp]}, admins = [uid]
+// hs/{tk}   : dữ liệu học của em (em tự ghi) · hsgv/{tk}: nhận xét, thẻ, ghi chú của cô (cô ghi)
+// asg/{id}  : bài về nhà cô giao
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function signed() { return request.auth != null; }
+    function hasMe() { return signed() && exists(/databases/$(db)/documents/users/$(request.auth.uid)); }
+    function me() { return get(/databases/$(db)/documents/users/$(request.auth.uid)).data; }
+    function org() { return get(/databases/$(db)/documents/org/main).data; }
+    function isQL() { return hasMe() && me().role == 'ql'; }
+    function isGV() { return hasMe() && me().role == 'gv'; }
+    function isSelf(tk) { return hasMe() && me().role == 'hs' && me().tk == tk; }
+    function isPH(tk) { return hasMe() && me().role == 'ph' && tk in me().con; }
+    function gvLop(tk) {
+      return isGV() && (tk in org().gd) && (me().gvId in org().pc) && (org().gd[tk] in org().pc[me().gvId]);
+    }
+
+    match /org/main {
+      allow read: if signed();
+      allow create: if signed() && request.resource.data.admins == [request.auth.uid];
+      allow update: if isQL()
+        || (isGV() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['j', 't']));
+    }
+    match /users/{uid} {
+      allow read: if signed() && (request.auth.uid == uid || isQL() || isGV());
+      allow create: if isQL()
+        || (signed() && request.auth.uid == uid && request.resource.data.role == 'ql' && request.auth.uid in org().admins);
+      allow update, delete: if isQL();
+    }
+    match /hs/{tk} {
+      allow read: if isSelf(tk) || isQL() || gvLop(tk) || isPH(tk);
+      allow write: if isSelf(tk) || isQL();
+    }
+    match /hsgv/{tk} {
+      allow read: if isSelf(tk) || isQL() || gvLop(tk) || isPH(tk);
+      allow write: if isQL() || gvLop(tk);
+    }
+    match /asg/{id} {
+      allow read: if signed();
+      allow write: if isQL() || isGV();
+    }
+  }
+}

@@ -29,7 +29,8 @@ Thầy chốt điều mới → ghi ngay vào `docs/LUAT-DA-CHOT.md`.
 
 ## Các trang trên GitHub Pages
 - Học sinh: `games/lop-hoc-ao/` (đăng nhập jenny01…jenny05 / jenny123, chỉ tiểu học; thử: lebaona / jenny123).
-- Giáo viên (tạm, dữ liệu mẫu): `games/lop-hoc-ao/giao-vien/` — mật khẩu `giaovien123` (đổi ở `tools/_teacher.py`).
+- Giáo viên & phụ huynh: `games/lop-hoc-ao/giao-vien/` — đăng nhập tài khoản thật (Firebase, `js/core/62-may-chu.js`); bản demo dữ liệu mẫu: mật khẩu `giaovien123` (đổi ở `tools/_teacher.py`).
+- Máy chủ: Firebase `jenny-lop-hoc-ao` (Firestore asia-southeast1). Quy tắc: `firebase/firestore.rules` — đổi quy tắc thì nhờ thầy dán lại vào Firestore › Rules. Chạy thử bằng Playwright cần `proxy:{server:process.env.HTTPS_PROXY}`, `ignoreHTTPSErrors:true`, `waitUntil:'domcontentloaded'`.
 
 ## Lưu ý kĩ thuật
 - Tất cả file JS chung phạm vi toàn cục; file nội dung mới nên bọc IIFE.

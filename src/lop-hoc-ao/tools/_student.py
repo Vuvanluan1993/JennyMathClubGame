@@ -33,8 +33,13 @@ function bootUser(u,name){const a=ACC[u];STUDENTS=[[u,name||(u.charAt(0).toUpper
   if(!load()){S={day:dayNow(),events:[],open:{j1:true,j2:true,jg1b1:true,jg1b2:true},st:{},cbi:{}};S.st[u]=newStudent(name||(u.charAt(0).toUpperCase()+u.slice(1)),a.g);S.st[u].active=true}
   if(name&&name.trim())S.st[u].name=name.trim();STUDENTS[0][1]=S.st[u].name;S.day=dayNow();S.open=Object.assign({j1:true,j2:true,jg1b1:true,jg1b2:true},S.open||{});save();
   document.getElementById('login').hidden=true;document.body.classList.remove('locked');go({k:'home'})}
-function logoutHS(){try{save();speechSynthesis.cancel()}catch(e){}try{localStorage.removeItem('jennyHS_last')}catch(e){}location.reload()}
+function logoutHS(){if(CLOUD){try{speechSynthesis.cancel()}catch(e){}fbDangXuat();return}try{save();speechSynthesis.cancel()}catch(e){}try{localStorage.removeItem('jennyHS_last')}catch(e){}location.reload()}
 async function doLogin(e){e.preventDefault();const u=document.getElementById('lgU').value.trim().toLowerCase(),p=document.getElementById('lgP').value,n=document.getElementById('lgN').value,msg=document.getElementById('lgMsg');
+  const nho=document.getElementById('lgR').checked;
+  if(!(ACC[u]&&!navigator.onLine)){msg.textContent='Đang đăng nhập…';try{await fbDangNhap(u,p,nho);
+    if(CLOUD.me.role!=='hs'){msg.textContent='Đây là tài khoản '+(CLOUD.me.role==='ph'?'phụ huynh':'giáo viên')+'. Hãy vào trang giáo viên & phụ huynh.';try{await FB.auth.signOut()}catch(x){}CLOUD=null;return}
+    await fbHsBoot();document.getElementById('login').hidden=true;document.body.classList.remove('locked');go({k:'home'});return}
+   catch(err){msg.textContent='';if(!ACC[u]){msg.textContent=fbLoi(err);CLOUD=null;return}CLOUD=null}}
   if(!ACC[u]){msg.textContent='Tên đăng nhập không đúng. Ví dụ: Jenny01';return}
   let ok=false;try{ok=(await sha(u+':'+p))===ACC[u].h}catch(err){msg.textContent='Trình duyệt không hỗ trợ đăng nhập. Hãy mở bằng Chrome hoặc Edge.';return}
   if(!ok){msg.textContent='Mật khẩu chưa đúng, em thử lại nhé.';return}
@@ -42,7 +47,9 @@ async function doLogin(e){e.preventDefault();const u=document.getElementById('lg
   bootUser(u,n)}
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 document.getElementById('lgForm').addEventListener('submit',doLogin);
-{let last=null;try{last=localStorage.getItem('jennyHS_last')}catch(e){}if(last&&ACC[last])bootUser(last);else{document.getElementById('lgU').focus()}}
+{let last=null;try{last=localStorage.getItem('jennyHS_last')}catch(e){}if(last&&ACC[last])bootUser(last);else{document.getElementById('lgU').focus();
+  /* đã đăng nhập máy chủ từ trước (ghi nhớ) thì vào thẳng */
+  fbInit().then(()=>{const off=FB.auth.onAuthStateChanged(async u=>{off();if(!u||CLOUD)return;try{await fbNapMe(u);if(CLOUD.me.role!=='hs'){CLOUD=null;return}await fbHsBoot();document.getElementById('login').hidden=true;document.body.classList.remove('locked');go({k:'home'})}catch(e){CLOUD=null}})}).catch(()=>{})}}
 </script>'''.replace('__ACC__',json.dumps(acc))
 t=t.replace(boot_old,login)
 # remove old brand replace in Khởi động (keep both harmless) ; login overlay markup
@@ -53,7 +60,7 @@ overlay='''<div id="login" class="login"><form id="lgForm" class="lgcard" autoco
  <label for="lgN">Tên của em <small>(lần đầu đăng nhập, có thể bỏ trống)</small></label><input id="lgN" name="n" placeholder="Ví dụ: Lê Bảo Na" maxlength="40">
  <label class="lgrem"><input id="lgR" type="checkbox"> Ghi nhớ trên máy này (máy ở nhà)</label>
  <button class="gobtn" type="submit">Vào học</button><p id="lgMsg" class="lgmsg" role="alert"></p>
- <p class="lgnote">Tiến độ học được lưu trên chính máy này. Ở phòng máy, em nhớ bấm <b>Đăng xuất</b> khi học xong.</p></form></div>
+ <p class="lgnote">Dùng tài khoản trung tâm cấp: tiến độ lưu trên máy chủ, cô giáo và bố mẹ xem được. Ở phòng máy, em nhớ bấm <b>Đăng xuất</b> khi học xong.</p></form></div>
 '''
 t=t.replace('<main class="wrap" id="app"></main>',overlay+'<main class="wrap" id="app"></main>',1)
 css='''

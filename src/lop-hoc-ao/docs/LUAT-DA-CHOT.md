@@ -104,6 +104,12 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Dữ liệu mẫu (23/10/2026):** giả định đã học 8 tháng; sẽ reset khi có dữ liệu thật.
 - **Chỉ tiểu học (23/10/2026):** bỏ tài khoản lớp 6–9. Dữ liệu mẫu: khối 1 và 2 mỗi khối 2 lớp × 12 em.
 
+## 6i. Máy chủ (chốt 24/10/2026)
+- Dùng **Firebase gói miễn phí (Spark)**, dự án `jenny-lop-hoc-ao`, Firestore vùng **asia-southeast1**; tắt Gemini và Google Analytics; không sao lưu tự động (cần gói trả phí).
+- Trang vẫn đặt trên GitHub Pages (chưa cần tên miền riêng).
+- Quy tắc bảo mật ở `firebase/firestore.rules` (dán vào Firestore › Rules mỗi khi đổi). Em chỉ xem dữ liệu của mình; cô chỉ xem lớp được phân công; phụ huynh chỉ xem con; chỉ quản lý tạo tài khoản.
+- Thử nghiệm dùng tài khoản thử, chưa nhập tên thật của học sinh.
+
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
 - `node tools/test/kien-thuc-tro-choi.js` — trò không vượt kiến thức.

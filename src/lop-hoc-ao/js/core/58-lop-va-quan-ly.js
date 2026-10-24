@@ -30,10 +30,11 @@ function ctxLop(){
 }
 function orgHeal(){
   if(!S)return;
+  if(typeof CLOUD!=='undefined'&&CLOUD&&!S.org)return;
   if(!S.org||S.org.v!==2)S.org=orgMoi(); /* v2 (23/10): chỉ tiểu học, khối 1–2 mỗi khối 2 lớp × 12 em */
   /* học sinh mẫu thêm chỉ nạp khi mở vai giáo viên/quản lý/phụ huynh (để bản học sinh và bài kiểm tra nhẹ) */
-  if(role!=='hs')O().hsOn=1;
-  if(O().hsOn)HS_THEM.concat(O().hsMoi).forEach(s=>{if(!STUDENTS.some(x=>x[0]===s[0]))STUDENTS.push(s)});
+  if(role!=='hs'&&!O().cloud)O().hsOn=1;
+  if(O().hsOn&&!O().cloud)HS_THEM.concat(O().hsMoi).forEach(s=>{if(!STUDENTS.some(x=>x[0]===s[0]))STUDENTS.push(s)});
   STUDENTS.forEach(([id,n,g])=>{if(!S.st[id])S.st[id]=newStudent(n,g)});
   const d=Object.getOwnPropertyDescriptor(S,'open');
   if(!d||!d.get){
@@ -44,7 +45,7 @@ function orgHeal(){
   /* Toán Jenny theo lớp: kích hoạt = lớp có gói, hoặc ngoại lệ của em */
   STUDENTS.forEach(([id])=>{const l=lopCua(id);S.st[id].active=!!((l&&l.tj.on)||O().nl[id])});
   (S.asg||[]).forEach(a=>{if(!a.lop){const f=O().lop.find(l=>l.khoi===a.g);if(f)a.lop=f.id}});
-  if(gvLop){const l=lopById(gvLop);if(!l||!l.gv.includes(gvMe))gvLop=null}
+  if(gvLop){const l=lopById(gvLop);if(!l||(!l.gv.includes(gvMe)&&!(O().cloud&&CLOUD&&CLOUD.me.role==='ql')))gvLop=null}
 }
 window.orgHeal=orgHeal;
 {const _r=render;render=function(){try{orgHeal()}catch(e){console.error(e)}return _r.apply(this,arguments)}}
@@ -52,7 +53,7 @@ window.orgHeal=orgHeal;
 /* ---------- Giáo viên ---------- */
 gvCLS=function(){return gvLop?hsCuaLop(gvLop):STUDENTS.filter(s=>s[2]===gvGrade)};
 gvTen=function(){return(gvById(gvMe)||{ten:'Cô giáo'}).ten};
-const lopCuaToi=()=>O().lop.filter(l=>l.gv.includes(gvMe)).sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten));
+const lopCuaToi=()=>O().lop.filter(l=>l.gv.includes(gvMe)||(O().cloud&&typeof CLOUD!=='undefined'&&CLOUD&&CLOUD.me.role==='ql')).sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten));
 const chonGV=()=>`<div class="field" style="min-width:0;max-width:360px"><label for="gvMe" class="muted" style="font-size:12.5px">Đang xem với tài khoản (chỉ có ở bản thử)</label><select id="gvMe" style="width:100%" onchange="gvMe=this.value;gvLop=null;go({k:'home'})">${O().gv.map(g=>`<option value="${g.id}" ${g.id===gvMe?'selected':''}>${esc(g.ten)} · ${O().lop.filter(l=>l.gv.includes(g.id)).map(l=>l.ten).join(', ')||'chưa có lớp'}</option>`).join('')}</select></div>`;
 window.vaoLop=id=>{const l=lopById(id);if(!l)return;gvLop=id;gvGrade=l.khoi;go({k:'home'})};
 gvHead=function(){
@@ -68,7 +69,7 @@ function viewLopCuaToi(){
       <span class="lt-so"><span>Học hôm nay <b>${hn}/${hs.length}</b></span><span class="${cy?'bad':''}">Cần chú ý <b>${cy}</b></span></span>
       ${l.tj.on?'<span class="tag paid">Toán Jenny</span>':''}</button>`};
   return`<div class="grid">
-   <div style="min-width:0"><h1 style="font-size:28px">Lớp của tôi</h1><div class="muted">${esc(gvTen())} · ${esc(O().ten)} · năm học ${esc(O().nam)} · ngày ${S.day}</div></div>${chonGV()}
+   <div style="min-width:0"><h1 style="font-size:28px">Lớp của tôi</h1><div class="muted">${esc(gvTen())} · ${esc(O().ten)} · năm học ${esc(O().nam)} · ngày ${S.day}</div></div>${O().cloud?'':chonGV()}
    ${mine.length?khoi.map(k=>`<section class="card"><h2>Khối ${k}</h2><div class="lopgrid">${mine.filter(l=>l.khoi===k).map(the).join('')}</div></section>`).join('')
      :'<section class="card"><h2>Chưa có lớp</h2><p class="muted" style="margin:6px 0 0">Quản lý trung tâm chưa phân công lớp cho tài khoản này.</p></section>'}
    <p class="muted" style="margin:0">Lớp và học sinh do quản lý trung tâm xếp. Toán Jenny mở theo gói của từng lớp.</p></div>`;
@@ -108,7 +109,7 @@ function viewQL(){
      <td>${l.tj.on?`<span class="pill ok">Đang mở · hạn ${l.tj.han}</span> <button class="btn sm" onclick="qlTJ('${l.id}',false)">Tắt</button>`:'<span class="muted">Chưa có</span>'}</td></tr>`}).join('');
   const rowsH=HS.map(([id,n,g])=>{const l=lopCua(id),cung=LOP.filter(x=>x.khoi===g),st=S.st[id];
     const tj=l&&l.tj.on?'<span class="pill ok">Theo lớp</span>':`<label class="row" style="gap:6px;font-size:13px"><input type="checkbox" ${o.nl[id]?'checked':''} onchange="qlNgoaiLe('${id}',this.checked)"> Ngoại lệ</label>`;
-    return`<tr><td><b>${esc(n)}</b><div class="muted">${id} · ${totalStars(st)} sao · ${st.coins} xu</div></td><td>Khối ${g}</td>
+    return`<tr><td><b>${esc(n)}</b><div class="muted">${id} · ${totalStars(st)} sao · ${st.coins} xu${o.cloud&&o.ph&&o.ph[id]?` · PH: ${esc(o.ph[id])}`:''}</div></td><td>Khối ${g}</td>
      <td><select aria-label="Lớp của ${esc(n)}" onchange="qlChuyen('${id}',this.value)"><option value="">Chưa xếp lớp</option>${cung.map(x=>`<option value="${x.id}" ${l&&l.id===x.id?'selected':''}>${esc(x.ten)}</option>`).join('')}</select></td><td>${tj}</td></tr>`}).join('');
   const chuaGoi=LOP.filter(l=>!l.tj.on);
   return`<div class="grid">
@@ -129,11 +130,11 @@ function viewQL(){
     <span class="muted">${HS0.length} học sinh</span></div>
    <div class="tablewrap"><table><tr><th>Học sinh</th><th>Khối</th><th>Lớp</th><th>Toán Jenny</th></tr>${rowsH}</table></div>
    ${HS0.length>HS.length?`<div style="margin-top:8px"><button class="btn sm" onclick="qlMax+=20;render()">Hiện thêm (còn ${HS0.length-HS.length})</button></div>`:''}
-   <form class="task" onsubmit="qlTaoHS(event)" style="margin-top:14px"><b>Thêm học sinh</b><div class="row" style="gap:8px;margin-top:8px"><input id="nhTen" placeholder="Họ và tên" aria-label="Họ và tên" style="flex:1;min-width:160px" maxlength="40"><select id="nhLop" aria-label="Xếp vào lớp">${LOP.map(l=>`<option value="${l.id}">Lớp ${esc(l.ten)}</option>`).join('')}</select><button class="btn pri">Tạo tài khoản</button></div><div class="muted" style="margin-top:6px">Tên đăng nhập tự tạo, mật khẩu mặc định jenny123. Trẻ không cần email.</div></form></section>
+   <form class="task" onsubmit="qlTaoHS(event)" style="margin-top:14px"><b>Thêm học sinh</b><div class="row" style="gap:8px;margin-top:8px"><input id="nhTen" placeholder="Họ và tên" aria-label="Họ và tên" style="flex:1;min-width:160px" maxlength="40">${o.cloud?`<input id="nhTk" placeholder="Tên đăng nhập" aria-label="Tên đăng nhập" style="width:140px" autocapitalize="off" spellcheck="false" maxlength="24"><input id="nhPw" value="jenny123" aria-label="Mật khẩu" style="width:110px" maxlength="30">`:''}<select id="nhLop" aria-label="Xếp vào lớp">${LOP.map(l=>`<option value="${l.id}">Lớp ${esc(l.ten)}</option>`).join('')}</select><button class="btn pri">Tạo tài khoản</button></div><div class="muted" style="margin-top:6px">${o.cloud?'Tên đăng nhập: chữ thường không dấu, số, dấu chấm (bỏ trống thì app tự tạo). Mật khẩu ít nhất 6 kí tự. Trẻ không cần email.':'Tên đăng nhập tự tạo, mật khẩu mặc định jenny123. Trẻ không cần email.'}</div></form>${o.cloud?qlFormPH(o):''}</section>
 
   <div class="grid gpair">
-   <section class="card"><h2>Giáo viên</h2>${o.gv.map(g=>{const ls=o.lop.filter(l=>l.gv.includes(g.id));return`<div class="task"><b>${esc(g.ten)}</b><div class="row" style="gap:6px;margin-top:6px">${ls.length?ls.map(l=>`<span class="pill">${esc(l.ten)}</span>`).join(''):'<span class="muted">Chưa có lớp</span>'}</div></div>`}).join('')}
-    <form class="row" onsubmit="qlTaoGV(event)" style="gap:8px;margin-top:12px"><input id="ngTen" placeholder="Tên giáo viên, ví dụ Cô Lan" aria-label="Tên giáo viên" style="flex:1;min-width:150px" maxlength="30"><button class="btn">Thêm giáo viên</button></form></section>
+   <section class="card"><h2>Giáo viên</h2>${o.gv.map(g=>{const ls=o.lop.filter(l=>l.gv.includes(g.id));return`<div class="task"><b>${esc(g.ten)}</b>${o.cloud&&g.tk?` <span class="muted">· ${esc(g.tk)}</span>`:''}<div class="row" style="gap:6px;margin-top:6px">${ls.length?ls.map(l=>`<span class="pill">${esc(l.ten)}</span>`).join(''):'<span class="muted">Chưa có lớp</span>'}</div></div>`}).join('')}
+    <form class="row" onsubmit="qlTaoGV(event)" style="gap:8px;margin-top:12px"><input id="ngTen" placeholder="Tên giáo viên, ví dụ Cô Lan" aria-label="Tên giáo viên" style="flex:1;min-width:150px" maxlength="30">${o.cloud?`<input id="ngTk" placeholder="Tên đăng nhập" aria-label="Tên đăng nhập giáo viên" style="width:140px" autocapitalize="off" spellcheck="false" maxlength="24"><input id="ngPw" placeholder="Mật khẩu" aria-label="Mật khẩu giáo viên" style="width:120px" maxlength="30">`:''}<button class="btn">Thêm giáo viên</button></form></section>
    <section class="card"><h2>Nhật ký thao tác</h2>${o.nk.length?`<div class="log" style="max-height:260px">${o.nk.slice(-30).reverse().map(x=>`Ngày ${x.d} · ${esc(x.ai||'')} · ${esc(x.t)}`).join('\n')}</div>`:'<p class="muted" style="margin:6px 0 0">Chưa có thao tác nào.</p>'}
     <p class="muted" style="margin:10px 0 0">Không xóa hẳn: em chưa xếp lớp vẫn giữ tài khoản và dữ liệu.</p></section>
   </div>
@@ -141,6 +142,8 @@ function viewQL(){
   </div>`;
 }
 window.viewQL=viewQL;
+function qlFormPH(o){const hs=STUDENTS.filter(x=>!(o.ph||{})[x[0]]);return`<form class="task" onsubmit="qlTaoPH(event)" style="margin-top:10px"><b>Tạo tài khoản phụ huynh</b><div class="row" style="gap:8px;margin-top:8px"><select id="phHs" aria-label="Con" onchange="document.getElementById('phTk').value='ph.'+this.value">${hs.map(x=>`<option value="${x[0]}">${esc(x[1])} (${x[0]})</option>`).join('')}</select><input id="phTk" value="${hs[0]?'ph.'+hs[0][0]:''}" aria-label="Tên đăng nhập phụ huynh" style="width:150px" autocapitalize="off" spellcheck="false" maxlength="28"><input id="phPw" value="jenny123" aria-label="Mật khẩu phụ huynh" style="width:110px" maxlength="30"><button class="btn" ${hs.length?'':'disabled'}>Tạo</button></div><div class="muted" style="margin-top:6px">Phụ huynh đăng nhập ở trang giáo viên &amp; phụ huynh, chỉ xem được con mình.</div></form>`}
+window.qlFormPH=qlFormPH;
 {const _p=viewPH;viewPH=function(){if(role==='ql'){orgHeal();return viewQL()}return _p.apply(this,arguments)}}
 {const _h=header;header=function(){_h();try{const t=document.getElementById('tabs');if(!t.querySelector('[data-ql]'))t.insertAdjacentHTML('beforeend',`<button data-ql class="${role==='ql'?'on':''}" aria-pressed="${role==='ql'}" onclick="setRole('ql')">Quản lý</button>`);
   document.getElementById('whoBox').hidden=role==='gv'||role==='ql';
