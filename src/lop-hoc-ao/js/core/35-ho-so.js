@@ -6,6 +6,7 @@ const HS_AX=[{k:'so',n:'Số',f:'Số'},{k:'pt',n:'Phép tính',f:'Phép tính'}
 const HS_AXN=Object.fromEntries(HS_AX.map(a=>[a.k,a.f]));
 /* gắn dạng bài vào trục: luật theo từ khoá (thứ tự quan trọng) */
 const HS_RULES=[
+ ['so',/quy luật lặp/], /* quy luật lặp hình đồ vật (Toán Jenny Buổi 1) là tư duy số, không phải Hình học (sửa 24/10/2026) */
  ['tk',/kiểm đếm|số liệu|biểu đồ|thống kê|xác suất|khả năng|chắc chắn|có thể|không thể|phân loại|sự kiện|lặp lại|ghi chép/],
  ['lv',/lời văn|bài toán|giải toán|toán có lời|toán chuyển động|hai bước|ba bước/],
  ['hh',/góc/],
@@ -31,7 +32,13 @@ const hsKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${S
 const hsDayDate=day=>{const d=new Date(HS_OPEN);d.setDate(d.getDate()+Math.max(1,day||1)-1);return d};
 function hsToday(){return typeof dayNow==='function'?new Date():hsDayDate(S.day)}
 const hsTodayKey=()=>hsKey(hsToday());
-function hsHeal(st,id){if(!st||st.grade>5)return;if(!st.dd)st.dd={};if(!st.sk)st.sk={};if(!st.skm)st.skm={};
+/* gắn lại mạch cho dạng bài đã ghi khi luật đổi; bỏ mạch không còn dạng bài nào khỏi ảnh chụp tháng */
+const HS_AXV=2;
+function hsAxFix(st){if(!st||!st.sk||st.axv===HS_AXV)return;st.axv=HS_AXV;let doi=false;
+  Object.entries(st.sk).forEach(([kd,e])=>{const a=hsAxOf(kd,'');if(a&&a!==e.ax){e.ax=a;doi=true}});if(!doi)return;
+  try{const sc=hsScores(st),ms=Object.keys(st.skm||{}).sort(),cuoi=ms[ms.length-1];
+    ms.forEach(k=>{const m=st.skm[k];HS_AX.forEach(a=>{if(!sc[a.k].ok)delete m[a.k];else if(k===cuoi)m[a.k]=sc[a.k].s})})}catch(e){}}
+function hsHeal(st,id){if(!st||st.grade>5)return;if(!st.dd)st.dd={};if(!st.sk)st.sk={};if(!st.skm)st.skm={};hsAxFix(st);
   if(!st.ddv){st.ddv=1;try{(S.events||[]).forEach(e=>{if(e.actor.account.name!==id||!e.verb.id.endsWith('answered'))return;const k=hsKey(hsDayDate(evDay(e))),o=st.dd[k]||(st.dd[k]={n:0,c:0,sec:0});o.n++;if(e.result.success)o.c++;o.sec+=Math.min(180,parseInt(String(e.result.duration||'PT0S').slice(2))||0)})}catch(e){}}}
 {const _h=healAll;healAll=function(){_h.apply(this,arguments);try{Object.entries(S.st||{}).forEach(([id,st])=>hsHeal(st,id))}catch(e){}}}
 

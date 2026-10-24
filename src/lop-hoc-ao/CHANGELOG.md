@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Sửa: Sức mạnh Toán hiện điểm Hình học sai (lớp 1)
+- Nguyên nhân: Toán Jenny lớp 1 Buổi 1 "Quy luật xếp hình" có dạng "Quy luật lặp 2 hình / 3 hình" (táo, sao, bóng…). Luật gắn mạch thấy chữ "hình" nên tính vào **Hình học**. Học sinh mới học Bài 1–2 (như Đặng Phương Dung) vì thế có điểm Hình học dù chưa học hình.
+- Sửa (`35-ho-so.js`): dạng "Quy luật lặp…" tính vào mạch **Số**. "Quy luật xếp hình" ở Bài 8 (xếp hình vuông, tròn…) vẫn là Hình học.
+- Dữ liệu cũ tự sửa: khi mở hồ sơ, các dạng bài được gắn lại mạch đúng; mạch chưa đủ 5 câu thì bỏ khỏi biểu đồ (hiện "chưa đủ"/"chưa học"). Học sinh mở app là lưu bản đã sửa lên máy chủ.
+
 ## 24/10/2026 — Bấm logo Clb để về trang chủ
 - Thanh trên cùng: bấm (hoặc chạm) logo "JennyClub / Clb Học Toán cùng Jenny" là về trang chủ (Bản đồ), từ bất cứ tab nào (Cửa hàng, Nhà em, Sổ lỗi sai…). Trang giáo viên, phụ huynh, quản lý: về màn đầu của vai đó.
 - Trong màn chơi, thanh trên được ẩn nên không lỡ tay thoát. Nếu đang có bài về nhà bắt buộc thì vẫn hiện màn bài về nhà.

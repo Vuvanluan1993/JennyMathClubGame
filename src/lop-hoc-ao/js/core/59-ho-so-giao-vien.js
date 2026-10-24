@@ -34,7 +34,7 @@ function gvGoiY(id,st,al){const out=[],T=gvTong(st),cuoi=gvCuoi(id,st),sc=hsScor
   return out}
 /* điểm mạch theo cửa sổ tháng: trung bình các ảnh chụp tháng (st.skm) trong n tháng gần nhất */
 function gvThang(n){const d=hsToday(),out=[];for(let i=0;i<n;i++){const x=new Date(d.getFullYear(),d.getMonth()-i,1);out.push(hsMonth(x))}return out}
-function gvMach(st,n){const M=gvThang(n),o={};HS_AX.forEach(a=>{const v=M.map(m=>(st.skm||{})[m]).filter(x=>x&&x[a.k]!=null).map(x=>x[a.k]);if(v.length)o[a.k]=Math.round(v.reduce((p,q)=>p+q,0)/v.length)});return o}
+function gvMach(st,n){try{hsAxFix(st)}catch(e){}const M=gvThang(n),o={};HS_AX.forEach(a=>{const v=M.map(m=>(st.skm||{})[m]).filter(x=>x&&x[a.k]!=null).map(x=>x[a.k]);if(v.length)o[a.k]=Math.round(v.reduce((p,q)=>p+q,0)/v.length)});return o}
 function gvTBKhoi(g){const o={},c={};STUDENTS.filter(s=>s[2]===g).forEach(([id])=>{const st=S.st[id];if(!st)return;const m=gvMach(st,3);Object.entries(m).forEach(([k,v])=>{o[k]=(o[k]||0)+v;c[k]=(c[k]||0)+1})});Object.keys(o).forEach(k=>o[k]=Math.round(o[k]/c[k]));return{v:o,n:STUDENTS.filter(s=>s[2]===g).length}}
 /* biểu đồ mạng nhện (SVG, theo màu của trang); L = [{v:{trục:điểm}, c:lớp CSS}] */
 function gvRadar(L,lab){const cx=160,cy=140,R=92,n=HS_AX.length,pt=(i,v)=>{const a=(-90+360/n*i)*Math.PI/180;return[cx+Math.cos(a)*R*v/100,cy+Math.sin(a)*R*v/100]};
