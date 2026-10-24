@@ -8091,7 +8091,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 17:52';
+const APP_VER='24/10 · 17:58';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -12979,12 +12979,14 @@ if(typeof orgHeal==='function'){const _h=orgHeal;orgHeal=function(){const r=_h.a
 {const _t=window.qlTaoHS;window.qlTaoHS=async function(){const truoc=new Set(Object.keys(S.st));const r=await _t.apply(this,arguments);try{const x=(S.org&&S.org.xoa)||[];Object.keys(S.st).filter(k=>!truoc.has(k)).forEach(k=>{const i=x.indexOf(k);if(i>=0)x.splice(i,1)})}catch(e){}return r}}
 /* nút Xoá trong bảng Sửa học sinh */
 {const _s=window.qlSua;window.qlSua=function(id){const r=_s.apply(this,arguments);try{const f=document.querySelector('#qlsua form');if(f&&!f.querySelector('.qlxoa')){
-  f.insertAdjacentHTML('beforeend',`<div class="qlxoa"><span class="muted">Không học nữa? Dùng Nghỉ học (Năm học · Lên lớp) để giữ dữ liệu.</span><button type="button" class="btn sm qlxbtn" onclick="qlXoaHS(['${id}'])">🗑 Xoá học sinh</button></div>`)}}catch(x){}return r}}
+  const bt=f.querySelector('.qsbtn');if(bt)bt.insertAdjacentHTML('afterbegin',`<button type="button" class="btn qlxbtn qlxoa" title="Xoá hẳn tài khoản. Em chỉ tạm nghỉ thì dùng Nghỉ học (Năm học · Lên lớp) để giữ dữ liệu." onclick="qlXoaHS(['${id}'])">🗑 Xoá học sinh</button>`);else f.insertAdjacentHTML('beforeend',`<div class="qsbtn"><button type="button" class="btn qlxbtn qlxoa" onclick="qlXoaHS(['${id}'])">🗑 Xoá học sinh</button></div>`)}}catch(x){}return r}}
 /* nút Xoá ở thanh chọn nhiều em */
-{const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='hs')
+{const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&(qlTrang==='hs'||qlTrang==='lopct'))r=r.replace(/(<button type="button" class="btn sm" onclick="qlSua\('([a-z0-9._-]+)'\)">✎ Sửa<\/button>)/g,(m,b,id)=>`${b}<button type="button" class="btn sm qlxbtn qlx1" title="Xoá học sinh" aria-label="Xoá học sinh" onclick="qlXoaHS(['${id}'])">🗑 Xoá</button>`);
+ if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='hs')
   r=r.replace(`<button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`,`<button type="button" class="btn sm qlxbtn" onclick="qlXoaHS(Object.keys(qlChon).filter(k=>qlChon[k]))">🗑 Xoá</button><button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`);return r}}
 document.head.insertAdjacentHTML('beforeend',`<style>
-.qlxoa{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed #C9D1E6}.qlxoa .muted{font-size:12.5px;flex:1 1 200px}
+.qlx1{margin-left:6px}
+.gdbox{max-height:calc(100vh - 20px)!important;overflow:auto}.gdbox .gdhd{position:sticky;top:0;z-index:3}.gdbox .qsbtn{position:sticky;bottom:0;z-index:2;background:#fff;margin:8px -14px -14px;padding:10px 14px;border-top:1px solid #E8EAED}
 body.px .btn.qlxbtn,.btn.qlxbtn{color:#B3261E!important;background:#fff!important}
 </style>`);
 })();
