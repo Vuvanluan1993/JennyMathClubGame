@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Sửa hiển thị trên điện thoại (trang Giáo viên, Phụ huynh, Quản lý)
+- Nguyên nhân chính: 3 trang thiếu khung trang (`<!doctype>` + `meta viewport`) nên điện thoại vẽ như màn 980px rồi bóp lại → chữ bị chèn, cột dồn. `tools/_teacher.py` thêm khung trang như bản học sinh.
+- Bảng trên điện thoại (≤640px) chuyển thành thẻ: ô đầu là tiêu đề, các ô sau "NHÃN … giá trị" (Tiến độ từng em, Tiến độ SGK, Dạng bài, Sổ lỗi sai, Bài về nhà, Lớp học, Học sinh…).
+- Thanh 4 thẻ hồ sơ thành lưới 2 × 2; thanh tài khoản (tên · Đổi mật khẩu · Đăng xuất) gọn hơn.
+- Đã quét tự động ở khổ 320/360/390 (giả lập điện thoại), chế độ tối và 1280px: không tràn, không chữ bị bóp.
+
 ## 24/10/2026 — Tách 3 trang: Giáo viên, Phụ huynh, Quản lý
 - `tools/_teacher.py` tạo 3 trang riêng: `games/lop-hoc-ao/giao-vien/` (tài khoản giáo viên; quản lý cũng vào được để dạy), `phu-huynh/` (chỉ phụ huynh), `quan-ly/` (chỉ quản lý, có "Thiết lập lần đầu"). Mỗi trang chỉ một vai, không còn thanh chọn vai.
 - Đăng nhập sai trang → báo "Đây là tài khoản …" kèm link đúng trang. Mỗi trang vẫn có "Xem bản demo" của vai đó (mật khẩu `giaovien123`).

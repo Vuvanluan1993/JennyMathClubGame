@@ -139,5 +139,5 @@ async function fbQLTaoPH(e){e.preventDefault();const o=S.org,con=document.getEle
 document.head.insertAdjacentHTML('beforeend',`<style>
 body.cloud .demo{display:none!important}
 body[class*="trang-"] #tabs{display:none!important}body.trang-gv #whoBox,body.trang-ql #whoBox{display:none!important}
-.fbme{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.fbst{font-size:12px}.fbst.loi{color:var(--coral)}
+.fbme{display:flex;gap:6px;align-items:center;flex-wrap:wrap}@media(max-width:520px){.fbme{width:100%;order:5}.fbst{display:none}.fbme .btn{padding:6px 10px}}.fbst{font-size:12px}.fbst.loi{color:var(--coral)}
 </style>`);

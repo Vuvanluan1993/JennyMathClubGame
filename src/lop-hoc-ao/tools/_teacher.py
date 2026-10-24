@@ -50,6 +50,10 @@ base=t
 for TR,TEN,DIR,VAI in [('gv','Giáo viên','giao-vien',['gv','ql']),('ph','Phụ huynh','phu-huynh',['ph']),('ql','Quản lý trung tâm','quan-ly',['ql'])]:
     g=GATE.replace('__H__',H).replace('__TRANG__',TR).replace('__VAI__',json.dumps(VAI)).replace('__TIEUDE__',TEN)
     t=base.replace(boot,g).replace('<title>','<meta name="robots" content="noindex"><title>',1)
+    # khung trang đầy đủ (doctype + viewport) để điện thoại hiển thị đúng khổ màn hình
+    t='<!doctype html>\n<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'+t
+    i=t.find('</style>')+len('</style>')
+    t=t[:i]+'\n</head>\n<body class="px">\n'+t[i:]+'\n</body></html>\n'
     t=t.replace('<title>Lớp học ảo Jenny','<title>'+TEN+' · Lớp học ảo Jenny',1)
     out=os.path.join(ROOT,'..','..','games','lop-hoc-ao',DIR);os.makedirs(out,exist_ok=True)
     open(os.path.join(out,'index.html'),'w',encoding='utf-8').write(t)
