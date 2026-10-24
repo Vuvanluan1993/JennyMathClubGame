@@ -6,7 +6,7 @@
 let LANG='vi';try{LANG=localStorage.getItem('jennyLang')==='en'?'en':'vi'}catch(e){}
 const I18N={
  'Bản đồ':'Map','Toán Jenny':'Jenny Math','Luyện lỗi':'Fix mistakes','Sưu tập':'Collection','Hồ sơ':'Profile','← Bản đồ':'← Map',
- 'Học sinh':'Student','Giáo viên':'Teacher','Phụ huynh':'Parent','Đăng xuất':'Log out','Nghe Jenny':'Listen to Jenny','Đang học':'You are here','Trùm':'Boss',
+ 'Học sinh':'Student','Giáo viên':'Teacher','Phụ huynh':'Parent','Quản lý':'Admin','Đăng xuất':'Log out','Nghe Jenny':'Listen to Jenny','Đang học':'You are here','Trùm':'Boss',
  'Tiếp tục':'Continue','Thử lại':'Try again','Chơi lại':'Play again','Về đảo':'Back to island','Kiểm tra':'Check','Nộp':'Submit','Đúng':'True','Sai':'False','Xếp lại':'Reset',
  'Tuyệt vời!':'Excellent!','Giỏi quá!':'Well done!','Đúng rồi!':'Correct!','Qua màn!':'Level passed!','Mình chơi lại nhé!':"Let's try again!",'Hết tim rồi!':'Out of hearts!','Hết giờ!':"Time's up!",'Kỷ lục mới!':'New record!',
  'Chưa đúng, mất 1 tim.':'Not quite — you lost 1 heart.','Chưa đúng.':'Not quite.','Em nhìn kỹ hình và thử lại nhé.':'Look carefully and try again.','Xem kết quả':'See results',
@@ -32,7 +32,7 @@ const I18N={
  'Trả lời nhanh để kéo dây về phía Jenny':"Answer quickly to pull the rope to Jenny's side",'Trả lời đúng để tưới cây, cây lớn dần tới khi ra quả, 8 lần tưới':'Answer correctly to water the tree until it bears fruit, 8 waterings',
  'Chọn lá súng có đáp án đúng, 8 hàng':'Jump onto the lily pad with the right answer, 8 rows','Thả mồi, cá cắn câu thì trả lời đúng để kéo lên, 8 con cá':'Cast the bait; when a fish bites, answer correctly to reel it in, 8 fish',
  'Cô giáo mở buổi nào thì em học buổi đó. Mỗi buổi có video, ví dụ và 3 màn, được tới 9 sao.':'Do the sessions your teacher opens. Each session has a video, examples and 3 levels, worth up to 9 stars.',
- 'Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu liền là dạng đó ra khỏi sổ, được +5 xu. Luyện lỗi không mất tim.':'Each round practises 3 question types, 2 questions each with new numbers. Get both right in a row to clear that type from the book and earn +5 coins. No hearts are lost when fixing mistakes.',
+ 'Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu liền là dạng đó ra khỏi sổ, được +5 xu. Luyện lỗi không mất tim.':'Each round practises 3 question types, 2 questions each with new numbers. Get both right in a row to clear that type from the book and earn +5 coins. No hearts are lost when fixing mistakes.','Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu liền là dạng đó ra khỏi sổ, được +5 xu. Luyện lỗi không mất tim. Lỗi cô chưa giao sẽ tự bỏ sau 7 ngày.':'Each round practises 3 question types, 2 questions each with new numbers. Get both right in a row to clear that type from the book and earn +5 coins. No hearts are lost when fixing mistakes. Mistakes your teacher has not assigned are removed after 7 days.',
  'Em chơi thêm các đảo nhé! Khi đủ bài, Jenny sẽ vẽ Sức mạnh Toán cho em.':'Play more islands! When you have done enough, Jenny will draw your Math power chart.',
  'Tìm khung đúng số lượng':'Find the box with the right amount','Đếm số lượng':'Count how many','Điền số theo thứ tự':'Fill in numbers in order',
  'T2':'Mon','T3':'Tue','T4':'Wed','T5':'Thu','T6':'Fri','T7':'Sat','CN':'Sun'};
@@ -44,7 +44,7 @@ const I18N_RE=[
  [/^Chào (.+)!$/,'Hi $1!'],[/^(.+) · Lớp (\d+)$/,'$1 · Grade $2'],[/^Lớp (\d+)$/,'Grade $1'],[/^Bản (\d+\/\d+ · \d+:\d+)$/,'Build $1'],
  [/^Màn (\d+)$/,'Level $1'],[/^Trang (\d+)\/(\d+)$/,'Page $1/$2'],[/^Khoảng (\d+) câu · (\d+) tim$/,'About $1 questions · $2 hearts'],[/^(\d+)\/(\d+) câu đúng · còn (\d+) tim(.*)$/,'$1/$2 correct · $3 hearts left$4'],[/^(\d+)\/(\d+) câu đúng(.*)$/,'$1/$2 correct$3'],
  [/^\+(\d+) xu$/,'+$1 coins'],[/^\+(\d+) sao$/,'+$1 star'],[/^(\d+) dạng$/,'$1 types'],[/^(\d+)\/(\d+) dấu$/,'$1/$2 stamps'],[/^(\d+) ngày$/,'$1 days'],
- [/^Em vừa sai (\d+) câu\. Luyện lại một lượt để mở màn tiếp theo\.$/,'You missed $1 question(s). Practise them once to unlock the next level.'],[/^Em vừa sai (\d+) câu\. Luyện lại một lượt để chơi tiếp\.$/,'You missed $1 question(s). Practise them once to keep playing.'],
+ [/^Em vừa sai (\d+) câu\. Em có thể luyện lại ngay \(không bắt buộc\)\.$/,'You missed $1 question(s). You can practise them now (optional).'],[/^Luyện lại câu sai \((\d+)\) ▶$/,'Practise mistakes ($1) ▶'],[/^Em vừa sai (\d+) câu\. Luyện lại một lượt để mở màn tiếp theo\.$/,'You missed $1 question(s). Practise them once to unlock the next level.'],[/^Em vừa sai (\d+) câu\. Luyện lại một lượt để chơi tiếp\.$/,'You missed $1 question(s). Practise them once to keep playing.'],
  [/^Luyện lỗi \((\d+)\) ▶$/,'Fix mistakes ($1) ▶'],[/^Lần trước em (chọn|ghi) (.+), chưa đúng\. Em làm lại nhé!$/,'Last time you answered $2 — not quite. Try again!'],
  [/^Bài (\d+) · Tiết (\d+)$/,'Lesson $1 · Period $2'],[/^(\d+) trang · Jenny đọc to · không bắt buộc$/,'$1 pages · Jenny reads aloud · optional'],
  [/^Năm học (.+) · mỗi ô là 1 ngày em vào làm bài$/,'School year $1 · each square is a day you practised'],[/^(.+): em chưa làm bài$/,'$1: no practice yet'],[/^(.+): em làm (\d+) câu$/,'$1: you did $2 questions'],

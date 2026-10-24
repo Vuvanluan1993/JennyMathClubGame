@@ -47,6 +47,10 @@ async function doLogin(e){e.preventDefault();const u=document.getElementById('lg
   bootUser(u,n)}
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 document.getElementById('lgForm').addEventListener('submit',doLogin);
+{const M='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>',A='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg>';
+ const i=document.getElementById('lgP'),w=document.createElement('span');w.className='pwbox';i.parentNode.insertBefore(w,i);w.appendChild(i);const b=document.createElement('button');b.type='button';b.className='pweye';b.setAttribute('aria-label','Hiện mật khẩu');b.innerHTML=M;
+ b.onclick=()=>{const h=i.type==='password';i.type=h?'text':'password';b.innerHTML=h?A:M;b.setAttribute('aria-label',h?'Ẩn mật khẩu':'Hiện mật khẩu');i.focus()};w.appendChild(b);
+ document.head.insertAdjacentHTML('beforeend','<style>.pwbox{position:relative;display:block}.pwbox input{padding-right:48px!important;width:100%;box-sizing:border-box}.pweye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:40px;height:36px;border:0;background:transparent;cursor:pointer;display:grid;place-items:center;color:var(--ink,#1F2A5A);padding:0}</style>')}
 {let last=null;try{last=localStorage.getItem('jennyHS_last')}catch(e){}if(last&&ACC[last])bootUser(last);else{document.getElementById('lgU').focus();
   /* đã đăng nhập máy chủ từ trước (ghi nhớ) thì vào thẳng */
   fbInit().then(()=>{const off=FB.auth.onAuthStateChanged(async u=>{off();if(!u||CLOUD)return;try{await fbNapMe(u);if(CLOUD.me.role!=='hs'){CLOUD=null;return}await fbHsBoot();document.getElementById('login').hidden=true;document.body.classList.remove('locked');go({k:'home'})}catch(e){CLOUD=null}})}).catch(()=>{})}}

@@ -27,6 +27,11 @@ document.body.insertAdjacentHTML('afterbegin',`<div id="gvGate" class="gvgate"><
  <p class="gvnote">Trang khác: ${[['gv','Giáo viên','giao-vien'],['ph','Phụ huynh','phu-huynh'],['ql','Quản lý','quan-ly']].filter(x=>x[0]!==TRANG).map(x=>`<a href="../${x[2]}/">${x[1]}</a>`).join(' · ')} · <a href="../">Học sinh</a></p></div></div>`);
 const TRANG_TEN={gv:'giáo viên',ph:'phụ huynh',ql:'quản lý',hs:'học sinh'},TRANG_LINK={gv:'../giao-vien/',ph:'../phu-huynh/',ql:'../quan-ly/',hs:'../'};
 function gvSaiTrang(m){const r=CLOUD.me.role;m.innerHTML=`Đây là tài khoản ${TRANG_TEN[r]||r}. Hãy vào <a href="${TRANG_LINK[r]||'../'}">trang ${TRANG_TEN[r]||''}</a>.`}
+const PW_MAT='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>',PW_AN='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg>';
+function pwMat(root){(root||document).querySelectorAll('input[type=password]').forEach(i=>{if(i.parentElement.classList.contains('pwbox'))return;const w=document.createElement('span');w.className='pwbox';i.parentNode.insertBefore(w,i);w.appendChild(i);
+ const b=document.createElement('button');b.type='button';b.className='pweye';b.setAttribute('aria-label','Hiện mật khẩu');b.innerHTML=PW_MAT;
+ b.onclick=()=>{const hien=i.type==='password';i.type=hien?'text':'password';b.innerHTML=hien?PW_AN:PW_MAT;b.setAttribute('aria-label',hien?'Ẩn mật khẩu':'Hiện mật khẩu');i.focus()};w.appendChild(b)})}
+pwMat(document.getElementById('gvGate'));
 async function gvCloudOpen(){await fbGvBoot();const g=document.getElementById('gvGate');if(g)g.remove();document.body.classList.remove('locked');go({k:'home'})}
 async function gvCloudLogin(e){e.preventDefault();const m=document.getElementById('gvMsg2');m.textContent='Đang đăng nhập…';
  try{await fbDangNhap(document.getElementById('gvU').value.trim().toLowerCase(),document.getElementById('gvPw').value,true);
@@ -39,7 +44,14 @@ document.head.insertAdjacentHTML('beforeend',`<style>.gvgate{position:fixed;inse
 .gvcard{width:min(400px,100%);max-height:calc(100vh - 32px);overflow:auto;background:#fff;color:#1F2A5A;padding:18px;box-shadow:var(--f2),0 6px 0 0 #1F2A5A;display:flex;flex-direction:column;gap:8px}
 .gvhd{display:flex;gap:10px;align-items:center}.gvhd h1{margin:0;font-size:28px}.gvhd p{margin:0;font-size:13px;color:#3D4A70}
 .gvf{display:flex;flex-direction:column;gap:8px}.gvd{border-top:1px solid #DDE3F0;padding-top:8px}.gvd summary{cursor:pointer;font-size:14px;color:#1F2A5A;font-weight:600}.gvd .gvf{margin-top:8px}
-.gvcard input{padding:10px;border:0;box-shadow:var(--f2);font:inherit;background:#fff;color:#1F2A5A}.gvmsg{color:#B8320F;margin:0;min-height:1em;font-size:14px}.gvnote{font-size:12px;color:#3D4A70;margin:0}
+.gvcard{color-scheme:light}
+.gvcard input{padding:10px!important;border:0!important;border-radius:0!important;box-shadow:var(--f2)!important;font:inherit!important;font-size:17px!important;background:#fff!important;color:#1F2A5A!important;caret-color:#1F2A5A;width:100%;box-sizing:border-box}
+.gvcard input:focus{outline:3px solid #FCB40C!important;outline-offset:1px}
+.gvcard label{color:#1F2A5A!important}.gvcard a{color:#0068B5!important}.gvcard .jav{background:#FFF4D6!important}
+.gvcard .gobtn{background:#0079C1!important;color:#fff!important}
+.pwbox{position:relative;display:block}.pwbox input{padding-right:48px!important}
+.pweye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:40px;height:36px;border:0;background:transparent;cursor:pointer;display:grid;place-items:center;color:#1F2A5A;padding:0}
+.pweye:focus-visible{outline:2px solid #0079C1}.gvmsg{color:#B8320F;margin:0;min-height:1em;font-size:14px}.gvnote{font-size:12px;color:#3D4A70;margin:0}
 body.locked{overflow:hidden}</style>`);
 document.body.classList.add('locked');
 {let ok=false;try{ok=sessionStorage.getItem('jennyGV_'+TRANG)==='1'}catch(e){}if(ok)gvOpen();else{render();setTimeout(()=>{const i=document.getElementById('gvU');if(i)i.focus()},50);

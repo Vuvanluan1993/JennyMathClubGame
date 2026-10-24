@@ -1,5 +1,15 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Màn đăng nhập dễ đọc + nút hiện mật khẩu
+- 3 trang Giáo viên/Phụ huynh/Quản lý: ô nhập luôn nền trắng chữ xanh đậm (trước bị nền tối khi máy để chế độ tối), viền vàng khi đang gõ, nút Đăng nhập xanh rõ.
+- Nút hình con mắt trong ô mật khẩu (cả app học sinh): bấm để hiện/ẩn mật khẩu.
+- Dịch nút "Quản lý" sang tiếng Anh (bài kiểm tra tiếng Anh còn 0 chuỗi sót).
+
+## 24/10/2026 — Luyện lỗi không bắt buộc; lỗi cô không giao tự bỏ sau 7 ngày
+- Bỏ chặn "luyện lỗi trước rồi mới chơi tiếp" (`46-bat-buoc-luyen-loi.js`). Màn kết thúc có lỗi: nút "Luyện lại câu sai (n)" — không bắt buộc.
+- Lỗi vẫn ghi vào Sổ lỗi sai. Cô giao "Luyện lỗi" (hồ sơ › Lỗi & bài về nhà) → bài về nhà bắt buộc như cũ.
+- `63-loi-tu-bo.js`: lỗi không nằm trong bài cô giao tự bỏ sau 7 ngày kể từ lần sai gần nhất; lỗi cô đã giao giữ tới khi em làm xong. Bảng Sổ lỗi sai của cô có cột "Tự bỏ sau" (x ngày / cô đã giao).
+
 ## 24/10/2026 — Sửa hiển thị trên điện thoại (trang Giáo viên, Phụ huynh, Quản lý)
 - Nguyên nhân chính: 3 trang thiếu khung trang (`<!doctype>` + `meta viewport`) nên điện thoại vẽ như màn 980px rồi bóp lại → chữ bị chèn, cột dồn. `tools/_teacher.py` thêm khung trang như bản học sinh.
 - Bảng trên điện thoại (≤640px) chuyển thành thẻ: ô đầu là tiêu đề, các ô sau "NHÃN … giá trị" (Tiến độ từng em, Tiến độ SGK, Dạng bài, Sổ lỗi sai, Bài về nhà, Lớp học, Học sinh…).

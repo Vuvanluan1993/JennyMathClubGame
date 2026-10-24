@@ -22,15 +22,16 @@ function startGateFix(){const st=S.st[sid],M=mist(st),keys=gateOf().filter(k=>M[
 /* làm hết một lượt luyện lỗi thì mở khoá */
 {const _e=endFix1;endFix1=function(){try{if(scr&&scr.fix&&!scr.lz){const st=S.st[sid],done=new Set(scr.qs.map(q=>q.key));st.gate=gateOf().filter(k=>!done.has(k))}}catch(e){}return _e.apply(this,arguments)}}
 /* chặn bắt đầu màn/trò khác khi còn lỗi chưa luyện */
-const gateWrap=f=>function(){if(gateOpen()){gateAsk();return}return f.apply(this,arguments)};
+/* 24/10/2026 (thầy chốt): luyện lỗi KHÔNG bắt buộc nữa — chỉ bắt buộc khi cô giao (bài về nhà). Giữ nút luyện lại tự chọn ở màn kết thúc. */
+const gateWrap=f=>function(){return f.apply(this,arguments)};
 startG1=gateWrap(startG1);startXG=gateWrap(startXG);startMini=gateWrap(startMini);startRace=gateWrap(startRace);
 try{if(typeof startJ1==='function')startJ1=gateWrap(startJ1)}catch(e){}
 /* màn hình kết thúc có lỗi: nút Luyện lỗi đứng đầu */
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(g&&(g.end)&&!g.fix&&gateOpen()){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');if(box&&!document.querySelector('.gatebtn')){const n=gateOf().length;
-  box.insertAdjacentHTML('afterbegin',`<div class="gatenote">${spr('book',18)} Em vừa sai ${n} câu. Luyện lại một lượt để mở màn tiếp theo.</div><button type="button" class="gobtn gatebtn" onclick="startGateFix()">Luyện lỗi (${n}) ▶</button>`)}}}catch(e){}return r}}
+  box.insertAdjacentHTML('afterbegin',`<div class="gatenote">${spr('book',18)} Em vừa sai ${n} câu. Em có thể luyện lại ngay (không bắt buộc).</div><button type="button" class="gobtn gatebtn" onclick="startGateFix()">Luyện lại câu sai (${n}) ▶</button>`)}}}catch(e){}return r}}
 /* trò chơi kết thúc (màn hình điểm của trò chơi): cũng hiện nút luyện lỗi */
 {const _r=render;render=function(){const r=_r.apply(this,arguments);try{const g=scr;if(g&&(g.k==='xg'||g.k==='mini')&&g.end&&gateOpen()){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');if(box&&!document.querySelector('.gatebtn')){const n=gateOf().length;
-  box.insertAdjacentHTML('afterbegin',`<div class="gatenote">${spr('book',18)} Em vừa sai ${n} câu. Luyện lại một lượt để chơi tiếp.</div><button type="button" class="gobtn gatebtn" onclick="startGateFix()">Luyện lỗi (${n}) ▶</button>`)}}}catch(e){}return r}}
+  box.insertAdjacentHTML('afterbegin',`<div class="gatenote">${spr('book',18)} Em vừa sai ${n} câu. Em có thể luyện lại ngay (không bắt buộc).</div><button type="button" class="gobtn gatebtn" onclick="startGateFix()">Luyện lại câu sai (${n}) ▶</button>`)}}}catch(e){}return r}}
 /* bản đồ: từ tab khác về thì về "Đang học" */
 {const _go=go;go=function(s){try{if(s&&s.k==='home'&&s.tab&&s.tab!=='map'){MAP_TI=null;MAP_ID=null}}catch(e){}return _go.apply(this,arguments)}}
 document.head.insertAdjacentHTML('beforeend',`<style>

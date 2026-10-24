@@ -2567,7 +2567,7 @@ function startFix1(){const M=Object.values(mist(S.st[sid])).sort((a,b)=>a.day-b.
   v1Said='';go({k:'game',g1:1,fix:1,id:M[0].id,lv:0,qs:M.flatMap(e=>[mk(e),mk(e)]),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,hp:0,fixed:0,t0:Date.now()})}
 function viewFix1(st){const M=Object.values(mist(st)).sort((a,b)=>b.n-a.n);
   return`<div class="grid"><section class="card"><div class="secthead"><h2>📒 Sổ lỗi sai</h2><span class="grow"></span><span class="pill ${M.length?'warn':'ok'}">${M.length} dạng</span></div>
-   ${M.length?`<p class="muted" style="margin:0 0 10px">Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu liền là dạng đó ra khỏi sổ, được +5 xu. Luyện lỗi không mất tim.</p><ul class="mlist">${M.slice(0,6).map(e=>`<li><span>${esc(e.label)}</span><span class="muted">sai ${e.n} lần${e.streak?` · đã đúng ${e.streak}/2`:''}</span></li>`).join('')}</ul><button class="gobtn" type="button" style="margin-top:12px" onclick="startFix1()">Luyện ngay</button>`:`<div class="row" style="flex-wrap:nowrap;gap:12px">${jenny(56)}<p class="muted" style="margin:0">Sổ đang trống. Câu nào em làm sai lần đầu sẽ được ghi vào đây để luyện lại.</p></div>`}</section></div>`}
+   ${M.length?`<p class="muted" style="margin:0 0 10px">Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu liền là dạng đó ra khỏi sổ, được +5 xu. Luyện lỗi không mất tim. Lỗi cô chưa giao sẽ tự bỏ sau 7 ngày.</p><ul class="mlist">${M.slice(0,6).map(e=>`<li><span>${esc(e.label)}</span><span class="muted">sai ${e.n} lần${e.streak?` · đã đúng ${e.streak}/2`:''}</span></li>`).join('')}</ul><button class="gobtn" type="button" style="margin-top:12px" onclick="startFix1()">Luyện ngay</button>`:`<div class="row" style="flex-wrap:nowrap;gap:12px">${jenny(56)}<p class="muted" style="margin:0">Sổ đang trống. Câu nào em làm sai lần đầu sẽ được ghi vào đây để luyện lại.</p></div>`}</section></div>`}
 /* ---- Toán Jenny lớp 1 (nội dung mẫu, sẽ thay bằng sách của Clb) ---- */
 const ANI=[['chick','gà con'],['fish','cá'],['cat','mèo'],['crab','cua'],['bug','bọ rùa']];
 const JQ1={
@@ -8021,7 +8021,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 07:51';
+const APP_VER='24/10 · 08:08';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -8305,15 +8305,16 @@ function startGateFix(){const st=S.st[sid],M=mist(st),keys=gateOf().filter(k=>M[
 /* làm hết một lượt luyện lỗi thì mở khoá */
 {const _e=endFix1;endFix1=function(){try{if(scr&&scr.fix&&!scr.lz){const st=S.st[sid],done=new Set(scr.qs.map(q=>q.key));st.gate=gateOf().filter(k=>!done.has(k))}}catch(e){}return _e.apply(this,arguments)}}
 /* chặn bắt đầu màn/trò khác khi còn lỗi chưa luyện */
-const gateWrap=f=>function(){if(gateOpen()){gateAsk();return}return f.apply(this,arguments)};
+/* 24/10/2026 (thầy chốt): luyện lỗi KHÔNG bắt buộc nữa — chỉ bắt buộc khi cô giao (bài về nhà). Giữ nút luyện lại tự chọn ở màn kết thúc. */
+const gateWrap=f=>function(){return f.apply(this,arguments)};
 startG1=gateWrap(startG1);startXG=gateWrap(startXG);startMini=gateWrap(startMini);startRace=gateWrap(startRace);
 try{if(typeof startJ1==='function')startJ1=gateWrap(startJ1)}catch(e){}
 /* màn hình kết thúc có lỗi: nút Luyện lỗi đứng đầu */
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(g&&(g.end)&&!g.fix&&gateOpen()){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');if(box&&!document.querySelector('.gatebtn')){const n=gateOf().length;
-  box.insertAdjacentHTML('afterbegin',`<div class="gatenote">${spr('book',18)} Em vừa sai ${n} câu. Luyện lại một lượt để mở màn tiếp theo.</div><button type="button" class="gobtn gatebtn" onclick="startGateFix()">Luyện lỗi (${n}) ▶</button>`)}}}catch(e){}return r}}
+  box.insertAdjacentHTML('afterbegin',`<div class="gatenote">${spr('book',18)} Em vừa sai ${n} câu. Em có thể luyện lại ngay (không bắt buộc).</div><button type="button" class="gobtn gatebtn" onclick="startGateFix()">Luyện lại câu sai (${n}) ▶</button>`)}}}catch(e){}return r}}
 /* trò chơi kết thúc (màn hình điểm của trò chơi): cũng hiện nút luyện lỗi */
 {const _r=render;render=function(){const r=_r.apply(this,arguments);try{const g=scr;if(g&&(g.k==='xg'||g.k==='mini')&&g.end&&gateOpen()){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');if(box&&!document.querySelector('.gatebtn')){const n=gateOf().length;
-  box.insertAdjacentHTML('afterbegin',`<div class="gatenote">${spr('book',18)} Em vừa sai ${n} câu. Luyện lại một lượt để chơi tiếp.</div><button type="button" class="gobtn gatebtn" onclick="startGateFix()">Luyện lỗi (${n}) ▶</button>`)}}}catch(e){}return r}}
+  box.insertAdjacentHTML('afterbegin',`<div class="gatenote">${spr('book',18)} Em vừa sai ${n} câu. Em có thể luyện lại ngay (không bắt buộc).</div><button type="button" class="gobtn gatebtn" onclick="startGateFix()">Luyện lại câu sai (${n}) ▶</button>`)}}}catch(e){}return r}}
 /* bản đồ: từ tab khác về thì về "Đang học" */
 {const _go=go;go=function(s){try{if(s&&s.k==='home'&&s.tab&&s.tab!=='map'){MAP_TI=null;MAP_ID=null}}catch(e){}return _go.apply(this,arguments)}}
 document.head.insertAdjacentHTML('beforeend',`<style>
@@ -8328,7 +8329,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 let LANG='vi';try{LANG=localStorage.getItem('jennyLang')==='en'?'en':'vi'}catch(e){}
 const I18N={
  'Bản đồ':'Map','Toán Jenny':'Jenny Math','Luyện lỗi':'Fix mistakes','Sưu tập':'Collection','Hồ sơ':'Profile','← Bản đồ':'← Map',
- 'Học sinh':'Student','Giáo viên':'Teacher','Phụ huynh':'Parent','Đăng xuất':'Log out','Nghe Jenny':'Listen to Jenny','Đang học':'You are here','Trùm':'Boss',
+ 'Học sinh':'Student','Giáo viên':'Teacher','Phụ huynh':'Parent','Quản lý':'Admin','Đăng xuất':'Log out','Nghe Jenny':'Listen to Jenny','Đang học':'You are here','Trùm':'Boss',
  'Tiếp tục':'Continue','Thử lại':'Try again','Chơi lại':'Play again','Về đảo':'Back to island','Kiểm tra':'Check','Nộp':'Submit','Đúng':'True','Sai':'False','Xếp lại':'Reset',
  'Tuyệt vời!':'Excellent!','Giỏi quá!':'Well done!','Đúng rồi!':'Correct!','Qua màn!':'Level passed!','Mình chơi lại nhé!':"Let's try again!",'Hết tim rồi!':'Out of hearts!','Hết giờ!':"Time's up!",'Kỷ lục mới!':'New record!',
  'Chưa đúng, mất 1 tim.':'Not quite — you lost 1 heart.','Chưa đúng.':'Not quite.','Em nhìn kỹ hình và thử lại nhé.':'Look carefully and try again.','Xem kết quả':'See results',
@@ -8354,7 +8355,7 @@ const I18N={
  'Trả lời nhanh để kéo dây về phía Jenny':"Answer quickly to pull the rope to Jenny's side",'Trả lời đúng để tưới cây, cây lớn dần tới khi ra quả, 8 lần tưới':'Answer correctly to water the tree until it bears fruit, 8 waterings',
  'Chọn lá súng có đáp án đúng, 8 hàng':'Jump onto the lily pad with the right answer, 8 rows','Thả mồi, cá cắn câu thì trả lời đúng để kéo lên, 8 con cá':'Cast the bait; when a fish bites, answer correctly to reel it in, 8 fish',
  'Cô giáo mở buổi nào thì em học buổi đó. Mỗi buổi có video, ví dụ và 3 màn, được tới 9 sao.':'Do the sessions your teacher opens. Each session has a video, examples and 3 levels, worth up to 9 stars.',
- 'Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu liền là dạng đó ra khỏi sổ, được +5 xu. Luyện lỗi không mất tim.':'Each round practises 3 question types, 2 questions each with new numbers. Get both right in a row to clear that type from the book and earn +5 coins. No hearts are lost when fixing mistakes.',
+ 'Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu liền là dạng đó ra khỏi sổ, được +5 xu. Luyện lỗi không mất tim.':'Each round practises 3 question types, 2 questions each with new numbers. Get both right in a row to clear that type from the book and earn +5 coins. No hearts are lost when fixing mistakes.','Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu liền là dạng đó ra khỏi sổ, được +5 xu. Luyện lỗi không mất tim. Lỗi cô chưa giao sẽ tự bỏ sau 7 ngày.':'Each round practises 3 question types, 2 questions each with new numbers. Get both right in a row to clear that type from the book and earn +5 coins. No hearts are lost when fixing mistakes. Mistakes your teacher has not assigned are removed after 7 days.',
  'Em chơi thêm các đảo nhé! Khi đủ bài, Jenny sẽ vẽ Sức mạnh Toán cho em.':'Play more islands! When you have done enough, Jenny will draw your Math power chart.',
  'Tìm khung đúng số lượng':'Find the box with the right amount','Đếm số lượng':'Count how many','Điền số theo thứ tự':'Fill in numbers in order',
  'T2':'Mon','T3':'Tue','T4':'Wed','T5':'Thu','T6':'Fri','T7':'Sat','CN':'Sun'};
@@ -8366,7 +8367,7 @@ const I18N_RE=[
  [/^Chào (.+)!$/,'Hi $1!'],[/^(.+) · Lớp (\d+)$/,'$1 · Grade $2'],[/^Lớp (\d+)$/,'Grade $1'],[/^Bản (\d+\/\d+ · \d+:\d+)$/,'Build $1'],
  [/^Màn (\d+)$/,'Level $1'],[/^Trang (\d+)\/(\d+)$/,'Page $1/$2'],[/^Khoảng (\d+) câu · (\d+) tim$/,'About $1 questions · $2 hearts'],[/^(\d+)\/(\d+) câu đúng · còn (\d+) tim(.*)$/,'$1/$2 correct · $3 hearts left$4'],[/^(\d+)\/(\d+) câu đúng(.*)$/,'$1/$2 correct$3'],
  [/^\+(\d+) xu$/,'+$1 coins'],[/^\+(\d+) sao$/,'+$1 star'],[/^(\d+) dạng$/,'$1 types'],[/^(\d+)\/(\d+) dấu$/,'$1/$2 stamps'],[/^(\d+) ngày$/,'$1 days'],
- [/^Em vừa sai (\d+) câu\. Luyện lại một lượt để mở màn tiếp theo\.$/,'You missed $1 question(s). Practise them once to unlock the next level.'],[/^Em vừa sai (\d+) câu\. Luyện lại một lượt để chơi tiếp\.$/,'You missed $1 question(s). Practise them once to keep playing.'],
+ [/^Em vừa sai (\d+) câu\. Em có thể luyện lại ngay \(không bắt buộc\)\.$/,'You missed $1 question(s). You can practise them now (optional).'],[/^Luyện lại câu sai \((\d+)\) ▶$/,'Practise mistakes ($1) ▶'],[/^Em vừa sai (\d+) câu\. Luyện lại một lượt để mở màn tiếp theo\.$/,'You missed $1 question(s). Practise them once to unlock the next level.'],[/^Em vừa sai (\d+) câu\. Luyện lại một lượt để chơi tiếp\.$/,'You missed $1 question(s). Practise them once to keep playing.'],
  [/^Luyện lỗi \((\d+)\) ▶$/,'Fix mistakes ($1) ▶'],[/^Lần trước em (chọn|ghi) (.+), chưa đúng\. Em làm lại nhé!$/,'Last time you answered $2 — not quite. Try again!'],
  [/^Bài (\d+) · Tiết (\d+)$/,'Lesson $1 · Period $2'],[/^(\d+) trang · Jenny đọc to · không bắt buộc$/,'$1 pages · Jenny reads aloud · optional'],
  [/^Năm học (.+) · mỗi ô là 1 ngày em vào làm bài$/,'School year $1 · each square is a day you practised'],[/^(.+): em chưa làm bài$/,'$1: no practice yet'],[/^(.+): em làm (\d+) câu$/,'$1: you did $2 questions'],
@@ -11088,8 +11089,8 @@ function gvTabLoi(id,st,ph){
   const M=Object.entries(st.mist||{}).sort((a,b)=>b[1].n-a[1].n),A=asgMine(st),dang=A.find(a=>a.loai==='loi'&&!asgState(st,a).done),chon=scr.loiChon||[];
   const kq=(a,s)=>{if(a.loai==='loi')return s.done?'<span class="pill ok">Đã sửa xong</span>':`<span class="pill ${s.doing?'acc':'warn'}">còn ${s.con}/${a.keys.length} lỗi</span>`;
     const b=s.r.best;return s.done?`<span class="pill ${b.ok/b.n>=.8?'ok':'acc'}">${b.ok}/${b.n} đúng</span>`:s.chuaDat?`<span class="pill acc">chưa đạt ${b.ok}/${b.n}, làm lại</span>`:s.doing?'<span class="pill acc">đang làm</span>':'<span class="pill warn">chưa làm</span>'};
-  return`<section class="card"><h2>Sổ lỗi sai <span class="pill">${M.length} lỗi</span></h2><p class="muted" style="margin:4px 0 0">Mỗi lỗi cần đúng 2 lần liền mới ra khỏi sổ.</p>
-   ${M.length?`<div class="tablewrap"><table><tr>${ph?'':'<th></th>'}<th>Lỗi</th><th>Ở đảo</th><th>Sai</th><th>Đúng liền</th><th>Ghi ngày</th></tr>${M.map(([k,m])=>{const x=isl1(m.id);return`<tr>${ph?'':`<td><input type="checkbox" aria-label="Chọn lỗi" ${chon.includes(k)?'checked':''} ${dang?'disabled':''} onchange="gvChonLoi('${k}',this.checked)"></td>`}<td>${esc(m.label||'')}</td><td>${x?esc(x.title):''}</td><td><b>${m.n}</b> lần</td><td>${m.streak||0}/2</td><td>Ngày ${m.day}</td></tr>`}).join('')}</table></div>
+  return`<section class="card"><h2>Sổ lỗi sai <span class="pill">${M.length} lỗi</span></h2><p class="muted" style="margin:4px 0 0">Em tự luyện nếu muốn (không bắt buộc). Cô bấm giao thì thành bài về nhà bắt buộc. Lỗi cô không giao sẽ tự bỏ sau ${LOI_NGAY} ngày kể từ lần sai gần nhất.</p>
+   ${M.length?`<div class="tablewrap"><table><tr>${ph?'':'<th></th>'}<th>Lỗi</th><th>Ở đảo</th><th>Sai</th><th>Đúng liền</th><th>Tự bỏ sau</th></tr>${M.map(([k,m])=>{const x=isl1(m.id);return`<tr>${ph?'':`<td><input type="checkbox" aria-label="Chọn lỗi" ${chon.includes(k)?'checked':''} ${dang?'disabled':''} onchange="gvChonLoi('${k}',this.checked)"></td>`}<td>${esc(m.label||'')}</td><td>${x?esc(x.title):''}</td><td><b>${m.n}</b> lần</td><td>${m.streak||0}/2</td><td>${loiGiu(id).has(k)?'<span class="pill acc">cô đã giao</span>':loiConNgay(m)+' ngày'}</td></tr>`}).join('')}</table></div>
    ${ph?'':dang?`<p class="hint" style="margin:10px 0 0">Đã giao Luyện lỗi ngày ${asgD(dang.t)}, em đang còn ${asgState(st,dang).con} lỗi. Giao tiếp khi em làm xong.</p>`
      :`<div class="row" style="gap:8px;margin-top:10px"><button class="btn pri" onclick="gvGiaoLoi('${id}',0)">Giao luyện tất cả (${M.length} lỗi)</button><button class="btn" ${chon.length?'':'disabled'} onclick="gvGiaoLoi('${id}',1)">Giao các lỗi đã chọn (${chon.length})</button></div>
       <p class="muted" style="margin:6px 0 0">Bài về nhà: mỗi lỗi 2 câu số mới, đúng 2 lần liền mới xong; còn lỗi thì em làm lại. Em phải làm xong trước mọi việc khác. Thưởng ${BVN_XU} xu.</p>`}`:'<p class="muted">Sổ đang trống.</p>'}</section>
@@ -11529,6 +11530,15 @@ body.cloud .demo{display:none!important}
 body[class*="trang-"] #tabs{display:none!important}body.trang-gv #whoBox,body.trang-ql #whoBox{display:none!important}
 .fbme{display:flex;gap:6px;align-items:center;flex-wrap:wrap}@media(max-width:520px){.fbme{width:100%;order:5}.fbst{display:none}.fbme .btn{padding:6px 10px}}.fbst{font-size:12px}.fbst.loi{color:var(--coral)}
 </style>`);
+/* ===================== Lỗi tự bỏ sau 7 ngày (thầy chốt 24/10/2026) =====================
+   Sai → ghi vào Sổ lỗi sai, em tự luyện nếu muốn (không bắt buộc).
+   Cô giao "Luyện lỗi" (bài về nhà) → bắt buộc (60-bai-ve-nha.js).
+   Lỗi cô KHÔNG giao: 7 ngày kể từ lần sai gần nhất (e.day) thì tự bỏ khỏi sổ. Lỗi đang nằm trong bài cô giao thì giữ tới khi em làm xong. */
+const LOI_NGAY=7;
+function loiGiu(id){const g=new Set();(S.asg||[]).forEach(a=>{if(a.loai==='loi'&&(!a.hs||a.hs.includes(id)))(a.keys||[]).forEach(k=>g.add(k))});return g}
+function loiConNgay(e){return Math.max(0,LOI_NGAY-(S.day-(e.day||S.day)))}
+function loiDon(id,st){const M=st&&st.mist;if(!M)return 0;const giu=loiGiu(id);let n=0;Object.keys(M).forEach(k=>{if(!giu.has(k)&&loiConNgay(M[k])<=0){delete M[k];n++}});return n}
+{const _r=render;render=function(){try{if(S&&S.st){if(role==='hs'){if(S.st[sid]&&loiDon(sid,S.st[sid]))save()}else STUDENTS.forEach(([id])=>loiDon(id,S.st[id]))}}catch(e){}return _r.apply(this,arguments)}}
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 if(!load())fresh();
@@ -11551,6 +11561,11 @@ document.body.insertAdjacentHTML('afterbegin',`<div id="gvGate" class="gvgate"><
  <p class="gvnote">Trang khác: ${[['gv','Giáo viên','giao-vien'],['ph','Phụ huynh','phu-huynh'],['ql','Quản lý','quan-ly']].filter(x=>x[0]!==TRANG).map(x=>`<a href="../${x[2]}/">${x[1]}</a>`).join(' · ')} · <a href="../">Học sinh</a></p></div></div>`);
 const TRANG_TEN={gv:'giáo viên',ph:'phụ huynh',ql:'quản lý',hs:'học sinh'},TRANG_LINK={gv:'../giao-vien/',ph:'../phu-huynh/',ql:'../quan-ly/',hs:'../'};
 function gvSaiTrang(m){const r=CLOUD.me.role;m.innerHTML=`Đây là tài khoản ${TRANG_TEN[r]||r}. Hãy vào <a href="${TRANG_LINK[r]||'../'}">trang ${TRANG_TEN[r]||''}</a>.`}
+const PW_MAT='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>',PW_AN='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg>';
+function pwMat(root){(root||document).querySelectorAll('input[type=password]').forEach(i=>{if(i.parentElement.classList.contains('pwbox'))return;const w=document.createElement('span');w.className='pwbox';i.parentNode.insertBefore(w,i);w.appendChild(i);
+ const b=document.createElement('button');b.type='button';b.className='pweye';b.setAttribute('aria-label','Hiện mật khẩu');b.innerHTML=PW_MAT;
+ b.onclick=()=>{const hien=i.type==='password';i.type=hien?'text':'password';b.innerHTML=hien?PW_AN:PW_MAT;b.setAttribute('aria-label',hien?'Ẩn mật khẩu':'Hiện mật khẩu');i.focus()};w.appendChild(b)})}
+pwMat(document.getElementById('gvGate'));
 async function gvCloudOpen(){await fbGvBoot();const g=document.getElementById('gvGate');if(g)g.remove();document.body.classList.remove('locked');go({k:'home'})}
 async function gvCloudLogin(e){e.preventDefault();const m=document.getElementById('gvMsg2');m.textContent='Đang đăng nhập…';
  try{await fbDangNhap(document.getElementById('gvU').value.trim().toLowerCase(),document.getElementById('gvPw').value,true);
@@ -11563,7 +11578,14 @@ document.head.insertAdjacentHTML('beforeend',`<style>.gvgate{position:fixed;inse
 .gvcard{width:min(400px,100%);max-height:calc(100vh - 32px);overflow:auto;background:#fff;color:#1F2A5A;padding:18px;box-shadow:var(--f2),0 6px 0 0 #1F2A5A;display:flex;flex-direction:column;gap:8px}
 .gvhd{display:flex;gap:10px;align-items:center}.gvhd h1{margin:0;font-size:28px}.gvhd p{margin:0;font-size:13px;color:#3D4A70}
 .gvf{display:flex;flex-direction:column;gap:8px}.gvd{border-top:1px solid #DDE3F0;padding-top:8px}.gvd summary{cursor:pointer;font-size:14px;color:#1F2A5A;font-weight:600}.gvd .gvf{margin-top:8px}
-.gvcard input{padding:10px;border:0;box-shadow:var(--f2);font:inherit;background:#fff;color:#1F2A5A}.gvmsg{color:#B8320F;margin:0;min-height:1em;font-size:14px}.gvnote{font-size:12px;color:#3D4A70;margin:0}
+.gvcard{color-scheme:light}
+.gvcard input{padding:10px!important;border:0!important;border-radius:0!important;box-shadow:var(--f2)!important;font:inherit!important;font-size:17px!important;background:#fff!important;color:#1F2A5A!important;caret-color:#1F2A5A;width:100%;box-sizing:border-box}
+.gvcard input:focus{outline:3px solid #FCB40C!important;outline-offset:1px}
+.gvcard label{color:#1F2A5A!important}.gvcard a{color:#0068B5!important}.gvcard .jav{background:#FFF4D6!important}
+.gvcard .gobtn{background:#0079C1!important;color:#fff!important}
+.pwbox{position:relative;display:block}.pwbox input{padding-right:48px!important}
+.pweye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:40px;height:36px;border:0;background:transparent;cursor:pointer;display:grid;place-items:center;color:#1F2A5A;padding:0}
+.pweye:focus-visible{outline:2px solid #0079C1}.gvmsg{color:#B8320F;margin:0;min-height:1em;font-size:14px}.gvnote{font-size:12px;color:#3D4A70;margin:0}
 body.locked{overflow:hidden}</style>`);
 document.body.classList.add('locked');
 {let ok=false;try{ok=sessionStorage.getItem('jennyGV_'+TRANG)==='1'}catch(e){}if(ok)gvOpen();else{render();setTimeout(()=>{const i=document.getElementById('gvU');if(i)i.focus()},50);
