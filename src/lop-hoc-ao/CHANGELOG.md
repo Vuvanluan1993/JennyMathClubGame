@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Sửa lọc học sinh theo Khối ở trang Quản lý
+- Bấm Khối 1…5, chọn lớp, tìm tên, "Hiện thêm" trước không có tác dụng (biến lọc bị khoá trong hàm). Nay lọc đúng; bỏ chọn Phân công cũng hoạt động.
+
 ## 24/10/2026 — Sửa lệch ô trong bảng nhập Quản lý
 - Các bảng Thêm giáo viên, Thêm học sinh, Sửa tài khoản: ô không còn tràn ra ngoài khung; xếp 2 cột đều (Giới tính · Điện thoại/Năm sinh), Gmail và Ngày sinh (ngày, tháng) một hàng riêng.
 

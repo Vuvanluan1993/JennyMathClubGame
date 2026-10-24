@@ -78,7 +78,8 @@ function viewLopCuaToi(){
 {const _t=toggleOpen;toggleOpen=function(id){_t(id);try{nk(`${S.open[id]?'Mở':'Đóng'} ${unit(2,id).title.split(' · ')[0]} Toán Jenny · lớp ${gvLop}`);save()}catch(e){}}}
 
 /* ---------- Quản lý trung tâm ---------- */
-let qlKhoi=0,qlXoa='',qlLop='',qlTim='',qlMax=20;
+/* biến lọc để ở window: nút trong trang (onclick) đổi được (24/10: trước để let trong hàm nên bấm Khối không lọc) */
+window.qlKhoi=0;window.qlXoa='';window.qlLop='';window.qlTim='';window.qlMax=20;
 const qlMsg=t=>{save();render();toast(t)};
 window.qlTJ=(id,on)=>{const l=lopById(id);if(on){const c=(document.getElementById('tjMa')||{}).value;if(String(c||'').trim().toUpperCase()!==DEMO_CODE){toast('Mã gói chưa đúng (mã thử: '+DEMO_CODE+')');return}l.tj={on:true,han:'31/05/2027'};nk(`Gắn gói Toán Jenny cho lớp ${id}`)}else{l.tj={on:false};nk(`Tắt gói Toán Jenny của lớp ${id}`)}qlMsg(on?`Lớp ${id} đã có Toán Jenny`:`Đã tắt Toán Jenny của lớp ${id}`)};
 window.qlTJgan=()=>{const id=document.getElementById('tjLop').value;if(id)qlTJ(id,true)};
