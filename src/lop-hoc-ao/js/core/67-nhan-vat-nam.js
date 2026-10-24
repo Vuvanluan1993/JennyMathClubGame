@@ -1,5 +1,6 @@
 /* 58 — Nhân vật Nam (thầy yêu cầu 24/10/2026)
-   - Học sinh chọn "Bạn nữ" (Jenny) hoặc "Bạn nam" (tóc ngắn, không búi, không nơ) — hỏi 1 lần khi vào lần đầu, đổi được ở Tủ đồ.
+   - Nhân vật theo GIỚI TÍNH quản lý nhập khi tạo/sửa tài khoản (st.gender = 'nu'|'nam'; chưa nhập = bạn nữ).
+     Học sinh không tự chọn nam/nữ (thầy chốt 24/10/2026).
    - Giữ phong cách pixel cũ (16 ô ngang). Bạn nam dùng chung thân, biểu cảm, áo, mũ kính với Jenny (chỉ khác tóc).
    - Cửa hàng thêm đồ cho bạn nam; đồ riêng của bạn nữ/bạn nam chỉ hiện với bạn đó (đồ đã mua vẫn giữ). */
 const BOY_HAIR=["......kk.k......","....kkkkkkkk....","..kkkkkkkkkkkk..",".kkkkkkkkkkkkkk.",".kkkkkkkkkkkkkk."];
@@ -33,11 +34,10 @@ function genPick(cls){const st=S.st[sid],cur=st&&st.gender;const b=(g,sp,t)=>`<b
 PXS.jenny__raw=PXS.jenny;
 function genAsk(){if(document.getElementById('genov'))return;const el=document.createElement('div');el.className='gdov';el.id='genov';
  el.innerHTML=`<div class="gdbox genbox"><div class="gdhd"><b>${arcT('Chọn nhân vật của em','Choose your character')}</b></div><p class="genq">${arcT('Em là bạn nữ hay bạn nam? Em có thể đổi lại trong Tủ đồ.','Are you a girl or a boy? You can change it later in the Wardrobe.')}</p>${genPick()}</div>`;document.body.appendChild(el)}
-{const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(role!=='hs'){const o=document.getElementById('genov');if(o)o.remove()}if(role==='hs'&&scr.k==='home'){const st=S.st[sid];if(st&&st.grade<=5&&!st.gender)genAsk()}}catch(e){}return v}}
+/* (đã bỏ) hỏi chọn nhân vật lần đầu */
 /* Tủ đồ: hàng chọn nhân vật + đổi tên "Tủ đồ của em" */
 {const _t=viewTudo;viewTudo=function(st){let r=_t.apply(this,arguments);try{
- r=r.replace(arcT('Tủ đồ của Jenny','Jenny’s wardrobe'),arcT('Tủ đồ của em','My wardrobe'));
- if(!scr.tdCat)r=r.replace(/(<section class="card tdbody">)/,`$1<h3 class="ghgh" style="margin-top:0">${arcT('Nhân vật','Character')}</h3>${genPick('gensm')}`)}catch(e){}return r}}
+ r=r.replace(arcT('Tủ đồ của Jenny','Jenny’s wardrobe'),arcT('Tủ đồ của em','My wardrobe'));}catch(e){}return r}}
 Object.assign(I18N,{'Áo cầu thủ':'Football shirt','Áo Ninja':'Ninja suit','Áo phi hành gia':'Astronaut suit','Nơ cổ':'Bow tie','Băng đô ninja':'Ninja headband','Kính râm':'Sunglasses','Tai nghe':'Headphones','Mũ bảo hiểm':'Helmet','Bạn nữ':'Girl','Bạn nam':'Boy'});
 document.head.insertAdjacentHTML('beforeend',`<style>
 .genrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0 4px}

@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Nhân vật theo giới tính quản lý nhập
+- Học sinh **không còn tự chọn** bạn nữ/bạn nam: bỏ hàng "Nhân vật" trong Tủ đồ và bỏ ô hỏi khi vào lần đầu. Tủ đồ chỉ có nhân vật của em.
+- Quản lý chọn **Giới tính** khi tạo tài khoản (ô "Thêm học sinh") hoặc khi ✎ Sửa → em đăng nhập là nhân vật tương ứng (Nam = bạn nam, Nữ hoặc chưa nhập = bạn nữ). Cửa hàng hiện đồ theo giới tính đó.
+- Bản có máy chủ: giới tính được ghi vào hồ sơ học sinh trên máy chủ để máy của em nhận được.
+
 ## 24/10/2026 — Hồ sơ học sinh trong trang Quản lý
 - Ô ✎ Sửa thêm: **Giới tính · Ngày sinh (ngày, tháng) · Năm sinh · Điện thoại phụ huynh · Gmail phụ huynh**. Kiểm tra số điện thoại, gmail, ngày có thật.
 - Bảng Học sinh hiện dòng hồ sơ dưới tên (vd "Nữ · 12/3/2019 · PH 0912345678 · …"); em chưa có hồ sơ ghi màu cam "Chưa có hồ sơ".

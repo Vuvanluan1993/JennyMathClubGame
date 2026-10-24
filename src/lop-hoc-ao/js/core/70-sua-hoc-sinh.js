@@ -56,13 +56,19 @@ window.qlLuu=async function(e,a){e.preventDefault();const st=S.st[a];if(!st)retu
  const tk=(b!==a||pw||ten!==st.name);
  if(cloud()&&tk){toast('Đang lưu lên máy chủ…');try{await mayChu(a,b,ten,pw)}catch(err){console.error(err);toast('Chưa lưu được: '+(typeof fbLoi==='function'?fbLoi(err):(err.message||err)));return}}
  S.org.hoso=S.org.hoso||{};S.org.hoso[a]=Object.fromEntries(Object.entries(Hm).filter(([k,x])=>x));
+ const doiGt=Hm.gt&&Hm.gt!==st.gender;if(Hm.gt)st.gender=Hm.gt;
  st.name=ten;[STUDENTS,(S.org&&S.org.hs)||[]].forEach(L=>L.forEach(r=>{if(r[0]===a)r[1]=ten}));doiKhoa(a,b);
  nk(`Sửa tài khoản ${ten}: ${doi.join(', ')}`);save();document.getElementById('qlsua').remove();
- if(cloud()){try{await fbDayNgay()}catch(err){}}
+ if(cloud()){try{if(doiGt)await FB.db.doc('hs/'+b).set({j:JSON.stringify(fbTach(S.st[b]).hs),t:fbTS()},{merge:true});await fbDayNgay()}catch(err){toast('Máy chủ chưa nhận giới tính: '+(typeof fbLoi==='function'?fbLoi(err):err.message))}}
  if(pw&&typeof fbMKVua!=='undefined'){try{fbMKVua={tk:b,pw}}catch(err){}}
  render();toast(pw?`Đã lưu: ${b} / ${pw}`:'Đã lưu')};
+/* Thêm học sinh: chọn giới tính ngay khi tạo → nhân vật tương ứng */
+{const _t=window.qlTaoHS;window.qlTaoHS=async function(e){const gt=(document.getElementById('nhGt')||{}).value||'',truoc=new Set(Object.keys(S.st));
+ const r=await _t(e);try{if(gt){const moi=Object.keys(S.st).filter(k=>!truoc.has(k));for(const id of moi){S.st[id].gender=gt;const o=S.org;o.hoso=o.hoso||{};o.hoso[id]=Object.assign({},o.hoso[id],{gt});
+   if(cloud()){try{await FB.db.doc('hs/'+id).set({j:JSON.stringify(fbTach(S.st[id]).hs),t:fbTS()},{merge:true})}catch(err){}}}
+  if(moi.length){save();if(cloud()){try{await fbDayNgay()}catch(err){}}render()}}}catch(err){}return r}}
 /* nút Sửa ở bảng Học sinh của Quản lý */
-{const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);try{if(role==='ql')r=r.replace(/<tr><td><b>([^<]*)<\/b><div class="muted">([a-z0-9._-]+) · /g,(m,n,id)=>{if(!S.st[id])return m;const H=hoSo(id),x=[H.gt?(H.gt==='nu'?'Nữ':'Nam'):'',H.nam?((H.ng&&H.th?H.ng+'/'+H.th+'/':'')+H.nam):'',H.dt?'PH '+H.dt:'',H.mail||''].filter(Boolean).join(' · ');
+{const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);try{if(role==='ql')r=r.replace(/(<input id="nhTen"[^>]*>)/,`$1<select id="nhGt" aria-label="Giới tính" style="width:100px"><option value="">Giới tính</option><option value="nu">Nữ</option><option value="nam">Nam</option></select>`).replace(/<tr><td><b>([^<]*)<\/b><div class="muted">([a-z0-9._-]+) · /g,(m,n,id)=>{if(!S.st[id])return m;const H=hoSo(id),x=[H.gt?(H.gt==='nu'?'Nữ':'Nam'):'',H.nam?((H.ng&&H.th?H.ng+'/'+H.th+'/':'')+H.nam):'',H.dt?'PH '+H.dt:'',H.mail||''].filter(Boolean).join(' · ');
   return`<tr><td><b>${n}</b> <button type="button" class="btn sm qlsuab" onclick="qlSua('${id}')" aria-label="Sửa ${n}">✎ Sửa</button>${x?`<div class="muted qlhs">${esc(x)}</div>`:'<div class="muted qlhs qlthieu">Chưa có hồ sơ (giới tính, ngày sinh, liên hệ phụ huynh)</div>'}<div class="muted">${id} · `})}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .qsbox{max-width:420px}.qsform{display:flex;flex-direction:column;gap:10px;margin-top:10px;padding:0 14px 14px;color:#1F2A5A}
