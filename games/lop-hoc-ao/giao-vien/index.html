@@ -8021,7 +8021,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 08:08';
+const APP_VER='24/10 · 08:11';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -11089,7 +11089,7 @@ function gvTabLoi(id,st,ph){
   const M=Object.entries(st.mist||{}).sort((a,b)=>b[1].n-a[1].n),A=asgMine(st),dang=A.find(a=>a.loai==='loi'&&!asgState(st,a).done),chon=scr.loiChon||[];
   const kq=(a,s)=>{if(a.loai==='loi')return s.done?'<span class="pill ok">Đã sửa xong</span>':`<span class="pill ${s.doing?'acc':'warn'}">còn ${s.con}/${a.keys.length} lỗi</span>`;
     const b=s.r.best;return s.done?`<span class="pill ${b.ok/b.n>=.8?'ok':'acc'}">${b.ok}/${b.n} đúng</span>`:s.chuaDat?`<span class="pill acc">chưa đạt ${b.ok}/${b.n}, làm lại</span>`:s.doing?'<span class="pill acc">đang làm</span>':'<span class="pill warn">chưa làm</span>'};
-  return`<section class="card"><h2>Sổ lỗi sai <span class="pill">${M.length} lỗi</span></h2><p class="muted" style="margin:4px 0 0">Em tự luyện nếu muốn (không bắt buộc). Cô bấm giao thì thành bài về nhà bắt buộc. Lỗi cô không giao sẽ tự bỏ sau ${LOI_NGAY} ngày kể từ lần sai gần nhất.</p>
+  return`<section class="card"><h2>Sổ lỗi sai <span class="pill">${M.length} lỗi</span></h2><p class="muted" style="margin:4px 0 0">${ph?`Con tự luyện ở mục Luyện lỗi trong app (không bắt buộc). Lỗi cô chưa giao sẽ tự bỏ sau ${LOI_NGAY} ngày kể từ lần sai gần nhất, bố mẹ nhắc con luyện trong tuần nhé.`:`Em tự luyện nếu muốn (không bắt buộc). Cô bấm giao thì thành bài về nhà bắt buộc. Lỗi cô không giao sẽ tự bỏ sau ${LOI_NGAY} ngày kể từ lần sai gần nhất.`}</p>
    ${M.length?`<div class="tablewrap"><table><tr>${ph?'':'<th></th>'}<th>Lỗi</th><th>Ở đảo</th><th>Sai</th><th>Đúng liền</th><th>Tự bỏ sau</th></tr>${M.map(([k,m])=>{const x=isl1(m.id);return`<tr>${ph?'':`<td><input type="checkbox" aria-label="Chọn lỗi" ${chon.includes(k)?'checked':''} ${dang?'disabled':''} onchange="gvChonLoi('${k}',this.checked)"></td>`}<td>${esc(m.label||'')}</td><td>${x?esc(x.title):''}</td><td><b>${m.n}</b> lần</td><td>${m.streak||0}/2</td><td>${loiGiu(id).has(k)?'<span class="pill acc">cô đã giao</span>':loiConNgay(m)+' ngày'}</td></tr>`}).join('')}</table></div>
    ${ph?'':dang?`<p class="hint" style="margin:10px 0 0">Đã giao Luyện lỗi ngày ${asgD(dang.t)}, em đang còn ${asgState(st,dang).con} lỗi. Giao tiếp khi em làm xong.</p>`
      :`<div class="row" style="gap:8px;margin-top:10px"><button class="btn pri" onclick="gvGiaoLoi('${id}',0)">Giao luyện tất cả (${M.length} lỗi)</button><button class="btn" ${chon.length?'':'disabled'} onclick="gvGiaoLoi('${id}',1)">Giao các lỗi đã chọn (${chon.length})</button></div>
@@ -11195,6 +11195,10 @@ function viewPHHS(id){const st=S.st[id];hsHeal(st,id);const l=typeof lopCua==='f
    <section class="card"><h2>Lời nhắn của giáo viên</h2>${C.length?`${C.slice(0,3).map((c,i)=>`<div class="task phmsg${i===0?' moi':''}"><div class="row" style="justify-content:space-between"><span class="muted">${gvNgayD(c.day)}${c.by?' · '+esc(c.by):''}</span>${i===0?'<span class="pill acc">Mới nhất</span>':''}</div><div style="margin-top:4px">${esc(c.t)}</div></div>`).join('')}
      ${C.length>3?`<details style="margin-top:8px"><summary>Xem ${C.length-3} lời nhắn cũ hơn</summary>${C.slice(3).map(c=>`<div class="task"><span class="muted">${gvNgayD(c.day)}${c.by?' · '+esc(c.by):''}</span><div>${esc(c.t)}</div></div>`).join('')}</details>`:''}`:`<p class="muted" style="margin:6px 0 0">Cô chưa gửi lời nhắn nào.</p>`}
     ${B.length?`<p style="margin:12px 0 0"><b>Thẻ cô tặng ${esc(first)}:</b> ${B.slice(0,6).map(b=>`<span class="pill acc">♥ ${esc(b.t)}</span>`).join(' ')}</p>`:''}</section>
+   ${(()=>{const M=Object.values(st.mist||{}),giu=loiGiu(id),tu=Object.entries(st.mist||{}).filter(([k])=>!giu.has(k)),sap=tu.filter(([,e])=>loiConNgay(e)<=2).length;
+     return M.length?`<section class="card phnhac"><h2>Nhắc bố mẹ</h2><p style="margin:6px 0 0">${esc(first)} đang có <b>${M.length} lỗi</b> trong Sổ lỗi sai${M.length>tu.length?`, trong đó ${M.length-tu.length} lỗi cô đã giao làm bài về nhà`:''}.</p>
+      ${tu.length?`<p style="margin:6px 0 0">${tu.length} lỗi cô chưa giao sẽ <b>tự bỏ sau ${LOI_NGAY} ngày</b>${sap?` (${sap} lỗi chỉ còn 1–2 ngày)`:''}. Bố mẹ nhắc con vào mục <b>Luyện lỗi</b> trong app, mỗi ngày 5 phút, để sửa hết trước khi lỗi bị bỏ.</p>`:''}
+      <p class="muted" style="margin:6px 0 0">Mỗi lỗi cần đúng 2 lần liền mới ra khỏi sổ. Xem chi tiết ở thẻ "Lỗi &amp; bài về nhà".</p></section>`:''})()}
    <div class="seg gtabs" role="tablist" aria-label="Kết quả học tập">${PH_TABS.map(([k,t])=>`<button role="tab" class="${k===tab?'on':''}" aria-selected="${k===tab}" onclick="scr.phTab='${k}';render()">${t}</button>`).join('')}</div>
    ${body}</div>`}
 {const _p=viewPH;viewPH=function(){try{if(role==='ph'&&typeof ORG_ON!=='undefined'&&ORG_ON&&S.st[sid]&&S.st[sid].grade<=5)return viewPHHS(sid)}catch(e){console.error(e)}return _p.apply(this,arguments)}}
@@ -11275,6 +11279,7 @@ tr.gyeu td{background:var(--coral-soft)}
 .gr-lb{font:600 12.5px var(--f-body);fill:var(--ink)}.gr-lb.dim{fill:var(--muted);font-weight:400}.gr-v{font-weight:800;font-size:13px}
 .gr-leg{display:flex;gap:16px;justify-content:center;font-size:12.5px}.gr-leg i{display:inline-block;width:18px;height:0;border-top:3px solid var(--sea);vertical-align:middle;margin-right:4px}.gr-leg{flex-wrap:wrap;gap:6px 14px}.gr-leg i.s6{border-top-color:#F37A1F}.gr-leg i.tb{border-top:2px dashed var(--muted)}
 .phmsg.moi{border-left:4px solid var(--sea)}
+.phnhac{border-left:6px solid var(--sun)}
 .gpair{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}@media(max-width:900px){.gpair{grid-template-columns:minmax(0,1fr)}}
 .glichcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,320px);gap:12px 28px;align-items:start}@media(max-width:900px){.glichcard{grid-template-columns:minmax(0,1fr)}}
 .glichcard .grow{grid-template-columns:60px 1fr 44px}

@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Trang phụ huynh: nhắc lỗi tự bỏ sau 7 ngày
+- Khung "Nhắc bố mẹ" (dưới Lời nhắn của giáo viên) khi con có lỗi trong Sổ lỗi sai: số lỗi, bao nhiêu lỗi cô đã giao, bao nhiêu lỗi sẽ tự bỏ sau 7 ngày (báo riêng lỗi chỉ còn 1–2 ngày), lời khuyên con luyện 5 phút mỗi ngày ở mục Luyện lỗi.
+- Thẻ "Lỗi & bài về nhà" của phụ huynh: câu giải thích viết cho bố mẹ; cột "Tự bỏ sau" cho từng lỗi.
+
 ## 24/10/2026 — Màn đăng nhập dễ đọc + nút hiện mật khẩu
 - 3 trang Giáo viên/Phụ huynh/Quản lý: ô nhập luôn nền trắng chữ xanh đậm (trước bị nền tối khi máy để chế độ tối), viền vàng khi đang gõ, nút Đăng nhập xanh rõ.
 - Nút hình con mắt trong ô mật khẩu (cả app học sinh): bấm để hiện/ẩn mật khẩu.
