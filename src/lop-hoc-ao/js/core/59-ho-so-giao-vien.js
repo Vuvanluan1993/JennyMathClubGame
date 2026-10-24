@@ -64,7 +64,8 @@ window.gvLichTap=(ev,id)=>{const i=ev.target.closest('i[data-k]');if(!i)return;d
 function gvSucManh(id,st){
   const sc=hsScores(st),m3=gvMach(st,3),m6=gvMach(st,6),tb=gvTBKhoi(st.grade),du=Object.keys(m3).length;
   const lab=Object.fromEntries(HS_AX.map(a=>[a.k,!sc[a.k].taught?'chưa học':m3[a.k]!=null?m3[a.k]:'chưa đủ']));
-  const bars=HS_AX.map(a=>{const v=m3[a.k],v6=m6[a.k],t=tb.v[a.k];return`<div class="grow"><span>${a.f}</span>${v==null?`<span class="muted">${sc[a.k].taught?'chưa đủ bài':'chưa học'}</span>`:`<span class="gbar"><i style="width:${v}%;background:${v>=80?'var(--leaf)':v>=60?'var(--sun)':'var(--coral)'}"></i>${t!=null?`<b class="gprev" style="left:${t}%" title="TB khối ${t}"></b>`:''}</span><b>${v}</b>`}</div>${v!=null?`<div class="gsub muted">6 tháng: ${v6!=null?v6:'–'} · khối: ${t!=null?`${t} (${v>=t?'+':'−'}${Math.abs(v-t)})`:'–'}</div>`:''}`}).join('');
+  const LG=hsLogic(st),lgSub=`<div class="gsub muted">Bài logic ${LG.A.s!=null?LG.A.s:'–'} · Suy luận ở các mạch ${LG.B.s!=null?LG.B.s:'–'} · Thói quen (đúng ngay, không bấm bừa) ${LG.C.s!=null?LG.C.s:'–'}</div>`;
+  const bars=HS_AX.map(a=>{const v=m3[a.k],v6=m6[a.k],t=tb.v[a.k];return`<div class="grow"><span>${a.f}</span>${v==null?`<span class="muted">${sc[a.k].taught?'chưa đủ bài':'chưa học'}</span>`:`<span class="gbar"><i style="width:${v}%;background:${v>=80?'var(--leaf)':v>=60?'var(--sun)':'var(--coral)'}"></i>${t!=null?`<b class="gprev" style="left:${t}%" title="TB khối ${t}"></b>`:''}</span><b>${v}</b>`}</div>${a.k==='lg'&&LG.ok?lgSub:''}${v!=null?`<div class="gsub muted">6 tháng: ${v6!=null?v6:'–'} · khối: ${t!=null?`${t} (${v>=t?'+':'−'}${Math.abs(v-t)})`:'–'}</div>`:''}`}).join('');
   return{radar:`${gvRadar([{v:tb.v,c:'gr-tb'},{v:m6,c:'gr-6'},{v:m3,c:'gr-cur'}],lab)}<div class="gr-leg muted"><span><i class="cur"></i> Em · 3 tháng gần nhất</span><span><i class="s6"></i> Em · 6 tháng gần nhất</span><span><i class="tb"></i> TB học sinh Jenny khối ${st.grade} (${tb.n} em)</span></div>
     ${du<3?`<p class="hint" style="margin:10px 0 0">Em mới có điểm ở ${du} mạch nên hình còn hẹp.</p>`:''}`,bars:bars+gvLoiVanDong(st)}}
 /* kĩ năng giải toán lời văn: đã tính vào các trục nội dung, hiện riêng tỉ lệ đúng để cô biết em đọc đề có tốt không */
@@ -226,7 +227,7 @@ const GV_NX=[
  f=>`${f} nghỉ học mấy hôm. Bố mẹ giúp con giữ thói quen 15 phút mỗi ngày.`,
  (f,w,b)=>`${f} làm tốt phần ${b}, hay giúp bạn trong lớp. Cô tặng con thẻ "Giúp bạn".`];
 function gvMau(){
-  if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS5||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS5=1;
+  if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS6||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS6=1;
   try{window.orgHeal&&window.orgHeal()}catch(e){}
   const NG=GV_NG;S.day=NG;const thang=[];for(let d=1;d<=NG;d+=1){const m=hsMonth(hsDayDate(d));if(!thang.includes(m))thang.push(m)}
   S.asg=(S.asg||[]).filter(a=>!a.mau);
@@ -242,7 +243,7 @@ function gvMau(){
     const pos={};L.slice(0,ki).forEach((x,i)=>pos[x.id]=i);
     const kinds=Object.entries(hsIndex(g).kinds).filter(([,v])=>v.src.some(sr=>pos[sr[0]]!=null));
     /* điểm từng mạch theo tháng: mạch bắt đầu khi em học tới đảo có mạch đó, rồi tăng dần */
-    const fin={};HS_AX.forEach(a=>{const ks=kinds.filter(([,v])=>v.ax===a.k);if(!ks.length)return;const i0=Math.min(...ks.flatMap(([,v])=>v.src.filter(sr=>pos[sr[0]]!=null).map(sr=>pos[sr[0]])));
+    const fin={};HS_AX.forEach(a=>{const ks=kinds.filter(([kd,v])=>v.ax===a.k||(a.k==='lg'&&hsSuy(kd)));if(!ks.length)return;const i0=Math.min(...ks.flatMap(([,v])=>v.src.filter(sr=>pos[sr[0]]!=null).map(sr=>pos[sr[0]])));
       const m0=Math.min(thang.length-1,Math.floor(i0/ki*(thang.length-1)));let v=100*(gioi-.14)+rnd()*10;const tang=1.2+rnd()*3.2;
       for(let m=m0;m<thang.length;m++){const x=Math.round(Math.max(20,Math.min(98,v+(rnd()-.5)*8)));(st.skm[thang[m]]=st.skm[thang[m]]||{})[a.k]=x;v+=tang;fin[a.k]=x}});
     kinds.forEach(([kd,v])=>{const kg=Math.min(.98,Math.max(.15,(fin[v.ax]||70)/100+(rnd()-.55)*.45));st.sk[kd]={r:Array.from({length:5+Math.floor(rnd()*6)},()=>rnd()<kg?1:0),t:hsDayDate(NG-Math.floor(rnd()*20)).getTime(),ax:v.ax}});

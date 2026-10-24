@@ -26,13 +26,27 @@ function hsAxOf(kind,topic){const t=String(kind||'').toLowerCase(),p=String(topi
   if(HS_WORD.test(t)){const r=t.replace(HS_WORD,' ');for(const[k,re]of HS_WSUB)if(re.test(r))return k;if(p)for(const[k,re]of HS_RULES)if(k!=='lg'&&re.test(p))return k;return'pt'}
   for(const[k,re]of HS_RULES)if(re.test(t))return k;
   if(p)for(const[k,re]of HS_RULES)if(re.test(p))return k;return null}
+/* ----- Điểm Tư duy – Logic (thầy duyệt 24/10/2026; theo TIMSS, câu "suy luận" nằm rải trong mọi mạch) -----
+   A (40%) bài thuần logic (trục lg) · B (40%) bài suy luận ở các mạch khác (vẫn tính vào mạch của nó):
+   ① tìm thành phần chưa biết ② bài nhiều bước ③ so sánh kết quả không cần tính hết ④ ước lượng ⑤ câu đúng/sai
+   C (20%) thói quen: đúng ngay lần đầu × (1 − tỉ lệ trả lời dưới 3 giây). Phần thiếu dữ liệu thì chia lại trọng số.
+   Hiện điểm khi A + B có từ 5 câu. */
+const HS_SUY=/còn thiếu|thành phần|tìm số (trong phép|hạng|trừ|bị|chia)|tìm thừa số|tìm số hạng|biểu thức chứa chữ|hai bước|ba bước|tổng và hiệu|tổng và tỉ|hiệu và tỉ|giá trị (của )?biểu thức|so sánh kết quả|ước lượng|đúng\/sai|đúng sai/;
+const hsSuy=kind=>HS_SUY.test(String(kind||'').toLowerCase());
+function hsLogic(st){const E=Object.entries(st.sk||{}).filter(([,e])=>e.r&&e.r.length);
+  const part=L=>{const n=L.reduce((a,[,e])=>a+e.r.length,0);return{n,k:L.length,s:L.length?Math.round(L.reduce((a,[,e])=>a+e.r.reduce((x,y)=>x+y,0)/e.r.length,0)/L.length*100):null}};
+  const A=part(E.filter(([,e])=>e.ax==='lg')),B=part(E.filter(([k,e])=>e.ax!=='lg'&&hsSuy(k)));
+  const T={f:0,fc:0,fast:0,n:0};Object.values(st.dd||{}).forEach(o=>{T.f+=o.f||0;T.fc+=o.fc||0;T.fast+=o.fast||0;T.n+=o.n||0});
+  const C={n:T.f,s:T.f>=10?Math.round(T.fc/T.f*100*(1-Math.min(1,T.n?T.fast/T.n:0))):null};
+  let w=0,v=0;[[A,.4],[B,.4],[C,.2]].forEach(([x,k])=>{if(x.s!=null&&x.n){w+=k;v+=k*x.s}});
+  return{A,B,C,n:A.n+B.n,s:w?Math.round(v/w):0,ok:A.n+B.n>=5}}
 /* tỉ lệ đúng các bài lời văn (mọi trục) */
 function hsLoiVan(st){const ks=Object.entries(st.sk||{}).filter(([k,e])=>e.r&&e.r.length&&hsWord(k));const n=ks.reduce((a,[,e])=>a+e.r.length,0),c=ks.reduce((a,[,e])=>a+e.r.reduce((x,y)=>x+y,0),0);return{n,c,p:n?Math.round(c/n*100):0,k:ks.length}}
 const hsTopicOf=id=>{try{const x=id&&isl1(id);if(!x)return'';for(const g in PRIM){if(PRIM[g].isl.includes(x)){const T=PRIM[g].T[x.ti||0];return T?T[0]:''}}}catch(e){}return''};
 /* chỉ mục dạng bài theo lớp: kind → [[đảo, màn, bộ sinh]], trục có dạy */
 const HSIDX={};
 function hsIndex(g){if(HSIDX[g])return HSIDX[g];const kinds={},ax=new Set();
-  (PRIM[g]?PRIM[g].isl:[]).forEach(x=>{const tp=(PRIM[g].T[x.ti||0]||[''])[0];x.lv.forEach((gens,L)=>gens.forEach((gn,gi)=>{const seen=new Set();for(let k=0;k<2;k++){let q;try{q=gn()}catch(e){continue}const kd=q.kind||'Câu hỏi';if(seen.has(kd))continue;seen.add(kd);const a=hsAxOf(kd,tp);if(!a)continue;ax.add(a);(kinds[kd]=kinds[kd]||{ax:a,src:[]}).src.push([x.id,L,gi])}}))});
+  (PRIM[g]?PRIM[g].isl:[]).forEach(x=>{const tp=(PRIM[g].T[x.ti||0]||[''])[0];x.lv.forEach((gens,L)=>gens.forEach((gn,gi)=>{const seen=new Set();for(let k=0;k<2;k++){let q;try{q=gn()}catch(e){continue}const kd=q.kind||'Câu hỏi';if(seen.has(kd))continue;seen.add(kd);const a=hsAxOf(kd,tp);if(!a)continue;ax.add(a);if(hsSuy(kd))ax.add('lg');(kinds[kd]=kinds[kd]||{ax:a,src:[]}).src.push([x.id,L,gi])}}))});
   return HSIDX[g]={kinds,ax}}
 
 /* ----- ngày ----- */
@@ -55,7 +69,8 @@ function hsHeal(st,id){if(!st||st.grade>5)return;if(!st.dd)st.dd={};if(!st.sk)st
 function hsScores(st){const g=st.grade<=5?st.grade:1,idx=hsIndex(g),o={};
   HS_AX.forEach(a=>{const ks=Object.values(st.sk||{}).filter(e=>e.ax===a.k&&e.r.length);const n=ks.reduce((s,e)=>s+e.r.length,0);
     const s=ks.length?Math.round(ks.reduce((s,e)=>s+e.r.reduce((x,y)=>x+y,0)/e.r.length,0)/ks.length*100):0;
-    o[a.k]={s,n,ok:n>=5,taught:idx.ax.has(a.k)||n>0}});return o}
+    o[a.k]={s,n,ok:n>=5,taught:idx.ax.has(a.k)||n>0}});
+  try{const L=hsLogic(st);o.lg={s:L.s,n:L.n,ok:L.ok,taught:idx.ax.has('lg')||L.n>0}}catch(e){}return o}
 const hsMonth=d=>hsKey(d).slice(0,7);
 function hsSnap(st){const sc=hsScores(st),m={};HS_AX.forEach(a=>{if(sc[a.k].ok)m[a.k]=sc[a.k].s});st.skm[hsMonth(hsToday())]=m}
 
@@ -84,7 +99,7 @@ function hsMakeQ(src,kd){const[id,L,gi]=src,x=isl1(id);let q;for(let t=0;t<6;t++
 function startLuyen(){const st=S.st[sid],g=st.grade<=5?st.grade:1,idx=hsIndex(g),plan=hsPlan(st);if(plan.none){toast('Em chơi thêm các đảo để Jenny biết em giỏi phần nào nhé!');return}
   const SD=hsStudied(st),inS=kd=>idx.kinds[kd].src.filter(s=>SD.has(s[0]));
   const pool=Object.keys(idx.kinds).filter(kd=>inS(kd).length);
-  const ax=plan.ax,axPool=pool.filter(kd=>idx.kinds[kd].ax===ax);if(!axPool.length){toast('Em hãy học thêm các đảo nhé!');return}
+  const ax=plan.ax,axPool=pool.filter(kd=>idx.kinds[kd].ax===ax||(ax==='lg'&&hsSuy(kd)));if(!axPool.length){toast('Em hãy học thêm các đảo nhé!');return}
   let weak;if(plan.review&&plan.kind&&axPool.includes(plan.kind))weak=[plan.kind,...axPool.filter(k=>k!==plan.kind).sort((a,b)=>((st.sk[a]||{t:0}).t)-((st.sk[b]||{t:0}).t)).slice(0,1)];
   else weak=axPool.slice().sort((a,b)=>{const A=hsKindAcc(st,a),B=hsKindAcc(st,b);const ka=A<0?.5:A,kb=B<0?.5:B;return ka-kb||((st.sk[a]||{t:0}).t-(st.sk[b]||{t:0}).t)}).slice(0,3);
   const strong=pool.filter(kd=>!weak.includes(kd)&&hsKindAcc(st,kd)>=.8).sort(()=>Math.random()-.5).slice(0,2);
