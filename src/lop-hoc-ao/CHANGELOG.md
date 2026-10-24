@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 2026-10-24
+- Đảo nhà: bỏ khung tiền "🪙 n Cửa hàng ▸" ở thanh trên.
+
 ## 24/10/2026 — Rà lệch khung các bảng nhập Quản lý
 - Bỏ chữ phụ trong nhãn (đưa vào chữ mờ trong ô) để nhãn 1 dòng; ô trong cùng hàng canh đáy, cao bằng nhau (42px).
 - Rà tự động 6 bảng (Thêm HS, Thêm GV, Thêm lớp, Xếp lớp, Phụ huynh, Sửa tài khoản) × 4 khổ (320, 390, 600, 1100) × sáng/tối × có/không máy chủ: không ô nào lệch hay tràn.
