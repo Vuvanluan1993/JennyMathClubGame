@@ -38,6 +38,7 @@ async function mayChu(a,b,ten,pw){const db=FB.db,doi=a!==b;
   for(const col of['hs','hsgv']){const d=await db.doc(col+'/'+a).get();if(d.exists){await db.doc(col+'/'+b).set(d.data());await db.doc(col+'/'+a).delete()}}
   const ph=await db.collection('users').where('con','array-contains',a).get();await Promise.all(ph.docs.map(d=>db.doc('users/'+d.id).set({con:(d.data().con||[]).map(x=>x===a?b:x)},{merge:true})))}
  const st=S.st[b];if(st)await db.doc('hs/'+b).set({j:JSON.stringify(fbTach(st).hs),t:fbTS()},{merge:true})}
+window.mayChu=mayChu;
 window.qlLuu=async function(e,a){e.preventDefault();const st=S.st[a];if(!st)return;
  const ten=document.getElementById('qsTen').value.trim().replace(/\s+/g,' '),b=document.getElementById('qsTk').value.trim().toLowerCase(),pw=(document.getElementById('qsPw').value||'').trim();
  if(ten.split(' ').length<2){toast('Nhập đủ họ và tên');return}

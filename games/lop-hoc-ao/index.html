@@ -8091,7 +8091,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 18:02';
+const APP_VER='24/10 · 18:04';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -11849,6 +11849,7 @@ async function mayChu(a,b,ten,pw){const db=FB.db,doi=a!==b;
   for(const col of['hs','hsgv']){const d=await db.doc(col+'/'+a).get();if(d.exists){await db.doc(col+'/'+b).set(d.data());await db.doc(col+'/'+a).delete()}}
   const ph=await db.collection('users').where('con','array-contains',a).get();await Promise.all(ph.docs.map(d=>db.doc('users/'+d.id).set({con:(d.data().con||[]).map(x=>x===a?b:x)},{merge:true})))}
  const st=S.st[b];if(st)await db.doc('hs/'+b).set({j:JSON.stringify(fbTach(st).hs),t:fbTS()},{merge:true})}
+window.mayChu=mayChu;
 window.qlLuu=async function(e,a){e.preventDefault();const st=S.st[a];if(!st)return;
  const ten=document.getElementById('qsTen').value.trim().replace(/\s+/g,' '),b=document.getElementById('qsTk').value.trim().toLowerCase(),pw=(document.getElementById('qsPw').value||'').trim();
  if(ten.split(' ').length<2){toast('Nhập đủ họ và tên');return}
@@ -12539,18 +12540,18 @@ function trangPH(){const o=O(),m={};Object.entries(o.ph||{}).forEach(([c,tk])=>{
  const chua=STUDENTS.filter(s=>!phOf(s[0]));
  return`<div class="grid">${head('👪','Phụ huynh',`<span class="pill">${tks.length} tài khoản</span>`)}
  <div class="row" style="gap:8px" id="phNut"></div>
- <p class="muted" style="margin:0">Tài khoản phụ huynh tự tạo khi thêm học sinh; anh chị em cùng SĐT/Gmail dùng chung 1 tài khoản. Bấm ✎ Sửa để gắn thêm hoặc tách con.</p>
- <section class="card"><h2>Tài khoản phụ huynh</h2>${tks.length?`<div class="qlli">${tks.map(t=>`<div class="qlr qph"><div class="a-ten"><b>${e(phTen(t))}</b><div class="muted">${e(t)}${(info[t]||{}).dt?' · '+e(info[t].dt):''}</div></div><div class="a-con">${m[t].map(c=>`<span class="pill">${e(ten(c))}</span>`).join(' ')}</div><div class="a-act"><button type="button" class="btn sm" onclick="qlMoPH('${t}')">✎ Sửa</button></div></div>`).join('')}</div>`:'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>
+ <p class="muted" style="margin:0">Tài khoản phụ huynh tự tạo khi thêm học sinh; anh chị em cùng SĐT/Gmail dùng chung 1 tài khoản. Bấm ✎ Sửa để sửa SĐT, Gmail, mật khẩu; 👪 Con để gắn thêm hoặc tách con.</p>
+ <section class="card"><h2>Tài khoản phụ huynh</h2>${tks.length?`<div class="qlli">${tks.map(t=>`<div class="qlr qph"><div class="a-ten"><b>${e(phTen(t))}</b><div class="muted">${e(t)}${(info[t]||{}).dt?' · '+e(info[t].dt):''}</div></div><div class="a-con">${m[t].map(c=>`<span class="pill">${e(ten(c))}</span>`).join(' ')}</div><div class="a-act"><button type="button" class="btn sm" onclick="qlSuaPH('${t}')">✎ Sửa</button><button type="button" class="btn sm" onclick="qlMoPH('${t}')">👪 Con</button></div></div>`).join('')}</div>`:'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>
  <section class="card"><h2>Em chưa có phụ huynh (${chua.length})</h2>${chua.length?`<div class="qlchips">${chua.slice(0,60).map(s=>`<span class="pill">${e(s[1])}</span>`).join(' ')}${chua.length>60?` <span class="muted">… và ${chua.length-60} em</span>`:''}</div>`:'<p class="muted">Em nào cũng đã có phụ huynh.</p>'}</section>
  ${o.cloud&&typeof fbTaiKhoanBox==='function'?fbTaiKhoanBox():''}</div>`}
 
 /* ---------- Giáo viên ---------- */
 function trangGV(){const o=O(),L=o.lop||[];
- const rows=(o.gv||[]).map(g=>{const ls=L.filter(l=>(l.gv||[]).includes(g.id));return`<div class="qlr qgv"><div class="a-ten"><b>${e(g.ten)}</b><div class="muted">${e(g.tk||g.id)}${g.dt?' · '+e(g.dt):''}</div></div><div class="a-con">${ls.length?ls.map(l=>`<button type="button" class="pill lnk" onclick="qlDi('lopct','${l.id}')">Lớp ${e(l.ten)}</button>`).join(' '):'<span class="pill qlwarn">Chưa có lớp</span>'}</div></div>`}).join('');
+ const rows=(o.gv||[]).map(g=>{const ls=L.filter(l=>(l.gv||[]).includes(g.id));return`<div class="qlr qgv"><div class="a-ten"><b>${e(g.ten)}</b><div class="muted">${e(g.tk||g.id)}${g.dt?' · '+e(g.dt):''}</div></div><div class="a-con">${ls.length?ls.map(l=>`<button type="button" class="pill lnk" onclick="qlDi('lopct','${l.id}')">Lớp ${e(l.ten)}</button>`).join(' '):'<span class="pill qlwarn">Chưa có lớp</span>'}</div><div class="a-act"><button type="button" class="btn sm" onclick="qlSuaGV('${g.id}')">✎ Sửa</button></div></div>`}).join('');
  return`<div class="grid">${head('👩‍🏫','Giáo viên',`<span class="pill">${(o.gv||[]).length} người</span>`)}
  <div class="row" style="gap:8px"><button type="button" class="btn pri" onclick="qlMoGV()">+ Thêm giáo viên</button></div>
  <p class="muted" style="margin:0">Phân công dạy lớp: vào trang Lớp › chọn lớp › Phân công giáo viên.</p>
- <section class="card"><div class="qlli"><div class="qlr qgv qlrh"><div class="a-ten">Giáo viên</div><div class="a-con">Lớp đang dạy</div></div>${rows||'<p class="muted">Chưa có giáo viên.</p>'}</div></section></div>`}
+ <section class="card"><div class="qlli"><div class="qlr qgv qlrh"><div class="a-ten">Giáo viên</div><div class="a-con">Lớp đang dạy</div><div class="a-act"></div></div>${rows||'<p class="muted">Chưa có giáo viên.</p>'}</div></section></div>`}
 
 /* ---------- Lớp ---------- */
 function trangLop(){const L=LOP();
@@ -12624,7 +12625,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .qlr:last-child{border-bottom:0}.qlrh{font-size:12px;font-weight:700;text-transform:uppercase;color:#5A6488;padding-top:0}
 .qlr .a-act{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}.qlr .a-ten{min-width:0;overflow-wrap:anywhere}
 .qhs{grid-template-columns:minmax(0,2fr) minmax(130px,1.2fr) minmax(0,1.4fr) auto}
-.qph{grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) auto}.qgv{grid-template-columns:minmax(0,1fr) minmax(0,2fr)}
+.qph{grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) auto}.qgv{grid-template-columns:minmax(0,1fr) minmax(0,2fr) auto}
 .qlp{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1.3fr) auto}.qds{grid-template-columns:28px minmax(0,1fr) auto}
 .qlr .a-con{display:flex;flex-wrap:wrap;gap:6px}.qlr select{width:100%;max-width:200px}
 .mlab,.qlmall{display:none}
@@ -13173,6 +13174,71 @@ function ganTuXa(tk,st2,ev2,bao){const cu=S.st[tk]||{};GV_F.forEach(k=>{if(cu[k]
     const ev2=fbJ(x.ev||'[]');ganTuXa(tk,st2,ev2,arcT('Bài em làm trên máy khác vừa được cập nhật.','Work from your other device has been updated.'));
     fbLast['hs/'+tk]=x.j;fbLast['ev/'+tk]=x.ev||'[]';try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}fbVe()}catch(e){console.error(e)}},e=>{}));
  }catch(e){console.error(e)}}}
+})();
+/* 81 — Sửa thông tin giáo viên và phụ huynh (Quản lý, 24/10/2026).
+   Giáo viên: Họ tên, Giới tính, SĐT, Gmail, Mật khẩu mới (máy chủ). Phụ huynh: SĐT, Gmail, Mật khẩu mới (máy chủ); con thì sửa ở nút 👪 Con.
+   Tên đăng nhập không đổi ở đây. Đổi mật khẩu trên máy chủ = cấp đăng nhập mới cho cùng tên (dùng mayChu của 70). */
+(function(){
+if(typeof viewPH==='undefined')return;
+const O=()=>S.org,e=s=>esc(String(s==null?'':s));
+const cloud=()=>!!(O()&&O().cloud&&typeof CLOUD!=='undefined'&&CLOUD&&typeof FB!=='undefined'&&FB&&FB.db);
+const v=i=>((document.getElementById(i)||{}).value||'').trim();
+const dtC=s=>{let d=String(s||'').replace(/[^\d+]/g,'');if(/^\+?84/.test(d))d='0'+d.replace(/^\+?84/,'');return d};
+const okDt=d=>!d||/^0\d{9,10}$/.test(d),okMail=m=>!m||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m);
+const nk=t=>{(O().nk=O().nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t})};
+const dong=()=>{const m=document.getElementById('qlsua2');if(m)m.remove()};window.qlDong2=dong;
+function hop(tieuDe,than,luu){dong();const el=document.createElement('div');el.className='gdov';el.id='qlsua2';
+ el.innerHTML=`<div class="gdbox qsbox qlmbox"><div class="gdhd"><b>${tieuDe}</b><button type="button" class="gdx" onclick="qlDong2()">Đóng ✕</button></div><form class="qsform" onsubmit="event.preventDefault();${luu}">${than}<div class="qsbtn"><span style="flex:1"></span><button class="btn pri" type="submit">Lưu</button></div></form></div>`;
+ document.body.appendChild(el);setTimeout(()=>{const i=el.querySelector('input:not([readonly]),select');if(i)i.focus()},30)}
+const mkRow=cl=>cl?`<label>Mật khẩu mới<input id="sPw" type="text" maxlength="30" placeholder="Để trống nếu không đổi" autocomplete="off"></label>`:'<p class="muted" style="margin:0;font-size:12.5px">Đổi mật khẩu chỉ làm được khi dùng máy chủ.</p>';
+let busy=false;
+async function mayChuDoi(tk,ten,pw){if(!cloud())return;if(typeof window.mayChu!=='function')throw new Error('Thiếu chức năng máy chủ');
+ if(!ten){const q=await FB.db.collection('users').where('tk','==',tk).get();ten=(q.docs[0]&&q.docs[0].data().ten)||tk}
+ await window.mayChu(tk,tk,ten,pw)}
+
+/* ---------- Giáo viên ---------- */
+window.qlSuaGV=function(id){const g=(O().gv||[]).find(x=>x.id===id);if(!g)return;const cl=cloud();
+ hop('Sửa giáo viên',`<label>Họ tên<input id="sTen" maxlength="40" value="${e(g.ten)}" required></label>
+ <div class="qs2"><label>Tên đăng nhập<input value="${e(g.tk||g.id)}" readonly></label><label>Giới tính<select id="sGt"><option value="">—</option><option value="nu" ${g.gt==='nu'?'selected':''}>Nữ</option><option value="nam" ${g.gt==='nam'?'selected':''}>Nam</option></select></label></div>
+ <div class="qs2"><label>Điện thoại<input id="sDt" type="tel" maxlength="15" value="${e(g.dt||'')}" placeholder="0912345678"></label><label>Gmail<input id="sMail" type="email" maxlength="60" value="${e(g.mail||'')}" placeholder="ten@gmail.com"></label></div>
+ ${mkRow(cl)}`,`qlLuuSuaGV('${id}')`)};
+window.qlLuuSuaGV=async function(id){if(busy)return;const g=(O().gv||[]).find(x=>x.id===id);if(!g)return;
+ const ten=v('sTen').replace(/\s+/g,' '),dt=dtC(v('sDt')),mail=v('sMail').toLowerCase(),pw=v('sPw'),gt=v('sGt');
+ if(ten.length<3){toast('Nhập họ tên giáo viên');return}if(!okDt(dt)){toast('Số điện thoại chưa đúng');return}if(!okMail(mail)){toast('Gmail chưa đúng');return}
+ if(pw&&pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
+ const doi=[];if(ten!==g.ten)doi.push('tên');if(dt!==(g.dt||''))doi.push('SĐT');if(mail!==(g.mail||''))doi.push('Gmail');if(gt!==(g.gt||''))doi.push('giới tính');if(pw)doi.push('mật khẩu');
+ if(!doi.length){dong();toast('Không có thay đổi');return}
+ busy=true;const b=document.querySelector('#qlsua2 button[type=submit]');if(b){b.disabled=true;b.textContent='Đang lưu…'}
+ try{if(cloud()&&(pw||ten!==g.ten)){toast('Đang lưu lên máy chủ…');await mayChuDoi(g.tk||g.id,ten,pw)}
+  g.ten=ten;g.dt=dt||undefined;g.mail=mail||undefined;g.gt=gt||undefined;nk(`Sửa giáo viên ${ten}: ${doi.join(', ')}`);save();if(cloud()){try{await fbDayNgay()}catch(x){}}
+  dong();render();toast(pw?`Đã lưu. Mật khẩu mới: ${pw}`:'Đã lưu')}
+ catch(x){console.error(x);toast('Chưa lưu được: '+(typeof fbLoi==='function'?fbLoi(x):(x.message||x)))}
+ finally{busy=false;if(b&&document.body.contains(b)){b.disabled=false;b.textContent='Lưu'}}};
+
+/* ---------- Phụ huynh ---------- */
+window.qlSuaPH=function(tk){const o=O(),pi=(o.phInfo||{})[tk]||{},cl=cloud();
+ const con=Object.entries(o.ph||{}).filter(([c,t])=>t===tk).map(([c])=>(STUDENTS.find(s=>s[0]===c)||[c,c])[1]);
+ hop('Sửa tài khoản phụ huynh',`<div class="qs2"><label>Tên đăng nhập<input value="${e(tk)}" readonly></label><label>Con<input value="${e(con.join(', ')||'chưa có')}" readonly></label></div>
+ <div class="qs2"><label>Điện thoại<input id="sDt" type="tel" maxlength="15" value="${e(pi.dt||'')}" placeholder="0912345678"></label><label>Gmail<input id="sMail" type="email" maxlength="60" value="${e(pi.mail||'')}" placeholder="ten@gmail.com"></label></div>
+ ${mkRow(cl)}<p class="muted" style="margin:0;font-size:12.5px">Gắn thêm hoặc tách con: dùng nút 👪 Con.</p>`,`qlLuuSuaPH('${tk}')`)};
+window.qlLuuSuaPH=async function(tk){if(busy)return;const o=O();o.phInfo=o.phInfo||{};const pi=o.phInfo[tk]=o.phInfo[tk]||{};
+ const dt=dtC(v('sDt')),mail=v('sMail').toLowerCase(),pw=v('sPw');
+ if(!okDt(dt)){toast('Số điện thoại chưa đúng');return}if(!okMail(mail)){toast('Gmail chưa đúng');return}if(pw&&pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
+ const trung=typeof phTim==='function'?phTim(dt,mail,tk):{};const khac=trung.xung?trung.xung[0]:trung.tk;
+ if(khac&&!confirm(`SĐT/Gmail này đang thuộc phụ huynh ${khac}. Vẫn lưu cho ${tk}?\n(Muốn gộp anh chị em thì dùng nút 👪 Con của phụ huynh ${khac}.)`))return;
+ const doi=[];if(dt!==(pi.dt||''))doi.push('SĐT');if(mail!==(pi.mail||''))doi.push('Gmail');if(pw)doi.push('mật khẩu');
+ if(!doi.length){dong();toast('Không có thay đổi');return}
+ busy=true;const b=document.querySelector('#qlsua2 button[type=submit]');if(b){b.disabled=true;b.textContent='Đang lưu…'}
+ try{if(cloud()&&pw){toast('Đang lưu lên máy chủ…');await mayChuDoi(tk,pi.ten||'',pw)}
+  pi.dt=dt;pi.mail=mail;if(pw){window.qlMK=window.qlMK||{};qlMK[tk]=pw}nk(`Sửa phụ huynh ${tk}: ${doi.join(', ')}`);save();if(cloud()){try{await fbDayNgay()}catch(x){}}
+  dong();render();toast(pw?`Đã lưu. Mật khẩu mới: ${pw}`:'Đã lưu')}
+ catch(x){console.error(x);toast('Chưa lưu được: '+(typeof fbLoi==='function'?fbLoi(x):(x.message||x)))}
+ finally{busy=false;if(b&&document.body.contains(b)){b.disabled=false;b.textContent='Lưu'}}};
+
+document.head.insertAdjacentHTML('beforeend',`<style>
+#qlsua2 input[readonly]{background:#F4F6FA!important;color:#5F6B85!important}
+@media(max-width:640px){.qgv .a-act,.qph .a-act{grid-column:2;grid-row:1}}
+</style>`);
 })();
 /* 80 — Phong cách kiểu Google Classroom cho trang Quản lý, Giáo viên, Phụ huynh (thầy chọn phương án 1, 24/10/2026).
    Giữ nguyên bố cục, khung, nút, vị trí; chỉ đổi chữ (Lexend), màu, cỡ chữ, bo góc, đường viền. Trang học sinh giữ phong cách pixel.

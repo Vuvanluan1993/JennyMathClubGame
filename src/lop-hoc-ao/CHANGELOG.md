@@ -65,6 +65,7 @@
 - File mới: `js/core/72-tu-luyen.js`.
 
 ## 2026-10-24
+- Quản lý: nút ✎ Sửa thông tin giáo viên (tên, giới tính, SĐT, Gmail, mật khẩu) và phụ huynh (SĐT, Gmail, mật khẩu); nút 👪 Con để sửa con.
 - Quản lý › Học sinh: bỏ ô tích chọn từng em và ô "Chọn cả trang".
 - Quản lý: nút 🗑 Xoá cạnh ✎ Sửa ở từng dòng học sinh (trang Học sinh, trang Lớp); bảng nhập/sửa có nút Lưu/Xoá luôn hiện ở đáy, không phải kéo xuống.
 - Trang Quản lý, Giáo viên, Phụ huynh: phong cách mới kiểu Google Classroom (chữ Lexend, thanh trên trắng tab gạch chân, thẻ viền mảnh bo 8px, dải màu đầu thẻ, nút phẳng). Trang học sinh giữ pixel.

@@ -90,18 +90,18 @@ function trangPH(){const o=O(),m={};Object.entries(o.ph||{}).forEach(([c,tk])=>{
  const chua=STUDENTS.filter(s=>!phOf(s[0]));
  return`<div class="grid">${head('👪','Phụ huynh',`<span class="pill">${tks.length} tài khoản</span>`)}
  <div class="row" style="gap:8px" id="phNut"></div>
- <p class="muted" style="margin:0">Tài khoản phụ huynh tự tạo khi thêm học sinh; anh chị em cùng SĐT/Gmail dùng chung 1 tài khoản. Bấm ✎ Sửa để gắn thêm hoặc tách con.</p>
- <section class="card"><h2>Tài khoản phụ huynh</h2>${tks.length?`<div class="qlli">${tks.map(t=>`<div class="qlr qph"><div class="a-ten"><b>${e(phTen(t))}</b><div class="muted">${e(t)}${(info[t]||{}).dt?' · '+e(info[t].dt):''}</div></div><div class="a-con">${m[t].map(c=>`<span class="pill">${e(ten(c))}</span>`).join(' ')}</div><div class="a-act"><button type="button" class="btn sm" onclick="qlMoPH('${t}')">✎ Sửa</button></div></div>`).join('')}</div>`:'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>
+ <p class="muted" style="margin:0">Tài khoản phụ huynh tự tạo khi thêm học sinh; anh chị em cùng SĐT/Gmail dùng chung 1 tài khoản. Bấm ✎ Sửa để sửa SĐT, Gmail, mật khẩu; 👪 Con để gắn thêm hoặc tách con.</p>
+ <section class="card"><h2>Tài khoản phụ huynh</h2>${tks.length?`<div class="qlli">${tks.map(t=>`<div class="qlr qph"><div class="a-ten"><b>${e(phTen(t))}</b><div class="muted">${e(t)}${(info[t]||{}).dt?' · '+e(info[t].dt):''}</div></div><div class="a-con">${m[t].map(c=>`<span class="pill">${e(ten(c))}</span>`).join(' ')}</div><div class="a-act"><button type="button" class="btn sm" onclick="qlSuaPH('${t}')">✎ Sửa</button><button type="button" class="btn sm" onclick="qlMoPH('${t}')">👪 Con</button></div></div>`).join('')}</div>`:'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>
  <section class="card"><h2>Em chưa có phụ huynh (${chua.length})</h2>${chua.length?`<div class="qlchips">${chua.slice(0,60).map(s=>`<span class="pill">${e(s[1])}</span>`).join(' ')}${chua.length>60?` <span class="muted">… và ${chua.length-60} em</span>`:''}</div>`:'<p class="muted">Em nào cũng đã có phụ huynh.</p>'}</section>
  ${o.cloud&&typeof fbTaiKhoanBox==='function'?fbTaiKhoanBox():''}</div>`}
 
 /* ---------- Giáo viên ---------- */
 function trangGV(){const o=O(),L=o.lop||[];
- const rows=(o.gv||[]).map(g=>{const ls=L.filter(l=>(l.gv||[]).includes(g.id));return`<div class="qlr qgv"><div class="a-ten"><b>${e(g.ten)}</b><div class="muted">${e(g.tk||g.id)}${g.dt?' · '+e(g.dt):''}</div></div><div class="a-con">${ls.length?ls.map(l=>`<button type="button" class="pill lnk" onclick="qlDi('lopct','${l.id}')">Lớp ${e(l.ten)}</button>`).join(' '):'<span class="pill qlwarn">Chưa có lớp</span>'}</div></div>`}).join('');
+ const rows=(o.gv||[]).map(g=>{const ls=L.filter(l=>(l.gv||[]).includes(g.id));return`<div class="qlr qgv"><div class="a-ten"><b>${e(g.ten)}</b><div class="muted">${e(g.tk||g.id)}${g.dt?' · '+e(g.dt):''}</div></div><div class="a-con">${ls.length?ls.map(l=>`<button type="button" class="pill lnk" onclick="qlDi('lopct','${l.id}')">Lớp ${e(l.ten)}</button>`).join(' '):'<span class="pill qlwarn">Chưa có lớp</span>'}</div><div class="a-act"><button type="button" class="btn sm" onclick="qlSuaGV('${g.id}')">✎ Sửa</button></div></div>`}).join('');
  return`<div class="grid">${head('👩‍🏫','Giáo viên',`<span class="pill">${(o.gv||[]).length} người</span>`)}
  <div class="row" style="gap:8px"><button type="button" class="btn pri" onclick="qlMoGV()">+ Thêm giáo viên</button></div>
  <p class="muted" style="margin:0">Phân công dạy lớp: vào trang Lớp › chọn lớp › Phân công giáo viên.</p>
- <section class="card"><div class="qlli"><div class="qlr qgv qlrh"><div class="a-ten">Giáo viên</div><div class="a-con">Lớp đang dạy</div></div>${rows||'<p class="muted">Chưa có giáo viên.</p>'}</div></section></div>`}
+ <section class="card"><div class="qlli"><div class="qlr qgv qlrh"><div class="a-ten">Giáo viên</div><div class="a-con">Lớp đang dạy</div><div class="a-act"></div></div>${rows||'<p class="muted">Chưa có giáo viên.</p>'}</div></section></div>`}
 
 /* ---------- Lớp ---------- */
 function trangLop(){const L=LOP();
@@ -175,7 +175,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .qlr:last-child{border-bottom:0}.qlrh{font-size:12px;font-weight:700;text-transform:uppercase;color:#5A6488;padding-top:0}
 .qlr .a-act{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}.qlr .a-ten{min-width:0;overflow-wrap:anywhere}
 .qhs{grid-template-columns:minmax(0,2fr) minmax(130px,1.2fr) minmax(0,1.4fr) auto}
-.qph{grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) auto}.qgv{grid-template-columns:minmax(0,1fr) minmax(0,2fr)}
+.qph{grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) auto}.qgv{grid-template-columns:minmax(0,1fr) minmax(0,2fr) auto}
 .qlp{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1.3fr) auto}.qds{grid-template-columns:28px minmax(0,1fr) auto}
 .qlr .a-con{display:flex;flex-wrap:wrap;gap:6px}.qlr select{width:100%;max-width:200px}
 .mlab,.qlmall{display:none}
