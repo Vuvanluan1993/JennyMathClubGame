@@ -32,6 +32,8 @@ ${L} .nb-lang{border:1px solid var(--lm-line)!important;border-radius:18px!impor
 ${L} .nb-lang button{border:0!important;box-shadow:none!important;border-radius:16px!important;background:transparent!important;color:var(--lm-mute)!important;font-family:${FF}!important;font-size:13px!important;font-weight:500!important;padding:4px 10px!important;min-height:0!important}
 ${L} .nb-lang button.on,${L} .nb-lang button[aria-pressed=true]{background:var(--lm-pri-soft)!important;color:var(--lm-pri)!important}
 ${L} .who{box-shadow:none!important;border:0!important}
+${L} .appbar button:not(#tabs button):not(.nb-lang button){border:1px solid var(--lm-line)!important;border-radius:4px!important;box-shadow:none!important;background:#fff!important;color:var(--lm-pri)!important;font-family:${FF}!important;font-weight:500!important;transform:none!important}
+${L} .appbar :is(.pill,.chip,.who b,.cloudme){border-radius:16px!important}
 ${L} :is(.tag,.pill){text-transform:none!important;letter-spacing:0!important}
 
 /* khung, thẻ: viền xám mảnh, bo 8px, không bóng */
