@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Sửa tài khoản học sinh: chỉ Họ tên, Tên đăng nhập, Mật khẩu
+- Theo thầy: bỏ sửa khối, nhân vật, xu, Toán Jenny, làm lại tiến độ. Ô Sửa chỉ còn **Họ tên · Tên đăng nhập · Mật khẩu mới** (để trống nếu không đổi).
+- Đổi tên đăng nhập: dữ liệu học (sao, xu, đồ, lớp, phụ huynh) chuyển theo, không mất; không cho trùng tên đã có.
+- Bản có máy chủ: đổi cả tài khoản, hồ sơ, liên kết phụ huynh trên máy chủ; đổi mật khẩu như "Đặt lại mật khẩu". Bản demo: mật khẩu không đổi được (không có máy chủ).
+
 ## 24/10/2026 — Bỏ ô "Tên của em" khi đăng nhập; quản lý sửa thông tin học sinh
 - Trang đăng nhập học sinh chỉ còn Tên đăng nhập + Mật khẩu. Tên hiển thị do quản lý nhập.
 - Quản lý › Học sinh: mỗi em có nút **✎ Sửa**: Họ tên, Khối, Nhân vật (nữ/nam/em tự chọn), Xu, Kích hoạt Toán Jenny, **Làm lại tiến độ** (bấm 2 lần mới xoá). Đổi khối thì em ra khỏi lớp khác khối. Mọi thay đổi ghi Nhật ký thao tác.

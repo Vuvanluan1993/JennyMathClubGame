@@ -122,7 +122,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 
 ## 6i. Đăng nhập và sửa thông tin học sinh (24/10/2026)
 - Học sinh đăng nhập chỉ bằng tên đăng nhập + mật khẩu, không tự nhập tên.
-- Quản lý sửa được: họ tên, khối, nhân vật, xu, kích hoạt Toán Jenny, làm lại tiến độ (Quản lý › Học sinh › ✎ Sửa); có ghi Nhật ký.
+- Quản lý › Học sinh › ✎ Sửa: **chỉ** sửa Họ tên, Tên đăng nhập, Mật khẩu. Không sửa thông tin khác (khối, xu, sao, đồ, tiến độ). Có ghi Nhật ký.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
