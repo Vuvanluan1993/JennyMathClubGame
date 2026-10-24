@@ -30,7 +30,7 @@ function gvGoiY(id,st,al){const out=[],T=gvTong(st),cuoi=gvCuoi(id,st),sc=hsScor
   if(T.f>=20&&T.fc/T.f<.6)out.push({t:'Ôn lại cách làm',c:'warn',m:`Em chỉ đúng ngay lần đầu ${pc(T.fc,T.f)}% câu.`});
   if(T.n>=30&&T.gd/T.n>.15)out.push({t:'Cần hỗ trợ nhiều',c:'warn',m:`Em mở hướng dẫn ${T.gd} lần trên ${T.n} câu.`});
   if(!coKhong){if(cuoi){const g=Math.round((hsToday()-new Date(cuoi+'T00:00:00'))/864e5);if(g>=2)out.push({t:`Nhắn phụ huynh: ${g} ngày chưa học`,c:'warn',m:'Em đã lâu chưa vào học.'})}else out.push({t:'Nhắn phụ huynh: chưa học lần nào',c:'warn',m:'Em chưa vào học.'})}
-  const best=HS_AX.filter(a=>sc[a.k].ok).sort((a,b)=>sc[b.k].s-sc[a.k].s)[0];if(best&&sc[best.k].s>=85)out.push({t:`Khen em: giỏi ${best.f}`,c:'ok',m:`${sc[best.k].s} điểm.`});
+  const best=HS_AX.filter(a=>sc[a.k].ok).sort((a,b)=>sc[b.k].s-sc[a.k].s)[0];if(best&&sc[best.k].s>=85)out.push({t:`Khen em: giỏi ${best.f}`,c:'ok',m:`Mức ${hsMuc(sc[best.k].s)}.`});
   return out}
 /* điểm mạch theo cửa sổ tháng: trung bình các ảnh chụp tháng (st.skm) trong n tháng gần nhất */
 function gvThang(n){const d=hsToday(),out=[];for(let i=0;i<n;i++){const x=new Date(d.getFullYear(),d.getMonth()-i,1);out.push(hsMonth(x))}return out}
@@ -63,20 +63,20 @@ window.gvLichTap=(ev,id)=>{const i=ev.target.closest('i[data-k]');if(!i)return;d
 
 function gvSucManh(id,st){
   const sc=hsScores(st),m3=gvMach(st,3),m6=gvMach(st,6),tb=gvTBKhoi(st.grade),du=Object.keys(m3).length;
-  const lab=Object.fromEntries(HS_AX.map(a=>[a.k,!sc[a.k].taught?'chưa học':m3[a.k]!=null?m3[a.k]:'chưa đủ']));
-  const LG=hsLogic(st),lgSub=`<div class="gsub muted">Bài logic ${LG.A.s!=null?LG.A.s:'–'} · Suy luận ở các mạch ${LG.B.s!=null?LG.B.s:'–'} · Thói quen (đúng ngay, không bấm bừa) ${LG.C.s!=null?LG.C.s:'–'}</div>`;
-  const bars=HS_AX.map(a=>{const v=m3[a.k],v6=m6[a.k],t=tb.v[a.k];return`<div class="grow"><span>${a.f}</span>${v==null?`<span class="muted">${sc[a.k].taught?'chưa đủ bài':'chưa học'}</span>`:`<span class="gbar"><i style="width:${v}%;background:${v>=80?'var(--leaf)':v>=60?'var(--sun)':'var(--coral)'}"></i>${t!=null?`<b class="gprev" style="left:${t}%" title="TB khối ${t}"></b>`:''}</span><b>${v}</b>`}</div>${a.k==='lg'&&LG.ok?lgSub:''}${v!=null?`<div class="gsub muted">6 tháng: ${v6!=null?v6:'–'} · khối: ${t!=null?`${t} (${v>=t?'+':'−'}${Math.abs(v-t)})`:'–'}</div>`:''}`}).join('');
+  const lab=Object.fromEntries(HS_AX.map(a=>[a.k,!sc[a.k].taught?'chưa học':m3[a.k]!=null?hsMuc(m3[a.k]):'chưa đủ']));
+  const LG=hsLogic(st),lgSub=`<div class="gsub muted">Bài logic ${LG.A.s!=null?hsMuc(LG.A.s):'–'} · Suy luận ở các mạch ${LG.B.s!=null?hsMuc(LG.B.s):'–'} · Thói quen (đúng ngay, không bấm bừa) ${LG.C.s!=null?hsMuc(LG.C.s):'–'}</div>`;
+  const bars=HS_AX.map(a=>{const v=m3[a.k],v6=m6[a.k],t=tb.v[a.k];return`<div class="grow"><span>${a.f}</span>${v==null?`<span class="muted">${sc[a.k].taught?'chưa đủ bài':'chưa học'}</span>`:`<span class="gbar"><i style="width:${v}%;background:${v>=75?'var(--leaf)':v>=60?'var(--sun)':'var(--coral)'}"></i>${t!=null?`<b class="gprev" style="left:${t}%" title="TB khối: ${hsMuc(t)}"></b>`:''}</span><b>${hsMuc(v)}</b>`}</div>${a.k==='lg'&&LG.ok?lgSub:''}${v!=null?`<div class="gsub muted">6 tháng: ${v6!=null?hsMuc(v6):'–'} · so với khối: ${t!=null?(v-t>=5?'cao hơn':t-v>=5?'thấp hơn':'ngang'):'–'}</div>`:''}`}).join('');
   return{radar:`${gvRadar([{v:tb.v,c:'gr-tb'},{v:m6,c:'gr-6'},{v:m3,c:'gr-cur'}],lab)}<div class="gr-leg muted"><span><i class="cur"></i> Em · 3 tháng gần nhất</span><span><i class="s6"></i> Em · 6 tháng gần nhất</span><span><i class="tb"></i> TB học sinh Jenny khối ${st.grade} (${tb.n} em)</span></div>
-    ${du<3?`<p class="hint" style="margin:10px 0 0">Em mới có điểm ở ${du} mạch nên hình còn hẹp.</p>`:''}`,bars:bars+gvLoiVanDong(st)}}
+    ${du<3?`<p class="hint" style="margin:10px 0 0">Em mới đủ bài ở ${du} mạch nên hình còn hẹp.</p>`:''}`,bars:bars+gvLoiVanDong(st)}}
 /* kĩ năng giải toán lời văn: đã tính vào các trục nội dung, hiện riêng tỉ lệ đúng để cô biết em đọc đề có tốt không */
-function gvLoiVanDong(st){const L=hsLoiVan(st);return`<div class="grow glv"><span>Giải toán lời văn</span>${L.n<5?`<span class="muted">${L.n?'chưa đủ bài':'chưa làm'}</span>`:`<span class="gbar"><i style="width:${L.p}%;background:${L.p>=80?'var(--leaf)':L.p>=60?'var(--sun)':'var(--coral)'}"></i></span><b>${L.p}</b>`}</div>${L.n>=5?`<div class="gsub muted">${L.n} câu gần nhất của ${L.k} dạng bài lời văn · đã tính vào các mạch Số, Phép tính, Đo lường, Hình học</div>`:''}`}
+function gvLoiVanDong(st){const L=hsLoiVan(st);return`<div class="grow glv"><span>Giải toán lời văn</span>${L.n<HS_MIN?`<span class="muted">${L.n?'chưa đủ bài':'chưa làm'}</span>`:`<span class="gbar"><i style="width:${L.p}%;background:${L.p>=75?'var(--leaf)':L.p>=60?'var(--sun)':'var(--coral)'}"></i></span><b>${hsMuc(L.p)}</b>`}</div>${L.n>=HS_MIN?`<div class="gsub muted">${L.n} câu gần nhất của ${L.k} dạng bài lời văn · đã tính vào các mạch Số, Phép tính, Đo lường, Hình học</div>`:''}`}
 function gvTabTQ(id,st,ph){
   const sk=hsStreaks(st),T=gvTong(st),al=alerts(id),gy=gvGoiY(id,st,al).filter(g=>!ph||!/Nhắn phụ huynh/.test(g.t)),SM=gvSucManh(id,st);
   return`<div class="kpis">${gvKpi('Chuỗi ngày học',sk.cur+' ngày','dài nhất '+sk.best)}${gvKpi('Số ngày học',sk.days,'từ đầu năm học')}${gvKpi('Số câu',sk.n,T.n?`đúng ${pc(T.c,T.n)}%`:'')}
    ${gvKpi('Đúng ngay lần đầu',T.f>=10?pc(T.fc,T.f)+'%':'–',T.f>=10?`sửa rồi đúng ${T.fx} câu`:'chưa đủ dữ liệu')}${gvKpi('Thời gian mỗi câu',T.n?Math.round(T.sec/T.n)+' giây':'–',T.n?`trả lời dưới 3 giây: ${pc(T.fast,T.n)}%`:'')}${gvKpi('Mở hướng dẫn',T.gd+' lần',T.n?`${(T.gd/T.n*100).toFixed(0)} lần / 100 câu`:'')}</div>
   <div class="grid gpair">
-   <section class="card"><h2>Sức mạnh Toán</h2><p class="muted" style="margin:4px 0 0">Điểm 6 mạch, so với chính em và với các bạn cùng khối học Jenny.</p>${SM.radar}</section>
-   <section class="card"><h2>Điểm từng mạch</h2><p class="muted" style="margin:4px 0 6px">Thanh: điểm 3 tháng gần nhất. Vạch mờ: trung bình khối.</p>${SM.bars}
+   <section class="card"><h2>Sức mạnh Toán</h2><p class="muted" style="margin:4px 0 0">Mức 6 mạch, so với chính em và với các bạn cùng khối học Jenny. Mức: Mới bắt đầu · Đang tập · Khá · Tốt · Vững.</p>${SM.radar}</section>
+   <section class="card"><h2>Mức từng mạch</h2><p class="muted" style="margin:4px 0 6px">Thanh: 3 tháng gần nhất. Vạch mờ: trung bình khối.</p>${SM.bars}
     <h3 style="margin-top:14px">${ph?'Cần lưu ý':'Cảnh báo'}</h3><div class="row" style="gap:6px;margin-top:6px">${al.length||gy.length?al.map(a=>`<span class="pill ${a.c}">${esc(a.t)}</span>`).join('')+gy.map(g=>`<span class="pill ${g.c}" title="${esc(g.m)}">${esc(g.t)}</span>`).join(''):'<span class="pill ok">Ổn</span>'}</div></section>
   </div>`}
 
@@ -227,7 +227,7 @@ const GV_NX=[
  f=>`${f} nghỉ học mấy hôm. Bố mẹ giúp con giữ thói quen 15 phút mỗi ngày.`,
  (f,w,b)=>`${f} làm tốt phần ${b}, hay giúp bạn trong lớp. Cô tặng con thẻ "Giúp bạn".`];
 function gvMau(){
-  if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS6||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS6=1;
+  if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS7||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS7=1;
   try{window.orgHeal&&window.orgHeal()}catch(e){}
   const NG=GV_NG;S.day=NG;const thang=[];for(let d=1;d<=NG;d+=1){const m=hsMonth(hsDayDate(d));if(!thang.includes(m))thang.push(m)}
   S.asg=(S.asg||[]).filter(a=>!a.mau);
@@ -244,8 +244,8 @@ function gvMau(){
     const kinds=Object.entries(hsIndex(g).kinds).filter(([,v])=>v.src.some(sr=>pos[sr[0]]!=null));
     /* điểm từng mạch theo tháng: mạch bắt đầu khi em học tới đảo có mạch đó, rồi tăng dần */
     const fin={};HS_AX.forEach(a=>{const ks=kinds.filter(([kd,v])=>v.ax===a.k||(a.k==='lg'&&hsSuy(kd)));if(!ks.length)return;const i0=Math.min(...ks.flatMap(([,v])=>v.src.filter(sr=>pos[sr[0]]!=null).map(sr=>pos[sr[0]])));
-      const m0=Math.min(thang.length-1,Math.floor(i0/ki*(thang.length-1)));let v=100*(gioi-.14)+rnd()*10;const tang=1.2+rnd()*3.2;
-      for(let m=m0;m<thang.length;m++){const x=Math.round(Math.max(20,Math.min(98,v+(rnd()-.5)*8)));(st.skm[thang[m]]=st.skm[thang[m]]||{})[a.k]=x;v+=tang;fin[a.k]=x}});
+      const m0=Math.min(thang.length-1,Math.floor(i0/ki*(thang.length-1)));let v=100*(gioi-.24)+rnd()*8;const tang=.8+rnd()*2.4;
+      for(let m=m0;m<thang.length;m++){const x=Math.round(Math.max(20,Math.min(92,v+(rnd()-.5)*8)));(st.skm[thang[m]]=st.skm[thang[m]]||{})[a.k]=x;v+=tang;fin[a.k]=x}});
     kinds.forEach(([kd,v])=>{const kg=Math.min(.98,Math.max(.15,(fin[v.ax]||70)/100+(rnd()-.55)*.45));st.sk[kd]={r:Array.from({length:5+Math.floor(rnd()*6)},()=>rnd()<kg?1:0),t:hsDayDate(NG-Math.floor(rnd()*20)).getTime(),ax:v.ax}});
     hsSnap(st);
     const nmi=gioi<.7?3+Math.floor(rnd()*3):Math.floor(rnd()*3),M=mist(st);kinds.filter((_,j)=>j%4===1).slice(0,nmi).forEach(([kd,v])=>{const s0=v.src.find(sr=>pos[sr[0]]!=null);if(s0)M[`${s0[0]}:${s0[1]}:${s0[2]}`]={id:s0[0],lv:s0[1],gi:s0[2],label:kd,n:1+Math.floor(rnd()*3),streak:rnd()<.3?1:0,day:NG-Math.floor(rnd()*20)}});

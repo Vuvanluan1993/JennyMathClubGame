@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Sức mạnh Toán: tính chặt hơn, hiện mức thay số
+- Điểm mỗi dạng co về 50% theo số câu (thêm 2 câu "nửa đúng"): làm ít câu không còn được 100. Điểm mạch tính theo số câu, cần ≥ 10 câu (trước là 5).
+- Bỏ số chi tiết: hiện **mức** Mới bắt đầu · Đang tập · Khá · Tốt · Vững ở hồ sơ học sinh, trang giáo viên, phụ huynh, kết quả màn Luyện. So với khối ghi "cao hơn / ngang / thấp hơn".
+- Ảnh chụp tháng cũ hạ theo cách tính mới (`st.scv=2`), tháng gần nhất tính lại. Dữ liệu mẫu trang giáo viên tạo lại (`mauHS7`), điểm thấp hơn trước.
+- Màu thanh: xanh từ mức Tốt (≥75), vàng từ Khá (≥60).
+
 ## 24/10/2026 — Bỏ giới hạn xu trong ngày
 - Thầy chốt: không giới hạn số xu em kiếm được trong ngày. Bỏ giới hạn 150 xu/ngày (câu đúng trong màn, Tự luyện) và 100 xu/ngày (trò chơi). Bỏ các dòng "đã đủ xu hôm nay".
 - Giữ nguyên: xu mỗi ván trò chơi theo luật từng trò (tối đa 20 xu/ván), giới hạn lượt chơi (vé, Khủng long 10 ván/ngày), Thử thách hôm nay 1 lượt/ngày.

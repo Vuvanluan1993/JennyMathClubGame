@@ -5745,15 +5745,22 @@ function hsAxOf(kind,topic){const t=String(kind||'').toLowerCase(),p=String(topi
    Hiện điểm khi A + B có từ 5 câu. */
 const HS_SUY=/còn thiếu|thành phần|tìm số (trong phép|hạng|trừ|bị|chia)|tìm thừa số|tìm số hạng|biểu thức chứa chữ|hai bước|ba bước|tổng và hiệu|tổng và tỉ|hiệu và tỉ|giá trị (của )?biểu thức|so sánh kết quả|ước lượng|đúng\/sai|đúng sai/;
 const hsSuy=kind=>HS_SUY.test(String(kind||'').toLowerCase());
+/* Điểm chặt hơn (thầy chốt 24/10/2026): mỗi dạng co về 50% theo số câu đã làm (thêm HS_K câu "nửa đúng"),
+   điểm mạch = trung bình các dạng theo số câu; cần ít nhất HS_MIN câu mới có điểm. Mức hiển thị: hsMuc(). */
+const HS_K=2,HS_MIN=10;
+const hsKd=e=>{const n=e.r.length,c=e.r.reduce((x,y)=>x+y,0);return(c+HS_K/2)/(n+HS_K)};
+const hsGop=ks=>{const n=ks.reduce((a,e)=>a+e.r.length,0);return n?Math.round(ks.reduce((a,e)=>a+hsKd(e)*e.r.length,0)/n*100):0};
+const HS_MUC=[[85,'Vững','Strong'],[75,'Tốt','Good'],[60,'Khá','Fair'],[40,'Đang tập','Practising'],[0,'Mới bắt đầu','Starting']];
+function hsMuc(s){const m=HS_MUC.find(x=>s>=x[0]);return typeof LANG!=='undefined'&&LANG==='en'?m[2]:m[1]}
 function hsLogic(st){const E=Object.entries(st.sk||{}).filter(([,e])=>e.r&&e.r.length);
-  const part=L=>{const n=L.reduce((a,[,e])=>a+e.r.length,0);return{n,k:L.length,s:L.length?Math.round(L.reduce((a,[,e])=>a+e.r.reduce((x,y)=>x+y,0)/e.r.length,0)/L.length*100):null}};
+  const part=L=>{const n=L.reduce((a,[,e])=>a+e.r.length,0);return{n,k:L.length,s:L.length?hsGop(L.map(([,e])=>e)):null}};
   const A=part(E.filter(([,e])=>e.ax==='lg')),B=part(E.filter(([k,e])=>e.ax!=='lg'&&hsSuy(k)));
   const T={f:0,fc:0,fast:0,n:0};Object.values(st.dd||{}).forEach(o=>{T.f+=o.f||0;T.fc+=o.fc||0;T.fast+=o.fast||0;T.n+=o.n||0});
   const C={n:T.f,s:T.f>=10?Math.round(T.fc/T.f*100*(1-Math.min(1,T.n?T.fast/T.n:0))):null};
   let w=0,v=0;[[A,.4],[B,.4],[C,.2]].forEach(([x,k])=>{if(x.s!=null&&x.n){w+=k;v+=k*x.s}});
-  return{A,B,C,n:A.n+B.n,s:w?Math.round(v/w):0,ok:A.n+B.n>=5}}
+  return{A,B,C,n:A.n+B.n,s:w?Math.round(v/w):0,ok:A.n+B.n>=HS_MIN}}
 /* tỉ lệ đúng các bài lời văn (mọi trục) */
-function hsLoiVan(st){const ks=Object.entries(st.sk||{}).filter(([k,e])=>e.r&&e.r.length&&hsWord(k));const n=ks.reduce((a,[,e])=>a+e.r.length,0),c=ks.reduce((a,[,e])=>a+e.r.reduce((x,y)=>x+y,0),0);return{n,c,p:n?Math.round(c/n*100):0,k:ks.length}}
+function hsLoiVan(st){const ks=Object.entries(st.sk||{}).filter(([k,e])=>e.r&&e.r.length&&hsWord(k));const n=ks.reduce((a,[,e])=>a+e.r.length,0),c=ks.reduce((a,[,e])=>a+e.r.reduce((x,y)=>x+y,0),0);return{n,c,p:n?Math.round((c+HS_K/2)/(n+HS_K)*100):0,k:ks.length}}
 const hsTopicOf=id=>{try{const x=id&&isl1(id);if(!x)return'';for(const g in PRIM){if(PRIM[g].isl.includes(x)){const T=PRIM[g].T[x.ti||0];return T?T[0]:''}}}catch(e){}return''};
 /* chỉ mục dạng bài theo lớp: kind → [[đảo, màn, bộ sinh]], trục có dạy */
 const HSIDX={};
@@ -5773,15 +5780,18 @@ function hsAxFix(st){if(!st||!st.sk||st.axv===HS_AXV)return;st.axv=HS_AXV;let do
   Object.entries(st.sk).forEach(([kd,e])=>{const a=hsAxOf(kd,'');if(a&&a!==e.ax){e.ax=a;doi=true}});if(!doi)return;
   try{const sc=hsScores(st),ms=Object.keys(st.skm||{}).sort(),cuoi=ms[ms.length-1];
     ms.forEach(k=>{const m=st.skm[k];Object.keys(m).forEach(x=>{if(!HS_AXN[x])delete m[x]});HS_AX.forEach(a=>{if(!sc[a.k].ok)delete m[a.k];else if(k===cuoi)m[a.k]=sc[a.k].s})})}catch(e){}}
-function hsHeal(st,id){if(!st||st.grade>5)return;if(!st.dd)st.dd={};if(!st.sk)st.sk={};if(!st.skm)st.skm={};hsAxFix(st);
+function hsScFix(st){if(st.scv===2)return;st.scv=2;try{const ms=Object.keys(st.skm||{}).sort(),cuoi=ms[ms.length-1];
+  /* tháng cũ không còn đủ dữ liệu để tính lại: hạ tương ứng với cách co điểm mới; tháng gần nhất tính lại từ câu đã làm */
+  ms.forEach(k=>{const m=st.skm[k];Object.keys(m).forEach(x=>{m[x]=Math.round(50+(m[x]-50)*.83)})});if(cuoi){const sc=hsScores(st),m=st.skm[cuoi];HS_AX.forEach(a=>{if(sc[a.k].ok)m[a.k]=sc[a.k].s;else delete m[a.k]})}}catch(e){}}
+function hsHeal(st,id){if(!st||st.grade>5)return;if(!st.dd)st.dd={};if(!st.sk)st.sk={};if(!st.skm)st.skm={};hsAxFix(st);hsScFix(st);
   if(!st.ddv){st.ddv=1;try{(S.events||[]).forEach(e=>{if(e.actor.account.name!==id||!e.verb.id.endsWith('answered'))return;const k=hsKey(hsDayDate(evDay(e))),o=st.dd[k]||(st.dd[k]={n:0,c:0,sec:0});o.n++;if(e.result.success)o.c++;o.sec+=Math.min(180,parseInt(String(e.result.duration||'PT0S').slice(2))||0)})}catch(e){}}}
 {const _h=healAll;healAll=function(){_h.apply(this,arguments);try{Object.entries(S.st||{}).forEach(([id,st])=>hsHeal(st,id))}catch(e){}}}
 
 /* ----- điểm trục ----- */
 function hsScores(st){const g=st.grade<=5?st.grade:1,idx=hsIndex(g),o={};
   HS_AX.forEach(a=>{const ks=Object.values(st.sk||{}).filter(e=>e.ax===a.k&&e.r.length);const n=ks.reduce((s,e)=>s+e.r.length,0);
-    const s=ks.length?Math.round(ks.reduce((s,e)=>s+e.r.reduce((x,y)=>x+y,0)/e.r.length,0)/ks.length*100):0;
-    o[a.k]={s,n,ok:n>=5,taught:idx.ax.has(a.k)||n>0}});
+    const s=hsGop(ks);
+    o[a.k]={s,n,ok:n>=HS_MIN,taught:idx.ax.has(a.k)||n>0}});
   try{const L=hsLogic(st);o.lg={s:L.s,n:L.n,ok:L.ok,taught:idx.ax.has('lg')||L.n>0}}catch(e){}return o}
 const hsMonth=d=>hsKey(d).slice(0,7);
 function hsSnap(st){const sc=hsScores(st),m={};HS_AX.forEach(a=>{if(sc[a.k].ok)m[a.k]=sc[a.k].s});st.skm[hsMonth(hsToday())]=m}
@@ -5825,7 +5835,7 @@ function startLuyen(){const st=S.st[sid],g=st.grade<=5?st.grade:1,idx=hsIndex(g)
   sfx('win');sayJ(g.lza>g.lzb?`Sức mạnh ${HS_AXN[g.lz]} của em tăng lên rồi! Giỏi quá!`:'Em luyện chăm lắm! Jenny rất vui.');save();render()}}
 {const _v=viewEnd1;viewEnd1=function(){if(!scr.lz)return _v.apply(this,arguments);const g=scr,up=g.lzaok&&g.lza>g.lzb;
   return`<div class="game g1"><div class="gend"><div class="bigicon bossend">${jenny(84,'cheer')}</div><h1>Luyện xong!</h1><p class="muted">${g.ok}/${g.qs.length} câu đúng · +5 xu</p>
-   <div class="hs-up${up?' on':''}"><span>${esc(HS_AXN[g.lz])}</span><b>${g.lzok?g.lzb:'–'}</b><span aria-hidden="true">▶</span><b class="hs-new">${g.lzaok?g.lza:'chưa đủ'}</b></div>
+   <div class="hs-up${up?' on':''}"><span>${esc(HS_AXN[g.lz])}</span><b>${g.lzok?hsMuc(g.lzb):'–'}</b><span aria-hidden="true">▶</span><b class="hs-new">${g.lzaok?hsMuc(g.lza):'chưa đủ'}</b></div>
    <div class="gendbtn"><button class="gobtn" type="button" onclick="startLuyen()">Luyện tiếp</button><button class="gobtn ghost" type="button" onclick="go({k:'home',tab:'hoso'})">Về Hồ sơ</button><button class="gobtn ghost" type="button" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`}}
 {const _g=viewGame1;viewGame1=function(){const h=_g.apply(this,arguments);if(!scr.lz||scr.end)return h;
   return h.replace(`go({k:'home',tab:'fix'})`,`go({k:'home',tab:'hoso'})`).replace('📒 Luyện lỗi',`Luyện · ${esc(HS_AXN[scr.lz])}`).replace('aria-label="Sổ lỗi sai"',`aria-label="Luyện ${esc(HS_AXN[scr.lz])}"`)}}
@@ -5866,8 +5876,8 @@ function viewHoSo(st){hsHeal(st,sid);const g=st.grade,sk=hsStreaks(st),H=hsHeat(
     <div class="hs-lg">Ít ${HS_LV.map(c=>`<i style="background:${c[0]};border-color:${c[1]}"></i>`).join('')} Nhiều <span class="hs-lt"><i class="hs-t"></i> Hôm nay</span></div>
     <div class="hs-pf hs-det" id="hsDet" aria-live="polite">${hsDetail(tk,(st.dd||{})[tk])}</div></section>
    <section class="hs-pf hs-box"><h2 class="hs-h2">Sức mạnh Toán</h2>
-    <div class="hs-rd"><canvas id="hsRadar" width="100" height="84" data-sc='${JSON.stringify(Object.fromEntries(HS_AX.map(a=>[a.k,[sc[a.k].s,sc[a.k].ok?1:0,sc[a.k].taught?1:0]])))}' data-prev='${prev?JSON.stringify(st.skm[prev]):''}' role="img" aria-label="Sức mạnh Toán: ${HS_AX.map(a=>`${a.f} ${!sc[a.k].taught?'chưa học':sc[a.k].ok?sc[a.k].s:'chưa đủ'}`).join(', ')}"></canvas>
-     ${HS_AX.map((a,i)=>{const s=sc[a.k],dim=!s.taught||!s.ok;return`<span class="hs-lb${dim?' dim':''}" data-i="${i}">${a.n}<br><b>${!s.taught?'chưa học':s.ok?s.s:'chưa đủ'}</b></span>`}).join('')}</div>
+    <div class="hs-rd"><canvas id="hsRadar" width="100" height="84" data-sc='${JSON.stringify(Object.fromEntries(HS_AX.map(a=>[a.k,[sc[a.k].s,sc[a.k].ok?1:0,sc[a.k].taught?1:0]])))}' data-prev='${prev?JSON.stringify(st.skm[prev]):''}' role="img" aria-label="Sức mạnh Toán: ${HS_AX.map(a=>`${a.f} ${!sc[a.k].taught?'chưa học':sc[a.k].ok?hsMuc(sc[a.k].s):'chưa đủ'}`).join(', ')}"></canvas>
+     ${HS_AX.map((a,i)=>{const s=sc[a.k],dim=!s.taught||!s.ok;return`<span class="hs-lb${dim?' dim':''}" data-i="${i}">${a.n}<br><b>${!s.taught?'chưa học':s.ok?hsMuc(s.s):'chưa đủ'}</b></span>`}).join('')}</div>
     <div class="hs-leg"><span><i class="a"></i> Tháng này</span>${prev?`<span><i class="b"></i> Tháng ${Number(prev.slice(5))}</span>`:''}</div></section>
    <div class="hs-pf hs-tip">${jenny(40,'idle')}<div>${tip}</div>${btn}</div></div>`}
 function hsDrawRadar(){const cv=document.getElementById('hsRadar');if(!cv)return;const D=JSON.parse(cv.dataset.sc),P=cv.dataset.prev?JSON.parse(cv.dataset.prev):null;
@@ -8052,7 +8062,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 14:57';
+const APP_VER='24/10 · 15:00';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -11055,7 +11065,7 @@ function gvGoiY(id,st,al){const out=[],T=gvTong(st),cuoi=gvCuoi(id,st),sc=hsScor
   if(T.f>=20&&T.fc/T.f<.6)out.push({t:'Ôn lại cách làm',c:'warn',m:`Em chỉ đúng ngay lần đầu ${pc(T.fc,T.f)}% câu.`});
   if(T.n>=30&&T.gd/T.n>.15)out.push({t:'Cần hỗ trợ nhiều',c:'warn',m:`Em mở hướng dẫn ${T.gd} lần trên ${T.n} câu.`});
   if(!coKhong){if(cuoi){const g=Math.round((hsToday()-new Date(cuoi+'T00:00:00'))/864e5);if(g>=2)out.push({t:`Nhắn phụ huynh: ${g} ngày chưa học`,c:'warn',m:'Em đã lâu chưa vào học.'})}else out.push({t:'Nhắn phụ huynh: chưa học lần nào',c:'warn',m:'Em chưa vào học.'})}
-  const best=HS_AX.filter(a=>sc[a.k].ok).sort((a,b)=>sc[b.k].s-sc[a.k].s)[0];if(best&&sc[best.k].s>=85)out.push({t:`Khen em: giỏi ${best.f}`,c:'ok',m:`${sc[best.k].s} điểm.`});
+  const best=HS_AX.filter(a=>sc[a.k].ok).sort((a,b)=>sc[b.k].s-sc[a.k].s)[0];if(best&&sc[best.k].s>=85)out.push({t:`Khen em: giỏi ${best.f}`,c:'ok',m:`Mức ${hsMuc(sc[best.k].s)}.`});
   return out}
 /* điểm mạch theo cửa sổ tháng: trung bình các ảnh chụp tháng (st.skm) trong n tháng gần nhất */
 function gvThang(n){const d=hsToday(),out=[];for(let i=0;i<n;i++){const x=new Date(d.getFullYear(),d.getMonth()-i,1);out.push(hsMonth(x))}return out}
@@ -11088,20 +11098,20 @@ window.gvLichTap=(ev,id)=>{const i=ev.target.closest('i[data-k]');if(!i)return;d
 
 function gvSucManh(id,st){
   const sc=hsScores(st),m3=gvMach(st,3),m6=gvMach(st,6),tb=gvTBKhoi(st.grade),du=Object.keys(m3).length;
-  const lab=Object.fromEntries(HS_AX.map(a=>[a.k,!sc[a.k].taught?'chưa học':m3[a.k]!=null?m3[a.k]:'chưa đủ']));
-  const LG=hsLogic(st),lgSub=`<div class="gsub muted">Bài logic ${LG.A.s!=null?LG.A.s:'–'} · Suy luận ở các mạch ${LG.B.s!=null?LG.B.s:'–'} · Thói quen (đúng ngay, không bấm bừa) ${LG.C.s!=null?LG.C.s:'–'}</div>`;
-  const bars=HS_AX.map(a=>{const v=m3[a.k],v6=m6[a.k],t=tb.v[a.k];return`<div class="grow"><span>${a.f}</span>${v==null?`<span class="muted">${sc[a.k].taught?'chưa đủ bài':'chưa học'}</span>`:`<span class="gbar"><i style="width:${v}%;background:${v>=80?'var(--leaf)':v>=60?'var(--sun)':'var(--coral)'}"></i>${t!=null?`<b class="gprev" style="left:${t}%" title="TB khối ${t}"></b>`:''}</span><b>${v}</b>`}</div>${a.k==='lg'&&LG.ok?lgSub:''}${v!=null?`<div class="gsub muted">6 tháng: ${v6!=null?v6:'–'} · khối: ${t!=null?`${t} (${v>=t?'+':'−'}${Math.abs(v-t)})`:'–'}</div>`:''}`}).join('');
+  const lab=Object.fromEntries(HS_AX.map(a=>[a.k,!sc[a.k].taught?'chưa học':m3[a.k]!=null?hsMuc(m3[a.k]):'chưa đủ']));
+  const LG=hsLogic(st),lgSub=`<div class="gsub muted">Bài logic ${LG.A.s!=null?hsMuc(LG.A.s):'–'} · Suy luận ở các mạch ${LG.B.s!=null?hsMuc(LG.B.s):'–'} · Thói quen (đúng ngay, không bấm bừa) ${LG.C.s!=null?hsMuc(LG.C.s):'–'}</div>`;
+  const bars=HS_AX.map(a=>{const v=m3[a.k],v6=m6[a.k],t=tb.v[a.k];return`<div class="grow"><span>${a.f}</span>${v==null?`<span class="muted">${sc[a.k].taught?'chưa đủ bài':'chưa học'}</span>`:`<span class="gbar"><i style="width:${v}%;background:${v>=75?'var(--leaf)':v>=60?'var(--sun)':'var(--coral)'}"></i>${t!=null?`<b class="gprev" style="left:${t}%" title="TB khối: ${hsMuc(t)}"></b>`:''}</span><b>${hsMuc(v)}</b>`}</div>${a.k==='lg'&&LG.ok?lgSub:''}${v!=null?`<div class="gsub muted">6 tháng: ${v6!=null?hsMuc(v6):'–'} · so với khối: ${t!=null?(v-t>=5?'cao hơn':t-v>=5?'thấp hơn':'ngang'):'–'}</div>`:''}`}).join('');
   return{radar:`${gvRadar([{v:tb.v,c:'gr-tb'},{v:m6,c:'gr-6'},{v:m3,c:'gr-cur'}],lab)}<div class="gr-leg muted"><span><i class="cur"></i> Em · 3 tháng gần nhất</span><span><i class="s6"></i> Em · 6 tháng gần nhất</span><span><i class="tb"></i> TB học sinh Jenny khối ${st.grade} (${tb.n} em)</span></div>
-    ${du<3?`<p class="hint" style="margin:10px 0 0">Em mới có điểm ở ${du} mạch nên hình còn hẹp.</p>`:''}`,bars:bars+gvLoiVanDong(st)}}
+    ${du<3?`<p class="hint" style="margin:10px 0 0">Em mới đủ bài ở ${du} mạch nên hình còn hẹp.</p>`:''}`,bars:bars+gvLoiVanDong(st)}}
 /* kĩ năng giải toán lời văn: đã tính vào các trục nội dung, hiện riêng tỉ lệ đúng để cô biết em đọc đề có tốt không */
-function gvLoiVanDong(st){const L=hsLoiVan(st);return`<div class="grow glv"><span>Giải toán lời văn</span>${L.n<5?`<span class="muted">${L.n?'chưa đủ bài':'chưa làm'}</span>`:`<span class="gbar"><i style="width:${L.p}%;background:${L.p>=80?'var(--leaf)':L.p>=60?'var(--sun)':'var(--coral)'}"></i></span><b>${L.p}</b>`}</div>${L.n>=5?`<div class="gsub muted">${L.n} câu gần nhất của ${L.k} dạng bài lời văn · đã tính vào các mạch Số, Phép tính, Đo lường, Hình học</div>`:''}`}
+function gvLoiVanDong(st){const L=hsLoiVan(st);return`<div class="grow glv"><span>Giải toán lời văn</span>${L.n<HS_MIN?`<span class="muted">${L.n?'chưa đủ bài':'chưa làm'}</span>`:`<span class="gbar"><i style="width:${L.p}%;background:${L.p>=75?'var(--leaf)':L.p>=60?'var(--sun)':'var(--coral)'}"></i></span><b>${hsMuc(L.p)}</b>`}</div>${L.n>=HS_MIN?`<div class="gsub muted">${L.n} câu gần nhất của ${L.k} dạng bài lời văn · đã tính vào các mạch Số, Phép tính, Đo lường, Hình học</div>`:''}`}
 function gvTabTQ(id,st,ph){
   const sk=hsStreaks(st),T=gvTong(st),al=alerts(id),gy=gvGoiY(id,st,al).filter(g=>!ph||!/Nhắn phụ huynh/.test(g.t)),SM=gvSucManh(id,st);
   return`<div class="kpis">${gvKpi('Chuỗi ngày học',sk.cur+' ngày','dài nhất '+sk.best)}${gvKpi('Số ngày học',sk.days,'từ đầu năm học')}${gvKpi('Số câu',sk.n,T.n?`đúng ${pc(T.c,T.n)}%`:'')}
    ${gvKpi('Đúng ngay lần đầu',T.f>=10?pc(T.fc,T.f)+'%':'–',T.f>=10?`sửa rồi đúng ${T.fx} câu`:'chưa đủ dữ liệu')}${gvKpi('Thời gian mỗi câu',T.n?Math.round(T.sec/T.n)+' giây':'–',T.n?`trả lời dưới 3 giây: ${pc(T.fast,T.n)}%`:'')}${gvKpi('Mở hướng dẫn',T.gd+' lần',T.n?`${(T.gd/T.n*100).toFixed(0)} lần / 100 câu`:'')}</div>
   <div class="grid gpair">
-   <section class="card"><h2>Sức mạnh Toán</h2><p class="muted" style="margin:4px 0 0">Điểm 6 mạch, so với chính em và với các bạn cùng khối học Jenny.</p>${SM.radar}</section>
-   <section class="card"><h2>Điểm từng mạch</h2><p class="muted" style="margin:4px 0 6px">Thanh: điểm 3 tháng gần nhất. Vạch mờ: trung bình khối.</p>${SM.bars}
+   <section class="card"><h2>Sức mạnh Toán</h2><p class="muted" style="margin:4px 0 0">Mức 6 mạch, so với chính em và với các bạn cùng khối học Jenny. Mức: Mới bắt đầu · Đang tập · Khá · Tốt · Vững.</p>${SM.radar}</section>
+   <section class="card"><h2>Mức từng mạch</h2><p class="muted" style="margin:4px 0 6px">Thanh: 3 tháng gần nhất. Vạch mờ: trung bình khối.</p>${SM.bars}
     <h3 style="margin-top:14px">${ph?'Cần lưu ý':'Cảnh báo'}</h3><div class="row" style="gap:6px;margin-top:6px">${al.length||gy.length?al.map(a=>`<span class="pill ${a.c}">${esc(a.t)}</span>`).join('')+gy.map(g=>`<span class="pill ${g.c}" title="${esc(g.m)}">${esc(g.t)}</span>`).join(''):'<span class="pill ok">Ổn</span>'}</div></section>
   </div>`}
 
@@ -11252,7 +11262,7 @@ const GV_NX=[
  f=>`${f} nghỉ học mấy hôm. Bố mẹ giúp con giữ thói quen 15 phút mỗi ngày.`,
  (f,w,b)=>`${f} làm tốt phần ${b}, hay giúp bạn trong lớp. Cô tặng con thẻ "Giúp bạn".`];
 function gvMau(){
-  if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS6||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS6=1;
+  if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS7||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS7=1;
   try{window.orgHeal&&window.orgHeal()}catch(e){}
   const NG=GV_NG;S.day=NG;const thang=[];for(let d=1;d<=NG;d+=1){const m=hsMonth(hsDayDate(d));if(!thang.includes(m))thang.push(m)}
   S.asg=(S.asg||[]).filter(a=>!a.mau);
@@ -11269,8 +11279,8 @@ function gvMau(){
     const kinds=Object.entries(hsIndex(g).kinds).filter(([,v])=>v.src.some(sr=>pos[sr[0]]!=null));
     /* điểm từng mạch theo tháng: mạch bắt đầu khi em học tới đảo có mạch đó, rồi tăng dần */
     const fin={};HS_AX.forEach(a=>{const ks=kinds.filter(([kd,v])=>v.ax===a.k||(a.k==='lg'&&hsSuy(kd)));if(!ks.length)return;const i0=Math.min(...ks.flatMap(([,v])=>v.src.filter(sr=>pos[sr[0]]!=null).map(sr=>pos[sr[0]])));
-      const m0=Math.min(thang.length-1,Math.floor(i0/ki*(thang.length-1)));let v=100*(gioi-.14)+rnd()*10;const tang=1.2+rnd()*3.2;
-      for(let m=m0;m<thang.length;m++){const x=Math.round(Math.max(20,Math.min(98,v+(rnd()-.5)*8)));(st.skm[thang[m]]=st.skm[thang[m]]||{})[a.k]=x;v+=tang;fin[a.k]=x}});
+      const m0=Math.min(thang.length-1,Math.floor(i0/ki*(thang.length-1)));let v=100*(gioi-.24)+rnd()*8;const tang=.8+rnd()*2.4;
+      for(let m=m0;m<thang.length;m++){const x=Math.round(Math.max(20,Math.min(92,v+(rnd()-.5)*8)));(st.skm[thang[m]]=st.skm[thang[m]]||{})[a.k]=x;v+=tang;fin[a.k]=x}});
     kinds.forEach(([kd,v])=>{const kg=Math.min(.98,Math.max(.15,(fin[v.ax]||70)/100+(rnd()-.55)*.45));st.sk[kd]={r:Array.from({length:5+Math.floor(rnd()*6)},()=>rnd()<kg?1:0),t:hsDayDate(NG-Math.floor(rnd()*20)).getTime(),ax:v.ax}});
     hsSnap(st);
     const nmi=gioi<.7?3+Math.floor(rnd()*3):Math.floor(rnd()*3),M=mist(st);kinds.filter((_,j)=>j%4===1).slice(0,nmi).forEach(([kd,v])=>{const s0=v.src.find(sr=>pos[sr[0]]!=null);if(s0)M[`${s0[0]}:${s0[1]}:${s0[2]}`]={id:s0[0],lv:s0[1],gi:s0[2],label:kd,n:1+Math.floor(rnd()*3),streak:rnd()<.3?1:0,day:NG-Math.floor(rnd()*20)}});
@@ -11468,7 +11478,7 @@ async function fbTaoTK(tk,pw){await fbInit();const app2=firebase.apps.find(a=>a.
 async function fbThietLap(ten,tk,pw){const{auth,db}=await fbInit();const ref=db.doc('org/main');
   const c=await auth.createUserWithEmailAndPassword(fbEmail(tk),pw);const uid=c.user.uid;
   const o=await ref.get();if(o.exists)throw{code:'x',message:'Trung tâm đã có quản lý. Hãy đăng nhập.'};
-  const org={ten:'Clb Học Toán cùng Jenny',nam:'2026–2027',gv:[{id:tk,ten,tk}],lop:[],gd:{},nl:{},nk:[],mo:{},hs:[],ph:{},v:2,cloud:1,mauHS4:1,mauHS5:1,mauHS6:1,mauHS3:1,mauHS2:1,mauHS:1};
+  const org={ten:'Clb Học Toán cùng Jenny',nam:'2026–2027',gv:[{id:tk,ten,tk}],lop:[],gd:{},nl:{},nk:[],mo:{},hs:[],ph:{},v:2,cloud:1,mauHS4:1,mauHS5:1,mauHS6:1,mauHS7:1,mauHS3:1,mauHS2:1,mauHS:1};
   await ref.set({j:JSON.stringify(org),gd:{},pc:{},admins:[uid],t:fbTS()});
   await db.doc('users/'+uid).set({role:'ql',tk,ten,gvId:tk});return fbNapMe(c.user)}
 
@@ -11520,7 +11530,7 @@ async function fbGvBoot(){const me=CLOUD.me,db=FB.db;document.body.classList.add
   role=window.TRANG||(me.role==='ph'?'ph':'gv');gvMe=me.gvId||me.tk;gvLop=null;scr={k:'home'};
   await new Promise(ok=>{let lan=0;
     fbSub.push(db.doc('org/main').onSnapshot(d=>{const j=d.exists?d.data().j:null;if(!j){ok();return}
-      if(j!==fbLast['org/main']||!S.org){fbLast['org/main']=j;const o=fbJ(j);o.cloud=1;o.v=2;['mauHS','mauHS2','mauHS3','mauHS4','mauHS5','mauHS6'].forEach(k=>o[k]=1);
+      if(j!==fbLast['org/main']||!S.org){fbLast['org/main']=j;const o=fbJ(j);o.cloud=1;o.v=2;['mauHS','mauHS2','mauHS3','mauHS4','mauHS5','mauHS6','mauHS7'].forEach(k=>o[k]=1);
         const giu=S.org&&Object.getOwnPropertyDescriptor(S,'open');S.org=o;fbDanhSach();if(lan++)fbVe()}ok()},e=>{console.error(e);ok()}))});
   if(me.role!=='ph')fbSub.push(db.collection('asg').onSnapshot(q=>{const A=[];q.docs.forEach(d=>{const j=d.data().j;fbLast['asg/'+d.id]=j;const a=fbJ(j);if(a)A.push(a)});S.asg=A;fbVe()},e=>console.error(e)));
   else fbSub.push(db.collection('asg').onSnapshot(q=>{S.asg=q.docs.map(d=>fbJ(d.data().j)).filter(Boolean);fbVe()},e=>{}));

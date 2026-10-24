@@ -33,15 +33,22 @@ function hsAxOf(kind,topic){const t=String(kind||'').toLowerCase(),p=String(topi
    Hiện điểm khi A + B có từ 5 câu. */
 const HS_SUY=/còn thiếu|thành phần|tìm số (trong phép|hạng|trừ|bị|chia)|tìm thừa số|tìm số hạng|biểu thức chứa chữ|hai bước|ba bước|tổng và hiệu|tổng và tỉ|hiệu và tỉ|giá trị (của )?biểu thức|so sánh kết quả|ước lượng|đúng\/sai|đúng sai/;
 const hsSuy=kind=>HS_SUY.test(String(kind||'').toLowerCase());
+/* Điểm chặt hơn (thầy chốt 24/10/2026): mỗi dạng co về 50% theo số câu đã làm (thêm HS_K câu "nửa đúng"),
+   điểm mạch = trung bình các dạng theo số câu; cần ít nhất HS_MIN câu mới có điểm. Mức hiển thị: hsMuc(). */
+const HS_K=2,HS_MIN=10;
+const hsKd=e=>{const n=e.r.length,c=e.r.reduce((x,y)=>x+y,0);return(c+HS_K/2)/(n+HS_K)};
+const hsGop=ks=>{const n=ks.reduce((a,e)=>a+e.r.length,0);return n?Math.round(ks.reduce((a,e)=>a+hsKd(e)*e.r.length,0)/n*100):0};
+const HS_MUC=[[85,'Vững','Strong'],[75,'Tốt','Good'],[60,'Khá','Fair'],[40,'Đang tập','Practising'],[0,'Mới bắt đầu','Starting']];
+function hsMuc(s){const m=HS_MUC.find(x=>s>=x[0]);return typeof LANG!=='undefined'&&LANG==='en'?m[2]:m[1]}
 function hsLogic(st){const E=Object.entries(st.sk||{}).filter(([,e])=>e.r&&e.r.length);
-  const part=L=>{const n=L.reduce((a,[,e])=>a+e.r.length,0);return{n,k:L.length,s:L.length?Math.round(L.reduce((a,[,e])=>a+e.r.reduce((x,y)=>x+y,0)/e.r.length,0)/L.length*100):null}};
+  const part=L=>{const n=L.reduce((a,[,e])=>a+e.r.length,0);return{n,k:L.length,s:L.length?hsGop(L.map(([,e])=>e)):null}};
   const A=part(E.filter(([,e])=>e.ax==='lg')),B=part(E.filter(([k,e])=>e.ax!=='lg'&&hsSuy(k)));
   const T={f:0,fc:0,fast:0,n:0};Object.values(st.dd||{}).forEach(o=>{T.f+=o.f||0;T.fc+=o.fc||0;T.fast+=o.fast||0;T.n+=o.n||0});
   const C={n:T.f,s:T.f>=10?Math.round(T.fc/T.f*100*(1-Math.min(1,T.n?T.fast/T.n:0))):null};
   let w=0,v=0;[[A,.4],[B,.4],[C,.2]].forEach(([x,k])=>{if(x.s!=null&&x.n){w+=k;v+=k*x.s}});
-  return{A,B,C,n:A.n+B.n,s:w?Math.round(v/w):0,ok:A.n+B.n>=5}}
+  return{A,B,C,n:A.n+B.n,s:w?Math.round(v/w):0,ok:A.n+B.n>=HS_MIN}}
 /* tỉ lệ đúng các bài lời văn (mọi trục) */
-function hsLoiVan(st){const ks=Object.entries(st.sk||{}).filter(([k,e])=>e.r&&e.r.length&&hsWord(k));const n=ks.reduce((a,[,e])=>a+e.r.length,0),c=ks.reduce((a,[,e])=>a+e.r.reduce((x,y)=>x+y,0),0);return{n,c,p:n?Math.round(c/n*100):0,k:ks.length}}
+function hsLoiVan(st){const ks=Object.entries(st.sk||{}).filter(([k,e])=>e.r&&e.r.length&&hsWord(k));const n=ks.reduce((a,[,e])=>a+e.r.length,0),c=ks.reduce((a,[,e])=>a+e.r.reduce((x,y)=>x+y,0),0);return{n,c,p:n?Math.round((c+HS_K/2)/(n+HS_K)*100):0,k:ks.length}}
 const hsTopicOf=id=>{try{const x=id&&isl1(id);if(!x)return'';for(const g in PRIM){if(PRIM[g].isl.includes(x)){const T=PRIM[g].T[x.ti||0];return T?T[0]:''}}}catch(e){}return''};
 /* chỉ mục dạng bài theo lớp: kind → [[đảo, màn, bộ sinh]], trục có dạy */
 const HSIDX={};
@@ -61,15 +68,18 @@ function hsAxFix(st){if(!st||!st.sk||st.axv===HS_AXV)return;st.axv=HS_AXV;let do
   Object.entries(st.sk).forEach(([kd,e])=>{const a=hsAxOf(kd,'');if(a&&a!==e.ax){e.ax=a;doi=true}});if(!doi)return;
   try{const sc=hsScores(st),ms=Object.keys(st.skm||{}).sort(),cuoi=ms[ms.length-1];
     ms.forEach(k=>{const m=st.skm[k];Object.keys(m).forEach(x=>{if(!HS_AXN[x])delete m[x]});HS_AX.forEach(a=>{if(!sc[a.k].ok)delete m[a.k];else if(k===cuoi)m[a.k]=sc[a.k].s})})}catch(e){}}
-function hsHeal(st,id){if(!st||st.grade>5)return;if(!st.dd)st.dd={};if(!st.sk)st.sk={};if(!st.skm)st.skm={};hsAxFix(st);
+function hsScFix(st){if(st.scv===2)return;st.scv=2;try{const ms=Object.keys(st.skm||{}).sort(),cuoi=ms[ms.length-1];
+  /* tháng cũ không còn đủ dữ liệu để tính lại: hạ tương ứng với cách co điểm mới; tháng gần nhất tính lại từ câu đã làm */
+  ms.forEach(k=>{const m=st.skm[k];Object.keys(m).forEach(x=>{m[x]=Math.round(50+(m[x]-50)*.83)})});if(cuoi){const sc=hsScores(st),m=st.skm[cuoi];HS_AX.forEach(a=>{if(sc[a.k].ok)m[a.k]=sc[a.k].s;else delete m[a.k]})}}catch(e){}}
+function hsHeal(st,id){if(!st||st.grade>5)return;if(!st.dd)st.dd={};if(!st.sk)st.sk={};if(!st.skm)st.skm={};hsAxFix(st);hsScFix(st);
   if(!st.ddv){st.ddv=1;try{(S.events||[]).forEach(e=>{if(e.actor.account.name!==id||!e.verb.id.endsWith('answered'))return;const k=hsKey(hsDayDate(evDay(e))),o=st.dd[k]||(st.dd[k]={n:0,c:0,sec:0});o.n++;if(e.result.success)o.c++;o.sec+=Math.min(180,parseInt(String(e.result.duration||'PT0S').slice(2))||0)})}catch(e){}}}
 {const _h=healAll;healAll=function(){_h.apply(this,arguments);try{Object.entries(S.st||{}).forEach(([id,st])=>hsHeal(st,id))}catch(e){}}}
 
 /* ----- điểm trục ----- */
 function hsScores(st){const g=st.grade<=5?st.grade:1,idx=hsIndex(g),o={};
   HS_AX.forEach(a=>{const ks=Object.values(st.sk||{}).filter(e=>e.ax===a.k&&e.r.length);const n=ks.reduce((s,e)=>s+e.r.length,0);
-    const s=ks.length?Math.round(ks.reduce((s,e)=>s+e.r.reduce((x,y)=>x+y,0)/e.r.length,0)/ks.length*100):0;
-    o[a.k]={s,n,ok:n>=5,taught:idx.ax.has(a.k)||n>0}});
+    const s=hsGop(ks);
+    o[a.k]={s,n,ok:n>=HS_MIN,taught:idx.ax.has(a.k)||n>0}});
   try{const L=hsLogic(st);o.lg={s:L.s,n:L.n,ok:L.ok,taught:idx.ax.has('lg')||L.n>0}}catch(e){}return o}
 const hsMonth=d=>hsKey(d).slice(0,7);
 function hsSnap(st){const sc=hsScores(st),m={};HS_AX.forEach(a=>{if(sc[a.k].ok)m[a.k]=sc[a.k].s});st.skm[hsMonth(hsToday())]=m}
@@ -113,7 +123,7 @@ function startLuyen(){const st=S.st[sid],g=st.grade<=5?st.grade:1,idx=hsIndex(g)
   sfx('win');sayJ(g.lza>g.lzb?`Sức mạnh ${HS_AXN[g.lz]} của em tăng lên rồi! Giỏi quá!`:'Em luyện chăm lắm! Jenny rất vui.');save();render()}}
 {const _v=viewEnd1;viewEnd1=function(){if(!scr.lz)return _v.apply(this,arguments);const g=scr,up=g.lzaok&&g.lza>g.lzb;
   return`<div class="game g1"><div class="gend"><div class="bigicon bossend">${jenny(84,'cheer')}</div><h1>Luyện xong!</h1><p class="muted">${g.ok}/${g.qs.length} câu đúng · +5 xu</p>
-   <div class="hs-up${up?' on':''}"><span>${esc(HS_AXN[g.lz])}</span><b>${g.lzok?g.lzb:'–'}</b><span aria-hidden="true">▶</span><b class="hs-new">${g.lzaok?g.lza:'chưa đủ'}</b></div>
+   <div class="hs-up${up?' on':''}"><span>${esc(HS_AXN[g.lz])}</span><b>${g.lzok?hsMuc(g.lzb):'–'}</b><span aria-hidden="true">▶</span><b class="hs-new">${g.lzaok?hsMuc(g.lza):'chưa đủ'}</b></div>
    <div class="gendbtn"><button class="gobtn" type="button" onclick="startLuyen()">Luyện tiếp</button><button class="gobtn ghost" type="button" onclick="go({k:'home',tab:'hoso'})">Về Hồ sơ</button><button class="gobtn ghost" type="button" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`}}
 {const _g=viewGame1;viewGame1=function(){const h=_g.apply(this,arguments);if(!scr.lz||scr.end)return h;
   return h.replace(`go({k:'home',tab:'fix'})`,`go({k:'home',tab:'hoso'})`).replace('📒 Luyện lỗi',`Luyện · ${esc(HS_AXN[scr.lz])}`).replace('aria-label="Sổ lỗi sai"',`aria-label="Luyện ${esc(HS_AXN[scr.lz])}"`)}}
@@ -154,8 +164,8 @@ function viewHoSo(st){hsHeal(st,sid);const g=st.grade,sk=hsStreaks(st),H=hsHeat(
     <div class="hs-lg">Ít ${HS_LV.map(c=>`<i style="background:${c[0]};border-color:${c[1]}"></i>`).join('')} Nhiều <span class="hs-lt"><i class="hs-t"></i> Hôm nay</span></div>
     <div class="hs-pf hs-det" id="hsDet" aria-live="polite">${hsDetail(tk,(st.dd||{})[tk])}</div></section>
    <section class="hs-pf hs-box"><h2 class="hs-h2">Sức mạnh Toán</h2>
-    <div class="hs-rd"><canvas id="hsRadar" width="100" height="84" data-sc='${JSON.stringify(Object.fromEntries(HS_AX.map(a=>[a.k,[sc[a.k].s,sc[a.k].ok?1:0,sc[a.k].taught?1:0]])))}' data-prev='${prev?JSON.stringify(st.skm[prev]):''}' role="img" aria-label="Sức mạnh Toán: ${HS_AX.map(a=>`${a.f} ${!sc[a.k].taught?'chưa học':sc[a.k].ok?sc[a.k].s:'chưa đủ'}`).join(', ')}"></canvas>
-     ${HS_AX.map((a,i)=>{const s=sc[a.k],dim=!s.taught||!s.ok;return`<span class="hs-lb${dim?' dim':''}" data-i="${i}">${a.n}<br><b>${!s.taught?'chưa học':s.ok?s.s:'chưa đủ'}</b></span>`}).join('')}</div>
+    <div class="hs-rd"><canvas id="hsRadar" width="100" height="84" data-sc='${JSON.stringify(Object.fromEntries(HS_AX.map(a=>[a.k,[sc[a.k].s,sc[a.k].ok?1:0,sc[a.k].taught?1:0]])))}' data-prev='${prev?JSON.stringify(st.skm[prev]):''}' role="img" aria-label="Sức mạnh Toán: ${HS_AX.map(a=>`${a.f} ${!sc[a.k].taught?'chưa học':sc[a.k].ok?hsMuc(sc[a.k].s):'chưa đủ'}`).join(', ')}"></canvas>
+     ${HS_AX.map((a,i)=>{const s=sc[a.k],dim=!s.taught||!s.ok;return`<span class="hs-lb${dim?' dim':''}" data-i="${i}">${a.n}<br><b>${!s.taught?'chưa học':s.ok?hsMuc(s.s):'chưa đủ'}</b></span>`}).join('')}</div>
     <div class="hs-leg"><span><i class="a"></i> Tháng này</span>${prev?`<span><i class="b"></i> Tháng ${Number(prev.slice(5))}</span>`:''}</div></section>
    <div class="hs-pf hs-tip">${jenny(40,'idle')}<div>${tip}</div>${btn}</div></div>`}
 function hsDrawRadar(){const cv=document.getElementById('hsRadar');if(!cv)return;const D=JSON.parse(cv.dataset.sc),P=cv.dataset.prev?JSON.parse(cv.dataset.prev):null;
