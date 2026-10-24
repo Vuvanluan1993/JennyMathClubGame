@@ -12414,9 +12414,9 @@ function trangPH(){const o=O(),m={};Object.entries(o.ph||{}).forEach(([c,tk])=>{
  const ten=id=>(STUDENTS.find(s=>s[0]===id)||[id,id])[1];
  const chua=STUDENTS.filter(s=>!phOf(s[0]));
  return`<div class="grid">${head('👪','Phụ huynh',`<span class="pill">${tks.length} tài khoản</span>`)}
- <div class="row" style="gap:8px"><button type="button" class="btn pri" onclick="qlMoPH('')">+ Tài khoản phụ huynh</button></div>
- <p class="muted" style="margin:0">Một tài khoản phụ huynh gắn được nhiều con (anh chị em cùng bố mẹ).</p>
- <section class="card"><h2>Tài khoản phụ huynh</h2>${tks.length?`<div class="qlli">${tks.map(t=>`<div class="qlr qph"><div class="a-ten"><b>${e(phTen(t))}</b><div class="muted">${e(t)}${(info[t]||{}).dt?' · '+e(info[t].dt):''}</div></div><div class="a-con">${m[t].map(c=>`<span class="pill">${e(ten(c))}</span>`).join(' ')}</div><div class="a-act"><button type="button" class="btn sm" onclick="qlMoPH('${t}')">Sửa con</button></div></div>`).join('')}</div>`:'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>
+ <div class="row" style="gap:8px" id="phNut"></div>
+ <p class="muted" style="margin:0">Tài khoản phụ huynh tự tạo khi thêm học sinh; anh chị em cùng SĐT/Gmail dùng chung 1 tài khoản. Bấm ✎ Sửa để gắn thêm hoặc tách con.</p>
+ <section class="card"><h2>Tài khoản phụ huynh</h2>${tks.length?`<div class="qlli">${tks.map(t=>`<div class="qlr qph"><div class="a-ten"><b>${e(phTen(t))}</b><div class="muted">${e(t)}${(info[t]||{}).dt?' · '+e(info[t].dt):''}</div></div><div class="a-con">${m[t].map(c=>`<span class="pill">${e(ten(c))}</span>`).join(' ')}</div><div class="a-act"><button type="button" class="btn sm" onclick="qlMoPH('${t}')">✎ Sửa</button></div></div>`).join('')}</div>`:'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>
  <section class="card"><h2>Em chưa có phụ huynh (${chua.length})</h2>${chua.length?`<div class="qlchips">${chua.slice(0,60).map(s=>`<span class="pill">${e(s[1])}</span>`).join(' ')}${chua.length>60?` <span class="muted">… và ${chua.length-60} em</span>`:''}</div>`:'<p class="muted">Em nào cũng đã có phụ huynh.</p>'}</section>
  ${o.cloud&&typeof fbTaiKhoanBox==='function'?fbTaiKhoanBox():''}</div>`}
 
@@ -12719,7 +12719,7 @@ window.qlInLop=function(lid){const ids=STUDENTS.filter(s=>(O().gd||{})[s[0]]===l
  if(qlTrang==='hs')r=r.replace(`onclick="qlMoHS()">+ Thêm học sinh</button>`,`onclick="qlMoHS()">+ Thêm học sinh</button><button type="button" class="btn pri" onclick="qlMoNhap()">⬆ Nhập từ Excel</button><button type="button" class="btn" onclick="qlTaiDS()">⬇ Tải danh sách</button>`)
   .replace(`<button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`,`<button type="button" class="btn sm" onclick="qlInPhieu(Object.keys(qlChon).filter(k=>qlChon[k]),'hs')">🖨 In phiếu</button><button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`);
  if(qlTrang==='lopct')r=r.replace(/(<span class="pill">Khối \d+ · \d+ em<\/span><\/div>)/,`$1<div class="qlin"><button type="button" class="btn" onclick="qlInLop('${qlLopId}')">🖨 In phiếu cả lớp</button></div>`);
- if(qlTrang==='ph')r=r.replace(`onclick="qlMoPH('')">+ Tài khoản phụ huynh</button>`,`onclick="qlMoPH('')">+ Tài khoản phụ huynh</button><button type="button" class="btn" onclick="qlInPhieu([...new Set(Object.values(S.org.ph||{}))],'ph')">🖨 In phiếu phụ huynh</button>`);
+ if(qlTrang==='ph')r=r.replace(`<div class="row" style="gap:8px" id="phNut"></div>`,`<div class="row" style="gap:8px" id="phNut"><button type="button" class="btn" onclick="qlInPhieu([...new Set(Object.values(S.org.ph||{}))],'ph')">🖨 In phiếu phụ huynh</button></div>`);
  }catch(x){console.error(x)}return r}}
 
 document.head.insertAdjacentHTML('beforeend',`<style>
@@ -12958,6 +12958,27 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .qlxoa{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed #C9D1E6}.qlxoa .muted{font-size:12.5px;flex:1 1 200px}
 body.px .btn.qlxbtn,.btn.qlxbtn{color:#B3261E!important;background:#fff!important}
 </style>`);
+})();
+/* 79 — Chống bấm nhiều lần khi lưu/tạo (24/10/2026): đang lưu thì khoá nút, bấm thêm không tạo trùng.
+   Tạo học sinh trùng họ tên + ngày sinh với em đã có → hỏi lại trước khi tạo. */
+(function(){
+if(typeof viewPH==='undefined')return;
+const khoa=(ten)=>{const f=window[ten];if(typeof f!=='function'||f._khoa)return;let busy=false;
+ const g=async function(){if(busy){return}busy=true;const bt=[...document.querySelectorAll('#qlm button[type=submit],#qlsua button[type=submit],#qlnhap .btn.pri')];const cu=bt.map(b=>[b,b.disabled,b.innerHTML]);
+  bt.forEach(b=>{b.disabled=true;if(b.type==='submit')b.innerHTML='Đang lưu…'});
+  try{return await f.apply(this,arguments)}finally{busy=false;cu.forEach(([b,d,h])=>{if(document.body.contains(b)){b.disabled=d;b.innerHTML=h}})}};
+ g._khoa=1;window[ten]=g};
+const bo=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().replace(/\s+/g,' ').trim();
+const val=i=>((document.getElementById(i)||{}).value||'').trim();
+/* hỏi khi trùng họ tên + ngày sinh (bọc trước khi khoá để chạy trong khoá) */
+{const _l=window.qlLuuHS;if(_l)window.qlLuuHS=async function(){const n=bo(val('mHo')+' '+val('mTen')),H=(S.org&&S.org.hoso)||{},nam=val('mNam'),ng=val('mNg'),th=val('mTh');
+ const trung=STUDENTS.filter(s=>bo(s[1])===n&&(()=>{const h=H[s[0]]||{};if(!nam&&!h.nam)return true;return String(h.nam||'')===nam&&(!ng||!h.ng||(String(h.ng)===ng&&String(h.th)===th))})());
+ if(n&&trung.length&&!confirm(`Đã có ${trung.length} em trùng họ tên${nam?' và năm sinh':''}: ${trung.map(s=>s[1]+' ('+s[0]+')').join(', ')}.\n\nVẫn tạo thêm tài khoản mới?`))return;
+ return _l.apply(this,arguments)}}
+['qlLuuHS','qlLuuGV','qlLuuLop','qlLuuPH','qlLuuXep','qlChayNhap','qlXoaHS','phTaoThieu','llChay','qlThemVao'].forEach(khoa);
+/* bảng Sửa dùng onsubmit="qlLuu(event,id)" */
+{const f=window.qlLuu;if(f){let busy=false;window.qlLuu=async function(e){if(e&&e.preventDefault)e.preventDefault();if(busy)return;busy=true;const b=document.querySelector('#qlsua button[type=submit]');if(b){b.disabled=true}
+ try{return await f.apply(this,arguments)}finally{busy=false;if(b&&document.body.contains(b))b.disabled=false}}}}
 })();
 /* 74 — Chế độ tối: tăng độ tương phản cho nút, ô nhập, ô chọn, ô tích và nút bị khoá (24/10/2026).
    Chỉ tác động khi máy để chế độ tối (hoặc data-theme="dark"); chế độ sáng giữ nguyên. */

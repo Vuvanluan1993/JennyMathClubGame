@@ -46,6 +46,7 @@
 - File mới: `js/core/72-tu-luyen.js`.
 
 ## 2026-10-24
+- Quản lý: chống bấm nhiều lần khi tạo/lưu (khoá nút, không tạo trùng); hỏi lại khi tạo em trùng họ tên; trang Phụ huynh bỏ nút tạo tay, "Sửa con" → "✎ Sửa".
 - Sửa lỗi không vào được trang Quản lý/Giáo viên/Phụ huynh (máy chủ) khi có em chưa xếp lớp (khối 0 làm lỗi tạo dữ liệu học).
 - Quản lý: bỏ Họ tên phụ huynh (bảng Thêm học sinh, file Excel mẫu); thêm Xoá học sinh (từng em trong bảng Sửa, hoặc chọn nhiều em; gõ XOA để xác nhận; xoá cả tài khoản trên máy chủ và phụ huynh ph.… không còn con).
 - Quản lý: tài khoản phụ huynh tự động khi tạo học sinh (gắn theo SĐT/Gmail có sẵn, hoặc tạo ph.<tên đăng nhập em>); gộp khi bổ sung SĐT sau; nút tạo cho các em chưa có; ô Họ tên phụ huynh ở bảng Thêm học sinh. Nhập Excel dùng cùng luật.

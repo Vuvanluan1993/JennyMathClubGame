@@ -153,6 +153,8 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Nhận anh chị em theo SĐT/Gmail, không theo tên, nên trùng họ tên + ngày sinh không bị gộp nhầm.
 - Sửa học sinh, bổ sung SĐT/Gmail trùng phụ huynh khác → hỏi gộp; tài khoản ph.… tạm không còn con thì bỏ. Trang Phụ huynh có nút "Tạo tài khoản phụ huynh cho n em" (các em chưa có).
 - **Không dùng họ tên phụ huynh** (24/10/2026): bỏ ô này ở Thêm học sinh và ở file Excel mẫu; phụ huynh nhận diện bằng SĐT/Gmail và tên đăng nhập.
+- **Trang Phụ huynh** (24/10/2026): bỏ nút tạo tài khoản phụ huynh bằng tay (đã tự tạo khi thêm học sinh). Còn: ✎ Sửa từng phụ huynh (gắn thêm/tách con), 🖨 In phiếu phụ huynh, nút tạo bù cho các em chưa có (chỉ hiện khi còn em thiếu).
+- **Chống bấm nhiều lần** (24/10/2026): khi đang lưu/tạo thì nút bị khoá ("Đang lưu…"), bấm thêm không tạo trùng. Tạo học sinh trùng họ tên (+ năm sinh) với em đã có → hỏi lại.
 - **Xoá học sinh** (24/10/2026): trong bảng ✎ Sửa (nút 🗑 Xoá học sinh) hoặc chọn nhiều em › 🗑 Xoá; phải gõ XOA để xác nhận; xoá hẳn tài khoản và dữ liệu học, không khôi phục; tài khoản phụ huynh ph.… không còn con thì xoá theo. Em chỉ tạm nghỉ thì dùng Nghỉ học để giữ dữ liệu.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)

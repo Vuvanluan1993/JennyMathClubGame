@@ -188,7 +188,7 @@ window.qlInLop=function(lid){const ids=STUDENTS.filter(s=>(O().gd||{})[s[0]]===l
  if(qlTrang==='hs')r=r.replace(`onclick="qlMoHS()">+ Thêm học sinh</button>`,`onclick="qlMoHS()">+ Thêm học sinh</button><button type="button" class="btn pri" onclick="qlMoNhap()">⬆ Nhập từ Excel</button><button type="button" class="btn" onclick="qlTaiDS()">⬇ Tải danh sách</button>`)
   .replace(`<button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`,`<button type="button" class="btn sm" onclick="qlInPhieu(Object.keys(qlChon).filter(k=>qlChon[k]),'hs')">🖨 In phiếu</button><button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`);
  if(qlTrang==='lopct')r=r.replace(/(<span class="pill">Khối \d+ · \d+ em<\/span><\/div>)/,`$1<div class="qlin"><button type="button" class="btn" onclick="qlInLop('${qlLopId}')">🖨 In phiếu cả lớp</button></div>`);
- if(qlTrang==='ph')r=r.replace(`onclick="qlMoPH('')">+ Tài khoản phụ huynh</button>`,`onclick="qlMoPH('')">+ Tài khoản phụ huynh</button><button type="button" class="btn" onclick="qlInPhieu([...new Set(Object.values(S.org.ph||{}))],'ph')">🖨 In phiếu phụ huynh</button>`);
+ if(qlTrang==='ph')r=r.replace(`<div class="row" style="gap:8px" id="phNut"></div>`,`<div class="row" style="gap:8px" id="phNut"><button type="button" class="btn" onclick="qlInPhieu([...new Set(Object.values(S.org.ph||{}))],'ph')">🖨 In phiếu phụ huynh</button></div>`);
  }catch(x){console.error(x)}return r}}
 
 document.head.insertAdjacentHTML('beforeend',`<style>

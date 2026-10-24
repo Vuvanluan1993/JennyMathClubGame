@@ -89,9 +89,9 @@ function trangPH(){const o=O(),m={};Object.entries(o.ph||{}).forEach(([c,tk])=>{
  const ten=id=>(STUDENTS.find(s=>s[0]===id)||[id,id])[1];
  const chua=STUDENTS.filter(s=>!phOf(s[0]));
  return`<div class="grid">${head('👪','Phụ huynh',`<span class="pill">${tks.length} tài khoản</span>`)}
- <div class="row" style="gap:8px"><button type="button" class="btn pri" onclick="qlMoPH('')">+ Tài khoản phụ huynh</button></div>
- <p class="muted" style="margin:0">Một tài khoản phụ huynh gắn được nhiều con (anh chị em cùng bố mẹ).</p>
- <section class="card"><h2>Tài khoản phụ huynh</h2>${tks.length?`<div class="qlli">${tks.map(t=>`<div class="qlr qph"><div class="a-ten"><b>${e(phTen(t))}</b><div class="muted">${e(t)}${(info[t]||{}).dt?' · '+e(info[t].dt):''}</div></div><div class="a-con">${m[t].map(c=>`<span class="pill">${e(ten(c))}</span>`).join(' ')}</div><div class="a-act"><button type="button" class="btn sm" onclick="qlMoPH('${t}')">Sửa con</button></div></div>`).join('')}</div>`:'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>
+ <div class="row" style="gap:8px" id="phNut"></div>
+ <p class="muted" style="margin:0">Tài khoản phụ huynh tự tạo khi thêm học sinh; anh chị em cùng SĐT/Gmail dùng chung 1 tài khoản. Bấm ✎ Sửa để gắn thêm hoặc tách con.</p>
+ <section class="card"><h2>Tài khoản phụ huynh</h2>${tks.length?`<div class="qlli">${tks.map(t=>`<div class="qlr qph"><div class="a-ten"><b>${e(phTen(t))}</b><div class="muted">${e(t)}${(info[t]||{}).dt?' · '+e(info[t].dt):''}</div></div><div class="a-con">${m[t].map(c=>`<span class="pill">${e(ten(c))}</span>`).join(' ')}</div><div class="a-act"><button type="button" class="btn sm" onclick="qlMoPH('${t}')">✎ Sửa</button></div></div>`).join('')}</div>`:'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>
  <section class="card"><h2>Em chưa có phụ huynh (${chua.length})</h2>${chua.length?`<div class="qlchips">${chua.slice(0,60).map(s=>`<span class="pill">${e(s[1])}</span>`).join(' ')}${chua.length>60?` <span class="muted">… và ${chua.length-60} em</span>`:''}</div>`:'<p class="muted">Em nào cũng đã có phụ huynh.</p>'}</section>
  ${o.cloud&&typeof fbTaiKhoanBox==='function'?fbTaiKhoanBox():''}</div>`}
 
