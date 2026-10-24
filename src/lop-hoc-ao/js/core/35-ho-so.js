@@ -1,14 +1,14 @@
 /* ===================== HỒ SƠ CỦA EM (lớp 1–5) ===================== */
 /* Ghi nhận: st.dd[ngày]={n,c,sec} (số câu, câu đúng, số giây), st.sk[dạng bài]={r:[10 kết quả gần nhất 1/0],t,ax},
    st.skm['YYYY-MM']={trục:điểm} (ảnh chụp theo tháng). 6 trục theo Chương trình Toán 2018. Màn "Luyện" theo trục yếu. */
-const HS_AX=[{k:'so',n:'Số',f:'Số'},{k:'pt',n:'Phép tính',f:'Phép tính'},{k:'lv',n:'Lời văn',f:'Giải toán lời văn'},
+/* 24/10/2026: trục Lời văn thay bằng Logic (Tư duy); bài lời văn tính vào trục nội dung của nó, riêng tỉ lệ đúng bài lời văn vẫn hiện (hsLoiVan) */
+const HS_AX=[{k:'so',n:'Số',f:'Số'},{k:'pt',n:'Phép tính',f:'Phép tính'},{k:'lg',n:'Logic',f:'Tư duy – Logic'},
  {k:'hh',n:'Hình học',f:'Hình học'},{k:'dl',n:'Đo lường',f:'Đo lường'},{k:'tk',n:'Thống kê',f:'Thống kê – Xác suất'}];
 const HS_AXN=Object.fromEntries(HS_AX.map(a=>[a.k,a.f]));
 /* gắn dạng bài vào trục: luật theo từ khoá (thứ tự quan trọng) */
 const HS_RULES=[
- ['so',/quy luật lặp/], /* quy luật lặp hình đồ vật (Toán Jenny Buổi 1) là tư duy số, không phải Hình học (sửa 24/10/2026) */
+ ['lg',/quy luật|nhóm khác|giống nhau|khác nhau|cân thăng bằng|suy luận|logic|tư duy|câu đố/],
  ['tk',/kiểm đếm|số liệu|biểu đồ|thống kê|xác suất|khả năng|chắc chắn|có thể|không thể|phân loại|sự kiện|lặp lại|ghi chép/],
- ['lv',/lời văn|bài toán|giải toán|toán có lời|toán chuyển động|hai bước|ba bước/],
  ['hh',/góc/],
  ['dl',/đo lường|đơn vị đo|đổi đơn vị|^đo |đo độ dài|độ dài|số đo (diện tích|thể tích|thời gian)|viết số đo|mét khối|lít|ước lượng (độ dài|nặng|diện tích|thể tích|dung tích)/],
  ['so',/viết số thành tổng|cấu tạo số|giá trị (của )?chữ số|hàng và lớp|hàng của|làm tròn|đọc, viết|bảng các số|đủ số lượng|số có sáu chữ số/],
@@ -17,8 +17,17 @@ const HS_RULES=[
  ['pt',/cộng|trừ|nhân|chia|phép|tính|tổng|hiệu|tích|thương|số hạng|thừa số|số bị|bảng|biểu thức|nhẩm|gấp|giảm|tách|gộp|thêm|bớt|kết quả|trung bình|thành phần|kém|tìm x|một phần mấy|của một số/],
  ['so',/số|đếm|so sánh|dấu|chục|trăm|nghìn|triệu|phân số|chẵn|lẻ|la mã|dãy|thứ tự|liền|tia|nhiều hơn|ít hơn|bằng nhau|nhóm|thẻ|lớn hơn|bé hơn|lớn nhất|bé nhất|sắp xếp|xếp|tỉ số|phần trăm|thập phân|hỗn số|tỉ lệ/],
 ];
-function hsAxOf(kind,topic){const t=String(kind||'').toLowerCase();for(const[k,re]of HS_RULES)if(re.test(t))return k;
-  const p=String(topic||'').toLowerCase();if(p)for(const[k,re]of HS_RULES)if(re.test(p))return k;return null}
+/* bài lời văn: xếp vào trục nội dung (diện tích → Hình học, kg/thời gian/tiền → Đo lường, phân số/% → Số, còn lại → Phép tính) */
+const HS_WORD=/lời văn|bài toán|giải toán|toán có lời|toán chuyển động|hai bước|ba bước/;
+const HS_WSUB=[['hh',/diện tích|thể tích|chu vi|hình/],['dl',/\bkg\b|lít|độ dài|cân nặng|khối lượng|thời gian|vận tốc|chuyển động|đo lường|tiền|mua|giảm giá/],
+ ['so',/phân số|thập phân|phần trăm|bản đồ|tỉ lệ/],['pt',/thêm|bớt|nhiều hơn|ít hơn|bảng|bước|tổng|hiệu|tỉ số|nhân|chia|cộng|trừ/]];
+const hsWord=kind=>HS_WORD.test(String(kind||'').toLowerCase());
+function hsAxOf(kind,topic){const t=String(kind||'').toLowerCase(),p=String(topic||'').toLowerCase();
+  if(HS_WORD.test(t)){const r=t.replace(HS_WORD,' ');for(const[k,re]of HS_WSUB)if(re.test(r))return k;if(p)for(const[k,re]of HS_RULES)if(k!=='lg'&&re.test(p))return k;return'pt'}
+  for(const[k,re]of HS_RULES)if(re.test(t))return k;
+  if(p)for(const[k,re]of HS_RULES)if(re.test(p))return k;return null}
+/* tỉ lệ đúng các bài lời văn (mọi trục) */
+function hsLoiVan(st){const ks=Object.entries(st.sk||{}).filter(([k,e])=>e.r&&e.r.length&&hsWord(k));const n=ks.reduce((a,[,e])=>a+e.r.length,0),c=ks.reduce((a,[,e])=>a+e.r.reduce((x,y)=>x+y,0),0);return{n,c,p:n?Math.round(c/n*100):0,k:ks.length}}
 const hsTopicOf=id=>{try{const x=id&&isl1(id);if(!x)return'';for(const g in PRIM){if(PRIM[g].isl.includes(x)){const T=PRIM[g].T[x.ti||0];return T?T[0]:''}}}catch(e){}return''};
 /* chỉ mục dạng bài theo lớp: kind → [[đảo, màn, bộ sinh]], trục có dạy */
 const HSIDX={};
@@ -33,11 +42,11 @@ const hsDayDate=day=>{const d=new Date(HS_OPEN);d.setDate(d.getDate()+Math.max(1
 function hsToday(){return typeof dayNow==='function'?new Date():hsDayDate(S.day)}
 const hsTodayKey=()=>hsKey(hsToday());
 /* gắn lại mạch cho dạng bài đã ghi khi luật đổi; bỏ mạch không còn dạng bài nào khỏi ảnh chụp tháng */
-const HS_AXV=2;
+const HS_AXV=3;
 function hsAxFix(st){if(!st||!st.sk||st.axv===HS_AXV)return;st.axv=HS_AXV;let doi=false;
   Object.entries(st.sk).forEach(([kd,e])=>{const a=hsAxOf(kd,'');if(a&&a!==e.ax){e.ax=a;doi=true}});if(!doi)return;
   try{const sc=hsScores(st),ms=Object.keys(st.skm||{}).sort(),cuoi=ms[ms.length-1];
-    ms.forEach(k=>{const m=st.skm[k];HS_AX.forEach(a=>{if(!sc[a.k].ok)delete m[a.k];else if(k===cuoi)m[a.k]=sc[a.k].s})})}catch(e){}}
+    ms.forEach(k=>{const m=st.skm[k];Object.keys(m).forEach(x=>{if(!HS_AXN[x])delete m[x]});HS_AX.forEach(a=>{if(!sc[a.k].ok)delete m[a.k];else if(k===cuoi)m[a.k]=sc[a.k].s})})}catch(e){}}
 function hsHeal(st,id){if(!st||st.grade>5)return;if(!st.dd)st.dd={};if(!st.sk)st.sk={};if(!st.skm)st.skm={};hsAxFix(st);
   if(!st.ddv){st.ddv=1;try{(S.events||[]).forEach(e=>{if(e.actor.account.name!==id||!e.verb.id.endsWith('answered'))return;const k=hsKey(hsDayDate(evDay(e))),o=st.dd[k]||(st.dd[k]={n:0,c:0,sec:0});o.n++;if(e.result.success)o.c++;o.sec+=Math.min(180,parseInt(String(e.result.duration||'PT0S').slice(2))||0)})}catch(e){}}}
 {const _h=healAll;healAll=function(){_h.apply(this,arguments);try{Object.entries(S.st||{}).forEach(([id,st])=>hsHeal(st,id))}catch(e){}}}
@@ -46,7 +55,7 @@ function hsHeal(st,id){if(!st||st.grade>5)return;if(!st.dd)st.dd={};if(!st.sk)st
 function hsScores(st){const g=st.grade<=5?st.grade:1,idx=hsIndex(g),o={};
   HS_AX.forEach(a=>{const ks=Object.values(st.sk||{}).filter(e=>e.ax===a.k&&e.r.length);const n=ks.reduce((s,e)=>s+e.r.length,0);
     const s=ks.length?Math.round(ks.reduce((s,e)=>s+e.r.reduce((x,y)=>x+y,0)/e.r.length,0)/ks.length*100):0;
-    o[a.k]={s,n,ok:n>=5,taught:idx.ax.has(a.k)}});return o}
+    o[a.k]={s,n,ok:n>=5,taught:idx.ax.has(a.k)||n>0}});return o}
 const hsMonth=d=>hsKey(d).slice(0,7);
 function hsSnap(st){const sc=hsScores(st),m={};HS_AX.forEach(a=>{if(sc[a.k].ok)m[a.k]=sc[a.k].s});st.skm[hsMonth(hsToday())]=m}
 

@@ -66,7 +66,9 @@ function gvSucManh(id,st){
   const lab=Object.fromEntries(HS_AX.map(a=>[a.k,!sc[a.k].taught?'chưa học':m3[a.k]!=null?m3[a.k]:'chưa đủ']));
   const bars=HS_AX.map(a=>{const v=m3[a.k],v6=m6[a.k],t=tb.v[a.k];return`<div class="grow"><span>${a.f}</span>${v==null?`<span class="muted">${sc[a.k].taught?'chưa đủ bài':'chưa học'}</span>`:`<span class="gbar"><i style="width:${v}%;background:${v>=80?'var(--leaf)':v>=60?'var(--sun)':'var(--coral)'}"></i>${t!=null?`<b class="gprev" style="left:${t}%" title="TB khối ${t}"></b>`:''}</span><b>${v}</b>`}</div>${v!=null?`<div class="gsub muted">6 tháng: ${v6!=null?v6:'–'} · khối: ${t!=null?`${t} (${v>=t?'+':'−'}${Math.abs(v-t)})`:'–'}</div>`:''}`}).join('');
   return{radar:`${gvRadar([{v:tb.v,c:'gr-tb'},{v:m6,c:'gr-6'},{v:m3,c:'gr-cur'}],lab)}<div class="gr-leg muted"><span><i class="cur"></i> Em · 3 tháng gần nhất</span><span><i class="s6"></i> Em · 6 tháng gần nhất</span><span><i class="tb"></i> TB học sinh Jenny khối ${st.grade} (${tb.n} em)</span></div>
-    ${du<3?`<p class="hint" style="margin:10px 0 0">Em mới có điểm ở ${du} mạch nên hình còn hẹp.</p>`:''}`,bars}}
+    ${du<3?`<p class="hint" style="margin:10px 0 0">Em mới có điểm ở ${du} mạch nên hình còn hẹp.</p>`:''}`,bars:bars+gvLoiVanDong(st)}}
+/* kĩ năng giải toán lời văn: đã tính vào các trục nội dung, hiện riêng tỉ lệ đúng để cô biết em đọc đề có tốt không */
+function gvLoiVanDong(st){const L=hsLoiVan(st);return`<div class="grow glv"><span>Giải toán lời văn</span>${L.n<5?`<span class="muted">${L.n?'chưa đủ bài':'chưa làm'}</span>`:`<span class="gbar"><i style="width:${L.p}%;background:${L.p>=80?'var(--leaf)':L.p>=60?'var(--sun)':'var(--coral)'}"></i></span><b>${L.p}</b>`}</div>${L.n>=5?`<div class="gsub muted">${L.n} câu gần nhất của ${L.k} dạng bài lời văn · đã tính vào các mạch Số, Phép tính, Đo lường, Hình học</div>`:''}`}
 function gvTabTQ(id,st,ph){
   const sk=hsStreaks(st),T=gvTong(st),al=alerts(id),gy=gvGoiY(id,st,al).filter(g=>!ph||!/Nhắn phụ huynh/.test(g.t)),SM=gvSucManh(id,st);
   return`<div class="kpis">${gvKpi('Chuỗi ngày học',sk.cur+' ngày','dài nhất '+sk.best)}${gvKpi('Số ngày học',sk.days,'từ đầu năm học')}${gvKpi('Số câu',sk.n,T.n?`đúng ${pc(T.c,T.n)}%`:'')}
@@ -89,7 +91,7 @@ function gvTabHT(id,st){
    <p class="muted" style="margin:6px 0 0">Tổng thời gian học: ${Math.round(T.sec/60)} phút (khoảng ${Math.round(T.sec/60/Math.max(1,Object.values(st.dd||{}).filter(o=>o.n).length))} phút mỗi ngày học).</p></div></section>
   <section class="card"><h2>Tiến độ SGK</h2><div class="tablewrap"><table><tr><th>Chủ đề</th><th>Màn đã qua</th><th>Đảo bị kẹt</th></tr>${chu}</table></div></section>
   <section class="card"><h2>Tỉ lệ đúng từng dạng bài</h2><p class="muted" style="margin:4px 0 0">10 lần làm gần nhất mỗi dạng, dạng yếu xếp trước (10 dạng yếu nhất).</p>${gvBangDang(st,1)}</section>`}
-function gvBangDang(st,gon){const D=gvDang(st),top=gon?D.slice(0,10):D,con=gon?D.slice(10):[];const row=x=>`<tr${x.n>=4&&x.p<GV_YEU?' class="gyeu"':''}><td>${esc(x.k)}</td><td>${HS_AXN[x.ax]||''}</td><td style="min-width:140px">${gvBar(x.p,x.p>=80?'var(--leaf)':x.p>=GV_YEU?'var(--sun)':'var(--coral)')} <b>${x.p}%</b></td><td>${x.n}</td><td>${x.t?gvNgay(hsKey(new Date(x.t))):''}</td></tr>`;const bang=L=>`<div class="tablewrap"><table class="gdang"><tr><th>Dạng bài</th><th>Mạch</th><th>Đúng</th><th>Số lần</th><th>Lần cuối</th></tr>${L.map(row).join('')}</table></div>`;
+function gvBangDang(st,gon){const D=gvDang(st),top=gon?D.slice(0,10):D,con=gon?D.slice(10):[];const row=x=>`<tr${x.n>=4&&x.p<GV_YEU?' class="gyeu"':''}><td>${esc(x.k)}${hsWord(x.k)?' <span class="pill">lời văn</span>':''}</td><td>${HS_AXN[x.ax]||''}</td><td style="min-width:140px">${gvBar(x.p,x.p>=80?'var(--leaf)':x.p>=GV_YEU?'var(--sun)':'var(--coral)')} <b>${x.p}%</b></td><td>${x.n}</td><td>${x.t?gvNgay(hsKey(new Date(x.t))):''}</td></tr>`;const bang=L=>`<div class="tablewrap"><table class="gdang"><tr><th>Dạng bài</th><th>Mạch</th><th>Đúng</th><th>Số lần</th><th>Lần cuối</th></tr>${L.map(row).join('')}</table></div>`;
   return D.length?bang(top)+(con.length?`<details style="margin-top:8px"><summary>Xem thêm ${con.length} dạng (đều đúng từ ${con[0].p}% trở lên)</summary>${bang(con)}</details>`:''):'<p class="muted">Chưa có dữ liệu.</p>'}
 
 function gvTabLoi(id,st,ph){
@@ -224,7 +226,7 @@ const GV_NX=[
  f=>`${f} nghỉ học mấy hôm. Bố mẹ giúp con giữ thói quen 15 phút mỗi ngày.`,
  (f,w,b)=>`${f} làm tốt phần ${b}, hay giúp bạn trong lớp. Cô tặng con thẻ "Giúp bạn".`];
 function gvMau(){
-  if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS4||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS4=1;
+  if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS5||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS5=1;
   try{window.orgHeal&&window.orgHeal()}catch(e){}
   const NG=GV_NG;S.day=NG;const thang=[];for(let d=1;d<=NG;d+=1){const m=hsMonth(hsDayDate(d));if(!thang.includes(m))thang.push(m)}
   S.asg=(S.asg||[]).filter(a=>!a.mau);

@@ -1,5 +1,13 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Trục Lời văn thay bằng Tư duy – Logic
+- Sức mạnh Toán giờ có 6 trục: Số · Phép tính · **Tư duy – Logic** · Hình học · Đo lường · Thống kê.
+- Logic: bài quy luật, dãy số theo quy luật, tìm nhóm khác, xếp hình – suy luận, cân thăng bằng (Toán Jenny và sách). Chưa có bài thì hiện "chưa học".
+- Bài lời văn tính vào trục nội dung: thêm/bớt, bảng nhân chia, nhiều bước, tổng – hiệu, tổng – tỉ → Phép tính; kg, lít, độ dài, thời gian, vận tốc, tiền → Đo lường; diện tích, thể tích, hình tròn → Hình học; phân số, số thập phân, phần trăm, tỉ lệ bản đồ → Số.
+- Hồ sơ giáo viên/phụ huynh: thêm dòng **Giải toán lời văn: đúng x%**; bảng dạng bài có nhãn "lời văn".
+- Dữ liệu cũ tự chuyển sang trục mới; dữ liệu mẫu 8 tháng tạo lại.
+- Đang chờ thầy duyệt: công thức Logic kết hợp bài suy luận ở các mạch khác (A 40% · B 40% · C 20%).
+
 ## 24/10/2026 — Sửa: Sức mạnh Toán hiện điểm Hình học sai (lớp 1)
 - Nguyên nhân: Toán Jenny lớp 1 Buổi 1 "Quy luật xếp hình" có dạng "Quy luật lặp 2 hình / 3 hình" (táo, sao, bóng…). Luật gắn mạch thấy chữ "hình" nên tính vào **Hình học**. Học sinh mới học Bài 1–2 (như Đặng Phương Dung) vì thế có điểm Hình học dù chưa học hình.
 - Sửa (`35-ho-so.js`): dạng "Quy luật lặp…" tính vào mạch **Số**. "Quy luật xếp hình" ở Bài 8 (xếp hình vuông, tròn…) vẫn là Hình học.

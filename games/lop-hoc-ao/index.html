@@ -5740,14 +5740,14 @@ function viewPass(st){const g=st.grade<=5?st.grade:1,P=st.pass||{},T=passTopics(
 /* ===================== HỒ SƠ CỦA EM (lớp 1–5) ===================== */
 /* Ghi nhận: st.dd[ngày]={n,c,sec} (số câu, câu đúng, số giây), st.sk[dạng bài]={r:[10 kết quả gần nhất 1/0],t,ax},
    st.skm['YYYY-MM']={trục:điểm} (ảnh chụp theo tháng). 6 trục theo Chương trình Toán 2018. Màn "Luyện" theo trục yếu. */
-const HS_AX=[{k:'so',n:'Số',f:'Số'},{k:'pt',n:'Phép tính',f:'Phép tính'},{k:'lv',n:'Lời văn',f:'Giải toán lời văn'},
+/* 24/10/2026: trục Lời văn thay bằng Logic (Tư duy); bài lời văn tính vào trục nội dung của nó, riêng tỉ lệ đúng bài lời văn vẫn hiện (hsLoiVan) */
+const HS_AX=[{k:'so',n:'Số',f:'Số'},{k:'pt',n:'Phép tính',f:'Phép tính'},{k:'lg',n:'Logic',f:'Tư duy – Logic'},
  {k:'hh',n:'Hình học',f:'Hình học'},{k:'dl',n:'Đo lường',f:'Đo lường'},{k:'tk',n:'Thống kê',f:'Thống kê – Xác suất'}];
 const HS_AXN=Object.fromEntries(HS_AX.map(a=>[a.k,a.f]));
 /* gắn dạng bài vào trục: luật theo từ khoá (thứ tự quan trọng) */
 const HS_RULES=[
- ['so',/quy luật lặp/], /* quy luật lặp hình đồ vật (Toán Jenny Buổi 1) là tư duy số, không phải Hình học (sửa 24/10/2026) */
+ ['lg',/quy luật|nhóm khác|giống nhau|khác nhau|cân thăng bằng|suy luận|logic|tư duy|câu đố/],
  ['tk',/kiểm đếm|số liệu|biểu đồ|thống kê|xác suất|khả năng|chắc chắn|có thể|không thể|phân loại|sự kiện|lặp lại|ghi chép/],
- ['lv',/lời văn|bài toán|giải toán|toán có lời|toán chuyển động|hai bước|ba bước/],
  ['hh',/góc/],
  ['dl',/đo lường|đơn vị đo|đổi đơn vị|^đo |đo độ dài|độ dài|số đo (diện tích|thể tích|thời gian)|viết số đo|mét khối|lít|ước lượng (độ dài|nặng|diện tích|thể tích|dung tích)/],
  ['so',/viết số thành tổng|cấu tạo số|giá trị (của )?chữ số|hàng và lớp|hàng của|làm tròn|đọc, viết|bảng các số|đủ số lượng|số có sáu chữ số/],
@@ -5756,8 +5756,17 @@ const HS_RULES=[
  ['pt',/cộng|trừ|nhân|chia|phép|tính|tổng|hiệu|tích|thương|số hạng|thừa số|số bị|bảng|biểu thức|nhẩm|gấp|giảm|tách|gộp|thêm|bớt|kết quả|trung bình|thành phần|kém|tìm x|một phần mấy|của một số/],
  ['so',/số|đếm|so sánh|dấu|chục|trăm|nghìn|triệu|phân số|chẵn|lẻ|la mã|dãy|thứ tự|liền|tia|nhiều hơn|ít hơn|bằng nhau|nhóm|thẻ|lớn hơn|bé hơn|lớn nhất|bé nhất|sắp xếp|xếp|tỉ số|phần trăm|thập phân|hỗn số|tỉ lệ/],
 ];
-function hsAxOf(kind,topic){const t=String(kind||'').toLowerCase();for(const[k,re]of HS_RULES)if(re.test(t))return k;
-  const p=String(topic||'').toLowerCase();if(p)for(const[k,re]of HS_RULES)if(re.test(p))return k;return null}
+/* bài lời văn: xếp vào trục nội dung (diện tích → Hình học, kg/thời gian/tiền → Đo lường, phân số/% → Số, còn lại → Phép tính) */
+const HS_WORD=/lời văn|bài toán|giải toán|toán có lời|toán chuyển động|hai bước|ba bước/;
+const HS_WSUB=[['hh',/diện tích|thể tích|chu vi|hình/],['dl',/\bkg\b|lít|độ dài|cân nặng|khối lượng|thời gian|vận tốc|chuyển động|đo lường|tiền|mua|giảm giá/],
+ ['so',/phân số|thập phân|phần trăm|bản đồ|tỉ lệ/],['pt',/thêm|bớt|nhiều hơn|ít hơn|bảng|bước|tổng|hiệu|tỉ số|nhân|chia|cộng|trừ/]];
+const hsWord=kind=>HS_WORD.test(String(kind||'').toLowerCase());
+function hsAxOf(kind,topic){const t=String(kind||'').toLowerCase(),p=String(topic||'').toLowerCase();
+  if(HS_WORD.test(t)){const r=t.replace(HS_WORD,' ');for(const[k,re]of HS_WSUB)if(re.test(r))return k;if(p)for(const[k,re]of HS_RULES)if(k!=='lg'&&re.test(p))return k;return'pt'}
+  for(const[k,re]of HS_RULES)if(re.test(t))return k;
+  if(p)for(const[k,re]of HS_RULES)if(re.test(p))return k;return null}
+/* tỉ lệ đúng các bài lời văn (mọi trục) */
+function hsLoiVan(st){const ks=Object.entries(st.sk||{}).filter(([k,e])=>e.r&&e.r.length&&hsWord(k));const n=ks.reduce((a,[,e])=>a+e.r.length,0),c=ks.reduce((a,[,e])=>a+e.r.reduce((x,y)=>x+y,0),0);return{n,c,p:n?Math.round(c/n*100):0,k:ks.length}}
 const hsTopicOf=id=>{try{const x=id&&isl1(id);if(!x)return'';for(const g in PRIM){if(PRIM[g].isl.includes(x)){const T=PRIM[g].T[x.ti||0];return T?T[0]:''}}}catch(e){}return''};
 /* chỉ mục dạng bài theo lớp: kind → [[đảo, màn, bộ sinh]], trục có dạy */
 const HSIDX={};
@@ -5772,11 +5781,11 @@ const hsDayDate=day=>{const d=new Date(HS_OPEN);d.setDate(d.getDate()+Math.max(1
 function hsToday(){return typeof dayNow==='function'?new Date():hsDayDate(S.day)}
 const hsTodayKey=()=>hsKey(hsToday());
 /* gắn lại mạch cho dạng bài đã ghi khi luật đổi; bỏ mạch không còn dạng bài nào khỏi ảnh chụp tháng */
-const HS_AXV=2;
+const HS_AXV=3;
 function hsAxFix(st){if(!st||!st.sk||st.axv===HS_AXV)return;st.axv=HS_AXV;let doi=false;
   Object.entries(st.sk).forEach(([kd,e])=>{const a=hsAxOf(kd,'');if(a&&a!==e.ax){e.ax=a;doi=true}});if(!doi)return;
   try{const sc=hsScores(st),ms=Object.keys(st.skm||{}).sort(),cuoi=ms[ms.length-1];
-    ms.forEach(k=>{const m=st.skm[k];HS_AX.forEach(a=>{if(!sc[a.k].ok)delete m[a.k];else if(k===cuoi)m[a.k]=sc[a.k].s})})}catch(e){}}
+    ms.forEach(k=>{const m=st.skm[k];Object.keys(m).forEach(x=>{if(!HS_AXN[x])delete m[x]});HS_AX.forEach(a=>{if(!sc[a.k].ok)delete m[a.k];else if(k===cuoi)m[a.k]=sc[a.k].s})})}catch(e){}}
 function hsHeal(st,id){if(!st||st.grade>5)return;if(!st.dd)st.dd={};if(!st.sk)st.sk={};if(!st.skm)st.skm={};hsAxFix(st);
   if(!st.ddv){st.ddv=1;try{(S.events||[]).forEach(e=>{if(e.actor.account.name!==id||!e.verb.id.endsWith('answered'))return;const k=hsKey(hsDayDate(evDay(e))),o=st.dd[k]||(st.dd[k]={n:0,c:0,sec:0});o.n++;if(e.result.success)o.c++;o.sec+=Math.min(180,parseInt(String(e.result.duration||'PT0S').slice(2))||0)})}catch(e){}}}
 {const _h=healAll;healAll=function(){_h.apply(this,arguments);try{Object.entries(S.st||{}).forEach(([id,st])=>hsHeal(st,id))}catch(e){}}}
@@ -5785,7 +5794,7 @@ function hsHeal(st,id){if(!st||st.grade>5)return;if(!st.dd)st.dd={};if(!st.sk)st
 function hsScores(st){const g=st.grade<=5?st.grade:1,idx=hsIndex(g),o={};
   HS_AX.forEach(a=>{const ks=Object.values(st.sk||{}).filter(e=>e.ax===a.k&&e.r.length);const n=ks.reduce((s,e)=>s+e.r.length,0);
     const s=ks.length?Math.round(ks.reduce((s,e)=>s+e.r.reduce((x,y)=>x+y,0)/e.r.length,0)/ks.length*100):0;
-    o[a.k]={s,n,ok:n>=5,taught:idx.ax.has(a.k)}});return o}
+    o[a.k]={s,n,ok:n>=5,taught:idx.ax.has(a.k)||n>0}});return o}
 const hsMonth=d=>hsKey(d).slice(0,7);
 function hsSnap(st){const sc=hsScores(st),m={};HS_AX.forEach(a=>{if(sc[a.k].ok)m[a.k]=sc[a.k].s});st.skm[hsMonth(hsToday())]=m}
 
@@ -8055,7 +8064,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 09:36';
+const APP_VER='24/10 · 09:47';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -8371,7 +8380,7 @@ const I18N={
  'Luyện ngay ▶':'Practise now ▶','Luyện lỗi trước nhé':'Fix your mistakes first','Luyện ngay':'Practise now','Luyện tiếp':'Keep practising','Về sổ lỗi sai':'Back to mistakes book',
  'Sổ lỗi sai':'Mistakes book','Hộ chiếu đại dương':'Ocean passport','🛂 Hộ chiếu đại dương':'🛂 Ocean passport','Tủ đồ của Jenny':"Jenny's wardrobe",'Đang mặc':'Wearing',
  '📖 Bộ sưu tập sinh vật biển':'📖 Sea creature collection','Hồ sơ của em':'My profile','Chuỗi':'Streak','Dài nhất':'Longest','Ngày học':'Study days','Số câu':'Questions',
- 'Chuỗi ngày chăm chỉ':'Study streak','Hôm nay':'Today','Ít':'Less','Nhiều':'More','Sức mạnh Toán':'Math power','Số':'Numbers','Phép tính':'Operations','Lời văn':'Word problems',
+ 'Chuỗi ngày chăm chỉ':'Study streak','Hôm nay':'Today','Ít':'Less','Nhiều':'More','Sức mạnh Toán':'Math power','Số':'Numbers','Phép tính':'Operations','Lời văn':'Word problems','Logic':'Logic','Tư duy – Logic':'Logical thinking','Giải toán lời văn':'Word problems','lời văn':'word problem','chưa làm':'not yet',
  'Hình học':'Geometry','Đo lường':'Measurement','Thống kê':'Statistics','chưa đủ':'not enough','Tháng này':'This month',
  'Hôm nay em học:':'Today you learn:','Bài giảng Jenny':"Jenny's lesson",'Nên xem':'Recommended','Học trên đảo':'Learn on the island','Chơi':'Play','Trùm lớp':'Class boss','bắt buộc':'required',
  'Góp sức':'Join in','Chơi thêm':'More games','tùy chọn':'optional','Nâng cao':'Advanced','Đánh trùm':'Fight the boss','Đảo tiếp theo →':'Next island →',
@@ -11093,7 +11102,9 @@ function gvSucManh(id,st){
   const lab=Object.fromEntries(HS_AX.map(a=>[a.k,!sc[a.k].taught?'chưa học':m3[a.k]!=null?m3[a.k]:'chưa đủ']));
   const bars=HS_AX.map(a=>{const v=m3[a.k],v6=m6[a.k],t=tb.v[a.k];return`<div class="grow"><span>${a.f}</span>${v==null?`<span class="muted">${sc[a.k].taught?'chưa đủ bài':'chưa học'}</span>`:`<span class="gbar"><i style="width:${v}%;background:${v>=80?'var(--leaf)':v>=60?'var(--sun)':'var(--coral)'}"></i>${t!=null?`<b class="gprev" style="left:${t}%" title="TB khối ${t}"></b>`:''}</span><b>${v}</b>`}</div>${v!=null?`<div class="gsub muted">6 tháng: ${v6!=null?v6:'–'} · khối: ${t!=null?`${t} (${v>=t?'+':'−'}${Math.abs(v-t)})`:'–'}</div>`:''}`}).join('');
   return{radar:`${gvRadar([{v:tb.v,c:'gr-tb'},{v:m6,c:'gr-6'},{v:m3,c:'gr-cur'}],lab)}<div class="gr-leg muted"><span><i class="cur"></i> Em · 3 tháng gần nhất</span><span><i class="s6"></i> Em · 6 tháng gần nhất</span><span><i class="tb"></i> TB học sinh Jenny khối ${st.grade} (${tb.n} em)</span></div>
-    ${du<3?`<p class="hint" style="margin:10px 0 0">Em mới có điểm ở ${du} mạch nên hình còn hẹp.</p>`:''}`,bars}}
+    ${du<3?`<p class="hint" style="margin:10px 0 0">Em mới có điểm ở ${du} mạch nên hình còn hẹp.</p>`:''}`,bars:bars+gvLoiVanDong(st)}}
+/* kĩ năng giải toán lời văn: đã tính vào các trục nội dung, hiện riêng tỉ lệ đúng để cô biết em đọc đề có tốt không */
+function gvLoiVanDong(st){const L=hsLoiVan(st);return`<div class="grow glv"><span>Giải toán lời văn</span>${L.n<5?`<span class="muted">${L.n?'chưa đủ bài':'chưa làm'}</span>`:`<span class="gbar"><i style="width:${L.p}%;background:${L.p>=80?'var(--leaf)':L.p>=60?'var(--sun)':'var(--coral)'}"></i></span><b>${L.p}</b>`}</div>${L.n>=5?`<div class="gsub muted">${L.n} câu gần nhất của ${L.k} dạng bài lời văn · đã tính vào các mạch Số, Phép tính, Đo lường, Hình học</div>`:''}`}
 function gvTabTQ(id,st,ph){
   const sk=hsStreaks(st),T=gvTong(st),al=alerts(id),gy=gvGoiY(id,st,al).filter(g=>!ph||!/Nhắn phụ huynh/.test(g.t)),SM=gvSucManh(id,st);
   return`<div class="kpis">${gvKpi('Chuỗi ngày học',sk.cur+' ngày','dài nhất '+sk.best)}${gvKpi('Số ngày học',sk.days,'từ đầu năm học')}${gvKpi('Số câu',sk.n,T.n?`đúng ${pc(T.c,T.n)}%`:'')}
@@ -11116,7 +11127,7 @@ function gvTabHT(id,st){
    <p class="muted" style="margin:6px 0 0">Tổng thời gian học: ${Math.round(T.sec/60)} phút (khoảng ${Math.round(T.sec/60/Math.max(1,Object.values(st.dd||{}).filter(o=>o.n).length))} phút mỗi ngày học).</p></div></section>
   <section class="card"><h2>Tiến độ SGK</h2><div class="tablewrap"><table><tr><th>Chủ đề</th><th>Màn đã qua</th><th>Đảo bị kẹt</th></tr>${chu}</table></div></section>
   <section class="card"><h2>Tỉ lệ đúng từng dạng bài</h2><p class="muted" style="margin:4px 0 0">10 lần làm gần nhất mỗi dạng, dạng yếu xếp trước (10 dạng yếu nhất).</p>${gvBangDang(st,1)}</section>`}
-function gvBangDang(st,gon){const D=gvDang(st),top=gon?D.slice(0,10):D,con=gon?D.slice(10):[];const row=x=>`<tr${x.n>=4&&x.p<GV_YEU?' class="gyeu"':''}><td>${esc(x.k)}</td><td>${HS_AXN[x.ax]||''}</td><td style="min-width:140px">${gvBar(x.p,x.p>=80?'var(--leaf)':x.p>=GV_YEU?'var(--sun)':'var(--coral)')} <b>${x.p}%</b></td><td>${x.n}</td><td>${x.t?gvNgay(hsKey(new Date(x.t))):''}</td></tr>`;const bang=L=>`<div class="tablewrap"><table class="gdang"><tr><th>Dạng bài</th><th>Mạch</th><th>Đúng</th><th>Số lần</th><th>Lần cuối</th></tr>${L.map(row).join('')}</table></div>`;
+function gvBangDang(st,gon){const D=gvDang(st),top=gon?D.slice(0,10):D,con=gon?D.slice(10):[];const row=x=>`<tr${x.n>=4&&x.p<GV_YEU?' class="gyeu"':''}><td>${esc(x.k)}${hsWord(x.k)?' <span class="pill">lời văn</span>':''}</td><td>${HS_AXN[x.ax]||''}</td><td style="min-width:140px">${gvBar(x.p,x.p>=80?'var(--leaf)':x.p>=GV_YEU?'var(--sun)':'var(--coral)')} <b>${x.p}%</b></td><td>${x.n}</td><td>${x.t?gvNgay(hsKey(new Date(x.t))):''}</td></tr>`;const bang=L=>`<div class="tablewrap"><table class="gdang"><tr><th>Dạng bài</th><th>Mạch</th><th>Đúng</th><th>Số lần</th><th>Lần cuối</th></tr>${L.map(row).join('')}</table></div>`;
   return D.length?bang(top)+(con.length?`<details style="margin-top:8px"><summary>Xem thêm ${con.length} dạng (đều đúng từ ${con[0].p}% trở lên)</summary>${bang(con)}</details>`:''):'<p class="muted">Chưa có dữ liệu.</p>'}
 
 function gvTabLoi(id,st,ph){
@@ -11251,7 +11262,7 @@ const GV_NX=[
  f=>`${f} nghỉ học mấy hôm. Bố mẹ giúp con giữ thói quen 15 phút mỗi ngày.`,
  (f,w,b)=>`${f} làm tốt phần ${b}, hay giúp bạn trong lớp. Cô tặng con thẻ "Giúp bạn".`];
 function gvMau(){
-  if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS4||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS4=1;
+  if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS5||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS5=1;
   try{window.orgHeal&&window.orgHeal()}catch(e){}
   const NG=GV_NG;S.day=NG;const thang=[];for(let d=1;d<=NG;d+=1){const m=hsMonth(hsDayDate(d));if(!thang.includes(m))thang.push(m)}
   S.asg=(S.asg||[]).filter(a=>!a.mau);
@@ -11467,7 +11478,7 @@ async function fbTaoTK(tk,pw){await fbInit();const app2=firebase.apps.find(a=>a.
 async function fbThietLap(ten,tk,pw){const{auth,db}=await fbInit();const ref=db.doc('org/main');
   const c=await auth.createUserWithEmailAndPassword(fbEmail(tk),pw);const uid=c.user.uid;
   const o=await ref.get();if(o.exists)throw{code:'x',message:'Trung tâm đã có quản lý. Hãy đăng nhập.'};
-  const org={ten:'Clb Học Toán cùng Jenny',nam:'2026–2027',gv:[{id:tk,ten,tk}],lop:[],gd:{},nl:{},nk:[],mo:{},hs:[],ph:{},v:2,cloud:1,mauHS4:1,mauHS3:1,mauHS2:1,mauHS:1};
+  const org={ten:'Clb Học Toán cùng Jenny',nam:'2026–2027',gv:[{id:tk,ten,tk}],lop:[],gd:{},nl:{},nk:[],mo:{},hs:[],ph:{},v:2,cloud:1,mauHS4:1,mauHS5:1,mauHS3:1,mauHS2:1,mauHS:1};
   await ref.set({j:JSON.stringify(org),gd:{},pc:{},admins:[uid],t:fbTS()});
   await db.doc('users/'+uid).set({role:'ql',tk,ten,gvId:tk});return fbNapMe(c.user)}
 
@@ -11517,7 +11528,7 @@ async function fbGvBoot(){const me=CLOUD.me,db=FB.db;document.body.classList.add
   role=window.TRANG||(me.role==='ph'?'ph':'gv');gvMe=me.gvId||me.tk;gvLop=null;scr={k:'home'};
   await new Promise(ok=>{let lan=0;
     fbSub.push(db.doc('org/main').onSnapshot(d=>{const j=d.exists?d.data().j:null;if(!j){ok();return}
-      if(j!==fbLast['org/main']||!S.org){fbLast['org/main']=j;const o=fbJ(j);o.cloud=1;o.v=2;['mauHS','mauHS2','mauHS3','mauHS4'].forEach(k=>o[k]=1);
+      if(j!==fbLast['org/main']||!S.org){fbLast['org/main']=j;const o=fbJ(j);o.cloud=1;o.v=2;['mauHS','mauHS2','mauHS3','mauHS4','mauHS5'].forEach(k=>o[k]=1);
         const giu=S.org&&Object.getOwnPropertyDescriptor(S,'open');S.org=o;fbDanhSach();if(lan++)fbVe()}ok()},e=>{console.error(e);ok()}))});
   if(me.role!=='ph')fbSub.push(db.collection('asg').onSnapshot(q=>{const A=[];q.docs.forEach(d=>{const j=d.data().j;fbLast['asg/'+d.id]=j;const a=fbJ(j);if(a)A.push(a)});S.asg=A;fbVe()},e=>console.error(e)));
   else fbSub.push(db.collection('asg').onSnapshot(q=>{S.asg=q.docs.map(d=>fbJ(d.data().j)).filter(Boolean);fbVe()},e=>{}));

@@ -111,7 +111,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Thử nghiệm dùng tài khoản thử, chưa nhập tên thật của học sinh.
 - **3 trang tách riêng** (24/10/2026): Giáo viên, Phụ huynh, Quản lý — mỗi trang một vai; app học sinh riêng.
 
-- Sức mạnh Toán: dạng "Quy luật lặp hình" (đồ vật) tính vào mạch Số, không phải Hình học (24/10/2026).
+- Sức mạnh Toán 6 trục: Số · Phép tính · Tư duy – Logic · Hình học · Đo lường · Thống kê. Bài lời văn tính vào trục nội dung của nó; tỉ lệ đúng bài lời văn hiện riêng (24/10/2026).
 - Bấm logo Clb ở thanh trên → về trang chủ (mọi trang) (24/10/2026).
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)

@@ -14,7 +14,7 @@ const I18N={
  'Luyện ngay ▶':'Practise now ▶','Luyện lỗi trước nhé':'Fix your mistakes first','Luyện ngay':'Practise now','Luyện tiếp':'Keep practising','Về sổ lỗi sai':'Back to mistakes book',
  'Sổ lỗi sai':'Mistakes book','Hộ chiếu đại dương':'Ocean passport','🛂 Hộ chiếu đại dương':'🛂 Ocean passport','Tủ đồ của Jenny':"Jenny's wardrobe",'Đang mặc':'Wearing',
  '📖 Bộ sưu tập sinh vật biển':'📖 Sea creature collection','Hồ sơ của em':'My profile','Chuỗi':'Streak','Dài nhất':'Longest','Ngày học':'Study days','Số câu':'Questions',
- 'Chuỗi ngày chăm chỉ':'Study streak','Hôm nay':'Today','Ít':'Less','Nhiều':'More','Sức mạnh Toán':'Math power','Số':'Numbers','Phép tính':'Operations','Lời văn':'Word problems',
+ 'Chuỗi ngày chăm chỉ':'Study streak','Hôm nay':'Today','Ít':'Less','Nhiều':'More','Sức mạnh Toán':'Math power','Số':'Numbers','Phép tính':'Operations','Lời văn':'Word problems','Logic':'Logic','Tư duy – Logic':'Logical thinking','Giải toán lời văn':'Word problems','lời văn':'word problem','chưa làm':'not yet',
  'Hình học':'Geometry','Đo lường':'Measurement','Thống kê':'Statistics','chưa đủ':'not enough','Tháng này':'This month',
  'Hôm nay em học:':'Today you learn:','Bài giảng Jenny':"Jenny's lesson",'Nên xem':'Recommended','Học trên đảo':'Learn on the island','Chơi':'Play','Trùm lớp':'Class boss','bắt buộc':'required',
  'Góp sức':'Join in','Chơi thêm':'More games','tùy chọn':'optional','Nâng cao':'Advanced','Đánh trùm':'Fight the boss','Đảo tiếp theo →':'Next island →',
