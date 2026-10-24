@@ -55,6 +55,7 @@
 - File mới: `js/core/72-tu-luyen.js`.
 
 ## 2026-10-24
+- Trang Quản lý, Giáo viên, Phụ huynh: phong cách mới kiểu Google Classroom (chữ Lexend, thanh trên trắng tab gạch chân, thẻ viền mảnh bo 8px, dải màu đầu thẻ, nút phẳng). Trang học sinh giữ pixel.
 - Luôn nền sáng trắng ở mọi trang (học sinh, giáo viên, phụ huynh, quản lý), không đổi theo chế độ tối của máy; nhãn Mới/Chưa làm/Đã làm đậm màu hơn.
 - Quản lý: chống bấm nhiều lần khi tạo/lưu (khoá nút, không tạo trùng); hỏi lại khi tạo em trùng họ tên; trang Phụ huynh bỏ nút tạo tay, "Sửa con" → "✎ Sửa".
 - Sửa lỗi không vào được trang Quản lý/Giáo viên/Phụ huynh (máy chủ) khi có em chưa xếp lớp (khối 0 làm lỗi tạo dữ liệu học).

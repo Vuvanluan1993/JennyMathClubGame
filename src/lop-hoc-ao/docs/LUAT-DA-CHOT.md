@@ -156,6 +156,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Trang Phụ huynh** (24/10/2026): bỏ nút tạo tài khoản phụ huynh bằng tay (đã tự tạo khi thêm học sinh). Còn: ✎ Sửa từng phụ huynh (gắn thêm/tách con), 🖨 In phiếu phụ huynh, nút tạo bù cho các em chưa có (chỉ hiện khi còn em thiếu).
 - **Chống bấm nhiều lần** (24/10/2026): khi đang lưu/tạo thì nút bị khoá ("Đang lưu…"), bấm thêm không tạo trùng. Tạo học sinh trùng họ tên (+ năm sinh) với em đã có → hỏi lại.
 - **Xoá học sinh** (24/10/2026): trong bảng ✎ Sửa (nút 🗑 Xoá học sinh) hoặc chọn nhiều em › 🗑 Xoá; phải gõ XOA để xác nhận; xoá hẳn tài khoản và dữ liệu học, không khôi phục; tài khoản phụ huynh ph.… không còn con thì xoá theo. Em chỉ tạm nghỉ thì dùng Nghỉ học để giữ dữ liệu.
+- **Phong cách trang Quản lý, Giáo viên, Phụ huynh = kiểu Google Classroom** (thầy chọn phương án 1, 24/10/2026; file `80-phong-cach-lms.js`, chỉ áp dụng khi vai khác Học sinh): chữ Lexend; thanh trên trắng, tab vai trò gạch chân xanh #0079C1; thẻ viền xám mảnh bo 8px không bóng; 4 ô Quản lý và thẻ lớp Giáo viên có dải màu đầu thẻ (xanh biển, xanh lá, cam, xanh đậm… từ logo) + biểu tượng tròn; nút bo 4px (nút chính nền xanh, nút phụ viền xám chữ xanh); nhãn bo tròn nền nhạt; ảnh đại diện tròn. Bố cục, khung, nút, vị trí giữ nguyên. **Trang học sinh giữ phong cách pixel.**
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
