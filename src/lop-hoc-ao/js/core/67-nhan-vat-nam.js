@@ -33,7 +33,7 @@ function genPick(cls){const st=S.st[sid],cur=st&&st.gender;const b=(g,sp,t)=>`<b
 PXS.jenny__raw=PXS.jenny;
 function genAsk(){if(document.getElementById('genov'))return;const el=document.createElement('div');el.className='gdov';el.id='genov';
  el.innerHTML=`<div class="gdbox genbox"><div class="gdhd"><b>${arcT('Chọn nhân vật của em','Choose your character')}</b></div><p class="genq">${arcT('Em là bạn nữ hay bạn nam? Em có thể đổi lại trong Tủ đồ.','Are you a girl or a boy? You can change it later in the Wardrobe.')}</p>${genPick()}</div>`;document.body.appendChild(el)}
-{const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(role==='hs'&&scr.k==='home'){const st=S.st[sid];if(st&&st.grade<=5&&!st.gender)genAsk()}}catch(e){}return v}}
+{const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(role!=='hs'){const o=document.getElementById('genov');if(o)o.remove()}if(role==='hs'&&scr.k==='home'){const st=S.st[sid];if(st&&st.grade<=5&&!st.gender)genAsk()}}catch(e){}return v}}
 /* Tủ đồ: hàng chọn nhân vật + đổi tên "Tủ đồ của em" */
 {const _t=viewTudo;viewTudo=function(st){let r=_t.apply(this,arguments);try{
  r=r.replace(arcT('Tủ đồ của Jenny','Jenny’s wardrobe'),arcT('Tủ đồ của em','My wardrobe'));

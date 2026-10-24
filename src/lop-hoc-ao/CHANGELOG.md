@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Hồ sơ học sinh trong trang Quản lý
+- Ô ✎ Sửa thêm: **Giới tính · Ngày sinh (ngày, tháng) · Năm sinh · Điện thoại phụ huynh · Gmail phụ huynh**. Kiểm tra số điện thoại, gmail, ngày có thật.
+- Bảng Học sinh hiện dòng hồ sơ dưới tên (vd "Nữ · 12/3/2019 · PH 0912345678 · …"); em chưa có hồ sơ ghi màu cam "Chưa có hồ sơ".
+- Lưu ở dữ liệu trung tâm (theo tên đăng nhập, đổi tên đăng nhập vẫn giữ); có ghi Nhật ký.
+- Sửa: ô "Chọn nhân vật" không hiện khi đang ở vai Giáo viên/Quản lý/Phụ huynh.
+
 ## 24/10/2026 — Sửa tài khoản học sinh: chỉ Họ tên, Tên đăng nhập, Mật khẩu
 - Theo thầy: bỏ sửa khối, nhân vật, xu, Toán Jenny, làm lại tiến độ. Ô Sửa chỉ còn **Họ tên · Tên đăng nhập · Mật khẩu mới** (để trống nếu không đổi).
 - Đổi tên đăng nhập: dữ liệu học (sao, xu, đồ, lớp, phụ huynh) chuyển theo, không mất; không cho trùng tên đã có.
