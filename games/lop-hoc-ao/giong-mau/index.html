@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nghe giọng Jenny</title>
+<style>
+:root{--bg:#fff8e7;--ink:#1d2b53;--muted:#5a6683;--card:#fff;--line:#1d2b53}
+@media (prefers-color-scheme:dark){:root{--bg:#141a2e;--ink:#f2f4ff;--muted:#aab3d0;--card:#1f2742;--line:#aab3d0}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif;padding:16px}
+h1{font-size:20px;margin:0 0 4px}p.s{color:var(--muted);margin:0 0 16px;font-size:14px}
+.c{background:var(--card);border:2px solid var(--line);box-shadow:3px 3px 0 var(--line);padding:12px;margin:0 0 14px;max-width:640px}
+.c b{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}.c div{margin-bottom:8px;line-height:1.5}
+audio{width:100%}.x{color:#c0392b;font-size:13px}
+</style></head><body>
+<h1>Nghe giọng Jenny</h1>
+<p class="s">Google Chirp 3 HD · Tiếng Việt · Despina</p>
+<div id="ds"></div>
+<script>
+fetch('../../../tools/giong/cau-mau.json').catch(()=>null).then(r=>r&&r.ok?r.json():null).then(ds=>{
+ const el=document.getElementById('ds');
+ if(!ds){el.innerHTML='<p class="x">Chưa đọc được danh sách câu.</p>';return}
+ ds.forEach(c=>{const d=document.createElement('div');d.className='c';
+  d.innerHTML='<b>'+c.id+'</b><div></div><audio controls preload="none" src="'+c.id+'.mp3"></audio>';
+  d.querySelector('div').textContent=c.text;
+  d.querySelector('audio').onerror=function(){this.replaceWith(Object.assign(document.createElement('span'),{className:'x',textContent:'Chưa thu câu này.'}))};
+  el.appendChild(d)});
+});
+</script>
+</body></html>

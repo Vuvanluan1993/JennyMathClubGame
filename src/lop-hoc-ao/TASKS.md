@@ -43,6 +43,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 - ☑ **T-20 Trồng cây** — trò chuyển cảnh: mỗi câu đúng tưới cây một lần, cây lớn 8 bậc tới khi ra quả; sai 2 lần ốc sên gặm lá (19/10).
 - ☑ **T-23 Phòng học của em** — Bài cô giao, Luyện lỗi, Tự luyện (chờ thầy) (23/10).
 - ☐ **T-24 Tự luyện** — chờ thầy chốt ý tưởng.
+- ◐ **T-25 Giọng đọc thu sẵn (Google Chirp 3 HD · Despina)** — đã có công cụ thu + trang nghe mẫu `games/lop-hoc-ao/giong-mau/` (24/10); chờ thầy thêm khóa `GOOGLE_TTS_KEY`. Tiếp: gom mọi lời đọc, thu lớp 1, gắn vào app (tải khi cần, lỗi mạng dùng giọng máy), rồi lớp 2–5.
 - ☑ **T-22 Tủ đồ** — phối đồ cho Jenny trong Nhà em (23/10).
 - ☑ **T-21 Leo núi tìm kho báu** — trò cho tiết toán có lời văn: mỗi bài đúng leo 1 chặng, 6 chặng lên đỉnh mở rương; sai 2 lần xem lời giải (19/10).
 - ☑ **Logo về trang chủ** — bấm logo Clb ở thanh trên là về Bản đồ (24/10).

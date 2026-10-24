@@ -38,7 +38,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Bấm EN thì **toàn bộ** chuyển tiếng Anh: giao diện, đề, lời giải, hình, hướng dẫn, giọng đọc.
 - Anh – Anh, thuật ngữ Cambridge. Giữ tên Việt (Lan, Nam…) và tiền đồng.
 - Làm từng lớp: lớp 1 xong (`48b-en-lop1.js`), thầy duyệt rồi mới làm lớp 2→5. Rà bằng `tools/test/tieng-anh.js` (phải 0 chuỗi sót).
-- Giọng đọc: trình duyệt mỗi máy một giọng (đọc chưa chuẩn). Khuyến nghị đã gửi thầy: giọng AI trên máy chủ (Google/Microsoft) có lưu đệm — **chờ thầy tạo tài khoản**.
+- **Giọng đọc (chốt 24/10/2026):** dùng **Google Cloud Chirp 3 HD · Tiếng Việt · Despina** (`vi-VN-Chirp3-HD-Despina`). Thu sẵn thành file mp3 (không đọc trực tiếp lúc học): lời cố định (bài giảng, hướng dẫn, lời Jenny) thu trước; câu có số thay đổi tạm dùng giọng máy. File chia theo lớp/bài, tải khi cần, tải trước câu kế tiếp; lỗi mạng thì quay về giọng máy. Thu bằng GitHub Actions (`.github/workflows/giong-doc.yml`, khóa `GOOGLE_TTS_KEY` trong Secrets), có lưu đệm: chỉ thu lại câu đã sửa. Không dùng giọng hệ thống của Mac để thu (giấy phép Apple cấm dùng thương mại). Giọng tiếng Anh: chọn sau.
 
 ## 6. Xu, Cửa hàng, Đảo nhà, thú cưng (chốt 20/10/2026)
 - Tên gọi thống nhất: **Cửa hàng** / "Cửa hàng Jenny" (không dùng "Gian hàng", 23/10).

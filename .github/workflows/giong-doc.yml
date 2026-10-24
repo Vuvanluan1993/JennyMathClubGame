@@ -1,0 +1,32 @@
+name: Thu giọng đọc (Google Chirp 3 HD)
+
+on:
+  workflow_dispatch:
+    inputs:
+      danh_sach:
+        description: "Danh sách lời đọc (JSON)"
+        default: "tools/giong/cau-mau.json"
+      thu_muc:
+        description: "Thư mục ghi file mp3"
+        default: "games/lop-hoc-ao/giong-mau"
+
+permissions:
+  contents: write
+
+jobs:
+  thu-am:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tạo file tiếng
+        env:
+          GOOGLE_TTS_KEY: ${{ secrets.GOOGLE_TTS_KEY }}
+        run: python3 tools/giong/tao-giong.py "${{ inputs.danh_sach }}" "${{ inputs.thu_muc }}"
+      - name: Lưu vào repo
+        run: |
+          git config user.name "jenny-giong-doc"
+          git config user.email "actions@users.noreply.github.com"
+          git add "${{ inputs.thu_muc }}"
+          git diff --cached --quiet && echo "Không có file mới" && exit 0
+          git commit -m "Thu giọng đọc: ${{ inputs.danh_sach }}"
+          git pull --rebase && git push

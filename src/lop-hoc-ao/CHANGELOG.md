@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Chốt giọng đọc Google Chirp 3 HD · Despina; công cụ thu sẵn
+- Thầy chọn giọng **Chirp 3 HD · Tiếng Việt · Despina**. Ghi vào `docs/LUAT-DA-CHOT.md` mục 5.
+- `tools/giong/tao-giong.py`: gọi Google Text-to-Speech, ghi mp3 theo danh sách JSON; có lưu đệm (`_ma.json`) nên chỉ thu lại câu đã sửa.
+- `.github/workflows/giong-doc.yml`: bấm chạy trên GitHub (Actions › Thu giọng đọc) để thu và lưu file vào repo. Khóa API đặt ở Secrets `GOOGLE_TTS_KEY`.
+- Trang nghe thử `games/lop-hoc-ao/giong-mau/` với 7 câu mẫu (`tools/giong/cau-mau.json`): dấu hỏi/ngã, đọc số, câu hỏi, bài giảng, hướng dẫn, lời khen, câu có kí hiệu toán.
+- Chưa gắn vào app.
+
 ## 24/10/2026 — Điểm Tư duy – Logic kết hợp mọi mạch
 - Công thức (thầy duyệt; theo TIMSS, câu suy luận nằm rải trong mọi mạch): **A 40%** bài thuần logic (quy luật, tìm nhóm khác, suy luận…) · **B 40%** bài suy luận ở các mạch khác (tìm thành phần chưa biết, bài nhiều bước, so sánh kết quả, ước lượng, câu đúng/sai — vẫn tính vào mạch của nó) · **C 20%** thói quen: đúng ngay lần đầu × (1 − tỉ lệ trả lời dưới 3 giây).
 - Phần chưa có dữ liệu thì chia lại trọng số; hiện điểm khi A + B có từ 5 câu. Lớp chưa mở Toán Jenny vẫn có điểm Logic.
