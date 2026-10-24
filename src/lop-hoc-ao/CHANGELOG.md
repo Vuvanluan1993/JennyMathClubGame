@@ -1,5 +1,15 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Tự luyện: 6 dạng mới từ VBT lớp 1 tập 2, lớp 2 tập 1–2 (T-27)
+- Đã rà 362 trang VBT tham khảo; phần lớn dạng bài đã có. Thêm 6 dạng (viết lại, không chép sách), đều nhập bằng ô số:
+  - **Chuỗi phép tính**: số đầu → (+a) → □ → (−b) → □ → … (lớp 1 bài 29–33, 39 không nhớ; lớp 2 bài 5–14, 19–24, 33, 45, 59–63, 69–70).
+  - **Bảng thành phần phép tính**: Số hạng/Tổng, Số bị trừ/Hiệu, Thừa số/Tích, Số bị chia/Thương; 3 cột, mỗi cột ẩn 1 ô (lớp 2 bài 3, 5–6, 38–45).
+  - **★ Chữ số bí ẩn**: phép đặt tính ẩn vài chữ số, mỗi cột ẩn tối đa 1 nên chỉ có một cách điền (lớp 1 bài 29–33 không nhớ; lớp 2 bài 19–24, 33, 60–63, 69–70 có nhớ).
+  - **★ Mỗi hình là một số**: ▲ + ▲ = …, ▲ + ● = …, ● − ■ = … (lớp 1 bài 12–13, 18, 20, 38; lớp 2 bài 10, 14, 19–24, 45 có phép nhân).
+  - **Tách số theo hàng**: 623 = □ + 20 + □ (lớp 1 bài 21–24, lớp 2 bài 1–2, 48–54).
+  - **Đếm nhảy**: dãy cách đều 1, 2, 5, 10, 100, thêm hoặc bớt; bắt đầu từ bội của bước (lớp 1 bài 21–24, lớp 2 bài 1–2, 39, 40, 48–54).
+- `tools/test/tu-luyen.js` kiểm tra luật từng dạng (Chữ số bí ẩn: thử mọi chữ số, phải đúng 1 cách điền).
+
 ## 24/10/2026 — Đồng bộ tiến độ an toàn hơn (T-06)
 - Dữ liệu học của em (đảo, Tự luyện, Sổ lỗi, bài về nhà, số liệu hồ sơ, xu…) vốn đã lưu lên máy chủ `hs/{tk}` mỗi lần lưu. Sửa 4 chỗ dễ mất dữ liệu:
   - Ghi lỗi (mất mạng) thì tự thử lại sau 20 giây và lần lưu sau vẫn ghi (trước: bỏ qua vì tưởng đã ghi).
