@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Sửa: bài Luyện lỗi cô giao bị mở lại khi em sai lại
+- Lỗi: bài "Luyện lỗi" đã xong lại thành "chưa xong" khi em sai lại đúng dạng đó → app chặn bắt làm lại (gặp ở tài khoản test01).
+- Sửa: sửa hết các lỗi cô giao một lần là bài **xong hẳn** (`asgR.xong`); sai lại sau đó chỉ ghi vào Sổ lỗi sai (tự luyện, tự bỏ sau 7 ngày). Lỗi của bài đã xong không còn được giữ khỏi việc tự bỏ.
+
 ## 24/10/2026 — Trang phụ huynh: nhắc lỗi tự bỏ sau 7 ngày
 - Khung "Nhắc bố mẹ" (dưới Lời nhắn của giáo viên) khi con có lỗi trong Sổ lỗi sai: số lỗi, bao nhiêu lỗi cô đã giao, bao nhiêu lỗi sẽ tự bỏ sau 7 ngày (báo riêng lỗi chỉ còn 1–2 ngày), lời khuyên con luyện 5 phút mỗi ngày ở mục Luyện lỗi.
 - Thẻ "Lỗi & bài về nhà" của phụ huynh: câu giải thích viết cho bố mẹ; cột "Tự bỏ sau" cho từng lỗi.

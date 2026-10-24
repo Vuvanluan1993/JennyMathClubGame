@@ -9,7 +9,10 @@ const BVN_XU=20;
 function bvnId(st){return Object.keys(S.st).find(k=>S.st[k]===st)}
 function bvnLoiCon(st,a){const M=mist(st);return(a.keys||[]).filter(k=>M[k])}
 {const _s=asgState;asgState=function(st,a){const o=_s.apply(this,arguments);try{
-  if(a.loai==='loi'){const con=bvnLoiCon(st,a).length;o.done=con===0;o.con=con;if(o.done&&!o.r.best)o.r.best={ok:a.keys.length,n:a.keys.length};o.doing=!o.done&&!!o.r.lam;o.late=!o.done&&a.due&&Date.now()>a.due;o.neu=!o.r.seen&&!o.done}
+  if(a.loai==='loi'){const con=bvnLoiCon(st,a).length;
+    /* đã xong một lần (sửa hết các lỗi cô giao) là xong hẳn: em sai lại cùng dạng sau đó thì chỉ ghi vào sổ, không mở lại bài cô giao (sửa 24/10/2026) */
+    if(con===0&&!o.r.xong){o.r.xong=Date.now()}
+    const xong=!!(o.r.xong||o.r.thuong);o.done=xong||con===0;o.con=xong?0:con;if(o.done&&!o.r.best)o.r.best={ok:a.keys.length,n:a.keys.length};o.doing=!o.done&&!!o.r.lam;o.late=!o.done&&a.due&&Date.now()>a.due;o.neu=!o.r.seen&&!o.done}
   else if(a.bat&&o.r.best){const b=o.r.best;o.done=b.ok/b.n>=(a.dat||80)/100;o.chuaDat=!o.done;if(o.chuaDat){o.doing=false;o.late=a.due&&Date.now()>a.due}}}catch(e){}return o}}
 function bvnCho(st){if(!st||st.grade>5)return[];return asgMine(st).filter(a=>a.bat&&!asgState(st,a).done).sort((p,q)=>p.t-q.t)}
 /* thưởng khi xong lần đầu */
