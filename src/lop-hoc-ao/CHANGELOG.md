@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 24/10/2026 — Khủng long chạy: 30 ván/ngày, không hiện số ván
+- Mức chơi miễn phí tăng lên **30 ván/ngày**. Không hiện số ván đã chơi cho em (chỉ đếm ngầm).
+- Chơi tới 30 ván thì báo: "Hôm nay em đã chơi nhiều lần, hẹn em ngày mai nhé!"
+
 ## 24/10/2026 — Tô màu theo kết quả: phép tính luôn một dòng
 - Phép tính trong ô không còn bị xuống dòng (trước: "10 −" / "4"). Ô chật thì cả lưới thu nhỏ cùng một cỡ chữ. Đã thử 320/375/414px.
 

@@ -117,7 +117,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 
 - Sức mạnh Toán 6 trục: Số · Phép tính · Tư duy – Logic · Hình học · Đo lường · Thống kê. Bài lời văn tính vào trục nội dung của nó; tỉ lệ đúng bài lời văn hiện riêng (24/10/2026).
 - Điểm Logic = A 40% bài thuần logic + B 40% bài suy luận ở các mạch (tìm thành phần chưa biết, nhiều bước, so sánh kết quả, ước lượng, đúng/sai) + C 20% thói quen (đúng ngay lần đầu, không bấm bừa); thiếu phần nào thì chia lại trọng số; cần A + B ≥ 5 câu (24/10/2026).
-- Khủng long chạy miễn phí từ đầu: không mua, không tốn lượt; riêng 10 ván/ngày (24/10/2026).
+- Khủng long chạy miễn phí từ đầu: không mua, không tốn lượt; tối đa 30 ván/ngày, không hiện số ván; quá 30 báo "Hôm nay em đã chơi nhiều lần, hẹn em ngày mai nhé!" (24/10/2026).
 - Bấm logo Clb ở thanh trên → về trang chủ (mọi trang) (24/10/2026).
 - **Sức mạnh Toán chặt hơn, không hiện số (24/10/2026):** điểm mỗi dạng co về 50% theo số câu đã làm (cộng thêm 2 câu "nửa đúng": 10/10 → 92, 8/10 → 75, 1/1 → 67); điểm mạch = trung bình các dạng theo số câu; cần ≥ 10 câu mới có mức. Thầy, cô, phụ huynh, học sinh chỉ thấy **mức**: Mới bắt đầu (<40) · Đang tập (40–59) · Khá (60–74) · Tốt (75–84) · Vững (≥85). Biểu đồ mạng nhện vẫn vẽ theo điểm. Áp cả cho Giải toán lời văn và 3 phần của Logic.
 - Bảng "Tỉ lệ đúng từng dạng bài" (hồ sơ em › Hoạt động học tập) **giữ % đúng thô** để cô chọn dạng giao bài (24/10/2026).
