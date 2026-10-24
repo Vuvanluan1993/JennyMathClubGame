@@ -8091,7 +8091,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 17:21';
+const APP_VER='24/10 · 17:32';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -12111,6 +12111,87 @@ function datTinh(mode,OP,kb){const big=mode==='1000';let a,b,op,r;
   say:T(`Đặt tính rồi tính: ${a} ${op==='+'?'cộng':'trừ'} ${b}. Em tính từ hàng đơn vị nhé.`,`Work out ${a} ${op==='+'?'plus':'minus'} ${b} in columns. Start with the ones.`),
   sol:st.join(' ')})}
 
+/* ---------- T-27: 6 dạng mới rút từ VBT lớp 1 tập 2, lớp 2 tập 1–2 (viết lại, không chép sách) ---------- */
+const nhoKhong=(a,b,op)=>{for(;a||b;a=Math.floor(a/10),b=Math.floor(b/10)){const x=a%10,y=b%10;if(op==='+'?x+y>9:x<y)return false}return true};
+/* 1) Chuỗi phép tính: số đầu → (+a) → □ → (−b) → □ → (+c) → □ */
+function chuoiPT(M,kieu){const st=kieu==='1000'?3:3;let v0,ops,vals;
+ const opnd=op=>kieu==='20'?RR(2,9):kieu==='1000'?RR(1,9)*(Math.random()<.5?100:10)+(Math.random()<.3?RR(1,9):0):kieu==='nhan'?(op==='×'?pick([2,5]):RR(2,9)):Math.random()<.5?RR(1,9)*10:RR(2,9)+(Math.random()<.5?RR(1,6)*10:0);
+ for(let t=0;t<400;t++){v0=kieu==='20'?RR(3,15):kieu==='1000'?RR(1,8)*100+RR(0,9)*10:kieu==='nhan'?RR(1,9):RR(10,70);ops=[];vals=[];let v=v0,ok=true;
+  for(let k=0;k<st;k++){let op=kieu==='nhan'&&k===0?'×':Math.random()<.5?'+':'−';const d=opnd(op);const w=op==='+'?v+d:op==='−'?v-d:v*d;
+   if(w<0||w>M||(kieu==='khong'&&op!=='×'&&!nhoKhong(v,d,op))){ok=false;break}ops.push([op,d]);vals.push(w);v=w}
+  if(ok)break}
+ return cq({lay:'chain',v0,ops,rows:[],a:vals,kind:'Chuỗi phép tính',label:'Chuỗi phép tính',
+  q:T('<b>Chuỗi phép tính</b>: tính lần lượt theo mũi tên, điền kết quả vào ô trống.','<b>Number chain</b>: follow the arrows and fill in each result.'),
+  say:T('Chuỗi phép tính. Em tính lần lượt theo mũi tên nhé.','Number chain. Follow the arrows.'),
+  sol:(()=>{let v=v0;return ops.map(([o,d],i)=>{const r=`${fmt(v)} ${o} ${fmt(d)} = ${fmt(vals[i])}`;v=vals[i];return r}).join(' · ')})()})}
+/* 2) Bảng thành phần phép tính (3 cột, mỗi cột ẩn 1 ô) */
+const TL_BANG={cong:[['Số hạng','Addend'],['Số hạng','Addend'],['Tổng','Sum'],'+'],tru:[['Số bị trừ','Minuend'],['Số trừ','Subtrahend'],['Hiệu','Difference'],'−'],
+ nhan:[['Thừa số','Factor'],['Thừa số','Factor'],['Tích','Product'],'×'],chia:[['Số bị chia','Dividend'],['Số chia','Divisor'],['Thương','Quotient'],':']};
+function bangTP(loai,M,ban){const cols=[];const seen=new Set();
+ for(let t=0;cols.length<3&&t<200;t++){let x,y,z;
+  if(loai==='cong'){x=RR(10,M-10);y=RR(1,M-x);z=x+y}else if(loai==='tru'){x=RR(20,M);y=RR(1,x-1);z=x-y}
+  else{const f=ban?pick(ban):pick([2,5]),k=RR(1,10);if(loai==='nhan'){x=Math.random()<.5?f:k;y=x===f?k:f;z=x*y}else{x=f*k;y=f;z=k}}
+  const key=x+'|'+y;if(seen.has(key))continue;seen.add(key);cols.push([x,y,z])}
+ const an=cols.map(()=>RR(0,2)),rows=[0,1,2].map(r=>cols.map((c,j)=>an[j]===r?null:c[r])),a=[];rows.forEach((r,i)=>r.forEach((v,j)=>{if(v===null)a.push(cols[j][i])}));
+ const L=TL_BANG[loai];
+ return cq({lay:'tbl',loai,cols,rows,a,hd:[0,1,2].map(i=>T(L[i][0],L[i][1])),kind:'Bảng thành phần phép tính',label:'Bảng thành phần phép tính',
+  q:T(`<b>Điền số vào bảng</b>: mỗi cột là một phép ${{cong:'cộng',tru:'trừ',nhan:'nhân',chia:'chia'}[loai]}.`,`<b>Fill in the table</b>: each column is one ${{cong:'addition',tru:'subtraction',nhan:'multiplication',chia:'division'}[loai]}.`),
+  say:T(`Điền số vào bảng. Mỗi cột là một phép ${{cong:'cộng',tru:'trừ',nhan:'nhân',chia:'chia'}[loai]}.`,'Fill in the table. Each column is one calculation.'),
+  sol:cols.map(c=>`${c[0]} ${L[3]} ${c[1]} = ${c[2]}`).join(' · ')})}
+/* 3) Chữ số bí ẩn trong phép đặt tính (mỗi cột ẩn tối đa 1 chữ số, nên chỉ có một cách điền) */
+function soBiAn(mode,OP){const g1=mode==='1';let a,b,op,r;
+ for(let t=0;t<500;t++){op=OP||(Math.random()<.5?'+':'−');
+  if(mode==='1000'){if(op==='+'){a=RR(110,880);b=RR(11,999-a);r=a+b}else{a=RR(200,999);b=RR(11,a-10);r=a-b}}
+  else{if(op==='+'){a=RR(11,88);b=RR(11,88);r=a+b}else{a=RR(21,99);b=RR(11,a-1);r=a-b}}
+  if(r<10||r>(mode==='1000'?999:99))continue;if(g1&&!nhoKhong(a,b,op))continue;if(!g1&&nhoKhong(a,b,op))continue;break}
+ const n=Math.max(String(a).length,String(b).length,String(r).length),dg=x=>String(x).padStart(n,' ').split('').map(c=>c===' '?'':+c);
+ const R=[dg(a),dg(b),dg(r)],ka=shuf(Array.from({length:n},(_,i)=>i)).slice(0,Math.min(n,g1?2:3));
+ ka.forEach(k=>{const rr=shuf([0,1,2]).find(i=>R[i][k]!=='');if(rr!==undefined)R[rr][k]=null});
+ const D=[dg(a),dg(b),dg(r)],ans=[];R.forEach((row,i)=>row.forEach((v,k)=>{if(v===null)ans.push(D[i][k])}));
+ return cq({lay:'vmiss',rows:R,op,n,va:a,vb:b,a:ans,kind:'Chữ số bí ẩn',label:'Chữ số bí ẩn',tt:1,
+  q:T('<b>★ Chữ số bí ẩn</b>: điền chữ số còn thiếu để phép tính đúng.','<b>★ Missing digits</b>: fill in the digits to make the sum correct.'),
+  say:T('Chữ số bí ẩn. Em điền chữ số còn thiếu để phép tính đúng nhé.','Missing digits. Fill them in to make the sum correct.'),
+  sol:`${fmt(a)} ${op} ${fmt(b)} = ${fmt(r)}`})}
+/* 4) Mỗi hình là một số */
+const TL_HINHS=[['▲','#E0441A'],['●','#0079C1'],['■','#1E9A52']];
+function hinhSo(g,nhan){let v,E;
+ for(let t=0;t<300;t++){if(g===1){v=[RR(1,5),RR(0,5)];E=[[[0,'+',0],v[0]*2],[[0,'+',1],v[0]+v[1]]];if(v[0]!==v[1])break;continue}
+  if(nhan){v=[RR(2,9),RR(1,20),0];E=[[[0,'×',5],null],[[1,'+',0],null]];E[0][1]=v[0]*5;E[1][1]=v[1]+v[0];E.length=2;v.length=2;break}
+  v=[RR(5,40),RR(5,40),0];v[2]=RR(1,v[1]);E=[[[0,'+',0],v[0]*2],[[0,'+',1],v[0]+v[1]],[[1,'−',2],v[1]-v[2]]];if(new Set(v).size===3&&v[0]+v[1]<=100)break}
+ const sh=i=>`<b class="tlsh" style="color:${TL_HINHS[i][1]}">${TL_HINHS[i][0]}</b>`,tok=x=>typeof x==='number'?sh(x):x;
+ return cq({lay:'shape',eqs:E.map(([l,r])=>({h:`${tok(l[0])} ${l[1]} ${typeof l[2]==='number'&&!(nhan&&l[1]==='×')?tok(l[2]):l[2]} = ${fmt(r)}`,l,r})),shs:v.map((_,i)=>sh(i)),nh:!!nhan,rows:[],a:v.slice(),kind:'Mỗi hình là một số',label:'Mỗi hình là một số',tt:1,
+  q:T('<b>★ Mỗi hình là một số</b>: hình giống nhau là số giống nhau. Tìm số của mỗi hình.','<b>★ Shape puzzle</b>: the same shape is the same number. Find each number.'),
+  say:T('Mỗi hình là một số. Hình giống nhau là số giống nhau. Em tìm số của mỗi hình nhé.','Shape puzzle. The same shape is the same number.'),
+  sol:v.map((x,i)=>`${TL_HINHS[i][0]} = ${x}`).join(' · ')})}
+/* 5) Tách số theo trăm, chục, đơn vị */
+function tachSo(g){const ba=g===2;const n=ba?RR(101,999):RR(11,99),h=Math.floor(n/100),c=Math.floor(n/10)%10,u=n%10,k=RR(0,2);let rows,a;
+ if(ba){if(k===0){rows=[[n,'=',null,'+',null,'+',null]];a=[h*100,c*10,u]}else if(k===1){rows=[[null,'=',h*100,'+',c*10,'+',u]];a=[n]}else{rows=[[n,'=',null,'+',c*10,'+',null]];a=[h*100,u]}}
+ else{if(k===0){rows=[[n,'=',null,'+',null]];a=[c*10,u]}else if(k===1){rows=[[null,'=',c*10,'+',u]];a=[n]}else{rows=[[n,'=',c*10,'+',null]];a=[u]}}
+ return cq({lay:'split',n,rows,a,kind:'Tách số theo hàng',label:'Tách số theo hàng',
+  q:T(`<b>Viết số thành tổng</b> các ${ba?'trăm, chục, đơn vị':'chục và đơn vị'}.`,`<b>Write the number</b> as ${ba?'hundreds + tens + ones':'tens + ones'}.`),
+  say:T(`Viết số thành tổng các ${ba?'trăm, chục, đơn vị':'chục và đơn vị'}.`,'Write the number as a sum of its place values.'),
+  sol:ba?`${n} = ${h*100} + ${c*10} + ${u}`:`${n} = ${c*10} + ${u}`})}
+/* 6) Đếm nhảy: dãy số cách đều, điền số còn thiếu */
+function demNhay(steps,lo,hi){const s=pick(steps)*(Math.random()<.3?-1:1);let v0;for(let t=0;t<100;t++){v0=RR(lo,hi);const end=v0+6*s;if(end>=lo&&end<=hi&&(Math.abs(s)<10||v0%Math.abs(s)===0||Math.random()<.3))break}
+ const L=Array.from({length:7},(_,i)=>v0+i*s),an=shuf([2,3,4,5,6]).slice(0,3).sort((x,y)=>x-y),rows=[L.map((v,i)=>an.includes(i)?null:v)];
+ return cq({lay:'seq',st:s,rows,a:an.map(i=>L[i]),kind:'Đếm nhảy',label:'Đếm nhảy',
+  q:T(`<b>Đếm ${s>0?'thêm':'bớt'}</b>: dãy số cách đều nhau. Điền số còn thiếu.`,`<b>Count ${s>0?'on':'back'}</b>: the numbers go up or down by the same step. Fill in the gaps.`),
+  say:T(`Đếm ${s>0?'thêm':'bớt'} ${Math.abs(s)}. Em điền số còn thiếu nhé.`,`Count ${s>0?'on':'back'} in ${Math.abs(s)}s.`),
+  sol:T(`Mỗi số ${s>0?'hơn':'kém'} số trước ${Math.abs(s)}: `,`Each number ${s>0?'adds':'takes away'} ${Math.abs(s)}: `)+L.join(', ')})}
+function tlThem(x){const g=curG(),b=x.b,L=[];
+ if(g===1){if(b===21||b===22||b===23||b===24)L.push(()=>demNhay([1,2,5,10],0,100),()=>tachSo(1));if(b>=29&&b<=33||b===39)L.push(()=>chuoiPT(99,'khong'))}
+ if(g===2){if(b===1||b===2)L.push(()=>demNhay([2,5,10],0,100),()=>tachSo(1));if(b===3)L.push(()=>bangTP('cong',100),()=>bangTP('tru',100));
+  if(b===5||b===6)L.push(()=>chuoiPT(99,'khong'),()=>bangTP('cong',100));if(b>=7&&b<=14)L.push(()=>chuoiPT(20,'20'));if(b>=19&&b<=24||b===33||b===69)L.push(()=>chuoiPT(100,'100'));
+  if(b===38)L.push(()=>bangTP('nhan',50));if(b===39)L.push(()=>bangTP('nhan',50,[2]),()=>demNhay([2],0,40));if(b===40)L.push(()=>bangTP('nhan',50,[5]),()=>demNhay([5],0,100));
+  if(b===42)L.push(()=>bangTP('chia',50));if(b===43)L.push(()=>bangTP('chia',50,[2]));if(b===44)L.push(()=>bangTP('chia',50,[5]));if(b===45||b===71)L.push(()=>bangTP(pick(['nhan','chia']),50),()=>chuoiPT(100,'nhan'));
+  if(b>=48&&b<=54||b===68)L.push(()=>demNhay([10,100,1],100,1000),()=>tachSo(2));if(b>=59&&b<=63||b===70)L.push(()=>chuoiPT(1000,'1000'))}
+ return L}
+function tlThemTT(x){const g=curG(),b=x.b,L=[];
+ if(g===1){if(b>=29&&b<=33||b===39)L.push(()=>soBiAn('1'));if(b>=12&&b<=13||b===18||b===20||b===38)L.push(()=>hinhSo(1))}
+ if(g===2){if(b>=19&&b<=24||b===33||b===69){const o={19:'+',20:'+',21:'+',22:'−',23:'−'}[b];L.push(()=>soBiAn('100',o),()=>hinhSo(2))}
+  if(b===14||b===10)L.push(()=>hinhSo(2));if(b===45)L.push(()=>hinhSo(2,1));if(b===60||b===62||b===63||b===70){const o={60:'+',62:'−'}[b];L.push(()=>soBiAn('1000',o))}}
+ return L}
+
 /* dạng mới hợp với từng bài (theo số bài KNTT) */
 function tlNew(x){const g=curG(),b=x.b;
  if(g===1){if(b===4)return[()=>dungSai(1,'so')];if(b===5||b===6)return[()=>nhaSo(1),()=>dungSai(1,'so')];if(b===10||b===11)return[()=>giaDinh(1),()=>nhaSo(1),()=>dungSai(1)];if(b>=12&&b<=13||b===18||b===20||b===38)return[()=>giaDinh(1),()=>nhaSo(1),()=>toMau(1),()=>dungSai(1)];if(b>=29&&b<=33||b===39)return[()=>giaDinh(1,'100'),()=>dungSai(1,'100')];if(b===22)return[()=>dungSai(1,'so')];return[]}
@@ -12123,6 +12204,7 @@ function tlChal(x){const g=curG(),b=x.b;
  if(g===2&&(b>=19&&b<=24||b===33||b===69))return[()=>thapSo(2,100)];
  return[]}
 
+{const _n=tlNew,_c=tlChal;tlNew=x=>_n(x).concat(tlThem(x));tlChal=x=>_c(x).concat(tlThemTT(x))}
 /* ---------- sinh trang theo seed ---------- */
 function tlQs(x,seed){const mr=Math.random;Math.random=seedRnd(seed);const qs=[];
  try{const L=[0,1].filter(l=>x.lv[l]),cand=shuf(L.flatMap(l=>x.lv[l].map((_,gi)=>[l,gi]))),used=new Set();
@@ -12154,6 +12236,11 @@ function tlFig(q){const g=scr;let b=0;
   if(c==='')return`<span class="tc gap"></span>`;if(typeof c==='string')return`<span class="tc op">${c}</span>`;return`<span class="tc">${fmt(c)}</span>`};
  if(q.lay==='color'){const c=(g.cv||[]);return`<div class="tlcol">${q.cells.map((t,i)=>{const v=c[i],col=v!==''&&v!=null?TL_MAU[+v][0]:'';return`<button type="button" class="cc ${col?'on':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" ${col?`style="background:${col}"`:''} onclick="tlCell(${i})"><span class="cct">${t}</span></button>`}).join('')}</div>`}
  if(q.lay==='ds'){const c=(g.cv||[]);return`<div class="tlds">${q.st.map((t,i)=>`<div class="dsr ${g.cbad&&g.cbad.includes(i)?'bad':''}"><span class="dst">${t}</span><button type="button" class="dsb ${c[i]==='1'?'on':''}" onclick="tlDS(${i},1)" aria-pressed="${c[i]==='1'}">${T('Đ','T')}</button><button type="button" class="dsb ${c[i]==='0'?'on':''}" onclick="tlDS(${i},0)" aria-pressed="${c[i]==='0'}">${T('S','F')}</button></div>`).join('')}</div>`}
+ if(q.lay==='chain'){let k=0;return`<div class="tlchain"><span class="tc">${fmt(q.v0)}</span>${q.ops.map(([o,d])=>`<span class="tca"><i>${o} ${fmt(d)}</i>→</span>${cell(null)}`).join('')}</div>`}
+ if(q.lay==='tbl'){return`<div class="tltbl" style="grid-template-columns:auto repeat(${q.cols.length},46px)">${q.rows.map((r,i)=>`<span class="th">${q.hd[i]}</span>${r.map(cell).join('')}`).join('')}</div>`}
+ if(q.lay==='vmiss'){const n=q.n;return`<div class="tlvert" style="grid-template-columns:repeat(${n+1},44px)"><span class="tc gap"></span>${q.rows[0].map(c=>c===''?'<span class="tc gap"></span>':cell(c)).join('')}<span class="tc op vop">${q.op}</span>${q.rows[1].map(c=>c===''?'<span class="tc gap"></span>':cell(c)).join('')}<i class="vline" style="grid-column:1/-1"></i><span class="tc gap"></span>${q.rows[2].map(c=>c===''?'<span class="tc gap"></span>':cell(c)).join('')}</div>`}
+ if(q.lay==='shape'){return`<div class="tlshape">${q.eqs.map(e=>`<div class="eqs">${e.h}</div>`).join('')}<div class="ans">${q.shs.map(s=>`<span>${s} = ${cell(null)}</span>`).join('')}</div></div>`}
+ if(q.lay==='seq'){return`<div class="tlseq">${q.rows[0].map(cell).join('')}</div>`}
  if(q.lay==='vert'){const [A,B,R]=q.rows;let bi=0;const n=q.n,col=`grid-template-columns:repeat(${n+1},44px)`;
   const nho=`<span class="tc gap"></span>`+A.map((_,k)=>k<n-1?`<button type="button" class="vn ${(g.nho||[]).includes(k)?'on':''}" onclick="tlNho(${k})" aria-label="${T('Ghi nhớ','Carry')}">${(g.nho||[]).includes(k)?'1':''}</button>`:`<span class="tc gap"></span>`).join('');
   const dg=c=>c===''?`<span class="tc gap"></span>`:`<span class="tc vd">${c}</span>`;
@@ -12304,7 +12391,7 @@ window.gvTLDel=function(id){S.asg=(S.asg||[]).filter(a=>a.id!==id);save();render
 /* phép tính trong ô Tô màu luôn nằm trên 1 dòng: chữ to quá thì tự nhỏ lại */
 function tlFitCol(){const B=[...document.querySelectorAll('.tlcol .cc')];if(!B.length)return;B.forEach(b=>b.style.fontSize='');let f=parseFloat(getComputedStyle(B[0]).fontSize);const over=()=>B.some(b=>{const t=b.querySelector('.cct');return t&&t.offsetWidth>b.clientWidth-4});while(over()&&f>11){f-=1;B.forEach(b=>b.style.fontSize=f+'px')}}/* cả lưới cùng một cỡ chữ */
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{if(scr&&scr.tl)tlFitCol()}catch(e){}return r}}
-Object.assign(I18N,{'Đặt tính rồi tính':'Column method','Lưới phép tính':'Number grid','Tô màu theo kết quả':'Colour by answer','Đúng hay sai':'True or false','Nhà số':'Number house','Gia đình phép tính':'Fact family','Tháp số':'Number pyramid','Tam giác số':'Number triangle'});
+Object.assign(I18N,{'Chuỗi phép tính':'Number chain','Bảng thành phần phép tính':'Calculation table','Chữ số bí ẩn':'Missing digits','Mỗi hình là một số':'Shape puzzle','Tách số theo hàng':'Place value split','Đếm nhảy':'Skip counting','Đặt tính rồi tính':'Column method','Lưới phép tính':'Number grid','Tô màu theo kết quả':'Colour by answer','Đúng hay sai':'True or false','Nhà số':'Number house','Gia đình phép tính':'Fact family','Tháp số':'Number pyramid','Tam giác số':'Number triangle'});
 document.head.insertAdjacentHTML('beforeend',`<style>
 .vbt h2{margin:0}.vsub{font-size:13px;color:var(--muted);margin:2px 0 10px}.vstat{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px}
 .vsec{font-family:var(--f-display);font-size:20px;margin:16px 0 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--ink);line-height:1.15}
@@ -12349,6 +12436,13 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .tlvert .tc{width:44px;height:46px;font-size:32px}.tlvert .tc.vd{background:transparent;box-shadow:none;color:var(--ink)}.tlvert .tc.vop{font-size:32px;width:44px}
 .tlvert .vline{display:block;height:4px;background:var(--pxk,#1F2A5A);margin:2px 0}
 .tlvert .vn{width:30px;height:24px;justify-self:center;border:0;background:transparent;color:#E0441A;font-family:var(--f-display);font-size:22px;line-height:1;box-shadow:inset 0 0 0 2px var(--muted);opacity:.7;cursor:pointer;padding:0}.tlvert .vn.on{opacity:1;box-shadow:inset 0 0 0 2px #E0441A;background:#FDE6DE}
+.tlchain{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 2px;max-width:340px}
+.tlchain .tca{display:flex;flex-direction:column;align-items:center;font-family:var(--f-display);font-size:22px;line-height:.9;color:var(--ink);padding:0 2px}.tlchain .tca i{font-style:normal;font-size:20px;color:#E0441A;white-space:nowrap}
+.tltbl{display:grid;gap:4px;align-items:center;justify-content:center}.tltbl .th{font-size:14px;font-weight:700;color:var(--ink);padding-right:6px;text-align:right;line-height:1.15}
+.tlshape{display:flex;flex-direction:column;align-items:center;gap:8px}.tlshape .eqs{font-family:var(--f-display);font-size:32px;line-height:1;color:var(--ink);white-space:nowrap}
+.tlshape .ans{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:6px}.tlshape .ans span{display:flex;align-items:center;gap:6px;font-family:var(--f-display);font-size:32px;color:var(--ink)}
+.tlsh{font-weight:400;font-size:30px}
+.tlseq{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:340px}.tlseq .tc{width:50px}
 .tlend{text-align:center}.tlend .big{font-family:var(--f-display);font-size:48px;color:var(--leaf);line-height:1.1}
 </style>`);
 })();
