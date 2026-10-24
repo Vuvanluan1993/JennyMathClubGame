@@ -134,7 +134,7 @@ function themBox(l){const o=O(),q=bo(qlThemTim),GOI=5,TIM=15;
  ${show.length?`<div class="qlck">${list}</div>`:(q?'<p class="muted">Không tìm thấy em nào.</p>':'')}
  ${q&&con?`<p class="muted qlhint">… còn ${con} em, gõ thêm chữ để thu hẹp.</p>`:''}
  <div class="qlin" style="margin-top:10px"><button type="button" class="btn pri" ${n?'':'disabled'} onclick="qlThemVao('${l.id}')">${n?`Đưa ${n} em vào lớp`:'Đưa vào lớp'}</button></div>
- <p class="muted qlhint">Chưa có tài khoản? <button type="button" class="lnk" onclick="qlMoHS()">+ Tạo tài khoản học sinh</button></p></section>`}
+ <div class="qlin qlnew"><span class="muted">Chưa có tài khoản?</span><button type="button" class="btn sm" onclick="qlMoHS()">+ Tạo tài khoản học sinh</button></div></section>`}
 /* ---------- Nhật ký, Năm học ---------- */
 function trangNK(){const o=O();return`<div class="grid">${head('📒','Nhật ký thao tác')}<section class="card">${(o.nk||[]).length?`<div class="log" style="max-height:70vh">${o.nk.slice(-200).reverse().map(x=>`Ngày ${x.d} · ${e(x.ai||'')} · ${e(x.t)}`).join('\n')}</div>`:'<p class="muted">Chưa có thao tác.</p>'}</section></div>`}
 function trangNam(){const o=O();return`<div class="grid">${head('🎓','Năm học · Lên lớp')}<section class="card"><h2>Năm học ${e(o.nam)}</h2><p class="muted">Sắp có: Kết thúc năm học — lên lớp cả trung tâm (1A → 2A…), chọn em ở lại lớp, nghỉ học; lớp 5 thành "Đã học xong". Xu, đồ, thú cưng giữ nguyên; sao và kết quả lưu vào Hồ sơ năm học.</p></section></div>`}
@@ -182,7 +182,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .qlin{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.qlin input,.qlin select{flex:1 1 140px;min-width:0;max-width:220px;height:38px;box-sizing:border-box}
 #qlThem input[type=search]{width:100%;box-sizing:border-box;height:42px}.qlhint{margin:8px 0 0;font-size:13px}
 #qlThem .qlck{margin-top:8px;max-height:none}#qlThem .qlckr{display:flex;align-items:center;gap:10px!important;padding:6px 4px}#qlThem .qlckr input{flex:0 0 18px;margin:0 2px 0 0}.qlckr span{min-width:0;overflow-wrap:anywhere}
-.qlnote span{flex:1 1 220px}
+.qlnew{margin-top:12px;padding-top:10px;border-top:1px solid rgba(120,130,170,.28)}.qlnote span{flex:1 1 220px}
 @media(max-width:640px){
  .qlrh{display:none}.mlab{display:inline;color:#5A6488;font-size:12px}
  .qlmall{display:flex;gap:8px;align-items:center;font-size:13px;padding:4px 2px 6px;border-bottom:1px solid rgba(120,130,170,.28)}

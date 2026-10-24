@@ -8088,7 +8088,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='24/10 · 15:31';
+const APP_VER='24/10 · 15:41';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -12435,7 +12435,7 @@ function themBox(l){const o=O(),q=bo(qlThemTim),GOI=5,TIM=15;
  ${show.length?`<div class="qlck">${list}</div>`:(q?'<p class="muted">Không tìm thấy em nào.</p>':'')}
  ${q&&con?`<p class="muted qlhint">… còn ${con} em, gõ thêm chữ để thu hẹp.</p>`:''}
  <div class="qlin" style="margin-top:10px"><button type="button" class="btn pri" ${n?'':'disabled'} onclick="qlThemVao('${l.id}')">${n?`Đưa ${n} em vào lớp`:'Đưa vào lớp'}</button></div>
- <p class="muted qlhint">Chưa có tài khoản? <button type="button" class="lnk" onclick="qlMoHS()">+ Tạo tài khoản học sinh</button></p></section>`}
+ <div class="qlin qlnew"><span class="muted">Chưa có tài khoản?</span><button type="button" class="btn sm" onclick="qlMoHS()">+ Tạo tài khoản học sinh</button></div></section>`}
 /* ---------- Nhật ký, Năm học ---------- */
 function trangNK(){const o=O();return`<div class="grid">${head('📒','Nhật ký thao tác')}<section class="card">${(o.nk||[]).length?`<div class="log" style="max-height:70vh">${o.nk.slice(-200).reverse().map(x=>`Ngày ${x.d} · ${e(x.ai||'')} · ${e(x.t)}`).join('\n')}</div>`:'<p class="muted">Chưa có thao tác.</p>'}</section></div>`}
 function trangNam(){const o=O();return`<div class="grid">${head('🎓','Năm học · Lên lớp')}<section class="card"><h2>Năm học ${e(o.nam)}</h2><p class="muted">Sắp có: Kết thúc năm học — lên lớp cả trung tâm (1A → 2A…), chọn em ở lại lớp, nghỉ học; lớp 5 thành "Đã học xong". Xu, đồ, thú cưng giữ nguyên; sao và kết quả lưu vào Hồ sơ năm học.</p></section></div>`}
@@ -12483,7 +12483,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .qlin{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.qlin input,.qlin select{flex:1 1 140px;min-width:0;max-width:220px;height:38px;box-sizing:border-box}
 #qlThem input[type=search]{width:100%;box-sizing:border-box;height:42px}.qlhint{margin:8px 0 0;font-size:13px}
 #qlThem .qlck{margin-top:8px;max-height:none}#qlThem .qlckr{display:flex;align-items:center;gap:10px!important;padding:6px 4px}#qlThem .qlckr input{flex:0 0 18px;margin:0 2px 0 0}.qlckr span{min-width:0;overflow-wrap:anywhere}
-.qlnote span{flex:1 1 220px}
+.qlnew{margin-top:12px;padding-top:10px;border-top:1px solid rgba(120,130,170,.28)}.qlnote span{flex:1 1 220px}
 @media(max-width:640px){
  .qlrh{display:none}.mlab{display:inline;color:#5A6488;font-size:12px}
  .qlmall{display:flex;gap:8px;align-items:center;font-size:13px;padding:4px 2px 6px;border-bottom:1px solid rgba(120,130,170,.28)}
@@ -12500,6 +12500,27 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .qllop.qlchua{background:#3A2A10;color:#FFE2B0}:root:not([data-theme="light"]) .qlnote{background:#3A2A10;color:#FFE2B0}:root:not([data-theme="light"]) .qlrh,:root:not([data-theme="light"]) .mlab{color:#AEB7D6}:root:not([data-theme="light"]) .pill.qlwarn{background:#3A2A10;color:#FFE2B0}:root:not([data-theme="light"]) .qlbar{background:rgba(245,166,35,.18)}}:root[data-theme="dark"] .qllop.qlchua{background:#3A2A10;color:#FFE2B0}:root[data-theme="dark"] .qlnote{background:#3A2A10;color:#FFE2B0}:root[data-theme="dark"] .qlrh,:root[data-theme="dark"] .mlab{color:#AEB7D6}:root[data-theme="dark"] .pill.qlwarn{background:#3A2A10;color:#FFE2B0}:root[data-theme="dark"] .qlbar{background:rgba(245,166,35,.18)}
 </style>`);
+})();
+/* 74 — Chế độ tối: tăng độ tương phản cho nút, ô nhập, ô chọn, ô tích và nút bị khoá (24/10/2026).
+   Chỉ tác động khi máy để chế độ tối (hoặc data-theme="dark"); chế độ sáng giữ nguyên. */
+(function(){
+const R=`
+body.px{--pxk:#7183D0}
+body.px .btn:not(.pri):not(.ghost):not(.on){background:#1B2F46;color:#F1F6FB}
+body.px .btn:not(.ghost):disabled,body.px .btn:not(.ghost)[disabled]{opacity:1;background:#2A394E!important;color:#93A5BA!important}
+body.px .btn.ghost{color:#DCE6F2}
+body.px input:not([type=checkbox]):not([type=radio]):not([type=range]),body.px select,body.px textarea{background:#091320;color:#EEF4FA}
+body.px input::placeholder,body.px textarea::placeholder{color:#8496AC}
+body.px input[type=checkbox]{appearance:none;-webkit-appearance:none;width:20px;height:20px;min-width:20px;margin:0;padding:0!important;box-shadow:inset 0 0 0 2px #AEBBF0!important;border:0!important;background:#091320!important;display:inline-grid;place-content:center;cursor:pointer;vertical-align:middle}
+body.px input[type=checkbox]:checked{background:#4FC3F7!important;box-shadow:inset 0 0 0 2px #4FC3F7!important}
+body.px input[type=checkbox]:checked::before{content:"";width:9px;height:5px;border:solid #08131F;border-width:0 0 3px 3px;transform:translateY(-1px) rotate(-45deg)}
+body.px input[type=checkbox]:focus-visible{outline:2px solid #FFBD47;outline-offset:2px}
+body.px .muted{color:#A7B6C8}
+body.px .pgtag{background:#3B4A8C}
+body.px .qlok{color:#6EDC9A}body.px .qlw{color:#FFB070}`;
+const sc=pre=>R.replace(/(^|\})\s*([^{}]+)\{/g,(m,a,sel)=>a+'\n'+sel.split(',').map(x=>pre+x.trim()).join(',')+'{');
+document.head.insertAdjacentHTML('beforeend',`<style>@media (prefers-color-scheme: dark){${sc(':root:not([data-theme="light"]) ')}}${sc(':root[data-theme="dark"] ')}</style>`);
+document.head.insertAdjacentHTML('beforeend','<style>.hs-lb.dim,.hs-lb.dim b{color:#666F8E}</style>');
 })();
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}

@@ -139,6 +139,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **2 cách xếp học sinh vào lớp** (24/10/2026): (1) trang Học sinh — cột Lớp là ô chọn, em chưa xếp lớp hiện "⚠ Chọn lớp…" (chọn được mọi lớp); em đã có lớp chỉ đổi sang lớp cùng khối hoặc bỏ khỏi lớp (có hỏi lại). (2) trang một Lớp — khung "Thêm học sinh vào lớp": tìm, tích chọn các em chưa xếp lớp hoặc đang ở lớp khác cùng khối, bấm "Đưa vào lớp".
 - Khung "Thêm học sinh vào lớp" chỉ **gợi ý 5 em chưa xếp lớp**; muốn em khác thì gõ tên để tìm (tối đa 15 kết quả). Bỏ nút "Xếp lớp" ở trang Học sinh (trùng với ô chọn lớp).
 - Danh sách ở trang Quản lý dùng hàng thẳng cột; trên điện thoại mỗi em là 1 thẻ gọn (tên + Sửa, dưới là ô lớp, phụ huynh).
+- **Chế độ tối** (24/10/2026): mọi nút, ô nhập, ô chọn, ô tích phải tách rõ khỏi nền (file `74-che-do-toi.js`); kiểm tra bằng đo tương phản tự động trước khi đăng.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
