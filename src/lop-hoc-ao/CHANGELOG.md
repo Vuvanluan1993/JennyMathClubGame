@@ -1,5 +1,24 @@
 # Lịch sử thay đổi
 
+## 25/10/2026 — Design system Jenny trong Claude Design (P-18, DS)
+- Mới design system "Jenny" (công cụ Artifact, kiểu Design System; link và quy tắc "màn mới dùng thành phần" ở `design/README.md`): 2 theme Pixel/Classroom cùng bảng màu, khác họ chữ và bo góc; 5 trang token; 12 thành phần có trạng thái và cỡ chạm (Nút, Ô phương án, Khung pixel, Thẻ lớp, Bảng nhập, Toast, Hộp thoại, Thanh điều hướng, Huy hiệu mức, Thẻ chào, Nhãn cảnh báo, Ô Quản lý); 6 mẫu trang ghép từ thành phần, mỗi mẫu ghi khác biệt so với ảnh app 25/10 (ảnh gốc đính kèm trong design system).
+- Mới `design/design-system/xuat-token.py`: sinh `design/design-system/project/tokens.json` từ `design/tokens.json`; `--check` so hai chiều → khác 0 giá trị (96 token + 6 họ chữ; thang chữ 29 kiểu chỉ có ở design system). Bản sao file design system ở `design/design-system/project/`.
+- Không đổi luật đã chốt; không vẽ nhân vật (sprite PXS chỉ tham chiếu). Đề xuất chờ thầy duyệt ghi ở `design/README.md` (4 cặp tương phản, token mới, cỡ nút Classroom, toast học sinh).
+- LUAT §2 thêm một dòng "Màn hình mới vẽ từ design system Jenny".
+
+## 25/10/2026 — CSP, chữ tự host, SRI Firebase, bỏ giọng Google (P-08, FE2)
+- Mọi trang (14 game, trang chủ, Lớp học ảo) có `<meta http-equiv="Content-Security-Policy">` và `<meta name="referrer" content="no-referrer">`; trang Lớp học ảo cho phép thêm Firebase (gstatic, *.googleapis.com, *.firebaseio.com, wss, firebaseapp.com).
+- Chữ Baloo 2, Nunito, VT323, Be Vietnam Pro, Lexend tự host ở `assets/fonts/` (48 file woff2 ≈ 1 MB, subset vietnamese + latin-ext + latin đúng như Google đưa, `font-display: swap`; tải lại bằng `assets/fonts/tai-font.py`); không trang nào gọi Google Fonts nữa. So ảnh và kiểu hiển thị 4 trang × 4 khổ với bản trước P-08: giống hệt (chỉ khác ô giờ build). `80-phong-cach-lms.js` không chèn Lexend từ Google.
+- `62-may-chu.js`: 3 file Firebase compat 10.12.2 tải kèm `integrity` + `crossorigin` (hash ở `docs/SRI.md`).
+- Mầm non, Thám tử, Tiểu học: bỏ `translate_tts` (nội dung câu không gửi ra Google); chỉ `speechSynthesis`; máy không có giọng tiếng Việt thì báo.
+- Bebras kit: tham số `?n=` ép thành số. Trang chủ bỏ `document.write`, dùng `games.js?v=__SHA__` (CI điền ở P-02).
+- Mới `tools/test/khong-goi-ngoai.mjs` (trong `npm test`): mở 20 trang, kiểm không yêu cầu ra ngoài danh sách cho phép, không lỗi CSP/JS, không 404.
+
+## 25/10/2026 — Token thiết kế chung (P-03, FE1)
+- Mới `design/tokens.json` (nguồn) → `design/tokens.css` sinh bằng `tools/tokens.py` (`--check` để so). 102 token `--jc-*`: 25 màu logo (= PXC), bộ app/pixel/trang chủ/LMS, họ chữ, khoảng cách, cỡ chạm, bo góc, khung pixel.
+- `app.css` (`:root` + `body.px`), `games/tu-duy-bebras/_kit/kit.css`, `index.html` giữ tên biến cũ (`--ink`, `--sea`, `--paper`…) nhưng trỏ sang `--jc-*`; `app.template.html` include `tokens.css` trước `app.css`. Giao diện không đổi (so kiểu hiển thị 4 trang × 4 khổ: 0 khác).
+- Mới `tools/check_contrast.py`: đo 36 cặp chữ/nền; 4 cặp dưới 4.5 chờ thầy quyết (xem kết quả in ra của lệnh).
+
 ## 24/10/2026 — Tự luyện: 6 dạng mới từ VBT lớp 1 tập 2, lớp 2 tập 1–2 (T-27)
 - Đã rà 362 trang VBT tham khảo; phần lớn dạng bài đã có. Thêm 6 dạng (viết lại, không chép sách), đều nhập bằng ô số:
   - **Chuỗi phép tính**: số đầu → (+a) → □ → (−b) → □ → … (lớp 1 bài 29–33, 39 không nhớ; lớp 2 bài 5–14, 19–24, 33, 45, 59–63, 69–70).
