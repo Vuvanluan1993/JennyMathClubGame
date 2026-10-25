@@ -6,26 +6,29 @@ Trang chơi: https://vuvanluan1993.github.io/JennyMathClubGame/
 
 ## Game hiện có
 
-| Bộ game | Lớp | Số câu | Đường dẫn |
-|---|---|---|---|
-| Ô Số Bí Ẩn | Lớp 6 | 18 | `games/o-so-bi-an/lop-6/` |
-| Ô Số Bí Ẩn | Lớp 7 | 17 | `games/o-so-bi-an/lop-7/` |
-| Mảnh Ghép Bí Mật (cả lớp chơi chung) | Lớp 6 | 15 | `games/manh-ghep-bi-mat/lop-6/` |
-| Mật Mã Bí Ẩn (3 mức độ) | Mọi lớp | – | `games/mat-ma-bi-an/moi-lop/` |
-| Tư Duy Bebras · Robot Tìm Đường | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/robot-tim-duong/` |
-| Tư Duy Bebras · Xoay Lật Hình | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/xoay-lat-hinh/` |
-| Tư Duy Bebras · Xếp Ống Bi | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/xep-ong-bi/` |
-| Tư Duy Bebras · Giải Mã Thư | Mọi lớp | 8 màn × 3 mức | `games/tu-duy-bebras/giai-ma-thu/` |
-| Tư Duy Bebras · Đường Đi Rẻ Nhất | Mọi lớp | 8 màn × 3 mức | `games/tu-duy-bebras/duong-di-re-nhat/` |
-| Tư Duy Bebras · Chồng Hình | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/chong-hinh/` |
+Cột "Trang chủ" lấy từ `games.js`: **Ẩn** = có `hidden: true` (game vẫn mở được bằng đường dẫn, bỏ dòng đó để hiện lại).
+Cột "Khoá lưu" là `saveKey` trong `localStorage`; không đổi tên khoá, nếu không học sinh mất tiến độ.
 
-| Hành Trình Của Jenny (đi màn + toán, cần mã CLB) | Lớp 6 | 30 màn + 673 bài | `games/hanh-trinh-jenny/lop-6/` |
+| Bộ game | Lớp | Số câu / màn | Đường dẫn | Trang chủ | Khoá lưu |
+|---|---|---|---|---|---|
+| Lớp Học Ảo Jenny (đăng nhập tài khoản Clb) | Lớp 1–9 | Lớp 1–5 cả năm; lớp 6–9 chương I | `games/lop-hoc-ao/` (mã nguồn `src/lop-hoc-ao/`) | Hiện | – |
+| Ô Số Bí Ẩn | Lớp 6 | 18 câu | `games/o-so-bi-an/lop-6/` | Ẩn | `osba6` |
+| Ô Số Bí Ẩn | Lớp 7 | 17 câu | `games/o-so-bi-an/lop-7/` | **Hiện** (chưa có `hidden`) | `osba7` |
+| Mảnh Ghép Bí Mật (cả lớp chơi chung) | Lớp 6 | 15 câu | `games/manh-ghep-bi-mat/lop-6/` | Ẩn | – |
+| Mật Mã Bí Ẩn (3 mức độ) | Mọi lớp | – | `games/mat-ma-bi-an/moi-lop/` | Ẩn | `mmba` |
+| Tư Duy Bebras · Robot Tìm Đường | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/robot-tim-duong/` | Ẩn | `bb-robot` |
+| Tư Duy Bebras · Xoay Lật Hình | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/xoay-lat-hinh/` | Ẩn | `bb-xoaylat` |
+| Tư Duy Bebras · Xếp Ống Bi | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/xep-ong-bi/` | Ẩn | `bb-ongbi` |
+| Tư Duy Bebras · Giải Mã Thư | Mọi lớp | 8 màn × 3 mức | `games/tu-duy-bebras/giai-ma-thu/` | Ẩn | `bb-giaima` |
+| Tư Duy Bebras · Đường Đi Rẻ Nhất | Mọi lớp | 8 màn × 3 mức | `games/tu-duy-bebras/duong-di-re-nhat/` | Ẩn | `bb-duongdi` |
+| Tư Duy Bebras · Chồng Hình | Mọi lớp | 10 màn × 3 mức | `games/tu-duy-bebras/chong-hinh/` | Ẩn | `bb-chonghinh` |
+| Hành Trình Của Jenny (đi màn + toán, cần mã CLB) | Lớp 6 | 30 màn + 673 bài | `games/hanh-trinh-jenny/lop-6/` | Ẩn | `jenny-saga-6` |
+| Hành Trình Của Jenny Tiểu học (cần mã CLB) | Lớp 1–4 | 40 màn + 120 bài toán tư duy | `games/hanh-trinh-jenny/tieu-hoc/` | Ẩn | `jenny-saga-th` |
+| Hành Trình Của Jenny Mầm non | 5–6 tuổi | 48 màn tương tác | `games/hanh-trinh-jenny/mam-non/` | Ẩn | `jenny-saga-mn` |
+| Jenny Thám Tử Nhí (sinh từ bản Mầm non) | 5–6 tuổi | 10 khu, 80 màn | `games/hanh-trinh-jenny/tham-tu/` | Ẩn | `jenny-saga-tt` |
+| Ô Số Bí Ẩn | Lớp 8, Lớp 9 | sắp ra mắt (`status: "soon"`) | – | Ẩn | – |
 
-| Hành Trình Của Jenny Mầm non | 5–6 tuổi | 48 màn tương tác | `games/hanh-trinh-jenny/mam-non/` |
-| Lớp Học Ảo Jenny (đăng nhập tài khoản Clb) | Lớp 1–9 | Lớp 1–5 cả năm; lớp 6–9 chương I | `games/lop-hoc-ao/` (mã nguồn: `src/lop-hoc-ao/`) |
-| Hành Trình Của Jenny Tiểu học (cần mã CLB) | Lớp 1–4 | 40 màn + 120 bài toán tư duy | `games/hanh-trinh-jenny/tieu-hoc/` |
-
-Hiện trang chủ chỉ hiện bản Mầm non và Tiểu học; các game khác có `hidden: true` trong `games.js` (bỏ dòng đó để hiện lại).
+Hiện trang chủ chỉ hiện **Lớp Học Ảo Jenny** và **Ô Số Bí Ẩn Lớp 7**.
 
 Game Tư Duy Bebras tạo đề ngẫu nhiên mỗi lần chơi, có 3 mức Dễ / Vừa / Khó.
 
@@ -39,15 +42,26 @@ Mọi game kiểm tra theo `TIEU_CHI.md` (mục tiêu học tập, đề bài, h
 index.html              Trang chủ: danh sách game, lọc theo lớp
 games.js                Danh sách game (trang chủ đọc từ đây)
 assets/                 Logo, hình dùng chung
+manifest.webmanifest    Cài trang chủ lên màn hình điện thoại (icon ở assets/icons/)
 games/
   <bo-game>/            Mỗi bộ game một thư mục
-    lop-6/index.html    Mỗi game là 1 file HTML chạy độc lập
+    lop-6/index.html    Mỗi game là 1 trang HTML (mở thẳng bằng đường dẫn)
     lop-7/index.html
+  o-so-bi-an/
+    _chung.css, _chung.js   Giao diện + cách chơi chung; lop-6, lop-7 chỉ còn dữ liệu câu đố
+  hanh-trinh-jenny/
+    _saga/              Phần chung bản lớp 6 + tiểu học (saga.css, saga.js: bản đồ, vườn, sao lưu, mở kho bài)
+                        và khoi-phuc.js (khôi phục mã sao lưu an toàn, dùng cho cả mầm non, thám tử)
+    lop-6/, tieu-hoc/   Mỗi bản giữ HTML, cấu hình đảo và Trạm toán riêng
+    tham-tu/index.html  FILE SINH RA (không nằm trong git): python3 tools/build_tham_tu.py
   tu-duy-bebras/
     _kit/               Khung dùng chung cho game Bebras (thanh trên, màn, sao,
                         bóng đèn gợi ý, đồng hồ, lưu tiến độ, Jenny, âm thanh)
     <ten-game>/index.html   Chỉ viết phần đề và cách chơi, gọi Kit.run({...})
 ```
+
+Thư mục bắt đầu bằng `_` là phần dùng chung, không phải game. Nút bấm dùng cỡ chạm `--jc-tap` (48px, từ token
+`size.tap` trong `design/tokens.json`). Mọi file sinh ra dựng một lệnh: `python3 tools/build_all.py`.
 
 ## Thêm game mới
 
@@ -98,7 +112,8 @@ python tools/build_bank.py <_pool_lop6.json> games/hanh-trinh-jenny/lop-6/bank.e
 
 ## Lớp Học Ảo Jenny – tài khoản học sinh
 
-Trang: `games/lop-hoc-ao/`. Mã nguồn, cách build, kiểm tra và danh sách việc: `src/lop-hoc-ao/README.md`. Mật khẩu mọi tài khoản: `jenny123`. Tên đăng nhập không phân biệt hoa thường.
+Trang: `games/lop-hoc-ao/`. Mã nguồn, cách build, kiểm tra và danh sách việc: `src/lop-hoc-ao/README.md`.
+File `games/lop-hoc-ao/**/index.html` **không nằm trong git**: GitHub Actions dựng từ `src/lop-hoc-ao/` rồi đưa lên Pages mỗi lần đẩy vào `main` (`.github/workflows/deploy.yml` → `python3 tools/build_all.py`). Xem trên máy: chạy lệnh đó rồi mở file. Mật khẩu mọi tài khoản: `jenny123`. Tên đăng nhập không phân biệt hoa thường.
 
 | Lớp | Tài khoản chính | Tài khoản dự phòng |
 |---|---|---|

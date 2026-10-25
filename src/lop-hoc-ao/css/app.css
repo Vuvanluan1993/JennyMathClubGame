@@ -1,11 +1,12 @@
 /* Ứng dụng học: thanh trên cùng dính, nội dung một cột rộng tối đa 1120px, lưới hai cột co thành một cột trên điện thoại */
+/* Màu/chữ lấy từ design/tokens.css (sinh từ design/tokens.json, nhóm app/px/font); tên biến cũ giữ nguyên, chỉ trỏ sang --jc-*. */
 :root{
- --bg:#eef4f8;--surface:#ffffff;--surface2:#f6f9fb;--ink:#13263a;--muted:#566779;--line:#dbe4ec;
- --sea:#0a7ea4;--sea-ink:#ffffff;--sea-soft:#e0f1f7;--sea-deep:#06587a;
- --sun:#e8960c;--sun-soft:#fff2d9;--sun-ink:#7d4b00;
- --leaf:#22884f;--leaf-soft:#e2f4e9;--coral:#d4492f;--coral-soft:#fde8e3;
- --lock:#e9eef2;--shadow:0 1px 2px rgba(19,38,58,.06),0 4px 14px rgba(19,38,58,.06);
- --f-display:"Baloo 2","Be Vietnam Pro",system-ui,sans-serif;--f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+ --bg:var(--jc-app-bg);--surface:var(--jc-app-surface);--surface2:var(--jc-app-surface-2);--ink:var(--jc-app-ink);--muted:var(--jc-app-muted);--line:var(--jc-app-line);
+ --sea:var(--jc-app-sea);--sea-ink:var(--jc-app-sea-ink);--sea-soft:var(--jc-app-sea-soft);--sea-deep:var(--jc-app-sea-deep);
+ --sun:var(--jc-app-sun);--sun-soft:var(--jc-app-sun-soft);--sun-ink:var(--jc-app-sun-ink);
+ --leaf:var(--jc-app-leaf);--leaf-soft:var(--jc-app-leaf-soft);--coral:var(--jc-app-coral);--coral-soft:var(--jc-app-coral-soft);
+ --lock:var(--jc-app-lock);--shadow:var(--jc-app-shadow);
+ --f-display:var(--jc-font-display);--f-body:var(--jc-font-body);
  --acc:var(--sea);--onacc:var(--sea-ink);--accs:var(--sea-soft);--accb:var(--sea);--ok:var(--leaf);--oks:var(--leaf-soft);--okb:var(--leaf);
  --warn:var(--sun-ink);--warns:var(--sun-soft);--warnb:var(--sun);--bad:var(--coral);--bads:var(--coral-soft);
  --card:var(--surface);--quiet:var(--muted);--chip:var(--surface2);
@@ -317,7 +318,7 @@ sup{font-size:.7em}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* ===== Phong cách pixel cho học sinh (màu logo Clb) ===== */
-body.px{--pxk:#1F2A5A;--f-display:"VT323","Be Vietnam Pro",ui-monospace,monospace;--bg:#EEF2F8;--sea:#0079C1;--sea-deep:#1F2A5A;--sea-soft:#DDF3FB;--leaf:#1E9A52;--leaf-soft:#E3F7EA;--sun:#FCB40C;--sun-soft:#FFF4D6;--sun-ink:#7A4E00;--coral:#E0441A;--coral-soft:#FDE6DE;--line:#C9D1E6;--water:#BDEBFA;--wdot:#FFFFFF}
+body.px{--pxk:var(--jc-px-frame);--f-display:var(--jc-font-pixel);--bg:var(--jc-px-bg);--sea:var(--jc-px-sea);--sea-deep:var(--jc-px-sea-deep);--sea-soft:var(--jc-px-sea-soft);--leaf:var(--jc-px-leaf);--leaf-soft:var(--jc-px-leaf-soft);--sun:var(--jc-px-sun);--sun-soft:var(--jc-px-sun-soft);--sun-ink:var(--jc-px-sun-ink);--coral:var(--jc-px-coral);--coral-soft:var(--jc-px-coral-soft);--line:var(--jc-px-line);--water:var(--jc-px-water);--wdot:var(--jc-px-water-dot)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body.px{--pxk:#5868B0;--bg:#0b1520;--sea:#3db5db;--sea-deep:#96d8ef;--sea-soft:#113548;--leaf:#5bcf8b;--leaf-soft:#123423;--sun:#ffbd47;--sun-soft:#382a0f;--sun-ink:#ffd48a;--coral:#ff8a72;--coral-soft:#3b1c16;--line:#24394d;--water:#0f3247;--wdot:#2a5f7d}}
 :root[data-theme="dark"] body.px{--pxk:#5868B0;--bg:#0b1520;--sea:#3db5db;--sea-deep:#96d8ef;--sea-soft:#113548;--leaf:#5bcf8b;--leaf-soft:#123423;--sun:#ffbd47;--sun-soft:#382a0f;--sun-ink:#ffd48a;--coral:#ff8a72;--coral-soft:#3b1c16;--line:#24394d;--water:#0f3247;--wdot:#2a5f7d}
 img.px{image-rendering:pixelated;image-rendering:crisp-edges;display:inline-block;vertical-align:-.18em}

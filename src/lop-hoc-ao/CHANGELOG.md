@@ -1,5 +1,30 @@
 # Lịch sử thay đổi
 
+## 25/10/2026 — Game lẻ dùng kit và token chung (P-19, GL)
+- **Ô Số Bí Ẩn** lớp 6, 7: bỏ đoạn `<head>` lạ ở đầu file, có `lang="vi"`, `<title>` về đúng chỗ. Giao diện và cách chơi chung ở `games/o-so-bi-an/_chung.css` + `_chung.js`; mỗi lớp chỉ còn dữ liệu câu đố (20 dòng). Khoá lưu giữ `osba6`, `osba7`.
+- **Hành trình của Jenny** lớp 6 + tiểu học: phần chung (hình vẽ, tiến độ, âm thanh, bản đồ, vườn, cửa hàng, sao lưu, mở kho bài) ở `games/hanh-trinh-jenny/_saga/saga.js` + `saga.css`; mỗi bản giữ HTML, cấu hình đảo và Trạm toán riêng. Khoá lưu giữ `jenny-saga-6`, `jenny-saga-th`.
+- **Khôi phục mã sao lưu an toàn** ở lớp 6, tiểu học, mầm non, thám tử: `_saga/khoi-phuc.js` hàm `khoiPhucAnToan(o, fresh)` chỉ chép các khoá có trong tiến độ mới, đúng kiểu, bỏ `__proto__`/`constructor`/`prototype` (trước đây mã dán vào chép được mọi khoá và đổi được prototype).
+- **Thám tử** (`tham-tu/index.html`) ra khỏi git, sinh bởi `tools/build_tham_tu.py` (do `tools/build_all.py` gọi theo tên, cả trên GitHub Actions khi deploy). Sửa mầm non hoặc `tools/tham_tu_acts.js` rồi dựng lại.
+- **Nút ≥ 48px**: `.ib` của khung Bebras và `.chip` trang chủ dùng `--jc-tap` (= `--jc-size-tap` 48px). Màn dọc ≤ 440px bớt logo (đã có nút Về trang chủ), ≤ 360px bớt đồng hồ để thanh trên không tràn. Màn ngang thấp: thanh trên cao thêm 16px, nên `kit.js` thêm bước co cuối `html.tighter` (bớt vài px khoảng cách) chỉ khi đã co chữ hết mà vẫn tràn (Robot · Khó, dãy lệnh dài ở 740×360).
+- Sửa 6 ca `check_fit.py` đỏ từ trước: **Thám tử** (mảnh ghép, cái bóng, thư và hộp thư ở 360×640, 390×700) hàng 4 lựa chọn / 4 hộp thư co lại vừa khung (ô còn 77px), trước đây kéo cả trang rộng thêm 14–40px (`tools/build_tham_tu.py`); **Hành trình lớp 6** vườn, cửa hàng ở 1920×950: chữ cỡ 32px cạnh con vật thò khỏi ô 4px, thêm đệm dưới `.pen .side` (`_saga/saga.css`).
+- `tools/giong/tao-giong.py`: khoá Gemini và Cloud TTS đi trong header `x-goog-api-key`, không nằm trên URL.
+- Mới `manifest.webmanifest` + icon `assets/icons/jenny-192.png`, `jenny-512.png`: cài trang chủ lên màn hình điện thoại (chưa có chạy ngoại tuyến, việc đó ở P-16).
+- README: bảng game đủ 16 dòng, có cột Trang chủ (Hiện/Ẩn theo `games.js`) và Khoá lưu; Ô Số lớp 7 hiện đang **hiện** trên trang chủ.
+- Kiểm tra: so vị trí + kiểu mọi phần tử bản cũ/bản mới (Ô Số 42 ca, Hành trình 161 ca) giống nhau, trừ 1 thuộc tính `display` của hình Jenny nằm trong hàng đã ẩn ở tiểu học khổ ngang thấp; thanh trên Bebras 108 ca vừa, nút ≥ 48; khôi phục mã thật giữ nguyên tiến độ, mã độc bị chặn ở cả 4 bản.
+
+## 25/10/2026 — CSP, chữ tự host, SRI Firebase, bỏ giọng Google (P-08, FE2)
+- Mọi trang (14 game, trang chủ, Lớp học ảo) có `<meta http-equiv="Content-Security-Policy">` và `<meta name="referrer" content="no-referrer">`; trang Lớp học ảo cho phép thêm Firebase (gstatic, *.googleapis.com, *.firebaseio.com, wss, firebaseapp.com).
+- Chữ Baloo 2, Nunito, VT323, Be Vietnam Pro, Lexend tự host ở `assets/fonts/` (48 file woff2 ≈ 1 MB, subset vietnamese + latin-ext + latin đúng như Google đưa, `font-display: swap`; tải lại bằng `assets/fonts/tai-font.py`); không trang nào gọi Google Fonts nữa. So ảnh và kiểu hiển thị 4 trang × 4 khổ với bản trước P-08: giống hệt (chỉ khác ô giờ build). `80-phong-cach-lms.js` không chèn Lexend từ Google.
+- `62-may-chu.js`: 3 file Firebase compat 10.12.2 tải kèm `integrity` + `crossorigin` (hash ở `docs/SRI.md`).
+- Mầm non, Thám tử, Tiểu học: bỏ `translate_tts` (nội dung câu không gửi ra Google); chỉ `speechSynthesis`; máy không có giọng tiếng Việt thì báo.
+- Bebras kit: tham số `?n=` ép thành số. Trang chủ bỏ `document.write`, dùng `games.js?v=__SHA__` (CI điền ở P-02).
+- Mới `tools/test/khong-goi-ngoai.mjs` (trong `npm test`): mở 20 trang, kiểm không yêu cầu ra ngoài danh sách cho phép, không lỗi CSP/JS, không 404.
+
+## 25/10/2026 — Token thiết kế chung (P-03, FE1)
+- Mới `design/tokens.json` (nguồn) → `design/tokens.css` sinh bằng `tools/tokens.py` (`--check` để so). 102 token `--jc-*`: 25 màu logo (= PXC), bộ app/pixel/trang chủ/LMS, họ chữ, khoảng cách, cỡ chạm, bo góc, khung pixel.
+- `app.css` (`:root` + `body.px`), `games/tu-duy-bebras/_kit/kit.css`, `index.html` giữ tên biến cũ (`--ink`, `--sea`, `--paper`…) nhưng trỏ sang `--jc-*`; `app.template.html` include `tokens.css` trước `app.css`. Giao diện không đổi (so kiểu hiển thị 4 trang × 4 khổ: 0 khác).
+- Mới `tools/check_contrast.py`: đo 36 cặp chữ/nền; 4 cặp dưới 4.5 chờ thầy quyết (xem kết quả in ra của lệnh).
+
 ## 24/10/2026 — Tự luyện: 6 dạng mới từ VBT lớp 1 tập 2, lớp 2 tập 1–2 (T-27)
 - Đã rà 362 trang VBT tham khảo; phần lớn dạng bài đã có. Thêm 6 dạng (viết lại, không chép sách), đều nhập bằng ô số:
   - **Chuỗi phép tính**: số đầu → (+a) → □ → (−b) → □ → … (lớp 1 bài 29–33, 39 không nhớ; lớp 2 bài 5–14, 19–24, 33, 45, 59–63, 69–70).

@@ -1,5 +1,6 @@
 # Dựng game "Jenny Thám Tử Nhí" từ khung game Mầm non + các dạng bài trong tools/tham_tu_acts.js
-# Chạy: python tools/build_tham_tu.py
+# Chạy: python3 tools/build_tham_tu.py (tools/build_all.py gọi theo tên, cả trên máy thầy lẫn GitHub Actions deploy.yml)
+# Kết quả games/hanh-trinh-jenny/tham-tu/index.html KHÔNG nằm trong git (P-19, .gitignore): sửa mam-non hoặc tham_tu_acts.js rồi dựng lại.
 import os
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC=ROOT+'/games/hanh-trinh-jenny/mam-non/index.html'
@@ -54,7 +55,11 @@ css="""
 .cbtn.boxb.got{background:#eee}
 .clocks .it svg{width:100%;height:100%}
 @media (max-width:460px){.cbtn.pic.big{width:84px;height:80px}.cbtn.pic.piece-o{width:84px;height:76px}.cbtn.envb{width:106px;height:76px;font-size:24px}.cbtn.boxb{width:92px;height:84px;font-size:26px}.cbtn.boxb .mbox{width:62px;height:40px}.choices.envs,.choices.boxes{gap:6px}}
+/* màn hẹp (360–400px): hàng 4 lựa chọn / 4 hộp thư co lại cho vừa khung thay vì kéo cả trang rộng ra (P-19) */
+#vPlay,.act.col,.act.mail{grid-template-columns:minmax(0,1fr)}
+@media (max-width:400px){.choices>.cbtn.pic.big,.choices>.cbtn.pic.piece-o,.choices.boxes>.cbtn.boxb,.choices.envs>.cbtn.envb{flex:0 1 auto;min-width:0}}
 @media (max-height:520px){.cbtn.envb{height:70px;width:120px;font-size:24px}.cbtn.boxb{height:72px;width:100px;font-size:24px}.cbtn.boxb .mbox{height:34px}.act.mail{gap:6px}}
 </style>"""
 k=s.index('</style>'); s=s[:k]+css+s[k+8:]
+os.makedirs(os.path.dirname(OUT), exist_ok=True)
 open(OUT,'w').write(s); print(len(s))
