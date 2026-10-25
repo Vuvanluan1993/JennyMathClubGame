@@ -16,7 +16,8 @@ let FB=null,CLOUD=null,fbSub=[],fbLast={},fbHen=null,fbDangGhi=false,fbBan=0;/* 
 const fbEmail=tk=>`${String(tk).trim().toLowerCase()}@jenny-lop-hoc-ao.firebaseapp.com`;
 const fbTkOk=tk=>/^[a-z0-9][a-z0-9._-]{2,23}$/.test(tk);
 function fbNap(){if(window.firebase&&firebase.firestore&&firebase.auth)return Promise.resolve();
-  const one=n=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-${n}-compat.js`;s.onload=ok;s.onerror=()=>no({code:'network',message:'Không tải được Firebase. Kiểm tra mạng.'});document.head.appendChild(s)});
+  const SRI={app:'sha384-AQ3POAMqIhwS81FrUH95ekxqBZHeP5tG2JfEL3+7GuTtfRLWnrRh32UxwzM+//A9',auth:'sha384-TnlRYaR4JYz/lpaGuaiU61PjNberSA4vjLjtF+oRC/IkohkJqnWxw5EmDSOt1vA1',firestore:'sha384-qn4Jh88HhJA8dplNQyGjOh9OGI4izVhrfj/qIFgaKcdgOE06pXqIKGlsCILZcLAC','app-check':'sha384-E3vxFxXu8FhW5kvqdQJ5Yf8ugrV7iCJP8jgnItRH2Rk8Q08cJzJGTi/oMC3FEp3j'};/* SRI cho FB_VER 10.12.2 — đổi FB_VER thì tính lại, xem docs/SRI.md */
+  const one=n=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-${n}-compat.js`;s.integrity=SRI[n];s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>no({code:'network',message:'Không tải được Firebase. Kiểm tra mạng.'});document.head.appendChild(s)});
   let p=one('app').then(()=>one('auth')).then(()=>one('firestore'));if(FB_CFG.appCheckKey)p=p.then(()=>one('app-check'));return p}
 async function fbInit(){await fbNap();if(!FB){const cfg=Object.assign({},FB_CFG);delete cfg.appCheckKey;const app=firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
   if(FB_CFG.appCheckKey&&firebase.appCheck){try{firebase.appCheck(app).activate(FB_CFG.appCheckKey,true)}catch(e){console.warn('App Check chưa bật được:',e)}}

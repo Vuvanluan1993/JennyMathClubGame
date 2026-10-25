@@ -37,6 +37,19 @@
 - Mới `tools/test/rules.test.mjs` (22 ca, `@firebase/rules-unit-testing`) + `firebase/firebase.json` (emulator cổng 8089). Chạy `node src/lop-hoc-ao/tools/test/rules.test.mjs`: tự bật emulator khi có Java; máy không có Java in "BỎ QUA" và thoát 0 (CI Ubuntu có Java). Cần `package.json` có `firebase`, `@firebase/rules-unit-testing`, `firebase-tools` (nhờ lane CI thêm).
 - Máy thầy 25/10 chưa có Node và Java: chưa chạy được `rules.test.mjs` lẫn `tools/test/dong-bo.js`; đã rà tay từng luật theo bảng ca thử và kiểm tra cú pháp `62-may-chu.js`. Khi có Node: `node tools/test/dong-bo.js` phải ĐẠT (bản giả lập không có `where` nên `fbAsgLop` tự lùi về cả collection).
 
+## 25/10/2026 — CSP, chữ tự host, SRI Firebase, bỏ giọng Google (P-08, FE2)
+- Mọi trang (14 game, trang chủ, Lớp học ảo) có `<meta http-equiv="Content-Security-Policy">` và `<meta name="referrer" content="no-referrer">`; trang Lớp học ảo cho phép thêm Firebase (gstatic, *.googleapis.com, *.firebaseio.com, wss, firebaseapp.com).
+- Chữ Baloo 2, Nunito, VT323, Be Vietnam Pro, Lexend tự host ở `assets/fonts/` (48 file woff2 ≈ 1 MB, subset vietnamese + latin-ext + latin đúng như Google đưa, `font-display: swap`; tải lại bằng `assets/fonts/tai-font.py`); không trang nào gọi Google Fonts nữa. So ảnh và kiểu hiển thị 4 trang × 4 khổ với bản trước P-08: giống hệt (chỉ khác ô giờ build). `80-phong-cach-lms.js` không chèn Lexend từ Google.
+- `62-may-chu.js`: 3 file Firebase compat 10.12.2 tải kèm `integrity` + `crossorigin` (hash ở `docs/SRI.md`).
+- Mầm non, Thám tử, Tiểu học: bỏ `translate_tts` (nội dung câu không gửi ra Google); chỉ `speechSynthesis`; máy không có giọng tiếng Việt thì báo.
+- Bebras kit: tham số `?n=` ép thành số. Trang chủ bỏ `document.write`, dùng `games.js?v=__SHA__` (CI điền ở P-02).
+- Mới `tools/test/khong-goi-ngoai.mjs` (trong `npm test`): mở 20 trang, kiểm không yêu cầu ra ngoài danh sách cho phép, không lỗi CSP/JS, không 404.
+
+## 25/10/2026 — Token thiết kế chung (P-03, FE1)
+- Mới `design/tokens.json` (nguồn) → `design/tokens.css` sinh bằng `tools/tokens.py` (`--check` để so). 102 token `--jc-*`: 25 màu logo (= PXC), bộ app/pixel/trang chủ/LMS, họ chữ, khoảng cách, cỡ chạm, bo góc, khung pixel.
+- `app.css` (`:root` + `body.px`), `games/tu-duy-bebras/_kit/kit.css`, `index.html` giữ tên biến cũ (`--ink`, `--sea`, `--paper`…) nhưng trỏ sang `--jc-*`; `app.template.html` include `tokens.css` trước `app.css`. Giao diện không đổi (so kiểu hiển thị 4 trang × 4 khổ: 0 khác).
+- Mới `tools/check_contrast.py`: đo 36 cặp chữ/nền; 4 cặp dưới 4.5 chờ thầy quyết (xem kết quả in ra của lệnh).
+
 ## 24/10/2026 — Tự luyện: 6 dạng mới từ VBT lớp 1 tập 2, lớp 2 tập 1–2 (T-27)
 - Đã rà 362 trang VBT tham khảo; phần lớn dạng bài đã có. Thêm 6 dạng (viết lại, không chép sách), đều nhập bằng ô số:
   - **Chuỗi phép tính**: số đầu → (+a) → □ → (−b) → □ → … (lớp 1 bài 29–33, 39 không nhớ; lớp 2 bài 5–14, 19–24, 33, 45, 59–63, 69–70).
