@@ -82,7 +82,7 @@ window.llChay=async function(){const o=O(),r=tinh();if(!confirm(`Kết thúc nă
 
 /* máy chủ: học sinh đăng nhập — nghỉ/học xong thì báo; lớp mới cao hơn thì tự lên lớp */
 if(typeof fbHsBoot==='function'){const _b=fbHsBoot;fbHsBoot=async function(){const me=CLOUD.me,tk=me.tk;
-  const o=await FB.db.doc('org/main').get(),org=o.exists?fbJ(o.data().j)||{}:{},ng=(org.nghi||{})[tk];
+  const org=typeof fbOrgHS==='function'?await fbOrgHS(tk):(()=>{return{}})(),ng=(org.nghi||{})[tk];/* P-06a: v3 đọc org/main + lop/{lớp}, không đọc j */
   if(ng)throw{code:ng.ly==='xong'?'hoc-xong':'nghi-hoc'};
   const r=await _b.apply(this,arguments);
   try{const L=(org.lop||[]).find(l=>l.id===(org.gd||{})[tk]),st=S.st[tk];if(L&&st&&L.khoi>st.grade){(STUDENTS[0]||[])[2]=L.khoi;lenLopHS(st,L.khoi,(org.namCu||[]).slice(-1)[0]?.nam||'',(((org.namCu||[]).slice(-1)[0]||{}).lop||[]).find(x=>x.id===(((org.namCu||[]).slice(-1)[0]||{}).gd||{})[tk])?.ten||'');save();render()}}catch(x){}

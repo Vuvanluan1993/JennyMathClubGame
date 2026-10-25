@@ -53,6 +53,15 @@ await env.withSecurityRulesDisabled(async c => {
   await setDoc(doc(db, 'asg/a1'), {j: '{"id":"a1"}', lop: '1A', t: T});
   await setDoc(doc(db, 'asg/a2'), {j: '{"id":"a2"}', lop: '2A', t: T});
   await setDoc(doc(db, 'login/em1'), {email: 'em1.r1@jenny-lop-hoc-ao.firebaseapp.com', t: T});
+  /* dữ liệu v3 (P-06a) */
+  await setDoc(doc(db, 'lop/1A'), {ten: '1A', khoi: 1, gv: ['co1'], tj: {on: true, han: '31/05/2027'}, mo: {j1: true}, t: T});
+  await setDoc(doc(db, 'lop/2A'), {ten: '2A', khoi: 2, gv: ['co2'], tj: {on: false}, mo: {}, t: T});
+  await setDoc(doc(db, 'hsdm/em1'), {ten: 'Em 1', khoi: 1, lop: '1A', ph: 'ph1', t: T});
+  await setDoc(doc(db, 'hsdm/em2'), {ten: 'Em 2', khoi: 2, lop: '2A', ph: '', t: T});
+  await setDoc(doc(db, 'hoso/em1'), {gt: 'nu', ng: 1, th: 2, nam: 2019, dt: '0912345678', mail: 'ph1@gmail.com', t: T});
+  await setDoc(doc(db, 'ph/ph1'), {ten: 'Phụ huynh Em 1', dt: '0912345678', mail: 'ph1@gmail.com', t: T});
+  await setDoc(doc(db, 'gv/co1'), {ten: 'Cô 1', tk: 'co1', t: T});
+  await setDoc(doc(db, 'nk/n1'), {d: 1, ai: 'Quản lý trung tâm', t: 'Tạo lớp 1A', luc: T});
 });
 
 const as = uid => env.authenticatedContext(uid).firestore();
@@ -101,7 +110,7 @@ ca('19 phụ huynh đọc bài lớp của con (1A) ĐƯỢC; lớp khác và gh
   await assertFails(getDoc(doc(ph1, 'asg/a2'))); await assertFails(setDoc(doc(ph1, 'asg/a1'), {j: '{}', lop: '1A', t: serverTimestamp()})); });
 ca('20 quản lý đọc cả kho bài, xoá bài ĐƯỢC', 'cho', async () => { await getDocs(collection(ql, 'asg')); await deleteDoc(doc(ql, 'asg/a3')); });
 /* LH-H1 còn lại cho P-06: cô vẫn ghi j, nhưng không đụng gd/pc/admins */
-ca('21 cô sửa org/main chỉ j, t ĐƯỢC; sửa gd BỊ CHẶN', 'cho', async () => {
+ca('21 (v2) cô sửa org/main chỉ j, t ĐƯỢC; sửa gd BỊ CHẶN', 'cho', async () => {
   await updateDoc(doc(gv1, 'org/main'), {j: '{"ten":"Clb 2"}', t: serverTimestamp()});
   await assertFails(updateDoc(doc(gv1, 'org/main'), {gd: {em1: '2A'}})); });
 /* P-05 — users.mustChange */
@@ -115,6 +124,43 @@ ca('24 chính chủ bật lại mustChange = true, hoặc tự đổi role/tk B�
 ca('25 người khác không tắt mustChange hộ; QL đặt mustChange = true ĐƯỢC', 'cho', async () => {
   await assertFails(updateDoc(doc(hs1, 'users/hs2'), {mustChange: false}));
   await updateDoc(doc(ql, 'users/hs2'), {mustChange: true}); });
+/* P-06a — các collection v3 */
+ca('26 lop: em, cô, phụ huynh đọc được; cô dạy 1A chỉ sửa mo (và t) của lớp 1A', 'cho', async () => {
+  await getDoc(doc(hs1, 'lop/1A')); await getDoc(doc(ph1, 'lop/1A')); await getDocs(collection(gv1, 'lop'));
+  await updateDoc(doc(gv1, 'lop/1A'), {mo: {j1: true, j2: true}, t: serverTimestamp()}); });
+ca('27 lop: cô sửa tj/gv/khoi, sửa lớp khác, tạo/xoá lớp đều BỊ CHẶN; người lạ không đọc', 'cam', async () => {
+  await assertFails(updateDoc(doc(gv1, 'lop/1A'), {tj: {on: false}}));
+  await assertFails(updateDoc(doc(gv1, 'lop/1A'), {gv: ['co1', 'co2']}));
+  await assertFails(updateDoc(doc(gv1, 'lop/2A'), {mo: {j1: true}}));
+  await assertFails(setDoc(doc(gv1, 'lop/1C'), {ten: '1C', khoi: 1, gv: ['co1'], tj: {on: false}, mo: {}}));
+  await assertFails(deleteDoc(doc(gv1, 'lop/2A')));
+  await getDoc(doc(la, 'lop/1A')); });
+ca('28 hsdm: cô truy vấn where lop == lớp mình ĐƯỢC; phụ huynh đọc con; em đọc mình; QL ghi', 'cho', async () => {
+  await getDocs(query(collection(gv1, 'hsdm'), where('lop', '==', '1A'))); await getDoc(doc(ph1, 'hsdm/em1')); await getDoc(doc(hs1, 'hsdm/em1'));
+  await setDoc(doc(ql, 'hsdm/em3'), {ten: 'Em 3', khoi: 1, lop: '1A', ph: '', t: serverTimestamp()}); });
+ca('29 hsdm: cô đọc lớp khác / cả kho, cô ghi, phụ huynh đọc em khác, em đọc em khác đều BỊ CHẶN', 'cam', async () => {
+  await assertFails(getDoc(doc(gv1, 'hsdm/em2'))); await assertFails(getDocs(collection(gv1, 'hsdm')));
+  await assertFails(updateDoc(doc(gv1, 'hsdm/em1'), {lop: '2A'})); await assertFails(getDoc(doc(ph1, 'hsdm/em2')));
+  await getDoc(doc(hs1, 'hsdm/em2')); });
+ca('30 hoso (PII): chỉ QL đọc/ghi; cô lớp, phụ huynh, em đều KHÔNG', 'cam', async () => {
+  await assertSucceeds(getDoc(doc(ql, 'hoso/em1'))); await assertSucceeds(updateDoc(doc(ql, 'hoso/em1'), {dt: '0900000000'}));
+  await assertFails(getDoc(doc(gv1, 'hoso/em1'))); await assertFails(getDoc(doc(ph1, 'hoso/em1'))); await getDoc(doc(hs1, 'hoso/em1')); });
+ca('31 ph: phụ huynh đọc bản ghi của mình ĐƯỢC, của người khác KHÔNG; cô KHÔNG; chỉ QL ghi', 'cho', async () => {
+  await getDoc(doc(ph1, 'ph/ph1')); await assertFails(getDoc(doc(ph1, 'ph/ph2'))); await assertFails(getDoc(doc(gv1, 'ph/ph1')));
+  await assertFails(setDoc(doc(ph1, 'ph/ph1'), {ten: 'x'})); await setDoc(doc(ql, 'ph/ph2'), {ten: 'PH 2', dt: '', mail: '', t: serverTimestamp()}); });
+ca('32 gv: ai có hồ sơ đọc được; người lạ và cô không ghi', 'cho', async () => {
+  await getDocs(collection(hs1, 'gv')); await getDocs(collection(ph1, 'gv'));
+  await assertFails(getDocs(collection(la, 'gv'))); await assertFails(setDoc(doc(gv1, 'gv/co9'), {ten: 'x', tk: 'co9'})); });
+ca('33 nk: QL và cô thêm dòng ĐƯỢC; sửa/xoá KHÔNG; chỉ QL đọc; em không thêm', 'cho', async () => {
+  await setDoc(doc(ql, 'nk/n2'), {d: 2, ai: 'Quản lý trung tâm', t: 'Chuyển lớp', luc: serverTimestamp()});
+  await setDoc(doc(gv1, 'nk/n3'), {d: 2, ai: 'Cô 1', t: 'Mở đảo', luc: serverTimestamp()});
+  await assertFails(updateDoc(doc(ql, 'nk/n1'), {t: 'sửa'})); await assertFails(deleteDoc(doc(ql, 'nk/n1')));
+  await assertFails(getDocs(collection(gv1, 'nk'))); await assertFails(setDoc(doc(hs1, 'nk/n4'), {d: 2, ai: 'em', t: 'x', luc: serverTimestamp()}));
+  await getDocs(query(collection(ql, 'nk'), where('d', '>=', 0))); });
+ca('34 org/main v3 (v == 3): cô KHÔNG còn sửa được j; QL vẫn ghi', 'cam', async () => {
+  await env.withSecurityRulesDisabled(c => updateDoc(doc(c.firestore(), 'org/main'), {v: 3}));
+  await assertSucceeds(updateDoc(doc(ql, 'org/main'), {ten: 'Clb v3', t: serverTimestamp()}));
+  await updateDoc(doc(gv1, 'org/main'), {j: '{}', t: serverTimestamp()}); });
 /* QL vừa chuyển lớp cho em: em ghi lop mới theo org.gd ĐƯỢC */
 ca('22 QL chuyển em1 sang 1B rồi em ghi lop = 1B ĐƯỢC', 'cho', async () => {
   await updateDoc(doc(ql, 'org/main'), {gd: {em1: '1B', em2: '2A'}});

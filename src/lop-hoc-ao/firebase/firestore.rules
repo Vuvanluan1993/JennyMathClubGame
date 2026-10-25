@@ -5,7 +5,7 @@ rules_version = '2';
 // hs/{tk}   : dữ liệu học của em (em tự ghi: chỉ 4 khoá j, ev, lop, t) · hsgv/{tk}: nhận xét, thẻ, ghi chú của cô (cô ghi)
 // asg/{id}  : bài về nhà cô giao, có khoá lop → chỉ cô dạy lớp đó ghi; em, phụ huynh, cô của lớp đó đọc
 // login/{tk}: chỉ có khi quản lý đã đặt lại mật khẩu (email ẩn thay thế). Không liệt kê được, không có uid.
-// Kiểm tra: tools/test/rules.test.mjs (emulator). Còn LH-H1 (giáo viên ghi đè org/main.j) → P-06.
+// Kiểm tra: tools/test/rules.test.js (emulator). LH-H1 đóng khi dữ liệu đã nâng cấp v3 (org/main.v == 3): cô không ghi org/main nữa.
 service cloud.firestore {
   match /databases/{db}/documents {
     function signed() { return request.auth != null; }
@@ -47,11 +47,45 @@ service cloud.firestore {
       allow create: if signed()
         && request.resource.data.admins == [request.auth.uid]
         && request.resource.data.keys().hasOnly(['j', 'gd', 'pc', 'admins', 't']);
-      // GV chỉ đổi j, t (vẫn ghi đè được cả j — LH-H1, P-06 tách); gd/pc/admins chỉ QL
+      // v2 (chưa nâng cấp): GV còn đổi j, t. v3 (v == 3): chỉ QL ghi org/main → đóng LH-H1
       allow update: if isQL()
-        || (isGV() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['j', 't'])
+        || (isGV() && resource.data.v != 3
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['j', 't'])
             && request.resource.data.j is string);
       allow delete: if false;
+    }
+    // ---------- dữ liệu v3 (P-06a, 25/10/2026): org/main.j tách thành các collection ----------
+    match /lop/{id} {
+      // tên, khối, cô dạy, gói Toán Jenny, đảo mở — không PII; em cần đọc lớp mình, cô/PH đọc để hiện tên lớp
+      allow read: if hasMe();
+      allow create, delete: if isQL();
+      allow update: if isQL() || (gvDay(id) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['mo', 't']));
+    }
+    match /hsdm/{tk} {
+      // danh mục học sinh (tên, khối, lớp, tk phụ huynh): QL; cô lớp đó (truy vấn where lop); phụ huynh của em; chính em
+      allow read: if isQL() || gvDay(resource.data.lop) || isPH(tk) || isSelf(tk);
+      allow write: if isQL();
+    }
+    match /hoso/{tk} {
+      // hồ sơ cá nhân (ngày sinh, SĐT, Gmail phụ huynh, năm học cũ): chỉ quản lý
+      allow read, write: if isQL();
+    }
+    match /ph/{tk} {
+      // thông tin phụ huynh: quản lý; chính phụ huynh đó đọc
+      allow read: if isQL() || (hasMe() && me().role == 'ph' && me().tk == tk);
+      allow write: if isQL();
+    }
+    match /gv/{id} {
+      allow read: if hasMe();
+      allow write: if isQL();
+    }
+    match /nk/{id} {
+      // nhật ký thao tác: QL đọc; QL và cô thêm dòng mới; không sửa, không xoá
+      allow read: if isQL();
+      allow create: if (isQL() || isGV())
+        && request.resource.data.keys().hasOnly(['d', 'ai', 't', 'luc', 'tk'])
+        && request.resource.data.t is string && request.resource.data.t.size() < 2000;
+      allow update, delete: if false;
     }
     match /users/{uid} {
       // LH-H2: chỉ chính chủ hoặc QL; GV không còn đọc hồ sơ người khác
