@@ -1,9 +1,11 @@
 rules_version = '2';
-// Quy tắc bảo mật Firestore — Lớp học ảo Jenny (bản thử nghiệm 24/10/2026)
+// Quy tắc bảo mật Firestore — Lớp học ảo Jenny (siết 25/10/2026, kế hoạch P-04)
 // users/{uid}: vai trò (ql | gv | hs | ph), tk (tên đăng nhập), gvId (giáo viên), con (phụ huynh: danh sách tk của con)
 // org/main  : dữ liệu trung tâm (j = JSON), gd = {tk: lớp}, pc = {gvId: [lớp]}, admins = [uid]
-// hs/{tk}   : dữ liệu học của em (em tự ghi) · hsgv/{tk}: nhận xét, thẻ, ghi chú của cô (cô ghi)
-// asg/{id}  : bài về nhà cô giao
+// hs/{tk}   : dữ liệu học của em (em tự ghi: chỉ 4 khoá j, ev, lop, t) · hsgv/{tk}: nhận xét, thẻ, ghi chú của cô (cô ghi)
+// asg/{id}  : bài về nhà cô giao, có khoá lop → chỉ cô dạy lớp đó ghi; em, phụ huynh, cô của lớp đó đọc
+// login/{tk}: chỉ có khi quản lý đã đặt lại mật khẩu (email ẩn thay thế). Không liệt kê được, không có uid.
+// Kiểm tra: tools/test/rules.test.mjs (emulator). Còn LH-H1 (giáo viên ghi đè org/main.j) → P-06.
 service cloud.firestore {
   match /databases/{db}/documents {
     function signed() { return request.auth != null; }
@@ -12,39 +14,82 @@ service cloud.firestore {
     function org() { return get(/databases/$(db)/documents/org/main).data; }
     function isQL() { return hasMe() && me().role == 'ql'; }
     function isGV() { return hasMe() && me().role == 'gv'; }
-    function isSelf(tk) { return hasMe() && me().role == 'hs' && me().tk == tk; }
+    function isHS() { return hasMe() && me().role == 'hs'; }
+    function isSelf(tk) { return isHS() && me().tk == tk; }
     function isPH(tk) { return hasMe() && me().role == 'ph' && tk in me().con; }
-    function gvLop(tk) {
-      return isGV() && (tk in org().gd) && (me().gvId in org().pc) && (org().gd[tk] in org().pc[me().gvId]);
+    // lớp của em tk theo bảng QL ghi (org.gd); '' nếu chưa xếp lớp
+    function lopCua(tk) { return (tk in org().gd) ? org().gd[tk] : ''; }
+    // cô đang đăng nhập có dạy lớp l không (org.pc do QL ghi)
+    function gvDay(l) { return isGV() && (me().gvId in org().pc) && (l in org().pc[me().gvId]); }
+    function gvLop(tk) { return gvDay(lopCua(tk)); }
+    // phụ huynh có con học lớp l không (tối đa 4 con; con ở xa hơn không xem được bài về nhà)
+    function phCon(l) {
+      return hasMe() && me().role == 'ph' && l != '' && (
+           (me().con.size() > 0 && lopCua(me().con[0]) == l)
+        || (me().con.size() > 1 && lopCua(me().con[1]) == l)
+        || (me().con.size() > 2 && lopCua(me().con[2]) == l)
+        || (me().con.size() > 3 && lopCua(me().con[3]) == l));
+    }
+    // dữ liệu học em tự ghi: đúng 4 khoá, j/ev là chuỗi, j dưới 900 000 kí tự, t là dấu giờ máy chủ
+    function hsHopLe() {
+      return request.resource.data.keys().hasOnly(['j', 'ev', 'lop', 't'])
+        && request.resource.data.j is string && request.resource.data.j.size() < 900000
+        && request.resource.data.ev is string
+        && request.resource.data.lop is string
+        && request.resource.data.t is timestamp;
     }
 
     match /org/main {
-      allow read: if signed();
-      allow create: if signed() && request.resource.data.admins == [request.auth.uid];
+      // LH-C1: người lạ tự đăng ký (chưa có hồ sơ users) không đọc được trung tâm
+      allow read: if hasMe();
+      // LH-M1: chỉ tạo được khi chưa có (create), đúng hình dạng, người tạo là admin duy nhất.
+      // Đóng hẳn khi P-05 tắt tự đăng ký ở Authentication.
+      allow create: if signed()
+        && request.resource.data.admins == [request.auth.uid]
+        && request.resource.data.keys().hasOnly(['j', 'gd', 'pc', 'admins', 't']);
+      // GV chỉ đổi j, t (vẫn ghi đè được cả j — LH-H1, P-06 tách); gd/pc/admins chỉ QL
       allow update: if isQL()
-        || (isGV() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['j', 't']));
+        || (isGV() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['j', 't'])
+            && request.resource.data.j is string);
+      allow delete: if false;
     }
     match /users/{uid} {
-      allow read: if signed() && (request.auth.uid == uid || isQL() || isGV());
+      // LH-H2: chỉ chính chủ hoặc QL; GV không còn đọc hồ sơ người khác
+      allow read: if signed() && (request.auth.uid == uid || isQL());
       allow create: if isQL()
         || (signed() && request.auth.uid == uid && request.resource.data.role == 'ql' && request.auth.uid in org().admins);
       allow update, delete: if isQL();
     }
     match /hs/{tk} {
       allow read: if isSelf(tk) || isQL() || gvLop(tk) || isPH(tk);
-      allow write: if isSelf(tk) || isQL();
+      // LH-C2 (phần kiểu/cỡ): em chỉ ghi 4 khoá; lop giữ nguyên hoặc đúng lớp QL đã xếp (khi QL vừa chuyển lớp)
+      allow create: if isQL() || (isSelf(tk) && hsHopLe() && request.resource.data.lop == lopCua(tk));
+      allow update: if isQL() || (isSelf(tk) && hsHopLe()
+        && (request.resource.data.lop == resource.data.lop || request.resource.data.lop == lopCua(tk)));
+      allow delete: if isQL();
     }
     match /hsgv/{tk} {
       allow read: if isSelf(tk) || isQL() || gvLop(tk) || isPH(tk);
       allow write: if isQL() || gvLop(tk);
     }
     match /login/{tk} {
-      allow read: if true;
+      // LH-H2: không liệt kê được nữa. Chỉ đọc đúng 1 bản ghi theo tên đăng nhập, và app chỉ đọc khi
+      // email ẩn chuẩn đăng nhập không được (sau khi QL đặt lại mật khẩu). Bản ghi chỉ có email, t.
+      allow get: if true;
+      allow list: if false;
       allow write: if isQL();
     }
     match /asg/{id} {
-      allow read: if signed();
-      allow write: if isQL() || isGV();
+      // LH-M4: đọc/ghi theo lớp. Bài phải có khoá lop (chuỗi, khác '').
+      allow read: if isQL()
+        || gvDay(resource.data.lop)
+        || (isHS() && resource.data.lop != '' && resource.data.lop == lopCua(me().tk))
+        || phCon(resource.data.lop);
+      allow create, update: if isQL()
+        || (gvDay(request.resource.data.lop)
+            && request.resource.data.keys().hasOnly(['j', 'lop', 't'])
+            && request.resource.data.j is string);
+      allow delete: if isQL() || gvDay(resource.data.lop);
     }
   }
 }

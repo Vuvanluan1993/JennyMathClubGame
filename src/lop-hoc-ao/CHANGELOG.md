@@ -1,5 +1,19 @@
 # Lịch sử thay đổi
 
+## 25/10/2026 — Siết quy tắc Firestore (P-04, kế hoạch kiến trúc `docs/kien-truc/`)
+- **Thầy cần làm:** dán `firebase/firestore.rules` mới vào Firebase › Firestore › Rules; collection `login` nếu trống thì xoá. Dán rules **trước hoặc cùng lúc** đưa bản này lên `main` (bản cũ vẫn chạy với rules mới, chỉ bài về nhà của cô/phụ huynh cần bản mới để lọc theo lớp).
+- `firebase/firestore.rules` đóng các phát hiện của audit 25/10:
+  - LH-C1: `org/main` chỉ đọc được khi đã có hồ sơ `users` (người lạ tự đăng ký không đọc được trung tâm nữa).
+  - LH-C2 (phần kiểu/cỡ): em chỉ ghi `hs/{tk}` với đúng 4 khoá `j, ev, lop, t`; `j`, `ev` là chuỗi, `j` dưới 900 000 kí tự, `t` là dấu giờ máy chủ; `lop` giữ nguyên hoặc đúng lớp quản lý đã xếp (`org.gd`). Em vẫn tự ghi xu/sao trong `j` — P-06 (ví xu) mới chặn.
+  - LH-H2: `users` chỉ chính chủ hoặc quản lý đọc (cô không đọc hồ sơ người khác); `login` không liệt kê được, không còn `uid`.
+  - LH-M4: bài về nhà `asg` đọc/ghi theo lớp: cô chỉ ghi/xoá bài lớp mình dạy (`org.pc`), em đọc bài lớp mình, phụ huynh đọc bài lớp của con (tối đa 4 con), quản lý tất cả. Bài phải có khoá `lop`.
+  - LH-M1: `org/main` chỉ tạo được đúng hình dạng và người tạo là admin duy nhất; đóng hẳn khi P-05 tắt tự đăng ký.
+  - **Còn LH-H1** (cô vẫn ghi đè cả `org/main.j`): để P-06 tách `org/main` thành nhiều document.
+- `js/core/62-may-chu.js`: đăng nhập dùng thẳng email ẩn chuẩn `tk@jenny-lop-hoc-ao.firebaseapp.com`, **không** tra `login/{tk}` trước nữa; chỉ khi sai mật khẩu/tài khoản mới `get` đúng một bản ghi `login/{tk}` (có sau khi quản lý "Đặt lại mật khẩu", vì gói Spark không đổi được mật khẩu người khác). Kế hoạch con ghi `login` đọc `false`; giữ `get` để nút Đặt lại mật khẩu (P-05 còn dùng) không làm em bị khoá — thầy muốn bỏ hẳn thì đổi 1 dòng rules và bỏ nhánh `catch` trong `fbDangNhap`.
+- `62-may-chu.js`: bài về nhà nghe theo lớp (`where('lop','==',…)`): em lớp mình; cô từng lớp mình dạy; phụ huynh từng lớp của con; quản lý cả kho. Cô giao bài chưa chọn lớp thì không đẩy lên máy chủ (ghi `console.warn`).
+- Mới `tools/test/rules.test.mjs` (22 ca, `@firebase/rules-unit-testing`) + `firebase/firebase.json` (emulator cổng 8089). Chạy `node src/lop-hoc-ao/tools/test/rules.test.mjs`: tự bật emulator khi có Java; máy không có Java in "BỎ QUA" và thoát 0 (CI Ubuntu có Java). Cần `package.json` có `firebase`, `@firebase/rules-unit-testing`, `firebase-tools` (nhờ lane CI thêm).
+- Máy thầy 25/10 chưa có Node và Java: chưa chạy được `rules.test.mjs` lẫn `tools/test/dong-bo.js`; đã rà tay từng luật theo bảng ca thử và kiểm tra cú pháp `62-may-chu.js`. Khi có Node: `node tools/test/dong-bo.js` phải ĐẠT (bản giả lập không có `where` nên `fbAsgLop` tự lùi về cả collection).
+
 ## 24/10/2026 — Tự luyện: 6 dạng mới từ VBT lớp 1 tập 2, lớp 2 tập 1–2 (T-27)
 - Đã rà 362 trang VBT tham khảo; phần lớn dạng bài đã có. Thêm 6 dạng (viết lại, không chép sách), đều nhập bằng ô số:
   - **Chuỗi phép tính**: số đầu → (+a) → □ → (−b) → □ → … (lớp 1 bài 29–33, 39 không nhớ; lớp 2 bài 5–14, 19–24, 33, 45, 59–63, 69–70).

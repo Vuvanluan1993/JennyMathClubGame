@@ -113,6 +113,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Giữ Firebase, vá bảo mật theo kế hoạch kiến trúc (chốt 25/10/2026, Q1 = A):** làm P-04 (rules), P-05 (Auth), P-06 (tách `org/main.j`, ví xu) trong `docs/kien-truc/KE-HOACH.md`; chuyển Supabase chỉ xem lại khi có hơn 1 lớp thật.
 - Trang vẫn đặt trên GitHub Pages (chưa cần tên miền riêng).
 - Quy tắc bảo mật ở `firebase/firestore.rules` (dán vào Firestore › Rules mỗi khi đổi). Em chỉ xem dữ liệu của mình; cô chỉ xem lớp được phân công; phụ huynh chỉ xem con; chỉ quản lý tạo tài khoản.
+- **Rules siết theo P-04 (25/10/2026):** `org/main` chỉ đọc khi đã có hồ sơ `users`; `users` chỉ chính chủ hoặc quản lý đọc; em ghi `hs/{tk}` chỉ 4 khoá `j, ev, lop, t` (`j` chuỗi dưới 900 000 kí tự, `lop` không tự đổi); `login/{tk}` không liệt kê được (chỉ `get` 1 bản ghi khi email ẩn chuẩn đăng nhập sai, sau khi quản lý đặt lại mật khẩu); bài về nhà `asg` đọc/ghi theo lớp (cô chỉ lớp mình dạy, em lớp mình, phụ huynh lớp của con, tối đa 4 con). Đăng nhập dùng thẳng email ẩn `tk@jenny-lop-hoc-ao.firebaseapp.com`. Kiểm tra bằng `tools/test/rules.test.mjs` trên emulator (CI). **Còn lại:** cô vẫn ghi đè cả `org/main.j` (LH-H1) và em vẫn tự ghi xu/sao trong `j` → P-06; tắt tự đăng ký Auth → P-05.
 - Thử nghiệm dùng tài khoản thử, chưa nhập tên thật của học sinh.
 - **3 trang tách riêng** (24/10/2026): Giáo viên, Phụ huynh, Quản lý — mỗi trang một vai; app học sinh riêng.
 
