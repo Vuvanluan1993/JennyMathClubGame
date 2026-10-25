@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 25/10/2026 — Token thiết kế chung (P-03, FE1)
+- Mới `design/tokens.json` (nguồn) → `design/tokens.css` sinh bằng `tools/tokens.py` (`--check` để so). 102 token `--jc-*`: 25 màu logo (= PXC), bộ app/pixel/trang chủ/LMS, họ chữ, khoảng cách, cỡ chạm, bo góc, khung pixel.
+- `app.css` (`:root` + `body.px`), `games/tu-duy-bebras/_kit/kit.css`, `index.html` giữ tên biến cũ (`--ink`, `--sea`, `--paper`…) nhưng trỏ sang `--jc-*`; `app.template.html` include `tokens.css` trước `app.css`. Giao diện không đổi (so kiểu hiển thị 4 trang × 4 khổ: 0 khác).
+- Mới `tools/check_contrast.py`: đo 36 cặp chữ/nền; 4 cặp dưới 4.5 chờ thầy quyết (xem kết quả in ra của lệnh).
+
 ## 24/10/2026 — Tự luyện: 6 dạng mới từ VBT lớp 1 tập 2, lớp 2 tập 1–2 (T-27)
 - Đã rà 362 trang VBT tham khảo; phần lớn dạng bài đã có. Thêm 6 dạng (viết lại, không chép sách), đều nhập bằng ô số:
   - **Chuỗi phép tính**: số đầu → (+a) → □ → (−b) → □ → … (lớp 1 bài 29–33, 39 không nhớ; lớp 2 bài 5–14, 19–24, 33, 45, 59–63, 69–70).

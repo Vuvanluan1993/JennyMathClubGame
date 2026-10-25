@@ -8,15 +8,17 @@
 <link rel="icon" href="assets/jenny-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<link rel="stylesheet" href="design/tokens.css">
 <style>
 [hidden]{display:none!important}
 /* Same look as the games: sky board, thick ink outlines, sunny yellow buttons. */
 :root{
-  --sky:#CFEAFB; --ink:#1D2B53; --ink-soft:#4A5878; --paper:#FFFFFF;
-  --sun:#FFC93C; --sun-soft:#FFF0C2; --coral:#FF6B57; --mint:#2DBE8C; --mint-soft:#D5F6E8;
-  --sel:#2F7DE1; --sel-soft:#DCEBFF; --hatch:#B8C6DD; --purple:#8E6BD8;
-  --display:'Baloo 2','Trebuchet MS',system-ui,sans-serif;
-  --body:'Nunito','Segoe UI',system-ui,sans-serif;
+  /* màu/chữ từ design/tokens.css (nhóm home, font); tên cũ giữ nguyên */
+  --sky:var(--jc-home-sky); --ink:var(--jc-home-ink); --ink-soft:var(--jc-home-ink-soft); --paper:var(--jc-home-paper);
+  --sun:var(--jc-home-sun); --sun-soft:var(--jc-home-sun-soft); --coral:var(--jc-home-coral); --mint:var(--jc-home-mint); --mint-soft:var(--jc-home-mint-soft);
+  --sel:var(--jc-home-sel); --sel-soft:var(--jc-home-sel-soft); --hatch:var(--jc-home-hatch); --purple:var(--jc-home-purple);
+  --display:var(--jc-font-home);
+  --body:var(--jc-font-home-body);
   color-scheme:light;
 }
 *{box-sizing:border-box}
