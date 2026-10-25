@@ -51,7 +51,9 @@ function ghCard(c,x,st){if((c.k==='pet'||c.k==='care')&&typeof petCard==='functi
 function ghTry(k,id){const T={k,id};if(k==='of')T.of=id;else if(k==='acc')T.acc=id;else if(k==='pet')T.pet=id;else if(k==='frame')T.frame=id;scr.ghTry=T;try{sfx('tap')}catch(e){}render()}
 function ghBuy(){const st=S.st[sid],s=ghSt(st),T=scr.ghTry;if(!T)return;const f=ghFind(T.id);if(!f)return;if(T.k==='pet')return petBuy(T.id);if(T.k==='care')return careBuy(T.id);const pr=f.x[2];
  if(st.coins<pr){toast(`Em cần thêm ${pr-st.coins} xu. Làm bài để kiếm xu nhé!`);return}
- st.coins-=pr;s.own.push(T.id);ghUse(1);try{sfx('win')}catch(e){}toast(`Đã mua ${f.x[1]}!`)}
+ /* P-20: trừ xu qua ví (vi/{tk}); áo váy, mũ kính, khung = tudo; đảo nhà = items */
+ if(!xuMua(f.c.k==='dec'?'items':'tudo',T.id)){toast('Chưa mua được. Em thử lại sau nhé!');return}
+ s.own.push(T.id);ghUse(1);try{sfx('win')}catch(e){}toast(`Đã mua ${f.x[1]}!`)}
 function ghUse(silent){const st=S.st[sid],s=ghSt(st),T=scr.ghTry;if(!T||!s.own.includes(T.id))return;const k=T.k,id=T.id;
  if(k==='of')st.outfit=st.outfit===id?'':id;else if(k==='dec'){s.dec=s.dec.includes(id)?s.dec.filter(x=>x!==id):s.dec.concat(id)}else s[k]=s[k]===id?'':id;
  scr.ghTry=null;save();if(!silent)try{sfx('card')}catch(e){}render()}

@@ -24,7 +24,7 @@ async function fbInit(){await fbNap();if(!FB){const cfg=Object.assign({},FB_CFG)
   FB={app,auth:app.auth(),db:app.firestore()}}return FB}
 function fbLoi(e){const c=(e&&e.code)||'';return({'chua-lop':'Tài khoản của em chưa được xếp lớp. Em nhờ cô giáo nhé!','auth/invalid-credential':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/invalid-login-credentials':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/wrong-password':'Mật khẩu chưa đúng.','auth/user-not-found':'Không có tài khoản này.','auth/too-many-requests':'Thử sai nhiều lần. Đợi vài phút rồi thử lại.','auth/network-request-failed':'Không kết nối được mạng.','auth/email-already-in-use':'Tên đăng nhập này đã có người dùng.','auth/weak-password':'Mật khẩu cần ít nhất 6 kí tự.','auth/invalid-email':'Tên đăng nhập không hợp lệ.','auth/requires-recent-login':'Phiên đăng nhập đã cũ. Đăng xuất, đăng nhập lại rồi làm tiếp.','permission-denied':'Tài khoản không có quyền làm việc này.','no-profile':'Tài khoản chưa được gán vai trò. Hỏi quản lý trung tâm.','network':e.message})[c]||('Có lỗi: '+((e&&e.message)||e))}
 const fbJ=s=>{try{return JSON.parse(s)}catch(e){return null}};
-const fbTach=st=>{const a={},b={};Object.keys(st||{}).forEach(k=>(GV_F.includes(k)?b:a)[k]=st[k]);GV_F.forEach(k=>{if(b[k]===undefined)b[k]=k==='gvSkip'?{}:[]});return{hs:a,gv:b}};
+const fbTach=st=>{const a={},b={};Object.keys(st||{}).forEach(k=>(GV_F.includes(k)?b:a)[k]=st[k]);GV_F.forEach(k=>{if(b[k]===undefined)b[k]=k==='gvSkip'?{}:[]});if(typeof xuOn==='function'&&xuOn()){delete a.coins;delete a.items}return{hs:a,gv:b}};/* P-20: xu, quà trùm ở ví vi/{tk}, không còn trong hs.j */
 const fbTS=()=>firebase.firestore.FieldValue.serverTimestamp();
 /* bài về nhà của một lớp (rules P-04 chỉ cho đọc asg theo lớp nên phải lọc ngay trong truy vấn; bản giả lập trong test không có where) */
 const fbAsgLop=(db,l)=>{const c=db.collection('asg');return c.where?c.where('lop','==',l):c};
@@ -132,7 +132,7 @@ async function fbGvBoot(){const me=CLOUD.me,db=FB.db;document.body.classList.add
   S={day:fbNgay(),events:[],st:{},cbi:{},asg:[],asgSeed:2,mk2:1,org:null};STUDENTS.length=0;
   role=window.TRANG||(me.role==='ph'?'ph':'gv');gvMe=me.gvId||me.tk;gvLop=null;scr={k:'home'};
   await new Promise(ok=>{let lan=0;
-    fbSub.push(db.doc('org/main').onSnapshot(d=>{const j=d.exists?d.data().j:null;if(!j){ok();return}
+    fbSub.push(db.doc('org/main').onSnapshot(d=>{if(d.exists&&d.data().v===3&&!V3.on){fbTaiLai();return}const j=d.exists?d.data().j:null;if(!j){ok();return}
       if(j!==fbLast['org/main']||!S.org){fbLast['org/main']=j;const o=fbJ(j);o.cloud=1;o.v=2;['mauHS','mauHS2','mauHS3','mauHS4','mauHS5','mauHS6','mauHS7'].forEach(k=>o[k]=1);
         const giu=S.org&&Object.getOwnPropertyDescriptor(S,'open');S.org=o;fbDanhSach();if(lan++)fbVe()}ok()},e=>{console.error(e);ok()}))});
   /* bài về nhà (P-04): QL nghe cả kho; GV nghe từng lớp mình dạy; PH nghe lớp của con — rules chỉ cho đọc theo lớp */
@@ -148,8 +148,12 @@ function fbDanhSach(){const o=S.org,me=CLOUD.me;if(!o)return;
   const ds=(o.hs||[]).filter(([tk])=>me.role==='ql'||(me.role==='ph'?(me.con||[]).includes(tk):(o.lop||[]).some(l=>l.id===(o.gd||{})[tk]&&(l.gv||[]).includes(me.gvId||me.tk))));
   STUDENTS.length=0;ds.forEach(r=>{STUDENTS.push(r);if(!S.st[r[0]])S.st[r[0]]=newStudent(r[1],r[2]);fbNgheHS(r[0])});
   if(me.role==='ph'&&!ds.some(r=>r[0]===sid)&&ds[0])sid=ds[0][0];}
+/* P-20: cô/QL/PH đọc xu từ ví vi/{tk} (hs.j không còn coins); fbVi[tk] = null khi em chưa có ví */
+const fbVi={},fbHsDa={};
+function fbViAp(tk){const v=fbVi[tk],st=S.st[tk];if(v&&st){st.coins=Math.max(0,Math.round(+v.coins||0));if(typeof XU_THUONG!=='undefined')st.items=Object.keys(v.items||{}).filter(n=>XU_THUONG.includes(n))}}
 function fbNgheHS(tk){if(fbDaNghe.has(tk))return;fbDaNghe.add(tk);const db=FB.db;
-  fbSub.push(db.doc('hs/'+tk).onSnapshot(d=>{if(!d.exists)return;const x=d.data(),st=fbJ(x.j);if(!st)return;const cu=S.st[tk]||{};GV_F.forEach(k=>{if(cu[k]!==undefined)st[k]=cu[k]});S.st[tk]=st;
+  fbSub.push(db.doc('vi/'+tk).onSnapshot(d=>{fbVi[tk]=d.exists?d.data():null;fbViAp(tk);fbVe()},e=>{}));
+  fbSub.push(db.doc('hs/'+tk).onSnapshot(d=>{fbHsDa[tk]=1;if(!d.exists)return;const x=d.data(),st=fbJ(x.j);if(!st)return;const cu=S.st[tk]||{};GV_F.forEach(k=>{if(cu[k]!==undefined)st[k]=cu[k]});S.st[tk]=st;fbViAp(tk);
     const ev=fbJ(x.ev||'[]')||[];S.events=S.events.filter(e=>e.actor.account.name!==tk).concat(ev).sort((a,b)=>String(a.timestamp).localeCompare(String(b.timestamp)));fbVe()},e=>console.error('hs',tk,e)));
   fbSub.push(db.doc('hsgv/'+tk).onSnapshot(d=>{const j=d.exists?d.data().j:JSON.stringify(fbTach(S.st[tk]||{}).gv);fbLast['hsgv/'+tk]=j;const g=fbJ(j)||{};if(S.st[tk])GV_F.forEach(k=>{if(g[k]!==undefined)S.st[tk][k]=g[k]});fbVe()},e=>console.error('hsgv',tk,e)));}
 
@@ -165,6 +169,7 @@ async function fbQLTaoHS(e){e.preventDefault();const o=S.org,n=document.getEleme
   try{const uid=await fbTaoTK(tk,pw),db=FB.db,st=newStudent(n,l?l.khoi:1);
     await db.doc('users/'+uid).set({role:'hs',tk,ten:n,khoi:l?l.khoi:0,mustChange:true});
     await db.doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:l?lid:'',t:fbTS()});
+    await db.doc('vi/'+tk).set({coins:0,items:{},pets:{},tudo:{},t:fbTS()});/* P-20: ví xu */
     (o.hs=o.hs||[]).push([tk,n,l?l.khoi:0]);if(l)o.gd[tk]=lid;(o.nk=o.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Tạo tài khoản ${n} (${tk})`+(l?` · lớp ${lid}`:' · chưa xếp lớp')});
     fbMKNho(tk,pw);S.st[tk]=st;fbDanhSach();save();await fbDayNgay();render();toast(`Đã tạo tài khoản ${tk}. Mật khẩu tạm trên phiếu in (In phiếu).`)}catch(err){toast(fbLoi(err))}}
 /* mật khẩu khi tạo tài khoản: ô để trống hoặc còn mặc định cũ → ngẫu nhiên; QL gõ thì phải đủ mạnh (fbMKLoi) */
@@ -234,3 +239,175 @@ body[class*="trang-"] #tabs{display:none!important}body.trang-gv #whoBox,body.tr
 .fbmkhien{flex-direction:row!important;align-items:center;font-weight:400!important}.fbmkerr{min-height:18px;font-size:13px;color:#B3261E}.fbmkerr:empty{display:none}
 .fbme{display:flex;gap:6px;align-items:center;flex-wrap:wrap}@media(max-width:520px){.fbme{width:100%;order:5}.fbst{display:none}.fbme .btn{padding:6px 10px}}.fbst{font-size:12px}.fbst.loi{color:var(--coral)}
 </style>`);
+
+/* ===================== P-06a (25/10/2026): tách org/main.j thành nhiều document (dữ liệu v3) =====================
+   org/main  {v:3, ten, nam, admins, gd:{tk:lớp}, pc:{gvId:[lớp]}, nl, nghi, xoa, namCu, t, j (bản cũ, giữ 30 ngày)}  QL ghi
+   lop/{id}  {ten, khoi, gv:[gvId], tj:{on,han}, mo:{đảo mở}}      QL ghi; cô dạy lớp chỉ sửa mo
+   hsdm/{tk} {ten, khoi, lop, ph}                                  danh mục, không PII: QL ghi; cô lớp / phụ huynh / em đọc
+   hoso/{tk} {gt, ng, th, nam, dt, mail, hosoNam}                  PII: chỉ QL
+   ph/{tk}   {ten, dt, mail}                                       PII phụ huynh: QL, chính chủ đọc
+   gv/{id}   {ten, tk}                                             ai có hồ sơ cũng đọc
+   nk/{id}   {d, ai, t, luc}                                       QL/cô thêm, không sửa xoá; QL đọc 200 dòng mới nhất
+   Lớp tương thích: orgV3Gop(V3) dựng S.org đúng hình cũ cho mọi file; orgV3Tach(S.org) chiếu ngược ra từng doc;
+   fbDay so từng doc với bản đã đồng bộ (fbLast) và chỉ ghi doc đổi; orgSet(path, value) sửa một chỗ rồi đẩy ngay.
+   Bật khi org/main.v === 3 (nút "Nâng cấp dữ liệu v3" ở trang Quản lý › Tài khoản). Trước đó vẫn chạy kiểu cũ (j). */
+function fbTaiLai(){location.reload()}
+const V3={on:false,main:null,lop:{},hsdm:{},hoso:{},gv:{},ph:{},nk:[],san:{}};
+const V3_COLS=['lop','hsdm','hoso','gv','ph'];
+const fbV3=()=>V3.on;
+/* JSON chuẩn: khoá sắp xếp, bỏ undefined/null, bỏ t — để so sánh doc ở máy với doc máy chủ */
+function fbJ3(x){const s=v=>{if(Array.isArray(v))return v.map(s);if(v&&typeof v==='object'&&!(v.toDate)){const o={};Object.keys(v).filter(k=>k!=='t'&&v[k]!==undefined&&v[k]!==null).sort().forEach(k=>o[k]=s(v[k]));return o}return v};return JSON.stringify(s(x))}
+const fbSao=x=>JSON.parse(JSON.stringify(x===undefined?null:x));
+/* org cũ → các doc (thuần, dùng cho nâng cấp và cho fbDay) */
+function orgV3Tach(o){o=o||{};const D={main:{},lop:{},hsdm:{},hoso:{},gv:{},ph:{}};
+  D.main={v:3,ten:o.ten||'',nam:o.nam||'',gd:fbSao(o.gd||{}),pc:fbPc(o),nl:fbSao(o.nl||{}),nghi:fbSao(o.nghi||{}),xoa:fbSao(o.xoa||[]),namCu:fbSao(o.namCu||[])};
+  (o.lop||[]).forEach(l=>{if(!l||!l.id)return;D.lop[l.id]={ten:l.ten||l.id,khoi:+l.khoi||0,gv:fbSao(l.gv||[]),tj:fbSao(l.tj||{on:false}),mo:fbSao((o.mo||{})[l.id]||{})}});
+  (o.hs||[]).forEach(r=>{if(!r||!r[0])return;D.hsdm[r[0]]={ten:r[1]||r[0],khoi:+r[2]||0,lop:(o.gd||{})[r[0]]||'',ph:(o.ph||{})[r[0]]||''}});
+  Object.keys(o.hoso||{}).forEach(tk=>{D.hoso[tk]=fbSao(o.hoso[tk]||{})});
+  Object.keys(o.hosoNam||{}).forEach(tk=>{(D.hoso[tk]=D.hoso[tk]||{}).hosoNam=fbSao(o.hosoNam[tk])});
+  (o.gv||[]).forEach(g=>{if(!g||!g.id)return;D.gv[g.id]={ten:g.ten||g.id,tk:g.tk||g.id}});
+  Object.keys(o.phInfo||{}).forEach(tk=>{D.ph[tk]=fbSao(o.phInfo[tk]||{})});
+  return D}
+/* các doc → org hình cũ (mọi file khác vẫn đọc S.org như trước) */
+function orgV3Gop(V){const m=V.main||{};
+  const o={ten:m.ten||'',nam:m.nam||'',gd:fbSao(m.gd||{}),nl:fbSao(m.nl||{}),nghi:fbSao(m.nghi||{}),xoa:fbSao(m.xoa||[]),namCu:fbSao(m.namCu||[]),
+    lop:Object.keys(V.lop).map(id=>{const l=V.lop[id];return{id,ten:l.ten||id,khoi:+l.khoi||0,gv:fbSao(l.gv||[]),tj:fbSao(l.tj||{on:false})}}).sort((a,b)=>a.khoi-b.khoi||String(a.ten).localeCompare(String(b.ten))),
+    mo:{},hs:[],ph:{},phInfo:{},hoso:{},hosoNam:{},gv:Object.keys(V.gv).map(id=>({id,ten:V.gv[id].ten||id,tk:V.gv[id].tk||id})),nk:fbSao(V.nk||[]),hsMoi:[],v:2,cloud:1,v3:1,
+    mauHS:1,mauHS2:1,mauHS3:1,mauHS4:1,mauHS5:1,mauHS6:1,mauHS7:1};
+  Object.keys(V.lop).forEach(id=>{o.mo[id]=fbSao(V.lop[id].mo||{})});
+  Object.keys(V.hsdm).forEach(tk=>{const h=V.hsdm[tk];o.hs.push([tk,h.ten||tk,+h.khoi||0]);if(h.ph)o.ph[tk]=h.ph;if(h.lop&&!o.gd[tk])o.gd[tk]=h.lop});
+  Object.keys(V.hoso).forEach(tk=>{const x=fbSao(V.hoso[tk]||{});if(x.hosoNam){o.hosoNam[tk]=x.hosoNam;delete x.hosoNam}if(Object.keys(x).length)o.hoso[tk]=x});
+  Object.keys(V.ph).forEach(tk=>{o.phInfo[tk]=fbSao(V.ph[tk]||{})});
+  return o}
+/* sửa một chỗ trong S.org theo đường dẫn ('gd.em1', 'lop.1A.tj', 'nl.em1'; 'lop.<id>' tìm theo id trong mảng) rồi đẩy ngay */
+function orgSet(path,value){const o=S.org;if(!o)return;const p=String(path).split('.');let cur=o;
+  for(let i=0;i<p.length-1;i++){let k=p[i];if(Array.isArray(cur)){const f=cur.find(x=>x&&x.id===k);if(!f)return;cur=f;continue}if(cur[k]===undefined||cur[k]===null)cur[k]={};cur=cur[k]}
+  const k=p[p.length-1];if(Array.isArray(cur)){const i=cur.findIndex(x=>x&&x.id===k);if(value===undefined){if(i>=0)cur.splice(i,1)}else if(i>=0)cur[i]=value;else cur.push(value)}
+  else if(value===undefined)delete cur[k];else cur[k]=value;
+  save();return fbDayNgay()}
+/* nhận một doc từ máy chủ vào bộ nhớ V3; trả true nếu nội dung đổi so với bản đã biết */
+const V3_MAIN_KEYS=['v','ten','nam','gd','pc','nl','nghi','xoa','namCu'];
+function fbV3Nhan(col,id,data){const k=col==='main'?'org/main':col+'/'+id;if(col==='main'&&data){const x={};V3_MAIN_KEYS.forEach(q=>{if(data[q]!==undefined)x[q]=data[q]});data=x}if(data===null){const co=col==='main'?!!V3.main:!!V3[col][id];if(col==='main')V3.main=null;else delete V3[col][id];delete fbLast[k];return co}
+  const j=fbJ3(data),cu=fbLast[k];fbLast[k]=j;const d=JSON.parse(j);if(col==='main')V3.main=d;else V3[col][id]=d;return cu!==j}
+let fbV3Hen=null;function fbV3Cap(ngay){clearTimeout(fbV3Hen);const lam=()=>{try{S.org=orgV3Gop(V3);fbDanhSach();fbVe()}catch(e){console.error(e)}};if(ngay)lam();else fbV3Hen=setTimeout(lam,40)}
+/* lớp cô dạy theo pc của org/main (nguồn rules dùng) */
+const fbLopCua=(m,gvId)=>fbSao(((m&&m.pc)||{})[gvId]||[]);
+const fbSub3={};function fbNghe3(k,lam){if(fbSub3[k])return;fbSub3[k]=1;fbSub.push(lam())}
+/* nghe các collection theo vai: QL cả kho; cô: lớp mình (pc) + hsdm từng lớp; phụ huynh: hsdm/lop của con */
+function fbV3Nghe(me,db,ok){const vai=me.role,gvId=me.gvId||me.tk;
+  const docL=(col,id)=>fbNghe3(col+'/'+id,()=>db.doc(col+'/'+id).onSnapshot(d=>{if(d.metadata.hasPendingWrites)return;if(fbV3Nhan(col,id,d.exists?d.data():null))fbV3Cap()},e=>console.error(col,id,e)));
+  const colL=(col,q,tag)=>fbNghe3(col+'?'+(tag||'*'),()=>q.onSnapshot(s=>{if(s.metadata.hasPendingWrites)return;let doi=false;const thay=new Set();
+      s.docs.forEach(d=>{thay.add(d.id);if(fbV3Nhan(col,d.id,d.data()))doi=true});
+      if(!tag)Object.keys(V3[col]).forEach(id=>{if(!thay.has(id)){delete V3[col][id];delete fbLast[col+'/'+id];doi=true}});
+      else s.docChanges().forEach(c=>{if(c.type==='removed'&&!thay.has(c.doc.id)){delete V3[col][c.doc.id];delete fbLast[col+'/'+c.doc.id];doi=true}});
+      V3.san[col]=1;if(doi)fbV3Cap()},e=>console.error(col,tag,e)));
+  fbSub.push(db.doc('org/main').onSnapshot(d=>{if(d.metadata.hasPendingWrites)return;const m=d.exists?d.data():null;
+    if(V3.on&&(!m||m.v!==3)){fbTaiLai();return}
+    const doi=fbV3Nhan('main','',m?Object.assign({},m,{j:undefined,jCu:undefined,admins:undefined}):null);V3.san.main=1;
+    if(vai==='ql')V3_COLS.forEach(c=>colL(c,db.collection(c)));
+    else if(vai==='gv'){colL('gv',db.collection('gv'));fbLopCua(m,gvId).forEach(l=>{docL('lop',l);colL('hsdm',db.collection('hsdm').where('lop','==',l),l)})}
+    else{colL('gv',db.collection('gv'));(me.con||[]).forEach(c=>{docL('hsdm',c);const l=((m&&m.gd)||{})[c];if(l)docL('lop',l)})}
+    if(ok){fbV3Cap(true);const f=ok;ok=null;f()}else if(doi)fbV3Cap()},e=>{console.error(e);if(ok){const f=ok;ok=null;f()}}));}
+/* nk: QL đọc 200 dòng mới nhất → V3.nk (kèm id để fbDay không ghi lại) */
+function fbV3NkNhan(s){V3.nk=s.docs.map(d=>Object.assign({id:d.id},d.data(),{luc:undefined})).reverse();fbV3Cap()}
+/* ghi theo từng doc (QL: mọi doc đổi, xoá doc không còn; cô: chỉ mo của lớp mình + nk) */
+function fbDayV3(me,db,ghi){const o=fbOrgSach(),D=orgV3Tach(o),gv=me.role==='gv',myLop=new Set(fbLopCua(V3.main,me.gvId||me.tk));
+  if(!gv){const j=fbJ3(D.main);if(fbLast['org/main']!==j){fbLast['org/main']=j;V3.main=JSON.parse(j);ghi.push(db.doc('org/main').update(Object.assign({},D.main,{t:fbTS()})))}}
+  V3_COLS.forEach(col=>{Object.keys(D[col]).forEach(id=>{const k=col+'/'+id,j=fbJ3(D[col][id]);if(fbLast[k]===j)return;
+      if(gv){if(col!=='lop'||!myLop.has(id))return;fbLast[k]=j;V3[col][id]=JSON.parse(j);ghi.push(db.doc(k).update({mo:D[col][id].mo,t:fbTS()}));return}
+      fbLast[k]=j;V3[col][id]=JSON.parse(j);ghi.push(db.doc(k).set(Object.assign({},D[col][id],{t:fbTS()})))});
+    if(!gv&&V3.san[col])Object.keys(fbLast).filter(k=>k.startsWith(col+'/')&&!(k.slice(col.length+1) in D[col])).forEach(k=>{delete fbLast[k];delete V3[col][k.slice(col.length+1)];ghi.push(db.doc(k).delete())})});
+  (o.nk||[]).forEach(e=>{if(!e||typeof e!=='object'||e.id)return;e.id=db.collection('nk').doc().id;V3.nk.push({id:e.id,d:+e.d||0,ai:String(e.ai||''),t:String(e.t||'')});ghi.push(db.doc('nk/'+e.id).set({d:+e.d||0,ai:String(e.ai||''),t:String(e.t||''),luc:fbTS()}))})}
+/* fbDay: nhánh v3 cho QL/cô thay cho ghi org/main.j */
+{const _d=fbDay;fbDay=async function(){if(!CLOUD||!FB||!fbV3()||!(CLOUD.me.role==='ql'||CLOUD.me.role==='gv'))return _d.apply(this,arguments);
+  const db=FB.db,me=CLOUD.me,ghi=[];try{
+    if(S.org)fbDayV3(me,db,ghi);
+    Object.keys(S.st).forEach(tk=>{if(!fbLast.hasOwnProperty('hsgv/'+tk))return;const j=JSON.stringify(fbTach(S.st[tk]).gv);if(fbLast['hsgv/'+tk]!==j){fbLast['hsgv/'+tk]=j;ghi.push(db.doc('hsgv/'+tk).set({j,t:fbTS()}))}});
+    const co=new Set();(S.asg||[]).forEach(a=>{co.add(a.id);if(me.role==='gv'&&!a.lop)return;const j=JSON.stringify(a);if(fbLast['asg/'+a.id]!==j){fbLast['asg/'+a.id]=j;ghi.push(db.doc('asg/'+a.id).set({j,lop:a.lop||'',t:fbTS()}))}});
+    Object.keys(fbLast).filter(k=>k.startsWith('asg/')&&!co.has(k.slice(4))).forEach(k=>{delete fbLast[k];ghi.push(db.doc(k).delete())});
+    if(ghi.length){fbBan++;try{await Promise.all(ghi)}finally{fbBan--}fbTrangThai('Đã lưu lên máy chủ')}
+  }catch(e){console.error(e);fbTrangThai('Chưa lưu được: '+fbLoi(e),1)}}}
+/* fbGvBoot: v3 nghe collection; v2 như cũ. Chế độ quyết định bởi org/main.v */
+{const _b=fbGvBoot;fbGvBoot=async function(){const me=CLOUD.me,db=FB.db;const m=await db.doc('org/main').get();
+  if(!m.exists||m.data().v!==3)return _b.apply(this,arguments);
+  V3.on=true;document.body.classList.add('cloud');window.dayNow=fbNgay;
+  S={day:fbNgay(),events:[],st:{},cbi:{},asg:[],asgSeed:2,mk2:1,org:null};STUDENTS.length=0;
+  role=window.TRANG||(me.role==='ph'?'ph':'gv');gvMe=me.gvId||me.tk;gvLop=null;scr={k:'home'};
+  await new Promise(ok=>fbV3Nghe(me,db,ok));
+  if(me.role==='ql')fbSub.push(db.collection('nk').orderBy('luc','desc').limit(200).onSnapshot(s=>{if(!s.metadata.hasPendingWrites)fbV3NkNhan(s)},e=>console.error('nk',e)));
+  await new Promise(ok=>setTimeout(ok,350));fbV3Cap(true);
+  /* bài về nhà như P-04 */
+  const o=S.org||{},gvId=me.gvId||me.tk;
+  const lops=me.role==='ql'?[null]:me.role==='ph'?[...new Set((me.con||[]).map(c=>(o.gd||{})[c]).filter(Boolean))]:fbLopCua(V3.main,gvId);
+  const theoLop={};const gop=()=>{const A=[];Object.values(theoLop).forEach(L=>L.forEach(a=>A.push(a)));S.asg=A;fbVe()};
+  lops.forEach(l=>{const q=l===null?db.collection('asg'):fbAsgLop(db,l);
+    fbSub.push(q.onSnapshot(s=>{const A=[];s.docs.forEach(d=>{const j=d.data().j;if(me.role!=='ph')fbLast['asg/'+d.id]=j;const a=fbJ(j);if(a)A.push(a)});theoLop[l===null?'*':l]=A;gop()},e=>console.error('asg',l,e)))});}}
+/* học sinh: dữ liệu trung tâm cần cho em (lop của em, gd, nl, nghi, namCu) — v3 đọc org/main + lop/{lop}; v2 đọc j */
+async function fbOrgHS(tk){const db=FB.db,o=await db.doc('org/main').get();if(!o.exists)return{};const m=o.data();
+  if(m.v!==3)return fbJ(m.j)||{};V3.on=true;
+  const lop=(m.gd||{})[tk]||'',L=lop?await db.doc('lop/'+lop).get():null,l=L&&L.exists?L.data():null;
+  return{v3:1,ten:m.ten,nam:m.nam,gd:m.gd||{},nl:m.nl||{},nghi:m.nghi||{},namCu:m.namCu||[],lop:l?[Object.assign({id:lop},l)]:[],mo:l?{[lop]:l.mo||{}}:{}}}
+{const _b=fbHsBoot;fbHsBoot=async function(){const me=CLOUD.me,tk=me.tk,db=FB.db;const o0=await db.doc('org/main').get();
+  if(!o0.exists||o0.data().v!==3)return _b.apply(this,arguments);
+  const [h,org]=await Promise.all([db.doc('hs/'+tk).get(),fbOrgHS(tk)]);
+  const lop=(org.gd||{})[tk]||'',L=(org.lop||[]).find(l=>l.id===lop),khoi=(L&&L.khoi)||me.khoi||1;
+  if(!L)throw{code:'chua-lop'};
+  let st=h.exists?fbJ(h.data().j):null;const ev=h.exists?fbJ(h.data().ev||'[]')||[]:[];
+  if(st&&st.grade!==khoi&&!ev.length){const gt=st.gender;st=newStudent(me.ten||tk,khoi);if(gt)st.gender=gt}
+  if(!st)st=newStudent(me.ten||tk,khoi);if(me.ten)st.name=me.ten;
+  st.active=!!((L&&L.tj&&L.tj.on)||(org.nl||{})[tk]);
+  S={day:fbNgay(),events:ev,open:Object.assign({},(org.mo||{})[lop]||{}),st:{[tk]:st},cbi:{},asg:[],asgSeed:2,lopHS:lop};
+  STUDENTS=[[tk,st.name,st.grade]];sid=tk;role='hs';KEY='jennyHSc_'+tk;
+  if(typeof xuBoot==='function')await xuBoot(tk,db);/* P-20: ví xu + bảng giá; sau đó hs.j không còn coins */
+  fbLast['hs/'+tk]=JSON.stringify(fbTach(st).hs);fbLast['ev/'+tk]=JSON.stringify(ev);
+  const mine=a=>a.hs?a.hs.includes(tk):(a.lop?a.lop===lop:a.g===st.grade&&!a.mau);
+  fbSub.push(fbAsgLop(db,lop).onSnapshot(q=>{S.asg=q.docs.map(d=>fbJ(d.data().j)).filter(a=>a&&mine(a));fbVe()},e=>console.error(e)));
+  fbSub.push(db.doc('hsgv/'+tk).onSnapshot(d=>{const g=d.exists?fbJ(d.data().j)||{}:{};GV_F.forEach(k=>{if(g[k]!==undefined)S.st[tk][k]=g[k]});fbVe()},e=>{}));
+  let nlOn=!!(org.nl||{})[tk],tjOn=!!(L.tj&&L.tj.on);const capActive=()=>{S.st[tk].active=nlOn||tjOn;fbVe()};
+  fbSub.push(db.doc('lop/'+lop).onSnapshot(d=>{if(!d.exists)return;const l=d.data();S.open=Object.assign({},l.mo||{});tjOn=!!(l.tj&&l.tj.on);capActive()},e=>{}));
+  fbSub.push(db.doc('org/main').onSnapshot(d=>{if(!d.exists)return;const m=d.data();if(m.v!==3){fbTaiLai();return}nlOn=!!((m.nl||{})[tk]);if(((m.gd||{})[tk]||'')!==lop){fbTaiLai();return}capActive()},e=>{}));
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}}
+/* QL chuyển lớp cho em: giao dịch org/main.gd + hsdm/{tk} (v3) để hai nơi luôn khớp */
+if(typeof window.qlChuyen==='function'){const _c=window.qlChuyen;window.qlChuyen=function(tk,lid){const r=_c.apply(this,arguments);
+  try{if(fbV3()&&CLOUD&&CLOUD.me.role==='ql'){const db=FB.db,L=(S.org.lop||[]).find(x=>x.id===lid),khoi=L?+L.khoi:((S.org.hs||[]).find(x=>x[0]===tk)||[])[2]||0;
+    db.runTransaction(async tx=>{const m=await tx.get(db.doc('org/main')),gd=Object.assign({},(m.data()||{}).gd||{});if(lid)gd[tk]=lid;else delete gd[tk];
+      const h=await tx.get(db.doc('hsdm/'+tk));tx.update(db.doc('org/main'),{gd,t:fbTS()});if(h.exists)tx.update(db.doc('hsdm/'+tk),{lop:lid||'',khoi:khoi||h.data().khoi||0,t:fbTS()})})
+    .catch(e=>{console.error(e);fbTrangThai('Chưa lưu được: '+fbLoi(e),1)})}}catch(e){console.error(e)}return r}}
+/* Nâng cấp dữ liệu v3 (QL bấm một lần; chạy lại không trùng): chiếu S.org ra các doc, ghi theo lô, đặt org/main.v = 3, giữ j */
+async function fbNangCapV3(){if(!CLOUD||CLOUD.me.role!=='ql'||!S.org){toast('Chỉ quản lý mới nâng cấp được');return}
+  const o=fbOrgSach(),D=orgV3Tach(o),n=c=>Object.keys(D[c]).length,nk=(o.nk||[]).filter(e=>e&&!e.id);
+  if(!await fbXacNhan('Nâng cấp dữ liệu v3',`Tách dữ liệu trung tâm thành ${n('lop')} lớp, ${n('hsdm')} học sinh, ${n('hoso')} hồ sơ, ${n('gv')} giáo viên, ${n('ph')} phụ huynh, ${nk.length} dòng nhật ký. Bản cũ (j) vẫn giữ 30 ngày. Sau khi xong, mọi người tải lại trang.`,'Nâng cấp'))return;
+  const db=FB.db;toast('Đang nâng cấp…');
+  try{let b=db.batch(),c=0;const ghi=[];const them=(ref,data)=>{b.set(ref,data);if(++c>=400){ghi.push(b.commit());b=db.batch();c=0}};
+    V3_COLS.forEach(col=>Object.keys(D[col]).forEach(id=>them(db.doc(col+'/'+id),Object.assign({},D[col][id],{t:fbTS()}))));
+    nk.forEach(e=>{e.id=db.collection('nk').doc().id;them(db.doc('nk/'+e.id),{d:+e.d||0,ai:String(e.ai||''),t:String(e.t||''),luc:fbTS()})});
+    b.update(db.doc('org/main'),Object.assign({},D.main,{jCu:fbTS(),t:fbTS()}));ghi.push(b.commit());await Promise.all(ghi);
+    await fbTaoVi(true);/* P-20: ví xu từng em + bảng giá cfg/shop */
+    toast('Đã nâng cấp dữ liệu v3. Đang tải lại…');setTimeout(()=>fbTaiLai(),1200)}catch(e){console.error(e);toast('Chưa nâng cấp được: '+fbLoi(e))}}
+{const _t=fbTaiKhoanBox;fbTaiKhoanBox=function(){const r=_t.apply(this,arguments);if(!r||fbV3()||!CLOUD||CLOUD.me.role!=='ql')return r;
+  return r.replace('</section>',`<div class="task" style="margin-top:10px;border-left:4px solid var(--coral)"><b>Dữ liệu còn ở dạng cũ (một khối JSON)</b><div class="muted" style="margin:4px 0 8px">Nâng cấp lên v3 để tách lớp, học sinh, hồ sơ, nhật ký thành từng bản ghi riêng (bảo mật theo từng trường, cô không ghi đè được dữ liệu trung tâm). Làm một lần, sau đó dán quy tắc Firestore mới.</div><button type="button" class="btn pri" onclick="fbNangCapV3()">⬆ Nâng cấp dữ liệu v3</button></div></section>`)}}
+/* thiết lập lần đầu tạo thẳng v3 */
+{const _s=fbThietLap;fbThietLap=async function(ten,tk,pw){const r=await _s.apply(this,arguments);try{const db=FB.db,o=fbJ((await db.doc('org/main').get()).data().j)||{},D=orgV3Tach(o);
+  await db.doc('gv/'+tk).set(Object.assign({},D.gv[tk]||{ten,tk},{t:fbTS()}));await db.doc('org/main').set(Object.assign({},D.main,{jCu:fbTS(),t:fbTS()}),{merge:true})}catch(e){console.error(e)}return r}}
+/* ===================== P-20 (25/10/2026): ví xu vi/{tk}, sổ ev/{tk}/d, bảng giá cfg/shop (luật ở firestore.rules, máy em ở 64-xu.js) =====================
+   QL: fbTaoVi() tạo ví cho em chưa có (xu, đồ lấy từ hs.j đang có) và ghi bảng giá cfg/shop từ danh mục trong app; gọi trong Nâng cấp v3, chạy lại không trùng.
+   Cô/QL: fbXuNgay(tks) đọc sổ ev hôm nay của từng em (where t >= đầu ngày) → fbXuCache.d[tk] = {xu, n, man1h, la}; fbXuSo(tk) mở 30 dòng gần nhất. */
+async function fbTaoVi(im){if(!CLOUD||CLOUD.me.role!=='ql'||!FB){if(!im)toast('Chỉ quản lý mới tạo ví được');return 0}const db=FB.db;const co={};
+  try{(await db.collection('vi').get()).forEach(d=>{co[d.id]=1})}catch(e){console.warn('vi',e)}
+  let b=db.batch(),c=0,n=0,cho=0;const ghi=[];const them=(ref,data)=>{b.set(ref,data);if(++c>=400){ghi.push(b.commit());b=db.batch();c=0}};
+  ((S.org&&S.org.hs)||[]).forEach(([tk])=>{if(co[tk])return;if(!fbHsDa[tk]||!S.st[tk]){cho++;return}them(db.doc('vi/'+tk),Object.assign(xuViTu(S.st[tk]),{t:fbTS()}));n++});
+  them(db.doc('cfg/shop'),Object.assign(xuBangGia(),{t:fbTS()}));ghi.push(b.commit());
+  try{await Promise.all(ghi);if(!im){toast(`Đã tạo ví cho ${n} em và ghi bảng giá cfg/shop`+(cho?` · ${cho} em chưa tải xong, bấm lại sau`:''));render()}}catch(e){console.error(e);toast('Chưa tạo được ví: '+fbLoi(e))}return n}
+{const _t=fbTaiKhoanBox;fbTaiKhoanBox=function(){const r=_t.apply(this,arguments);if(!r||!fbV3()||!CLOUD||CLOUD.me.role!=='ql')return r;
+  const thieu=((S.org&&S.org.hs)||[]).filter(([tk])=>fbVi[tk]===null).length;
+  return r.replace('</section>',`<div class="task" style="margin-top:10px;border-left:4px solid ${thieu?'var(--coral)':'var(--leaf)'}"><b>Ví xu (P-20)</b> <span class="muted">${thieu?`${thieu} em chưa có ví vi/{tk} — em đó vẫn giữ xu trong hs.j kiểu cũ.`:'Mọi em đã có ví; xu, đồ mua ghi theo luật máy chủ.'} Nút này cũng ghi lại bảng giá cfg/shop từ danh mục trong app.</span> <button type="button" class="btn sm" onclick="fbTaoVi()">Tạo ví + bảng giá</button></div></section>`)}}
+const fbXuCache={t:0,d:{},dang:false};
+async function fbXuNgay(tks){if(!FB||!FB.db||fbXuCache.dang||!window.firebase||!firebase.firestore.Timestamp)return;fbXuCache.dang=true;const db=FB.db,dau=new Date();dau.setHours(0,0,0,0);const T0=firebase.firestore.Timestamp.fromDate(dau);
+  try{await Promise.all(tks.map(async tk=>{const c=db.collection('ev/'+tk+'/d');if(!c.where)return;try{const q=await c.where('t','>=',T0).get();let xu=0,n=0;const gio={};
+    q.forEach(d=>{const x=d.data()||{};n++;if(x.d>0)xu+=x.d;if(x.k==='man'){const h=x.t&&x.t.toDate?x.t.toDate().getHours():0;gio[h]=(gio[h]||0)+1}});
+    const man1h=Math.max(0,...Object.values(gio));fbXuCache.d[tk]={xu,n,man1h,la:xu>300||man1h>15}}catch(e){console.warn('ev',tk,e&&e.code)}}));fbXuCache.t=Date.now()}
+  finally{fbXuCache.dang=false;fbVe()}}
+async function fbXuSo(tk){try{const q=await FB.db.collection('ev/'+tk+'/d').orderBy('t','desc').limit(30).get();const TEN={man:'Qua màn',tl:'Tự luyện',bvn:'Bài về nhà',game:'Trò chơi',mua:'Mua',ban:'Bán',ql:'Quản lý',khac:'Khác'};
+  const rows=q.docs.map(d=>{const x=d.data()||{},t=x.t&&x.t.toDate?x.t.toDate():null;return`<tr><td>${t?t.toLocaleString('vi-VN'):''}</td><td>${esc(TEN[x.k]||x.k||'')}</td><td style="text-align:right"><b>${x.d>0?'+':''}${x.d|0}</b></td><td>${esc(x.ref||'')}</td></tr>`}).join('');
+  const el=document.createElement('div');el.className='gdov fbmk';el.innerHTML=`<div class="gdbox fbmkbox" role="dialog" aria-modal="true" style="max-height:85vh;overflow:auto"><div class="gdhd"><b>Sổ xu · ${esc(tk)}</b><button type="button" class="gdx" data-x aria-label="Đóng">✕</button></div><div class="fbmkf"><p class="muted">30 dòng gần nhất. Sổ chỉ thêm, không sửa xoá.</p><table><tr><th>Lúc</th><th>Loại</th><th>Xu</th><th>Ở đâu</th></tr>${rows||'<tr><td colspan="4" class="muted">Chưa có dòng nào</td></tr>'}</table></div></div>`;
+  document.body.appendChild(el);el.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>el.remove())}catch(e){toast('Chưa đọc được sổ xu: '+fbLoi(e))}}

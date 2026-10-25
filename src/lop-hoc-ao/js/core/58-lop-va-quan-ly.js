@@ -160,3 +160,10 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .xbtn{all:unset;cursor:pointer;padding:0 4px;font-weight:700}.xbtn.arm{color:var(--coral)}
 </style>`);
 })();
+/* ===================== P-20 (25/10/2026): trang cô — thẻ "Xu hôm nay" + nhãn "Xu tăng lạ" (sổ ev trên máy chủ, đọc qua fbXuNgay ở 62) ===================== */
+function xuNgayCard(){try{if(!S.org||!S.org.cloud||typeof fbXuNgay!=='function'||typeof CLOUD==='undefined'||!CLOUD)return'';const hs=gvCLS();if(!hs.length)return'';const C=fbXuCache;
+ if(Date.now()-C.t>60000&&!C.dang)fbXuNgay(hs.map(r=>r[0]));
+ const rows=hs.map(([id,n])=>{const x=C.d[id];return`<tr><td><button class="lnk" onclick="go({k:'gvhs',id:'${id}'})">${esc(n)}</button></td><td style="text-align:right"><b>${x?x.xu:'…'}</b></td><td style="text-align:right">${x?x.n:'…'}</td><td>${x&&x.la?'<span class="pill warn">Xu tăng lạ</span> ':x?'<span class="muted">bình thường</span> ':''}<button class="btn sm" type="button" onclick="fbXuSo('${id}')">Xem sổ</button></td></tr>`}).join('');
+ return`<section class="card"><h2>Xu hôm nay</h2><p class="muted" style="margin:4px 0 0">Từ sổ xu trên máy chủ (mỗi lần cộng, mua là một dòng). <b>Xu tăng lạ</b> = hơn 300 xu trong ngày, hoặc hơn 15 dòng qua màn trong một giờ — cô bấm "Xem sổ" rồi hỏi em. ${C.t?'Cập nhật '+new Date(C.t).toLocaleTimeString('vi-VN'):'Đang tải…'} <button class="btn sm" type="button" onclick="fbXuCache.t=0;render()">Làm mới</button></p>
+  <div class="tablewrap"><table class="gvbang"><tr><th>Học sinh</th><th>Xu hôm nay</th><th>Số dòng</th><th>Nhãn</th></tr>${rows}</table></div></section>`}catch(e){return''}}
+if(typeof viewGV==='function'){const _v=viewGV;viewGV=function(){let r=_v.apply(this,arguments);try{if(gvLop&&typeof r==='string'){const c=xuNgayCard();if(c){const i=r.indexOf('<h2>Tiến độ từng em</h2>'),j=i>=0?r.indexOf('</section>',i):-1;r=j>=0?r.slice(0,j+10)+c+r.slice(j+10):r.replace(/<\/div>\s*$/,c+'</div>')}}}catch(e){}return r}}
