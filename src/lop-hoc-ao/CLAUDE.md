@@ -16,7 +16,7 @@ Thầy chốt điều mới → ghi ngay vào `docs/LUAT-DA-CHOT.md`.
 5. Cập nhật `CHANGELOG.md` và đánh dấu `TASKS.md`.
 6. Commit (kèm dòng ghi công theo hướng dẫn phiên). `dist/` và `games/lop-hoc-ao/**/index.html` **không nằm trong git**
    (`.gitignore`), không commit. Phiên Code: đẩy nhánh, mở PR (CI chạy `npm test`); Cowork: `git pull --rebase`, `git push`
-   (sau khi CI deploy chạy, Cowork cũng nên qua PR — chờ thầy chốt Q3). Gộp vào `main` xong, GitHub Actions tự dựng
+   thẳng `main` (thầy chốt Q3 = B; CI chạy trên mỗi push `main`). Gộp vào `main` xong, GitHub Actions tự dựng
    (`tools/build_all.py`) và đưa lên Pages; không cần build hay commit "Dựng lại bản".
 7. Nếu phiên có công cụ Artifact: đăng lại `dist/lop-hoc-ao-jenny.html` lên artifact
    https://claude.ai/artifact/6HBRFgdwbmKHCXWEp7DwBB (bản đầy đủ có giáo viên/phụ huynh/demo).

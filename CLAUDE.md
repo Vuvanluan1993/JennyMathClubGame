@@ -27,8 +27,9 @@ lms-thu/                  LMS bản thử (Supabase)
 ## Hai nơi cùng làm việc trên kho này: Cowork và Claude Code
 Cowork và Claude Code có thể chạy song song. Quy tắc để không giẫm chân nhau:
 
-1. **Cowork làm thẳng trên `main`**: sửa → build → test → commit → `git pull --rebase` → `git push` (như quy trình cũ
-   trong `src/lop-hoc-ao/CLAUDE.md`).
+1. **Cowork làm thẳng trên `main`** (thầy chốt Q3 = B, 25/10/2026): sửa → build → test → commit → `git pull --rebase`
+   → `git push` (như quy trình cũ trong `src/lop-hoc-ao/CLAUDE.md`). CI (`ci.yml`) chạy trên mỗi push `main` để thấy đỏ ngay;
+   `deploy.yml` dựng và đưa lên Pages.
 2. **Claude Code: mỗi phiên một worktree + nhánh riêng.** Tên nhánh: `feature/…`, `fix/…`, `chore/…`, `wip/…`
    (chữ thường, không dấu, nối bằng gạch). **Không commit thẳng vào `main` từ phiên Code.**
    Khi đang ở worktree, các bước "push lên main" / "đăng artifact" trong `src/lop-hoc-ao/CLAUDE.md` đổi thành:
@@ -39,7 +40,10 @@ Cowork và Claude Code có thể chạy song song. Quy tắc để không giẫm
    `python3 src/lop-hoc-ao/tools/build.py`; không commit, không còn bước "Dựng lại bản" khi gộp, hết xung đột file sinh ra.
    Mỗi lần đẩy vào `main`, GitHub Actions (`.github/workflows/deploy.yml`) dựng lại rồi đưa cả kho lên Pages
    (cần một lần: Settings › Pages › Source = GitHub Actions). Số bản ở góc thẻ chào = ngày commit · sha.
-   Sau khi CI deploy chạy, Cowork cũng nên qua PR (chờ thầy chốt Q3 trong `docs/kien-truc/KE-HOACH.md`).
+   **Bảo vệ `main`**: bắt buộc PR + check "Kiểm tra" xanh, nhưng chủ kho (Vuvanluan1993) được miễn để Cowork đẩy thẳng.
+   Cách bật (một lần): Settings › Branches › Add rule cho `main` → tick "Require a pull request before merging" và
+   "Require status checks to pass" (chọn `kiem-tra`), tick "Allow specified actors to bypass required pull requests" và
+   thêm chủ kho; hoặc Settings › Rules › Rulesets với cùng hai yêu cầu và Bypass list = Repository admin.
 5. **Hai phiên không sửa cùng một file.** Mỗi task một khu vực (một bộ game, một dạng bài, một trang). Các file dễ đụng
    nhau là `CHANGELOG.md`, `TASKS.md`, `LUAT-DA-CHOT.md`: ghi mục mới lên **đầu** danh sách; xung đột thì giữ cả hai bên.
 6. Hết việc: cập nhật `CHANGELOG.md`/`TASKS.md` (nếu thuộc Lớp học ảo), commit kèm dòng ghi công theo hướng dẫn phiên,
