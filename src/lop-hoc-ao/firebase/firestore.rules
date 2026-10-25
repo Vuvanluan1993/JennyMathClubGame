@@ -49,7 +49,7 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['j', 'gd', 'pc', 'admins', 't']);
       // v2 (chưa nâng cấp): GV còn đổi j, t. v3 (v == 3): chỉ QL ghi org/main → đóng LH-H1
       allow update: if isQL()
-        || (isGV() && resource.data.v != 3
+        || (isGV() && resource.data.get('v', 0) != 3
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['j', 't'])
             && request.resource.data.j is string);
       allow delete: if false;
