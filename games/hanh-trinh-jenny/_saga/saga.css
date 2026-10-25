@@ -144,6 +144,8 @@ main{min-height:0;position:relative}
 .pen .ani svg{height:100%;width:auto}
 .pen .side{display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:900;font-size:min(4.2cqh,3cqw);line-height:1.1}
 .pen .side svg{width:min(9cqh,6cqw);height:min(9cqh,6cqw)}
+/* chữ to (màn lớn) thò khỏi dòng vì line-height 1.1: chừa đệm dưới để ô chữ không tràn (P-19, check_fit 1920×950) */
+.pen .side{padding-bottom:.15em}
 .pen .prod svg{width:min(10cqh,7cqw);height:min(10cqh,7cqw)}
 .pen .hungry{background:var(--coral);color:#fff;border-radius:999px;padding:2px 7px;border:2px solid var(--ink)}
 @container (orientation: portrait){
