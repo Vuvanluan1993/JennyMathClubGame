@@ -48,4 +48,5 @@ Cowork và Claude Code có thể chạy song song. Quy tắc để không giẫm
 - `python3` 3.9 có sẵn → `build.py`, `check_fit.py` chạy được (cần `pip install playwright` cho check_fit).
 - `node` **chưa cài** → `node tools/test/kiem-tra.js` chưa chạy được. Cài: `brew install node` rồi
   `npm i -D playwright && npx playwright install chromium`. Khi chưa có Node, ghi rõ trong báo cáo là chưa chạy bộ kiểm tra.
-- `gh` (GitHub CLI) **chưa cài** → mở PR bằng link GitHub trả về sau `git push -u origin <nhánh>`.
+- `gh` (GitHub CLI) 2.103 đã cài ở `~/.local/bin` (PATH thêm trong `~/.zprofile`), đã đăng nhập tài khoản Vuvanluan1993
+  qua SSH → mở PR bằng `gh pr create --fill`.
