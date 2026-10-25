@@ -3,7 +3,7 @@ name: Kiểm tra
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, 'tich-hop/**']   # nhánh tích hợp (Q6): chạy kiểm tra + lưu bản dựng để thầy tải về thử
 
 concurrency:
   group: kiem-tra-${{ github.ref }}
@@ -34,6 +34,18 @@ jobs:
 
       - name: Dựng bản Lớp học ảo
         run: npm run build
+
+      - name: Lưu bản dựng (tải về, giải nén, chạy python3 -m http.server ở thư mục đó)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ban-dung
+          path: |
+            .
+            !node_modules/
+            !src/
+            !tools/
+            !docs/
+          retention-days: 14
 
       - name: Chạy bộ kiểm tra
         run: npm test
