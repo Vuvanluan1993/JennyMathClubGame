@@ -40,7 +40,7 @@ function nextQ(){
   if(pass){log(sid,'passed',`${u.title} · màn ${i+1}`,0,{success:true,score:{raw:scr.ok,max:qs.length}});
     if(!s.m[i]){s.m[i]=true;scr.newStars=part===1?1:STAR2[i];log(sid,'earned',`${u.title} · màn ${i+1}`,0,{score:{raw:scr.newStars}})}
     if(part===1&&s.m.every(Boolean)&&!st.badges.some(b=>b.t==='Huy hiệu '+u.title.split('.')[0]))st.badges.push({t:'Huy hiệu '+u.title.split('.')[0],day:S.day,from:'máy'});
-    if(part===2&&s.m.every(Boolean)){const item=pick(['Vòng cổ vàng','Mũ phi hành gia','Cá hồi hiếm','Bóng len cầu vồng']);if(!st.items.includes(item))st.items.push(item)}
+    if(part===2&&s.m.every(Boolean)){const item=pick(['Vòng cổ vàng','Mũ phi hành gia','Cá hồi hiếm','Bóng len cầu vồng']);if(!st.items.includes(item)){st.items.push(item);if(typeof xuMua==='function')xuMua('items',item)}}
     const k=L1(st).findIndex((_,k)=>!openBefore[k]&&islandOpen(st,k));if(k>=0)scr.unlocked=L1(st)[k].title;
   }else{s.fails[i]++;log(sid,'failed',`${u.title} · màn ${i+1}`,0,{success:false,score:{raw:scr.ok,max:qs.length}})}
   scr.end=true;save();render();

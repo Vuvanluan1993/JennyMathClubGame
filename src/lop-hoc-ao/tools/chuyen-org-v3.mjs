@@ -1,4 +1,4 @@
-// Chuyển dữ liệu trung tâm v2 (một khối JSON org/main.j) sang v3 (nhiều document) — P-06a, 25/10/2026.
+// Chuyển dữ liệu trung tâm v2 (một khối JSON org/main.j) sang v3 (nhiều document) — P-06a, 25/10/2026. P-20: thêm ví vi/{tk} và cfg/shop.
 // Dùng đúng hàm orgV3Tach / orgV3Gop trong bản build (js/core/62-may-chu.js), không chép lại logic.
 //   node src/lop-hoc-ao/tools/chuyen-org-v3.mjs                 → chạy thử với dữ liệu demo: đếm doc, cỡ, kiểm tra chạy lại không đổi
 //   node src/lop-hoc-ao/tools/chuyen-org-v3.mjs org.json [ra.json] → chuyển một file org (dán từ Firestore › org/main › j) ra các doc
@@ -37,6 +37,14 @@ const kq = await p.evaluate(org => {
   const D2 = orgV3Tach(O2);
   const dem = c => Object.keys(D[c]).length, co = x => JSON.stringify(x).length;
   const khac = [];
+  /* P-20: ví xu từng em (xuViTu) và bảng giá cfg/shop (xuBangGia) — cùng hàm QL dùng khi Nâng cấp v3 */
+  const shop = xuBangGia(), vi = {};
+  Object.keys(S.st || {}).forEach(tk => { vi[tk] = xuViTu(S.st[tk]); });
+  ['items', 'pets', 'tudo'].forEach(l => { if (!Object.keys(shop[l]).length) khac.push('cfg/shop.' + l + ' rỗng'); });
+  if (shop.tranMan !== 40) khac.push('tranMan');
+  Object.keys(vi).forEach(tk => { const v = vi[tk]; if (!(v.coins >= 0) || typeof v.items !== 'object') khac.push('vi/' + tk);
+    ['items', 'pets', 'tudo'].forEach(l => Object.keys(v[l]).forEach(id => { if (!(id in shop[l])) khac.push(`vi/${tk}.${l}.${id} không có trong cfg/shop`); })); });
+  D.vi = vi; D.cfg = {shop};
   ['main', 'lop', 'hsdm', 'hoso', 'gv', 'ph'].forEach(c => { if (fbJ3(D[c]) !== fbJ3(D2[c])) khac.push(c); });
   /* các trường app dùng phải còn sau khi gộp */
   ['ten', 'nam', 'gd', 'lop', 'mo', 'gv', 'hs', 'ph', 'phInfo', 'hoso', 'hosoNam', 'nl', 'nk', 'nghi', 'namCu', 'xoa'].forEach(k => { if (O2[k] === undefined) khac.push('thiếu ' + k); });
@@ -44,7 +52,7 @@ const kq = await p.evaluate(org => {
   if (fbJ3(O2.mo) !== fbJ3(Object.fromEntries((org.lop || []).map(l => [l.id, (org.mo || {})[l.id] || {}])))) khac.push('mo');
   if (fbJ3(O2.hoso) !== fbJ3(org.hoso || {})) khac.push('hoso');
   if (fbJ3(O2.phInfo) !== fbJ3(org.phInfo || {})) khac.push('phInfo');
-  return {doc: {main: 1, lop: dem('lop'), hsdm: dem('hsdm'), hoso: dem('hoso'), gv: dem('gv'), ph: dem('ph'), nk: (org.nk || []).length},
+  return {doc: {main: 1, lop: dem('lop'), hsdm: dem('hsdm'), hoso: dem('hoso'), gv: dem('gv'), ph: dem('ph'), nk: (org.nk || []).length, vi: Object.keys(vi).length, shop: Object.keys(shop.items).length + '+' + Object.keys(shop.pets).length + '+' + Object.keys(shop.tudo).length},
     co: {orgCu: co(org), main: co(D.main), lop: co(D.lop), hsdm: co(D.hsdm), hoso: co(D.hoso)}, khac, D};
 }, vao);
 await b.close();

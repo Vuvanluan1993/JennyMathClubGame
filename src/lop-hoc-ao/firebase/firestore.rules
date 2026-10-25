@@ -5,7 +5,7 @@ rules_version = '2';
 // hs/{tk}   : dữ liệu học của em (em tự ghi: chỉ 4 khoá j, ev, lop, t) · hsgv/{tk}: nhận xét, thẻ, ghi chú của cô (cô ghi)
 // asg/{id}  : bài về nhà cô giao, có khoá lop → chỉ cô dạy lớp đó ghi; em, phụ huynh, cô của lớp đó đọc
 // login/{tk}: chỉ có khi quản lý đã đặt lại mật khẩu (email ẩn thay thế). Không liệt kê được, không có uid.
-// Kiểm tra: tools/test/rules.test.js (emulator). LH-H1 đóng khi dữ liệu đã nâng cấp v3 (org/main.v == 3): cô không ghi org/main nữa.
+// vi/{tk}, ev/{tk}/d/{id}, cfg/shop: ví xu theo rules (P-20, xem khối cuối). Kiểm tra: tools/test/rules.test.js (emulator). LH-H1 đóng khi dữ liệu đã nâng cấp v3 (org/main.v == 3): cô không ghi org/main nữa.
 service cloud.firestore {
   match /databases/{db}/documents {
     function signed() { return request.auth != null; }
@@ -86,6 +86,62 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['d', 'ai', 't', 'luc', 'tk'])
         && request.resource.data.t is string && request.resource.data.t.size() < 2000;
       allow update, delete: if false;
+    }
+    // ---------- P-20 (25/10/2026): ví xu, sổ sự kiện, bảng giá — em chỉ cộng từng ít, mua đúng giá ----------
+    // vi/{tk}      {coins:int ≥ 0, items:{mã:số}, pets:{loài:số}, tudo:{mã:số}, m:{loai,id} (món vừa mua), t}
+    //              Em cộng: 0 < delta ≤ cfg/shop.tranMan, cách lần ghi trước ≥ 3 giây, không đụng đồ.
+    //              Em mua: đúng một mã m.id ở nhóm m.loai, mã có trong cfg/shop, số lượng +1, delta == -giá.
+    //              Giảm mạnh gian lận, chưa chặn hẳn (em vẫn có thể cộng 40 xu mỗi 3 giây bằng console); chặn hẳn cần P-22.
+    // ev/{tk}/d/{id} {k, d:int, ref, t}  sổ sự kiện chỉ-thêm (em/QL tạo; không ai sửa, xoá); cô lớp, PH, QL đọc.
+    // cfg/shop     bảng giá (LUAT §6): QL ghi; ai có hồ sơ đọc.
+    function shop() { return get(/databases/$(db)/documents/cfg/shop).data; }
+    function viDang() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['coins', 'items', 'pets', 'tudo', 'm', 't'])
+        && d.keys().hasAll(['coins', 'items', 'pets', 'tudo', 't'])
+        && d.coins is int && d.coins >= 0
+        && d.items is map && d.pets is map && d.tudo is map
+        && d.t == request.time;
+    }
+    function viCach() { return resource.data.t is timestamp && request.time > resource.data.t + duration.value(3, 's'); }
+    function viDelta() { return request.resource.data.coins - resource.data.coins; }
+    function viCong() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['coins', 't'])
+        && viDelta() > 0 && viDelta() <= shop().tranMan;
+    }
+    function viMua() {
+      let m = request.resource.data.m;
+      let loai = m.loai;
+      let id = m.id;
+      let A = resource.data[loai];
+      let B = request.resource.data[loai];
+      return m is map && loai in ['items', 'pets', 'tudo'] && id is string
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['coins', 't', 'm', loai])
+        && id in shop()[loai] && viDelta() == -shop()[loai][id]
+        && B.diff(A).affectedKeys().hasOnly([id]) && B.keys().hasAll(A.keys())
+        && B[id] is int && B[id] == ((id in A) ? A[id] + 1 : 1);
+    }
+    match /vi/{tk} {
+      allow read: if isSelf(tk) || isQL() || gvLop(tk) || isPH(tk);
+      allow create: if isQL() || (isSelf(tk) && viDang() && request.resource.data.coins == 0
+        && request.resource.data.items == {} && request.resource.data.pets == {} && request.resource.data.tudo == {});
+      allow update: if isQL() || (isSelf(tk) && viDang() && viCach() && (viCong() || viMua()));
+      allow delete: if isQL();
+    }
+    match /ev/{tk}/d/{id} {
+      allow read: if isSelf(tk) || isQL() || gvLop(tk) || isPH(tk);
+      allow create: if (isSelf(tk) || isQL())
+        && request.resource.data.keys().hasOnly(['k', 'd', 'ref', 't'])
+        && request.resource.data.keys().hasAll(['k', 'd', 'ref', 't'])
+        && request.resource.data.k in ['man', 'tl', 'bvn', 'game', 'mua', 'ban', 'ql', 'khac']
+        && request.resource.data.d is int && request.resource.data.d >= -400 && request.resource.data.d <= 400
+        && request.resource.data.ref is string && request.resource.data.ref.size() < 200
+        && request.resource.data.t == request.time;
+      allow update, delete: if false;
+    }
+    match /cfg/{id} {
+      allow read: if hasMe();
+      allow write: if isQL();
     }
     match /users/{uid} {
       // LH-H2: chỉ chính chủ hoặc QL; GV không còn đọc hồ sơ người khác

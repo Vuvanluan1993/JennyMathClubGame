@@ -1,4 +1,4 @@
-// Kiểm tra firebase/firestore.rules trên Firebase emulator (P-04, 25/10/2026). Không cần mạng, không đụng dữ liệu thật.
+// Kiểm tra firebase/firestore.rules trên Firebase emulator (P-04, 25/10/2026; P-20 ví xu ca 35–48, thêm ~15 giây chờ luật 3 giây). Không cần mạng, không đụng dữ liệu thật.
 //   node src/lop-hoc-ao/tools/test/rules.test.js
 //     → tự bật emulator (cần Java 11+ và firebase-tools); không có Java thì in "BỎ QUA" và thoát 0 (máy thầy chưa có Java).
 //   Chạy thẳng trong emulator:
@@ -31,7 +31,7 @@ if (!process.env.FIRESTORE_EMULATOR_HOST) {
 
 (async () => {
 const {initializeTestEnvironment, assertSucceeds, assertFails} = await import('@firebase/rules-unit-testing');
-const {doc, getDoc, setDoc, updateDoc, deleteDoc, collection, getDocs, query, where, serverTimestamp} = await import('firebase/firestore');
+const {doc, getDoc, setDoc, updateDoc, deleteDoc, collection, getDocs, query, where, serverTimestamp, Timestamp, writeBatch} = await import('firebase/firestore');
 
 const [host, port] = process.env.FIRESTORE_EMULATOR_HOST.split(':');
 const env = await initializeTestEnvironment({projectId: 'demo-jenny', firestore: {rules: readFileSync(RULES, 'utf8'), host, port: +port}});
@@ -62,6 +62,11 @@ await env.withSecurityRulesDisabled(async c => {
   await setDoc(doc(db, 'ph/ph1'), {ten: 'Phụ huynh Em 1', dt: '0912345678', mail: 'ph1@gmail.com', t: T});
   await setDoc(doc(db, 'gv/co1'), {ten: 'Cô 1', tk: 'co1', t: T});
   await setDoc(doc(db, 'nk/n1'), {d: 1, ai: 'Quản lý trung tâm', t: 'Tạo lớp 1A', luc: T});
+  /* P-20: ví xu, bảng giá. vi/em1.t đặt lùi 10 giây để lần ghi đầu qua được luật "cách 3 giây" */
+  await setDoc(doc(db, 'cfg/shop'), {tranMan: 40, items: {palm: 40, seed: 5, 'game:bowl': 150, ve: 60, 'Vòng cổ vàng': 0}, pets: {chick: 150, turtle: 250}, tudo: {s_lime: 120, bow: 60}, t: T});
+  await setDoc(doc(db, 'vi/em1'), {coins: 500, items: {seed: 2}, pets: {}, tudo: {}, t: Timestamp.fromMillis(Date.now() - 10000)});
+  await setDoc(doc(db, 'vi/em2'), {coins: 10, items: {}, pets: {}, tudo: {}, t: Timestamp.fromMillis(Date.now() - 10000)});
+  await setDoc(doc(db, 'ev/em1/d/e1'), {k: 'man', d: 5, ref: 'j1', t: T});
 });
 
 const as = uid => env.authenticatedContext(uid).firestore();
@@ -165,6 +170,57 @@ ca('34 org/main v3 (v == 3): cô KHÔNG còn sửa được j; QL vẫn ghi', 'c
 ca('22 QL chuyển em1 sang 1B rồi em ghi lop = 1B ĐƯỢC', 'cho', async () => {
   await updateDoc(doc(ql, 'org/main'), {gd: {em1: '1B', em2: '2A'}});
   await setDoc(doc(hs1, 'hs/em1'), hsDoc({lop: '1B'})); });
+
+/* P-20 — ví xu vi/{tk}, sổ ev/{tk}/d, bảng giá cfg/shop. Ca 35–48 chạy theo thứ tự; giữa hai lần ghi vi/em1 phải chờ > 3 giây (luật viCach). */
+const cho3s = () => new Promise(ok => setTimeout(ok, 3200));
+const viSet = (c, tk, them) => setDoc(doc(c, 'vi/' + tk), Object.assign({coins: 500, items: {seed: 2}, pets: {}, tudo: {}, t: serverTimestamp()}, them));
+ca('35 vi: em đọc ví mình, cô lớp 1A, phụ huynh, QL đọc ĐƯỢC; cô lớp 2A, em khác KHÔNG; ai có hồ sơ đọc cfg/shop', 'cho', async () => {
+  await updateDoc(doc(ql, 'org/main'), {gd: {em1: '1A', em2: '2A'}}); /* ca 22 đã chuyển em1 sang 1B */
+  await getDoc(doc(hs1, 'vi/em1')); await getDoc(doc(gv1, 'vi/em1')); await getDoc(doc(ph1, 'vi/em1')); await getDoc(doc(ql, 'vi/em1'));
+  await assertFails(getDoc(doc(gv2, 'vi/em1'))); await assertFails(getDoc(doc(hs2, 'vi/em1')));
+  await getDoc(doc(hs1, 'cfg/shop')); await assertFails(getDoc(doc(la, 'cfg/shop'))); await assertFails(setDoc(doc(hs1, 'cfg/shop'), {tranMan: 9999})); });
+ca('36 vi: em cộng 40 xu (= tranMan) với t = serverTimestamp, cách lần trước > 3 giây ĐƯỢC (500 → 540)', 'cho', () => viSet(hs1, 'em1', {coins: 540}));
+ca('37 vi: em cộng lần nữa ngay (chưa đủ 3 giây) BỊ CHẶN', 'cam', () => viSet(hs1, 'em1', {coins: 580}));
+ca('38 vi: em cộng 41 xu (quá tranMan) BỊ CHẶN; cộng 1 000 000 BỊ CHẶN; bớt xu không mua gì BỊ CHẶN', 'cam', async () => {
+  await cho3s();
+  await assertFails(viSet(hs1, 'em1', {coins: 581})); await assertFails(viSet(hs1, 'em1', {coins: 1000000})); await viSet(hs1, 'em1', {coins: 500}); });
+ca('39 vi: t không phải serverTimestamp (giờ máy em) BỊ CHẶN; thiếu khoá / thêm khoá lạ BỊ CHẶN', 'cam', async () => {
+  await assertFails(viSet(hs1, 'em1', {coins: 560, t: Timestamp.now()}));
+  await assertFails(setDoc(doc(hs1, 'vi/em1'), {coins: 560, t: serverTimestamp()}));
+  await setDoc(doc(hs1, 'vi/em1'), {coins: 560, items: {seed: 2}, pets: {}, tudo: {}, t: serverTimestamp(), la: 1}); });
+ca('40 vi: em vừa cộng xu vừa thêm đồ BỊ CHẶN', 'cam', () => viSet(hs1, 'em1', {coins: 560, items: {seed: 2, palm: 1}}));
+ca('41 vi: em mua Cây dừa (palm 40 xu) đúng giá, số lượng 1, có m ĐƯỢC (540 → 500)', 'cho', async () => {
+  await cho3s(); await viSet(hs1, 'em1', {coins: 500, items: {seed: 2, palm: 1}, m: {loai: 'items', id: 'palm'}}); });
+ca('42 vi: mua món không có trong cfg/shop BỊ CHẶN', 'cam', async () => {
+  await cho3s(); await viSet(hs1, 'em1', {coins: 400, items: {seed: 2, palm: 1, rong: 1}, m: {loai: 'items', id: 'rong'}}); });
+ca('43 vi: mua trả sai giá (palm 40 mà chỉ trừ 1) BỊ CHẶN; trả giá đúng nhưng ghi m sai món BỊ CHẶN', 'cam', async () => {
+  await assertFails(viSet(hs1, 'em1', {coins: 499, items: {seed: 2, palm: 2}, m: {loai: 'items', id: 'palm'}}));
+  await viSet(hs1, 'em1', {coins: 460, items: {seed: 2, palm: 2}, m: {loai: 'items', id: 'seed'}}); });
+ca('44 vi: mua một lần hai món, hoặc tăng số lượng +2 BỊ CHẶN', 'cam', async () => {
+  await assertFails(viSet(hs1, 'em1', {coins: 455, items: {seed: 3, palm: 2}, m: {loai: 'items', id: 'palm'}}));
+  await viSet(hs1, 'em1', {coins: 460, items: {seed: 2, palm: 3}, m: {loai: 'items', id: 'palm'}}); });
+ca('45 vi: mua thú cưng chick 150 ĐƯỢC (500 → 350); mua khi không đủ xu (coins âm) BỊ CHẶN', 'cho', async () => {
+  await viSet(hs1, 'em1', {coins: 350, items: {seed: 2, palm: 1}, pets: {chick: 1}, m: {loai: 'pets', id: 'chick'}});
+  await assertFails(viSet(hs2, 'em2', {coins: -140, items: {}, pets: {chick: 1}, tudo: {}, m: {loai: 'pets', id: 'chick'}})); });
+ca('46 vi: em tạo ví mới chỉ với 0 xu, đồ rỗng ĐƯỢC; tạo ví có sẵn xu BỊ CHẶN; QL đặt xu tuỳ ý ĐƯỢC', 'cho', async () => {
+  await assertFails(setDoc(doc(hs2, 'vi/em9'), {coins: 100, items: {}, pets: {}, tudo: {}, t: serverTimestamp()}));
+  await env.withSecurityRulesDisabled(c => setDoc(doc(c.firestore(), 'users/hs9'), {role: 'hs', tk: 'em9', ten: 'Em 9', khoi: 1}));
+  await setDoc(doc(as('hs9'), 'vi/em9'), {coins: 0, items: {}, pets: {}, tudo: {}, t: serverTimestamp()});
+  await setDoc(doc(ql, 'vi/em2'), {coins: 10000, items: {}, pets: {}, tudo: {}, t: serverTimestamp()}); });
+ca('47 ev: em thêm dòng k=man d=5 với t = serverTimestamp ĐƯỢC; cùng một batch với vi ĐƯỢC; cô lớp, PH, QL đọc sổ', 'cho', async () => {
+  await setDoc(doc(hs1, 'ev/em1/d/e2'), {k: 'man', d: 5, ref: 'j1', t: serverTimestamp()});
+  await cho3s();
+  const b = writeBatch(hs1); b.set(doc(hs1, 'vi/em1'), {coins: 360, items: {seed: 2, palm: 1}, pets: {chick: 1}, tudo: {}, m: {loai: 'pets', id: 'chick'}, t: serverTimestamp()});
+  b.set(doc(hs1, 'ev/em1/d/e3'), {k: 'man', d: 10, ref: 'j1', t: serverTimestamp()}); await b.commit();
+  await getDocs(collection(gv1, 'ev/em1/d')); await getDocs(collection(ph1, 'ev/em1/d')); await getDocs(query(collection(ql, 'ev/em1/d'), where('t', '>=', Timestamp.fromMillis(0)))); });
+ca('48 ev: sửa, xoá dòng BỊ CHẶN (cả QL); k lạ, d quá 400, t giờ máy, ghi sổ em khác, cô lớp 2A đọc đều BỊ CHẶN', 'cam', async () => {
+  await assertFails(updateDoc(doc(hs1, 'ev/em1/d/e1'), {d: 400})); await assertFails(deleteDoc(doc(hs1, 'ev/em1/d/e1')));
+  await assertFails(updateDoc(doc(ql, 'ev/em1/d/e1'), {d: 400})); await assertFails(deleteDoc(doc(ql, 'ev/em1/d/e1')));
+  await assertFails(setDoc(doc(hs1, 'ev/em1/d/e4'), {k: 'hack', d: 5, ref: '', t: serverTimestamp()}));
+  await assertFails(setDoc(doc(hs1, 'ev/em1/d/e5'), {k: 'man', d: 401, ref: '', t: serverTimestamp()}));
+  await assertFails(setDoc(doc(hs1, 'ev/em1/d/e6'), {k: 'man', d: 5, ref: '', t: Timestamp.now()}));
+  await assertFails(setDoc(doc(hs1, 'ev/em2/d/e7'), {k: 'man', d: 5, ref: '', t: serverTimestamp()}));
+  await getDocs(collection(gv2, 'ev/em1/d')); });
 
 let sai = 0;
 for (const {ten, mong, f} of CA) {
