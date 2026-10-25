@@ -1,8 +1,24 @@
 # Kiến trúc
 
-Ứng dụng là **một file HTML duy nhất** (không cần máy chủ), ghép từ nhiều file nguồn bằng `tools/build.py`.
-Mọi file JS chạy chung một phạm vi toàn cục, theo đúng thứ tự trong `app.template.html`, nên file sau dùng được hàm/hằng của file trước.
+Ứng dụng ghép từ nhiều file nguồn bằng **Vite** (`npm run build`, từ P-14a; `python3 tools/build.py` vẫn chạy được và gọi lệnh này).
+Mọi file JS nối thành **một** `<script>` thường (không phải module), chạy chung một phạm vi toàn cục, theo đúng thứ tự trong `app.template.html`, nên file sau dùng được hàm/hằng của file trước.
 Lưu ý: khai báo `function` trùng tên thì bản viết sau thắng (một số màn hình đã được viết lại theo cách này).
+
+## Dựng bản (Vite, P-14a — 25/10/2026)
+
+| Lệnh | Làm gì |
+|---|---|
+| `npm run build` (= `vite build src/lop-hoc-ao`; `python3 tools/build.py` gọi lệnh này, tự `npm ci` nếu chưa có `node_modules`) | Ra `dist/` rồi chép 4 trang + `assets/` sang `games/lop-hoc-ao/` |
+| `npm run dev` (= `vite src/lop-hoc-ao`) | http://localhost:5173/JennyMathClubGame/games/lop-hoc-ao/ — dựng lại mỗi lần tải trang (một file, không hash); `/JennyMathClubGame/…` phục vụ file tĩnh của kho (chữ tự host…). Sửa file rồi tải lại trang |
+| `node tools/vite/so-voi-python.mjs` | So `vai.js` với `_student.py`/`_teacher.py` (phải giống từng byte). Chạy lại sau mỗi lần rebase có Python mới |
+
+- `vite.config.js`: 5 entry (`hoc-sinh` → `index.html`, `giao-vien/`, `phu-huynh/`, `quan-ly/`, `demo` → `demo.html`), `base: '/JennyMathClubGame/games/lop-hoc-ao/'`. Trang là ảo: không có file `.html` trên đĩa.
+- `tools/vite/noi-file.js` (plugin): đọc `app.template.html`, nối `/*@include …*/` theo đúng thứ tự (khối `<style>` và khối `<script>` chỉ gồm dòng include, mỗi loại đúng 1 khối — sai thì build dừng), thay `__APP_VER__` (ngày commit · sha). Từ bản đầy đủ, `vai.js` dựng từng trang; plugin tách khối CSS → `assets/lop-hoc-ao-[hash].css` (chung 5 trang) và khối JS → `assets/<trang>-[hash].js`. Mã JS là asset: Rollup không đọc, không đổi tên, không minify.
+- Giữ y bản cũ: script nhỏ trong `<head>` (`data-theme=light`, chữ tự host P-08, CSP, referrer) vẫn inline, chạy **trước** CSS; `<link>` CSS và `<script src>` đứng đúng chỗ khối cũ (thứ tự CSS, giờ chạy JS không đổi). Mỗi trang JS vẫn là **một** script (tách đôi sẽ đổi hoisting của hàm trùng tên). Khoá `localStorage` không đổi (mã giống từng byte).
+- Đường dẫn asset ghi **tương đối** (`assets/…`, `../assets/…`): cùng một bản chạy trên Pages (dưới `base`), ở máy chủ thử phục vụ gốc kho tại `/` (`npm test`) và trong `dist/`.
+- `dist/lop-hoc-ao-jenny.html`: bản đầy đủ **một file** (CSS/JS inline, không doctype) — y build cũ; bộ kiểm tra §7 và Artifact dùng file này. `dist/demo.html` = cùng nội dung nhưng CSS/JS ra file có hash.
+- `games/lop-hoc-ao/assets/` sinh ra mỗi lần build (xoá cũ trước), có `.gitignore` tự sinh (`*`) nên không vào git.
+- So với build Python (25/10/2026, tip 78be60f): 4 trang dạng một file giống từng byte; ảnh 4 trang × 4 khổ (320/375/414/900) giống từng byte; `demo.html` ≤ 0,001 %.
 
 ## Thứ tự nạp (rút gọn)
 
@@ -51,7 +67,7 @@ Kích thước chữ phương án tự co cho vừa nút và đồng đều (`op
 
 ## Bản học sinh
 
-`tools/_student.py` lấy bản đầy đủ rồi: đổi khoá lưu theo tài khoản, thêm màn đăng nhập (mật khẩu băm SHA-256),
+`tools/vite/vai.js` (`hocSinh`; trước P-14a là `tools/_student.py`, còn giữ để so) lấy bản đầy đủ rồi: đổi khoá lưu theo tài khoản, thêm màn đăng nhập (mật khẩu băm SHA-256),
 ẩn vai trò giáo viên/phụ huynh và thanh demo, tính "ngày học" theo lịch (từ 05/09/2026).
 
 ## Chơi thêm (lớp 1–5)

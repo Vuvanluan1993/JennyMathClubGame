@@ -1,0 +1,50 @@
+if(!load())fresh();
+const TRANG='__TRANG__',TRANG_VAI=__VAI__;window.TRANG=TRANG;document.body.classList.add('trang-'+TRANG);
+/* ===== Trang giáo viên: màn mật khẩu ===== */
+const GV_H='__H__';
+async function gvSha(s){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function gvOpen(){const g=document.getElementById('gvGate');if(g)g.remove();try{gvGrade=1}catch(e){}document.body.classList.remove('locked');try{setRole(TRANG)}catch(e){role=TRANG;go({k:'home'})}render()}
+async function gvLogin(e){e.preventDefault();const p=document.getElementById('gvP').value,m=document.getElementById('gvMsg');let ok=false;try{ok=(await gvSha('jennygv:'+p))===GV_H}catch(err){m.textContent='Trình duyệt không hỗ trợ. Hãy mở bằng Chrome, Edge hoặc Safari mới.';return}
+ if(!ok){m.textContent='Mật khẩu chưa đúng.';return}try{sessionStorage.setItem('jennyGV_'+TRANG,'1')}catch(err){}gvOpen()}
+document.body.insertAdjacentHTML('afterbegin',`<div id="gvGate" class="gvgate"><div class="gvcard"><div class="gvhd">${jenny(56)}<div><h1>__TIEUDE__</h1><p>Lớp học ảo Jenny · Clb Học Toán cùng Jenny</p></div></div>
+ <form onsubmit="gvCloudLogin(event)" class="gvf"><label for="gvU">Tên đăng nhập</label><input id="gvU" autocapitalize="off" spellcheck="false" autocomplete="username" required>
+ <label for="gvPw">Mật khẩu</label><input id="gvPw" type="password" autocomplete="current-password" required>
+ <button class="gobtn" type="submit">Đăng nhập</button><p id="gvMsg2" class="gvmsg" role="alert"></p></form>
+ <details class="gvd"><summary>Xem bản demo (dữ liệu mẫu)</summary><form onsubmit="gvLogin(event)" class="gvf"><label for="gvP">Mật khẩu bản demo</label><input id="gvP" type="password" autocomplete="off">
+  <button class="gobtn" type="submit">Vào bản demo</button><p id="gvMsg" class="gvmsg" role="alert"></p><p class="gvnote">Bản demo dùng dữ liệu mẫu, chỉ lưu trên máy này.</p></form></details>
+ ${TRANG==='ql'?`<details class="gvd"><summary>Thiết lập lần đầu (tạo tài khoản quản lý)</summary><form onsubmit="gvSetup(event)" class="gvf"><p class="gvnote">Chỉ làm một lần khi trung tâm chưa có quản lý.</p>
+  <label for="suN">Họ tên</label><input id="suN" required maxlength="40"><label for="suU">Tên đăng nhập</label><input id="suU" autocapitalize="off" spellcheck="false" required maxlength="24">
+  <label for="suP">Mật khẩu (ít nhất 6 kí tự)</label><input id="suP" type="password" required minlength="6"><button class="gobtn" type="submit">Tạo tài khoản quản lý</button><p id="suMsg" class="gvmsg" role="alert"></p></form></details>`:''}
+ <p class="gvnote">Trang khác: ${[['gv','Giáo viên','giao-vien'],['ph','Phụ huynh','phu-huynh'],['ql','Quản lý','quan-ly']].filter(x=>x[0]!==TRANG).map(x=>`<a href="../${x[2]}/">${x[1]}</a>`).join(' · ')} · <a href="../">Học sinh</a></p></div></div>`);
+const TRANG_TEN={gv:'giáo viên',ph:'phụ huynh',ql:'quản lý',hs:'học sinh'},TRANG_LINK={gv:'../giao-vien/',ph:'../phu-huynh/',ql:'../quan-ly/',hs:'../'};
+function gvSaiTrang(m){const r=CLOUD.me.role;m.innerHTML=`Đây là tài khoản ${TRANG_TEN[r]||r}. Hãy vào <a href="${TRANG_LINK[r]||'../'}">trang ${TRANG_TEN[r]||''}</a>.`}
+const PW_MAT='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>',PW_AN='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg>';
+function pwMat(root){(root||document).querySelectorAll('input[type=password]').forEach(i=>{if(i.parentElement.classList.contains('pwbox'))return;const w=document.createElement('span');w.className='pwbox';i.parentNode.insertBefore(w,i);w.appendChild(i);
+ const b=document.createElement('button');b.type='button';b.className='pweye';b.setAttribute('aria-label','Hiện mật khẩu');b.innerHTML=PW_MAT;
+ b.onclick=()=>{const hien=i.type==='password';i.type=hien?'text':'password';b.innerHTML=hien?PW_AN:PW_MAT;b.setAttribute('aria-label',hien?'Ẩn mật khẩu':'Hiện mật khẩu');i.focus()};w.appendChild(b)})}
+pwMat(document.getElementById('gvGate'));
+async function gvCloudOpen(){await fbGvBoot();const g=document.getElementById('gvGate');if(g)g.remove();document.body.classList.remove('locked');go({k:'home'})}
+async function gvCloudLogin(e){e.preventDefault();const m=document.getElementById('gvMsg2');m.textContent='Đang đăng nhập…';
+ try{await fbDangNhap(document.getElementById('gvU').value.trim().toLowerCase(),document.getElementById('gvPw').value,true);
+  if(!TRANG_VAI.includes(CLOUD.me.role)){gvSaiTrang(m);try{await FB.auth.signOut()}catch(x){}CLOUD=null;return}
+  m.textContent='';await gvCloudOpen()}catch(err){CLOUD=null;m.textContent=fbLoi(err)}}
+async function gvSetup(e){e.preventDefault();const m=document.getElementById('suMsg'),tk=document.getElementById('suU').value.trim().toLowerCase();
+ if(!fbTkOk(tk)){m.textContent='Tên đăng nhập 3–24 kí tự: chữ thường không dấu, số, dấu chấm.';return}m.textContent='Đang tạo…';
+ try{await fbThietLap(document.getElementById('suN').value.trim(),tk,document.getElementById('suP').value);m.textContent='';await gvCloudOpen()}catch(err){CLOUD=null;m.textContent=fbLoi(err)}}
+document.head.insertAdjacentHTML('beforeend',`<style>.gvgate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:16px;background:#12B5E8}
+.gvcard{width:min(400px,100%);max-height:calc(100vh - 32px);overflow:auto;background:#fff;color:#1F2A5A;padding:18px;box-shadow:var(--f2),0 6px 0 0 #1F2A5A;display:flex;flex-direction:column;gap:8px}
+.gvhd{display:flex;gap:10px;align-items:center}.gvhd h1{margin:0;font-size:28px}.gvhd p{margin:0;font-size:13px;color:#3D4A70}
+.gvf{display:flex;flex-direction:column;gap:8px}.gvd{border-top:1px solid #DDE3F0;padding-top:8px}.gvd summary{cursor:pointer;font-size:14px;color:#1F2A5A;font-weight:600}.gvd .gvf{margin-top:8px}
+.gvcard{color-scheme:light}
+.gvcard input{padding:10px!important;border:0!important;border-radius:0!important;box-shadow:var(--f2)!important;font:inherit!important;font-size:17px!important;background:#fff!important;color:#1F2A5A!important;caret-color:#1F2A5A;width:100%;box-sizing:border-box}
+.gvcard input:focus{outline:3px solid #FCB40C!important;outline-offset:1px}
+.gvcard label{color:#1F2A5A!important}.gvcard a{color:#0068B5!important}.gvcard .jav{background:#FFF4D6!important}
+.gvcard .gobtn{background:#0079C1!important;color:#fff!important}
+.pwbox{position:relative;display:block}.pwbox input{padding-right:48px!important}
+.pweye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:40px;height:36px;border:0;background:transparent;cursor:pointer;display:grid;place-items:center;color:#1F2A5A;padding:0}
+.pweye:focus-visible{outline:2px solid #0079C1}.gvmsg{color:#B8320F;margin:0;min-height:1em;font-size:14px}.gvnote{font-size:12px;color:#3D4A70;margin:0}
+body.locked{overflow:hidden}</style>`);
+document.body.classList.add('locked');
+{let ok=false;try{ok=sessionStorage.getItem('jennyGV_'+TRANG)==='1'}catch(e){}if(ok)gvOpen();else{render();setTimeout(()=>{const i=document.getElementById('gvU');if(i)i.focus()},50);
+  fbInit().then(()=>{const off=FB.auth.onAuthStateChanged(async u=>{off();if(!u||CLOUD)return;try{await fbNapMe(u);if(!TRANG_VAI.includes(CLOUD.me.role)){const m=document.getElementById('gvMsg2');if(m){gvSaiTrang(m);m.insertAdjacentHTML('beforeend',' <button type="button" class="btn sm" onclick="FB.auth.signOut().then(()=>location.reload())">Đăng xuất tài khoản này</button>')}CLOUD=null;return}await gvCloudOpen()}catch(e){CLOUD=null}})}).catch(()=>{})}}
+</script>

@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 25/10/2026 — Dựng bản bằng Vite, bọc mã cũ (P-14a, RF1)
+- `npm run build` = `vite build src/lop-hoc-ao` (`src/lop-hoc-ao/vite.config.js`, 5 entry: học sinh, giáo viên, phụ huynh, quản lý, demo; `base` `/JennyMathClubGame/games/lop-hoc-ao/`). `npm run dev` = `vite src/lop-hoc-ao`. `python3 tools/build.py` vẫn dùng được: gọi `npm run build` (tự `npm ci` nếu thiếu). Vite 8.3.4 ghim bản.
+- Plugin `tools/vite/noi-file.js` nối file theo đúng thứ tự `app.template.html`, giữ phạm vi toàn cục (một `<script>` thường mỗi trang); CSS/JS ra `dist/assets/*-[hash].css|js`, chép sang `games/lop-hoc-ao/assets/` (tự có `.gitignore`). `dist/lop-hoc-ao-jenny.html` vẫn là bản một file như cũ.
+- `tools/vite/vai.js` thay `_student.py` và `_teacher.py` (cùng các phép thay, có kiểm tra chuỗi phải có); đoạn mã chèn lấy nguyên văn vào `tools/vite/vai/`. `node tools/vite/so-voi-python.mjs`: 4 trang giống bản Python từng byte. Hai file Python còn giữ (để so khi rebase), build không gọi nữa.
+- Giao diện, khoá lưu, CSP, chữ tự host không đổi: ảnh 4 trang × 4 khổ giống từng byte với bản trước; `npm test` ĐẠT.
+
 ## 25/10/2026 — CSP, chữ tự host, SRI Firebase, bỏ giọng Google (P-08, FE2)
 - Mọi trang (14 game, trang chủ, Lớp học ảo) có `<meta http-equiv="Content-Security-Policy">` và `<meta name="referrer" content="no-referrer">`; trang Lớp học ảo cho phép thêm Firebase (gstatic, *.googleapis.com, *.firebaseio.com, wss, firebaseapp.com).
 - Chữ Baloo 2, Nunito, VT323, Be Vietnam Pro, Lexend tự host ở `assets/fonts/` (48 file woff2 ≈ 1 MB, subset vietnamese + latin-ext + latin đúng như Google đưa, `font-display: swap`; tải lại bằng `assets/fonts/tai-font.py`); không trang nào gọi Google Fonts nữa. So ảnh và kiểu hiển thị 4 trang × 4 khổ với bản trước P-08: giống hệt (chỉ khác ô giờ build). `80-phong-cach-lms.js` không chèn Lexend từ Google.

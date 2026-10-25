@@ -1,0 +1,5 @@
+{
+  "type": "module",
+  "private": true,
+  "description": "Công cụ Vite của Lớp học ảo (ES module): noi-file.js, vai.js, so-voi-python.mjs"
+}
