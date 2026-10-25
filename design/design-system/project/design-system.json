@@ -1,0 +1,78 @@
+{
+ "v": 3,
+ "layout": "files",
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-10-25T13:31:51Z"
+ },
+ "title": "Jenny",
+ "namespace": "Jenny",
+ "libraries": [],
+ "sections": {},
+ "groups": [
+  "Anh goc"
+ ],
+ "assetGroups": {
+  "Anh goc": {
+   "name": "Anh goc",
+   "tile": "m",
+   "order": [
+    "01-ban-do-375.png",
+    "02-man-choi-375.png",
+    "03-phong-hoc-375.png",
+    "04-lop-cua-toi-375.png",
+    "05-quan-ly-4-nut-375.png",
+    "06-dang-nhap-375.png"
+   ],
+   "files": {
+    "01-ban-do-375.png": {
+     "name": "01-ban-do-375.png",
+     "blob": "beaec27a161b21113fac9cca4a1eea44",
+     "size": 40995,
+     "type": "image/png"
+    },
+    "02-man-choi-375.png": {
+     "name": "02-man-choi-375.png",
+     "blob": "7d82cfeb46a3a59f85fd352d69219b9f",
+     "size": 10424,
+     "type": "image/png"
+    },
+    "03-phong-hoc-375.png": {
+     "name": "03-phong-hoc-375.png",
+     "blob": "d6f87d1907357ff0376068ec58c2f763",
+     "size": 41768,
+     "type": "image/png"
+    },
+    "04-lop-cua-toi-375.png": {
+     "name": "04-lop-cua-toi-375.png",
+     "blob": "7cfda70240e44e937655222a7b1b8ef7",
+     "size": 51405,
+     "type": "image/png"
+    },
+    "05-quan-ly-4-nut-375.png": {
+     "name": "05-quan-ly-4-nut-375.png",
+     "blob": "a11f527f4fc87224bfe6aea2b391969c",
+     "size": 53754,
+     "type": "image/png"
+    },
+    "06-dang-nhap-375.png": {
+     "name": "06-dang-nhap-375.png",
+     "blob": "e3916ca55ad7fb78141146ccaa13b6b3",
+     "size": 31903,
+     "type": "image/png"
+    }
+   }
+  }
+ },
+ "blobs": {},
+ "docs": {
+  "readme": "project/README.md",
+  "sections": []
+ },
+ "lastChange": {
+  "by": "thầy Luân",
+  "at": "2026-10-25T13:31:51Z",
+  "via": "Claude Code · phiên DS (P-18)",
+  "note": "Tạo mới từ design/tokens.json (FE1 419ae20): 96 token, 12 thành phần, 6 mẫu trang"
+ }
+}

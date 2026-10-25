@@ -9,6 +9,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Mỗi lần xong việc: build → test → cập nhật `CHANGELOG.md`, `TASKS.md` → commit, push → đăng lại artifact bản đầy đủ.
 
 ## 2. Phong cách
+- **Màn hình mới vẽ từ design system Jenny** (Claude Design, link trong `design/README.md`); token ở `design/tokens.json`; hai theme Pixel (học sinh) và Classroom (GV/PH/QL) cùng bảng màu, khác họ chữ và bo góc (25/10/2026).
 - Giữ cỡ ô pixel hiện tại (Jenny 16 ô ngang) — thầy không chọn bản mịn (24/10).
 - Nhân vật: **Bạn nữ (Jenny)** và **Bạn nam**, theo **giới tính quản lý nhập** khi tạo/sửa tài khoản; học sinh không tự chọn (chưa nhập = bạn nữ). Cửa hàng có đồ riêng cho từng bạn và đồ chung (24/10).
 - **Pixel ở mọi nơi**: khung khía góc (`var(--f2)`), bóng đổ cứng, chữ VT323 cho tiêu đề/nút, Be Vietnam Pro cho chữ thường; bảng màu logo Clb (`PXC` trong `22-do-hoa-pixel…`).
