@@ -1,5 +1,13 @@
 # Lịch sử thay đổi
 
+## 25/10/2026 — CSP, chữ tự host, SRI Firebase, bỏ giọng Google (P-08, FE2)
+- Mọi trang (14 game, trang chủ, Lớp học ảo) có `<meta http-equiv="Content-Security-Policy">` và `<meta name="referrer" content="no-referrer">`; trang Lớp học ảo cho phép thêm Firebase (gstatic, *.googleapis.com, *.firebaseio.com, wss, firebaseapp.com).
+- Chữ Baloo 2, Nunito, VT323, Be Vietnam Pro, Lexend tự host ở `assets/fonts/` (48 file woff2 ≈ 1 MB, subset vietnamese + latin-ext + latin đúng như Google đưa, `font-display: swap`; tải lại bằng `assets/fonts/tai-font.py`); không trang nào gọi Google Fonts nữa. So ảnh và kiểu hiển thị 4 trang × 4 khổ với bản trước P-08: giống hệt (chỉ khác ô giờ build). `80-phong-cach-lms.js` không chèn Lexend từ Google.
+- `62-may-chu.js`: 3 file Firebase compat 10.12.2 tải kèm `integrity` + `crossorigin` (hash ở `docs/SRI.md`).
+- Mầm non, Thám tử, Tiểu học: bỏ `translate_tts` (nội dung câu không gửi ra Google); chỉ `speechSynthesis`; máy không có giọng tiếng Việt thì báo.
+- Bebras kit: tham số `?n=` ép thành số. Trang chủ bỏ `document.write`, dùng `games.js?v=__SHA__` (CI điền ở P-02).
+- Mới `tools/test/khong-goi-ngoai.mjs` (trong `npm test`): mở 20 trang, kiểm không yêu cầu ra ngoài danh sách cho phép, không lỗi CSP/JS, không 404.
+
 ## 25/10/2026 — Token thiết kế chung (P-03, FE1)
 - Mới `design/tokens.json` (nguồn) → `design/tokens.css` sinh bằng `tools/tokens.py` (`--check` để so). 102 token `--jc-*`: 25 màu logo (= PXC), bộ app/pixel/trang chủ/LMS, họ chữ, khoảng cách, cỡ chạm, bo góc, khung pixel.
 - `app.css` (`:root` + `body.px`), `games/tu-duy-bebras/_kit/kit.css`, `index.html` giữ tên biến cũ (`--ink`, `--sea`, `--paper`…) nhưng trỏ sang `--jc-*`; `app.template.html` include `tokens.css` trước `app.css`. Giao diện không đổi (so kiểu hiển thị 4 trang × 4 khổ: 0 khác).
