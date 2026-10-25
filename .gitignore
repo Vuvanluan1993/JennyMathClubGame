@@ -1,0 +1,10 @@
+# Bản build tạm (bản đầy đủ có giáo viên/phụ huynh/demo), tạo lại bằng python3 tools/build.py
+src/lop-hoc-ao/dist/
+
+# Python / Node
+__pycache__/
+*.pyc
+node_modules/
+
+# macOS
+.DS_Store
