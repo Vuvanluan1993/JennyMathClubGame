@@ -16,9 +16,11 @@ const FB_DIR = path.resolve(path.dirname(TOI), '..', '..', 'firebase');
 const RULES = path.join(FB_DIR, 'firestore.rules');
 
 if (!process.env.FIRESTORE_EMULATOR_HOST) {
+  // firebase-tools (từ 14.x) đòi JDK 21+; thiếu hoặc cũ hơn thì bỏ qua có báo (CI cài Java 21 bằng actions/setup-java)
   const java = spawnSync('java', ['-version'], {encoding: 'utf8'});
-  if (java.status !== 0) {
-    console.log('Rules: BỎ QUA — máy này không có Java nên không bật được Firebase emulator (CI sẽ chạy ca này).');
+  const ver = java.status === 0 ? (((java.stderr || '') + (java.stdout || '')).match(/version "(\d+)/) || [])[1] : null;
+  if (!ver || +ver < 21) {
+    console.log(`Rules: BỎ QUA — ${ver ? 'Java ' + ver + ' cũ hơn 21' : 'máy này không có Java'} nên không bật được Firebase emulator (CI cài Java 21 và chạy ca này).`);
     process.exit(0);
   }
   const cmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
