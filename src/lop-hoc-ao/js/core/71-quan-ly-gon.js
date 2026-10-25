@@ -25,7 +25,7 @@ window.qlMoHS=function(){
  <div class="qs2"><label>Giới tính${gtSel('mGt','')}</label><label>Năm sinh<input id="mNam" type="number" min="2010" max="2025" placeholder="2019"></label></div>
  <label>Ngày sinh (ngày, tháng)${nsSel()}</label>
  <div class="qs2"><label>Điện thoại phụ huynh<input id="mDt" type="tel" maxlength="15" placeholder="0912345678"></label><label>Gmail phụ huynh<input id="mMail" type="email" maxlength="60" placeholder="ten@gmail.com"></label></div>
- ${cloud()?`<div class="qs2"><label>Tên đăng nhập<input id="mTk" maxlength="24" autocapitalize="off" spellcheck="false" placeholder="Bỏ trống = tự tạo"></label><label>Mật khẩu<input id="mPw" value="jenny123" maxlength="30"></label></div>`:''}`,'qlLuuHS()','Tạo tài khoản')};
+ ${cloud()?`<div class="qs2"><label>Tên đăng nhập<input id="mTk" maxlength="24" autocapitalize="off" spellcheck="false" placeholder="Bỏ trống = tự tạo"></label><label>Mật khẩu<input id="mPw" maxlength="30" placeholder="Bỏ trống = ngẫu nhiên"></label></div>`:''}`,'qlLuuHS()','Tạo tài khoản')};
 window.qlLuuHS=async function(){const ho=v('mHo').replace(/\s+/g,' '),ten=v('mTen').replace(/\s+/g,' '),n=(ho+' '+ten).trim();
  if(!ho||!ten){toast('Nhập họ và tên');return}const H={gt:v('mGt'),ng:v('mNg'),th:v('mTh'),nam:v('mNam'),dt:v('mDt').replace(/[^\d+]/g,''),mail:v('mMail').toLowerCase()};
  if(!H.gt){toast('Chọn giới tính (để chọn nhân vật cho em)');return}
@@ -75,13 +75,13 @@ window.qlLuuPH=async function(){const o=O();o.ph=o.ph||{};o.phInfo=o.phInfo||{};
   if(!/^[a-z0-9][a-z0-9._-]{2,23}$/.test(tk)){toast('Tên đăng nhập 3–24 kí tự: chữ thường không dấu, số, dấu chấm');return}
   if(Object.values(o.ph).includes(tk)||STUDENTS.some(s=>s[0]===tk)||(o.gv||[]).some(g=>(g.tk||g.id)===tk)){toast('Tên đăng nhập đã có');return}
   if(!okDt(dt)){toast('Số điện thoại chưa đúng');return}
-  if(cloud()){if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}toast('Đang tạo tài khoản…');
-   try{const uid=await fbTaoTK(tk,pw);await FB.db.doc('users/'+uid).set({role:'ph',tk,ten:ten||('Phụ huynh '+con.map(c=>(S.st[c]||{}).name).join(', ')),con})}catch(e){toast(typeof fbLoi==='function'?fbLoi(e):e.message);return}}
+  let pwPH=pw;if(cloud()){pwPH=fbMKTao(pw);if(fbMKLoi(pwPH,pwPH)){toast(fbMKLoi(pwPH,pwPH));return}toast('Đang tạo tài khoản…');
+   try{const uid=await fbTaoTK(tk,pwPH);await FB.db.doc('users/'+uid).set({role:'ph',tk,ten:ten||('Phụ huynh '+con.map(c=>(S.st[c]||{}).name).join(', ')),con,mustChange:true});fbMKNho(tk,pwPH)}catch(e){toast(typeof fbLoi==='function'?fbLoi(e):e.message);return}}
   o.phInfo[tk]={ten,dt};}
  const truoc=Object.entries(o.ph).filter(([c,t])=>t===tk).map(([c])=>c),bo=truoc.filter(c=>!con.includes(c));
  bo.forEach(c=>delete o.ph[c]);con.forEach(c=>o.ph[c]=tk);
  if(cloud()&&!moiTK){try{const q=await FB.db.collection('users').where('tk','==',tk).get();await Promise.all(q.docs.map(d=>FB.db.doc('users/'+d.id).set({con},{merge:true})))}catch(e){toast('Máy chủ chưa nhận: '+(typeof fbLoi==='function'?fbLoi(e):e.message))}}
- nk(`Phụ huynh ${tk}: con ${con.map(c=>(S.st[c]||{}).name||c).join(', ')}`);save();if(cloud()){try{await fbDayNgay()}catch(e){}}qlDong();render();toast(moiTK&&cloud()?`Đã tạo: ${tk} / ${v('mPhPw')||''}`:'Đã lưu')};
+ nk(`Phụ huynh ${tk}: con ${con.map(c=>(S.st[c]||{}).name||c).join(', ')}`);save();if(cloud()){try{await fbDayNgay()}catch(e){}}qlDong();render();toast(moiTK&&cloud()?`Đã tạo tài khoản ${tk}. Mật khẩu tạm trên phiếu in.`:'Đã lưu')};
 /* ---------- gắn nút vào trang Quản lý ---------- */
 function phCard(){const ds=phDs(),info=O().phInfo||{},tks=Object.keys(ds).sort();
  return`<section class="card qlphcard"><div class="qlhead"><h2>Phụ huynh</h2><button type="button" class="btn sm pri" onclick="qlMoPH('')">👪 Tài khoản phụ huynh</button></div>

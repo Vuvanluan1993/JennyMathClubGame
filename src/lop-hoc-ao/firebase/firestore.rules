@@ -1,9 +1,11 @@
 rules_version = '2';
-// Quy tắc bảo mật Firestore — Lớp học ảo Jenny (bản thử nghiệm 24/10/2026)
+// Quy tắc bảo mật Firestore — Lớp học ảo Jenny (siết 25/10/2026, kế hoạch P-04)
 // users/{uid}: vai trò (ql | gv | hs | ph), tk (tên đăng nhập), gvId (giáo viên), con (phụ huynh: danh sách tk của con)
 // org/main  : dữ liệu trung tâm (j = JSON), gd = {tk: lớp}, pc = {gvId: [lớp]}, admins = [uid]
-// hs/{tk}   : dữ liệu học của em (em tự ghi) · hsgv/{tk}: nhận xét, thẻ, ghi chú của cô (cô ghi)
-// asg/{id}  : bài về nhà cô giao
+// hs/{tk}   : dữ liệu học của em (em tự ghi: chỉ 4 khoá j, ev, lop, t) · hsgv/{tk}: nhận xét, thẻ, ghi chú của cô (cô ghi)
+// asg/{id}  : bài về nhà cô giao, có khoá lop → chỉ cô dạy lớp đó ghi; em, phụ huynh, cô của lớp đó đọc
+// login/{tk}: chỉ có khi quản lý đã đặt lại mật khẩu (email ẩn thay thế). Không liệt kê được, không có uid.
+// vi/{tk}, ev/{tk}/d/{id}, cfg/shop: ví xu theo rules (P-20, xem khối cuối). Kiểm tra: tools/test/rules.test.js (emulator). LH-H1 đóng khi dữ liệu đã nâng cấp v3 (org/main.v == 3): cô không ghi org/main nữa.
 service cloud.firestore {
   match /databases/{db}/documents {
     function signed() { return request.auth != null; }
@@ -12,39 +14,177 @@ service cloud.firestore {
     function org() { return get(/databases/$(db)/documents/org/main).data; }
     function isQL() { return hasMe() && me().role == 'ql'; }
     function isGV() { return hasMe() && me().role == 'gv'; }
-    function isSelf(tk) { return hasMe() && me().role == 'hs' && me().tk == tk; }
+    function isHS() { return hasMe() && me().role == 'hs'; }
+    function isSelf(tk) { return isHS() && me().tk == tk; }
     function isPH(tk) { return hasMe() && me().role == 'ph' && tk in me().con; }
-    function gvLop(tk) {
-      return isGV() && (tk in org().gd) && (me().gvId in org().pc) && (org().gd[tk] in org().pc[me().gvId]);
+    // lớp của em tk theo bảng QL ghi (org.gd); '' nếu chưa xếp lớp
+    function lopCua(tk) { return (tk in org().gd) ? org().gd[tk] : ''; }
+    // cô đang đăng nhập có dạy lớp l không (org.pc do QL ghi)
+    function gvDay(l) { return isGV() && (me().gvId in org().pc) && (l in org().pc[me().gvId]); }
+    function gvLop(tk) { return gvDay(lopCua(tk)); }
+    // phụ huynh có con học lớp l không (tối đa 4 con; con ở xa hơn không xem được bài về nhà)
+    function phCon(l) {
+      return hasMe() && me().role == 'ph' && l != '' && (
+           (me().con.size() > 0 && lopCua(me().con[0]) == l)
+        || (me().con.size() > 1 && lopCua(me().con[1]) == l)
+        || (me().con.size() > 2 && lopCua(me().con[2]) == l)
+        || (me().con.size() > 3 && lopCua(me().con[3]) == l));
+    }
+    // dữ liệu học em tự ghi: đúng 4 khoá, j/ev là chuỗi, j dưới 900 000 kí tự, t là dấu giờ máy chủ
+    function hsHopLe() {
+      return request.resource.data.keys().hasOnly(['j', 'ev', 'lop', 't'])
+        && request.resource.data.j is string && request.resource.data.j.size() < 900000
+        && request.resource.data.ev is string
+        && request.resource.data.lop is string
+        && request.resource.data.t is timestamp;
     }
 
     match /org/main {
-      allow read: if signed();
-      allow create: if signed() && request.resource.data.admins == [request.auth.uid];
+      // LH-C1: người lạ tự đăng ký (chưa có hồ sơ users) không đọc được trung tâm
+      allow read: if hasMe();
+      // LH-M1: chỉ tạo được khi chưa có (create), đúng hình dạng, người tạo là admin duy nhất.
+      // Đóng hẳn khi P-05 tắt tự đăng ký ở Authentication.
+      allow create: if signed()
+        && request.resource.data.admins == [request.auth.uid]
+        && request.resource.data.keys().hasOnly(['j', 'gd', 'pc', 'admins', 't']);
+      // v2 (chưa nâng cấp): GV còn đổi j, t. v3 (v == 3): chỉ QL ghi org/main → đóng LH-H1
       allow update: if isQL()
-        || (isGV() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['j', 't']));
+        || (isGV() && resource.data.get('v', 0) != 3
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['j', 't'])
+            && request.resource.data.j is string);
+      allow delete: if false;
+    }
+    // ---------- dữ liệu v3 (P-06a, 25/10/2026): org/main.j tách thành các collection ----------
+    match /lop/{id} {
+      // tên, khối, cô dạy, gói Toán Jenny, đảo mở — không PII; em cần đọc lớp mình, cô/PH đọc để hiện tên lớp
+      allow read: if hasMe();
+      allow create, delete: if isQL();
+      allow update: if isQL() || (gvDay(id) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['mo', 't']));
+    }
+    match /hsdm/{tk} {
+      // danh mục học sinh (tên, khối, lớp, tk phụ huynh): QL; cô lớp đó (truy vấn where lop); phụ huynh của em; chính em
+      allow read: if isQL() || gvDay(resource.data.lop) || isPH(tk) || isSelf(tk);
+      allow write: if isQL();
+    }
+    match /hoso/{tk} {
+      // hồ sơ cá nhân (ngày sinh, SĐT, Gmail phụ huynh, năm học cũ): chỉ quản lý
+      allow read, write: if isQL();
+    }
+    match /ph/{tk} {
+      // thông tin phụ huynh: quản lý; chính phụ huynh đó đọc
+      allow read: if isQL() || (hasMe() && me().role == 'ph' && me().tk == tk);
+      allow write: if isQL();
+    }
+    match /gv/{id} {
+      allow read: if hasMe();
+      allow write: if isQL();
+    }
+    match /nk/{id} {
+      // nhật ký thao tác: QL đọc; QL và cô thêm dòng mới; không sửa, không xoá
+      allow read: if isQL();
+      allow create: if (isQL() || isGV())
+        && request.resource.data.keys().hasOnly(['d', 'ai', 't', 'luc', 'tk'])
+        && request.resource.data.t is string && request.resource.data.t.size() < 2000;
+      allow update, delete: if false;
+    }
+    // ---------- P-20 (25/10/2026): ví xu, sổ sự kiện, bảng giá — em chỉ cộng từng ít, mua đúng giá ----------
+    // vi/{tk}      {coins:int ≥ 0, items:{mã:số}, pets:{loài:số}, tudo:{mã:số}, m:{loai,id} (món vừa mua), t}
+    //              Em cộng: 0 < delta ≤ cfg/shop.tranMan, cách lần ghi trước ≥ 3 giây, không đụng đồ.
+    //              Em mua: đúng một mã m.id ở nhóm m.loai, mã có trong cfg/shop, số lượng +1, delta == -giá.
+    //              Giảm mạnh gian lận, chưa chặn hẳn (em vẫn có thể cộng 40 xu mỗi 3 giây bằng console); chặn hẳn cần P-22.
+    // ev/{tk}/d/{id} {k, d:int, ref, t}  sổ sự kiện chỉ-thêm (em/QL tạo; không ai sửa, xoá); cô lớp, PH, QL đọc.
+    // cfg/shop     bảng giá (LUAT §6): QL ghi; ai có hồ sơ đọc.
+    function shop() { return get(/databases/$(db)/documents/cfg/shop).data; }
+    function viDang() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['coins', 'items', 'pets', 'tudo', 'm', 't'])
+        && d.keys().hasAll(['coins', 'items', 'pets', 'tudo', 't'])
+        && d.coins is int && d.coins >= 0
+        && d.items is map && d.pets is map && d.tudo is map
+        && d.t == request.time;
+    }
+    function viCach() { return resource.data.t is timestamp && request.time > resource.data.t + duration.value(3, 's'); }
+    function viDelta() { return request.resource.data.coins - resource.data.coins; }
+    function viCong() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['coins', 't'])
+        && viDelta() > 0 && viDelta() <= shop().tranMan;
+    }
+    function viMua() {
+      let m = request.resource.data.m;
+      let loai = m.loai;
+      let id = m.id;
+      let A = resource.data[loai];
+      let B = request.resource.data[loai];
+      return m is map && loai in ['items', 'pets', 'tudo'] && id is string
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['coins', 't', 'm', loai])
+        && id in shop()[loai] && viDelta() == -shop()[loai][id]
+        && B.diff(A).affectedKeys().hasOnly([id]) && B.keys().hasAll(A.keys())
+        && B[id] is int && B[id] == ((id in A) ? A[id] + 1 : 1);
+    }
+    match /vi/{tk} {
+      allow read: if isSelf(tk) || isQL() || gvLop(tk) || isPH(tk);
+      allow create: if isQL() || (isSelf(tk) && viDang() && request.resource.data.coins == 0
+        && request.resource.data.items == {} && request.resource.data.pets == {} && request.resource.data.tudo == {});
+      allow update: if isQL() || (isSelf(tk) && viDang() && viCach() && (viCong() || viMua()));
+      allow delete: if isQL();
+    }
+    match /ev/{tk}/d/{id} {
+      allow read: if isSelf(tk) || isQL() || gvLop(tk) || isPH(tk);
+      allow create: if (isSelf(tk) || isQL())
+        && request.resource.data.keys().hasOnly(['k', 'd', 'ref', 't'])
+        && request.resource.data.keys().hasAll(['k', 'd', 'ref', 't'])
+        && request.resource.data.k in ['man', 'tl', 'bvn', 'game', 'mua', 'ban', 'ql', 'khac']
+        && request.resource.data.d is int && request.resource.data.d >= -400 && request.resource.data.d <= 400
+        && request.resource.data.ref is string && request.resource.data.ref.size() < 200
+        && request.resource.data.t == request.time;
+      allow update, delete: if false;
+    }
+    match /cfg/{id} {
+      allow read: if hasMe();
+      allow write: if isQL();
     }
     match /users/{uid} {
-      allow read: if signed() && (request.auth.uid == uid || isQL() || isGV());
+      // LH-H2: chỉ chính chủ hoặc QL; GV không còn đọc hồ sơ người khác
+      allow read: if signed() && (request.auth.uid == uid || isQL());
       allow create: if isQL()
         || (signed() && request.auth.uid == uid && request.resource.data.role == 'ql' && request.auth.uid in org().admins);
-      allow update, delete: if isQL();
+      // P-05: chính chủ chỉ được tắt cờ mustChange (sau khi tự đặt mật khẩu mới); mọi trường khác chỉ QL
+      allow update: if isQL()
+        || (signed() && request.auth.uid == uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['mustChange'])
+            && request.resource.data.mustChange == false);
+      allow delete: if isQL();
     }
     match /hs/{tk} {
       allow read: if isSelf(tk) || isQL() || gvLop(tk) || isPH(tk);
-      allow write: if isSelf(tk) || isQL();
+      // LH-C2 (phần kiểu/cỡ): em chỉ ghi 4 khoá; lop giữ nguyên hoặc đúng lớp QL đã xếp (khi QL vừa chuyển lớp)
+      allow create: if isQL() || (isSelf(tk) && hsHopLe() && request.resource.data.lop == lopCua(tk));
+      allow update: if isQL() || (isSelf(tk) && hsHopLe()
+        && (request.resource.data.lop == resource.data.lop || request.resource.data.lop == lopCua(tk)));
+      allow delete: if isQL();
     }
     match /hsgv/{tk} {
       allow read: if isSelf(tk) || isQL() || gvLop(tk) || isPH(tk);
       allow write: if isQL() || gvLop(tk);
     }
     match /login/{tk} {
-      allow read: if true;
+      // LH-H2: không liệt kê được nữa. Chỉ đọc đúng 1 bản ghi theo tên đăng nhập, và app chỉ đọc khi
+      // email ẩn chuẩn đăng nhập không được (sau khi QL đặt lại mật khẩu). Bản ghi chỉ có email, t.
+      allow get: if true;
+      allow list: if false;
       allow write: if isQL();
     }
     match /asg/{id} {
-      allow read: if signed();
-      allow write: if isQL() || isGV();
+      // LH-M4: đọc/ghi theo lớp. Bài phải có khoá lop (chuỗi, khác '').
+      allow read: if isQL()
+        || gvDay(resource.data.lop)
+        || (isHS() && resource.data.lop != '' && resource.data.lop == lopCua(me().tk))
+        || phCon(resource.data.lop);
+      allow create, update: if isQL()
+        || (gvDay(request.resource.data.lop)
+            && request.resource.data.keys().hasOnly(['j', 'lop', 't'])
+            && request.resource.data.j is string);
+      allow delete: if isQL() || gvDay(resource.data.lop);
     }
   }
 }

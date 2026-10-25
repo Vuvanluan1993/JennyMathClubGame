@@ -1,8 +1,9 @@
 // Kiểm tra gắn dạng bài vào 6 trục "Sức mạnh Toán" (Số, Phép tính, Lời văn, Hình học, Đo lường, Thống kê).
 //   node tools/test/truc-kien-thuc.js        → đếm số dạng bài mỗi trục theo lớp, liệt kê dạng chưa gắn trục
 //   node tools/test/truc-kien-thuc.js -v     → in thêm danh sách dạng bài của từng trục
+if(process.env.PW_DIR&&!process.env.PLAYWRIGHT_BROWSERS_PATH)process.env.PLAYWRIGHT_BROWSERS_PATH=process.env.PW_DIR; // thư mục trình duyệt Playwright (mặc định: của Playwright)
 const path=require('path'),fs=require('fs');const {chromium}=require('playwright');
-const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME; // không đặt → Chromium của Playwright
 (async()=>{const b=await chromium.launch({executablePath:fs.existsSync(EXE)?EXE:undefined});const p=await b.newPage();
  await p.goto('file://'+path.join(ROOT,'dist','lop-hoc-ao-jenny.html'));await p.waitForTimeout(400);
  const r=await p.evaluate(()=>{const out={},un=new Set();for(const g of [1,2,3,4,5]){const c={};HS_AX.forEach(a=>c[a.k]=new Set());

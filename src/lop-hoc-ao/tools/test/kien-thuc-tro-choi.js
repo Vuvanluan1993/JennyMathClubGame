@@ -1,10 +1,11 @@
 /* Kiểm tra: trò Chơi thêm không vượt kiến thức đã học tới đảo đó.
-   Chạy: node tools/test/kien-thuc-tro-choi.js [lớp...]   (cần playwright; đặt NODE_PATH hoặc PW_DIR) */
+   Chạy: node tools/test/kien-thuc-tro-choi.js [lớp...]   (cần playwright: npm ci ở gốc kho; PW_DIR nếu trình duyệt ở chỗ khác) */
 const path=require('path'),fs=require('fs');
-let pw;try{pw=require('playwright')}catch(e){pw=require(path.join(process.env.PW_DIR||'/tmp/claude-0/-home-claude/77fff399-704f-58e4-a640-6dbb16a697fa/scratchpad','node_modules/playwright'))}
-const OUT=process.env.OUT_DIR||'/tmp/claude-0/-home-claude/77fff399-704f-58e4-a640-6dbb16a697fa/scratchpad/kienthuc';
+if(process.env.PW_DIR&&!process.env.PLAYWRIGHT_BROWSERS_PATH)process.env.PLAYWRIGHT_BROWSERS_PATH=process.env.PW_DIR; // thư mục trình duyệt Playwright (mặc định: của Playwright)
+const pw=require('playwright');
+const OUT=process.env.OUT_DIR||path.resolve(__dirname,'..','..','..','..','.ci','kien-thuc');
 const grades=process.argv.slice(2).map(Number).filter(Boolean);const G=grades.length?grades:[1,2,3,4,5];
-(async()=>{const b=await pw.chromium.launch({executablePath:process.env.CHROME||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});const p=await b.newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));
+(async()=>{const b=await pw.chromium.launch({executablePath:process.env.CHROME||undefined});const p=await b.newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));
  await p.goto('file://'+path.resolve(__dirname,'../../dist/lop-hoc-ao-jenny.html'));await p.waitForTimeout(600);
  let all=[],tl={};const NAME={fish:'Câu cá',balloon:'Bóng bay',race:'Đua giờ',star:'Hứng sao',pair:'Lật thẻ',tug:'Kéo co',clock:'Đồng hồ',scale:'Cân',shop:'Cửa hàng',train:'Tàu hoả',mole:'Chuột',frog:'Ếch',shape:'Ghép hình',bait:'Thả mồi',plant:'Trồng cây',climb:'Leo núi'};
  const csv=['lop,chu_de,dao,tro_choi'];

@@ -279,7 +279,7 @@ function tlSave(){const g=scr,st=S.st[sid];if(g.tlDay)return;const r=tlR(st)[g.i
  try{hsRec(q,ok,first,1,(q.src&&q.src[0])||g.id)}catch(e){}
  if(!ok&&first&&fromIsl){try{mist1Add(q);gdMistNote(q,{wa:gdShowAns(q,v),from:T('Tự luyện','Self-practice')})}catch(e){}}
  log(sid,'answered',`Tự luyện · ${x.title}`,0,{success:ok,duration:`PT${Math.round((Date.now()-g.t0)/1000)}S`});
- if(ok){g.ok++;if(g.res[g.j]===undefined)g.res[g.j]=true;const c=addCoins(sid,q.tt?TL_TT:TL_XU,'self');sfx('ok');
+ if(ok){g.ok++;if(g.res[g.j]===undefined)g.res[g.j]=true;const c=addCoins(sid,q.tt?TL_TT:TL_XU,'self','tl');sfx('ok');
   g.sheet={kind:'ok',msg:`+${c} ${T('xu','coins')}`};sayJ(pick(T('Giỏi quá!|Đúng rồi!|Tuyệt vời!','Brilliant!|Correct!|Well done!').split('|')))}
  else{g.tries++;sfx('bad');
   if(g.tries===1){if(q.type==='cells'){g.cbad=[];g.cv=g.cv.map((x,i)=>{if(Number(x)===q.a[i])return x;g.cbad.push(i);return''});g.cc=q.lay==='vert'?g.cbad[g.cbad.length-1]:g.cbad[0]||0}

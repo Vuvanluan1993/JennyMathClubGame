@@ -18,7 +18,7 @@ let cuoi='';
    if(j!==cuoi){if(cuoi)st._t=Date.now();cuoi=j}}}catch(e){}return _s.apply(this,arguments)}}
 /* 1) ghi lỗi → thử lại */
 let henLai=null;
-{const _t=fbTrangThai;fbTrangThai=function(t,loi){const r=_t.apply(this,arguments);try{if(loi){Object.keys(fbLast).forEach(k=>{if(/^(hs|ev|hsgv|asg)\/|^org\/main$/.test(k))fbLast[k]=''});
+{const _t=fbTrangThai;fbTrangThai=function(t,loi){const r=_t.apply(this,arguments);try{if(loi){Object.keys(fbLast).forEach(k=>{if(/^(hs|ev|hsgv|asg|lop|hsdm|hoso|gv|ph)\/|^org\/main$/.test(k))fbLast[k]=''});
    clearTimeout(henLai);henLai=setTimeout(()=>{try{fbDay()}catch(e){}},20000)}}catch(e){}return r}}
 /* 4) đăng xuất không treo khi mất mạng */
 {const _n=fbDayNgay;fbDayNgay=function(){const p=_n.apply(this,arguments);return hsTk()?Promise.race([p,new Promise(ok=>setTimeout(ok,4000))]):p}}
