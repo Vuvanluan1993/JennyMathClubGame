@@ -1,5 +1,30 @@
 # Lịch sử thay đổi
 
+## 25/10/2026 — Mật khẩu ngẫu nhiên, bắt đổi lần đầu, App Check theo dõi (P-05, kế hoạch kiến trúc)
+- **Thầy cần làm** (`docs/FIREBASE-CONSOLE.md`): dán `firestore.rules` mới (có thêm luật `mustChange`); Authentication › bật *Email enumeration protection*, Password policy ≥ 8 kí tự có chữ và số, giữ Email/Password, không bật ẩn danh; App Check › đăng ký reCAPTCHA v3, dán site key vào `FB_CFG.appCheckKey` (62), để **Unenforced** theo dõi một tuần. Sau đó mở từng lớp bấm **🔑 Đặt lại mật khẩu cả lớp** cho các em còn mật khẩu cũ.
+- Không còn mật khẩu mặc định `jenny123` trong mã app (`grep -rn jenny123 src/lop-hoc-ao/js` = 0). Tạo học sinh (nút Thêm, Excel), giáo viên, phụ huynh (tay và tự động) → mật khẩu tạm **ngẫu nhiên 8 kí tự dễ đọc** (`fbMKGoiY`, dạng `kuta5831`), `users.mustChange:true`; quản lý gõ mật khẩu riêng thì phải ≥ 8 kí tự có chữ và số. Mật khẩu tạm **chỉ hiện trên phiếu in** (học sinh, phụ huynh) và mục Tài khoản của Quản lý trong phiên; đăng xuất là mất.
+- **Đăng nhập lần đầu bắt đổi mật khẩu** (học sinh, cô, phụ huynh): hộp thoại pixel không đóng được, nhập 2 lần, ≥ 8 kí tự có chữ và số; xong app ghi `mustChange:false` (rules: chính chủ chỉ sửa được đúng trường này về `false`). Áp cả khi đăng nhập tự động. Phiên quá cũ → báo đăng nhập lại.
+- Bỏ hết `prompt()` trong `62-may-chu.js`: Đổi mật khẩu, Đặt lại mật khẩu dùng hộp thoại pixel `fbHoiMK` (ô mật khẩu che, tick "Hiện mật khẩu"); xác nhận dùng `fbXacNhan`.
+- Quản lý › trang một lớp: nút **🔑 Đặt lại mật khẩu cả lớp** — mỗi em một mật khẩu tạm mới, `mustChange:true`, xong tự mở phiếu in (`qlInPhieu`). "Đặt lại mật khẩu" từng người cũng đặt `mustChange:true`.
+- **App Check** (reCAPTCHA v3): khởi tạo khi `FB_CFG.appCheckKey` khác rỗng (nạp thêm `firebase-app-check-compat.js`); trống thì bỏ qua. Chỉ theo dõi; Enforce sai khoá làm hỏng mọi đọc/ghi nên chỉ bật khi thầy xác nhận.
+- Đăng xuất (nhận từ P-07): xoá `jennyVirtualDemo_v10`, bản lưu `jennyHSc_*` (chỉ khi đã đẩy xong lên máy chủ và đang có mạng — làm bài lúc mất mạng rồi đăng xuất vẫn giữ để lần sau đẩy lên), `window.qlMK` và danh sách mật khẩu tạm.
+- Kiểm tra: `rules.test.mjs` → đổi thành `rules.test.js` (CommonJS) để `npm test` tự nhặt; thêm 3 ca `mustChange` (25 ca). `package.json` thêm `firebase`, `@firebase/rules-unit-testing`; emulator chạy qua `npx firebase-tools` (CI có Java; máy thầy không có → BỎ QUA, thoát 0).
+- Ngoài lane nhưng cần để bỏ `jenny123`: `58-lop-va-quan-ly.js` (bỏ giá trị mặc định 2 ô mật khẩu, sửa chữ), `71-quan-ly-gon.js` (ô mật khẩu học sinh "Bỏ trống = ngẫu nhiên"; phụ huynh tạo tay cũng ngẫu nhiên + `mustChange`).
+
+## 25/10/2026 — Siết quy tắc Firestore (P-04, kế hoạch kiến trúc `docs/kien-truc/`)
+- **Thầy cần làm:** dán `firebase/firestore.rules` mới vào Firebase › Firestore › Rules; collection `login` nếu trống thì xoá. Dán rules **trước hoặc cùng lúc** đưa bản này lên `main` (bản cũ vẫn chạy với rules mới, chỉ bài về nhà của cô/phụ huynh cần bản mới để lọc theo lớp).
+- `firebase/firestore.rules` đóng các phát hiện của audit 25/10:
+  - LH-C1: `org/main` chỉ đọc được khi đã có hồ sơ `users` (người lạ tự đăng ký không đọc được trung tâm nữa).
+  - LH-C2 (phần kiểu/cỡ): em chỉ ghi `hs/{tk}` với đúng 4 khoá `j, ev, lop, t`; `j`, `ev` là chuỗi, `j` dưới 900 000 kí tự, `t` là dấu giờ máy chủ; `lop` giữ nguyên hoặc đúng lớp quản lý đã xếp (`org.gd`). Em vẫn tự ghi xu/sao trong `j` — P-06 (ví xu) mới chặn.
+  - LH-H2: `users` chỉ chính chủ hoặc quản lý đọc (cô không đọc hồ sơ người khác); `login` không liệt kê được, không còn `uid`.
+  - LH-M4: bài về nhà `asg` đọc/ghi theo lớp: cô chỉ ghi/xoá bài lớp mình dạy (`org.pc`), em đọc bài lớp mình, phụ huynh đọc bài lớp của con (tối đa 4 con), quản lý tất cả. Bài phải có khoá `lop`.
+  - LH-M1: `org/main` chỉ tạo được đúng hình dạng và người tạo là admin duy nhất; đóng hẳn khi P-05 tắt tự đăng ký.
+  - **Còn LH-H1** (cô vẫn ghi đè cả `org/main.j`): để P-06 tách `org/main` thành nhiều document.
+- `js/core/62-may-chu.js`: đăng nhập dùng thẳng email ẩn chuẩn `tk@jenny-lop-hoc-ao.firebaseapp.com`, **không** tra `login/{tk}` trước nữa; chỉ khi sai mật khẩu/tài khoản mới `get` đúng một bản ghi `login/{tk}` (có sau khi quản lý "Đặt lại mật khẩu", vì gói Spark không đổi được mật khẩu người khác). Kế hoạch con ghi `login` đọc `false`; giữ `get` để nút Đặt lại mật khẩu (P-05 còn dùng) không làm em bị khoá — thầy muốn bỏ hẳn thì đổi 1 dòng rules và bỏ nhánh `catch` trong `fbDangNhap`.
+- `62-may-chu.js`: bài về nhà nghe theo lớp (`where('lop','==',…)`): em lớp mình; cô từng lớp mình dạy; phụ huynh từng lớp của con; quản lý cả kho. Cô giao bài chưa chọn lớp thì không đẩy lên máy chủ (ghi `console.warn`).
+- Mới `tools/test/rules.test.mjs` (22 ca, `@firebase/rules-unit-testing`) + `firebase/firebase.json` (emulator cổng 8089). Chạy `node src/lop-hoc-ao/tools/test/rules.test.mjs`: tự bật emulator khi có Java; máy không có Java in "BỎ QUA" và thoát 0 (CI Ubuntu có Java). Cần `package.json` có `firebase`, `@firebase/rules-unit-testing`, `firebase-tools` (nhờ lane CI thêm).
+- Máy thầy 25/10 chưa có Node và Java: chưa chạy được `rules.test.mjs` lẫn `tools/test/dong-bo.js`; đã rà tay từng luật theo bảng ca thử và kiểm tra cú pháp `62-may-chu.js`. Khi có Node: `node tools/test/dong-bo.js` phải ĐẠT (bản giả lập không có `where` nên `fbAsgLop` tự lùi về cả collection).
+
 ## 24/10/2026 — Tự luyện: 6 dạng mới từ VBT lớp 1 tập 2, lớp 2 tập 1–2 (T-27)
 - Đã rà 362 trang VBT tham khảo; phần lớn dạng bài đã có. Thêm 6 dạng (viết lại, không chép sách), đều nhập bằng ô số:
   - **Chuỗi phép tính**: số đầu → (+a) → □ → (−b) → □ → … (lớp 1 bài 29–33, 39 không nhớ; lớp 2 bài 5–14, 19–24, 33, 45, 59–63, 69–70).

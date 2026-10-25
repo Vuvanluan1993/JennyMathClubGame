@@ -2,8 +2,9 @@
 //   node tools/test/dong-bo.js
 // Kiểm tra: dấu thời gian chỉ đổi khi dữ liệu đổi; bản trên máy mới hơn (làm lúc mất mạng) được giữ và đẩy lên;
 // máy khác cập nhật thì máy này nhận; ghi lỗi thì lần sau ghi lại.
+if(process.env.PW_DIR&&!process.env.PLAYWRIGHT_BROWSERS_PATH)process.env.PLAYWRIGHT_BROWSERS_PATH=process.env.PW_DIR; // thư mục trình duyệt Playwright (mặc định: của Playwright)
 const path=require('path'),fs=require('fs');const {chromium}=require('playwright');
-const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME; // không đặt → Chromium của Playwright
 (async()=>{const b=await chromium.launch({executablePath:fs.existsSync(EXE)?EXE:undefined});const tmp=path.join(ROOT,'..','..','games','lop-hoc-ao','index.html');
  const p=await b.newPage();await p.route(/^https?:/,r=>r.abort());const er=[];p.on('pageerror',e=>er.push(e.message));await p.goto('file://'+tmp,{waitUntil:'domcontentloaded'});await p.waitForTimeout(300);
  const r=await p.evaluate(async()=>{const bad=[],log=[];const wait=ms=>new Promise(ok=>setTimeout(ok,ms));
