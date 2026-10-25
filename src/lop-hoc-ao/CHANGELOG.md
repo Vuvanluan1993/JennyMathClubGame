@@ -70,6 +70,17 @@
 - Không đổi luật đã chốt; không vẽ nhân vật (sprite PXS chỉ tham chiếu). Đề xuất chờ thầy duyệt ghi ở `design/README.md` (4 cặp tương phản, token mới, cỡ nút Classroom, toast học sinh).
 - LUAT §2 thêm một dòng "Màn hình mới vẽ từ design system Jenny".
 
+## 25/10/2026 — Game lẻ dùng kit và token chung (P-19, GL)
+- **Ô Số Bí Ẩn** lớp 6, 7: bỏ đoạn `<head>` lạ ở đầu file, có `lang="vi"`, `<title>` về đúng chỗ. Giao diện và cách chơi chung ở `games/o-so-bi-an/_chung.css` + `_chung.js`; mỗi lớp chỉ còn dữ liệu câu đố (20 dòng). Khoá lưu giữ `osba6`, `osba7`.
+- **Hành trình của Jenny** lớp 6 + tiểu học: phần chung (hình vẽ, tiến độ, âm thanh, bản đồ, vườn, cửa hàng, sao lưu, mở kho bài) ở `games/hanh-trinh-jenny/_saga/saga.js` + `saga.css`; mỗi bản giữ HTML, cấu hình đảo và Trạm toán riêng. Khoá lưu giữ `jenny-saga-6`, `jenny-saga-th`.
+- **Khôi phục mã sao lưu an toàn** ở lớp 6, tiểu học, mầm non, thám tử: `_saga/khoi-phuc.js` hàm `khoiPhucAnToan(o, fresh)` chỉ chép các khoá có trong tiến độ mới, đúng kiểu, bỏ `__proto__`/`constructor`/`prototype` (trước đây mã dán vào chép được mọi khoá và đổi được prototype).
+- **Thám tử** (`tham-tu/index.html`) ra khỏi git, sinh bởi `tools/build_tham_tu.py` (do `tools/build_all.py` gọi theo tên, cả trên GitHub Actions khi deploy). Sửa mầm non hoặc `tools/tham_tu_acts.js` rồi dựng lại.
+- **Nút ≥ 48px**: `.ib` của khung Bebras và `.chip` trang chủ dùng `--jc-tap` (= `--jc-size-tap` 48px). Màn dọc ≤ 440px bớt logo (đã có nút Về trang chủ), ≤ 360px bớt đồng hồ để thanh trên không tràn. Màn ngang thấp: thanh trên cao thêm 16px, nên `kit.js` thêm bước co cuối `html.tighter` (bớt vài px khoảng cách) chỉ khi đã co chữ hết mà vẫn tràn (Robot · Khó, dãy lệnh dài ở 740×360).
+- `tools/giong/tao-giong.py`: khoá Gemini và Cloud TTS đi trong header `x-goog-api-key`, không nằm trên URL.
+- Mới `manifest.webmanifest` + icon `assets/icons/jenny-192.png`, `jenny-512.png`: cài trang chủ lên màn hình điện thoại (chưa có chạy ngoại tuyến, việc đó ở P-16).
+- README: bảng game đủ 16 dòng, có cột Trang chủ (Hiện/Ẩn theo `games.js`) và Khoá lưu; Ô Số lớp 7 hiện đang **hiện** trên trang chủ.
+- Kiểm tra: so vị trí + kiểu mọi phần tử bản cũ/bản mới (Ô Số 42 ca, Hành trình 161 ca) giống nhau, trừ 1 thuộc tính `display` của hình Jenny nằm trong hàng đã ẩn ở tiểu học khổ ngang thấp; thanh trên Bebras 108 ca vừa, nút ≥ 48; khôi phục mã thật giữ nguyên tiến độ, mã độc bị chặn ở cả 4 bản.
+
 ## 25/10/2026 — CSP, chữ tự host, SRI Firebase, bỏ giọng Google (P-08, FE2)
 - Mọi trang (14 game, trang chủ, Lớp học ảo) có `<meta http-equiv="Content-Security-Policy">` và `<meta name="referrer" content="no-referrer">`; trang Lớp học ảo cho phép thêm Firebase (gstatic, *.googleapis.com, *.firebaseio.com, wss, firebaseapp.com).
 - Chữ Baloo 2, Nunito, VT323, Be Vietnam Pro, Lexend tự host ở `assets/fonts/` (48 file woff2 ≈ 1 MB, subset vietnamese + latin-ext + latin đúng như Google đưa, `font-display: swap`; tải lại bằng `assets/fonts/tai-font.py`); không trang nào gọi Google Fonts nữa. So ảnh và kiểu hiển thị 4 trang × 4 khổ với bản trước P-08: giống hệt (chỉ khác ô giờ build). `80-phong-cach-lms.js` không chèn Lexend từ Google.

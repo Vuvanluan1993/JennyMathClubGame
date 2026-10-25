@@ -478,6 +478,7 @@ textarea.code{width:100%;height:64px;border:2.5px solid var(--ink);border-radius
 </div>
 <div class="ov" id="ov" hidden><div class="panel" id="panel"></div></div>
 <canvas id="fx"></canvas>
+<script src="../_saga/khoi-phuc.js"></script>
 <script src="art.js"></script>
 <script>
 (function () {
@@ -1431,7 +1432,7 @@ function openSettings() {
       const b = pn.querySelector('#rs'); b.textContent = 'Khôi phục'; b.classList.add('y');
       b.onclick = () => {
         try { const v = t.value.trim(); if (!v.startsWith('JNY1:')) throw 0; const o = JSON.parse(decodeURIComponent(escape(atob(v.slice(5))))); if (!o.saga || !o.mn) throw 0;
-          S = Object.assign(fresh(), o); save(); closeOv(); hud(); show('map'); toast('Đã khôi phục tiến độ!'); }
+          S = khoiPhucAnToan(o, fresh); save(); closeOv(); hud(); show('map'); toast('Đã khôi phục tiến độ!'); }
         catch (e) { toast('Mã sao lưu không đúng'); }
       };
     };
