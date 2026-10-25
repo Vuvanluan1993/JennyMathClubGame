@@ -1,5 +1,17 @@
 # Lịch sử thay đổi
 
+## 25/10/2026 — P-10 sao lưu tuần Firestore (lane chore/bo-demo-rieng-tu)
+- `.github/workflows/sao-luu.yml`: Chủ nhật 20:00 UTC + chạy tay; `permissions: contents: read`; đọc Firestore bằng Admin SDK (`tools/sao-luu/firestore-dump.mjs`, Spark không có gcloud export), mã hoá `age` bằng `BACKUP_PUBKEY`, đưa lên release kho riêng tư `Vuvanluan1993/jenny-backup` (`BACKUP_REPO_TOKEN`), giữ 12 bản.
+- `tools/sao-luu/firestore-restore.mjs` (emulator mặc định, dự án thật cần `--that`), `_chung.mjs`, `thu-gia-lap.mjs` (thử vòng xuất → nạp bằng Firestore giả lập, ĐẠT), `README.md` 5 bước khôi phục. `CLAUDE.md` gốc ghi nơi sao lưu.
+- Chưa chạy thật: thầy tạo kho `jenny-backup`, service account chỉ đọc, khoá age, 3 secret; emulator cần Java.
+
+## 25/10/2026 — P-07 bỏ tài khoản thử khỏi bản thật · P-09a văn bản riêng tư (lane chore/bo-demo-rieng-tu)
+- **Bản học sinh thật** (`games/lop-hoc-ao/`): chỉ đăng nhập máy chủ; không còn tài khoản Jenny01…/lebaona, không còn băm mật khẩu trong trang. `tools/_student.py` thêm `--demo`.
+- **Bản thử** (`games/lop-hoc-ao/demo/` + `demo/giao-vien|phu-huynh|quan-ly/`): tài khoản mẫu, dữ liệu chỉ trên máy, dải "Bản thử — dữ liệu chỉ trên máy này", `noindex`; **không commit** (`.gitignore`), chỉ có trên Pages sau khi build trên `main`. Trang GV/PH/QL bản thử mở thẳng vai, bỏ mật khẩu `giaovien…` (`tools/_teacher.py`).
+- `tools/build.py` gọi mỗi script 2 lần (thật, `--demo`). Mã CLB của `tools/check_fit.py` đọc từ biến môi trường `JENNY_CLB_CODE`; Hành Trình lop-6/tieu-hoc giữ mã trong `sessionStorage`.
+- **Riêng tư (bản nháp, chờ thầy duyệt)**: `rieng-tu/index.html` (chính sách ngắn cho phụ huynh), `docs/rieng-tu/PHIEU-DONG-Y.md`, `HO-SO-CHUYEN-DU-LIEU.md`, `DANH-MUC-DU-LIEU.md`; liên kết Riêng tư ở chân trang chủ và màn đăng nhập học sinh.
+- Chưa làm (P-05, lane Firebase): mật khẩu mặc định `MK0` ở `js/core` 58, 71, 75, 77. Thầy: đổi mã CLB, chạy `build_bank.py` và `build_bank_th.py`, commit `bank.enc` mới.
+
 ## 24/10/2026 — Tự luyện: 6 dạng mới từ VBT lớp 1 tập 2, lớp 2 tập 1–2 (T-27)
 - Đã rà 362 trang VBT tham khảo; phần lớn dạng bài đã có. Thêm 6 dạng (viết lại, không chép sách), đều nhập bằng ô số:
   - **Chuỗi phép tính**: số đầu → (+a) → □ → (−b) → □ → … (lớp 1 bài 29–33, 39 không nhớ; lớp 2 bài 5–14, 19–24, 33, 45, 59–63, 69–70).

@@ -3,6 +3,8 @@ src/lop-hoc-ao/dist/
 games/lop-hoc-ao/**/index.html
 !games/lop-hoc-ao/giong-mau/index.html
 tools/__pycache__/
+# Bản thử Lớp học ảo (tài khoản mẫu, băm mật khẩu) — sinh ra khi build, không đưa vào kho
+games/lop-hoc-ao/demo/
 
 # Python / Node
 __pycache__/

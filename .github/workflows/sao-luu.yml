@@ -1,0 +1,84 @@
+# Sao lưu Firestore hàng tuần (P-10, 25/10/2026).
+# Gói Firebase Spark không có "gcloud firestore export", nên đọc bằng Admin SDK (tools/sao-luu/firestore-dump.mjs),
+# mã hoá bằng age rồi đưa lên release của kho RIÊNG TƯ Vuvanluan1993/jenny-backup. Giữ 12 bản gần nhất.
+# 3 secret thầy dán ở Settings › Secrets and variables › Actions (xem tools/sao-luu/README.md):
+#   FIREBASE_SA_JSON   service account chỉ quyền đọc Firestore (roles/datastore.viewer), nguyên file JSON
+#   BACKUP_PUBKEY      khoá công khai age (age1…); khoá riêng giữ ngoài GitHub
+#   BACKUP_REPO_TOKEN  token chỉ có quyền Contents: write trên kho jenny-backup
+name: Sao lưu tuần (Firestore)
+
+on:
+  schedule:
+    - cron: "0 20 * * 0"   # 20:00 UTC Chủ nhật = 3:00 sáng thứ Hai giờ Việt Nam
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sao-luu
+  cancel-in-progress: false
+
+env:
+  BACKUP_REPO: Vuvanluan1993/jenny-backup
+  GIU_LAI: "12"
+
+jobs:
+  sao-luu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tools/sao-luu/package-lock.json
+
+      - name: Cài gói (firebase-admin)
+        run: npm ci --prefix tools/sao-luu
+
+      - name: Xuất Firestore ra JSON (ngoài thư mục kho)
+        env:
+          FIREBASE_SA_JSON: ${{ secrets.FIREBASE_SA_JSON }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/sao-luu"
+          node tools/sao-luu/firestore-dump.mjs --ra "$RUNNER_TEMP/sao-luu"
+
+      - name: Cài age
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq age && age --version
+
+      - name: Mã hoá bằng khoá công khai, xoá bản rõ
+        env:
+          BACKUP_PUBKEY: ${{ secrets.BACKUP_PUBKEY }}
+        run: |
+          cd "$RUNNER_TEMP/sao-luu"
+          f=$(ls backup-*.json | head -n1)
+          age -r "$BACKUP_PUBKEY" -o "$f.age" "$f"
+          shred -u "$f" 2>/dev/null || rm -f "$f"
+          ls -l
+
+      - name: Đưa lên release kho riêng tư
+        env:
+          GH_TOKEN: ${{ secrets.BACKUP_REPO_TOKEN }}
+        run: |
+          cd "$RUNNER_TEMP/sao-luu"
+          f=$(ls backup-*.json.age | head -n1)
+          tag="sao-luu-${f#backup-}"; tag="${tag%.json.age}"
+          if gh release view "$tag" --repo "$BACKUP_REPO" >/dev/null 2>&1; then
+            gh release upload "$tag" "$f" --repo "$BACKUP_REPO" --clobber
+          else
+            gh release create "$tag" "$f" --repo "$BACKUP_REPO" --title "Sao lưu $tag" \
+              --notes "Firestore jenny-lop-hoc-ao, mã hoá age. Giải mã: age -d -i khoa-rieng.txt $f > backup.json"
+          fi
+          echo "Đã đưa $f lên $BACKUP_REPO ($tag)"
+
+      - name: Chỉ giữ 12 bản gần nhất
+        env:
+          GH_TOKEN: ${{ secrets.BACKUP_REPO_TOKEN }}
+        run: |
+          gh release list --repo "$BACKUP_REPO" --limit 200 --json tagName --jq '.[].tagName' \
+            | grep '^sao-luu-' | sort -r | tail -n +$((GIU_LAI + 1)) \
+            | while read -r t; do echo "Xoá bản cũ $t"; gh release delete "$t" --repo "$BACKUP_REPO" --cleanup-tag -y; done
+          echo "Còn lại:"; gh release list --repo "$BACKUP_REPO" --limit "$GIU_LAI"

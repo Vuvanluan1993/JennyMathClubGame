@@ -336,7 +336,7 @@ textarea.code{width:100%;height:64px;border:2.5px solid var(--ink);border-radius
 'use strict';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const KEY = 'jenny-saga-6', CODEKEY = 'jenny-club-code', BACK = '../../hanh-trinh-jenny/lop-6/';
+const KEY = 'jenny-saga-6', CODEKEY = 'jenny-club-code' /* chỉ giữ trong phiên (sessionStorage), máy dùng chung không lộ mã */, BACK = '../../hanh-trinh-jenny/lop-6/';
 const EN_MAX = 10, DAY_XU = 300, XU = [10, 20, 40], EN = [1, 1, 2], DIFF = ['Dễ', 'Vừa', 'Khó'];
 
 /* ================= art ================= */
@@ -806,7 +806,7 @@ async function unlock(code) {
 }
 async function tryCode(code, quiet) {
   const err = $('#codeErr'); if (!quiet) { err.textContent = 'Đang mở…'; $('#codeGo').disabled = true; }
-  try { BANK = await unlock(code); try { localStorage.setItem(CODEKEY, code.trim().toUpperCase()); } catch (e) {} err.textContent = ''; start(); return true; }
+  try { BANK = await unlock(code); try { sessionStorage.setItem(CODEKEY, code.trim().toUpperCase()); } catch (e) {} err.textContent = ''; start(); return true; }
   catch (e) { if (!quiet) { err.textContent = navigator.onLine === false ? 'Không tải được dữ liệu. Em kiểm tra mạng nhé.' : 'Mã chưa đúng. Em hỏi lại thầy cô nhé!'; sfx.bad(); } return false; }
   finally { $('#codeGo').disabled = false; }
 }
@@ -822,7 +822,7 @@ addEventListener('resize', () => { if (view === 'map') drawMap(); if (view === '
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (view === 'map') drawMap(); if (view === 'math') fitText(); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden && BANK) { rollDay(); hud(); if (view === 'garden') drawGarden(); } });
 show('lock');
-const saved = (() => { try { return localStorage.getItem(CODEKEY); } catch (e) { return null; } })();
+const saved = (() => { try { localStorage.removeItem(CODEKEY); } catch (e) {} try { return sessionStorage.getItem(CODEKEY); } catch (e) { return null; } })();
 if (saved) tryCode(saved, true).then(ok => { if (!ok) $('#code').focus(); });
 else $('#code').focus();
 window.__saga = { get S() { return S; }, set S(v) { S = v; }, get bank() { return BANK; }, show, save, drawGarden };
