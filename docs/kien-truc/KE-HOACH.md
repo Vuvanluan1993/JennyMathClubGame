@@ -20,7 +20,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy.
   ⟳ 25/10: `npm test` chạy mọi `tools/test/*.mjs` theo tên file (không danh sách cứng) để P-17 chỉ thêm file. Push ngay khi xong: mọi lane rebase lên tip này.
 - ◐ **P-02 Build và deploy Pages từ CI; bỏ file sinh ra khỏi git** — `deploy.yml`; `.gitignore` thêm `games/lop-hoc-ao/**/index.html`, `dist/`; workflow thu giọng mở PR thay vì push `main`. `plans/P-02-deploy-ci.md`
   ⟳ 25/10: tạo `tools/build_all.py` chạy mọi `tools/build_*.py` theo tên để P-19 không sửa `deploy.yml`.
-- ◐ **P-03 Token thiết kế chung** — `design/tokens.css` + `tokens.json`; `app.css`, `kit.css`, `index.html` dùng chung qua alias; kiểm tra tương phản. `plans/P-03-design-tokens.md`
+- ☑ **P-03 Token thiết kế chung** (25/10, nhánh `claude/fe-sach-329fd2` `419ae20`; 36 cặp đo, 4 cặp chữ thường dưới 4.5 chờ thầy quyết: `.pill.ok` 3.90 và 3.23, `.flag.done` trang chủ 2.37, `.qlnote` 4.34) — `design/tokens.css` + `tokens.json`; `app.css`, `kit.css`, `index.html` dùng chung qua alias; kiểm tra tương phản. `plans/P-03-design-tokens.md`
 
 ## Giai đoạn 1 — Vá bảo mật bản đang chạy (Firebase)
 - ☑ **P-04 Siết Firestore rules** (25/10, nhánh `fix/firebase-va` `19220b1`; `rules.test.mjs` 22 ca chưa chạy tại máy vì thiếu Java, chạy trên CI khi có PR) — `asg` đọc theo lớp; `hs/{tk}` kiểm tra kiểu/cỡ; bỏ `login/{tk}` đọc công khai. `plans/P-04-firestore-rules.md`
@@ -28,7 +28,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy.
 - ☐ **P-06 Tách blob `org/main.j` và chống sửa xu/sao** — chia document theo lớp/học sinh; ví xu chỉ quản lý ghi; GV chỉ sửa lớp mình. (Chỉ khi Q1 = A.) `plans/P-06-tach-org-blob.md`
 - ☑ **P-07 Bỏ tài khoản thử** (25/10, nhánh `chore/bo-demo-rieng-tu` `8b5ae1a`; 12 chữ `jenny123` còn lại là `MK0`, P-05 xử lý) và băm mật khẩu khỏi bản học sinh thật** — bản demo tách riêng `games/lop-hoc-ao/demo/`. `plans/P-07-bo-demo-khoi-ban-that.md`
   ⟳ 25/10: không chạm `62-may-chu.js`; dòng xoá localStorage khi đăng xuất do P-05 làm. Chạy cùng phiên với P-09a.
-- ☐ **P-08 CSP, SRI, chữ tự host, bỏ `document.write`** — mọi trang và game. `plans/P-08-csp-font-sri.md`
+- ◐ **P-08 CSP, SRI, chữ tự host, bỏ `document.write`** — mọi trang và game. `plans/P-08-csp-font-sri.md`
 
 ## Giai đoạn 2 — Riêng tư và dữ liệu
 - ◐ **P-09 Riêng tư theo PDPL 2025** (09a văn bản ☑ 25/10 bản nháp trên `chore/bo-demo-rieng-tu`, chờ thầy duyệt; 09b chờ Q2) — trang chính sách, mẫu đồng ý, dữ liệu tối thiểu, nút Xuất dữ liệu một em, thời hạn lưu. `plans/P-09-rieng-tu.md`
@@ -43,7 +43,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy.
 - ☐ **P-14 Vite + ES module cho Lớp học ảo** — thay `build.py` bằng Vite, giữ hành vi; 4 entry dùng chung chunk. `plans/P-14-vite-module.md`
 - ☐ **P-15 Nội dung theo khối, tải động** — `js/content/**` thành gói mỗi khối, `import()` khi đăng nhập. `plans/P-15-noi-dung-theo-khoi.md`
 - ☐ **P-16 PWA ngoại tuyến** — manifest, service worker, nút "có bản mới". `plans/P-16-pwa.md`
-- ☐ **P-17 Kiểm tra giao diện tự động** — axe-core, tương phản, `check_fit` trên CI. `plans/P-17-kiem-tra-giao-dien.md`
+- ◐ **P-17 Kiểm tra giao diện tự động** — axe-core, tương phản, `check_fit` trên CI. `plans/P-17-kiem-tra-giao-dien.md`
   ⟳ 25/10: chỉ thêm file test mới + `giao-dien.yml`; không sửa `ci.yml`, `chay-tat-ca.mjs`. Mở từ tip P-01, chạy song song với P-19, P-18.
 
 ## Giai đoạn 5 — Hệ thống thiết kế và game lẻ
