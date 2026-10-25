@@ -14,6 +14,7 @@
     - **Tràn ngang**: Robot 320 px nút Tạm dừng `#kPause` lòi phải 24 px (thanh trên không co đủ); Ô Số 320/375 `#pauseBtn` lòi 31 px; Lớp học ảo (giáo viên/phụ huynh/quản lý, màn demo) 320–414: `.herochips` lòi 133 px, `img.px.pxe` 74 px, `b` 92 px, `.hcarr` 68 px.
     - **axe serious/critical**: `color-contrast` ở Lớp học ảo (`.appver` + 8 chỗ) và trang chủ (1 nút lọc) — trùng 4 cặp màu FE1 đã đo chờ thầy; `label-content-name-mismatch` ở nút bóng đèn (kit `.bulb`, Ô Số, Lớp học ảo): chữ hiện (số lần) không nằm trong aria-label theo cách axe đọc; Ô Số: `html` thiếu `lang` (serious), `#board` role thiếu phần tử con theo ARIA (critical) — khớp phát hiện L của audit, P-19.
     - Giảm chuyển động: **đạt** ở cả 12 trang (không animation còn chạy).
+    - Trên CI Linux (không có phông Baloo/Trebuchet, chữ thay thế rộng hơn) thanh trên tràn thêm: Ô Số 320/375 `#sndBtn` lòi 3–4 px; Mật Mã 900 trang cuộn ngang 25 px (`#pauseBtn`). Máy Mac không thấy → danh sách đã biết ghi cả hai môi trường.
   - `check_fit.py` (73 ca × 8 khổ, 18 phút trên Mac → workflow chia 8 phần song song, `continue-on-error` tới khi sửa): **6 ca ✗** sẵn có trên main: Hành trình lớp 6 · vườn và · cửa hàng ở 1920×950 "side tràn"; Thám tử · piece, · shadow ở 360×640 bị cắt 4 phần tử; Thám tử · mail ở 360×640 (cắt 4) và 390×700 (cắt 3). → P-19.
 - `TIEU_CHI.md` mục "Cách kiểm tra trước khi đưa lên" ghi tên 3 lệnh. Thêm `axe-core` vào devDependencies.
 

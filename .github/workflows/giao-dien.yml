@@ -63,11 +63,10 @@ jobs:
 
   check-fit:
     # Cả bộ 73 ca × 8 khổ mất ~18 phút trên Mac → chia 8 phần theo đường dẫn game, chạy song song.
-    # 25/10/2026: 6 ca đang ✗ trên main (xem CHANGELOG P-17) → continue-on-error cho tới khi P-19 sửa; đọc kết quả ở artifact.
+    # 25/10/2026: 6 ca đang ✗ trên main (xem CHANGELOG P-17) → bước chạy để continue-on-error cho tới khi P-19 sửa; đọc kết quả ở artifact (check-fit.html).
     name: Vừa 1 màn hình (check_fit.py ${{ matrix.game }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -82,6 +81,7 @@ jobs:
       - run: pip install playwright
       - run: python -m playwright install --with-deps chromium
       - name: Chạy check_fit.py (8 cỡ màn hình)
+        continue-on-error: true   # 6 ca ✗ đã biết (CHANGELOG P-17); bỏ dòng này khi P-19 sửa xong
         env:
           JENNY_CLB_CODE: ${{ secrets.JENNY_CLB_CODE }}
         run: |
