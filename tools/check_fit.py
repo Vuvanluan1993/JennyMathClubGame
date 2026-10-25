@@ -9,6 +9,7 @@ Cách dùng (cần Python + Playwright):
 Mỗi dòng ✓ = không phải kéo, không bị cắt. ✗ = cần sửa.
 Thêm game mới: thêm một mục vào CASES ở cuối file (đường dẫn + các bước đưa game về trạng thái cần đo).
 """
+import os
 import sys
 from playwright.sync_api import sync_playwright
 
@@ -123,7 +124,11 @@ def bb_end(pg):
 
 
 def sg_open(pg):
-    pg.fill("#code", "JENNY123")
+    # Mã CLB không nằm trong kho (P-07): đặt biến môi trường JENNY_CLB_CODE=<mã> trước khi chạy
+    code = os.environ.get("JENNY_CLB_CODE")
+    if not code:
+        sys.exit("Thiếu mã CLB: chạy  JENNY_CLB_CODE=<mã CLB> python3 tools/check_fit.py <tên game>")
+    pg.fill("#code", code)
     pg.click("#codeGo")
     pg.wait_for_function("window.__saga && __saga.bank", timeout=15000)
     wait(pg, 300)
