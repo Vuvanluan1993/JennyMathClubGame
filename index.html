@@ -8,6 +8,8 @@
 <title>Game Toán – Học Toán cùng Jenny</title>
 <meta name="description" content="Kho trò chơi toán của CLB Học Toán cùng Jenny, dành cho học sinh tiểu học và THCS.">
 <link rel="icon" href="assets/jenny-logo.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1D2B53">
 <link rel="stylesheet" href="assets/fonts/fonts.css">
 <link rel="stylesheet" href="design/tokens.css">
 <style>
@@ -20,6 +22,7 @@
   --sel:var(--jc-home-sel); --sel-soft:var(--jc-home-sel-soft); --hatch:var(--jc-home-hatch); --purple:var(--jc-home-purple);
   --display:var(--jc-font-home);
   --body:var(--jc-font-home-body);
+  --jc-tap:var(--jc-size-tap); /* ô chạm tối thiểu 48px (design/tokens.json size.tap) */
   color-scheme:light;
 }
 *{box-sizing:border-box}
@@ -49,7 +52,7 @@ header img{height:56px;width:auto;filter:drop-shadow(0 2px 0 rgba(29,43,83,.15))
 
 /* filter */
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 8px}
-.chip{height:40px;padding:0 16px;border-radius:12px;border:2.5px solid var(--ink);background:var(--paper);
+.chip{height:var(--jc-tap);padding:0 16px;border-radius:12px;border:2.5px solid var(--ink);background:var(--paper);
   box-shadow:0 3px 0 var(--ink);font-weight:900;font-size:15px}
 .chip:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
 .chip[aria-pressed="true"]{background:var(--sel);color:#fff}

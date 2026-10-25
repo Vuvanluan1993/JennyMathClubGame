@@ -273,7 +273,7 @@
     const root = document.documentElement;
     function fitSide() {
       const side = q('.side'), play = q('#play'), mission = q('#kMission');
-      root.classList.remove('tight'); mission.style.fontSize = '';
+      root.classList.remove('tight', 'tighter'); mission.style.fontSize = '';
       const tall = innerWidth <= innerHeight;
       const ok = () => side.scrollHeight <= side.clientHeight + 1 && root.scrollHeight <= innerHeight + 1
         && play.clientHeight >= innerHeight * (tall ? .36 : .5);
@@ -281,6 +281,7 @@
       root.classList.add('tight');
       let fs = parseFloat(getComputedStyle(mission).fontSize);
       while (!ok() && fs > 11.5) { fs -= .5; mission.style.fontSize = fs + 'px'; }
+      if (!ok()) root.classList.add('tighter'); /* bước cuối: bớt khoảng cách (nút 48px làm thanh trên cao hơn) */
     }
     function fitPanels() {
       document.querySelectorAll('.ov:not([hidden]) .panel').forEach(p => {

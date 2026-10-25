@@ -9,6 +9,7 @@
   --sel:var(--jc-home-sel); --sel-soft:var(--jc-home-sel-soft); --hatch:var(--jc-home-hatch); --purple:var(--jc-home-purple);
   --display:var(--jc-font-home);
   --body:var(--jc-font-home-body);
+  --jc-tap:var(--jc-size-tap); /* ô chạm tối thiểu 48px (design/tokens.json size.tap) */
   color-scheme:light;
 }
 *{box-sizing:border-box}
@@ -33,7 +34,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
 .pill .lab{font-size:11px;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase}
 .pill .val{font-family:var(--display);font-size:19px;line-height:1.1}
 .pill svg{width:18px;height:18px}
-.ib{width:42px;height:42px;border-radius:12px;border:2.5px solid var(--ink);background:var(--paper);box-shadow:0 3px 0 var(--ink);display:grid;place-items:center;flex:none;padding:0;color:var(--ink);text-decoration:none}
+.ib{width:var(--jc-tap);height:var(--jc-tap);border-radius:12px;border:2.5px solid var(--ink);background:var(--paper);box-shadow:0 3px 0 var(--ink);display:grid;place-items:center;flex:none;padding:0;color:var(--ink);text-decoration:none}
 .ib:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
 .ib svg{width:22px;height:22px}
 .ib.off{opacity:.45}
@@ -117,7 +118,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
   .bar{gap:5px}.bar .logo{height:32px}
   .ttl{display:none}
   .pill{padding:2px 8px}.pill .lab{display:none}.pill .val{font-size:16px}
-  .ib{width:34px;height:34px;border-radius:10px}.ib svg{width:18px;height:18px}
+  .ib{border-radius:10px}
   .ib.mus{display:none}
   .stage{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:8px}
   .play{border-radius:16px;padding:8px}
@@ -131,7 +132,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
   .app{padding:6px 10px;gap:6px}
   .bar .logo{height:30px}.ttl{font-size:17px}.ttl small{display:none}
   .pill{padding:1px 8px}.pill .lab{display:none}.pill .val{font-size:15px}
-  .ib{width:32px;height:32px;border-radius:9px}.ib svg{width:17px;height:17px}
+  .ib{border-radius:10px}
   .stage{gap:10px;grid-template-columns:minmax(0,1.2fr) minmax(260px,1fr)}
   .play{padding:6px;border-radius:14px}
   .card{padding:6px 10px;border-radius:14px;gap:4px}
@@ -141,9 +142,16 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
   .key.fn{font-size:13px}
   .side{gap:6px}.controls{gap:6px}.keys{gap:6px}
 }
+/* màn dọc hẹp: nút giữ 48px nên bớt logo (đã có nút Về trang chủ), khổ ≤ 360 bớt đồng hồ */
+@media (max-aspect-ratio:1/1) and (max-width:440px){ .bar .logo{display:none} }
+@media (max-aspect-ratio:1/1) and (max-width:360px){ .bar .pill[title="Thời gian"]{display:none} }
 @media (max-height:760px) and (max-aspect-ratio:1/1){ .say-line .jsvg{display:none} }
 html.tight .card .tag:not(.lv){display:none}
 html.tight .key{min-height:40px}
+/* bước cuối khi vẫn chưa vừa (kit.js fitSide): bớt khoảng cách dọc vài px */
+html.tighter .app{padding-top:4px;padding-bottom:4px;gap:4px}
+html.tighter .side,html.tighter .controls,html.tighter .keys{gap:4px}
+html.tighter .card{padding-top:4px;padding-bottom:4px;gap:2px}
 @media (max-height:560px){.panel .jsvg{display:none}}
 @media (max-height:560px) and (min-aspect-ratio:1/1){.panel{max-width:820px}.panel ul{columns:2;column-gap:28px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
