@@ -130,7 +130,7 @@ def sg_open(pg):
         sys.exit("Thiếu mã CLB: chạy  JENNY_CLB_CODE=<mã CLB> python3 tools/check_fit.py <tên game>")
     pg.fill("#code", code)
     pg.click("#codeGo")
-    pg.wait_for_function("window.__saga && __saga.bank", timeout=15000)
+    pg.wait_for_function("() => window.__saga && __saga.bank", timeout=15000)
     wait(pg, 300)
 
 

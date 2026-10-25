@@ -7,7 +7,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "build": "python3 src/lop-hoc-ao/tools/build.py",
+    "build": "python3 tools/build_all.py",
     "test": "node tools/test/chay-tat-ca.mjs"
   },
   "devDependencies": {

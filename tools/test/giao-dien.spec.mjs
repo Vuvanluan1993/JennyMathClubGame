@@ -109,6 +109,8 @@ const DA_BIET = [
   { trang: 'Mảnh Ghép Bí Mật', loai: 'nut', mau: 'button#restart-btn.tool', viec: 'P-19' },   // 320,375,414,900px: button#restart-btn.tool 34×29 ×1 "Chơi lại"
   { trang: 'Mảnh Ghép Bí Mật', loai: 'nut', mau: 'button#choose-btn.primary', viec: 'P-19' },   // 320,375,414,900px: button#choose-btn.primary 147×40 ×1 "Chọn mảnh ghép"
   { trang: 'Mảnh Ghép Bí Mật', loai: 'nut', mau: 'button#guess-btn.secondary.guess-trigger', viec: 'P-19' },   // 320,375,414,900px: button#guess-btn.secondary.guess-trigger 147×40 ×1 "Đoán ô chữ"
+  { trang: 'Mảnh Ghép Bí Mật', loai: 'tran', mau: 'div.tools', viec: 'P-19' },   // 320px: div.tools lòi phải 2px — thấy khi tích hợp #6 + #7 (chữ tự host), 25/10/2026
+  { trang: 'Mảnh Ghép Bí Mật', loai: 'tran', mau: 'button#restart-btn.tool', viec: 'P-19' },   // 320px: button#restart-btn.tool lòi phải 2px — như trên
   { trang: 'Robot tìm đường', loai: 'nut', mau: 'button.ib.bulb', viec: 'P-19' },   // 320,375,414,900px: button.ib.bulb 34×34 ×1 "Gợi ý của Jenny (còn 3 lần)"
   { trang: 'Robot tìm đường', loai: 'nut', mau: 'a.ib', viec: 'P-19' },   // 320,375,414,900px: a.ib 34×34 ×1 "Về trang chủ"
   { trang: 'Robot tìm đường', loai: 'nut', mau: 'button#kSnd.ib', viec: 'P-19' },   // 320,375,414,900px: button#kSnd.ib 34×34 ×1 "Bật/tắt âm thanh"
