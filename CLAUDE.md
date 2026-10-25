@@ -21,7 +21,8 @@ games/lop-hoc-ao/         *** FILE SINH RA từ src/lop-hoc-ao (học sinh, giao
 src/lop-hoc-ao/           Mã nguồn Lớp học ảo: python3 tools/build.py → dist/ + games/lop-hoc-ao/
 tools/                    check_fit.py (vừa 1 màn hình), build_bank*.py, giong/ (thu giọng đọc)
 lms-thu/                  LMS bản thử (Supabase)
-.github/workflows/        Thu giọng đọc (chạy tay trên GitHub Actions)
+.github/workflows/        ci.yml (kiểm tra PR), deploy.yml (dựng + đưa lên Pages khi đẩy main), sao-luu.yml (sao lưu tuần), giong-doc.yml (thu giọng, chạy tay)
+tools/sao-luu/            Sao lưu Firestore mỗi tuần → release kho riêng tư Vuvanluan1993/jenny-backup (mã hoá age); khôi phục: tools/sao-luu/README.md
 ```
 
 ## Hai nơi cùng làm việc trên kho này: Cowork và Claude Code

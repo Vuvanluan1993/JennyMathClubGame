@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 25/10/2026 — P-10 sao lưu tuần Firestore (lane chore/bo-demo-rieng-tu)
+- `.github/workflows/sao-luu.yml`: Chủ nhật 20:00 UTC + chạy tay; `permissions: contents: read`; đọc Firestore bằng Admin SDK (`tools/sao-luu/firestore-dump.mjs`, Spark không có gcloud export), mã hoá `age` bằng `BACKUP_PUBKEY`, đưa lên release kho riêng tư `Vuvanluan1993/jenny-backup` (`BACKUP_REPO_TOKEN`), giữ 12 bản.
+- `tools/sao-luu/firestore-restore.mjs` (emulator mặc định, dự án thật cần `--that`), `_chung.mjs`, `thu-gia-lap.mjs` (thử vòng xuất → nạp bằng Firestore giả lập, ĐẠT), `README.md` 5 bước khôi phục. `CLAUDE.md` gốc ghi nơi sao lưu.
+- Chưa chạy thật: thầy tạo kho `jenny-backup`, service account chỉ đọc, khoá age, 3 secret; emulator cần Java.
+
 ## 25/10/2026 — P-07 bỏ tài khoản thử khỏi bản thật · P-09a văn bản riêng tư (lane chore/bo-demo-rieng-tu)
 - **Bản học sinh thật** (`games/lop-hoc-ao/`): chỉ đăng nhập máy chủ; không còn tài khoản Jenny01…/lebaona, không còn băm mật khẩu trong trang. `tools/_student.py` thêm `--demo`.
 - **Bản thử** (`games/lop-hoc-ao/demo/` + `demo/giao-vien|phu-huynh|quan-ly/`): tài khoản mẫu, dữ liệu chỉ trên máy, dải "Bản thử — dữ liệu chỉ trên máy này", `noindex`; **không commit** (`.gitignore`), chỉ có trên Pages sau khi build trên `main`. Trang GV/PH/QL bản thử mở thẳng vai, bỏ mật khẩu `giaovien…` (`tools/_teacher.py`).
