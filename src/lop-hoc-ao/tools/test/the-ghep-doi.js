@@ -1,5 +1,6 @@
 // Rà trò "Lật thẻ ghép đôi": mọi cặp thẻ phải cùng giá trị, không hai cặp trùng giá trị. node tools/test/the-ghep-doi.js
-const {chromium}=require('playwright');(async()=>{const b=await chromium.launch({executablePath:process.env.CHROME||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+if(process.env.PW_DIR&&!process.env.PLAYWRIGHT_BROWSERS_PATH)process.env.PLAYWRIGHT_BROWSERS_PATH=process.env.PW_DIR; // thư mục trình duyệt Playwright (mặc định: của Playwright)
+const {chromium}=require('playwright');(async()=>{const b=await chromium.launch({executablePath:process.env.CHROME||undefined});
 const p=await b.newPage({viewport:{width:390,height:844}});await p.goto('file://'+require('path').resolve(__dirname,'..','..','dist','lop-hoc-ao-jenny.html'));await p.waitForTimeout(600);
 const r=await p.evaluate(()=>{role='hs';muted=true;
  const val=t=>{const lab=String(t).match(/Bể có (\d+) con cá/);if(lab)return +lab[1];const ex=String(t).replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/−/g,'-').replace(/×/g,'*').replace(/ : /g,'/').replace(/(\d) (?=\d{3})/g,'$1').replace(/,/g,'.').trim();if(/^[\d\s.+\-*\/()]+$/.test(ex))try{return Math.round(Function('return '+ex)()*1e9)/1e9}catch(e){}return 'X:'+ex};

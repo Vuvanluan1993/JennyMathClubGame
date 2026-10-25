@@ -3,20 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'self'">
+<meta name="referrer" content="no-referrer">
 <title>Game Toán – Học Toán cùng Jenny</title>
 <meta name="description" content="Kho trò chơi toán của CLB Học Toán cùng Jenny, dành cho học sinh tiểu học và THCS.">
 <link rel="icon" href="assets/jenny-logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<link rel="stylesheet" href="design/tokens.css">
 <style>
 [hidden]{display:none!important}
 /* Same look as the games: sky board, thick ink outlines, sunny yellow buttons. */
 :root{
-  --sky:#CFEAFB; --ink:#1D2B53; --ink-soft:#4A5878; --paper:#FFFFFF;
-  --sun:#FFC93C; --sun-soft:#FFF0C2; --coral:#FF6B57; --mint:#2DBE8C; --mint-soft:#D5F6E8;
-  --sel:#2F7DE1; --sel-soft:#DCEBFF; --hatch:#B8C6DD; --purple:#8E6BD8;
-  --display:'Baloo 2','Trebuchet MS',system-ui,sans-serif;
-  --body:'Nunito','Segoe UI',system-ui,sans-serif;
+  /* màu/chữ từ design/tokens.css (nhóm home, font); tên cũ giữ nguyên */
+  --sky:var(--jc-home-sky); --ink:var(--jc-home-ink); --ink-soft:var(--jc-home-ink-soft); --paper:var(--jc-home-paper);
+  --sun:var(--jc-home-sun); --sun-soft:var(--jc-home-sun-soft); --coral:var(--jc-home-coral); --mint:var(--jc-home-mint); --mint-soft:var(--jc-home-mint-soft);
+  --sel:var(--jc-home-sel); --sel-soft:var(--jc-home-sel-soft); --hatch:var(--jc-home-hatch); --purple:var(--jc-home-purple);
+  --display:var(--jc-font-home);
+  --body:var(--jc-font-home-body);
   color-scheme:light;
 }
 *{box-sizing:border-box}
@@ -146,10 +149,8 @@ footer{margin-top:40px;text-align:center;font-size:13.5px;color:var(--ink-soft);
   <footer>© CLB Học Toán cùng Jenny · Trò chơi dùng cho học tập trong câu lạc bộ</footer>
 </div>
 
-<script>
-  // Always load the newest game list (GitHub Pages lets browsers keep old files ~10 minutes).
-  document.write('<script src="games.js?t=' + Date.now() + '"><\/script>');
-</script>
+<!-- ?v=__SHA__ : CI (P-02) điền mã commit khi đưa lên, để trình duyệt cache được games.js mà vẫn lấy bản mới sau mỗi lần đổi -->
+<script src="games.js?v=__SHA__"></script>
 <script>
 (function(){
   const GAMES = (window.GAMES || []).filter(g => !g.hidden);
