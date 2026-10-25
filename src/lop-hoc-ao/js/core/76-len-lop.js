@@ -12,6 +12,12 @@ window.LL=null;
 const moi=()=>{const L=LOPS();return{buoc:1,lop:Object.fromEntries(L.map(l=>[l.id,l.khoi>=5?'':goiY(l)])),gv:Object.fromEntries(L.map(l=>[l.id,true])),hs:{},xem:(L[0]||{}).id||'',nam:namSau(O().nam)}};
 const hsCua=lid=>STUDENTS.filter(s=>(O().gd||{})[s[0]]===lid).sort((a,b)=>a[1].split(' ').pop().localeCompare(b[1].split(' ').pop())||a[1].localeCompare(b[1]));
 const quyet=(id,l)=>LL.hs[id]||(l.khoi>=5?'xong':'len');
+/* P-09b: thời hạn lưu — em nghỉ/học xong quá 24 tháng thì nhắc quản lý xuất rồi xoá (không xoá tự động).
+   Thời điểm nghỉ = x.luc (ghi từ 25/10/2026); bản ghi cũ thiếu luc thì suy từ cuối năm học trong x.nam (31/5 của năm sau). */
+const nghiLuc=x=>{if(x&&+x.luc>0)return +x.luc;const m=String((x&&x.nam)||'').match(/(\d{4})\D+(\d{4})/);return m?new Date(+m[2],4,31).getTime():0};
+const quaHan=x=>{const l=nghiLuc(x);if(!l)return false;const d=new Date(l);d.setMonth(d.getMonth()+24);return Date.now()>d.getTime()};
+const ngayVN=t=>{const d=new Date(t),p=n=>String(n).padStart(2,'0');return`${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()}`};
+window.llQuaHan=quaHan;window.llNghiLuc=nghiLuc;
 
 /* lên lớp dữ liệu một em: cất năm cũ vào st.namHoc, đổi khối, làm mới tiến độ đảo của khối mới */
 window.lenLopHS=function(st,khoiMoi,nam,lopTen){if(!st||!(khoiMoi>st.grade))return st;
@@ -28,7 +34,7 @@ function trang0(){const o=O(),L=LOPS(),n=STUDENTS.filter(s=>(o.gd||{})[s[0]]).le
   <p class="muted">Cuối năm bấm "Kết thúc năm học": lớp 1A thành 2A, 2A thành 3A…; lớp 5 thành "Đã học xong". Thầy chọn em ở lại lớp hoặc nghỉ học. Xu, đồ, thú cưng, tủ đồ, Sổ lỗi sai của em giữ nguyên; sao và tiến độ năm cũ cất vào Hồ sơ năm học; bản đồ mở chương trình lớp mới.</p>
   <button type="button" class="btn pri" ${L.length?'':'disabled'} onclick="LL=llMoi();render()">Kết thúc năm học ${e(o.nam)} ▸</button></section>
  ${cu.length?`<section class="card"><h2>Các năm học trước</h2>${cu.slice().reverse().map(y=>`<div class="qlr qgv"><div class="a-ten"><b>${e(y.nam)}</b><div class="muted">${(y.lop||[]).length} lớp · ${Object.keys(y.gd||{}).length} em</div></div><div class="a-con">${(y.lop||[]).map(l=>`<span class="pill">${e(l.ten)}</span>`).join('')}</div></div>`).join('')}</section>`:''}
- ${ng.length?`<section class="card"><h2>Nghỉ học · Đã học xong (${ng.length})</h2><p class="muted" style="margin:0 0 8px">Các em này không đăng nhập được; hồ sơ vẫn giữ. Bấm "Mở lại" rồi xếp lớp nếu em học tiếp.</p>${ng.map(([id,x])=>{const n=(STUDENTS.find(s=>s[0]===id)||[id,id])[1];return`<div class="qlr qds"><span class="a-ck">${x.ly==='xong'?'🎓':'⏸'}</span><div class="a-ten"><b>${e(n)}</b><div class="muted">${e(id)} · ${x.ly==='xong'?'Đã học xong':'Nghỉ học'} · ${e(x.nam||'')}</div></div><div class="a-act"><button type="button" class="btn sm" onclick="qlMoLai('${id}')">Mở lại</button></div></div>`}).join('')}</section>`:''}</div>`}
+ ${ng.length?(()=>{const qh=ng.filter(([id,x])=>quaHan(x)).length;return`<section class="card"><h2>Nghỉ học · Đã học xong (${ng.length})</h2>${qh?`<p class="qlnerr llqh0">⚠ ${qh} em đã nghỉ quá 24 tháng (thời hạn lưu). Nên bấm ⬇ Xuất để lưu file rồi 🗑 Xoá; app không tự xoá.</p>`:''}<p class="muted" style="margin:0 0 8px">Các em này không đăng nhập được; hồ sơ vẫn giữ. Bấm "Mở lại" rồi xếp lớp nếu em học tiếp.</p>${ng.map(([id,x])=>{const n=(STUDENTS.find(s=>s[0]===id)||[id,id])[1],q=quaHan(x),l=nghiLuc(x);return`<div class="qlr qds${q?' llqh':''}"><span class="a-ck">${x.ly==='xong'?'🎓':'⏸'}</span><div class="a-ten"><b>${e(n)}</b><div class="muted">${e(id)} · ${x.ly==='xong'?'Đã học xong':'Nghỉ học'} · ${e(x.nam||'')}${l?` · từ ${ngayVN(l)}${x.luc?'':' (ước)'}`:''}</div>${q?'<span class="pill llqhn">Quá 24 tháng · xoá theo thời hạn</span>':''}</div><div class="a-act">${q?`<button type="button" class="btn sm" onclick="qlXuatHS('${id}')">⬇ Xuất</button><button type="button" class="btn sm qlxbtn" onclick="qlXoaHS(['${id}'])">🗑 Xoá</button>`:''}<button type="button" class="btn sm" onclick="qlMoLai('${id}')">Mở lại</button></div></div>`}).join('')}</section>`})():''}</div>`}
 window.llMoi=moi;
 
 function b1(){const L=LOPS();
@@ -69,7 +75,7 @@ window.llChay=async function(){const o=O(),r=tinh();if(!confirm(`Kết thúc nă
   let sao=0;try{sao=st?totalStars(st):0}catch(x){}
   (o.hosoNam[id]=o.hosoNam[id]||[]).push({nam:namCu,lop:l.ten,khoi:l.khoi,sao,kq:q});
   if(q==='len'){gdMoi[id]=idMoi[l.id];row(id,l.khoi+1);if(st)lenLopHS(st,l.khoi+1,namCu,l.ten)}
-  else if(q==='nghi'||q==='xong'){o.nghi[id]={ly:q,nam:namCu}}
+  else if(q==='nghi'||q==='xong'){o.nghi[id]={ly:q,nam:namCu,luc:Date.now()}}
  }));
  o.lop=lopMoi;o.gd=gdMoi;o.mo=moMoi;o.nam=LL.nam;
  (S.asg||[]).forEach(a=>{if(a.lop&&!String(a.lop).includes('@'))a.lop=a.lop+'@'+namCu});
@@ -96,6 +102,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .llr{grid-template-columns:minmax(0,1.2fr) minmax(0,1.5fr) auto}.llr .a-con{align-items:center}.llr input:not([type=checkbox]){width:80px;height:38px;box-sizing:border-box}.qlin .grow{flex:1 1 auto}.llto{font-weight:700}
 .llsum{margin:0 0 10px;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .qds .a-act select{max-width:170px}
+.llqh{background:#FFF8E1}.llqhn{background:#FDECEA!important;color:#B3261E!important;font-weight:700;margin-top:4px;display:inline-block}.llqh .a-act{display:flex;gap:6px;flex-wrap:wrap}.llqh0{margin:0 0 8px}
 @media(max-width:640px){.llr{grid-template-columns:minmax(0,1fr)}.llr .a-act{justify-content:flex-start}}
 </style>`);
 })();
