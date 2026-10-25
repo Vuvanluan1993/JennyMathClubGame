@@ -6,7 +6,9 @@
      hs/{tk}     {j: JSON dữ liệu học của em (em ghi), ev: JSON sự kiện gần đây, lop, t}
      hsgv/{tk}   {j: JSON nhận xét/thẻ/ghi chú/bỏ qua của cô (cô ghi), t}
      asg/{id}    {j: JSON bài về nhà, lop, t}
-   Tên đăng nhập (tk) → email ẩn tk@jenny-lop-hoc-ao.firebaseapp.com (trẻ không cần email thật). */
+   Tên đăng nhập (tk) → email ẩn tk@jenny-lop-hoc-ao.firebaseapp.com (trẻ không cần email thật).
+   P-04 (25/10/2026): rules siết — org/main cần hồ sơ users; users chỉ chính chủ/QL; hs/{tk} em chỉ ghi j, ev, lop, t;
+     asg đọc/ghi theo lớp (truy vấn phải lọc where lop); login/{tk} chỉ get đúng 1 bản ghi khi email ẩn chuẩn sai. */
 const FB_CFG={apiKey:"AIzaSyDom_aoJHqhDgs0CYpPa0kTzRv0WQ7xo3o",authDomain:"jenny-lop-hoc-ao.firebaseapp.com",projectId:"jenny-lop-hoc-ao",storageBucket:"jenny-lop-hoc-ao.firebasestorage.app",messagingSenderId:"670173928664",appId:"1:670173928664:web:cd32fb1f8846f0ec82cbad"};
 const FB_VER='10.12.2',GV_F=['comments','badges','gvNote','gvSkip'];
 let FB=null,CLOUD=null,fbSub=[],fbLast={},fbHen=null,fbDangGhi=false;
@@ -20,11 +22,19 @@ function fbLoi(e){const c=(e&&e.code)||'';return({'chua-lop':'Tài khoản của
 const fbJ=s=>{try{return JSON.parse(s)}catch(e){return null}};
 const fbTach=st=>{const a={},b={};Object.keys(st||{}).forEach(k=>(GV_F.includes(k)?b:a)[k]=st[k]);GV_F.forEach(k=>{if(b[k]===undefined)b[k]=k==='gvSkip'?{}:[]});return{hs:a,gv:b}};
 const fbTS=()=>firebase.firestore.FieldValue.serverTimestamp();
+/* bài về nhà của một lớp (rules P-04 chỉ cho đọc asg theo lớp nên phải lọc ngay trong truy vấn; bản giả lập trong test không có where) */
+const fbAsgLop=(db,l)=>{const c=db.collection('asg');return c.where?c.where('lop','==',l):c};
 const fbNgay=()=>Math.max(1,Math.floor((Date.now()-Date.UTC(2026,8,5))/864e5)+1);
 
 async function fbDangNhap(tk,pw,nho){const{auth}=await fbInit();try{await auth.setPersistence(nho===false?firebase.auth.Auth.Persistence.SESSION:firebase.auth.Auth.Persistence.LOCAL)}catch(e){}
-  tk=String(tk).trim().toLowerCase();let em=fbEmail(tk);try{const L=await FB.db.doc('login/'+tk).get();if(L.exists&&L.data().email)em=L.data().email}catch(e){}
-  const c=await auth.signInWithEmailAndPassword(em,pw);return fbNapMe(c.user)}
+  tk=String(tk).trim().toLowerCase();const em=fbEmail(tk);let c;
+  try{c=await auth.signInWithEmailAndPassword(em,pw)}
+  catch(e){/* P-04 (25/10/2026): email ẩn chuẩn là chính, KHÔNG tra login/ trước. Chỉ khi sai mới xem QL có đặt lại mật khẩu
+             (tài khoản Auth mới, email ẩn khác, ghi ở login/{tk}) — rules chỉ cho get đúng 1 bản ghi, không liệt kê. */
+    if(!/^auth\/(invalid-credential|invalid-login-credentials|user-not-found|wrong-password)$/.test((e&&e.code)||''))throw e;
+    let em2='';try{const L=await FB.db.doc('login/'+tk).get();if(L.exists&&L.data().email)em2=String(L.data().email)}catch(x){}
+    if(!em2||em2===em)throw e;c=await auth.signInWithEmailAndPassword(em2,pw)}
+  return fbNapMe(c.user)}
 async function fbNapMe(user){const d=await FB.db.doc('users/'+user.uid).get();if(!d.exists)throw{code:'no-profile'};CLOUD={uid:user.uid,me:d.data()};return CLOUD}
 async function fbDangXuat(){fbSub.forEach(f=>{try{f()}catch(e){}});fbSub=[];try{await fbDayNgay()}catch(e){}try{await FB.auth.signOut()}catch(e){}CLOUD=null;location.reload()}
 async function fbDoiMK(){const p=prompt('Mật khẩu mới (ít nhất 6 kí tự):');if(!p)return;if(p.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
@@ -53,7 +63,7 @@ async function fbDay(){if(!CLOUD||!FB)return;const db=FB.db,me=CLOUD.me,ghi=[];
     if(S.org){const o=fbOrgSach(),j=JSON.stringify(o);if(fbLast['org/main']!==j){fbLast['org/main']=j;
       ghi.push(me.role==='ql'?db.doc('org/main').set({j,gd:o.gd||{},pc:fbPc(o),t:fbTS()},{merge:true}):db.doc('org/main').update({j,t:fbTS()}))}}
     Object.keys(S.st).forEach(tk=>{if(!fbLast.hasOwnProperty('hsgv/'+tk))return;const j=JSON.stringify(fbTach(S.st[tk]).gv);if(fbLast['hsgv/'+tk]!==j){fbLast['hsgv/'+tk]=j;ghi.push(db.doc('hsgv/'+tk).set({j,t:fbTS()}))}});
-    const co=new Set();(S.asg||[]).forEach(a=>{co.add(a.id);const j=JSON.stringify(a);if(fbLast['asg/'+a.id]!==j){fbLast['asg/'+a.id]=j;ghi.push(db.doc('asg/'+a.id).set({j,lop:a.lop||'',t:fbTS()}))}});
+    const co=new Set();(S.asg||[]).forEach(a=>{co.add(a.id);if(me.role==='gv'&&!a.lop){console.warn('Bài '+a.id+' chưa có lớp, máy chủ không nhận (P-04)');return}const j=JSON.stringify(a);if(fbLast['asg/'+a.id]!==j){fbLast['asg/'+a.id]=j;ghi.push(db.doc('asg/'+a.id).set({j,lop:a.lop||'',t:fbTS()}))}});
     Object.keys(fbLast).filter(k=>k.startsWith('asg/')&&!co.has(k.slice(4))).forEach(k=>{delete fbLast[k];ghi.push(db.doc(k).delete())});
   }
   if(ghi.length){await Promise.all(ghi);fbTrangThai('Đã lưu lên máy chủ')}
@@ -73,7 +83,7 @@ async function fbHsBoot(){const me=CLOUD.me,tk=me.tk,db=FB.db;
   STUDENTS=[[tk,st.name,st.grade]];sid=tk;role='hs';KEY='jennyHSc_'+tk;
   fbLast['hs/'+tk]=JSON.stringify(fbTach(st).hs);fbLast['ev/'+tk]=JSON.stringify(ev);
   const mine=a=>a.hs?a.hs.includes(tk):(a.lop?a.lop===lop:a.g===st.grade&&!a.mau);
-  fbSub.push(db.collection('asg').onSnapshot(q=>{S.asg=q.docs.map(d=>fbJ(d.data().j)).filter(a=>a&&mine(a));fbVe()},e=>console.error(e)));
+  fbSub.push(fbAsgLop(db,lop).onSnapshot(q=>{S.asg=q.docs.map(d=>fbJ(d.data().j)).filter(a=>a&&mine(a));fbVe()},e=>console.error(e)));
   fbSub.push(db.doc('hsgv/'+tk).onSnapshot(d=>{const g=d.exists?fbJ(d.data().j)||{}:{};GV_F.forEach(k=>{if(g[k]!==undefined)S.st[tk][k]=g[k]});fbVe()},e=>{}));
   fbSub.push(db.doc('org/main').onSnapshot(d=>{const og=d.exists?fbJ(d.data().j)||{}:{};S.open=Object.assign({},(og.mo||{})[lop]||{});const L2=(og.lop||[]).find(l=>l.id===lop);S.st[tk].active=!!((L2&&L2.tj&&L2.tj.on)||(og.nl||{})[tk]);fbVe()},e=>{}));
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
@@ -90,8 +100,13 @@ async function fbGvBoot(){const me=CLOUD.me,db=FB.db;document.body.classList.add
     fbSub.push(db.doc('org/main').onSnapshot(d=>{const j=d.exists?d.data().j:null;if(!j){ok();return}
       if(j!==fbLast['org/main']||!S.org){fbLast['org/main']=j;const o=fbJ(j);o.cloud=1;o.v=2;['mauHS','mauHS2','mauHS3','mauHS4','mauHS5','mauHS6','mauHS7'].forEach(k=>o[k]=1);
         const giu=S.org&&Object.getOwnPropertyDescriptor(S,'open');S.org=o;fbDanhSach();if(lan++)fbVe()}ok()},e=>{console.error(e);ok()}))});
-  if(me.role!=='ph')fbSub.push(db.collection('asg').onSnapshot(q=>{const A=[];q.docs.forEach(d=>{const j=d.data().j;fbLast['asg/'+d.id]=j;const a=fbJ(j);if(a)A.push(a)});S.asg=A;fbVe()},e=>console.error(e)));
-  else fbSub.push(db.collection('asg').onSnapshot(q=>{S.asg=q.docs.map(d=>fbJ(d.data().j)).filter(Boolean);fbVe()},e=>{}));
+  /* bài về nhà (P-04): QL nghe cả kho; GV nghe từng lớp mình dạy; PH nghe lớp của con — rules chỉ cho đọc theo lớp */
+  const o=S.org||{},gvId=me.gvId||me.tk;
+  const lops=me.role==='ql'?[null]:me.role==='ph'?[...new Set((me.con||[]).map(c=>(o.gd||{})[c]).filter(Boolean))]
+    :[...new Set((o.lop||[]).filter(l=>(l.gv||[]).includes(gvId)).map(l=>l.id))];
+  const theoLop={};const gop=()=>{const A=[];Object.values(theoLop).forEach(L=>L.forEach(a=>A.push(a)));S.asg=A;fbVe()};
+  lops.forEach(l=>{const q=l===null?db.collection('asg'):fbAsgLop(db,l);
+    fbSub.push(q.onSnapshot(s=>{const A=[];s.docs.forEach(d=>{const j=d.data().j;if(me.role!=='ph')fbLast['asg/'+d.id]=j;const a=fbJ(j);if(a)A.push(a)});theoLop[l===null?'*':l]=A;gop()},e=>console.error('asg',l,e)))});
 }
 /* danh sách em được xem: quản lý = tất cả; giáo viên = lớp được phân công; phụ huynh = con */
 function fbDanhSach(){const o=S.org,me=CLOUD.me;if(!o)return;
@@ -138,7 +153,7 @@ async function fbDatLaiMK(tk){const pw=prompt(`Mật khẩu mới cho "${tk}" (�
     const L=await db.doc('login/'+tk).get(),cu=L.exists?L.data().uid:null,docCu=q.docs.find(d=>d.id===cu)||q.docs[0],du=docCu.data();
     const em=`${tk}.r${Date.now().toString(36)}@jenny-lop-hoc-ao.firebaseapp.com`;
     await fbInit();const app2=firebase.apps.find(a=>a.name==='tao')||firebase.initializeApp(FB_CFG,'tao');const c=await app2.auth().createUserWithEmailAndPassword(em,pw);const uid=c.user.uid;await app2.auth().signOut();
-    await db.doc('users/'+uid).set(du);await db.doc('login/'+tk).set({email:em,uid,t:fbTS()});await Promise.all(q.docs.map(d=>db.doc('users/'+d.id).delete()));
+    await db.doc('users/'+uid).set(du);await db.doc('login/'+tk).set({email:em,t:fbTS()});/* P-04: không ghi uid (bản ghi này get được công khai) */await Promise.all(q.docs.map(d=>db.doc('users/'+d.id).delete()));
     (S.org.nk=S.org.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Đặt lại mật khẩu cho ${tk}`});save();
     fbMKVua={tk,pw};render();toast(`Đã đặt lại: ${tk} / ${pw}`)}catch(e){console.error(e);toast(fbLoi(e))}}
 let fbMKVua=null;
