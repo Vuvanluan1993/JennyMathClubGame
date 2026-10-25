@@ -1,8 +1,9 @@
 // Kiểm tra Tự luyện · Vở bài tập Jenny (cần đã chạy tools/build.py).
 //   node tools/test/tu-luyen.js      → lớp 1 và 2: mọi trang sinh đủ 5 bài + ★, dạng bài mới đúng đáp án,
 //   làm thử 1 trang từ đầu đến cuối (đúng hết, sai rồi thử lại), Thử thách hôm nay, gợi ý của cô, không tràn 320px.
+if(process.env.PW_DIR&&!process.env.PLAYWRIGHT_BROWSERS_PATH)process.env.PLAYWRIGHT_BROWSERS_PATH=process.env.PW_DIR; // thư mục trình duyệt Playwright (mặc định: của Playwright)
 const path=require('path'),fs=require('fs');const {chromium}=require('playwright');
-const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME; // không đặt → Chromium của Playwright
 (async()=>{const b=await chromium.launch({executablePath:fs.existsSync(EXE)?EXE:undefined});
  const tmp=path.join(ROOT,'dist','_tl.html');fs.writeFileSync(tmp,'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'+fs.readFileSync(path.join(ROOT,'dist','lop-hoc-ao-jenny.html'),'utf8')+'</body></html>');
  let fail=0;
