@@ -34,11 +34,12 @@ Cowork và Claude Code có thể chạy song song. Quy tắc để không giẫm
    Khi đang ở worktree, các bước "push lên main" / "đăng artifact" trong `src/lop-hoc-ao/CLAUDE.md` đổi thành:
    commit vào nhánh của mình, đẩy nhánh lên `origin`, mở Pull Request (hoặc báo thầy gộp).
 3. **Bắt đầu phiên**: `git fetch origin && git rebase origin/main` để lấy việc Cowork vừa làm.
-4. **File sinh ra không commit trên nhánh phụ.** `src/lop-hoc-ao/dist/` và `games/lop-hoc-ao/**/index.html` được build
-   ghi kèm dấu thời gian nên **luôn** xung đột khi gộp. Trên nhánh phụ: build để kiểm tra, nhưng trước khi commit chạy
-   `git checkout -- games/lop-hoc-ao` và chỉ commit `src/`, `CHANGELOG.md`, `TASKS.md`, tài liệu.
-   Khi gộp vào `main`: gộp xong → `cd src/lop-hoc-ao && python3 tools/build.py` → commit "Dựng lại bản" → push.
-   Gặp xung đột ở file sinh ra thì **không giải tay**, chạy lại build rồi `git add`.
+4. **File sinh ra không nằm trong git.** `src/lop-hoc-ao/dist/`, `games/lop-hoc-ao/**/index.html` (trừ `giong-mau/`)
+   và `__pycache__/` đã vào `.gitignore`. Build trên máy chỉ để kiểm tra: `python3 tools/build_all.py` (dựng mọi bản) hoặc
+   `python3 src/lop-hoc-ao/tools/build.py`; không commit, không còn bước "Dựng lại bản" khi gộp, hết xung đột file sinh ra.
+   Mỗi lần đẩy vào `main`, GitHub Actions (`.github/workflows/deploy.yml`) dựng lại rồi đưa cả kho lên Pages
+   (cần một lần: Settings › Pages › Source = GitHub Actions). Số bản ở góc thẻ chào = ngày commit · sha.
+   Sau khi CI deploy chạy, Cowork cũng nên qua PR (chờ thầy chốt Q3 trong `docs/kien-truc/KE-HOACH.md`).
 5. **Hai phiên không sửa cùng một file.** Mỗi task một khu vực (một bộ game, một dạng bài, một trang). Các file dễ đụng
    nhau là `CHANGELOG.md`, `TASKS.md`, `LUAT-DA-CHOT.md`: ghi mục mới lên **đầu** danh sách; xung đột thì giữ cả hai bên.
 6. Hết việc: cập nhật `CHANGELOG.md`/`TASKS.md` (nếu thuộc Lớp học ảo), commit kèm dòng ghi công theo hướng dẫn phiên,
