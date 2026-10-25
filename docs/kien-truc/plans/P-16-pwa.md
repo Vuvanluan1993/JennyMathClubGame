@@ -7,6 +7,7 @@
 - Mới: `src/lop-hoc-ao/public/manifest.webmanifest` (tên, màu `#1F2A5A`, icon pixel 192/512 từ `PXJ`), icon trong `public/icons/`.
 - `vite.config.js`: `vite-plugin-pwa` (Workbox, `registerType: 'prompt'`), precache shell + chunk khối của em (runtime cache `content/lop-*`), **không** cache yêu cầu Firebase/Supabase.
 - `js/core/34-khoi-dong.js`: khi SW báo bản mới → thanh pixel "Có bản mới · Tải lại"; dùng `79-dong-bo.js` hàng đợi khi mất mạng.
+  ⟳ 25/10: P-16 **sở hữu** `79-dong-bo.js`; P-21 không chạm file này (Firestore persistence đã xếp hàng ghi khi mất mạng, `79` chỉ còn hàng đợi cho bản demo/localStorage).
 - Trang chủ `index.html` + game lẻ: manifest riêng nhỏ (chỉ cài được, cache tĩnh) — làm ở P-19.
 
 ## Việc phải xong (DONE)

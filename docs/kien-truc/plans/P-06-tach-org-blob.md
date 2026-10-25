@@ -3,6 +3,8 @@
 **Mục tiêu:** đóng LH-H1, LH-H4, phần còn lại của LH-C1/C2. Dữ liệu trung tâm thành nhiều document, rules kiểm tra từng trường; ví xu chỉ quản lý ghi.
 **Ước lượng:** 16 giờ = 2 phiên (6a cấu trúc + chuyển đổi; 6b ví xu + rules + test). **Người dùng thấy gì:** không. **Cần trước:** P-05 đã push.
 
+⟳ 25/10 (Q1 = A, Q2 = B): chỉ làm **6a**. Phần 6b "ví xu xin qua `vi_yc`, QL duyệt" **bỏ**; thay bằng `plans/P-20-vi-xu-rules.md` (rules giới hạn mỗi lần ghi, sổ sự kiện chỉ-thêm). `hoso/{tk}` giữ **ngày sinh đầy đủ** `ngaySinh` và `mailPH` theo Q2 = B (không chỉ `namSinh`). Trong 6a, `11`, `64`, `49`, `51` chưa đổi; `fbTach` vẫn để `coins` trong `hs.j` tới P-20.
+
 ## Cấu trúc mới
 ```
 org/main            {ten, nam, v, admins, t}                  QL ghi

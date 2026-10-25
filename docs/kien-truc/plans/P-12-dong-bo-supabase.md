@@ -1,5 +1,7 @@
 # P-12 Lớp đồng bộ Supabase cho Lớp học ảo (chỉ khi Q1 = B)
 
+**Bỏ 25/10/2026 (Q1 = A, giữ Firebase):** không làm. Giữ file để tham khảo; việc an toàn và hiệu quả chuyển sang P-20, P-21, P-22.
+
 **Mục tiêu:** app học sinh, GV, PH, QL nói chuyện với Supabase qua RPC; xu/sao chấm ở máy chủ; giữ nguyên giao diện và hành vi.
 **Ước lượng:** 16 giờ = 2 phiên (12a schema + RPC cho Lớp học ảo; 12b lớp đồng bộ trong app). **Người dùng thấy gì:** không (cùng màn hình). **Cần trước:** P-11 đã push.
 

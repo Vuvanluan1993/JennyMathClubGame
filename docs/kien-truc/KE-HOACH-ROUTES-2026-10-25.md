@@ -1,3 +1,5 @@
+Cho việc tiếp theo, dùng `KE-HOACH-PARALLEL-2026-10-25.md` (bản cắt lại chiều 25/10: bỏ Supabase, thêm P-20, P-21, P-22). Các khối lệnh đã dán (CI1, CI2, FE1, FE2, FB1, FB2, FB3, T1, T2, KT) giữ nguyên chữ ở đây và ở `KE-HOACH-ROUTES-2026-10-25-HISTORY.md`.
+
 # Lộ trình chạy song song — kế hoạch kiến trúc (cắt ngày 25/10/2026)
 
 Cắt từ `docs/kien-truc/KE-HOACH.md` theo file nào dùng chung, việc nào chờ ai; chạy rộng nhất có thể.

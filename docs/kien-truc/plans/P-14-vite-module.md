@@ -1,6 +1,8 @@
 # P-14 Vite + ES module cho Lớp học ảo
 
 **Mục tiêu:** thay `build.py` nối chuỗi bằng Vite; mã thành module; 4 trang vai dùng chung chunk; hành vi không đổi.
+⟳ 25/10: 14b sửa mọi file `js/core/*` (dòng import) nên **đụng** lane Firebase (`62`, `64`, `11`, `49`, `51`, `58`). Luật: RF2 mở sau khi PR Firebase (P-06a + P-20) đã gộp vào `main`; mỗi lần lane Firebase gộp thêm (P-09b, P-21), RF rebase lên `main` và **chạy lại** `tools/vite/tim-import.mjs` thay vì giải xung đột tay.
+
 **Ước lượng:** 16 giờ = 2 phiên (14a Vite bọc mã cũ; 14b chuyển dần sang module). **Người dùng thấy gì:** trang tải nhanh hơn. **Cần trước:** P-01 (`package.json`), P-07 (`_student.py` đã tách demo), P-08 (`app.template.html` đã có CSP) đều đã push.
 
 ## 14a — Vite bọc mã cũ (không đổi 90 file)

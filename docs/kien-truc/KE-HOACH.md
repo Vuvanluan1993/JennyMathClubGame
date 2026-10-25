@@ -1,57 +1,61 @@
 # Kế hoạch cải tiến kiến trúc — JennyMathClubGame
 
-Bản 25/10/2026. Đích: `KIEN-TRUC-DICH.md`. Lý do: `AUDIT-2026-10-25.md`. Lộ trình chạy song song: `KE-HOACH-ROUTES-2026-10-25.md`.
+Bản 25/10/2026. Đích: `KIEN-TRUC-DICH.md`. Lý do: `AUDIT-2026-10-25.md`. Lộ trình chạy song song: `KE-HOACH-PARALLEL-2026-10-25.md` (bản cắt lại; bản đầu `KE-HOACH-ROUTES-2026-10-25.md`).
 Mỗi hàng có một kế hoạch con trong `plans/P-xx-*.md` (file sửa, việc phải xong, cách kiểm tra, ước lượng).
 
-Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy.
+Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy · ✗ bỏ.
 
-⟳ 25/10/2026 **THỨ TỰ CHẠY** (theo `KE-HOACH-ROUTES-2026-10-25.md`, không theo giai đoạn): ngày 1 mở cùng lúc P-01 · P-03 · P-04 · P-07+P-09a (· P-11 nếu Q1 = B); ngày 2 P-02 · P-08 · P-05 · P-10 (· P-12a); ngày 3 P-17 · P-19 · P-18 · P-06a · P-14a (· P-12b); ngày 4–7 P-06b, P-09b, P-14b, P-15a, P-15b, P-16 (· P-13). Độ rộng 4 (5 với B); đường tới hạn P-03 → P-08 → P-14 → P-15 → P-16 = 7 phiên.
+⟳ 25/10/2026 **THỨ TỰ CHẠY** (bản cắt lại, theo `KE-HOACH-PARALLEL-2026-10-25.md`): đã xong P-01, P-02, P-03, P-04, P-05, P-07, P-09a, P-10 (PR #3, #4, #5); đang chạy P-08 · P-17 · P-06a; mở ngay P-18; khi P-08 push: P-19 · P-14a; lane Firebase tiếp P-20 → P-09b → P-21 (→ P-22 nếu Q5 = Blaze). Độ rộng 4; đường tới hạn P-08 → P-14 → P-15 → P-16 = 6 phiên.
 
-## Quyết định thầy cần cho trước khi chạy
+## Quyết định của thầy
 | Mã | Quyết định | Ảnh hưởng |
 |---|---|---|
-| Q1 | **Đã chốt 25/10/2026: A — giữ Firebase**, vá theo P-04, P-05, P-06. Supabase (P-11..P-13) để sau, chỉ xem lại khi có >1 lớp thật | A → làm P-04..P-06; P-11..P-13 ⏸ |
-| Q2 | Bỏ ngày sinh đầy đủ, chỉ giữ năm sinh? (LUAT 6i đang ghi ngày sinh) | P-09 |
-| Q3 | Cowork cũng qua PR sau khi CI deploy chạy? | P-02 |
-| Q4 | Tạo design system trong Claude Design (2 theme Pixel + Classroom)? | P-18 |
+| Q1 | **Chốt 25/10: A — giữ Firebase.** Bỏ hẳn giai đoạn Supabase (P-11..P-13 ✗). An toàn và hiệu quả làm bằng Firestore rules, sổ sự kiện chỉ-thêm, bộ nhớ ngoại tuyến (P-20, P-21). Chặn hẳn gian lận xu cần Cloud Functions → Q5 | P-06, P-20, P-21, P-22 |
+| Q2 | **Chốt 25/10: B — giữ ngày sinh đầy đủ và Gmail phụ huynh**, tách sang `hoso/{tk}` chỉ quản lý đọc ghi (P-06a). P-09b còn: nút Xuất dữ liệu, nhắc thời hạn lưu | P-06a, P-09b |
+| Q3 | **Chốt 25/10: B — Cowork vẫn đẩy thẳng `main`**; bảo vệ nhánh bắt buộc PR + CI xanh nhưng chủ kho được miễn (bypass). Claude Code vẫn qua PR. CI vẫn chạy trên mỗi push `main` để thấy đỏ ngay | P-02 (dòng `CLAUDE.md`, cách bật bảo vệ) |
+| Q4 | **Chốt 25/10: A — dựng design system Jenny trong Claude Design**, 2 theme Pixel + Classroom, mở từ tip FE1 | P-18 |
+| Q5 | **Chờ thầy:** nâng Firebase lên gói Blaze (trả theo dùng, cần thẻ; đặt cảnh báo ngân sách 1 USD; ở quy mô CLB chi phí ≈ 0) để có Cloud Functions chấm xu, tạo tài khoản, chặn tự đăng ký, xuất sao lưu quản lý? Không nâng thì P-20 là mức bảo vệ cuối (giảm mạnh, không chặn hẳn) | P-22 |
 
 ## Giai đoạn 0 — Nền (chạy được mọi kiểm tra, build trên CI)
-- ☑ **P-01 Node + CI kiểm tra** (25/10, nhánh `claude/ci-kiem-tra-d60209` `3a62601`, `npm test` 8/8 ĐẠT) — `package.json` gốc, `npm test` chạy 7 kiểm tra của LUAT §7; GitHub Actions chạy trên mỗi PR. `plans/P-01-ci-kiem-tra.md`
-  ⟳ 25/10: `npm test` chạy mọi `tools/test/*.mjs` theo tên file (không danh sách cứng) để P-17 chỉ thêm file. Push ngay khi xong: mọi lane rebase lên tip này.
-- ☑ **P-02 Build và deploy Pages từ CI** (25/10, PR #4, CI đang chạy; lần đầu đỏ ở `tu-luyen.js` vì font chưa tải lúc đo, đã sửa `726bc6a`); bỏ file sinh ra khỏi git** — `deploy.yml`; `.gitignore` thêm `games/lop-hoc-ao/**/index.html`, `dist/`; workflow thu giọng mở PR thay vì push `main`. `plans/P-02-deploy-ci.md`
+- ☑ **P-01 Node + CI kiểm tra** (25/10, PR #4, `npm test` 8/8 ĐẠT). `plans/P-01-ci-kiem-tra.md`
+  ⟳ 25/10: `npm test` chạy mọi `tools/test/*.mjs` theo tên file (không danh sách cứng) để P-17 chỉ thêm file.
+- ☑ **P-02 Build và deploy Pages từ CI; bỏ file sinh ra khỏi git** (25/10, PR #4; CI đỏ 2 lần ở `tu-luyen.js` vì font chưa tải và thanh vai trò rộng hơn 1px trên Linux, đã sửa `726bc6a`, `53e84d8`; theo Q3, bảo vệ `main` bật với bypass cho chủ kho). `plans/P-02-deploy-ci.md`
   ⟳ 25/10: tạo `tools/build_all.py` chạy mọi `tools/build_*.py` theo tên để P-19 không sửa `deploy.yml`.
-- ☑ **P-03 Token thiết kế chung** (25/10, nhánh `claude/fe-sach-329fd2` `419ae20`; 36 cặp đo, 4 cặp chữ thường dưới 4.5 chờ thầy quyết: `.pill.ok` 3.90 và 3.23, `.flag.done` trang chủ 2.37, `.qlnote` 4.34) — `design/tokens.css` + `tokens.json`; `app.css`, `kit.css`, `index.html` dùng chung qua alias; kiểm tra tương phản. `plans/P-03-design-tokens.md`
+- ☑ **P-03 Token thiết kế chung** (25/10, nhánh `claude/fe-sach-329fd2`; 4 cặp chữ thường dưới 4.5 chờ thầy quyết: `.pill.ok` 3.90 và 3.23, `.flag.done` trang chủ 2.37, `.qlnote` 4.34). `plans/P-03-design-tokens.md`
 
 ## Giai đoạn 1 — Vá bảo mật bản đang chạy (Firebase)
-- ☑ **P-04 Siết Firestore rules** (25/10, nhánh `fix/firebase-va` `19220b1`; `rules.test.mjs` 22 ca chưa chạy tại máy vì thiếu Java, chạy trên CI khi có PR) — `asg` đọc theo lớp; `hs/{tk}` kiểm tra kiểu/cỡ; bỏ `login/{tk}` đọc công khai. `plans/P-04-firestore-rules.md`
-- ☑ **P-05 Firebase Auth cứng hơn** (25/10, PR #5; thầy còn 4 việc console trong `src/lop-hoc-ao/docs/FIREBASE-CONSOLE.md`) — App Check, bảo vệ liệt kê email, mật khẩu ≥ 8, tắt tự đăng ký (console) + mã khởi tạo App Check. `plans/P-05-firebase-auth.md`
-- ◐ **P-06 Tách blob `org/main.j` và chống sửa xu/sao** — chia document theo lớp/học sinh; ví xu chỉ quản lý ghi; GV chỉ sửa lớp mình. (Chỉ khi Q1 = A.) `plans/P-06-tach-org-blob.md`
-- ☑ **P-07 Bỏ tài khoản thử** (25/10, nhánh `chore/bo-demo-rieng-tu` `8b5ae1a`; 12 chữ `jenny123` còn lại là `MK0`, P-05 xử lý) và băm mật khẩu khỏi bản học sinh thật** — bản demo tách riêng `games/lop-hoc-ao/demo/`. `plans/P-07-bo-demo-khoi-ban-that.md`
-  ⟳ 25/10: không chạm `62-may-chu.js`; dòng xoá localStorage khi đăng xuất do P-05 làm. Chạy cùng phiên với P-09a.
-- ◐ **P-08 CSP, SRI, chữ tự host, bỏ `document.write`** — mọi trang và game. `plans/P-08-csp-font-sri.md`
+- ☑ **P-04 Siết Firestore rules** (25/10, PR #5; 22 ca `rules.test.mjs` chạy trên CI). `plans/P-04-firestore-rules.md`
+- ☑ **P-05 Firebase Auth cứng hơn** (25/10, PR #5; thầy còn 4 việc console trong `src/lop-hoc-ao/docs/FIREBASE-CONSOLE.md`). `plans/P-05-firebase-auth.md`
+- ◐ **P-06 Tách blob `org/main.j`** — 06a cấu trúc + chuyển đổi đang chạy (FB3, nhánh `fix/firebase-tach-org`); PII (ngày sinh, SĐT, Gmail) vào `hoso/{tk}` chỉ QL đọc ghi theo Q2. `plans/P-06-tach-org-blob.md`
+  ⟳ 25/10: phần 06b "ví xu duyệt bởi QL" **bỏ**, thay bằng P-20 (rules giới hạn, sổ sự kiện chỉ-thêm).
+- ☑ **P-07 Bỏ tài khoản thử và băm mật khẩu khỏi bản học sinh thật** (25/10, PR #3). `plans/P-07-bo-demo-khoi-ban-that.md`
+  ⟳ 25/10: không chạm `62-may-chu.js`; dòng xoá localStorage khi đăng xuất do P-05 làm.
+- ◐ **P-08 CSP, SRI, chữ tự host, bỏ `document.write`** — đang chạy (FE2); chờ thầy duyệt tải 5 file font woff2. `plans/P-08-csp-font-sri.md`
 
 ## Giai đoạn 2 — Riêng tư và dữ liệu
-- ◐ **P-09 Riêng tư theo PDPL 2025** (09a văn bản ☑ 25/10 bản nháp trên `chore/bo-demo-rieng-tu`, chờ thầy duyệt; 09b chờ Q2) — trang chính sách, mẫu đồng ý, dữ liệu tối thiểu, nút Xuất dữ liệu một em, thời hạn lưu. `plans/P-09-rieng-tu.md`
-- ☑ **P-10 Sao lưu hàng tuần** (25/10, PR #3; chưa chạy workflow thật: thầy cần tạo kho `jenny-backup`, service account, 3 secret) — workflow có lịch xuất dữ liệu, mã hoá, lưu kho riêng tư; thử khôi phục. `plans/P-10-sao-luu.md`
+- ◐ **P-09 Riêng tư theo PDPL 2025** — 09a văn bản ☑ (PR #3, bản nháp chờ thầy duyệt); 09b theo Q2 = B: nút Xuất dữ liệu một em, nhắc thời hạn lưu, không đổi trường. `plans/P-09-rieng-tu.md`
+- ☑ **P-10 Sao lưu hàng tuần** (25/10, PR #3; chưa chạy thật: thầy tạo kho `jenny-backup`, service account, 3 secret). `plans/P-10-sao-luu.md`
 
-## Giai đoạn 3 — Máy chủ Supabase (⏸ Q1 = A ngày 25/10; chỉ xem lại khi có >1 lớp thật)
-- ⏸ **P-11 Vá `lms-thu/setup.sql` thành migration** — sửa H1, H2, M1–M7 của audit; `supabase/migrations/`. `plans/P-11-supabase-migration.md`
-- ⏸ **P-12 Lớp đồng bộ Supabase cho Lớp học ảo** — `62b-may-chu-supabase.js` cùng giao diện hàm với `62`; chấm xu/sao ở máy chủ. `plans/P-12-dong-bo-supabase.md`
-- ⏸ **P-13 Chuyển dữ liệu và cắt chuyển** — script chuyển Firebase → Supabase, chạy song song 1 tuần, tắt Firebase. `plans/P-13-chuyen-du-lieu.md`
+## Giai đoạn 3 — Firebase an toàn và tiết kiệm (thay giai đoạn Supabase, chốt 25/10)
+- ✗ **P-11, P-12, P-13 Supabase** — bỏ theo Q1 (25/10). Kế hoạch con giữ lại để tham khảo, đầu file ghi "Bỏ".
+- ☐ **P-20 Ví xu và sao kiểm soát bằng rules** — `vi/{tk}` có kiểu; mỗi lần ghi cộng tối đa 40 xu và cách lần trước ≥ 3 giây; mua đồ khớp bảng giá `cfg/shop`; sổ sự kiện `ev/{tk}/{id}` chỉ-thêm; trang cô cảnh báo bất thường. Giảm mạnh gian lận; chặn hẳn cần P-22. `plans/P-20-vi-xu-rules.md`
+- ☐ **P-21 Firestore ngoại tuyến và tiết kiệm đọc** — bật bộ nhớ đệm bền, listener tối thiểu theo vai, chỉ mục `firestore.indexes.json`, đo đọc/ngày và cảnh báo ngân sách. Đi cùng P-16 PWA. `plans/P-21-firestore-ngoai-tuyen.md`
+- ⏸ **P-22 Blaze 0 đồng + Cloud Functions** (chỉ khi Q5 = Blaze) — hàm `taoTaiKhoan`, `chamXu`, `xoaHocSinh`, chặn tự đăng ký bằng blocking function, xuất sao lưu quản lý theo lịch; HS không còn ghi `vi`. `plans/P-22-blaze-functions.md`
 
 ## Giai đoạn 4 — Tái cấu trúc front-end
 - ☐ **P-14 Vite + ES module cho Lớp học ảo** — thay `build.py` bằng Vite, giữ hành vi; 4 entry dùng chung chunk. `plans/P-14-vite-module.md`
 - ☐ **P-15 Nội dung theo khối, tải động** — `js/content/**` thành gói mỗi khối, `import()` khi đăng nhập. `plans/P-15-noi-dung-theo-khoi.md`
 - ☐ **P-16 PWA ngoại tuyến** — manifest, service worker, nút "có bản mới". `plans/P-16-pwa.md`
-- ◐ **P-17 Kiểm tra giao diện tự động** — axe-core, tương phản, `check_fit` trên CI. `plans/P-17-kiem-tra-giao-dien.md`
-  ⟳ 25/10: chỉ thêm file test mới + `giao-dien.yml`; không sửa `ci.yml`, `chay-tat-ca.mjs`. Mở từ tip P-01, chạy song song với P-19, P-18.
+- ◐ **P-17 Kiểm tra giao diện tự động** — đang chạy (KT, PR #6); đã thấy 2 lỗi tràn ở 1920×950 (Hành trình · vườn, · cửa hàng), sửa ở task riêng. `plans/P-17-kiem-tra-giao-dien.md`
+  ⟳ 25/10: chỉ thêm file test mới + `giao-dien.yml`; không sửa `ci.yml`, `chay-tat-ca.mjs`.
 
 ## Giai đoạn 5 — Hệ thống thiết kế và game lẻ
-- ☐ **P-18 Design system trong Claude Design** — 2 theme Pixel + Classroom, xuất token khớp P-03. `plans/P-18-design-system.md`
-- ☐ **P-19 Game lẻ dùng kit + token chung** — gom mã trùng của 4 game cũ vào `_kit`, bỏ font ngoài. `plans/P-19-game-le-dung-kit.md`
+- ◐ **P-18 Design system trong Claude Design** — mở 25/10 theo Q4 từ tip FE1. `plans/P-18-design-system.md`
+- ☐ **P-19 Game lẻ dùng kit + token chung** — gom mã trùng của 4 game cũ vào `_kit`, nút ≥ 48px. `plans/P-19-game-le-dung-kit.md`
   ⟳ 25/10: không sửa `deploy.yml`; `tham-tu` sinh bởi `tools/build_tham_tu.py` do `build_all.py` gọi. Mở từ tip P-08.
 
 ## Nhật ký quyết định (STAR)
-- **25/10/2026 — Lập kế hoạch.** Tình huống: app chạy thật trên `main`, máy chủ Firebase mới nối 24/10, chưa có CI, chưa nhập tên thật. Nhiệm vụ: audit và vạch đường tới kiến trúc an toàn. Hành động: audit 3 khu (Lớp học ảo + Firebase, lms-thu Supabase, game lẻ + công cụ), viết đích và 19 việc. Kết quả: chờ thầy trả lời Q1–Q4; thứ tự chạy ở file ROUTES.
-- **25/10/2026 — Cắt lộ trình song song.** Tình huống: 19 hàng xếp theo giai đoạn sẽ chạy lần lượt ≈ 19 phiên. Nhiệm vụ: tìm thứ tự chạy nhanh nhất mà không đụng file. Hành động: đọc file mỗi kế hoạch con, 4 luật F-c (P-07/62, P-17/ci.yml, P-19/deploy.yml, P-12/include), gộp 19 hàng thành 9 gói, 22 phiên trong 9 lane. Kết quả: độ rộng 4 (5 với B), đường tới hạn 7 phiên, 3 walk; thầy gộp PR nhánh `chore/audit-kien-truc` là lời đồng ý với lộ trình.
-- **25/10/2026 — Thầy chốt Q1 = A và bắt đầu lộ trình.** Tình huống: thầy trả lời "giữ Firebase, vá theo P-04, P-05, P-06" và "bắt đầu lộ trình". Nhiệm vụ: mở ngày 1. Hành động: ghi Q1, ⏸ giai đoạn 3, mở 4 phiên CI1 · FE1 · FB1 · T1 đọc kế hoạch từ nhánh `chore/audit-kien-truc` tới khi PR #2 gộp. Kết quả: Q2, Q3, Q4 còn chờ (chỉ gate P-09b, một dòng CLAUDE.md ở P-02, P-18).
+- **25/10/2026 — Lập kế hoạch.** Tình huống: app chạy thật trên `main`, máy chủ Firebase mới nối 24/10, chưa có CI, chưa nhập tên thật. Nhiệm vụ: audit và vạch đường tới kiến trúc an toàn. Hành động: audit 3 khu, viết đích và 19 việc. Kết quả: PR #2 mở; chờ Q1–Q4.
+- **25/10/2026 — Cắt lộ trình song song.** Tình huống: 19 hàng theo giai đoạn ≈ 19 phiên lần lượt. Nhiệm vụ: thứ tự chạy nhanh nhất không đụng file. Hành động: 4 luật F-c, 9 gói, 22 phiên trong 9 lane. Kết quả: độ rộng 4, đường tới hạn 7 phiên.
+- **25/10/2026 — Thầy chốt Q1 = A, bắt đầu lộ trình.** Hành động: mở CI1 · FE1 · FB1 · T1, rồi ngày 2 CI2 · FE2 · FB2 · T2 · KT. Kết quả: PR #3, #4, #5, #6; P-03 xong; Node đã cài.
+- **25/10/2026 — Thầy chốt Q2 = B, Q3 = B, Q4 = A và bỏ hẳn Supabase.** Tình huống: giai đoạn 3 cũ dựa vào Supabase để chấm xu ở máy chủ. Nhiệm vụ: giữ mục tiêu an toàn và hiệu quả chỉ với Firebase. Hành động: thay P-11..13 bằng P-20 (rules giới hạn + sổ sự kiện), P-21 (ngoại tuyến, tiết kiệm đọc), P-22 (Blaze 0 đồng + Functions, chờ Q5); cắt lại lộ trình `KE-HOACH-PARALLEL-2026-10-25.md`; mở DS. Kết quả: 13 phiên còn lại (+2 nếu Q5), độ rộng 4, đường tới hạn 6 phiên; thầy gộp PR nhánh `chore/audit-kien-truc` là lời đồng ý với bản cắt lại.

@@ -1,5 +1,7 @@
 # P-13 Chuyển dữ liệu Firebase → Supabase và cắt chuyển (chỉ khi Q1 = B)
 
+**Bỏ 25/10/2026 (Q1 = A, giữ Firebase):** không làm. Giữ file để tham khảo; việc an toàn và hiệu quả chuyển sang P-20, P-21, P-22.
+
 **Mục tiêu:** dữ liệu thật đang có trên Firestore sang Supabase không mất; chạy song song 1 tuần; tắt Firebase.
 **Ước lượng:** 6 giờ (+ 1 tuần theo dõi). **Người dùng thấy gì:** một thông báo "Hệ thống nâng cấp, em đăng nhập lại". **Cần trước:** P-12 đã push; sao lưu P-10 đã chạy ít nhất 1 lần.
 

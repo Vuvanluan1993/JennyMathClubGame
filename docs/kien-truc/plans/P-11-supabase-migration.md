@@ -1,5 +1,7 @@
 # P-11 Vá `lms-thu/setup.sql` thành migration Supabase (chỉ khi Q1 = B)
 
+**Bỏ 25/10/2026 (Q1 = A, giữ Firebase):** không làm. Giữ file để tham khảo; việc an toàn và hiệu quả chuyển sang P-20, P-21, P-22.
+
 **Mục tiêu:** đóng SB-H1, SB-H2, SB-M1…M7 và các L của audit; schema sống trong `supabase/migrations/`, không chạy SQL tay.
 **Ước lượng:** 8 giờ. **Người dùng thấy gì:** không (LMS thử). **Cần trước:** Q1 = B.
 

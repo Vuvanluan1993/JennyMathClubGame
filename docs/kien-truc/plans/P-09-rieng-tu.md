@@ -9,6 +9,7 @@ Hai phần: **P-09a văn bản** (độc lập, làm ngay) và **P-09b mã** (sa
 - DONE: thầy duyệt 4 văn bản; liên kết hiện ở trang chủ và màn đăng nhập.
 
 ## P-09b — mã (dữ liệu tối thiểu, xuất dữ liệu, thời hạn)
+⟳ 25/10 (Q2 = B): **giữ** ngày sinh đầy đủ và Gmail phụ huynh; hai gạch đầu dòng "`hoso{ng,th,nam}` → chỉ `nam`" và "cột Ngày sinh → Năm sinh" **không làm**. Còn: nút Xuất dữ liệu (`78`), nhắc thời hạn lưu (`76`), LUAT §6i ghi Q2. File sửa chỉ `76`, `78`, CHANGELOG, LUAT. Ước lượng còn 3 giờ.
 - `src/lop-hoc-ao/js/core/70-sua-hoc-sinh.js:58` `hoso{ng,th,nam}` → chỉ `nam` (năm sinh) nếu Q2 = có; `75-nhap-excel.js` cột "Ngày sinh" → "Năm sinh" (nhận cả ngày đầy đủ, chỉ giữ năm); `73-quan-ly-4-nut.js` hiện năm.
 - `78-xoa-hoc-sinh.js`: thêm nút **⬇ Xuất dữ liệu của em** (JSON: hồ sơ + tiến độ + sổ lỗi + nhận xét), ghi nhật ký.
 - `76-len-lop.js`: em "Nghỉ học"/"Học xong" quá 24 tháng → QL thấy nhắc "xoá theo thời hạn" (xoá vẫn do người bấm, có XOA).
