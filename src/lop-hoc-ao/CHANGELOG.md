@@ -64,6 +64,12 @@
 - Mới `tools/test/rules.test.mjs` (22 ca, `@firebase/rules-unit-testing`) + `firebase/firebase.json` (emulator cổng 8089). Chạy `node src/lop-hoc-ao/tools/test/rules.test.mjs`: tự bật emulator khi có Java; máy không có Java in "BỎ QUA" và thoát 0 (CI Ubuntu có Java). Cần `package.json` có `firebase`, `@firebase/rules-unit-testing`, `firebase-tools` (nhờ lane CI thêm).
 - Máy thầy 25/10 chưa có Node và Java: chưa chạy được `rules.test.mjs` lẫn `tools/test/dong-bo.js`; đã rà tay từng luật theo bảng ca thử và kiểm tra cú pháp `62-may-chu.js`. Khi có Node: `node tools/test/dong-bo.js` phải ĐẠT (bản giả lập không có `where` nên `fbAsgLop` tự lùi về cả collection).
 
+## 25/10/2026 — Design system Jenny trong Claude Design (P-18, DS)
+- Mới design system "Jenny" (công cụ Artifact, kiểu Design System; link và quy tắc "màn mới dùng thành phần" ở `design/README.md`): 2 theme Pixel/Classroom cùng bảng màu, khác họ chữ và bo góc; 5 trang token; 12 thành phần có trạng thái và cỡ chạm (Nút, Ô phương án, Khung pixel, Thẻ lớp, Bảng nhập, Toast, Hộp thoại, Thanh điều hướng, Huy hiệu mức, Thẻ chào, Nhãn cảnh báo, Ô Quản lý); 6 mẫu trang ghép từ thành phần, mỗi mẫu ghi khác biệt so với ảnh app 25/10 (ảnh gốc đính kèm trong design system).
+- Mới `design/design-system/xuat-token.py`: sinh `design/design-system/project/tokens.json` từ `design/tokens.json`; `--check` so hai chiều → khác 0 giá trị (96 token + 6 họ chữ; thang chữ 29 kiểu chỉ có ở design system). Bản sao file design system ở `design/design-system/project/`.
+- Không đổi luật đã chốt; không vẽ nhân vật (sprite PXS chỉ tham chiếu). Đề xuất chờ thầy duyệt ghi ở `design/README.md` (4 cặp tương phản, token mới, cỡ nút Classroom, toast học sinh).
+- LUAT §2 thêm một dòng "Màn hình mới vẽ từ design system Jenny".
+
 ## 25/10/2026 — CSP, chữ tự host, SRI Firebase, bỏ giọng Google (P-08, FE2)
 - Mọi trang (14 game, trang chủ, Lớp học ảo) có `<meta http-equiv="Content-Security-Policy">` và `<meta name="referrer" content="no-referrer">`; trang Lớp học ảo cho phép thêm Firebase (gstatic, *.googleapis.com, *.firebaseio.com, wss, firebaseapp.com).
 - Chữ Baloo 2, Nunito, VT323, Be Vietnam Pro, Lexend tự host ở `assets/fonts/` (48 file woff2 ≈ 1 MB, subset vietnamese + latin-ext + latin đúng như Google đưa, `font-display: swap`; tải lại bằng `assets/fonts/tai-font.py`); không trang nào gọi Google Fonts nữa. So ảnh và kiểu hiển thị 4 trang × 4 khổ với bản trước P-08: giống hệt (chỉ khác ô giờ build). `80-phong-cach-lms.js` không chèn Lexend từ Google.
