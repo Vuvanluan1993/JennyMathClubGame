@@ -1,17 +1,17 @@
 // Kiểm tra firebase/firestore.rules trên Firebase emulator (P-04, 25/10/2026). Không cần mạng, không đụng dữ liệu thật.
-//   node src/lop-hoc-ao/tools/test/rules.test.mjs
+//   node src/lop-hoc-ao/tools/test/rules.test.js
 //     → tự bật emulator (cần Java 11+ và firebase-tools); không có Java thì in "BỎ QUA" và thoát 0 (máy thầy chưa có Java).
 //   Chạy thẳng trong emulator:
 //   npx firebase-tools emulators:exec --only firestore --project demo-jenny --config src/lop-hoc-ao/firebase/firebase.json \
-//       "node src/lop-hoc-ao/tools/test/rules.test.mjs"
-// Cần trong package.json (devDependencies): firebase, @firebase/rules-unit-testing, firebase-tools.
+//       "node src/lop-hoc-ao/tools/test/rules.test.js"
+// Cần trong package.json (devDependencies): firebase, @firebase/rules-unit-testing; firebase-tools tải qua npx khi chạy.
 // Mỗi ca ghi rõ điều gì được phép ("cho") hay bị chặn ("cam"); in ✔/✘ và thoát 1 nếu có ca sai.
-import {readFileSync, existsSync} from 'node:fs';
-import {spawnSync} from 'node:child_process';
-import path from 'node:path';
-import {fileURLToPath} from 'node:url';
+// File .js dạng CommonJS để tools/test/chay-tat-ca.mjs (glob *.js) tự nhặt; các gói Firebase nạp bằng import() động.
+const {readFileSync} = require('node:fs');
+const {spawnSync} = require('node:child_process');
+const path = require('node:path');
 
-const TOI = fileURLToPath(import.meta.url);
+const TOI = __filename;
 const FB_DIR = path.resolve(path.dirname(TOI), '..', '..', 'firebase');
 const RULES = path.join(FB_DIR, 'firestore.rules');
 
@@ -27,6 +27,7 @@ if (!process.env.FIRESTORE_EMULATOR_HOST) {
   process.exit(r.status ?? 1);
 }
 
+(async () => {
 const {initializeTestEnvironment, assertSucceeds, assertFails} = await import('@firebase/rules-unit-testing');
 const {doc, getDoc, setDoc, updateDoc, deleteDoc, collection, getDocs, query, where, serverTimestamp} = await import('firebase/firestore');
 
@@ -101,6 +102,17 @@ ca('20 quản lý đọc cả kho bài, xoá bài ĐƯỢC', 'cho', async () => 
 ca('21 cô sửa org/main chỉ j, t ĐƯỢC; sửa gd BỊ CHẶN', 'cho', async () => {
   await updateDoc(doc(gv1, 'org/main'), {j: '{"ten":"Clb 2"}', t: serverTimestamp()});
   await assertFails(updateDoc(doc(gv1, 'org/main'), {gd: {em1: '2A'}})); });
+/* P-05 — users.mustChange */
+ca('23 chính chủ tắt cờ mustChange (→ false) ĐƯỢC', 'cho', async () => {
+  await env.withSecurityRulesDisabled(c => setDoc(doc(c.firestore(), 'users/hs2'), {role: 'hs', tk: 'em2', ten: 'Em 2', khoi: 2, mustChange: true}));
+  await updateDoc(doc(hs2, 'users/hs2'), {mustChange: false}); });
+ca('24 chính chủ bật lại mustChange = true, hoặc tự đổi role/tk BỊ CHẶN', 'cam', async () => {
+  await assertFails(updateDoc(doc(hs2, 'users/hs2'), {mustChange: true}));
+  await assertFails(updateDoc(doc(hs2, 'users/hs2'), {mustChange: false, role: 'ql'}));
+  await updateDoc(doc(hs2, 'users/hs2'), {tk: 'em9'}); });
+ca('25 người khác không tắt mustChange hộ; QL đặt mustChange = true ĐƯỢC', 'cho', async () => {
+  await assertFails(updateDoc(doc(hs1, 'users/hs2'), {mustChange: false}));
+  await updateDoc(doc(ql, 'users/hs2'), {mustChange: true}); });
 /* QL vừa chuyển lớp cho em: em ghi lop mới theo org.gd ĐƯỢC */
 ca('22 QL chuyển em1 sang 1B rồi em ghi lop = 1B ĐƯỢC', 'cho', async () => {
   await updateDoc(doc(ql, 'org/main'), {gd: {em1: '1B', em2: '2A'}});
@@ -114,3 +126,4 @@ for (const {ten, mong, f} of CA) {
 await env.cleanup();
 console.log(`Rules: ${sai ? 'CHƯA ĐẠT' : 'ĐẠT'} · ${CA.length - sai}/${CA.length} ca`);
 process.exit(sai ? 1 : 0);
+})().catch(e => { console.error('Rules: CHƯA ĐẠT —', e && e.message || e); process.exit(1); });

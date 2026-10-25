@@ -58,7 +58,12 @@ service cloud.firestore {
       allow read: if signed() && (request.auth.uid == uid || isQL());
       allow create: if isQL()
         || (signed() && request.auth.uid == uid && request.resource.data.role == 'ql' && request.auth.uid in org().admins);
-      allow update, delete: if isQL();
+      // P-05: chính chủ chỉ được tắt cờ mustChange (sau khi tự đặt mật khẩu mới); mọi trường khác chỉ QL
+      allow update: if isQL()
+        || (signed() && request.auth.uid == uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['mustChange'])
+            && request.resource.data.mustChange == false);
+      allow delete: if isQL();
     }
     match /hs/{tk} {
       allow read: if isSelf(tk) || isQL() || gvLop(tk) || isPH(tk);
