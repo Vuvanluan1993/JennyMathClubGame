@@ -110,6 +110,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 
 ## 6i. Máy chủ (chốt 24/10/2026)
 - Dùng **Firebase gói miễn phí (Spark)**, dự án `jenny-lop-hoc-ao`, Firestore vùng **asia-southeast1**; tắt Gemini và Google Analytics; không sao lưu tự động (cần gói trả phí).
+- **Giữ Firebase, vá bảo mật theo kế hoạch kiến trúc (chốt 25/10/2026, Q1 = A):** làm P-04 (rules), P-05 (Auth), P-06 (tách `org/main.j`, ví xu) trong `docs/kien-truc/KE-HOACH.md`; chuyển Supabase chỉ xem lại khi có hơn 1 lớp thật.
 - Trang vẫn đặt trên GitHub Pages (chưa cần tên miền riêng).
 - Quy tắc bảo mật ở `firebase/firestore.rules` (dán vào Firestore › Rules mỗi khi đổi). Em chỉ xem dữ liệu của mình; cô chỉ xem lớp được phân công; phụ huynh chỉ xem con; chỉ quản lý tạo tài khoản.
 - Thử nghiệm dùng tài khoản thử, chưa nhập tên thật của học sinh.

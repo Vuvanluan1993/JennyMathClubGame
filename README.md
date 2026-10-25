@@ -79,7 +79,9 @@ Thêm game mới thì thêm vài dòng vào `CASES` cuối file đó.
 - Bản đồ 2 đảo × 15 màn. Mỗi màn là 1 đề Bebras cố định (game Bebras mở ở chế độ `?saga=...&seed=...`).
 - Trạm toán: bài MATHCOUNTS (đã dịch). Giải đúng được xu (Dễ 10, Vừa 20, Khó 40; tối đa 300 xu/ngày) và năng lượng (mỗi màn tốn 1).
 - Vườn: cây và thú lớn lên theo số bài giải đúng. Tiến độ lưu trên máy, có mã sao lưu để chuyển máy.
-- Kho bài `bank.enc` được mã hoá bằng mã CLB. Tạo lại kho (hoặc đổi mã):
+- Kho bài `bank.enc` được mã hoá bằng mã CLB. **Mã CLB không ghi ở đâu trong kho** (kể cả mã thử): chạy `check_fit.py` cho game này
+  phải đặt biến môi trường `JENNY_CLB_CODE=<mã CLB> python3 tools/check_fit.py <tên game>`. Trong game, mã chỉ giữ trong phiên
+  trình duyệt (`sessionStorage`), đóng thẻ là phải nhập lại — để máy dùng chung không lộ mã. Tạo lại kho (hoặc đổi mã):
 
 ```
 pip install cryptography
@@ -96,20 +98,21 @@ python tools/build_bank.py <_pool_lop6.json> games/hanh-trinh-jenny/lop-6/bank.e
 - Màn 1–4 dùng số đến 5, màn 5–8 đến 10. Mỗi câu máy tự đọc yêu cầu (chậm), sai 2 lần thì Jenny gợi ý.
 - Hình vẽ ở `art.js` (vẽ bằng SVG). Thêm dạng bài mới: thêm vào `ACTS` trong `index.html`.
 
-## Lớp Học Ảo Jenny – tài khoản học sinh
+## Lớp Học Ảo Jenny – tài khoản
 
-Trang: `games/lop-hoc-ao/`. Mã nguồn, cách build, kiểm tra và danh sách việc: `src/lop-hoc-ao/README.md`. Mật khẩu mọi tài khoản: `jenny123`. Tên đăng nhập không phân biệt hoa thường.
+Trang: `games/lop-hoc-ao/` (học sinh), `giao-vien/`, `phu-huynh/`, `quan-ly/`. Mã nguồn, cách build, kiểm tra và danh sách việc: `src/lop-hoc-ao/README.md`.
+File `games/lop-hoc-ao/**/index.html` **không nằm trong git**: GitHub Actions dựng từ `src/lop-hoc-ao/` rồi đưa lên Pages mỗi lần đẩy vào `main` (`.github/workflows/deploy.yml` → `python3 tools/build_all.py`). Xem trên máy: chạy lệnh đó rồi mở file. Mật khẩu mọi tài khoản: `jenny123`. Tên đăng nhập không phân biệt hoa thường.
 
-| Lớp | Tài khoản chính | Tài khoản dự phòng |
+**Bản thật** (các trang trên) chỉ đăng nhập bằng tài khoản do quản lý trung tâm cấp trên máy chủ (Firebase). Trang không chứa tài khoản mẫu hay mã băm mật khẩu nào.
+
+**Bản thử** (`games/lop-hoc-ao/demo/`, có cả `demo/giao-vien/`, `demo/phu-huynh/`, `demo/quan-ly/`): dữ liệu mẫu, chỉ lưu trên máy người xem, không gọi máy chủ, có dải "Bản thử — dữ liệu chỉ trên máy này" và `noindex`. Thư mục `demo/` được tạo khi build (`python3 tools/build_all.py` hoặc `src/lop-hoc-ao/tools/build.py`) và **không nằm trong kho** (`.gitignore`); GitHub Actions (`deploy.yml`) dựng lại mỗi lần đẩy vào `main` nên Pages có cả bản thật lẫn `demo/`. Tài khoản **chỉ dùng ở bản thử**, mật khẩu ghi ngay trên màn đăng nhập bản thử; tên đăng nhập không phân biệt hoa thường:
+
+| Lớp | Tài khoản chính (chỉ bản thử) | Tài khoản dự phòng (chỉ bản thử) |
 |---|---|---|
-| 1 | Jenny01 | Jenny01-1 … Jenny01-5 |
+| 1 | Jenny01 · lebaona (Lê Bảo Na, mở tất cả) | Jenny01-1 … Jenny01-5 |
 | 2 | Jenny02 | Jenny02-1 … Jenny02-5 |
 | 3 | Jenny03 | Jenny03-1 … Jenny03-5 |
 | 4 | Jenny04 | Jenny04-1 … Jenny04-5 |
 | 5 | Jenny05 | Jenny05-1 … Jenny05-5 |
-| 6 | Jenny06 | Jenny06-1 … Jenny06-5 |
-| 7 | Jenny07 | Jenny07-1 … Jenny07-5 |
-| 8 | Jenny08 | Jenny08-1 … Jenny08-5 |
-| 9 | Jenny09 | Jenny09-1 … Jenny09-5 |
 
-Lưu ý: tiến độ lưu trên trình duyệt của từng máy (chưa có máy chủ). Mật khẩu được lưu dạng mã băm trong trang, chỉ đủ để chia lớp, không phải bảo mật thật.
+Trang giáo viên, phụ huynh, quản lý ở bản thử mở thẳng vai đó (không còn mật khẩu `giaovien…` như trước).

@@ -1,0 +1,13 @@
+{
+  "name": "jenny-sao-luu",
+  "private": true,
+  "description": "Sao lưu / khôi phục Firestore của Lớp học ảo Jenny (chạy trong GitHub Actions, xem README.md)",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "thu": "node thu-gia-lap.mjs"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.4.0"
+  }
+}
