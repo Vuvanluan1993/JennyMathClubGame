@@ -3,6 +3,8 @@
 **Mục tiêu:** app mở nhanh từ bộ nhớ đệm, chạy khi mất mạng, và ở lại trong hạn miễn phí Spark (50 000 đọc/ngày) khi có 100 em học mỗi ngày.
 **Ước lượng:** 6 giờ = 1 phiên (FB6). **Người dùng thấy gì:** mở lại trang gần như tức thì; mất mạng vẫn học, nối lại tự gửi. **Cần trước:** P-20 đã push (cùng lane). Đi cùng P-16 (PWA cache phần tĩnh; P-21 cache dữ liệu).
 
+⟳ 25/10 (Q6): thêm **công tắc cấu hình theo bản dựng**: `firebase/cau-hinh.json` có hai khối `that` (dự án `jenny-lop-hoc-ao`) và `thu` (dự án `jenny-lop-hoc-ao-thu`, thầy tạo); `build.py`/`build_all.py` đọc biến môi trường `FB_ENV` (mặc định `that`) và thay khối cấu hình vào `62-may-chu.js` lúc dựng; CI của nhánh tích hợp đặt `FB_ENV=thu`, `deploy.yml` (main) giữ `that`. Dải "Bản thử" hiện ở thanh trên khi `thu`. Ước lượng +1 giờ. Thầy làm: tạo dự án thử (Firestore asia-southeast1, Authentication Email/Password, tắt Analytics), dán cấu hình web vào khối `thu`, dán rules + indexes của nhánh tích hợp vào dự án thử.
+
 ## File sửa
 - Mới: `js/core/63-firestore-tiet-kiem.js` (include ngay sau `62`):
   - bật bộ nhớ đệm bền `enablePersistence({synchronizeTabs:true})` (compat) ngay sau `fbInit`; lỗi `failed-precondition` (nhiều tab) và `unimplemented` (trình duyệt cũ) chỉ `console.info`;
