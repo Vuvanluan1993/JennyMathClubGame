@@ -88,7 +88,7 @@ overlay='''<div id="login" class="login"><form id="lgForm" class="lgcard" autoco
  <label for="lgP">Mật khẩu</label><input id="lgP" name="p" type="password" required>
  <label class="lgrem"><input id="lgR" type="checkbox"> Ghi nhớ trên máy này (máy ở nhà)</label>
  <button class="gobtn" type="submit">Vào học</button><p id="lgMsg" class="lgmsg" role="alert"></p>
- <p class="lgnote">'''+ghi_chu+'''</p></form></div>
+ <p class="lgnote">'''+ghi_chu+''' <a href="'''+('../../../' if DEMO else '../../')+'''rieng-tu/">Riêng tư</a></p></form></div>
 '''
 dai_demo='<div class="demoband" role="note">Bản thử — dữ liệu chỉ trên máy này · <a href="../">Bản chính</a> · <a href="giao-vien/">Giáo viên</a> · <a href="phu-huynh/">Phụ huynh</a> · <a href="quan-ly/">Quản lý</a></div>\n' if DEMO else ''
 t=t.replace('<main class="wrap" id="app"></main>',dai_demo+overlay+'<main class="wrap" id="app"></main>',1)
