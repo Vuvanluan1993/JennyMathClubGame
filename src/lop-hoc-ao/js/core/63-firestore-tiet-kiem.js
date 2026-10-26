@@ -13,6 +13,11 @@
        chỗ gọi thứ hai cùng ref chỉ nhận thêm bản chụp (có ngay bản mới nhất); trả về hàm tắt như onSnapshot.
        Lần đầu trên máy (localStorage.jennyV3 !== '1'): bỏ qua bản chụp từ đệm, chờ bản từ máy chủ (tránh đệm cũ sau
        "Nâng cấp dữ liệu v3"); nhận được bản máy chủ thì đặt jennyV3 = '1', từ đó lấy đệm trước cho nhanh.
+       Listener SỐNG theo vai, ≤ 4 document (thầy chốt 26/10): HS hsgv/{tk} + asg lớp (hs/{tk} do 79, vi/{tk} do 64 nghe thẳng);
+       GV lop/{id} lớp mình + asg; PH hs/{con}, hsgv/{con} + asg lớp con; QL org/main, lop (truy vấn), hsdm (truy vấn).
+       Tài liệu ngoài danh sách chỉ "NGHE MỘT LẦN": mở listener, nhận bản đệm rồi bản máy chủ là tắt ngay (có resume token nên
+       lần mở sau chỉ tốn đọc cho tài liệu đổi, rẻ hơn get() luôn lên máy chủ); mất mạng thì nhận bản đệm rồi tắt; quá 8 giây
+       chưa có bản máy chủ cũng tắt. Chỗ gọi vẫn nhận bản chụp như trước, chỉ không còn cập nhật trực tiếp (tải lại trang mới thấy).
    - fbNgheTat(): tắt hết listener; gọi khi bắt đầu fbHsBoot/fbGvBoot (đổi vai, đăng nhập lại) và khi đăng xuất.
    Không chạm 79-dong-bo.js (P-16 sở hữu): listener hs/{tk} của 79 và vi/{tk} của 64 vẫn gọi onSnapshot thẳng.
    Bản giả lập trong tools/test (FB.db tự chế, không có firebase.firestore.DocumentReference) chạy nhánh đơn giản: không
@@ -29,27 +34,40 @@ function fbDemBat(){if(!fbThat()||fbDemBat.ok)return;fbDemBat.ok=1;const F=fireb
   const ghi=()=>fbDemCong('ghi',1);
   boc(F.DocumentReference,'get',doc);boc(F.Query,'get',doc);boc(F.Transaction,'get',doc);
   ['set','update','delete'].forEach(m=>{boc(F.DocumentReference,m,ghi);boc(F.WriteBatch,m,ghi);boc(F.Transaction,m,ghi)})}
-/* ---------- một listener mỗi document ---------- */
-const fbNgheDS=[];/* {ref, path, cbs:[{cb,err}], off, last, lastJ, dau} */
+/* ---------- một listener mỗi document; sống hay nghe một lần tuỳ vai ---------- */
+const fbNgheDS=[];/* {ref, path, cbs:[{cb,err}], off, last, lastJ, dau, song, tat} */
+/* đường dẫn của DocumentReference (ref.path) hay collection của Query (nội bộ SDK compat: _delegate._query.path); '' = không rõ */
+function fbNgheDuong(ref){try{if(ref.path)return String(ref.path);const q=ref._delegate&&ref._delegate._query,pa=q&&q.path;if(!pa)return'';return pa.canonicalString?pa.canonicalString():(pa.segments||[]).join('/')}catch(e){return''}}
+/* listener được sống theo vai; đường dẫn không rõ (bản giả lập) thì sống */
+function fbNgheSong(path){if(!path||!CLOUD||!CLOUD.me)return true;const me=CLOUD.me,vai=me.role,tk=me.tk,con=me.con||[];
+  if(vai==='hs')return path==='hsgv/'+tk||path==='asg';
+  if(vai==='gv')return path==='asg'||path.startsWith('lop/');
+  if(vai==='ph')return path==='asg'||con.some(c=>path==='hs/'+c||path==='hsgv/'+c);
+  if(vai==='ql')return path==='org/main'||path==='lop'||path==='hsdm';
+  return true}
 function fbNgheTim(ref){const p=ref&&ref.path;for(const L of fbNgheDS){if(p?L.path===p:(!L.path&&L.ref===ref||(ref.isEqual&&L.ref.isEqual&&!L.path&&L.ref.isEqual(ref))))return L}return null}
+function fbNgheBo(L){const j=fbNgheDS.indexOf(L);if(j>=0){fbNgheDS.splice(j,1);fbDemCong('nghe',-1)}try{L.off&&L.off()}catch(e){}L.off=null}
 function fbNghe(ref,cb,err){if(typeof ref==='string')ref=FB.db.doc(ref);
   let L=fbNgheTim(ref);const s={cb,err};
-  if(!L){L={ref,path:ref.path||'',cbs:[],off:null,last:null,lastJ:undefined,dau:true};fbNgheDS.push(L);fbDemCong('nghe',1);
+  if(!L){const duong=fbNgheDuong(ref);L={ref,path:ref.path||'',duong,cbs:[],off:null,last:null,lastJ:undefined,dau:true,song:fbNgheSong(duong),tat:false};fbNgheDS.push(L);fbDemCong('nghe',1);
+    const xong=()=>{if(L.hen){clearTimeout(L.hen);L.hen=null}if(!L.song)fbNgheBo(L)};/* nghe một lần: đã có bản máy chủ (hay hết mạng/hết giờ) thì tắt */
     const nhan=sn=>{try{if(!sn)return;const md=sn.metadata||{},moi=fbThat()&&localStorage.getItem('jennyV3')!=='1';
-        if(moi&&md.fromCache)return;/* lần đầu trên máy: chờ bản máy chủ */
+        if(moi&&md.fromCache&&navigator.onLine)return;/* lần đầu trên máy: chờ bản máy chủ */
         if(moi&&!md.fromCache)try{localStorage.setItem('jennyV3','1')}catch(e){}
         if(!md.fromCache&&md.hasPendingWrites===false||!fbThat()){/* đếm đọc máy chủ: truy vấn = số doc đổi, document = 1 khi nội dung đổi */
           if(sn.docs){const n=L.dau?Math.max(1,sn.docs.length):(sn.docChanges?sn.docChanges().length:1);if(n)fbDemCong('doc',n)}
           else{let j;try{j=JSON.stringify(sn.exists?sn.data():null)}catch(e){j=String(Math.random())}if(j!==L.lastJ){L.lastJ=j;fbDemCong('doc',1)}}}
         else if(md.fromCache)fbDemCong('cache',sn.docs?(L.dau?Math.max(1,sn.docs.length):0):(L.dau?1:0));
-        L.dau=false;L.last=sn;L.cbs.slice().forEach(x=>{try{x.cb(sn)}catch(e){console.error(e)}})}catch(e){console.error(e)}};
-    const loi=e=>{L.cbs.slice().forEach(x=>{try{if(x.err)x.err(e);else console.error(L.path||'truy vấn',e)}catch(e2){}})};
-    try{const moi=fbThat()&&localStorage.getItem('jennyV3')!=='1';L.off=moi?ref.onSnapshot({includeMetadataChanges:true},nhan,loi):ref.onSnapshot(nhan,loi)}
+        L.dau=false;L.last=sn;L.cbs.slice().forEach(x=>{try{x.cb(sn)}catch(e){console.error(e)}});
+        if(!L.song&&(!md.fromCache||!navigator.onLine||!fbThat()))xong()}catch(e){console.error(e)}};
+    const loi=e=>{L.cbs.slice().forEach(x=>{try{if(x.err)x.err(e);else console.error(L.duong||'truy vấn',e)}catch(e2){}});if(!L.song)xong()};
+    try{const moi=fbThat()&&localStorage.getItem('jennyV3')!=='1';L.off=(moi||!L.song)&&fbThat()?ref.onSnapshot({includeMetadataChanges:true},nhan,loi):ref.onSnapshot(nhan,loi);
+      if(!L.song&&fbThat())L.hen=setTimeout(()=>{if(fbNgheDS.includes(L))xong()},8000)}
     catch(e){L.off=()=>{};setTimeout(()=>loi(e),0)}}
   L.cbs.push(s);
   if(L.last){const sn=L.last;Promise.resolve().then(()=>{if(L.cbs.includes(s))try{cb(sn)}catch(e){console.error(e)}})}
-  return()=>{if(L.tat||s.da)return;s.da=true;const i=L.cbs.indexOf(s);if(i>=0)L.cbs.splice(i,1);if(L.cbs.length)return;const j=fbNgheDS.indexOf(L);if(j>=0)fbNgheDS.splice(j,1);try{L.off&&L.off()}catch(e){}fbDemCong('nghe',-1)}}
-function fbNgheTat(){fbNgheDS.slice().forEach(L=>{L.tat=true;L.cbs.length=0;try{L.off&&L.off()}catch(e){}});fbNgheDS.length=0;fbDem.nghe=0;fbDemCong('nghe',0)}
+  return()=>{if(L.tat||s.da)return;s.da=true;const i=L.cbs.indexOf(s);if(i>=0)L.cbs.splice(i,1);if(L.cbs.length||!fbNgheDS.includes(L))return;fbNgheBo(L)}}
+function fbNgheTat(){fbNgheDS.slice().forEach(L=>{L.tat=true;L.cbs.length=0;if(L.hen)clearTimeout(L.hen);try{L.off&&L.off()}catch(e){}});fbNgheDS.length=0;fbDem.nghe=0;fbDemCong('nghe',0)}
 /* ---------- bật trong fbInit (62 gọi một dòng) ---------- */
 function fbTietKiem(){if(!FB||!FB.db||FB.dem)return;FB.dem=fbDem;
   try{if(FB.db.enablePersistence){FB.db.enablePersistence({synchronizeTabs:true}).then(()=>{document.documentElement.dataset.fbDem='1'},e=>console.info('Bộ nhớ đệm Firestore chưa bật:',(e&&e.code)||e))}}catch(e){console.info('Bộ nhớ đệm Firestore:',e)}
