@@ -341,7 +341,7 @@ function fbDayV3(me,db,ghi){const o=fbOrgSach(),D=orgV3Tach(o),gv=me.role==='gv'
     if(ghi.length){fbBan++;try{await Promise.all(ghi)}finally{fbBan--}fbTrangThai('Đã lưu lên máy chủ')}
   }catch(e){console.error(e);fbTrangThai('Chưa lưu được: '+fbLoi(e),1)}}}
 /* fbGvBoot: v3 nghe collection; v2 như cũ. Chế độ quyết định bởi org/main.v */
-{const _b=hooks.cu('fbGvBoot');hooks.de('fbGvBoot',async function(){const me=CLOUD.me,db=FB.db;const m=await db.doc('org/main').get();
+{hooks.on('fbGvBoot',_b=>async function(){const me=CLOUD.me,db=FB.db;const m=await db.doc('org/main').get();
   if(!m.exists||m.data().v!==3)return _b.apply(this,arguments);
   V3.on=true;document.body.classList.add('cloud');window.dayNow=fbNgay;
   S={day:fbNgay(),events:[],st:{},cbi:{},asg:[],asgSeed:2,mk2:1,org:null};STUDENTS.length=0;
