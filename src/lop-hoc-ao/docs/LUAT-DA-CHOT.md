@@ -111,7 +111,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 
 ## 6i. Máy chủ (chốt 24/10/2026)
 - Dùng **Firebase gói miễn phí (Spark)**, dự án `jenny-lop-hoc-ao`, Firestore vùng **asia-southeast1**; tắt Gemini và Google Analytics; không sao lưu tự động (cần gói trả phí).
-- **Giữ Firebase, vá bảo mật theo kế hoạch kiến trúc (chốt 25/10/2026, Q1 = A):** làm P-04 (rules), P-05 (Auth), P-06 (tách `org/main.j`) trong `docs/kien-truc/KE-HOACH.md`. **Bỏ hẳn Supabase** (25/10): xu, sao kiểm soát bằng rules + sổ sự kiện chỉ-thêm (P-20); ngoại tuyến và tiết kiệm đọc (P-21); chặn hẳn gian lận chỉ khi thầy nâng Blaze (P-22, Q5 chờ).
+- **Giữ Firebase, vá bảo mật theo kế hoạch kiến trúc (chốt 25/10/2026, Q1 = A):** làm P-04 (rules), P-05 (Auth), P-06 (tách `org/main.j`) trong `docs/kien-truc/KE-HOACH.md`. **Bỏ hẳn Supabase** (25/10): xu, sao kiểm soát bằng rules + sổ sự kiện chỉ-thêm (P-20); ngoại tuyến và tiết kiệm đọc (P-21); **không nâng Blaze (chốt 26/10/2026, Q5 = A)**: P-20 là mức bảo vệ cuối cho xu (giảm mạnh, không chặn hẳn), tự đăng ký Authentication để bật, sao lưu chỉ bằng P-10; xem lại khi có tên thật và thấy gian lận xu.
 - **Hồ sơ học sinh (chốt 25/10/2026, Q2 = B):** giữ ngày sinh đầy đủ và Gmail phụ huynh, nhưng để trong `hoso/{tk}` chỉ quản lý đọc ghi (cô lớp đọc, phụ huynh đọc của con); danh mục `hsdm/{tk}` mọi vai đọc không có thông tin này.
 - Trang vẫn đặt trên GitHub Pages (chưa cần tên miền riêng).
 - Quy tắc bảo mật ở `firebase/firestore.rules` (dán vào Firestore › Rules mỗi khi đổi). Em chỉ xem dữ liệu của mình; cô chỉ xem lớp được phân công; phụ huynh chỉ xem con; chỉ quản lý tạo tài khoản.

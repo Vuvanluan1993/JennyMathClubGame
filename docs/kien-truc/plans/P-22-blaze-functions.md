@@ -1,5 +1,7 @@
 # P-22 Blaze 0 đồng + Cloud Functions (chỉ khi Q5 = Blaze)
 
+**Bỏ 26/10/2026 (Q5 = A, giữ Spark):** không làm. Giữ file để xem lại khi có tên thật và thấy gian lận xu.
+
 **Mục tiêu:** chặn hẳn gian lận xu và tự đăng ký bằng hàm chạy ở máy chủ Firebase; tạo tài khoản không cần phiên phụ ở trình duyệt; sao lưu Firestore theo lịch của Google. Vẫn dùng Firebase, không đổi máy chủ.
 **Ước lượng:** 14 giờ = 2 phiên (FB7 hàm + rules; FB8 app gọi hàm + chuyển đổi). **Người dùng thấy gì:** không. **Cần trước:** P-21 đã push; thầy nâng gói Blaze và đặt cảnh báo ngân sách.
 
