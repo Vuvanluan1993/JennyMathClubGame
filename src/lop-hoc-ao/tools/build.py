@@ -1,38 +1,20 @@
 #!/usr/bin/env python3
-"""Ghép mã nguồn thành ứng dụng.
-  python3 tools/build.py  → dist/lop-hoc-ao-jenny.html (bản đầy đủ: học sinh, giáo viên, phụ huynh, demo)
-                            + games/lop-hoc-ao/index.html, giao-vien/, phu-huynh/, quan-ly/  (bản THẬT: chỉ đăng nhập máy chủ)
-                            + games/lop-hoc-ao/demo/… (bản THỬ: tài khoản mẫu, dữ liệu trên máy; không commit, xem .gitignore)
+"""Dựng Lớp học ảo — từ P-14a (25/10/2026) bằng Vite; lệnh cũ giữ lại cho tài liệu và tools/build_all.py.
+  python3 tools/build.py   = npm run build:lop-hoc-ao (= vite build src/lop-hoc-ao, cấu hình ở src/lop-hoc-ao/vite.config.js)
+    → dist/lop-hoc-ao-jenny.html           bản đầy đủ một file (bộ kiểm tra §7, Artifact)
+    → dist/index.html, giao-vien/, phu-huynh/, quan-ly/, demo.html + dist/assets/*-[hash].js|css
+    → chép 4 trang + assets sang games/lop-hoc-ao/ (GitHub Pages)
+Chưa có node_modules (vd. máy mới, workflow deploy) thì tự chạy `npm ci` trước. Cần Node ≥ 20.19 và npm.
+Trang theo vai: tools/vite/vai.js (thay _student.py, _teacher.py; so từng byte: node tools/vite/so-voi-python.mjs).
 """
-import os,re,runpy,sys
-ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-INC=re.compile(r'/\*@include ([^*]+?)\*/')
-def expand(text,depth=0):
-    assert depth<5,'include lồng quá sâu'
-    return INC.sub(lambda m:expand(open(os.path.join(ROOT,m.group(1).strip()),encoding='utf-8').read().removesuffix('\n'),depth+1),text)
-def so_ban():
-    """Số bản hiện ở góc thẻ chào: '<ngày commit> · <sha ngắn>' — dựng lại cùng commit cho cùng kết quả (CI và máy thầy giống nhau).
-    Lấy sha từ GITHUB_SHA (GitHub Actions) hoặc git rev-parse; không có git thì dùng giờ máy."""
-    import subprocess,datetime
-    sha=os.environ.get('GITHUB_SHA','')[:7]
-    try:
-        env=dict(os.environ,TZ='Asia/Ho_Chi_Minh') # ngày theo giờ Việt Nam, CI (UTC) và máy thầy ra cùng chuỗi
-        g=lambda *a:subprocess.run(['git','-C',ROOT,*a],capture_output=True,text=True,check=True,env=env).stdout.strip()
-        sha=sha or g('rev-parse','--short=7','HEAD')
-        return g('log','-1','--format=%cd','--date=format:%d/%m')+' · '+sha
-    except Exception:
-        return sha or datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7))).strftime('%d/%m · %H:%M')
-def chay(ten,*args):
-    """Chạy tools/<ten> như lệnh riêng, có tham số (vd. --demo)."""
-    duong=os.path.join(ROOT,'tools',ten);sys.argv=[duong]+list(args)
-    runpy.run_path(duong,run_name='__main__')
+import os,shutil,subprocess,sys
+KHO=os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','..'))
+def chay(*lenh):
+    r=subprocess.run(lenh,cwd=KHO)
+    if r.returncode:sys.exit(r.returncode)
 def main():
-    src=open(os.path.join(ROOT,'app.template.html'),encoding='utf-8').read()
-    out=expand(src)
-    out=out.replace('__APP_VER__',so_ban())
-    os.makedirs(os.path.join(ROOT,'dist'),exist_ok=True)
-    open(os.path.join(ROOT,'dist','lop-hoc-ao-jenny.html'),'w',encoding='utf-8').write(out)
-    print('dist/lop-hoc-ao-jenny.html',len(out.encode()),'bytes')
-    chay('_student.py');chay('_student.py','--demo')
-    chay('_teacher.py');chay('_teacher.py','--demo')
+    npm=shutil.which('npm')
+    if not npm:sys.exit('Chưa có npm (Node ≥ 20.19). Máy thầy: export PATH=$HOME/.local/node/bin:$PATH')
+    if not os.path.exists(os.path.join(KHO,'node_modules','vite','package.json')):chay(npm,'ci')
+    chay(npm,'run','build:lop-hoc-ao')
 if __name__=='__main__':main()

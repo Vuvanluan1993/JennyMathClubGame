@@ -8,12 +8,19 @@
   },
   "scripts": {
     "build": "python3 tools/build_all.py",
+    "build:lop-hoc-ao": "vite build src/lop-hoc-ao",
+    "dev": "vite src/lop-hoc-ao",
     "test": "node tools/test/chay-tat-ca.mjs"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^4.0.1",
-    "firebase": "^11.10.0",
+    "acorn": "^8.19.0",
+    "acorn-walk": "^8.3.5",
     "axe-core": "^4.14.0",
-    "playwright": "^1.56.0"
+    "eslint": "^9.39.5",
+    "firebase": "^11.10.0",
+    "globals": "^15.15.0",
+    "playwright": "^1.56.0",
+    "vite": "^8.3.4"
   }
 }

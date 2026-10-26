@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 25/10/2026 — Dựng bản bằng Vite, bọc mã cũ (P-14a, RF1)
+- `npm run build` = `vite build src/lop-hoc-ao` (`src/lop-hoc-ao/vite.config.js`, 5 entry: học sinh, giáo viên, phụ huynh, quản lý, demo; `base` `/JennyMathClubGame/games/lop-hoc-ao/`). `npm run dev` = `vite src/lop-hoc-ao`. `python3 tools/build.py` vẫn dùng được: gọi `npm run build` (tự `npm ci` nếu thiếu). Vite 8.3.4 ghim bản.
+- Plugin `tools/vite/noi-file.js` nối file theo đúng thứ tự `app.template.html`, giữ phạm vi toàn cục (một `<script>` thường mỗi trang); CSS/JS ra `dist/assets/*-[hash].css|js`, chép sang `games/lop-hoc-ao/assets/` (tự có `.gitignore`). `dist/lop-hoc-ao-jenny.html` vẫn là bản một file như cũ.
+- `tools/vite/vai.js` thay `_student.py` và `_teacher.py` (cùng các phép thay, có kiểm tra chuỗi phải có); đoạn mã chèn lấy nguyên văn vào `tools/vite/vai/`. `node tools/vite/so-voi-python.mjs`: 4 trang giống bản Python từng byte. Hai file Python còn giữ (để so khi rebase), build không gọi nữa.
+- Giao diện, khoá lưu, CSP, chữ tự host không đổi: ảnh 4 trang × 4 khổ giống từng byte với bản trước; `npm test` ĐẠT.
+
 ## 25/10/2026 — P-10 sao lưu tuần Firestore (lane chore/bo-demo-rieng-tu)
 - `.github/workflows/sao-luu.yml`: Chủ nhật 20:00 UTC + chạy tay; `permissions: contents: read`; đọc Firestore bằng Admin SDK (`tools/sao-luu/firestore-dump.mjs`, Spark không có gcloud export), mã hoá `age` bằng `BACKUP_PUBKEY`, đưa lên release kho riêng tư `Vuvanluan1993/jenny-backup` (`BACKUP_REPO_TOKEN`), giữ 12 bản.
 - `tools/sao-luu/firestore-restore.mjs` (emulator mặc định, dự án thật cần `--that`), `_chung.mjs`, `thu-gia-lap.mjs` (thử vòng xuất → nạp bằng Firestore giả lập, ĐẠT), `README.md` 5 bước khôi phục. `CLAUDE.md` gốc ghi nơi sao lưu.
