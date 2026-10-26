@@ -5,7 +5,7 @@
    - fbTietKiem(): 62 gọi đúng một dòng ngay sau khi tạo FB (trước lần đọc đầu, nếu không enablePersistence bị từ chối):
        bật bộ nhớ đệm bền enablePersistence({synchronizeTabs:true}); lỗi failed-precondition (nhiều tab bản cũ) và
        unimplemented (trình duyệt cũ) chỉ console.info, app vẫn chạy như trước;
-       FB.dem = bộ đếm {doc (đọc máy chủ), cache (đọc từ đệm), ghi, nghe (listener đang mở)}, lưu localStorage jennyDem
+       FB.dem = bộ đếm {doc (đọc máy chủ), cache (đọc từ đệm), ghi, nghe (listener fbNghe đang mở), ngoai (listener mở thẳng: 79, 64)}, lưu localStorage jennyDem
        để thầy mở DevTools › Application xem; in ra console khi đăng xuất;
        khi đăng xuất (signOut của app chính): tắt mọi listener, terminate + clearPersistence để máy dùng chung không giữ dữ liệu em.
    - fbNghe(ref, cb, err) thay mọi ref.onSnapshot(cb, err) trong 62 (đổi tên hàm, không đổi logic):
@@ -25,7 +25,7 @@
 import { hooks } from './00-hooks.js';
 import { FB } from './62-may-chu.js';
 const DEM_KEY='jennyDem';
-const fbDem={doc:0,cache:0,ghi:0,nghe:0,t0:Date.now(),luc:0};
+const fbDem={doc:0,cache:0,ghi:0,nghe:0,ngoai:0,t0:Date.now(),luc:0};
 let fbDemHen=null;
 function fbDemCong(k,n){fbDem[k]=(fbDem[k]||0)+(n==null?1:n);fbDem.luc=Date.now();clearTimeout(fbDemHen);fbDemHen=setTimeout(()=>{try{localStorage.setItem(DEM_KEY,JSON.stringify(Object.assign({},fbDem,{vai:CLOUD&&CLOUD.me?CLOUD.me.role:'',tk:CLOUD&&CLOUD.me?CLOUD.me.tk:''})))}catch(e){}},400)}
 const fbThat=()=>!!(window.firebase&&firebase.firestore&&firebase.firestore.DocumentReference);
@@ -35,7 +35,16 @@ function fbDemBat(){if(!fbThat()||fbDemBat.ok)return;fbDemBat.ok=1;const F=fireb
   const doc=p=>{if(p&&p.then)p.then(s=>{if(!s||!s.metadata)return;const n=s.docs?Math.max(1,s.docs.length):1;fbDemCong(s.metadata.fromCache?'cache':'doc',n)},()=>{})};
   const ghi=()=>fbDemCong('ghi',1);
   boc(F.DocumentReference,'get',doc);boc(F.Query,'get',doc);boc(F.Transaction,'get',doc);
-  ['set','update','delete'].forEach(m=>{boc(F.DocumentReference,m,ghi);boc(F.WriteBatch,m,ghi);boc(F.Transaction,m,ghi)})}
+  ['set','update','delete'].forEach(m=>{boc(F.DocumentReference,m,ghi);boc(F.WriteBatch,m,ghi);boc(F.Transaction,m,ghi)});
+  /* listener mở thẳng onSnapshot ngoài fbNghe (79: hs/{tk}, 64: vi/{tk}): đếm vào ngoai, đọc máy chủ đếm như fbNghe */
+  [F.DocumentReference,F.Query].forEach(P=>{if(!P||!P.prototype||!P.prototype.onSnapshot)return;const o=P.prototype.onSnapshot;
+    P.prototype.onSnapshot=function(){const a=[...arguments];if(fbDemTrong)return o.apply(this,a);const i=a.findIndex(x=>typeof x==='function');
+      if(i>=0){const cb=a[i];let lastJ,dau=true;a[i]=function(sn){try{const md=sn&&sn.metadata||{};if(sn&&!md.fromCache&&md.hasPendingWrites===false){
+          if(sn.docs){const n=dau?Math.max(1,sn.docs.length):(sn.docChanges?sn.docChanges().length:1);if(n)fbDemCong('doc',n)}
+          else{let j;try{j=JSON.stringify(sn.exists?sn.data():null)}catch(e){}if(j!==lastJ){lastJ=j;fbDemCong('doc',1)}}dau=false}
+        else if(sn&&md.fromCache&&dau)fbDemCong('cache',1)}catch(e){}return cb.apply(this,arguments)}}
+      fbDemCong('ngoai',1);const off=o.apply(this,a);let da=false;return function(){if(!da){da=true;fbDemCong('ngoai',-1)}return off.apply(this,arguments)}}})}
+let fbDemTrong=false;/* true trong lúc fbNghe tự gọi onSnapshot (không đếm hai lần) */
 /* ---------- một listener mỗi document; sống hay nghe một lần tuỳ vai ---------- */
 const fbNgheDS=[];/* {ref, path, cbs:[{cb,err}], off, last, lastJ, dau, song, tat} */
 /* đường dẫn của DocumentReference (ref.path) hay collection của Query (nội bộ SDK compat: _delegate._query.path); '' = không rõ */
@@ -63,7 +72,7 @@ export function fbNghe(ref,cb,err){if(typeof ref==='string')ref=FB.db.doc(ref);
         L.dau=false;L.last=sn;L.cbs.slice().forEach(x=>{try{x.cb(sn)}catch(e){console.error(e)}});
         if(!L.song&&(!md.fromCache||!navigator.onLine||!fbThat()))xong()}catch(e){console.error(e)}};
     const loi=e=>{L.cbs.slice().forEach(x=>{try{if(x.err)x.err(e);else console.error(L.duong||'truy vấn',e)}catch(e2){}});if(!L.song)xong()};
-    try{const moi=fbThat()&&localStorage.getItem('jennyV3')!=='1';L.off=(moi||!L.song)&&fbThat()?ref.onSnapshot({includeMetadataChanges:true},nhan,loi):ref.onSnapshot(nhan,loi);
+    try{const moi=fbThat()&&localStorage.getItem('jennyV3')!=='1';fbDemTrong=true;try{L.off=(moi||!L.song)&&fbThat()?ref.onSnapshot({includeMetadataChanges:true},nhan,loi):ref.onSnapshot(nhan,loi)}finally{fbDemTrong=false}
       if(!L.song&&fbThat())L.hen=setTimeout(()=>{if(fbNgheDS.includes(L))xong()},8000)}
     catch(e){L.off=()=>{};setTimeout(()=>loi(e),0)}}
   L.cbs.push(s);
