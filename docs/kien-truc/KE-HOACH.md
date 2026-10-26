@@ -40,7 +40,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy 
 ## Giai đoạn 3 — Firebase an toàn và tiết kiệm (thay giai đoạn Supabase, chốt 25/10)
 - ✗ **P-11, P-12, P-13 Supabase** — bỏ theo Q1 (25/10). Kế hoạch con giữ lại để tham khảo, đầu file ghi "Bỏ".
 - ☐ **P-20 Ví xu và sao kiểm soát bằng rules** — `vi/{tk}` có kiểu; mỗi lần ghi cộng tối đa 40 xu và cách lần trước ≥ 3 giây; mua đồ khớp bảng giá `cfg/shop`; sổ sự kiện `ev/{tk}/{id}` chỉ-thêm; trang cô cảnh báo bất thường. Giảm mạnh gian lận; chặn hẳn cần P-22. `plans/P-20-vi-xu-rules.md`
-- ☑ **P-21 Firestore ngoại tuyến và tiết kiệm đọc** (26/10, PR #15 base nhánh tích hợp; thử trên dự án thử: 2 ca ngoại tuyến ĐẠT, phiên HS 20 phút 31 đọc so với 35 trước, listener 4 so với 6; công tắc `FB_ENV`; trang cô lớp 12 em chưa đo). `plans/P-21-firestore-ngoai-tuyen.md`
+- ☑ **P-21 Firestore ngoại tuyến và tiết kiệm đọc** (26/10, PR #15 base nhánh tích hợp; thử trên dự án thử: 2 ca ngoại tuyến ĐẠT, phiên HS 20 phút 31 đọc so với 35 trước, listener 4 so với 6; trang cô lớp 12 em chưa đo). **Còn sót, giao FB7 (26/10):** công tắc `FB_ENV`/`cau-hinh.json` chưa làm; lỗi có sẵn `fbThietLap` đọc `org/main` trước khi có hồ sơ `users` → Thiết lập lần đầu trên dự án trống bị permission-denied. `plans/P-21-firestore-ngoai-tuyen.md`
 - ✗ **P-22 Blaze 0 đồng + Cloud Functions** (bỏ 26/10 theo Q5 = A; giữ kế hoạch con để xem lại khi có tên thật) — hàm `taoTaiKhoan`, `chamXu`, `xoaHocSinh`, chặn tự đăng ký bằng blocking function, xuất sao lưu quản lý theo lịch; HS không còn ghi `vi`. `plans/P-22-blaze-functions.md`
 
 ## Giai đoạn 4 — Tái cấu trúc front-end
