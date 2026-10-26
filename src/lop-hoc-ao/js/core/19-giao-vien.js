@@ -1,8 +1,7 @@
 /* ===================== Giáo viên ===================== */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
-import { L1 } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
-import { P2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { L1, P2 } from './30a-dang-ky-khoi.js';
 import { DEMO_CODE, gvCLS, gvHead, ORG_ON, save } from './09-du-lieu-demo.js';
 import { evDay, log } from './10-su-kien-mau-xapi.js';
 import { curIsland, p1Stars, p2Stars, totalStars } from './11-sao-va-mo-khoa.js';

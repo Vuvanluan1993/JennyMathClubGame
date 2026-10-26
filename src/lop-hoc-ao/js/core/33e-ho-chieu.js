@@ -8,7 +8,7 @@ import { save } from './09-du-lieu-demo.js';
 import { render, toast } from './13-giao-dien-chung.js';
 import { pixelize, PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { BIOME, OCEAN } from './23b-vung-bien.js';
-import { sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { sayJ } from './30b-may-tieu-hoc.js';
 import { PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { mHz, noise, sfx, SFX, tone } from './33b-am-thanh.js';
 import { biomeOfTopic } from './33d-jenny-bieu-cam.js';

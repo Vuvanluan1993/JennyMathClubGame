@@ -1,8 +1,7 @@
 /* ===================== Sao và mở khóa ===================== */
 import { hooks } from './00-hooks.js';
-import { L1, NEED } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
-import { P2, STAR2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
-import { open1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { L1, NEED, P2, STAR2 } from './30a-dang-ky-khoi.js';
+import { open1 } from './30b-may-tieu-hoc.js';
 import { P2_1 } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { xuCong } from './64-xu.js';
 export const p1Stars=st=>L1(st).reduce((a,x)=>a+((st.p1[x.id]||{m:[]}).m.filter(Boolean).length),0);

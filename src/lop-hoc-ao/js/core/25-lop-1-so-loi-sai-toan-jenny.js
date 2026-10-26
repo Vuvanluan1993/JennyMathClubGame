@@ -2,13 +2,13 @@
 /* ---- Sổ lỗi sai lớp 1 ---- */
 import { hooks } from './00-hooks.js';
 import { esc, pick, R, range } from './01-tien-ich.js';
-import { STAR2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { STAR2 } from './30a-dang-ky-khoi.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { go, render, toast } from './13-giao-dien-chung.js';
 import { mist, quest, shuf } from './21-lop-6-che-do-tro-choi.js';
 import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { BOSSES1, grp, isl1, NUMW, optN, P1_1, pickObj, sayJ, T1, viewHome1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { grp, isl1, NUMW, optN, pickObj, sayJ, viewHome1 } from './30b-may-tieu-hoc.js';
 import { viewAlbum } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
 import { cbCard } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
 import { sfx } from './33b-am-thanh.js';
@@ -98,7 +98,7 @@ export function viewEnd1b(){const g=scr,st=S.st[sid];
 
 
 /* ---- dữ liệu chung Tiểu học ---- */
-export const PRIM={1:{T:T1,isl:P1_1,boss:BOSSES1}};
+export const PRIM={};   // PRIM[lớp] = {T, isl, boss}: content/lop-N/10-hk1.js đăng ký (P-15a)
 export const curG=()=>{const st=S&&S.st&&S.st[sid];return st&&st.grade<=5?st.grade:1};
 export const PD=()=>PRIM[curG()],PI=()=>PD().isl,PT=()=>PD().T,PB=()=>PD().boss,QN=()=>curG()<=2?5:8;
 const WORDRX=/lời văn|ba bước|Hơn, kém|nhóm|gấp khúc|Chu vi|Tìm số hạng/;

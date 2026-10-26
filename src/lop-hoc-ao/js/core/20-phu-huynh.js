@@ -1,8 +1,7 @@
 /* ===================== Phụ huynh ===================== */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
-import { L1 } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
-import { P2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { L1, P2 } from './30a-dang-ky-khoi.js';
 import { curIsland, p1Stars, p2Stars, totalStars } from './11-sao-va-mo-khoa.js';
 import { activeDays, alerts, dayStats } from './12-so-lieu.js';
 import { j1s, P2_1 } from './25-lop-1-so-loi-sai-toan-jenny.js';

@@ -4,7 +4,7 @@
 import { hooks } from './00-hooks.js';
 import { PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { biomeOf } from './23b-vung-bien.js';
-import { isl1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1 } from './30b-may-tieu-hoc.js';
 import { PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { CBN } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
 import { jOutfit, ofVariant, OUTFIT } from './33e-ho-chieu.js';

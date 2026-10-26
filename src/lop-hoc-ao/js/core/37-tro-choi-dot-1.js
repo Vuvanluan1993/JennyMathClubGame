@@ -7,17 +7,18 @@
    Kỷ lục: st.mg[`${id}:${mode}`]. Xu: addCoins(…,'self') tối đa 20. Hồ sơ: mọi lượt trả lời vào st.dd; tug và clock vào cả st.sk. */
 import { hooks } from './00-hooks.js';
 import { esc, pick, R } from './01-tien-ich.js';
+import { MG, MGT } from './30a-dang-ky-khoi.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { addCoins } from './11-sao-va-mo-khoa.js';
 import { go, render } from './13-giao-dien-chung.js';
 import { shuf } from './21-lop-6-che-do-tro-choi.js';
 import { PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { isl1, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1, sayJ } from './30b-may-tieu-hoc.js';
 import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
-import { bossOf } from '../content/hk1/27-chu-de-2-lop-1-5.js';
-import { fN, MGT } from '../content/hk1/28-chu-de-3-lop-1-5.js';
-import { MG, mkQ } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
+import { bossOf } from './30d-hinh-phang-va-cau-hoi.js';
+import { fN } from './30e-hinh-hoc-so-lon.js';
+import { mkQ } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
 import { islPool } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
 import { hurtFx, sfx } from './33b-am-thanh.js';
 import { bossHTML } from './33c-trum-hoat-hinh.js';

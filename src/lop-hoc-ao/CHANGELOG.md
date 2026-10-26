@@ -1,5 +1,19 @@
 # Lịch sử thay đổi
 
+## 26/10/2026 — Nội dung theo khối (P-15a, RF3, PR vào `tich-hop/kien-truc-2026-10`)
+- **`js/content/**` (26 file) → `content/lop-1` … `lop-5`, `content/lop-6-9`** (32 file). Mỗi thư mục có `index.js` `export function dangKy(reg)`;
+  lớp 1–5: `10-hk1.js` (đảo chủ đề 1–5, bộ câu chỉ lớp đó dùng, luật `MG`/`MGT`), `20-bai-giang.js` (slide), `30/31-hk2-phan-a/b.js`.
+  `reg` = `{PRIM, P1BY, ALLP1, P2, LES, MG, MGT, addTopic}` do `js/core/30a-dang-ky-khoi.js` đưa vào (`dangKyKhoi`).
+- **Helper dùng chung lên core**: `js/core/30b` bộ máy tiểu học (phần chung của hk1/24), `30c` câu hỏi chung (`NQ`, `CQ`, `SG`, `ORD`, `F`, `buildIsl`…), `30d` hình phẳng/góc/đồng hồ,
+  `30e` hình học/số lớn, `30f` hình vẽ/lời văn, `30-bai-giang-jenny.js` khung Bài giảng. Helper lớp sau dùng của lớp trước nằm ở core, không ở content.
+  Bảng `MG` (chủ đề 1) rời `core/31`; `PRIM={}` ở `core/25`; `core/12`, `21` đọc `P1BY[6]` thay `P1_6`. 35 file core khác chỉ đổi dòng import (sinh lại).
+- **Dựng**: `tools/vite/noi-file.js` gói mỗi thư mục khối thành một phạm vi hàm và gọi `dangKyKhoi` **tại chỗ cũ** (vẫn tĩnh, một script, thứ tự chạy như trước).
+  `tim-import.mjs` hiểu khối (tên trong khối chỉ thấy trong khối; core không import content); `chuyen-hooks.mjs` bỏ qua `content/`; ESLint thêm `content/**`;
+  `vite.config.js` `manualChunks: chunkKhoi` (mỗi `content/lop-*` một chunk, dùng từ P-15b).
+- Không đổi hành vi: `PRIM` (804 đảo), `P1BY`, `ALLP1`, `P2`, `MG`, `MGT` giống hệt bản trước; `LES` 345 bài cùng khoá (6 slide khác toạ độ hình vẽ ngẫu nhiên);
+  44 ảnh ≤ 0,1 %; khoá `localStorage` không đổi; `npm test` 13/13 ĐẠT (kiem-tra lớp 1–5 ĐẠT); `npm run lint` 0 lỗi; `tim-import` 0 lỗi.
+- Gzip trang học sinh 670 → 685 KB (đủ 6 khối, tĩnh). Core 437 KB, mỗi khối 18–50 KB → P-15b (chỉ tải khối của em) ước 489–515 KB.
+
 ## 26/10/2026 — Hàm đè viết bằng `hooks.on` (P-14b, RF2 — tiếp)
 - `js/core/00-hooks.js`: `hooks.on('render', cu => function(){ … cu.apply(this,arguments) … })` là cách đè chính (bọc bản ngay trước); `hooks.de` chỉ còn cho chỗ thay hẳn hoặc đè tạm, `hooks.cu` cho chỗ giữ bản cũ dùng ở nhiều nơi; hook sự kiện đổi tên `hooks.on` → `hooks.khi` (`run` giữ). `tools/vite/chuyen-hooks.mjs` bước 4 gộp cặp `cu`+`de` liền nhau thành `on` (218 chỗ; còn 27 `de`, 12 `cu`).
 - Không đổi hành vi: ESLint 0 lỗi, 44 ảnh giống (cùng số bản), `npm test` 13/13.

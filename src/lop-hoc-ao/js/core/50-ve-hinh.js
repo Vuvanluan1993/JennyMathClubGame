@@ -11,7 +11,7 @@ import { addCoins } from './11-sao-va-mo-khoa.js';
 import { go, render } from './13-giao-dien-chung.js';
 import { shuf } from './21-lop-6-che-do-tro-choi.js';
 import { PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { isl1, s1, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1, s1, sayJ } from './30b-may-tieu-hoc.js';
 import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { hurtFx, sfx } from './33b-am-thanh.js';
 import { jenny } from './33d-jenny-bieu-cam.js';

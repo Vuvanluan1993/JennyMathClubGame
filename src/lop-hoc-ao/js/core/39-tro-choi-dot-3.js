@@ -7,6 +7,7 @@
    Cửa hàng Jenny: thêm cho lớp 1–3 ở đảo Luyện tập/Ôn tập và bài lời văn; lớp 1 dùng tiền chẵn nghìn (1 000–10 000 đồng). */
 import { hooks } from './00-hooks.js';
 import { esc, pick, R } from './01-tien-ich.js';
+import { MG, MGT } from './30a-dang-ky-khoi.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { addCoins } from './11-sao-va-mo-khoa.js';
@@ -14,10 +15,10 @@ import { go, render } from './13-giao-dien-chung.js';
 import { shuf } from './21-lop-6-che-do-tro-choi.js';
 import { PXC, PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { pxCanvas } from './23-bien-pixel-dong-phia-sau-ban-do.js';
-import { isl1, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1, sayJ } from './30b-may-tieu-hoc.js';
 import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
-import { fN, MGT } from '../content/hk1/28-chu-de-3-lop-1-5.js';
-import { MG, mkQ } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
+import { fN } from './30e-hinh-hoc-so-lon.js';
+import { mkQ } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
 import { islPool } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
 import { hurtFx, sfx } from './33b-am-thanh.js';
 import { jenny } from './33d-jenny-bieu-cam.js';

@@ -4,7 +4,7 @@
    Luyện lỗi: số lỗi cần sửa. Sưu tập: số món mới (thẻ sinh vật, dấu hộ chiếu) em chưa xem.
    Lưu: st.seen = {isl:{id:1}, j:{id:1}, alb:số món đã xem}. */
 import { hooks } from './00-hooks.js';
-import { ISL, s1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { ISL, s1 } from './30b-may-tieu-hoc.js';
 import { P2_1 } from './25-lop-1-so-loi-sai-toan-jenny.js';
 export function seenOf(st){const v=st.seen||(st.seen={isl:null,j:{},alb:null});v.j=v.j||{};
   /* lần đầu: coi mọi thứ hiện có là đã xem, để không hiện số lớn với tiến độ cũ */

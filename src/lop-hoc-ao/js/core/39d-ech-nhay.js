@@ -5,7 +5,7 @@ import { hooks } from './00-hooks.js';
 import { render } from './13-giao-dien-chung.js';
 import { pixelize, PXC, PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { BIOME } from './23b-vung-bien.js';
-import { isl1, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1, sayJ } from './30b-may-tieu-hoc.js';
 import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { hurtFx, sfx } from './33b-am-thanh.js';
 import { xgHearts, xgRec } from './37-tro-choi-dot-1.js';

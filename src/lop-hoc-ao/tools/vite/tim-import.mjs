@@ -10,6 +10,8 @@
 //   - tên không file nào khai báo: phải là builtin trình duyệt/JS (gói globals), gán tường minh globalThis.X=…/window.X=… ở file nào đó
 //     (ghi ra tools/vite/toan-cuc-sinh.json cho ESLint), hoặc có trong tools/vite/toan-cuc.json (mã chèn từ vai.js, bộ kiểm tra)
 //     → không import; còn lại là lỗi "chưa khai báo".
+// Nội dung theo khối (P-15a): file trong content/lop-N/ chỉ thấy tên của chính thư mục đó và của core (mỗi khối gói một phạm vi riêng khi nối);
+//   core không bao giờ import từ content (core đọc nội dung qua đăng ký: dangKyKhoi ở core/30a); content/lop-N/index.js luôn export dangKy.
 // Thoát 1 khi còn lỗi (vẫn ghi file để sửa dần). eslint.config.mjs (gốc kho) đọc cùng toan-cuc.json nên no-undef và script này cùng một luật.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -47,17 +49,22 @@ for (const f of files) {
     for (const k in n) { const v = n[k]; if (Array.isArray(v)) v.forEach(di); else if (v && typeof v.type === 'string') di(v); }
   })(ast);
 }
-const khaiBoi = new Map(); // tên → [file]
-for (const f of files) for (const n of f.khai.keys()) (khaiBoi.get(n) || khaiBoi.set(n, []).get(n)).push(f.ten);
+const khoiCua = ten => (ten.match(/^content\/(lop-[^/]+)\//) || [])[1]; // P-15a: file thuộc khối nào (không: core)
+const khaiBoi = new Map(); // tên → [file core]
+const khaiKhoi = new Map(); // khối → Map(tên → [file của khối])
+for (const f of files) {
+  const k = khoiCua(f.ten), m = k ? (khaiKhoi.get(k) || khaiKhoi.set(k, new Map()).get(k)) : khaiBoi;
+  for (const n of f.khai.keys()) (m.get(n) || m.set(n, []).get(n)).push(f.ten);
+}
 const tuongMinh = new Map(); // tên → mô tả (file nào gán)
 for (const f of files) for (const [n, cach] of f.tuongMinh) tuongMinh.set(n, (tuongMinh.get(n) || (cach === 'globalThis' ? 'trạng thái dùng chung (globalThis.*), đặt ở' : 'gán tường minh window.*, ở')) + ' ' + f.ten);
 
 // 2. Giải từng tên dùng tự do
-const loi = [], trung = [...khaiBoi].filter(([, fs]) => fs.length > 1), ganCheo = new Map(), chuaKhai = new Map(), nguoc = [];
+const loi = [], trung = [...khaiBoi, ...[...khaiKhoi.values()].flatMap(m => [...m])].filter(([, fs]) => fs.length > 1), ganCheo = new Map(), chuaKhai = new Map(), nguoc = [];
 for (const f of files) {
   f.nhap = new Map(); // file nguồn → Set tên
   for (const [n, o] of f.tuDo) {
-    const nguon = khaiBoi.get(n);
+    const k = khoiCua(f.ten), nguon = (k && khaiKhoi.get(k).get(n)) || khaiBoi.get(n);
     if (nguon) {
       const tu = nguon[nguon.length - 1];
       if (o.ghi) { (ganCheo.get(n) || ganCheo.set(n, []).get(n)).push(f.ten); continue; }
@@ -69,12 +76,17 @@ for (const f of files) {
     (chuaKhai.get(n) || chuaKhai.set(n, []).get(n)).push(f.ten);
   }
 }
-for (const [n, fs] of ganCheo) loi.push(`gán chéo: ${n} (khai báo ở ${khaiBoi.get(n).join(', ')}) bị gán ở ${[...new Set(fs)].join(', ')}`);
+for (const [n, fs] of ganCheo) loi.push(`gán chéo: ${n} (khai báo ở ${(khaiBoi.get(n) || []).join(', ')}) bị gán ở ${[...new Set(fs)].join(', ')}`);
 for (const [n, fs] of chuaKhai) loi.push(`chưa khai báo: ${n} dùng ở ${[...new Set(fs)].join(', ')}`);
 
 // 3. Ghi
 const dungBoiKhac = new Map(); // file → Set tên được file khác import
 for (const f of files) for (const [tu, ten] of f.nhap) for (const n of ten) (dungBoiKhac.get(tu) || dungBoiKhac.set(tu, new Set()).get(tu)).add(n);
+for (const f of files) if (/^content\/lop-[^/]+\/index\.js$/.test(f.ten)) { // P-15a: lối vào của khối, dangKyKhoi / import() gọi
+  if (!f.khai.has('dangKy')) loi.push(`${f.ten}: thiếu function dangKy(reg)`);
+  (dungBoiKhac.get(f.ten) || dungBoiKhac.set(f.ten, new Set()).get(f.ten)).add('dangKy');
+}
+for (const [k, m] of khaiKhoi) for (const [n, fs] of m) if (fs.length > 1) loi.push(`khối ${k}: ${n} khai báo ở ${fs.join(', ')} (cùng một phạm vi khi nối, đổi tên)`);
 let soImport = 0, soExport = 0;
 for (const f of files) {
   const xuat = dungBoiKhac.get(f.ten) || new Set();

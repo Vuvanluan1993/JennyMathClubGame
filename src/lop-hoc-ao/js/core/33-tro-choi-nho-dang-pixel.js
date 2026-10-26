@@ -2,7 +2,7 @@
 import { R } from './01-tien-ich.js';
 import { PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { pxCanvas } from './23-bien-pixel-dong-phia-sau-ban-do.js';
-import { sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { sayJ } from './30b-may-tieu-hoc.js';
 import { stopMini } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
 import { endMini } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
 import { hurtFx, sfx } from './33b-am-thanh.js';

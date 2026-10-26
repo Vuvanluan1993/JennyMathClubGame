@@ -6,7 +6,7 @@ import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
 import { mist } from './21-lop-6-che-do-tro-choi.js';
 import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { ISL } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { ISL } from './30b-may-tieu-hoc.js';
 import { jList, natOpen, seenOf } from './36-thong-bao.js';
 import { PET_SP, petSim, petsOf } from './49b-dao-nha-thu-cung.js';
 import { arcT } from './51-kho-game.js';

@@ -1,13 +1,12 @@
 /* ===================== 5 TÍNH NĂNG CHƠI THÊM (Tiểu học) ===================== */
 import { hooks } from './00-hooks.js';
-import { esc, fmt, pick, R, range } from './01-tien-ich.js';
+import { esc, pick } from './01-tien-ich.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { go, render, toast } from './13-giao-dien-chung.js';
 import { PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { NUMW, open1, q1, sayFull, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { open1, q1, sayFull, sayJ } from './30b-may-tieu-hoc.js';
 import { curG, PI, PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
-import { F } from '../content/hk1/26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
 import { endRace } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
 import { sfx } from './33b-am-thanh.js';
 Object.assign(PXS,{clock:["...kkk...","....k....","..kkkkk..",".kwwkwwk.","kwwwkwwwk","kwwwkkkwk","kwwwwwwwk",".kwwwwwk.","..kkkkk.."],
@@ -16,13 +15,7 @@ Object.assign(PXS,{clock:["...kkk...","....k....","..kkkkk..",".kwwkwwk.","kwwwk
 const FEATN={fish:['fish','Câu cá'],balloon:['balloon','Bóng bay'],race:['clock','Đua giờ'],cboss:['octo','Trùm lớp'],sea:['bottle','Kho báu biển'],card:['book','Sưu tập']};
 function featOf(name,ti){const f=[];if(ti===0||/số|So sánh|Phân số|thập phân|Tỉ số|Các số/i.test(name))f.push('fish');if(ti===0||/phép|cộng|trừ|nhân|chia|tính|Bảng/i.test(name))f.push('balloon');f.push('race','sea');if(ti===0||/Ôn tập/i.test(name)||ti%3===2)f.push('cboss');f.push('card');return f}
 /* ---- trò chơi nhỏ: câu cá / bắn bóng ---- */
-export const MG={
- 1:{fish:()=>{const k=R(3,6);return{rule:`Câu cá mang số <b>lớn hơn ${k}</b>`,say:`Câu những con cá mang số lớn hơn ${NUMW[k]}.`,item:()=>{const v=R(0,10);return{t:String(v),ok:v>k}}}},balloon:()=>{const k=R(4,7);return{rule:`Bắn bóng mang số <b>bé hơn ${k}</b>`,say:`Bắn những quả bóng mang số bé hơn ${NUMW[k]}.`,item:()=>{const v=R(0,10);return{t:String(v),ok:v<k}}}}},
- 2:{fish:()=>({rule:'Câu cá mang <b>số tròn chục</b>',say:'Câu những con cá mang số tròn chục.',item:()=>{const v=Math.random()<.4?R(1,9)*10:R(11,99);return{t:String(v),ok:v%10===0}}}),balloon:()=>{const r=R(4,9)*10;return{rule:`Bắn bóng có kết quả <b>bằng ${r}</b>`,say:`Bắn những quả bóng có kết quả bằng ${r}.`,item:()=>{const s=Math.random()<.4?r:r+pick([-10,-2,-1,1,2,10]);const a=R(10,s-10);return{t:`${a} + ${s-a}`,ok:s===r}}}}},
- 3:{fish:()=>{const k=pick([3,4,5]);return{rule:`Câu cá mang số <b>trong bảng nhân ${k}</b>`,say:`Câu những con cá mang kết quả trong bảng nhân ${NUMW[k]}.`,item:()=>{const v=Math.random()<.45?k*R(1,10):R(1,50);return{t:String(v),ok:v%k===0&&v<=k*10}}}},balloon:()=>{const t=pick([12,18,24,20,16,30,36]);return{rule:`Bắn bóng có tích <b>bằng ${t}</b>`,say:`Bắn những quả bóng có tích bằng ${t}.`,item:()=>{const ok=Math.random()<.45;if(ok){const ds=range(2,9).filter(d=>t%d===0&&t/d<=10);const d=pick(ds);return{t:`${d} × ${t/d}`,ok:true}}let a,b;do{a=R(2,9);b=R(2,9)}while(a*b===t);return{t:`${a} × ${b}`,ok:false}}}}},
- 4:{fish:()=>({rule:'Câu cá mang <b>số chẵn</b>',say:'Câu những con cá mang số chẵn.',item:()=>{const v=R(100,9999);return{t:fmt(v),ok:v%2===0}}}),balloon:()=>({rule:'Bắn bóng mang số <b>lớn hơn 50 000</b>',say:'Bắn những quả bóng mang số lớn hơn năm mươi nghìn.',item:()=>{const v=R(30000,70000);return{t:fmt(v),ok:v>50000}}})},
- 5:{fish:()=>({rule:`Câu cá mang phân số <b>bằng</b> ${F(1,2)}`,say:'Câu những con cá mang phân số bằng một phần hai.',item:()=>{const d=R(2,9),ok=Math.random()<.45;return ok?{t:F(d,2*d),ok:true}:{t:F(R(1,d),2*d+pick([1,-1,2])),ok:false}}}),balloon:()=>({rule:'Bắn bóng mang <b>phân số thập phân</b>',say:'Bắn những quả bóng mang phân số thập phân.',item:()=>{const ok=Math.random()<.45;return ok?{t:F(R(1,99),pick([10,100,1000])),ok:true}:{t:F(R(1,9),pick([3,4,5,6,7,8,20,25])),ok:false}}})},
-};
+/* MG[lớp] (luật Câu cá / Bóng bay chủ đề 1) nay ở content/lop-N/10-hk1.js, đăng ký vào MG của core/30a */
 globalThis.mgLoop=null;
 export function stopMini(){if(mgLoop){cancelAnimationFrame(mgLoop.raf);clearInterval(mgLoop.tick);mgLoop=null}}
 /* ---- câu hỏi lấy từ các đảo đã mở của chủ đề hiện tại ---- */

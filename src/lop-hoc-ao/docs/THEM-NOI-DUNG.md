@@ -2,8 +2,9 @@
 
 ## Thêm một chủ đề mới cho một lớp
 
-Tạo file trong `js/content/hk2/` (hoặc thư mục mới), bọc trong IIFE để tên không đụng nhau, rồi thêm dòng
-`/*@include js/content/.../ten-file.js*/` vào đúng chỗ (trong `js/content/hk1/30-bai-giang-jenny-...js`, cạnh các include hk2).
+Từ P-15a (26/10/2026): tạo file trong `content/lop-N/` (ví dụ `32-hk2-phan-c.js`) có `export function dangKyHk2C(reg){const {addTopic,LES}=reg; …}`,
+gọi nó trong `dangKy` của `content/lop-N/index.js`, rồi chạy `node tools/vite/tim-import.mjs` (sinh dòng import). Không cần sửa `app.template.html`:
+cả thư mục được nối, theo thứ tự tên file. Helper dùng cho từ hai lớp trở lên đặt ở `js/core/30b–30f`, không đặt ở content.
 
 ```js
 (()=>{
@@ -26,11 +27,11 @@ Quy tắc:
 
 ## Sửa một câu sai
 
-Tìm theo `kind` hoặc theo mã đảo (ví dụ `g4k38t2` = lớp 4, bài 38, tiết 2) trong `js/content/`.
+Tìm theo `kind` hoặc theo mã đảo (ví dụ `g4k38t2` = lớp 4, bài 38, tiết 2) trong `content/`.
 
 ## Sửa slide
 
-`js/content/lessons/bai-giang-lop<N>.js` (Chủ đề 1–5) hoặc phần `Object.assign(LES[...])` cuối mỗi file `hk2`.
+`content/lop-<N>/20-bai-giang.js` (Chủ đề 1–5) hoặc phần `Object.assign(LES[...])` cuối mỗi file `hk2`.
 
 ## Sau mỗi thay đổi
 

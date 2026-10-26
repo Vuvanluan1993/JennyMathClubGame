@@ -9,13 +9,14 @@
 /* bản gốc (để so sánh trước/sau trong kiểm tra) */
 import { hooks } from './00-hooks.js';
 import { esc, pick, R, range } from './01-tien-ich.js';
+import { MG, MGT } from './30a-dang-ky-khoi.js';
 import { go } from './13-giao-dien-chung.js';
 import { shuf } from './21-lop-6-che-do-tro-choi.js';
 import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { isl1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1 } from './30b-may-tieu-hoc.js';
 import { curG, PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
-import { fN, MGT } from '../content/hk1/28-chu-de-3-lop-1-5.js';
-import { MG, mkQ } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
+import { fN } from './30e-hinh-hoc-so-lon.js';
+import { mkQ } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
 import { islPool } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
 import { clockTarget, islOpts2, pairDeck, pairFromQ, xgHash, xgTime } from './37-tro-choi-dot-1.js';
 import { scaleRound, shopNotes, shopPrice, shopRound, trainRound, xgCalc, xgMass, xgMoney, xgTxt2 } from './38-tro-choi-dot-2.js';

@@ -18,7 +18,7 @@ import { log } from './10-su-kien-mau-xapi.js';
 import { go, render, shortTitle, toast } from './13-giao-dien-chung.js';
 import { mist } from './21-lop-6-che-do-tro-choi.js';
 import { PXS, ring, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { isl1, q1, right1, show1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1, q1, right1, show1 } from './30b-may-tieu-hoc.js';
 import { mist1Add, PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { sfx } from './33b-am-thanh.js';
 import { jenny } from './33d-jenny-bieu-cam.js';

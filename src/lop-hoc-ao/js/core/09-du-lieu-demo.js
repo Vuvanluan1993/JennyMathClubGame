@@ -1,8 +1,7 @@
 /* ===================== Dữ liệu demo ===================== */
 import { hooks } from './00-hooks.js';
 import { R } from './01-tien-ich.js';
-import { P1BY } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
-import { P2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { P1BY, P2 } from './30a-dang-ky-khoi.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { P2_1 } from './25-lop-1-so-loi-sai-toan-jenny.js';
 globalThis.KEY='jennyVirtualDemo_v10';

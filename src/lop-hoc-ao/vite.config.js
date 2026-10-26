@@ -8,6 +8,8 @@ import { defineConfig } from 'vite';
 import noiFile from './tools/vite/noi-file.js';
 
 const goc = path.dirname(fileURLToPath(import.meta.url));
+/** content/lop-1/…, content/lop-6-9/… → chunk 'lop-1', 'lop-6-9' (P-15a). */
+export const chunkKhoi = id => (id.split(path.sep).join('/').match(/\/content\/(lop-[^/]+)\//) || [])[1];
 const repo = path.resolve(goc, '..', '..');
 const base = '/JennyMathClubGame/games/lop-hoc-ao/';
 
@@ -37,7 +39,12 @@ export default defineConfig({
     assetsDir: 'assets',
     rollupOptions: {
       input: Object.fromEntries(Object.entries(trang).map(([ten, f]) => [ten, path.join(goc, f)])),
-      output: { assetFileNames: 'assets/[name]-[hash][extname]' },
+      output: {
+        assetFileNames: 'assets/[name]-[hash][extname]',
+        // P-15a: mỗi thư mục content/lop-* (nội dung một khối) là một chunk riêng → P-15b tải bằng import() theo khối học sinh.
+        // P-15a chưa tải động: nội dung vẫn nối tĩnh vào script trang (noi-file.js, dangKyKhoi), nên hiện chưa có chunk nào.
+        manualChunks: chunkKhoi,
+      },
     },
   },
   server: { port: 5173, strictPort: false },

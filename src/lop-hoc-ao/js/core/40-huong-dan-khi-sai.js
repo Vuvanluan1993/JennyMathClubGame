@@ -14,7 +14,7 @@ import { save } from './09-du-lieu-demo.js';
 import { addCoins } from './11-sao-va-mo-khoa.js';
 import { render } from './13-giao-dien-chung.js';
 import { pixelize, pxURI, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { isl1, next1, q1, right1, sayFull, sayJ, show1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1, next1, q1, right1, sayFull, sayJ, show1 } from './30b-may-tieu-hoc.js';
 import { curG, ju1 } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { sfx } from './33b-am-thanh.js';
 import { xgRec } from './37-tro-choi-dot-1.js';

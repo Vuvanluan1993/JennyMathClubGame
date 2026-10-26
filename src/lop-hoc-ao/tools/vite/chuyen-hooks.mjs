@@ -23,7 +23,8 @@ const laHam = n => n && (n.type === 'FunctionExpression' || n.type === 'ArrowFun
 const BUILTIN = new Set([...Object.keys(globals.browser), ...Object.keys(globals.es2025)]);
 
 // Nguồn: file JS theo app.template.html (mã sạch, không import/export) + mã chèn của vai.js (ảo, đứng cuối)
-const files = docFileJs(goc, thuTu(goc)).map(f => ({ ...f, code: boModule(f.code, f.ten), that: true }));
+// P-15a: bỏ qua content/lop-* (mỗi khối một phạm vi riêng khi nối, không đè hàm của core; tim-import.mjs bắt gán chéo)
+const files = docFileJs(goc, thuTu(goc)).filter(f => !f.ten.startsWith('content/')).map(f => ({ ...f, code: boModule(f.code, f.ten), that: true }));
 for (const f of fs.readdirSync(VAI).filter(f => f.endsWith('.js.txt')).sort()) { // mã chèn kết thúc bằng </script>: tách ra khi phân tích
   const code = fs.readFileSync(path.join(VAI, f), 'utf8'), duoi = code.endsWith('</script>') ? '</script>' : '';
   files.push({ ten: 'tools/vite/vai/' + f, duong: path.join(VAI, f), code: code.slice(0, code.length - duoi.length), duoi, that: false });

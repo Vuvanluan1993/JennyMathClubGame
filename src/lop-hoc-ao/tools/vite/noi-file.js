@@ -47,21 +47,39 @@ export function soBan(goc) {
   }
 }
 
+// Nội dung theo khối (P-15a): dòng include content/lop-N/index.js = cả thư mục content/lop-N.
+export const KHOI = /^content\/(lop-[^/]+)\/index\.js$/;
+/** File của một khối theo thứ tự chạy: tên tăng dần (10-…, 20-…), index.js cuối. */
+export function tepKhoi(goc, k) {
+  const d = path.join(goc, 'content', k);
+  return fs.readdirSync(d).filter(f => f.endsWith('.js')).sort((a, b) => (a === 'index.js') - (b === 'index.js') || a.localeCompare(b, 'en'))
+    .map(f => `content/${k}/${f}`);
+}
+/** Gói một khối thành MỘT câu lệnh trong script chung: mỗi khối một phạm vi hàm riêng (tên trùng giữa các khối không đụng nhau),
+ *  import/export bỏ như file core; tên của core dùng thẳng (cùng script). Gọi dangKyKhoi (core/30a) ngay tại chỗ → thứ tự chạy y như trước.
+ *  P-15b thay câu này bằng dangKyKhoi(k, await import('./content/…')). */
+function goiKhoi(goc, k) {
+  const ma = tepKhoi(goc, k).map(f => boModule(fs.readFileSync(path.join(goc, f), 'utf8'), f).replace(/\n$/, '')).join('\n');
+  return `dangKyKhoi('${k}',(()=>{\n${ma}\nreturn {dangKy};\n})());`;
+}
+
 function noi(goc, text, sau = 0) {
   if (sau >= 5) throw new Error('include lồng quá sâu');
   return text.replace(INC, (_, f) => {
     f = f.trim();
+    const k = f.match(KHOI);
+    if (k) return goiKhoi(goc, k[1]);
     let m = fs.readFileSync(path.join(goc, f), 'utf8');
     if (f.endsWith('.js')) m = boModule(m, f); // P-14b: file JS là ES module; khi nối thành một script thường thì bỏ dòng import và chữ "export "
     return noi(goc, m.replace(/\n$/, ''), sau + 1);
   });
 }
 
-/** Danh sách file theo thứ tự nối (CSS rồi JS), kể cả include lồng (vd. content/lessons/*, content/hk2/* trong file 30) — đọc từ app.template.html, không danh sách cứng. */
+/** Danh sách file theo thứ tự nối (CSS rồi JS), kể cả include lồng và mọi file của khối content/lop-* — đọc từ app.template.html, không danh sách cứng. */
 export function thuTu(goc, tep = 'app.template.html', sau = 0) {
   if (sau >= 5) throw new Error('include lồng quá sâu');
   const t = fs.readFileSync(path.join(goc, tep), 'utf8');
-  return [...t.matchAll(INC)].flatMap(m => { const f = m[1].trim(); return [f, ...thuTu(goc, f, sau + 1)]; });
+  return [...t.matchAll(INC)].flatMap(m => { const f = m[1].trim(), k = f.match(KHOI); return k ? tepKhoi(goc, k[1]) : [f, ...thuTu(goc, f, sau + 1)]; });
 }
 
 /** Bản đầy đủ. coMoc = true: đánh dấu khối CSS/JS chính để tách ra file (mốc là chú thích HTML, nằm ngoài thẻ). */
