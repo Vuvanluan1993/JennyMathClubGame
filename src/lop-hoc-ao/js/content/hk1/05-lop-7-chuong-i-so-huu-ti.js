@@ -1,5 +1,7 @@
 /* ===================== Lớp 7 · Chương I Số hữu tỉ ===================== */
-const P1_7=[
+import { pick, R } from '../../core/01-tien-ich.js';
+import { fr, frP, gcdI, nz, rat, rawfr } from '../../core/03-phan-so-va-kiem-tra-dap-an.js';
+export const P1_7=[
  {id:'g7b1',title:'Bài 1. Tập hợp các số hữu tỉ',video:true,slides:[
   {t:'Bài 1 · Tập hợp các số hữu tỉ',h:'<p>Số hữu tỉ là số viết được dưới dạng phân số <span class="frac"><span>a</span><span>b</span></span> với a, b ∈ ℤ, b ≠ 0.</p><p>Tập hợp các số hữu tỉ kí hiệu là <b>ℚ</b>.</p>',say:'Chào các em lớp bảy! Số hữu tỉ là số viết được dưới dạng phân số a trên b, với a, b là số nguyên và b khác không. Tập hợp các số hữu tỉ kí hiệu là Q.'},
   {t:'Ví dụ số hữu tỉ',h:`<p>−0,75 = ${fr(-3,4)} &nbsp;&nbsp; 2 = ${fr(2,1)} = <span class="frac"><span>4</span><span>2</span></span> &nbsp;&nbsp; 1,5 = ${fr(3,2)}</p><p>Mỗi số hữu tỉ có nhiều cách viết, nhưng chỉ có <b>một phân số tối giản</b> với mẫu dương.</p>`,say:'Ví dụ: âm không phẩy bảy lăm bằng âm ba phần tư. Số hai cũng là số hữu tỉ. Một phẩy năm bằng ba phần hai. Mỗi số hữu tỉ có nhiều cách viết, nhưng chỉ có một phân số tối giản với mẫu dương.'},

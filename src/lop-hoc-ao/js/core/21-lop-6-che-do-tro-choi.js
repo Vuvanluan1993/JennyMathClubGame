@@ -4,7 +4,20 @@
    - 6 kiểu câu: num, choice, tf, pick, order, line
    - 3 trái tim, combo, xây cầu, trùm đảo, rương, đảo nhà, bão đảo cũ, nhiệm vụ ngày
    ===================================================================== */
-const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=R(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+import { esc, fmt, pick, R, range, roman, sup } from './01-tien-ich.js';
+import { P1_6 } from '../content/hk1/02-phan-i-sgk-ket-noi-tri-thuc-6-chuong-i.js';
+import { L1, NEED, P1_Q } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
+import { P2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { save } from './09-du-lieu-demo.js';
+import { evDay, log } from './10-su-kien-mau-xapi.js';
+import { addCoins, curIsland, islandOpen, p1Stars, totalStars } from './11-sao-va-mo-khoa.js';
+import { bigStars, go, render, shortTitle, toast, unit } from './13-giao-dien-chung.js';
+import { nextAction, petFace } from './14-hoc-sinh-trang-chinh.js';
+import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { key1, q1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { hurtFx, sfx } from './33b-am-thanh.js';
+import { jenny } from './33d-jenny-bieu-cam.js';
+export const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=R(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
 function mkChoice(q,ans,cands,sol,show){const s=[ans];for(const c of cands){if(s.length>=4)break;if(c!==ans&&!s.includes(c)&&(typeof c!=='number'||c>=0))s.push(c)}let d=1;while(s.length<4&&typeof ans==='number'){if(!s.includes(ans+d))s.push(ans+d);d++}const o=shuf(s);return{type:'choice',q,opts:o.map(x=>show?show(x):typeof x==='number'?fmt(x):x),a:o.indexOf(ans),sol}}
 const tf=(q,a,sol)=>({type:'tf',q,a,sol});
 const N=(q,a,sol)=>({type:'num',q,a,sol});
@@ -93,22 +106,20 @@ const REV6=[1,3,7];
 function g6s(st,id){const s=st.p1[id];if(s.md===undefined){s.md=s.m.every(Boolean)?Math.max(1,S.day-1):null;s.ri=0}if(!s.med)s.med=s.m.map(v=>v?2:0);return s}
 const MEDAL=['','🥉','🥈','🥇'],MEDN=['','Đồng','Bạc','Vàng'];
 const weakIsland=(st,id)=>{const s=g6s(st,id);return s.med.some((m,i)=>s.m[i]&&m===1)};
-function mist(st){st.mist=st.mist||{};return st.mist}
+export function mist(st){st.mist=st.mist||{};return st.mist}
 function mistAdd(q){if(!q.key)return;const M=mist(S.st[sid]),e=M[q.key]||(M[q.key]={id:q.src[0],lv:q.src[1],gi:q.src[2],label:q.label,n:0,streak:0,day:S.day});e.n++;e.streak=0;e.day=S.day}
 const qLabel=(id,q)=>shortTitle(unit(1,id).title)+' · '+q.q.replace(/<br>/g,' ').replace(/<[^>]+>/g,'').replace(/&lt;/g,'<').replace(/\d+/g,'…').replace(/(…[ ;,]*){3,}/g,'… ').slice(0,52);
 const stormDue=(st,id)=>{const s=g6s(st,id);return s.m.every(Boolean)&&s.md!==null&&s.ri<3&&S.day>=s.md+REV6[s.ri]};
-function quest(st){st.q=st.q||{};if(!st.q[S.day])st.q[S.day]={ok:0,pass:0,combo:0,fix:0,paid:[]};return st.q[S.day]}
+export function quest(st){st.q=st.q||{};if(!st.q[S.day])st.q[S.day]={ok:0,pass:0,combo:0,fix:0,paid:[]};return st.q[S.day]}
 const QUESTS=[['ok',10,'Trả lời đúng 10 câu'],['pass',1,'Qua 1 màn'],['combo',1,'Đạt combo 3 câu đúng liền'],['fix',2,'Sửa xong 2 lỗi trong Sổ lỗi sai']];
 function streak(st){let n=0;for(let d=S.day;d>=1;d--){const has=S.events.some(e=>e.actor.account.name===sid&&evDay(e)===d&&e.verb.id.endsWith('answered')&&e.result.success);if(has)n++;else if(d===S.day)continue;else break}return n}
-let muted=false;try{muted=localStorage.getItem('jennyMute')==='1'}catch(e){}
-let AC=null;function sfx(kind){if(muted)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;const seq={ok:[[660,0],[880,.09]],bad:[[220,0],[180,.12]],combo:[[660,0],[880,.07],[1100,.14]],win:[[523,0],[659,.1],[784,.2],[1046,.3]],hit:[[300,0],[600,.05]],tap:[[500,0]]}[kind]||[];seq.forEach(([f,dt])=>{const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+dt);g.gain.exponentialRampToValueAtTime(.18,t+dt+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dt+.16);o.connect(g);g.connect(AC.destination);o.start(t+dt);o.stop(t+dt+.18)})}catch(e){}}
-function toggleMute(){muted=!muted;try{localStorage.setItem('jennyMute',muted?'1':'0')}catch(e){}render()}
-const buzz=ms=>{try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}};
+globalThis.muted=false;try{muted=localStorage.getItem('jennyMute')==='1'}catch(e){}
+globalThis.AC=null;const buzz=ms=>{try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}};
 
-function centerMap(){const sea=document.getElementById('sea');if(!sea)return;const here=sea.querySelector('.node.here')||sea.querySelector('.node.storm')||[...sea.querySelectorAll('.node:not(.lock)')].pop();if(!here)return;sea.scrollLeft=Math.max(0,here.offsetLeft+here.offsetWidth/2-sea.clientWidth/2)}
+export function centerMap(){const sea=document.getElementById('sea');if(!sea)return;const here=sea.querySelector('.node.here')||sea.querySelector('.node.storm')||[...sea.querySelectorAll('.node:not(.lock)')].pop();if(!here)return;sea.scrollLeft=Math.max(0,here.offsetLeft+here.offsetWidth/2-sea.clientWidth/2)}
 window.addEventListener('resize',()=>centerMap());
 /* ---------- Trang chính lớp 6 (có thanh điều hướng đáy) ---------- */
-function viewHome6(){
+export function viewHome6(){
   const st=S.st[sid],tab=scr.tab||'map';
   const nav=[['map','🗺️','Bản đồ'],['home','🏝️','Đảo nhà'],['quest','🎯','Nhiệm vụ'],['bag','🎒','Túi đồ']];
   const body=tab==='home'?tabHome(st):tab==='quest'?tabQuest(st):tab==='bag'?tabBag(st):tabMap(st);
@@ -162,7 +173,7 @@ function tabBag(st){
 }
 
 /* ---------- Trang đảo lớp 6 ---------- */
-function viewIsland6(){
+export function viewIsland6(){
   const st=S.st[sid],id=scr.id,u=unit(1,id),s=g6s(st,id),G=G6[id],storm=stormDue(st,id);
   const got=s.m.filter(Boolean).length;
   const mk=(lv,t,d)=>{const can=UNL||s.intro&&(lv===0||s.m[lv-1]),done=s.m[lv],med=s.med[lv]||0,stuck=!done&&s.fails[lv]>=2;
@@ -191,7 +202,7 @@ function startGame(id,lv,base){
   go({k:'game',id,lv,base,mode,qs,j:0,hearts:3,combo:0,best:0,ok:0,tries:0,inp:'',picks:[],seq:[],res:[],sheet:null,t0:Date.now(),hp:lv===2?P1_Q:0,demo,fixed:0});
 }
 function gameQ(){return scr.qs[scr.j]}
-function viewGame(){
+export function viewGame(){
   const g=scr,u=unit(1,g.id),G=G6[g.id],n=g.qs.length;
   if(g.end)return viewGameEnd();
   const q=gameQ(),boss=g.lv===2,soft=g.mode==='fix'||g.mode==='easy';

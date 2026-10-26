@@ -1,4 +1,10 @@
 /* ===================== LỚP 3 · CHỦ ĐỀ 11–16 (học kì 2, phần B) ===================== */
+import { pick, R, range } from '../../core/01-tien-ich.js';
+import { shuf } from '../../core/21-lop-6-che-do-tro-choi.js';
+import { CQ, NQ, ORD, SG } from '../hk1/26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { fN, OQ, QB4 } from '../hk1/28-chu-de-3-lop-1-5.js';
+import { colPic, QU3, WQ } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { addTopic, LES, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 (()=>{
 const G=3;
 const TH=['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];

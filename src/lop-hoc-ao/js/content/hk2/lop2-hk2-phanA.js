@@ -1,5 +1,14 @@
 /* ===================== LỚP 2 · CHỦ ĐỀ 6–10 (học kì 2, phần A) ===================== */
 /* 6: Ngày – giờ, giờ – phút, ngày – tháng · 7: Ôn tập học kì 1 · 8: Phép nhân, phép chia · 9: Làm quen với hình khối · 10: Các số trong phạm vi 1 000 */
+import { pick, R, range } from '../../core/01-tien-ich.js';
+import { shuf } from '../../core/21-lop-6-che-do-tro-choi.js';
+import { spr } from '../../core/22-do-hoa-pixel-mau-logo-clb.js';
+import { OBJ1 } from '../hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { CQ, NQ, ORD, SG, vnRead } from '../hk1/26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { QT2 } from '../hk1/27-chu-de-2-lop-1-5.js';
+import { hlN, OQ, QK2 } from '../hk1/28-chu-de-3-lop-1-5.js';
+import { lineSvg, QC2, QG2 } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { addTopic, LES, lsLine, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 (()=>{
 const G=2;
 /* ---------- hình vẽ ---------- */

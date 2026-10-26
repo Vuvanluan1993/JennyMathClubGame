@@ -1,5 +1,17 @@
 /* ===================== Giáo viên ===================== */
-function viewGV(){
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { L1 } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
+import { P2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { DEMO_CODE, gvCLS, gvHead, ORG_ON, save } from './09-du-lieu-demo.js';
+import { evDay, log } from './10-su-kien-mau-xapi.js';
+import { curIsland, p1Stars, p2Stars, totalStars } from './11-sao-va-mo-khoa.js';
+import { activeDays, alerts, dayStats } from './12-so-lieu.js';
+import { initials, render, shortTitle, toast, unit } from './13-giao-dien-chung.js';
+import { P2_1 } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { gvCB } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
+export function viewGV(...a){return hooks.goi('viewGV',this,a)}
+hooks.ham('viewGV',function(){
   const CLS=gvCLS();
   const allAl=CLS.flatMap(([id])=>alerts(id).map(a=>({...a,id}))).sort((a,b)=>(a.c==='bad'?0:1)-(b.c==='bad'?0:1));
   const all=allAl.slice(0,6);
@@ -26,8 +38,9 @@ function viewGV(){
   ${actCard}
   <section class="card"><details><summary>Nhật ký học tập (chuẩn xAPI) <span class="pill">${S.events.length} sự kiện</span></summary><div class="row" style="margin-top:10px"><button class="btn sm" onclick="exportLog()">Chép JSON</button></div><div class="log">${esc(feed)}</div><textarea id="jsonBox" hidden readonly aria-label="Nhật ký JSON"></textarea></details></section>
   </div>`;
-}
-function toggleOpen(id){S.open[id]=!S.open[id];if(S.open[id])log('gv','assigned',unit(2,id).title,0,{});save();render();toast(S.open[id]?'Đã mở '+unit(2,id).title:'Đã đóng buổi')}
+});
+function toggleOpen(...a){return hooks.goi('toggleOpen',this,a)}
+hooks.ham('toggleOpen',function(id){S.open[id]=!S.open[id];if(S.open[id])log('gv','assigned',unit(2,id).title,0,{});save();render();toast(S.open[id]?'Đã mở '+unit(2,id).title:'Đã đóng buổi')});
 function activate(){const id=document.getElementById('actWho').value,c=document.getElementById('actCode').value.trim().toUpperCase();if(c!==DEMO_CODE){document.getElementById('actMsg').innerHTML=`<div class="fb bad" style="margin-top:10px"><span class="ic">!</span><span>Mã không đúng. Kiểm tra lại mã trên phiếu (mã thử: ${DEMO_CODE}).</span></div>`;return}S.st[id].active=true;log(id,'activated','Toán Jenny',0,{});save();render();toast('Đã kích hoạt Toán Jenny cho '+S.st[id].name)}
 function award(b){const id=document.getElementById('bWho').value;S.st[id].badges.push({t:b,day:S.day,from:'cô'});log(id,'awarded',b,0,{});save();render();toast('Đã tặng thẻ "'+b+'"')}
 function comment(){const id=document.getElementById('bWho').value,t=document.getElementById('cTpl').value;S.st[id].comments.push({day:S.day,t});save();render();toast('Đã gửi nhận xét')}

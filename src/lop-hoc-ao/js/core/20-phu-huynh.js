@@ -1,5 +1,14 @@
 /* ===================== Phụ huynh ===================== */
-function viewPH(){
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { L1 } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
+import { P2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { curIsland, p1Stars, p2Stars, totalStars } from './11-sao-va-mo-khoa.js';
+import { activeDays, alerts, dayStats } from './12-so-lieu.js';
+import { j1s, P2_1 } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { jenny } from './33d-jenny-bieu-cam.js';
+export function viewPH(...a){return hooks.goi('viewPH',this,a)}
+hooks.ham('viewPH',function(){
   const st=S.st[sid],t=dayStats(sid,S.day),first=st.name.split(' ').pop(),k=curIsland(st);
   const l1=t.n?`Hôm nay ${first} học khoảng ${Math.max(1,t.min)} phút, làm ${t.n} câu, đúng ${t.c} câu.`:`Hôm nay ${first} chưa vào học.`;
   const l2=t.stars?`Con nhận thêm ${t.stars} sao hôm nay, tổng ${totalStars(st)} sao.`:k>=0?`Con đang học "${L1(st)[k].title}" (${st.p1[L1(st)[k].id].m.filter(Boolean).length}/3 sao), tổng ${totalStars(st)} sao.`:`Con có ${totalStars(st)} sao.`;
@@ -24,5 +33,5 @@ function viewPH(){
      ${st.active||st.grade!==6?'':'<p class="muted" style="margin:12px 0 0">Toán Jenny (2 buổi/tuần, cô giao theo lực học) chưa được kích hoạt cho con. Liên hệ trung tâm nếu muốn đăng ký.</p>'}
      <p class="muted" style="margin:12px 0 0">Phụ huynh có quyền xem, sửa, rút đồng ý hoặc yêu cầu xóa dữ liệu của con.</p></section>
    </aside></div></div>`;
-}
+});
 

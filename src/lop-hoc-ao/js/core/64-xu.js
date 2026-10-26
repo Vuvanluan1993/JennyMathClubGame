@@ -2,6 +2,13 @@
    Trước đây: câu đúng trong màn tính vào giới hạn 150 xu/ngày (selfCoins), trò chơi có giới hạn riêng 100 xu/ngày (gameCoins).
    Nay bỏ hết giới hạn ngày: em làm đúng, chơi xong là nhận đủ xu. Xu mỗi ván trò chơi vẫn theo luật của từng trò (ví dụ tối đa 20 xu/ván).
    Vẫn ghi số xu theo ngày (selfCoins, gameCoins) để thống kê. */
+import { hooks } from './00-hooks.js';
+import { save } from './09-du-lieu-demo.js';
+import { render } from './13-giao-dien-chung.js';
+import { GH } from './49-gian-hang.js';
+import { CARE, PET_SP } from './49b-dao-nha-thu-cung.js';
+import { ARC, ARC_PRICE, ARC_TK } from './51-kho-game.js';
+import { FB, fbSub, fbTS, fbVe } from './62-may-chu.js';
 const GAME_CAP=Infinity;
 const xuTroChoi=()=>{const g=scr;return!!(g&&(g.k==='xg'||g.k==='mini'||g.race||g.tug))};
 
@@ -22,13 +29,13 @@ const xuTroChoi=()=>{const g=scr;return!!(g&&(g.k==='xg'||g.k==='mini'||g.race||
    kiên trì); trang cô có cột "Xu hôm nay" và nhãn "Xu tăng lạ" (> 300 xu/ngày hoặc > 15 dòng man/giờ). Chặn hẳn cần hàm máy chủ (P-22, chờ Q5).
    Chưa bật ví (chưa nâng cấp, bản demo, học không máy chủ): hai hàm vẫn chạy, chỉ đổi st.coins như cũ. */
 const XU_TRAN=40,XU_CACH=3200,XU_LECH=50,XU_K=['man','tl','bvn','game','mua','ban','ql','khac'];
-const XU_THUONG=['Vòng cổ vàng','Mũ phi hành gia','Cá hồi hiếm','Bóng len cầu vồng'];
+export const XU_THUONG=['Vòng cổ vàng','Mũ phi hành gia','Cá hồi hiếm','Bóng len cầu vồng'];
 const VI={on:false,tk:'',coins:0,items:{},pets:{},tudo:{},m:undefined,shop:null,q:[],hen:null,ban:false,last:0};
 const xuTk=()=>typeof CLOUD!=='undefined'&&CLOUD&&CLOUD.me&&CLOUD.me.role==='hs'?CLOUD.me.tk:null;
-const xuOn=()=>VI.on&&xuTk()===VI.tk;
+export const xuOn=()=>VI.on&&xuTk()===VI.tk;
 /* bảng giá cfg/shop lấy từ chính các danh mục trong app (LUAT §6): tudo = áo váy, mũ kính, khung; pets = loài;
    items = đảo nhà, đồ nuôi, trò chơi (game:<mã>, 150), vé 10 lượt (ve, 60), quà trùm đảo (0 xu) */
-function xuBangGia(){const g={items:{},pets:{},tudo:{},tranMan:XU_TRAN};
+export function xuBangGia(){const g={items:{},pets:{},tudo:{},tranMan:XU_TRAN};
  try{GH.forEach(c=>c.it.forEach(([id,,pr])=>{if(c.k==='pet')g.pets[id]=pr;else if(c.k==='of'||c.k==='acc'||c.k==='frame')g.tudo[id]=pr;else g.items[id]=pr}))}catch(e){}
  try{CARE.forEach(c=>{g.items[c[0]]=c[2]})}catch(e){}
  try{Object.keys(PET_SP).forEach(sp=>{g.pets[sp]=PET_SP[sp][1]})}catch(e){}
@@ -63,39 +70,39 @@ async function xuBom(){if(!xuOn()||VI.ban||!VI.q.length)return;if(!navigator.onL
 function xuNhan(d){VI.coins=Math.max(0,Math.round(+d.coins||0));VI.items=d.items||{};VI.pets=d.pets||{};VI.tudo=d.tudo||{};VI.m=d.m||undefined}
 async function xuDocLai(){try{const d=await FB.db.doc('vi/'+VI.tk).get();if(d.exists)xuNhan(d.data());const st=S.st[VI.tk];if(st){st.coins=xuMong();xuDongBoDo(st);save();render()}}catch(e){}}
 /* ---- hai hàm duy nhất để đổi xu ---- */
-function xuCong(delta,k,ref){delta=Math.round(+delta||0);const st=S.st[sid];if(!st||delta<=0)return 0;k=XU_K.includes(k)?k:xuLoai();ref=String(ref==null?xuRef():ref).slice(0,190);
+export function xuCong(delta,k,ref){delta=Math.round(+delta||0);const st=S.st[sid];if(!st||delta<=0)return 0;k=XU_K.includes(k)?k:xuLoai();ref=String(ref==null?xuRef():ref).slice(0,190);
  st.coins=(st.coins||0)+delta;
  if(xuOn()){let d=delta;while(d>0){const c=Math.min(XU_TRAN,d);xuDay({d:c,k,ref});d-=c}}
  return delta}
 function xuGhiMua(loai,id,gia){if(xuOn())xuDay({d:-gia,k:'mua',ref:String(id).slice(0,190),mua:{loai,id}})}
-function xuMua(loai,id){const st=S.st[sid],gia=xuGia(loai,id);if(!st||gia===null||(st.coins||0)<gia)return false;st.coins-=gia;xuGhiMua(loai,id,gia);return true}
+export function xuMua(loai,id){const st=S.st[sid],gia=xuGia(loai,id);if(!st||gia===null||(st.coins||0)<gia)return false;st.coins-=gia;xuGhiMua(loai,id,gia);return true}
 const xuBan=(delta,ref)=>xuCong(delta,'ban',ref);
 const xuCo=(loai,id)=>!!(VI[loai]&&VI[loai][id])||VI.q.some(x=>x.mua&&x.mua.loai===loai&&x.mua.id===id);
 /* addCoins (11) đã gọi xuCong; ở đây chỉ tách thống kê trò chơi (gameCoins) khỏi selfCoins và gắn k = 'game' */
-{const _a=addCoins;addCoins=function(id,n,kind,k){const st=S.st[id];if(kind==='self'&&st&&xuTroChoi()){st.gameCoins=st.gameCoins||{};st.gameCoins[S.day]=(st.gameCoins[S.day]||0)+n;
-    Object.keys(st.gameCoins).forEach(d=>{if(+d<S.day-14)delete st.gameCoins[d]});return _a(id,n,'game',k||'game')}return _a.apply(this,arguments)}}
+{const _a=hooks.cu('addCoins');hooks.de('addCoins',function(id,n,kind,k){const st=S.st[id];if(kind==='self'&&st&&xuTroChoi()){st.gameCoins=st.gameCoins||{};st.gameCoins[S.day]=(st.gameCoins[S.day]||0)+n;
+    Object.keys(st.gameCoins).forEach(d=>{if(+d<S.day-14)delete st.gameCoins[d]});return _a(id,n,'game',k||'game')}return _a.apply(this,arguments)})}
 /* 49b (ngoài danh sách file P-20): mua thú cưng, đồ nuôi và bán thanh lý đi qua ví bằng cách bọc hàm */
 function xuBoc(ten,f){try{if(typeof window[ten]!=='function')return;const _f=window[ten];window[ten]=function(){const st=S.st[sid],tr=st?st.coins||0:0;const r=_f.apply(this,arguments);try{f(st,tr-((st&&st.coins)||0),arguments)}catch(e){}return r}}catch(e){}}
 xuBoc('petBuy',(st,da,a)=>{if(da>0)xuGhiMua('pets',a[0],da)});
 xuBoc('careBuy',(st,da,a)=>{if(da>0)xuGhiMua('items',a[0],da)});
 ['bagSell','gearSell','eggSell'].forEach(n=>xuBoc(n,(st,da,a)=>{if(da<0){st.coins+=da;xuBan(-da,String(a[0]||n))}}));
 /* save(): st.coins phải bằng xu máy chủ + hàng đợi; lệch thì xử lý */
-{const _s=save;save=function(){try{if(xuOn()){const st=S.st[sid];if(st){const d=Math.round((st.coins||0)-xuMong());
- if(d>0&&d<=XU_LECH){st.coins-=d;xuCong(d,'khac',undefined)}else if(d){console.warn('Xu: thay đổi '+(d>0?'+':'')+d+' xu ngoài luồng bị bỏ (P-20: chỉ xuCong/xuMua được đổi xu)');st.coins=xuMong()}}}}catch(e){}return _s.apply(this,arguments)}}
+{const _s=hooks.cu('save');hooks.de('save',function(){try{if(xuOn()){const st=S.st[sid];if(st){const d=Math.round((st.coins||0)-xuMong());
+ if(d>0&&d<=XU_LECH){st.coins-=d;xuCong(d,'khac',undefined)}else if(d){console.warn('Xu: thay đổi '+(d>0?'+':'')+d+' xu ngoài luồng bị bỏ (P-20: chỉ xuCong/xuMua được đổi xu)');st.coins=xuMong()}}}}catch(e){}return _s.apply(this,arguments)})}
 /* ---- vào app: đọc ví + bảng giá, nối hàng đợi còn dở, gỡ đồ ví không có ---- */
 function xuDongBoDo(st){try{const g=xuBangGia(),trong=id=>(id in g.tudo)||(id in g.items);
  if(st.shop&&Array.isArray(st.shop.own))st.shop.own=st.shop.own.filter(id=>!trong(id)||xuCo('tudo',id)||xuCo('items',id));
  if(st.arc&&st.arc.own)Object.keys(st.arc.own).forEach(k=>{if(!xuCo('items','game:'+k))delete st.arc.own[k]});
  st.items=XU_THUONG.filter(n=>xuCo('items',n))}catch(e){}}
 /* ví từ dữ liệu hs.j đang có (QL "Nâng cấp dữ liệu v3" / "Tạo ví"): xu + đồ đã mua ở Cửa hàng, Đồ nuôi, Kho trò chơi, quà trùm, thú cưng */
-function xuViTu(st){const g=xuBangGia(),v={coins:Math.max(0,Math.round(+st.coins||0)),items:{},pets:{},tudo:{}},sh=st.shop||{};
+export function xuViTu(st){const g=xuBangGia(),v={coins:Math.max(0,Math.round(+st.coins||0)),items:{},pets:{},tudo:{}},sh=st.shop||{};
  (sh.own||[]).forEach(id=>{if(id in g.tudo)v.tudo[id]=1;else if(id in g.items)v.items[id]=1});
  Object.keys(sh.bag||{}).forEach(id=>{if(sh.bag[id]>0&&(id in g.items))v.items[id]=(v.items[id]||0)+1});
  (sh.gear||[]).forEach(x=>{if(x&&(x.id in g.items))v.items[x.id]=(v.items[x.id]||0)+1});
  (st.items||[]).forEach(n=>{if(n in g.items)v.items[n]=1});
  if(st.arc&&st.arc.own)Object.keys(st.arc.own).forEach(k=>{if(st.arc.own[k])v.items['game:'+k]=1});
  ((st.pets&&st.pets.list)||[]).forEach(p=>{if(p&&p.sp)v.pets[p.sp]=(v.pets[p.sp]||0)+1});return v}
-async function xuBoot(tk,db){VI.on=false;VI.tk=tk;VI.q=[];VI.last=0;
+export async function xuBoot(tk,db){VI.on=false;VI.tk=tk;VI.q=[];VI.last=0;
  try{const [v,c]=await Promise.all([db.doc('vi/'+tk).get(),db.doc('cfg/shop').get().catch(()=>null)]);if(c&&c.exists)VI.shop=c.data();
   if(!v.exists){console.warn('Xu: em chưa có ví vi/'+tk+' (quản lý bấm Nâng cấp dữ liệu v3) — xu tạm giữ trong hs.j như cũ');return}
   xuNhan(v.data());try{VI.q=(JSON.parse(localStorage.getItem(xuKey())||'[]')||[]).filter(x=>x&&typeof x.d==='number')}catch(e){VI.q=[]}VI.q.forEach(x=>{x.dang=0});

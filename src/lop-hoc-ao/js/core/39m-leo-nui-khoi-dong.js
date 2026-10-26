@@ -1,5 +1,13 @@
 /* ===================== LEO NÚI: 5 chặng, 3 chặng đầu khởi động ===================== */
 /* Chặng 1–3: bài lời văn một phép tính, số nhỏ, chỉ dùng phép tính đã học (khởi động). Chặng 4–5: bài lời văn của tiết như trước. */
+import { hooks } from './00-hooks.js';
+import { pick, R } from './01-tien-ich.js';
+import { shuf } from './21-lop-6-che-do-tro-choi.js';
+import { isl1, jumpT1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { fN } from '../content/hk1/28-chu-de-3-lop-1-5.js';
+import { xgGr } from './39-tro-choi-dot-3.js';
+import { ktOf } from './39e-kien-thuc-tro-choi.js';
+import { CLIMB_N } from './39l-leo-nui.js';
 const CLIMB_EASY_N=3;
 const CE_NAMES=['Lan','Minh','Hoa','Nam','Mai','An','Bình','Hà'],CE_THINGS=[['quả cam','quả'],['cái bút','cái'],['quyển vở','quyển'],['bông hoa','bông'],['viên bi','viên'],['cái kẹo','cái'],['con cá','con'],['quả táo','quả']];
 function climbEasy(x,seen){const K=ktOf(x),G=xgGr(x),F=K.f||new Set(),ops=['+','-','×',':'].filter(o=>F.has(o));if(!ops.length)return null;
@@ -14,16 +22,16 @@ function climbEasy(x,seen){const K=ktOf(x),G=xgGr(x),F=K.f||new Set(),ops=['+','
     const d=ans>=50?10:1,cand=[...new Set([ans+d,ans-d,ans+2*d,ans+1,ans-1].filter(v=>v>=0&&v!==ans))];const opts=shuf([ans,...shuf(cand).slice(0,2)]).map(v=>`${fN(v)} ${cl}`);
     return{t,pic:'',opts,a:opts.indexOf(`${fN(ans)} ${cl}`),q:{kind:'Giải toán lời văn (khởi động)',say:t},sol:sol,easy:1}}
   return null}
-{const _q=climbQ;climbQ=function(x,seen){const g=scr,sc=(g&&g.k==='xg'&&g.mode==='climb'&&g.seen===seen)?g.score:0;if(sc<CLIMB_EASY_N){const e=climbEasy(x,seen);if(e)return e}return _q.apply(this,arguments)}}
+{const _q=hooks.cu('climbQ');hooks.de('climbQ',function(x,seen){const g=scr,sc=(g&&g.k==='xg'&&g.mode==='climb'&&g.seen===seen)?g.score:0;if(sc<CLIMB_EASY_N){const e=climbEasy(x,seen);if(e)return e}return _q.apply(this,arguments)})}
 /* lời mở đầu / huy hiệu theo số chặng mới */
-{const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='climb'){if(scr.say)scr.say=String(scr.say).replace(/sáu chặng/g,'năm chặng');document.querySelectorAll('.xcbadge small').forEach(s=>s.textContent=s.textContent.replace(/\b6 bài/,`${CLIMB_N} bài`))}}catch(e){}return v}}
+{const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='climb'){if(scr.say)scr.say=String(scr.say).replace(/sáu chặng/g,'năm chặng');document.querySelectorAll('.xcbadge small').forEach(s=>s.textContent=s.textContent.replace(/\b6 bài/,`${CLIMB_N} bài`))}}catch(e){}return v})}
 
 /* ===================== BẢN ĐỒ: quay lại đúng chủ đề đang xem ===================== */
 /* Vào đảo (hoặc chạm thẻ chủ đề) thì nhớ chủ đề; về bản đồ thì cuộn tới chủ đề đó thay vì chủ đề 1/chủ đề đang học. */
-let MAP_TI=null,MAP_ID=null;
-{const _go=go;go=function(s){try{if(s&&s.k==='island'&&s.id){const x=isl1(s.id);if(x){MAP_TI=x.ti;MAP_ID=s.id}}}catch(e){}return _go.apply(this,arguments)}}
-{const _j=jumpT1;jumpT1=function(ti,smooth){MAP_TI=ti;return _j.apply(this,arguments)}}
-{const _a=g1AfterRender;g1AfterRender=function(){const want=MAP_TI,onMap=role==='hs'&&scr.k==='home'&&(scr.tab||'map')==='map';
+globalThis.MAP_TI=null;globalThis.MAP_ID=null;
+{const _go=hooks.cu('go');hooks.de('go',function(s){try{if(s&&s.k==='island'&&s.id){const x=isl1(s.id);if(x){MAP_TI=x.ti;MAP_ID=s.id}}}catch(e){}return _go.apply(this,arguments)})}
+{const _j=hooks.cu('jumpT1');hooks.de('jumpT1',function(ti,smooth){MAP_TI=ti;return _j.apply(this,arguments)})}
+{const _a=hooks.cu('g1AfterRender');hooks.de('g1AfterRender',function(){const want=MAP_TI,onMap=role==='hs'&&scr.k==='home'&&(scr.tab||'map')==='map';
   if(onMap&&want!=null&&!scr.noJump){scr.noJump=1;const v=_a.apply(this,arguments);scr.noJump=0;setTimeout(()=>{jumpT1(want);const ch=document.querySelectorAll('.tchip')[want];if(ch&&ch.parentNode)ch.parentNode.scrollLeft=ch.offsetLeft-ch.parentNode.clientWidth/2+ch.offsetWidth/2;
     /* cuộn biển của chủ đề tới đúng đảo vừa vào */ if(MAP_ID){const n=document.querySelector(`#t1_${want} .node[onclick*="'${MAP_ID}'"]`);const sea=n&&n.closest('.sea');if(sea)sea.scrollLeft=n.offsetLeft-sea.clientWidth/2+55}},30);return v}
-  return _a.apply(this,arguments)}}
+  return _a.apply(this,arguments)})}

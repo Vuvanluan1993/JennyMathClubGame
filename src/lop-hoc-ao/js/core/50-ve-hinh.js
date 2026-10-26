@@ -3,6 +3,20 @@
    - 4 hình mỗi màn, 3 tim. Sai: mất 1 tim, vẽ lại; sai 2 lần thì hiện chấm gợi ý. Qua màn khi còn tim.
    - Phản hồi chỉ: "Đúng rồi!" / "Chưa đúng" + câu động viên.
    - Nhận dạng: bao lồi các nét → thử khớp tam giác / tứ giác (sai số trung bình), kiểm tra khép kín từng cạnh, rồi xét góc vuông và tỉ lệ cạnh. */
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { save } from './09-du-lieu-demo.js';
+import { log } from './10-su-kien-mau-xapi.js';
+import { addCoins } from './11-sao-va-mo-khoa.js';
+import { go, render } from './13-giao-dien-chung.js';
+import { shuf } from './21-lop-6-che-do-tro-choi.js';
+import { PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { isl1, s1, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { hurtFx, sfx } from './33b-am-thanh.js';
+import { jenny } from './33d-jenny-bieu-cam.js';
+import { gateWrap } from './46-bat-buoc-luyen-loi.js';
+import { enOn } from './48-dich-tieng-anh.js';
 const DRAW_ISL={g1b7t1:['sq','rect','tri'],g1b7t2:['sq','rect','tri'],g1b9t1:['sq','rect','tri'],
  g2e26t1:['quad','tri'],g2e26t2:['quad','tri'],g2k34t1:['sq','rect','tri','quad'],g2k34t2:['sq','rect','tri','quad'],
  g3c19t1:['tri','quad','rect','sq'],g3c19t2:['tri','quad','rect','sq'],g3c19t3:['tri','quad','rect','sq'],g3c20t1:['sq','rect'],g3c20t2:['sq','rect','tri'],
@@ -96,13 +110,13 @@ function drawEnd(alive){const g=scr,st=S.st[sid],s=s1(st,g.id);g.end=true;g.pass
  else{sfx('lose');try{sayJ(dEN()?"That's OK. Let's play again!":'Không sao cả. Mình chơi lại nhé!')}catch(e){}}
  save();render()}
 /* nối vào app */
-{const _vh=viewHS;viewHS=function(){try{if(scr.k==='drawg')return viewDraw()}catch(e){console.error(e)}return _vh.apply(this,arguments)}}
-{const _r=render;render=function(){const a=_r.apply(this,arguments);try{if(role==='hs'&&scr.k==='drawg'){document.body.classList.add('gaming');if(!scr.end)drawSetup()}}catch(e){}return a}}
+{const _vh=hooks.cu('viewHS');hooks.de('viewHS',function(){try{if(scr.k==='drawg')return viewDraw()}catch(e){console.error(e)}return _vh.apply(this,arguments)})}
+{const _r=hooks.cu('render');hooks.de('render',function(){const a=_r.apply(this,arguments);try{if(role==='hs'&&scr.k==='drawg'){document.body.classList.add('gaming');if(!scr.end)drawSetup()}}catch(e){}return a})}
 try{addEventListener('resize',()=>{if(scr&&scr.k==='drawg'&&!scr.end)drawSetup()})}catch(e){}
 /* trang đảo: thêm dòng "Màn vẽ hình" sau các màn hiện có */
-{const _vi=viewIsland1;viewIsland1=function(){const r=_vi.apply(this,arguments);try{const id=scr.id;if(!DRAW_ISL[id]||curG()>5)return r;const x=isl1(id),st=S.st[sid],s=s1(st,id),en=dEN(),can=UNL||s.m[0],done=!!s.draw,ks=DRAW_ISL[id].map(k=>DRAW_NAME[dL()][k]).join(', ');
+{const _vi=hooks.cu('viewIsland1');hooks.de('viewIsland1',function(){const r=_vi.apply(this,arguments);try{const id=scr.id;if(!DRAW_ISL[id]||curG()>5)return r;const x=isl1(id),st=S.st[sid],s=s1(st,id),en=dEN(),can=UNL||s.m[0],done=!!s.draw,ks=DRAW_ISL[id].map(k=>DRAW_NAME[dL()][k]).join(', ');
   const li=`<li class="${done?'done':''} ${!can&&!done?'off':''} dwli"><span class="n">${done?'✓':spr('pencil',22)}</span><div class="grow"><b>${en?`Level ${x.nm+1} · Draw shapes`:`Màn ${x.nm+1} · Vẽ hình`}</b><span class="muted">${en?`Draw by hand: ${ks} · ${DRAW_N} shapes · 3 hearts`:`Vẽ tay: ${ks} · ${DRAW_N} hình · 3 tim`}</span></div><button class="btn sm" ${can?'':'disabled'} onclick="startDraw('${id}')">${can?(done?(en?'Play again':'Chơi lại'):(en?'Play':'Chơi')):'🔒'}</button></li>`;
-  const i=r.indexOf('<ul class="tl">');if(i<0)return r;const j=r.indexOf('</ul>',i);return r.slice(0,j)+li+r.slice(j)}catch(e){return r}}}
+  const i=r.indexOf('<ul class="tl">');if(i<0)return r;const j=r.indexOf('</ul>',i);return r.slice(0,j)+li+r.slice(j)}catch(e){return r}})}
 Object.assign(PXS,{pencil:["......kk",".....kak","....kaak","...kaak.","..kaak..",".kwak...","kkwk....","kk......"].map(r=>r.replace(/w/g,'t'))});
 document.head.insertAdjacentHTML('beforeend',`<style>
 .dwgame .gmid{display:flex;flex-direction:column;gap:10px}

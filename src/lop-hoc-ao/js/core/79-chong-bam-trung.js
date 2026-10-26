@@ -1,5 +1,6 @@
 /* 79 — Chống bấm nhiều lần khi lưu/tạo (24/10/2026): đang lưu thì khoá nút, bấm thêm không tạo trùng.
    Tạo học sinh trùng họ tên + ngày sinh với em đã có → hỏi lại trước khi tạo. */
+import { viewPH } from './20-phu-huynh.js';
 (function(){
 if(typeof viewPH==='undefined')return;
 const khoa=(ten)=>{const f=window[ten];if(typeof f!=='function'||f._khoa)return;let busy=false;

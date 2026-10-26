@@ -2,6 +2,11 @@
    Tạo học sinh: SĐT/Gmail phụ huynh đã có → hỏi rồi gắn vào tài khoản phụ huynh đó (anh chị em);
    chưa có → tạo tài khoản phụ huynh mới tên "ph.<tên đăng nhập học sinh>", mật khẩu ngẫu nhiên (P-05, phải đổi lần đầu).
    Sửa học sinh: bổ sung SĐT/Gmail trùng phụ huynh khác → hỏi gộp; tài khoản ph.… tạm không còn con thì bỏ. */
+import { hooks } from './00-hooks.js';
+import { save } from './09-du-lieu-demo.js';
+import { render, toast } from './13-giao-dien-chung.js';
+import { viewPH } from './20-phu-huynh.js';
+import { FB, fbDayNgay, fbLoi, fbMKGoiY, fbTaoTK } from './62-may-chu.js';
 (function(){
 if(typeof viewPH==='undefined')return;
 const O=()=>S.org,MKmoi=()=>typeof fbMKGoiY==='function'?fbMKGoiY():'tam'+String(Math.floor(10000+Math.random()*90000));
@@ -62,6 +67,6 @@ window.phTaoThieu=async function(){const ds=STUDENTS.filter(s=>!(O().ph||{})[s[0
  if(!confirm(`Tạo tài khoản phụ huynh cho ${ds.length} em chưa có?\nEm có SĐT/Gmail trùng phụ huynh đã có sẽ được gắn chung; còn lại tạo "ph.tên đăng nhập", mật khẩu tạm ngẫu nhiên (in phiếu).`))return;
  let n=0,g=0,l=0;for(const [id] of ds){const h=(O().hoso||{})[id]||{};try{const f=phTim(h.dt,h.mail);await phGan(id,f.xung?f.xung[0]:f.tk,{dt:h.dt,mail:h.mail});(f.tk||f.xung)?g++:n++}catch(x){l++}}
  save();if(cloud()){try{await fbDayNgay()}catch(x){}}render();toast(`Đã tạo ${n} tài khoản, gắn chung ${g} em${l?`, ${l} lỗi`:''}`)};
-{const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='ph'){const n=STUDENTS.filter(s=>!(O().ph||{})[s[0]]).length;
- if(n)r=r.replace(/(<h2>Em chưa có phụ huynh \(\d+\)<\/h2>)/,`$1<div class="qlin" style="margin-bottom:10px"><button type="button" class="btn pri" onclick="phTaoThieu()">+ Tạo tài khoản phụ huynh cho ${n} em</button></div>`)}return r}}
+{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='ph'){const n=STUDENTS.filter(s=>!(O().ph||{})[s[0]]).length;
+ if(n)r=r.replace(/(<h2>Em chưa có phụ huynh \(\d+\)<\/h2>)/,`$1<div class="qlin" style="margin-bottom:10px"><button type="button" class="btn pri" onclick="phTaoThieu()">+ Tạo tài khoản phụ huynh cho ${n} em</button></div>`)}return r})}
 })();

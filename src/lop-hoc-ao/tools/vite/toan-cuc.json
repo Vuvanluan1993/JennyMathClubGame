@@ -1,0 +1,8 @@
+{
+  "mo_ta": "Tên toàn cục KHÔNG do file JS nào trong app.template.html khai báo nhưng mã vẫn dùng. tim-import.mjs và eslint.config.mjs (gốc kho) cùng đọc file này; ghi lý do cho từng tên. Trạng thái dùng chung (globalThis.*) nằm ở toan-cuc-sinh.json (sinh ra, không sửa tay).",
+  "ten": {
+    "ACC": "tài khoản thử, do vai.js chèn vào bản thử học sinh (tools/vite/vai/hoc-sinh-dang-nhap-thu.js.txt); 55-khoa-dao-tai-khoan.js chỉ dò bằng typeof",
+    "firebase": "SDK Firebase compat nạp bằng <script> trong 62-may-chu.js (fbInit)",
+    "fbMKVua": "70-sua-hoc-sinh.js chỉ gán khi đã có (typeof); chưa file nào khai báo — biến trung gian của luồng đổi mật khẩu, giữ nguyên hành vi cũ"
+  }
+}

@@ -5,18 +5,38 @@
    tug   Kéo co với trùm  — câu của đảo (máy Đua giờ, cờ tug), đúng kéo về Jenny, sai/đứng yên 6 giây trùm kéo lại, 90 giây.
    clock Đồng hồ thần kì  — chỉ ở đảo học xem giờ; kéo kim hoặc bấm +/− cho đúng giờ, 8 lượt, 3 tim.
    Kỷ lục: st.mg[`${id}:${mode}`]. Xu: addCoins(…,'self') tối đa 20. Hồ sơ: mọi lượt trả lời vào st.dd; tug và clock vào cả st.sk. */
+import { hooks } from './00-hooks.js';
+import { esc, pick, R } from './01-tien-ich.js';
+import { save } from './09-du-lieu-demo.js';
+import { log } from './10-su-kien-mau-xapi.js';
+import { addCoins } from './11-sao-va-mo-khoa.js';
+import { go, render } from './13-giao-dien-chung.js';
+import { shuf } from './21-lop-6-che-do-tro-choi.js';
+import { PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { isl1, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { bossOf } from '../content/hk1/27-chu-de-2-lop-1-5.js';
+import { fN, MGT } from '../content/hk1/28-chu-de-3-lop-1-5.js';
+import { MG, mkQ } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
+import { islPool } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
+import { hurtFx, sfx } from './33b-am-thanh.js';
+import { bossHTML } from './33c-trum-hoat-hinh.js';
+import { jenny } from './33d-jenny-bieu-cam.js';
+import { jOutfit, ofVariant } from './33e-ho-chieu.js';
+import { hsRec } from './35-ho-so.js';
 Object.assign(PXS,{
  basket:["k..............k","kn............nk","knnnnnnnnnnnnnnk","kNnNnNnNnNnNnNnk","knNnNnNnNnNnNnNk","kNnNnNnNnNnNnNnk",".knnnnnnnnnnnnk.","..kkkkkkkkkkkk.."],
  cardB:["kkkkkkkkkk","kbbbbbbbbk","kbBbBbBbBk","kbbbbbbbbk","kbBbyybBbk","kbbbyybbbk","kbBbBbBbBk","kbbbbbbbbk","kkkkkkkkkk"],
  rope:["n","N"],
 });
-const XGN={star:['star','Hứng sao rơi','Di giỏ hứng sao đúng luật trong 60 giây'],pair:['cardB','Lật thẻ ghép đôi','Ghép phép tính với kết quả, 6 cặp'],tug:['boss','Kéo co với trùm','Trả lời nhanh để kéo dây về phía Jenny'],clock:['clock','Đồng hồ thần kì','Xoay kim cho đúng giờ, 8 lượt']};
-const xgHash=s=>{let h=7;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return h};
-const xgTime=x=>{const t=`${x.title} ${x.lesson} ${x.goal}`;return /đồng hồ|xem giờ|giờ, phút|giờ\s*-\s*phút|lịch và giờ|giờ và phút|giờ đúng|giờ rưỡi|\bgiờ\b.*\bphút\b|Giờ, phút/i.test(t)};
-const xgRule=x=>{const g=curG();return!!(((x&&x.ti&&MGT[x.ti]&&MGT[x.ti][g])?MGT[x.ti][g]:MG[g])||{}).fish};
+export const XGN={star:['star','Hứng sao rơi','Di giỏ hứng sao đúng luật trong 60 giây'],pair:['cardB','Lật thẻ ghép đôi','Ghép phép tính với kết quả, 6 cặp'],tug:['boss','Kéo co với trùm','Trả lời nhanh để kéo dây về phía Jenny'],clock:['clock','Đồng hồ thần kì','Xoay kim cho đúng giờ, 8 lượt']};
+export const xgHash=s=>{let h=7;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return h};
+export const xgTime=x=>{const t=`${x.title} ${x.lesson} ${x.goal}`;return /đồng hồ|xem giờ|giờ, phút|giờ\s*-\s*phút|lịch và giờ|giờ và phút|giờ đúng|giờ rưỡi|\bgiờ\b.*\bphút\b|Giờ, phút/i.test(t)};
+export const xgRule=x=>{const g=curG();return!!(((x&&x.ti&&MGT[x.ti]&&MGT[x.ti][g])?MGT[x.ti][g]:MG[g])||{}).fish};
 /* chọn 2–3 trò cho đảo: cố định theo mã đảo */
-const _islOptsOld=islOpts;
-function islOpts2(x){const t=`${x.title} ${x.lesson} ${x.goal}`,old=_islOptsOld(x),c=[];
+export const _islOptsOld=hooks.cu('islOpts');
+export function islOpts2(...a){return hooks.goi('islOpts2',this,a)}
+hooks.ham('islOpts2',function(x){const t=`${x.title} ${x.lesson} ${x.goal}`,old=_islOptsOld(x),c=[];
   const time=xgTime(x);if(time)c.push('clock');
   const pool=[];old.forEach(o=>pool.push(o));
   if(xgRule(x)&&(old.includes('fish')||old.includes('balloon')||!old.length))pool.push('star');
@@ -27,33 +47,36 @@ function islOpts2(x){const t=`${x.title} ${x.lesson} ${x.goal}`,old=_islOptsOld(
   const target=h%3===0?2:3,out=[...c],nl=['pair','tug','star'].filter(o=>u.includes(o)),nw=nl.map((_,i)=>nl[(i+(h>>2))%nl.length]),od=r.filter(o=>!XGN[o]);
   /* xen kẽ trò mới và trò cũ để mỗi đảo một khác */
   for(let k=0;out.length<target&&k<Math.max(nw.length,od.length);k++){const a=(h>>3)%2?[nw[k],od[k]]:[od[k],nw[k]];a.forEach(o=>{if(o&&out.length<target&&!out.includes(o))out.push(o)})}
-  return [...new Set(out)].slice(0,3)}
+  return [...new Set(out)].slice(0,3)});
 /* trang đảo: dựng lại mục Chơi thêm với cả trò cũ và mới */
-{const _v=viewIsland1;viewIsland1=function(){const save_=islOpts;islOpts=()=>[];let h;try{h=_v.apply(this,arguments)}finally{islOpts=save_}
+{const _v=hooks.cu('viewIsland1');hooks.de('viewIsland1',function(){const save_=hooks.cu('islOpts');hooks.de('islOpts',()=>[]);let h;try{h=_v.apply(this,arguments)}finally{hooks.de('islOpts',save_)}
   const st=S.st[sid],x=isl1(scr.id),mg=st.mg||{},opts=islOpts2(x);
   const OPT={fish:['fish','Câu cá','Câu cá theo luật của đảo trong 45 giây',`startMini('fish','${x.id}')`,mg[`${x.id}:fish`]],balloon:['balloon','Bóng bay','Bắn bóng theo luật của đảo trong 45 giây',`startMini('balloon','${x.id}')`,mg[`${x.id}:balloon`]],race:['clock','Đua giờ 60 giây','Làm liên tục câu của đảo này, có bảng xếp hạng lớp',`startRace('${x.id}')`,(st.race||{})[x.id]]};
   Object.keys(XGN).forEach(k=>{const [s,n,d]=XGN[k];OPT[k]=[k==='tug'?bossOf(x.id)[0]:s,n,d,`startXG('${k}','${x.id}')`,mg[`${x.id}:${k}`]]});
   const sec=opts.length?`<h3 class="isec">Chơi thêm <span class="pill">tùy chọn</span></h3><div class="oplist">${opts.map(o=>{const [sp,n,d,act,best]=OPT[o];return`<button class="opt${XGN[o]?' xgnew':''}" type="button" onclick="${act}">${spr(sp,34)}<span><b>${n}</b><small>${d}</small></span><em>${best?'Kỷ lục '+best:'Chơi'}</em></button>`}).join('')}</div>`:'';
-  return h.replace(/<\/div><\/div>\s*$/,sec+'</div></div>')}}
+  return h.replace(/<\/div><\/div>\s*$/,sec+'</div></div>')})}
 
 /* ---------- khung chung ---------- */
-let xgLoop=null;
-function stopXG(){if(xgLoop){cancelAnimationFrame(xgLoop.raf);clearInterval(xgLoop.tick);clearTimeout(xgLoop.to);if(xgLoop.off)xgLoop.off();xgLoop=null}}
-{const _go=go;go=function(){stopXG();return _go.apply(this,arguments)}}
-function xgRec(ok,q){try{if(q)hsRec(q,ok,true,1,scr.id);else hsRec({},ok,false,1,scr.id)}catch(e){}}
-function xgHearts(){const l=document.getElementById('xgl');if(l)l.innerHTML=[0,1,2].map(i=>spr(i<scr.lives?'heart':'heartE',18)).join(' ')}
-function startXG(mode,id){try{speechSynthesis.cancel()}catch(e){}const x=isl1(id);
+globalThis.xgLoop=null;
+export function stopXG(){if(xgLoop){cancelAnimationFrame(xgLoop.raf);clearInterval(xgLoop.tick);clearTimeout(xgLoop.to);if(xgLoop.off)xgLoop.off();xgLoop=null}}
+{const _go=hooks.cu('go');hooks.de('go',function(){stopXG();return _go.apply(this,arguments)})}
+export function xgRec(...a){return hooks.goi('xgRec',this,a)}
+hooks.ham('xgRec',function(ok,q){try{if(q)hsRec(q,ok,true,1,scr.id);else hsRec({},ok,false,1,scr.id)}catch(e){}});
+export function xgHearts(){const l=document.getElementById('xgl');if(l)l.innerHTML=[0,1,2].map(i=>spr(i<scr.lives?'heart':'heartE',18)).join(' ')}
+function startXG(...a){return hooks.goi('startXG',this,a)}
+hooks.ham('startXG',function(mode,id){try{speechSynthesis.cancel()}catch(e){}const x=isl1(id);
   if(mode==='tug')return startTug(id);
   const base={k:'xg',mode,id,score:0,lives:3,end:false,started:false,t0:Date.now()};
   if(mode==='star'){const g=curG(),src=((x&&x.ti&&MGT[x.ti]&&MGT[x.ti][g])?MGT[x.ti][g]:MG[g]),r=(src.fish||src.balloon)();const fx=t=>String(t||'').replace(/^(Câu cá|Câu|Bắn bóng|Bắn|Chạm)\s+(?:con\s+cá\s+|cá\s+|quả\s+bóng\s+|bóng\s+)?/i,'Hứng sao ');go({...base,t:60,rule:fx(r.rule),say:'Hứng sao rơi! '+fx(r.say)});scr._r=r;return}
   if(mode==='pair'){const cards=pairDeck(x);go({...base,t:90,cards,open:[],done:[],miss:0,say:'Lật hai thẻ để ghép phép tính với kết quả đúng nhé.'});return}
-  if(mode==='clock'){const rounds=Array.from({length:8},()=>clockTarget(curG()));go({...base,rounds,ri:0,h:12,m:0,ok:0,say:`Đồng hồ thần kì! Em xoay kim cho đồng hồ chỉ ${clockWords(rounds[0])} nhé.`});return}}
+  if(mode==='clock'){const rounds=Array.from({length:8},()=>clockTarget(curG()));go({...base,rounds,ri:0,h:12,m:0,ok:0,say:`Đồng hồ thần kì! Em xoay kim cho đồng hồ chỉ ${clockWords(rounds[0])} nhé.`});return}});
 function xgEnd(){const g=scr;if(g.k!=='xg'||g.end)return;stopXG();const st=S.st[sid];st.mg=st.mg||{};const key=`${g.id}:${g.mode}`;g.prev=st.mg[key]||0;st.mg[key]=Math.max(g.prev,g.score);
   const c=g.mode==='star'?g.score:g.mode==='pair'?Math.round(g.score/5):g.score*2;g.coins=addCoins(sid,Math.min(20,c),'self');g.end=true;
   log(sid,'passed',`${XGN[g.mode][1]} · ${isl1(g.id).title}`,0,{success:true,score:{raw:g.score}});
   const win=g.mode==='pair'?g.done.length===g.cards.length:g.mode==='clock'?g.lives>0:g.lives>0;g.win=win;sfx(win?'win':g.lives<=0?'lose':'timeup');
   sayJ(g.mode==='pair'?(win?`Em ghép xong rồi! Được ${g.score} điểm.`:`Hết giờ! Em ghép được ${g.done.length/2} cặp.`):g.mode==='clock'?`Em đặt đúng ${g.score} đồng hồ!`:`Em hứng được ${g.score} ngôi sao!`);save();render()}
-function viewXG(){const g=scr,st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:${g.mode}`]||0,g.score),[sp,nm]=XGN[g.mode];
+function viewXG(...a){return hooks.goi('viewXG',this,a)}
+hooks.ham('viewXG',function(){const g=scr,st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:${g.mode}`]||0,g.score),[sp,nm]=XGN[g.mode];
   if(g.end){const rec=g.score>(g.prev||0)&&g.score>0;const line=g.mode==='pair'?`Ghép ${g.done.length/2}/6 cặp · lật sai ${g.miss} lần · ${g.score} điểm`:g.mode==='clock'?`Đúng <b>${g.score}</b>/${g.rounds.length} đồng hồ`:`Hứng đúng <b>${g.score}</b> ngôi sao`;
     return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr(sp,72)}</span>${jenny(72,g.win||g.score?'cheer':'sad')}</div><h1>${rec?'Kỷ lục mới!':g.win?'Giỏi quá!':'Hết lượt!'}</h1><p class="muted">${line} · kỷ lục ${best}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="startXG('${g.mode}','${g.id}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}
   const top=`<div class="gtop"><button class="gx" onclick="stopXG();go({k:'island',id:'${g.id}'})" aria-label="Thoát">✕</button><span class="mgsc">${spr('star',22)} <b id="xgs">${g.mode==='pair'?g.done.length/2+'/6':g.score}</b></span><span class="grow"></span>${g.mode==='clock'?`<span class="mgsc">${spr('clock',22)} <b id="xgr">${g.ri+1}/${g.rounds.length}</b></span>`:`<span class="mgsc">${spr('clock',22)} <b id="xgt">${g.t}</b></span>`}${g.mode==='pair'?'':`<span class="hearts" id="xgl">${[0,1,2].map(i=>spr(i<g.lives?'heart':'heartE',18)).join(' ')}</span>`}</div>`;
@@ -64,13 +87,14 @@ function viewXG(){const g=scr,st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:${
     <div class="xgctl"><div class="xgrow"><span>Kim giờ</span><button type="button" class="xgb" onclick="clockStep('h',-1)" aria-label="Lùi kim giờ">−</button><button type="button" class="xgb" onclick="clockStep('h',1)" aria-label="Tiến kim giờ">+</button></div>
     ${G>=2?`<div class="xgrow"><span>Kim phút</span><button type="button" class="xgb" onclick="clockStep('m',-1)" aria-label="Lùi kim phút">−</button><button type="button" class="xgb" onclick="clockStep('m',1)" aria-label="Tiến kim phút">+</button>${G>=3?`<button type="button" class="xgb sm" onclick="clockStep('m',-5)">−5</button><button type="button" class="xgb sm" onclick="clockStep('m',5)">+5</button>`:''}</div>`:''}
     <button type="button" class="gobtn xgchk" onclick="clockCheck()">Kiểm tra</button></div></div><div id="xgfb" class="xgfb"></div></div>`}
-  return''}
-{const _vh=viewHS;viewHS=function(){try{const st=S.st[sid];if(st&&st.grade<=5&&scr.k==='xg')return viewXG()}catch(e){}return _vh.apply(this,arguments)}}
-{const _r=render;render=function(){const a=_r.apply(this,arguments);try{if(role==='hs'&&scr.k==='xg')document.body.classList.toggle('gaming',true);xgAfterRender();tugAfterRender()}catch(e){console.error(e)}return a}}
-{const _mt=musicTheme;musicTheme=function(){try{if(role==='hs'){if(scr.k==='xg')return scr.end?null:({star:'balloon',pair:'game',clock:'fish'})[scr.mode];if(scr.k==='game'&&scr.tug&&!scr.end&&!(scr.sheet&&scr.sheet.kind!=='ok'))return'boss'}}catch(e){}return _mt.apply(this,arguments)}}
-function xgAfterRender(){const g=scr;if(g.k!=='xg'||g.end)return;if(g.mode==='clock')clockBind();if(g.started)return;g.started=true;stopXG();sayJ(g.say);
+  return''});
+{const _vh=hooks.cu('viewHS');hooks.de('viewHS',function(){try{const st=S.st[sid];if(st&&st.grade<=5&&scr.k==='xg')return viewXG()}catch(e){}return _vh.apply(this,arguments)})}
+{const _r=hooks.cu('render');hooks.de('render',function(){const a=_r.apply(this,arguments);try{if(role==='hs'&&scr.k==='xg')document.body.classList.toggle('gaming',true);xgAfterRender();tugAfterRender()}catch(e){console.error(e)}return a})}
+{const _mt=hooks.cu('musicTheme');hooks.de('musicTheme',function(){try{if(role==='hs'){if(scr.k==='xg')return scr.end?null:({star:'balloon',pair:'game',clock:'fish'})[scr.mode];if(scr.k==='game'&&scr.tug&&!scr.end&&!(scr.sheet&&scr.sheet.kind!=='ok'))return'boss'}}catch(e){}return _mt.apply(this,arguments)})}
+function xgAfterRender(...a){return hooks.goi('xgAfterRender',this,a)}
+hooks.ham('xgAfterRender',function(){const g=scr;if(g.k!=='xg'||g.end)return;if(g.mode==='clock')clockBind();if(g.started)return;g.started=true;stopXG();sayJ(g.say);
   if(g.mode==='star')return starRun();
-  xgLoop={tick:setInterval(()=>{if(scr!==g||g.end)return stopXG();if(g.mode==='pair'){g.t--;const e=document.getElementById('xgt');if(e)e.textContent=g.t;if(g.t>0&&g.t<=5)sfx('tick');if(g.t<=0)xgEnd()}},1000)}}
+  xgLoop={tick:setInterval(()=>{if(scr!==g||g.end)return stopXG();if(g.mode==='pair'){g.t--;const e=document.getElementById('xgt');if(e)e.textContent=g.t;if(g.t>0&&g.t<=5)sfx('tick');if(g.t<=0)xgEnd()}},1000)}});
 
 /* ---------- 1. HỨNG SAO RƠI ---------- */
 function starBg(f){const Z=4,W=Math.ceil(f.clientWidth/Z),H=Math.ceil(f.clientHeight/Z),cv=document.createElement('canvas');cv.className='mgbg';cv.width=W;cv.height=H;const x=cv.getContext('2d');x.imageSmoothingEnabled=false;
@@ -103,25 +127,27 @@ function starRun(){const g=scr,f=document.getElementById('xgf');if(!f)return;sta
     off:()=>{f.removeEventListener('pointerdown',pd);f.removeEventListener('pointermove',pm);removeEventListener('keydown',kd)}}}
 
 /* ---------- 2. LẬT THẺ GHÉP ĐÔI ---------- */
-const xgTxt=h=>String(h||'').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
-function pairFromQ(q){if(!q||q.pic||q.big)return null;const raw=String(q.q||'');if(/<svg|<img|<canvas|class="(pic|shp)/i.test(raw))return null;
+export const xgTxt=h=>String(h||'').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
+export function pairFromQ(q){if(!q||q.pic||q.big)return null;const raw=String(q.q||'');if(/<svg|<img|<canvas|class="(pic|shp)/i.test(raw))return null;
   let t=xgTxt(raw).replace(/\s*=\s*(\?|☐|\.\.\.|…)\s*$/,'').replace(/^(Tính|Tính nhẩm|Điền số|Số)\s*:?\s*/i,'');
   if(!t||t.length>13||/[a-zà-ỹ]{4,}/i.test(t.replace(/×|:/g,'')))return null;
   /* thẻ phép tính phải là phép tính trọn vẹn (không có ô trống, dấu =, dấu ?) — kết quả mới đúng là giá trị của nó */
   if(/[☐□?=…_]|\.\.\./.test(t))return null;if(!/[+\-−×:x\/]/.test(t))return null;
   let a=q.type==='num'?fN(q.a):q.type==='opt'&&typeof q.a==='string'?xgTxt(q.a):null;if(a==null||!String(a).length||String(a).length>8)return null;return[t,String(a)]}
-function pairFacts(x,n){const g=curG(),t=`${x.title} ${x.lesson} ${x.goal}`,out=[];const mul=/nhân|chia|Bảng/i.test(t)||g===3;
+export function pairFacts(...a){return hooks.goi('pairFacts',this,a)}
+hooks.ham('pairFacts',function(x,n){const g=curG(),t=`${x.title} ${x.lesson} ${x.goal}`,out=[];const mul=/nhân|chia|Bảng/i.test(t)||g===3;
   for(let i=0;i<60&&out.length<n;i++){let q,a;
     if(g===1){const s=R(3,10),p=R(0,s);if(Math.random()<.5){q=`${p} + ${s-p}`;a=s}else{q=`${s} − ${p}`;a=s-p}}
     else if(g===2&&!mul){const s=R(20,99),p=R(5,s-5);if(Math.random()<.5){q=`${p} + ${s-p}`;a=s}else{q=`${s} − ${p}`;a=s-p}}
     else if(mul||g===2){const u=R(2,g===2?5:9),v=R(2,9);if(Math.random()<.5){q=`${u} × ${v}`;a=u*v}else{q=`${u*v} : ${u}`;a=v}}
     else if(g===4){const u=R(11,99),v=R(2,9);if(Math.random()<.5){q=`${u} × ${v}`;a=u*v}else{q=`${u*10} : 10`;a=u}}
     else{const u=R(1,9),v=R(1,9);if(Math.random()<.5){q=`0,${u} + 0,${v}`;const s=u+v;a=s>=10?`1,${s-10}`.replace(/,0$/,''):`0,${s}`}else{q=`${u},5 × 2`;a=fN(u*2+1)}}
-    out.push([q,String(fN(a))])}return out}
-function pairDeck(x){const pool=islPool(x),pairs=[],seenA=new Set(),seenQ=new Set();
+    out.push([q,String(fN(a))])}return out});
+export function pairDeck(...a){return hooks.goi('pairDeck',this,a)}
+hooks.ham('pairDeck',function(x){const pool=islPool(x),pairs=[],seenA=new Set(),seenQ=new Set();
   for(let i=0;i<120&&pairs.length<6&&pool.length;i++){let q;try{q=mkQ(pick(pool))}catch(e){continue}const p=pairFromQ(q);if(p&&!seenA.has(p[1])&&!seenQ.has(p[0])){seenA.add(p[1]);seenQ.add(p[0]);pairs.push({p,q})}}
   if(pairs.length<6)pairFacts(x,40).forEach(p=>{if(pairs.length<6&&!seenA.has(p[1])&&!seenQ.has(p[0])){seenA.add(p[1]);seenQ.add(p[0]);pairs.push({p,q:null})}});
-  const cards=[];pairs.forEach((o,i)=>{cards.push({id:i,k:'q',t:esc(o.p[0]),q:o.q});cards.push({id:i,k:'a',t:esc(o.p[1]),q:o.q})});return shuf(cards)}
+  const cards=[];pairs.forEach((o,i)=>{cards.push({id:i,k:'q',t:esc(o.p[0]),q:o.q});cards.push({id:i,k:'a',t:esc(o.p[1]),q:o.q})});return shuf(cards)});
 function pairFlip(i){const g=scr;if(g.k!=='xg'||g.mode!=='pair'||g.end||g.lock||g.done.includes(i)||g.open.includes(i))return;g.open.push(i);sfx('card');
   if(g.open.length===2){const [a,b]=g.open,A=g.cards[a],B=g.cards[b],ok=A.id===B.id&&A.k!==B.k;
     if(ok){g.done.push(a,b);g.open=[];sfx('ok');xgRec(true,A.q?{...A.q,kind:A.q.kind}:null);g.score=g.done.length/2*10;if(g.done.length===g.cards.length){g.score+=Math.max(0,Math.round(g.t/2))-g.miss*2;g.score=Math.max(g.done.length/2*5,g.score);pairPaint();setTimeout(xgEnd,600);return}}
@@ -137,20 +163,21 @@ function tugBar(g){const b=bossOf(g.id),p=g.rope/TUGW;return`<div class="xgtug" 
   <span class="xgtr"><span class="xgtl"></span><span class="xgtm" style="left:${50-p*40}%"></span><span class="xgtz j"></span><span class="xgtz b"></span></span>
   <span class="xgtb">${bossHTML(b[0],52,g.flash==='ok'?'hit':g.flash==='bad'?'mad':'idle',Math.max(.05,(TUGW-g.rope)/(2*TUGW)))}</span></div>`}
 function tugAfterRender(){const g=scr;if(g.k!=='game'||!g.tug||g.end)return;const top=document.querySelector('.game .gtop');if(top&&!document.querySelector('.xgtug'))top.insertAdjacentHTML('afterend',tugBar(g))}
-{const _rar=raceAfterRender;raceAfterRender=function(){const g=scr;if(g.k==='game'&&g.tug){if(g.end||g.started)return;g.started=true;clearInterval(raceTick);sayJ('Kéo co với trùm! Trả lời đúng để kéo dây về phía Jenny.');
+{const _rar=hooks.cu('raceAfterRender');hooks.de('raceAfterRender',function(){const g=scr;if(g.k==='game'&&g.tug){if(g.end||g.started)return;g.started=true;clearInterval(raceTick);sayJ('Kéo co với trùm! Trả lời đúng để kéo dây về phía Jenny.');
   raceTick=setInterval(()=>{if(scr!==g||g.end){clearInterval(raceTick);return}g.t--;g.idle++;const e=document.getElementById('rtime');if(e)e.textContent=g.t;if(g.t>0&&g.t<=10)sfx(g.t%2?'tick':'tock');
     if(g.idle>=6){g.idle=0;g.rope--;g.flash='bad';sfx('bossmad');const bar=document.querySelector('.xgtug');if(bar)bar.outerHTML=tugBar(g);if(g.rope<=-TUGW)return endTug()}
-    if(g.t<=0)endTug()},1000);return}return _rar.apply(this,arguments)}}
-{const _ra=raceAns;raceAns=function(ok){const g=scr;if(g.tug){if(g.fin)return;g.rope=Math.max(-TUGW,Math.min(TUGW,g.rope+(ok?1:-1)));g.idle=0;const r=_ra.apply(this,arguments);if(ok)sfx('hit');if(g.rope>=TUGW||g.rope<=-TUGW){g.fin=1;setTimeout(endTug,250)}return r}return _ra.apply(this,arguments)}}
-{const _a=ans1;ans1=function(){const tug=scr&&scr.tug,n=S.events.length,r=_a.apply(this,arguments);if(tug){try{const ev=S.events[n];if(ev&&ev.verb.id.endsWith('answered')){const nm=`Kéo co · ${isl1(scr.id).title}`;ev.object.definition.name.vi=nm;ev.object.id='jenny:'+encodeURIComponent(nm)}}catch(e){}}return r}}
+    if(g.t<=0)endTug()},1000);return}return _rar.apply(this,arguments)})}
+{const _ra=hooks.cu('raceAns');hooks.de('raceAns',function(ok){const g=scr;if(g.tug){if(g.fin)return;g.rope=Math.max(-TUGW,Math.min(TUGW,g.rope+(ok?1:-1)));g.idle=0;const r=_ra.apply(this,arguments);if(ok)sfx('hit');if(g.rope>=TUGW||g.rope<=-TUGW){g.fin=1;setTimeout(endTug,250)}return r}return _ra.apply(this,arguments)})}
+{const _a=hooks.cu('ans1');hooks.de('ans1',function(){const tug=scr&&scr.tug,n=S.events.length,r=_a.apply(this,arguments);if(tug){try{const ev=S.events[n];if(ev&&ev.verb.id.endsWith('answered')){const nm=`Kéo co · ${isl1(scr.id).title}`;ev.object.definition.name.vi=nm;ev.object.id='jenny:'+encodeURIComponent(nm)}}catch(e){}}return r})}
 function endTug(){const g=scr,st=S.st[sid];if(!g.tug||g.end)return;clearInterval(raceTick);g.end=true;g.win=g.rope>0;st.mg=st.mg||{};const key=`${g.id}:tug`;g.prev=st.mg[key]||0;g.score=g.ok;st.mg[key]=Math.max(g.prev,g.ok);
   g.coins=addCoins(sid,Math.min(20,g.ok*2+(g.win?4:0)),'self');log(sid,'passed',`Kéo co với trùm · ${isl1(g.id).title}`,0,{success:g.win,score:{raw:g.ok}});sfx(g.win?'bossdown':'bosslaugh');setTimeout(()=>sfx(g.win?'win':'lose'),700);
   sayJ(g.win?'Jenny thắng rồi! Em giỏi quá!':'Trùm thắng mất rồi. Mình chơi lại nhé!');save();render()}
-{const _ve=viewEndExtra;viewEndExtra=function(){const g=scr;if(g.tug){const b=bossOf(g.id),best=Math.max(g.prev||0,g.ok);
-  return`<div class="game g1"><div class="gend xgend"><div class="xgtend">${jenny(72,g.win?'cheer':'sad')}${bossHTML(b[0],72,g.win?'dead':'win')}</div><h1>${g.win?'Jenny thắng!':'Trùm thắng rồi!'}</h1><p class="muted">Đúng <b>${g.ok}</b> câu, sai ${g.bad} câu · kỷ lục ${best}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="startTug('${g.id}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}return _ve.apply(this,arguments)}}
+{const _ve=hooks.cu('viewEndExtra');hooks.de('viewEndExtra',function(){const g=scr;if(g.tug){const b=bossOf(g.id),best=Math.max(g.prev||0,g.ok);
+  return`<div class="game g1"><div class="gend xgend"><div class="xgtend">${jenny(72,g.win?'cheer':'sad')}${bossHTML(b[0],72,g.win?'dead':'win')}</div><h1>${g.win?'Jenny thắng!':'Trùm thắng rồi!'}</h1><p class="muted">Đúng <b>${g.ok}</b> câu, sai ${g.bad} câu · kỷ lục ${best}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="startTug('${g.id}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}return _ve.apply(this,arguments)})}
 
 /* ---------- 4. ĐỒNG HỒ THẦN KÌ ---------- */
-function clockTarget(G){const h=R(1,12);if(G<=1)return{h,m:0};if(G===2)return{h,m:pick([0,15,30,45,0,30,5,10,20,25,35,40,50,55])};return{h,m:R(0,59)}}
+export function clockTarget(...a){return hooks.goi('clockTarget',this,a)}
+hooks.ham('clockTarget',function(G){const h=R(1,12);if(G<=1)return{h,m:0};if(G===2)return{h,m:pick([0,15,30,45,0,30,5,10,20,25,35,40,50,55])};return{h,m:R(0,59)}});
 const clockText=r=>r.m===0?`${r.h} giờ`:r.m===30&&curG()<=2?`${r.h} giờ rưỡi`:`${r.h} giờ ${r.m} phút`;
 const clockWords=r=>clockText(r);
 function clockBig(h,m){const c=100,R0=86,hr=((h%12)+m/60)*30*Math.PI/180,mr=m*6*Math.PI/180,P=(a,l)=>[c+l*Math.sin(a),c-l*Math.cos(a)];

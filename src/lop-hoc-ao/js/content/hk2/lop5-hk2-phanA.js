@@ -1,4 +1,12 @@
 /* ===== LỚP 5 · CHỦ ĐỀ 6–9 (Ôn tập HK1 · Tỉ số · Thể tích · Diện tích, thể tích hình khối) ===== */
+import { pick, R, range } from '../../core/01-tien-ich.js';
+import { shuf } from '../../core/21-lop-6-che-do-tro-choi.js';
+import { rowPair } from '../hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { CQ, F, NQ, SG } from '../hk1/26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { QT5 } from '../hk1/27-chu-de-2-lop-1-5.js';
+import { fN, OQ, QD5 } from '../hk1/28-chu-de-3-lop-1-5.js';
+import { cubeStack, dz, QDC5, QH5, trapSvg, triSvg, WQ } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { addTopic, LES, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 (()=>{
 const G=5;
 const pc=n=>n+'%';

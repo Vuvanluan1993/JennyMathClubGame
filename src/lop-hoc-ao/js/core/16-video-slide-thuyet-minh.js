@@ -1,5 +1,10 @@
 /* ===================== Video (slide + thuyết minh) ===================== */
-function viewVideo(){
+import { esc } from './01-tien-ich.js';
+import { save } from './09-du-lieu-demo.js';
+import { log } from './10-su-kien-mau-xapi.js';
+import { go, shortTitle, toast, unit, ustate } from './13-giao-dien-chung.js';
+import { jenny } from './33d-jenny-bieu-cam.js';
+export function viewVideo(){
   const u=unit(scr.part,scr.id);
   return`<div class="page">
    <div class="crumb"><button class="btn sm ghost" onclick="go({k:'island',part:${scr.part},id:'${scr.id}'})">← ${esc(shortTitle(u.title))}</button><span class="pill acc">Video thử · slide + lời Jenny</span></div>
@@ -8,7 +13,7 @@ function viewVideo(){
    <div class="cap">${jenny(32)}<span id="cap"></span></div>
    <div class="row" style="margin-top:14px;justify-content:space-between"><span class="muted" id="pNote"></span><button class="btn" id="pDone" onclick="finishVideo()" disabled>Đã xem xong ✓</button></div></div>`;
 }
-function startPlayer(){
+export function startPlayer(){
   const u=unit(scr.part,scr.id),slides=u.slides;let i=0,playing=false,timer=null,seen=new Set([0]);
   const synth=('speechSynthesis' in window)?window.speechSynthesis:null;
   let voice=null;const pickVoice=()=>{try{voice=(synth.getVoices()||[]).find(v=>/^vi/i.test(v.lang))||null}catch(e){voice=null}};

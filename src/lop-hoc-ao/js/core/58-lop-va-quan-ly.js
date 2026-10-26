@@ -3,6 +3,14 @@
    Giáo viên ↔ Lớp: nhiều–nhiều. Toán Jenny mở theo lớp; ngoại lệ từng em do quản lý bật.
    Buổi Toán Jenny mở theo từng lớp: S.open là thuộc tính ảo trỏ tới S.org.mo[lớp đang xem].
    Chỉ chạy ở bản đầy đủ / trang giáo viên (ORG_ON). Bản học sinh giữ nguyên. */
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { DEMO_CODE, gvCLS, gvTen, newStudent, ORG_ON, save } from './09-du-lieu-demo.js';
+import { totalStars } from './11-sao-va-mo-khoa.js';
+import { alerts, dayStats } from './12-so-lieu.js';
+import { go, render, toast, unit } from './13-giao-dien-chung.js';
+import { viewGV } from './19-giao-vien.js';
+import { fbXuCache, fbXuNgay } from './62-may-chu.js';
 (function(){
 if(!ORG_ON)return;
 const HS_THEM=[['bao','Nguyễn Gia Bảo',1],['linh','Trần Khánh Linh',1],['khang','Vũ Minh Khang',1],['phuc','Lê Hoàng Phúc',5],['ngoc','Phạm Bảo Ngọc',5],['huy','Nguyễn Khánh Huy',1],['han','Bùi Đức Hân',1],['khoi','Mai Thanh Khôi',1],['vy','Vũ Bảo Vy',1],['phuc2','Phan Ngọc Phúc',1],['ngan','Phạm Quỳnh Ngân',1],['nam','Dương Gia Nam',1],['chau','Trần Hoàng Châu',1],['long','Đỗ Tuệ Long',1],['trang','Đinh Minh Trang',1],['dat','Đặng Anh Đạt',1],['mai','Trịnh Hải Mai',1],['son','Hoàng Diệu Sơn',1],['ha','Lý Thu Hà',1],['tung','Lê Phương Tùng',1],['lan','Ngô Nhật Lan',1],['kien','Nguyễn Khánh Kiên',1],['yen','Bùi Đức Yến',1],['quang','Mai Thanh Quang',2],['nhi','Vũ Bảo Nhi',2],['toan','Phan Ngọc Toàn',2],['thu','Phạm Quỳnh Thư',2],['hieu','Dương Gia Hiếu',2],['uyen','Trần Hoàng Uyên',2],['binh','Đỗ Tuệ Bình',2],['hang','Đinh Minh Hằng',2],['tam','Đặng Anh Tâm',2],['loan','Trịnh Hải Loan',2],['viet','Hoàng Diệu Việt',2],['hoa','Lý Thu Hoa',2],['dung','Lê Phương Dũng',2],['ly','Ngô Nhật Ly',2],['thinh','Nguyễn Khánh Thịnh',2],['nhu','Bùi Đức Như',2],['tien','Mai Thanh Tiến',2],['giang','Vũ Bảo Giang',2],['khang2','Phan Ngọc Khang',2],['oanh','Phạm Quỳnh Oanh',2],['phong','Dương Gia Phong',2],['thao2','Trần Hoàng Thảo',2],['loc','Đỗ Tuệ Lộc',2]];
@@ -48,20 +56,20 @@ function orgHeal(){
   if(gvLop){const l=lopById(gvLop);if(!l||(!l.gv.includes(gvMe)&&!(O().cloud&&CLOUD&&CLOUD.me.role==='ql')))gvLop=null}
 }
 window.orgHeal=orgHeal;
-{const _r=render;render=function(){try{orgHeal()}catch(e){console.error(e)}return _r.apply(this,arguments)}}
+{const _r=hooks.cu('render');hooks.de('render',function(){try{orgHeal()}catch(e){console.error(e)}return _r.apply(this,arguments)})}
 
 /* ---------- Giáo viên ---------- */
-gvCLS=function(){return gvLop?hsCuaLop(gvLop):STUDENTS.filter(s=>s[2]===gvGrade)};
-gvTen=function(){return(gvById(gvMe)||{ten:'Cô giáo'}).ten};
+hooks.de('gvCLS',function(){return gvLop?hsCuaLop(gvLop):STUDENTS.filter(s=>s[2]===gvGrade)});
+hooks.de('gvTen',function(){return(gvById(gvMe)||{ten:'Cô giáo'}).ten});
 const lopCuaToi=()=>O().lop.filter(l=>l.gv.includes(gvMe)||(O().cloud&&typeof CLOUD!=='undefined'&&CLOUD&&CLOUD.me.role==='ql')).sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten));
 const chonGV=()=>`<div class="field" style="min-width:0;max-width:360px"><label for="gvMe" class="muted" style="font-size:12.5px">Đang xem với tài khoản (chỉ có ở bản thử)</label><select id="gvMe" style="width:100%" onchange="gvMe=this.value;gvLop=null;go({k:'home'})">${O().gv.map(g=>`<option value="${g.id}" ${g.id===gvMe?'selected':''}>${esc(g.ten)} · ${O().lop.filter(l=>l.gv.includes(g.id)).map(l=>l.ten).join(', ')||'chưa có lớp'}</option>`).join('')}</select></div>`;
 window.vaoLop=id=>{const l=lopById(id);if(!l)return;gvLop=id;gvGrade=l.khoi;go({k:'home'})};
-gvHead=function(){
+hooks.de('gvHead',function(){
   const l=lopById(gvLop),mine=lopCuaToi(),co=l.gv.filter(g=>g!==gvMe).map(g=>gvById(g)).filter(Boolean);
   return`<div class="row" style="justify-content:space-between;align-items:flex-end"><div><button class="btn sm" onclick="gvLop=null;go({k:'home'})">← Lớp của tôi</button>
    <h1 style="font-size:28px;margin:8px 0 0">Lớp ${esc(l.ten)}</h1><div class="muted">Khối ${l.khoi} · ${gvCLS().length} học sinh · ${esc(O().nam)}${co.length?' · dạy cùng '+co.map(g=>esc(g.ten)).join(', '):''}</div></div>
    ${mine.length>1?`<div class="seg" role="group" aria-label="Đổi lớp">${mine.map(x=>`<button class="${x.id===gvLop?'on':''}" aria-pressed="${x.id===gvLop}" onclick="vaoLop('${x.id}')">${esc(x.ten)}</button>`).join('')}</div>`:''}</div>`;
-};
+});
 function viewLopCuaToi(){
   const mine=lopCuaToi(),khoi=[...new Set(mine.map(l=>l.khoi))];
   const the=l=>{const hs=hsCuaLop(l.id),hn=hs.filter(([id])=>dayStats(id,S.day).n>0).length;ctxO=l.id;let cy=0;try{cy=hs.filter(([id])=>alerts(id).length).length}finally{ctxO=null}
@@ -74,8 +82,8 @@ function viewLopCuaToi(){
      :'<section class="card"><h2>Chưa có lớp</h2><p class="muted" style="margin:6px 0 0">Quản lý trung tâm chưa phân công lớp cho tài khoản này.</p></section>'}
    <p class="muted" style="margin:0">Lớp và học sinh do quản lý trung tâm xếp. Toán Jenny mở theo gói của từng lớp.</p></div>`;
 }
-{const _vg=viewGV;viewGV=function(){orgHeal();if(!gvLop)return viewLopCuaToi();gvGrade=lopById(gvLop).khoi;return _vg.apply(this,arguments)}}
-{const _t=toggleOpen;toggleOpen=function(id){_t(id);try{nk(`${S.open[id]?'Mở':'Đóng'} ${unit(2,id).title.split(' · ')[0]} Toán Jenny · lớp ${gvLop}`);save()}catch(e){}}}
+{const _vg=hooks.cu('viewGV');hooks.de('viewGV',function(){orgHeal();if(!gvLop)return viewLopCuaToi();gvGrade=lopById(gvLop).khoi;return _vg.apply(this,arguments)})}
+{const _t=hooks.cu('toggleOpen');hooks.de('toggleOpen',function(id){_t(id);try{nk(`${S.open[id]?'Mở':'Đóng'} ${unit(2,id).title.split(' · ')[0]} Toán Jenny · lớp ${gvLop}`);save()}catch(e){}})}
 
 /* ---------- Quản lý trung tâm ---------- */
 /* biến lọc để ở window: nút trong trang (onclick) đổi được (24/10: trước để let trong hàm nên bấm Khối không lọc) */
@@ -145,10 +153,10 @@ function viewQL(){
 window.viewQL=viewQL;
 function qlFormPH(o){const hs=STUDENTS.filter(x=>!(o.ph||{})[x[0]]);return`<form class="task" onsubmit="qlTaoPH(event)" style="margin-top:10px"><b>Tạo tài khoản phụ huynh</b><div class="row" style="gap:8px;margin-top:8px"><select id="phHs" aria-label="Con" onchange="document.getElementById('phTk').value='ph.'+this.value">${hs.map(x=>`<option value="${x[0]}">${esc(x[1])} (${x[0]})</option>`).join('')}</select><input id="phTk" value="${hs[0]?'ph.'+hs[0][0]:''}" aria-label="Tên đăng nhập phụ huynh" style="width:150px" autocapitalize="off" spellcheck="false" maxlength="28"><input id="phPw" placeholder="Mật khẩu (trống = ngẫu nhiên)" aria-label="Mật khẩu phụ huynh" style="width:110px" maxlength="30"><button class="btn" ${hs.length?'':'disabled'}>Tạo</button></div><div class="muted" style="margin-top:6px">Phụ huynh đăng nhập ở trang giáo viên &amp; phụ huynh, chỉ xem được con mình.</div></form>`}
 window.qlFormPH=qlFormPH;
-{const _p=viewPH;viewPH=function(){if(role==='ql'){orgHeal();return viewQL()}return _p.apply(this,arguments)}}
-{const _h=header;header=function(){_h();try{const t=document.getElementById('tabs');if(!t.querySelector('[data-ql]'))t.insertAdjacentHTML('beforeend',`<button data-ql class="${role==='ql'?'on':''}" aria-pressed="${role==='ql'}" onclick="setRole('ql')">Quản lý</button>`);
+{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){if(role==='ql'){orgHeal();return viewQL()}return _p.apply(this,arguments)})}
+{const _h=hooks.cu('header');hooks.de('header',function(){_h();try{const t=document.getElementById('tabs');if(!t.querySelector('[data-ql]'))t.insertAdjacentHTML('beforeend',`<button data-ql class="${role==='ql'?'on':''}" aria-pressed="${role==='ql'}" onclick="setRole('ql')">Quản lý</button>`);
   document.getElementById('whoBox').hidden=role==='gv'||role==='ql';
-  [...document.getElementById('who').options].forEach(op=>{const s=STUDENTS.find(x=>x[0]===op.value),l=s&&lopCua(s[0]);if(s)op.textContent=`${s[1]} · ${l?'lớp '+l.ten:'khối '+s[2]+' (chưa xếp lớp)'}`})}catch(e){}}}
+  [...document.getElementById('who').options].forEach(op=>{const s=STUDENTS.find(x=>x[0]===op.value),l=s&&lopCua(s[0]);if(s)op.textContent=`${s[1]} · ${l?'lớp '+l.ten:'khối '+s[2]+' (chưa xếp lớp)'}`})}catch(e){}})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .lopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:10px}
 .lopthe{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:14px;background:var(--surface2);color:var(--ink);box-shadow:var(--f2),0 4px 0 0 var(--ink);min-height:120px}
@@ -166,4 +174,4 @@ function xuNgayCard(){try{if(!S.org||!S.org.cloud||typeof fbXuNgay!=='function'|
  const rows=hs.map(([id,n])=>{const x=C.d[id];return`<tr><td><button class="lnk" onclick="go({k:'gvhs',id:'${id}'})">${esc(n)}</button></td><td style="text-align:right"><b>${x?x.xu:'…'}</b></td><td style="text-align:right">${x?x.n:'…'}</td><td>${x&&x.la?'<span class="pill warn">Xu tăng lạ</span> ':x?'<span class="muted">bình thường</span> ':''}<button class="btn sm" type="button" onclick="fbXuSo('${id}')">Xem sổ</button></td></tr>`}).join('');
  return`<section class="card"><h2>Xu hôm nay</h2><p class="muted" style="margin:4px 0 0">Từ sổ xu trên máy chủ (mỗi lần cộng, mua là một dòng). <b>Xu tăng lạ</b> = hơn 300 xu trong ngày, hoặc hơn 15 dòng qua màn trong một giờ — cô bấm "Xem sổ" rồi hỏi em. ${C.t?'Cập nhật '+new Date(C.t).toLocaleTimeString('vi-VN'):'Đang tải…'} <button class="btn sm" type="button" onclick="fbXuCache.t=0;render()">Làm mới</button></p>
   <div class="tablewrap"><table class="gvbang"><tr><th>Học sinh</th><th>Xu hôm nay</th><th>Số dòng</th><th>Nhãn</th></tr>${rows}</table></div></section>`}catch(e){return''}}
-if(typeof viewGV==='function'){const _v=viewGV;viewGV=function(){let r=_v.apply(this,arguments);try{if(gvLop&&typeof r==='string'){const c=xuNgayCard();if(c){const i=r.indexOf('<h2>Tiến độ từng em</h2>'),j=i>=0?r.indexOf('</section>',i):-1;r=j>=0?r.slice(0,j+10)+c+r.slice(j+10):r.replace(/<\/div>\s*$/,c+'</div>')}}}catch(e){}return r}}
+if(typeof viewGV==='function'){const _v=hooks.cu('viewGV');hooks.de('viewGV',function(){let r=_v.apply(this,arguments);try{if(gvLop&&typeof r==='string'){const c=xuNgayCard();if(c){const i=r.indexOf('<h2>Tiến độ từng em</h2>'),j=i>=0?r.indexOf('</section>',i):-1;r=j>=0?r.slice(0,j+10)+c+r.slice(j+10):r.replace(/<\/div>\s*$/,c+'</div>')}}}catch(e){}return r})}

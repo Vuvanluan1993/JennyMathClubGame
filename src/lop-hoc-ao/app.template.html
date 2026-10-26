@@ -29,6 +29,7 @@
 (function(){function fit(){try{var d=document.documentElement,L=matchMedia('(orientation:landscape)').matches,sw=L?Math.max(screen.width,screen.height):Math.min(screen.width,screen.height),coarse=matchMedia('(pointer:coarse)').matches;d.style.zoom='';var iw=window.innerWidth;if(coarse&&sw&&Math.min(screen.width,screen.height)<700&&iw>sw*1.25){d.style.zoom=(iw/sw).toFixed(3)}}catch(e){}}fit();addEventListener('orientationchange',function(){setTimeout(fit,300)})})();
 </script>
 <script>
+/*@include js/core/00-hooks.js*/
 /*@include js/core/01-tien-ich.js*/
 /*@include js/content/hk1/02-phan-i-sgk-ket-noi-tri-thuc-6-chuong-i.js*/
 /*@include js/core/03-phan-so-va-kiem-tra-dap-an.js*/

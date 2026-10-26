@@ -1,7 +1,14 @@
 /* 73 — Trang Quản lý gọn: trang chính 4 nút lớn (Học sinh · Phụ huynh · Giáo viên · Lớp) + trang con.
    Dùng lại các bảng nhập ở 70/71 (qlMoHS, qlMoGV, qlMoLop, qlMoXep, qlMoPH, qlSua) và các hàm ở 58 (qlChuyen, qlPhan, qlBo, qlTJ, qlNgoaiLe). */
 /* em chưa xếp lớp có khối 0: tạo dữ liệu học theo khối 1 cho tới khi được xếp lớp (tránh lỗi blankP1(0) làm treo đăng nhập máy chủ) */
-if(typeof newStudent==='function'){const _ns=newStudent;newStudent=function(n,g){return _ns(n,(+g>=1&&+g<=9)?+g:1)}}
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { DEMO_CODE, newStudent, save } from './09-du-lieu-demo.js';
+import { render, toast } from './13-giao-dien-chung.js';
+import { viewPH } from './20-phu-huynh.js';
+import { I18N } from './47-ngon-ngu-vi-en.js';
+import { fbDayNgay, fbTaiKhoanBox } from './62-may-chu.js';
+if(typeof newStudent==='function'){const _ns=hooks.cu('newStudent');hooks.de('newStudent',function(n,g){return _ns(n,(+g>=1&&+g<=9)?+g:1)})}
 (function(){
 if(typeof viewPH==='undefined')return;
 window.qlTrang='';window.qlLopId='';window.qlTrangSo=0;window.qlChon=window.qlChon||{};
@@ -146,10 +153,10 @@ function trangNam(){const o=O();return`<div class="grid">${head('🎓','Năm h�
 /* ô ẩn để các bảng nhập 70/71 dùng lại hàm tạo cũ (58/62) */
 const an=()=>`<div hidden aria-hidden="true"><input id="nhTen"><input id="nhLop"><select id="nhGt"><option value=""></option><option value="nu">Nữ</option><option value="nam">Nam</option></select><input id="nhTk"><input id="nhPw"><input id="ngTen"><input id="ngTk"><input id="ngPw"><select id="nlKhoi">${[1,2,3,4,5].map(k=>`<option value="${k}">${k}</option>`).join('')}</select><input id="nlTen"><select id="nlGV"><option value=""></option>${(O().gv||[]).map(g=>`<option value="${g.id}">x</option>`).join('')}</select></div>`;
 
-{const _p=viewPH;viewPH=function(){if(role!=='ql')return _p.apply(this,arguments);
+{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){if(role!=='ql')return _p.apply(this,arguments);
  try{if(typeof orgHeal==='function')orgHeal()}catch(x){}
  const T={hs:trangHS,ph:trangPH,gv:trangGV,lop:trangLop,lopct:trangLopCT,nk:trangNK,nam:trangNam}[qlTrang]||home;
- try{return T()+an()}catch(x){console.error(x);qlTrang='';return home()+an()}}}
+ try{return T()+an()}catch(x){console.error(x);qlTrang='';return home()+an()}})}
 
 /* tiếng Anh cho vài chữ chính */
 if(typeof I18N!=='undefined')Object.assign(I18N,{'Quản lý trung tâm':'Centre admin','Học sinh':'Students','Phụ huynh':'Parents','Giáo viên':'Teachers','Lớp':'Classes','Mở ▸':'Open ▸','📒 Nhật ký thao tác':'📒 Activity log','🎓 Năm học · Lên lớp':'🎓 School year · Promotion'});

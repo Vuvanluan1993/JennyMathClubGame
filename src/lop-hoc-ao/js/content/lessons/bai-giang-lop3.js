@@ -1,3 +1,9 @@
+import { spr } from '../../core/22-do-hoa-pixel-mau-logo-clb.js';
+import { F } from '../hk1/26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { angSvg, shp } from '../hk1/27-chu-de-2-lop-1-5.js';
+import { circSvg, polySvg, segSvg } from '../hk1/28-chu-de-3-lop-1-5.js';
+import { colPic, cubeStack, rulerSvg, stripSvg, thermoSvg, zigSvg } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { LES, lsLine, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 Object.assign(LES[3]=LES[3]||{},{
  1:[{t:'Trăm, chục, đơn vị',h:`${lsTab(['Trăm','Chục','Đơn vị'],[['6','2','8']])}<p>Số <b>628</b> gồm 6 trăm, 2 chục, 8 đơn vị.</p>`,say:'Chào các em! Số sáu trăm hai mươi tám gồm sáu trăm, hai chục và tám đơn vị.'},
     {t:'Đọc, viết số',h:`<p class="g1big" style="font-size:34px">507</p><p>Đọc: <b>năm trăm linh bảy</b>.</p><p>Chữ số 0 ở hàng chục đọc là "linh".</p>`,say:'Số năm trăm linh bảy. Hàng chục là chữ số không nên ta đọc là linh.'},

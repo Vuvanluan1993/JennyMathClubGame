@@ -1,4 +1,12 @@
 /* ===== LỚP 4 · CHỦ ĐỀ 6–9: Vuông góc, song song · Ôn tập HK1 · Phép nhân, phép chia · Thống kê, xác suất ===== */
+import { pick, R } from '../../core/01-tien-ich.js';
+import { shuf } from '../../core/21-lop-6-che-do-tro-choi.js';
+import { dice } from '../hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { CQ, NQ, SG } from '../hk1/26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { angSvg, QT4 } from '../hk1/27-chu-de-2-lop-1-5.js';
+import { fN, OQ, QB4 } from '../hk1/28-chu-de-3-lop-1-5.js';
+import { colPic, QA4, QM4, WQ } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { addTopic, LES, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 (()=>{
 const G=4;
 /* ---------- hình vẽ ---------- */

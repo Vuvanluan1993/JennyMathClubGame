@@ -7,13 +7,27 @@
       vài đảo trước, giá tiền/số trên toa/kim đồng hồ/hình trong tranh không vượt điều đã học.
    3) Chọn 2–3 trò mỗi đảo: ưu tiên trò luyện đúng nội dung của đảo, rồi trò đang ít dùng trong lớp (chia đều). */
 /* bản gốc (để so sánh trước/sau trong kiểm tra) */
-const KT_ORIG={islOpts2,pairDeck,pairFacts,frogQ,scaleRound,trainRound,shopPrice,shopRound,shopNotes,clockTarget,shapeSet,shapeTray};
+import { hooks } from './00-hooks.js';
+import { esc, pick, R, range } from './01-tien-ich.js';
+import { go } from './13-giao-dien-chung.js';
+import { shuf } from './21-lop-6-che-do-tro-choi.js';
+import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { isl1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { curG, PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { fN, MGT } from '../content/hk1/28-chu-de-3-lop-1-5.js';
+import { MG, mkQ } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
+import { islPool } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
+import { clockTarget, islOpts2, pairDeck, pairFromQ, xgHash, xgTime } from './37-tro-choi-dot-1.js';
+import { scaleRound, shopNotes, shopPrice, shopRound, trainRound, xgCalc, xgMass, xgMoney, xgTxt2 } from './38-tro-choi-dot-2.js';
+import { frogFromQ, frogMk, frogQ, shapeSet, xgGeo, xgGr, xNear, xNum, XSHN } from './39-tro-choi-dot-3.js';
+import { XG_ALL, xgElig } from './39c-can-bang-tro-choi.js';
+const KT_ORIG=Object.fromEntries(['islOpts2','pairDeck','pairFacts','frogQ','scaleRound','trainRound','shopPrice','shopRound','shopNotes','clockTarget','shapeSet','shapeTray'].map(k=>[k,hooks.cu(k)])); /* bản trước khi file này đè (hooks.cu lấy đúng bản lúc này) */
 const KTB=[5,10,20,100,1000,10000,100000,1000000,10000000,1e9];
 const ktBucket=n=>KTB.find(b=>b>=n)||1e12;
 const KTSH=[['vuong',/hình vuông/i],['cn',/hình chữ nhật/i],['tron',/hình tròn/i],['tamgiac',/hình tam giác|tam giác/i],['binhhanh',/bình hành/i],['thoi',/hình thoi/i],['thang',/hình thang/i],
  ['gvuong',/góc vuông/i],['gnhon',/góc nhọn/i],['gtu',/góc tù/i],['gbet',/góc bẹt/i],['lapphuong',/lập phương/i],['hop',/khối hộp|hộp chữ nhật/i],['tru',/khối trụ/i],['cau',/khối cầu/i]];
 const KTUNIT=/(\d)\s*(kg|g|yến|tạ|tấn|mm²|cm²|dm²|km²|m²|mm|cm|dm|km|ml|m|l|°C)(?![\p{L}\d²])/gu;
-function ktClean(s){return String(s==null?'':s).replace(/<svg[\s\S]*?<\/svg>/gi,' ').replace(/<span class="frac"><span>([^<]*)<\/span><span>([^<]*)<\/span><\/span>/g,' $1⁄$2 ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&[a-z]+;/g,' ')}
+export function ktClean(s){return String(s==null?'':s).replace(/<svg[\s\S]*?<\/svg>/gi,' ').replace(/<span class="frac"><span>([^<]*)<\/span><span>([^<]*)<\/span><\/span>/g,' $1⁄$2 ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&[a-z]+;/g,' ')}
 /* dấu hiệu trong một đoạn nội dung (câu hỏi / mẫu trò chơi) */
 function ktFeat(raw,opt){const s=ktClean(raw),f=new Set(),mode=opt&&opt.title?'title':opt&&opt.q?'q':'sample';let mx=0;
   if(mode!=='q'){if(/\+/.test(s))f.add('+');
@@ -56,10 +70,10 @@ function ktGrade0(G){const I=(PRIM[G]&&PRIM[G].isl)||[],prev=G>1&&PRIM[G-1]?ktGr
     out.push({k,id:x.id,f:new Set(acc),mx,max:ktBucket(mx)})});
   return out}
 const ktIdx=x=>{const G=xgGr(x);return(PRIM[G]&&PRIM[G].isl.indexOf(x))};
-function ktOf(x){const G=xgGr(x),L=ktGrade(G),k=ktIdx(x);return L[k>=0?k:0]||{f:new Set(),max:10,mx:10}}
+export function ktOf(x){const G=xgGr(x),L=ktGrade(G),k=ktIdx(x);return L[k>=0?k:0]||{f:new Set(),max:10,mx:10}}
 /* kiểm tra một mẫu nội dung theo kiến thức đã học */
-function ktViol(K,raw){const r=ktFeat(raw),v=[];r.f.forEach(t=>{if(t==='order'&&K.f.has('cmp'))return;if(t==='minute'&&!K.f.has('minute')&&K.f.has('time'))v.push(t);else if(t!=='minute'&&!K.f.has(t))v.push(t)});if(r.mx>K.max)v.push('số '+r.mx+'>'+K.max);return v}
-let XG_KT=null;   /* kiến thức của đảo đang chơi (để nắn nội dung) */
+export function ktViol(K,raw){const r=ktFeat(raw),v=[];r.f.forEach(t=>{if(t==='order'&&K.f.has('cmp'))return;if(t==='minute'&&!K.f.has('minute')&&K.f.has('time'))v.push(t);else if(t!=='minute'&&!K.f.has(t))v.push(t)});if(r.mx>K.max)v.push('số '+r.mx+'>'+K.max);return v}
+globalThis.XG_KT=null;   /* kiến thức của đảo đang chơi (để nắn nội dung) */
 const ktHas=t=>!XG_KT||XG_KT.f.has(t);
 const ktMax=()=>XG_KT?XG_KT.max:1e12;
 
@@ -78,14 +92,14 @@ function ktRule(x,mode){const key=x.id+':'+mode;if(XG_RULE[key])return XG_RULE[k
   return XG_RULE[key]={fn:()=>ktRuleDerived(K,mode,G),own:0}}
 /* Câu cá / Bóng bay trong đảo */
 const ktVerb=(t,pre)=>String(t||'').replace(/^Chọn (những )?/,pre);
-startMini=function(mode,id){const x=id?isl1(id):null,r0=x?ktRule(x,mode).fn():MG[curG()][mode](),pre=mode==='fish'?'Câu cá mang ':'Bắn bóng mang ',r={...r0,rule:ktVerb(r0.rule,pre),say:ktVerb(r0.say,mode==='fish'?'Câu những con cá mang ':'Bắn những quả bóng mang ')};try{speechSynthesis.cancel()}catch(e){}go({k:'mini',id,mode,rule:r.rule,say:r.say,score:0,lives:3,t:45,end:false,started:false});scr._r=r};
-{const _s=startXG;startXG=function(mode,id){const x=isl1(id);XG_KT=x?ktOf(x):null;
+hooks.de('startMini',function(mode,id){const x=id?isl1(id):null,r0=x?ktRule(x,mode).fn():MG[curG()][mode](),pre=mode==='fish'?'Câu cá mang ':'Bắn bóng mang ',r={...r0,rule:ktVerb(r0.rule,pre),say:ktVerb(r0.say,mode==='fish'?'Câu những con cá mang ':'Bắn những quả bóng mang ')};try{speechSynthesis.cancel()}catch(e){}go({k:'mini',id,mode,rule:r.rule,say:r.say,score:0,lives:3,t:45,end:false,started:false});scr._r=r});
+{const _s=hooks.cu('startXG');hooks.de('startXG',function(mode,id){const x=isl1(id);XG_KT=x?ktOf(x):null;
   if((mode==='star'||mode==='mole')&&x){const G=xgGr(x),fn=ktRule(x,'fish').fn,useT=!!(x.ti&&MGT[x.ti]&&MGT[x.ti][G]),box=useT?MGT[x.ti]:MG,old=box[G];box[G]={fish:fn,balloon:fn};
     try{const v=_s.apply(this,arguments);if(scr.k==='xg'){scr.rule=ktVerb(scr.rule,mode==='star'?'Hứng sao mang ':'Đập chuột cầm ');scr.say=String(scr.say).replace(/Chọn (những )?/,mode==='star'?'Hứng những ngôi sao mang ':'Đập những chú chuột cầm ');const el=document.querySelector('.mgrule span');if(el)el.innerHTML=scr.rule}return v}finally{box[G]=old}}
-  return _s.apply(this,arguments)}}
+  return _s.apply(this,arguments)})}
 
 /* ---------- Lật thẻ / Ếch: câu của đảo này → vài đảo trước → phép tính đã học → đếm chấm ---------- */
-function ktPrev(x,n){const G=xgGr(x),I=PRIM[G].isl,k=I.indexOf(x);return I.slice(Math.max(0,k-n),k).reverse()}
+export function ktPrev(x,n){const G=xgGr(x),I=PRIM[G].isl,k=I.indexOf(x);return I.slice(Math.max(0,k-n),k).reverse()}
 function ktFacts(K,G,n){const M=Math.min(K.max,G<=1?10:G===2?100:G===3?1000:10000),ops=['+','-','×',':'].filter(o=>K.f.has(o)),out=[];if(!ops.length)return out;
   for(let i=0;i<80&&out.length<n;i++){const o=pick(ops);let q,a;
     if(o==='+'){const s=R(Math.min(2,M),Math.min(M,G<=1?10:M)),p=R(0,s);q=`${fN(p)} + ${fN(s-p)}`;a=s}
@@ -96,38 +110,39 @@ function ktFacts(K,G,n){const M=Math.min(K.max,G<=1?10:G===2?100:G===3?1000:1000
 /* bể cá pixel: số cá = số cần ghép (0 → bể trống, chỉ có bọt nước) */
 const ktDots=n=>{n=Math.max(0,Math.min(10,n|0));const fs=Array.from({length:n},(_,i)=>`<i class="xtkf${i%2?' r':''}">${spr('fish',n>5?6:n>3?8:10)}</i>`).join('');
   return`<span class="xtank${n>5?' many':''}" role="img" aria-label="Bể có ${n} con cá"><span class="xtkw">${fs}</span><span class="xtkb"><i></i><i></i></span><span class="xtks"></span></span>`};
-pairFacts=function(x,n){const K=ktOf(x);return ktFacts(K,xgGr(x),n)};
-pairDeck=function(x){const K=ktOf(x),G=xgGr(x),pairs=[],seenA=new Set(),seenQ=new Set();
+hooks.de('pairFacts',function(x,n){const K=ktOf(x);return ktFacts(K,xgGr(x),n)});
+hooks.de('pairDeck',function(x){const K=ktOf(x),G=xgGr(x),pairs=[],seenA=new Set(),seenQ=new Set();
   const add=(p,q)=>{if(p&&pairs.length<6&&!seenA.has(p[1])&&!seenQ.has(p[0])&&!ktViol(K,p[0]+' | '+p[1]).length){seenA.add(p[1]);seenQ.add(p[0]);pairs.push({p,q})}};
   [x,...ktPrev(x,4)].forEach(y=>{const pool=islPool(y);for(let i=0;i<70&&pairs.length<6&&pool.length;i++){let q;try{q=mkQ(pick(pool))}catch(e){continue}add(pairFromQ(q),q)}});
   ktFacts(K,G,40).forEach(p=>add(p,null));
   const cards=[];pairs.forEach((o,i)=>{cards.push({id:i,k:'q',t:esc(o.p[0]),q:o.q});cards.push({id:i,k:'a',t:esc(o.p[1]),q:o.q})});
   /* chưa học phép tính: ghép nhóm chấm ↔ số */
   if(pairs.length<6){const M=Math.min(K.max,10),ns=shuf(range(0,M)).filter(v=>!seenA.has(String(v))).slice(0,6-pairs.length);ns.forEach((v,j)=>{const i=pairs.length+j;cards.push({id:i,k:'q',t:ktDots(v),q:null});cards.push({id:i,k:'a',t:String(v),q:null})})}
-  return shuf(cards)};
-{const _f=frogQ;frogQ=function(x){const K=ktOf(x),G=xgGr(x);
+  return shuf(cards)});
+{const _f=hooks.cu('frogQ');hooks.de('frogQ',function(x){const K=ktOf(x),G=xgGr(x);
   for(const y of [x,...ktPrev(x,4)]){const pool=islPool(y);for(let i=0;i<50&&pool.length;i++){let q;try{q=mkQ(pick(pool))}catch(e){continue}const f=frogFromQ(q);if(f&&!ktViol(K,f.t+' | '+f.ans+' | '+f.d.join(' | ')).length)return frogMk(f)}}
   for(let i=0;i<20;i++){const [t,a]=ktFacts(K,G,1)[0]||[];if(!t)break;const d=xNear(a).filter(v=>xNum(v)<=K.max);if(d.length>=2)return frogMk({t:esc(t)+' = ?',ans:a,d:d.slice(0,2),q:null})}
-  const M=Math.min(K.max,10),n=R(1,M),d=shuf(range(0,M).filter(v=>v!==n)).slice(0,2);return frogMk({t:`Bể có mấy con cá? ${ktDots(n)}`,ans:String(n),d:d.map(String),q:null})}}
+  const M=Math.min(K.max,10),n=R(1,M),d=shuf(range(0,M).filter(v=>v!==n)).slice(0,2);return frogMk({t:`Bể có mấy con cá? ${ktDots(n)}`,ans:String(n),d:d.map(String),q:null})})}
 
 /* ---------- Cân / Tàu hoả / Cửa hàng / Đồng hồ / Ghép hình: nắn theo kiến thức ---------- */
-{const _s=scaleRound;scaleRound=function(x){const K=ktOf(x);const r=_s.apply(this,arguments);
-  if(ktViol(K,r.left).some(v=>['+','-','×',':'].includes(v)))r.left=r.fmt(r.T);return r}}
-{const _t=trainRound;trainRound=function(x){const K=ktOf(x),r=_t.apply(this,arguments);
-  if(r.kind==='Xếp thứ tự số'&&Math.max(...r.vals)>K.max){const M=K.max,n=Math.min(r.vals.length,M+1),s=new Set();let k=0;while(s.size<n&&k++<300)s.add(R(0,M));const vals=[...s];r.vals=shuf(vals);r.order=[...vals].sort((a,b)=>r.up?a-b:b-a)}return r}}
-{const _p=shopPrice;shopPrice=function(G){const M=ktMax();let p=_p.apply(this,arguments);if(p>M){const st=M>=10000?1000:100;p=Math.max(st,Math.floor(R(Math.ceil(M*.3),M)/st)*st)}return p}}
-{const _r=shopRound;shopRound=function(G,k,N){let r=_r.apply(this,arguments);for(let i=0;i<6;i++){const need=r.t==='multi'?'+':r.t==='chg'||r.t==='disc'?'-':null;if((!need||ktHas(need))&&(r.t==='pay'||r.total<=ktMax()))break;r={...(_r(G,0,N)),t:'pay'};if(r.t==='pay'&&r.total<=ktMax())break}
+{const _s=hooks.cu('scaleRound');hooks.de('scaleRound',function(x){const K=ktOf(x);const r=_s.apply(this,arguments);
+  if(ktViol(K,r.left).some(v=>['+','-','×',':'].includes(v)))r.left=r.fmt(r.T);return r})}
+{const _t=hooks.cu('trainRound');hooks.de('trainRound',function(x){const K=ktOf(x),r=_t.apply(this,arguments);
+  if(r.kind==='Xếp thứ tự số'&&Math.max(...r.vals)>K.max){const M=K.max,n=Math.min(r.vals.length,M+1),s=new Set();let k=0;while(s.size<n&&k++<300)s.add(R(0,M));const vals=[...s];r.vals=shuf(vals);r.order=[...vals].sort((a,b)=>r.up?a-b:b-a)}return r})}
+{const _p=hooks.cu('shopPrice');hooks.de('shopPrice',function(G){const M=ktMax();let p=_p.apply(this,arguments);if(p>M){const st=M>=10000?1000:100;p=Math.max(st,Math.floor(R(Math.ceil(M*.3),M)/st)*st)}return p})}
+{const _r=hooks.cu('shopRound');hooks.de('shopRound',function(G,k,N){let r=_r.apply(this,arguments);for(let i=0;i<6;i++){const need=r.t==='multi'?'+':r.t==='chg'||r.t==='disc'?'-':null;if((!need||ktHas(need))&&(r.t==='pay'||r.total<=ktMax()))break;r={...(_r(G,0,N)),t:'pay'};if(r.t==='pay'&&r.total<=ktMax())break}
   const big=o=>Math.max(o.total||0,o.give||0,...(o.opts||[0]),...o.items.map(i=>i[1]))>ktMax();
-  if(big(r)){for(let i=0;i<8&&big(r);i++)r=_r(G,k,N);if(big(r)){const p=shopPrice(G);r={t:'pay',items:[[r.items[0][0],p]],total:p,kind:'Trả tiền mua hàng'}}}return r}}
-{const _n=shopNotes;shopNotes=function(G){const v=_n.apply(this,arguments),M=ktMax(),f=v.filter(n=>n<=M);return f.length>=2?f:v.slice(0,2)}}
-{const _c=clockTarget;clockTarget=function(G){const r=_c.apply(this,arguments);if(XG_KT&&!XG_KT.f.has('minute'))r.m=0;return r}}
-{const _set=shapeSet;shapeSet=function(x){const K=ktOf(x),own=_set.apply(this,arguments).filter(k=>K.f.has('sh:'+k));if(own.length>=3)return own;
+  if(big(r)){for(let i=0;i<8&&big(r);i++)r=_r(G,k,N);if(big(r)){const p=shopPrice(G);r={t:'pay',items:[[r.items[0][0],p]],total:p,kind:'Trả tiền mua hàng'}}}return r})}
+{const _n=hooks.cu('shopNotes');hooks.de('shopNotes',function(G){const v=_n.apply(this,arguments),M=ktMax(),f=v.filter(n=>n<=M);return f.length>=2?f:v.slice(0,2)})}
+{const _c=hooks.cu('clockTarget');hooks.de('clockTarget',function(G){const r=_c.apply(this,arguments);if(XG_KT&&!XG_KT.f.has('minute'))r.m=0;return r})}
+{const _set=hooks.cu('shapeSet');hooks.de('shapeSet',function(x){const K=ktOf(x),own=_set.apply(this,arguments).filter(k=>K.f.has('sh:'+k));if(own.length>=3)return own;
   const all=KTSH.map(([k])=>k).filter(k=>K.f.has('sh:'+k)),fam=k=>k[0]==='g'&&k!=='gvuong'||k==='gvuong'?'goc':['lapphuong','hop','tru','cau'].includes(k)?'khoi':'phang';
-  const pref=own.length?fam(own[0]):null,more=all.filter(k=>!own.includes(k)&&(!pref||fam(k)===pref));return[...own,...more].slice(0,6)}}
-shapeTray=function(g){const sl=g.pics[g.pi].slots[g.si];return shuf([sl.s,...shuf(g.set.filter(k=>k!==sl.s)).slice(0,3)])};
+  const pref=own.length?fam(own[0]):null,more=all.filter(k=>!own.includes(k)&&(!pref||fam(k)===pref));return[...own,...more].slice(0,6)})}
+hooks.de('shapeTray',function(g){const sl=g.pics[g.pi].slots[g.si];return shuf([sl.s,...shuf(g.set.filter(k=>k!==sl.s)).slice(0,3)])});
 
 /* ---------- trò nào được mở ở đảo nào ---------- */
-function ktSample(x,mode,n){const K=ktOf(x),G=xgGr(x),out=[],prevKT=XG_KT;XG_KT=K;
+function ktSample(...a){return hooks.goi('ktSample',this,a)}
+hooks.ham('ktSample',function(x,mode,n){const K=ktOf(x),G=xgGr(x),out=[],prevKT=XG_KT;XG_KT=K;
   try{for(let i=0;i<n;i++){
     if(mode==='fish'||mode==='balloon'||mode==='star'||mode==='mole'){const r=ktRule(x,mode==='balloon'?'balloon':'fish').fn();let t=r.rule;for(let j=0;j<12;j++)t+=' | '+r.item().t;out.push(t)}
     else if(mode==='pair'){out.push(pairDeck(x).map(c=>c.t).join(' | '))}
@@ -138,7 +153,7 @@ function ktSample(x,mode,n){const K=ktOf(x),G=xgGr(x),out=[],prevKT=XG_KT;XG_KT=
     else if(mode==='shop'){const r=shopRound(G,i,8);out.push(r.items.map(([o,p])=>fN(p)+' đồng').join(' | ')+(r.give?' | '+fN(r.give)+' đồng':'')+(r.opts?' | '+r.opts.map(v=>fN(v)+' đồng').join(' | '):'')+' | '+shopNotes(G).map(v=>fN(v)+' đồng').join(' | '))}
     else if(mode==='clock'){const r=clockTarget(G);out.push(r.m?`${r.h} giờ ${r.m} phút`:`${r.h} giờ`)}
     else if(mode==='shape'){out.push(shapeSet(x).map(k=>XSHN[k]).join(', '))}}}catch(e){out.push('LỖI '+e.message)}
-  XG_KT=prevKT;return out}
+  XG_KT=prevKT;return out});
 /* yêu cầu tối thiểu của từng trò */
 function ktReq(x,mode){const K=ktOf(x),f=K.f;
   if(mode==='clock')return f.has('time')&&xgTime(x);
@@ -149,21 +164,23 @@ function ktReq(x,mode){const K=ktOf(x),f=K.f;
   if(mode==='race'||mode==='tug')return islPool(x).length>0;
   return true}
 const XG_OK={};
-function ktAllowed(x,mode){const key=x.id+':'+mode;if(key in XG_OK)return XG_OK[key];let ok=ktReq(x,mode);
+function ktAllowed(...a){return hooks.goi('ktAllowed',this,a)}
+hooks.ham('ktAllowed',function(x,mode){const key=x.id+':'+mode;if(key in XG_OK)return XG_OK[key];let ok=ktReq(x,mode);
   /* Đua giờ, Kéo co: chỉ dùng câu của chính đảo; Lật thẻ, Ếch: đã lọc từng thẻ/câu theo kiến thức khi tạo → không cần lấy mẫu */
   if(ok&&!['race','tug','pair','frog'].includes(mode)){const K=ktOf(x),S=ktSample(x,mode,mode==='clock'||mode==='shape'?6:5);ok=S.every(t=>!/^LỖI/.test(t)&&!ktViol(K,t).length)}
-  return XG_OK[key]=ok}
+  return XG_OK[key]=ok});
 /* trò luyện đúng nội dung của đảo */
-function ktOwn(x,mode){if(mode==='clock')return xgTime(x);if(mode==='shape')return xgGeo(x);if(mode==='shop')return xgMoney(x);if(mode==='scale')return xgMass(x)||(xgCalc(x)&&/bằng nhau|tìm số|thành phần/i.test(xgTxt2(x)));
+function ktOwn(...a){return hooks.goi('ktOwn',this,a)}
+hooks.ham('ktOwn',function(x,mode){if(mode==='clock')return xgTime(x);if(mode==='shape')return xgGeo(x);if(mode==='shop')return xgMoney(x);if(mode==='scale')return xgMass(x)||(xgCalc(x)&&/bằng nhau|tìm số|thành phần/i.test(xgTxt2(x)));
   if(mode==='race'||mode==='tug')return x.tiet>1||/Luyện tập|Ôn tập/i.test(xgTxt2(x));
   if(mode==='pair'){const pool=islPool(x);let n=0;for(let i=0;i<40&&pool.length;i++){try{if(pairFromQ(mkQ(pick(pool))))n++}catch(e){}}return n>=6}
   if(mode==='frog'){const pool=islPool(x);for(let i=0;i<30&&pool.length;i++){try{if(frogFromQ(mkQ(pick(pool))))return true}catch(e){}}return false}
   if(mode==='train')return/so sánh|thứ tự|sắp xếp|xếp|lớn hơn|bé hơn/i.test(xgTxt2(x));
   if(mode==='fish'||mode==='balloon'||mode==='star'||mode==='mole')return!!ktRule(x,'fish').own;
-  return false}
+  return false});
 const XG_PICK={};
 /* ưu tiên riêng từng trò theo lớp: số âm = được chọn nhiều hơn (cộng vào bộ đếm ban đầu) */
-const XG_BIAS={};
+export const XG_BIAS={};
 function ktBalance(G){if(XG_PICK[G])return XG_PICK[G];ktGrade(G);return ktSeeded(311+G,()=>ktBalance0(G))}
 function ktBalance0(G){const I=(PRIM[G]&&PRIM[G].isl)||[],cnt={},out={};XG_ALL.forEach(o=>cnt[o]=(XG_BIAS[o]&&XG_BIAS[o][G])||0);
   const order=[...I].sort((a,b)=>xgHash(a.id+'kt')-xgHash(b.id+'kt'));
@@ -174,12 +191,12 @@ function ktBalance0(G){const I=(PRIM[G]&&PRIM[G].isl)||[],cnt={},out={};XG_ALL.f
     while(pick_.length<3){let c=al.filter(m=>!pick_.includes(m)&&el.has(m));if(!c.length)c=al.filter(m=>!pick_.includes(m));if(!c.length)break;pick_.push(least(c))}
     pick_.forEach(m=>cnt[m]++);out[x.id]=pick_});
   return XG_PICK[G]=out}
-islOpts2=function(x){const G=xgGr(x);if(G>=1&&G<=5){const m=ktBalance(G);if(m[x.id])return m[x.id]}return[]};
+hooks.de('islOpts2',function(x){const G=xgGr(x);if(G>=1&&G<=5){const m=ktBalance(G);if(m[x.id])return m[x.id]}return[]});
 /* kiểm tra toàn lớp (dùng trong tools/test/kien-thuc-tro-choi.js) */
 function ktAudit(G,n){const I=PRIM[G].isl,rows=[];I.forEach((x,k)=>{const K=ktOf(x);islOpts2(x).forEach(m=>{if(m==='race'||m==='tug'){const bad=islPool(x).filter(([y])=>y!==x);if(bad.length)rows.push({G,k,id:x.id,isl:x.short,ti:x.ti+1,mode:m,v:'câu của đảo khác',sample:''});return}ktSample(x,m,n||12).forEach(t=>{const v=ktViol(K,t);if(v.length)rows.push({G,k,id:x.id,isl:x.short,ti:x.ti+1,mode:m,v:v.join(' '),sample:ktClean(t).slice(0,140)})})})});return rows}
 /* số vi phạm của cách làm cũ (chỉ dùng trong kiểm tra) */
-function ktAuditBefore(G,n){const NOW={islOpts2,pairDeck,pairFacts,frogQ,scaleRound,trainRound,shopPrice,shopRound,shopNotes,clockTarget,shapeSet,shapeTray},rows=[];
-  ({islOpts2,pairDeck,pairFacts,frogQ,scaleRound,trainRound,shopPrice,shopRound,shopNotes,clockTarget,shapeSet,shapeTray}=KT_ORIG);
+function ktAuditBefore(G,n){const rows=[];
+  for(const k in KT_ORIG)hooks.de(k,KT_ORIG[k]); /* đè tạm bằng bản cũ, trả lại ở finally */
   try{PRIM[G].isl.forEach((x,k)=>{const K=ktOf(x),src=((x.ti&&MGT[x.ti]&&MGT[x.ti][G])?MGT[x.ti][G]:MG[G])||{};
     islOpts2(x).forEach(m=>{if(m==='race'||m==='tug')return;for(let i=0;i<(n||8);i++){let t='';try{
       if(['fish','balloon','star','mole'].includes(m)){const r=(src[m==='balloon'?'balloon':'fish']||src.fish||src.balloon)();t=r.rule;for(let j=0;j<12;j++)t+=' | '+r.item().t}
@@ -188,13 +205,13 @@ function ktAuditBefore(G,n){const NOW={islOpts2,pairDeck,pairFacts,frogQ,scaleRo
       else if(m==='shop'){const r=shopRound(G,i,8);t=r.items.map(([o,p])=>fN(p)+' đồng').join(' | ')+' | '+shopNotes(G).map(v=>fN(v)+' đồng').join(' | ')}
       else if(m==='clock'){const r=clockTarget(G);t=r.m?`${r.h} giờ ${r.m} phút`:`${r.h} giờ`}else if(m==='shape')t=shapeSet(x).map(k=>XSHN[k]).join(', ')}catch(e){continue}
       const v=ktViol(K,t);if(v.length){rows.push({k,mode:m,v:v.join(' ')});break}}})})}
-  finally{({islOpts2,pairDeck,pairFacts,frogQ,scaleRound,trainRound,shopPrice,shopRound,shopNotes,clockTarget,shapeSet,shapeTray}=NOW)}
+  finally{for(const k in KT_ORIG)hooks.bo(k)}
   return rows}
 
 /* Lời Jenny đọc luật luôn khớp dòng luật trên màn hình (Câu cá, Bóng bay, Hứng sao, Đập chuột) */
 function ktSayFromRule(rule){const t=String(rule||'').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').trim();return t?`Em ${t.charAt(0).toLowerCase()+t.slice(1)} nhé.`:''}
-{const _m=startMini;startMini=function(mode,id){const v=_m.apply(this,arguments);try{if(scr.k==='mini'&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v}}
-{const _x=startXG;startXG=function(mode,id){const v=_x.apply(this,arguments);try{if(scr.k==='xg'&&(mode==='star'||mode==='mole')&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v}}
+{const _m=hooks.cu('startMini');hooks.de('startMini',function(mode,id){const v=_m.apply(this,arguments);try{if(scr.k==='mini'&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v})}
+{const _x=hooks.cu('startXG');hooks.de('startXG',function(mode,id){const v=_x.apply(this,arguments);try{if(scr.k==='xg'&&(mode==='star'||mode==='mole')&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v})}
 
 /* Lật thẻ dùng bể cá: đổi lời hướng dẫn cho đúng */
-{const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='pair'&&scr.cards&&scr.cards.some(c=>/xtank/.test(c.t))){const sp=document.querySelector('.mgrule span');if(sp)sp.innerHTML='Lật 2 thẻ: ghép <b>bể cá</b> với <b>số con cá</b>';scr.say='Em lật hai thẻ, ghép bể cá với số con cá trong bể nhé.'}}catch(e){}return v}}
+{const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='pair'&&scr.cards&&scr.cards.some(c=>/xtank/.test(c.t))){const sp=document.querySelector('.mgrule span');if(sp)sp.innerHTML='Lật 2 thẻ: ghép <b>bể cá</b> với <b>số con cá</b>';scr.say='Em lật hai thẻ, ghép bể cá với số con cá trong bể nhé.'}}catch(e){}return v})}

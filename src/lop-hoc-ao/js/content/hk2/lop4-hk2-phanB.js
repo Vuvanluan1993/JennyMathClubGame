@@ -1,4 +1,12 @@
 /* ===== LỚP 4 · HỌC KÌ 2 (phần B): Phân số · Cộng, trừ phân số · Nhân, chia phân số · Ôn tập cuối năm ===== */
+import { pick, R, range } from '../../core/01-tien-ich.js';
+import { shuf } from '../../core/21-lop-6-che-do-tro-choi.js';
+import { spr } from '../../core/22-do-hoa-pixel-mau-logo-clb.js';
+import { CQ, F, NQ, ORD, SG, vnRead } from '../hk1/26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { QT4 } from '../hk1/27-chu-de-2-lop-1-5.js';
+import { fN, QB4 } from '../hk1/28-chu-de-3-lop-1-5.js';
+import { QA4, QM4, WQ } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { addTopic, LES, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 (()=>{
 const G=4;
 const gcd=(a,b)=>b?gcd(b,a%b):a,lcm=(a,b)=>a/gcd(a,b)*b;

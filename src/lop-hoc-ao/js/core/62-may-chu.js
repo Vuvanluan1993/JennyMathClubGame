@@ -9,24 +9,31 @@
    Tên đăng nhập (tk) → email ẩn tk@jenny-lop-hoc-ao.firebaseapp.com (trẻ không cần email thật).
    P-04 (25/10/2026): rules siết — org/main cần hồ sơ users; users chỉ chính chủ/QL; hs/{tk} em chỉ ghi j, ev, lop, t;
      asg đọc/ghi theo lớp (truy vấn phải lọc where lop); login/{tk} chỉ get đúng 1 bản ghi khi email ẩn chuẩn sai. */
-const FB_CFG={apiKey:"AIzaSyDom_aoJHqhDgs0CYpPa0kTzRv0WQ7xo3o",authDomain:"jenny-lop-hoc-ao.firebaseapp.com",projectId:"jenny-lop-hoc-ao",storageBucket:"jenny-lop-hoc-ao.firebasestorage.app",messagingSenderId:"670173928664",appId:"1:670173928664:web:cd32fb1f8846f0ec82cbad",
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { newStudent, save } from './09-du-lieu-demo.js';
+import { render, toast } from './13-giao-dien-chung.js';
+import { fbNghe, fbTietKiem } from './63-firestore-tiet-kiem.js';
+import { XU_THUONG, xuBangGia, xuBoot, xuOn, xuViTu } from './64-xu.js';
+export const FB_CFG={apiKey:"AIzaSyDom_aoJHqhDgs0CYpPa0kTzRv0WQ7xo3o",authDomain:"jenny-lop-hoc-ao.firebaseapp.com",projectId:"jenny-lop-hoc-ao",storageBucket:"jenny-lop-hoc-ao.firebasestorage.app",messagingSenderId:"670173928664",appId:"1:670173928664:web:cd32fb1f8846f0ec82cbad",
   appCheckKey:""};/* P-05: khoá site reCAPTCHA v3 của App Check (Firebase › App Check › Web app). Để trống = không bật. Chỉ theo dõi, chưa Enforce (xem docs/FIREBASE-CONSOLE.md). */
-const FB_VER='10.12.2',GV_F=['comments','badges','gvNote','gvSkip'];
-let FB=null,CLOUD=null,fbSub=[],fbLast={},fbHen=null,fbDangGhi=false,fbBan=0;/* fbBan: số lượt ghi đang chờ máy chủ */
+export const FB_VER='10.12.2',GV_F=['comments','badges','gvNote','gvSkip'];
+export let FB=null;globalThis.CLOUD=null;export let fbSub=[], fbLast={}, fbHen=null, fbDangGhi=false, fbBan=0;/* fbBan: số lượt ghi đang chờ máy chủ */
 const fbEmail=tk=>`${String(tk).trim().toLowerCase()}@jenny-lop-hoc-ao.firebaseapp.com`;
 const fbTkOk=tk=>/^[a-z0-9][a-z0-9._-]{2,23}$/.test(tk);
 function fbNap(){if(window.firebase&&firebase.firestore&&firebase.auth)return Promise.resolve();
   const SRI={app:'sha384-AQ3POAMqIhwS81FrUH95ekxqBZHeP5tG2JfEL3+7GuTtfRLWnrRh32UxwzM+//A9',auth:'sha384-TnlRYaR4JYz/lpaGuaiU61PjNberSA4vjLjtF+oRC/IkohkJqnWxw5EmDSOt1vA1',firestore:'sha384-qn4Jh88HhJA8dplNQyGjOh9OGI4izVhrfj/qIFgaKcdgOE06pXqIKGlsCILZcLAC','app-check':'sha384-E3vxFxXu8FhW5kvqdQJ5Yf8ugrV7iCJP8jgnItRH2Rk8Q08cJzJGTi/oMC3FEp3j'};/* SRI cho FB_VER 10.12.2 — đổi FB_VER thì tính lại, xem docs/SRI.md */
   const one=n=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-${n}-compat.js`;s.integrity=SRI[n];s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>no({code:'network',message:'Không tải được Firebase. Kiểm tra mạng.'});document.head.appendChild(s)});
   let p=one('app').then(()=>one('auth')).then(()=>one('firestore'));if(FB_CFG.appCheckKey)p=p.then(()=>one('app-check'));return p}
-async function fbInit(){await fbNap();if(!FB){const cfg=Object.assign({},FB_CFG);delete cfg.appCheckKey;const app=firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
+export async function fbInit(){await fbNap();if(!FB){const cfg=Object.assign({},FB_CFG);delete cfg.appCheckKey;const app=firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
   if(FB_CFG.appCheckKey&&firebase.appCheck){try{firebase.appCheck(app).activate(FB_CFG.appCheckKey,true)}catch(e){console.warn('App Check chưa bật được:',e)}}
   FB={app,auth:app.auth(),db:app.firestore()};
   if(typeof fbTietKiem==='function')fbTietKiem();/* P-21 (63): bộ nhớ đệm bền + đếm đọc ghi; phải chạy trước lần đọc đầu */}return FB}
-function fbLoi(e){const c=(e&&e.code)||'';return({'chua-lop':'Tài khoản của em chưa được xếp lớp. Em nhờ cô giáo nhé!','auth/invalid-credential':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/invalid-login-credentials':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/wrong-password':'Mật khẩu chưa đúng.','auth/user-not-found':'Không có tài khoản này.','auth/too-many-requests':'Thử sai nhiều lần. Đợi vài phút rồi thử lại.','auth/network-request-failed':'Không kết nối được mạng.','auth/email-already-in-use':'Tên đăng nhập này đã có người dùng.','auth/weak-password':'Mật khẩu cần ít nhất 6 kí tự.','auth/invalid-email':'Tên đăng nhập không hợp lệ.','auth/requires-recent-login':'Phiên đăng nhập đã cũ. Đăng xuất, đăng nhập lại rồi làm tiếp.','permission-denied':'Tài khoản không có quyền làm việc này.','no-profile':'Tài khoản chưa được gán vai trò. Hỏi quản lý trung tâm.','network':e.message})[c]||('Có lỗi: '+((e&&e.message)||e))}
-const fbJ=s=>{try{return JSON.parse(s)}catch(e){return null}};
-const fbTach=st=>{const a={},b={};Object.keys(st||{}).forEach(k=>(GV_F.includes(k)?b:a)[k]=st[k]);GV_F.forEach(k=>{if(b[k]===undefined)b[k]=k==='gvSkip'?{}:[]});if(typeof xuOn==='function'&&xuOn()){delete a.coins;delete a.items}return{hs:a,gv:b}};/* P-20: xu, quà trùm ở ví vi/{tk}, không còn trong hs.j */
-const fbTS=()=>firebase.firestore.FieldValue.serverTimestamp();
+export function fbLoi(...a){return hooks.goi('fbLoi',this,a)}
+hooks.ham('fbLoi',function(e){const c=(e&&e.code)||'';return({'chua-lop':'Tài khoản của em chưa được xếp lớp. Em nhờ cô giáo nhé!','auth/invalid-credential':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/invalid-login-credentials':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/wrong-password':'Mật khẩu chưa đúng.','auth/user-not-found':'Không có tài khoản này.','auth/too-many-requests':'Thử sai nhiều lần. Đợi vài phút rồi thử lại.','auth/network-request-failed':'Không kết nối được mạng.','auth/email-already-in-use':'Tên đăng nhập này đã có người dùng.','auth/weak-password':'Mật khẩu cần ít nhất 6 kí tự.','auth/invalid-email':'Tên đăng nhập không hợp lệ.','auth/requires-recent-login':'Phiên đăng nhập đã cũ. Đăng xuất, đăng nhập lại rồi làm tiếp.','permission-denied':'Tài khoản không có quyền làm việc này.','no-profile':'Tài khoản chưa được gán vai trò. Hỏi quản lý trung tâm.','network':e.message})[c]||('Có lỗi: '+((e&&e.message)||e))});
+export const fbJ=s=>{try{return JSON.parse(s)}catch(e){return null}};
+export const fbTach=st=>{const a={},b={};Object.keys(st||{}).forEach(k=>(GV_F.includes(k)?b:a)[k]=st[k]);GV_F.forEach(k=>{if(b[k]===undefined)b[k]=k==='gvSkip'?{}:[]});if(typeof xuOn==='function'&&xuOn()){delete a.coins;delete a.items}return{hs:a,gv:b}};/* P-20: xu, quà trùm ở ví vi/{tk}, không còn trong hs.j */
+export const fbTS=()=>firebase.firestore.FieldValue.serverTimestamp();
 /* bài về nhà của một lớp (rules P-04 chỉ cho đọc asg theo lớp nên phải lọc ngay trong truy vấn; bản giả lập trong test không có where) */
 const fbAsgLop=(db,l)=>{const c=db.collection('asg');return c.where?c.where('lop','==',l):c};
 const fbNgay=()=>Math.max(1,Math.floor((Date.now()-Date.UTC(2026,8,5))/864e5)+1);
@@ -50,9 +57,9 @@ async function fbDangXuat(){fbSub.forEach(f=>{try{f()}catch(e){}});fbSub=[];let 
     window.qlMK={};fbMKPhien.length=0}catch(e){}
   try{await FB.auth.signOut()}catch(e){}CLOUD=null;location.reload()}
 /* ---------- mật khẩu (P-05): ngẫu nhiên 8 kí tự dễ đọc, hộp thoại pixel thay prompt(), bắt đổi lần đầu ---------- */
-function fbMKGoiY(){const C='bdghkmnprstvx',V='aeiou',r=n=>Math.floor(Math.random()*n);let s='';for(let i=0;i<2;i++)s+=C[r(C.length)]+V[r(V.length)];return s+String(1000+r(9000))}
-const fbMKLoi=(a,b)=>a.length<8?'Mật khẩu cần ít nhất 8 kí tự.':!(/[a-z]/i.test(a)&&/\d/.test(a))?'Mật khẩu cần có cả chữ và số.':a!==b?'Hai lần nhập chưa giống nhau.':'';
-const fbMKPhien=[];function fbMKNho(tk,pw){window.qlMK=window.qlMK||{};qlMK[tk]=pw;const i=fbMKPhien.findIndex(x=>x.tk===tk);if(i>=0)fbMKPhien.splice(i,1);fbMKPhien.unshift({tk,pw})}
+export function fbMKGoiY(){const C='bdghkmnprstvx',V='aeiou',r=n=>Math.floor(Math.random()*n);let s='';for(let i=0;i<2;i++)s+=C[r(C.length)]+V[r(V.length)];return s+String(1000+r(9000))}
+export const fbMKLoi=(a,b)=>a.length<8?'Mật khẩu cần ít nhất 8 kí tự.':!(/[a-z]/i.test(a)&&/\d/.test(a))?'Mật khẩu cần có cả chữ và số.':a!==b?'Hai lần nhập chưa giống nhau.':'';
+const fbMKPhien=[];export function fbMKNho(tk,pw){window.qlMK=window.qlMK||{};qlMK[tk]=pw;const i=fbMKPhien.findIndex(x=>x.tk===tk);if(i>=0)fbMKPhien.splice(i,1);fbMKPhien.unshift({tk,pw})}
 /* fbHoiMK({tieuDe, loiNhan, goiY, nhacLai, batBuoc, nut, luu}) → Promise<mật khẩu | null>. luu(pw) chạy trong hộp; lỗi hiện tại chỗ. */
 function fbHoiMK(o){o=o||{};return new Promise(res=>{const el=document.createElement('div');el.className='gdov fbmk';
   el.innerHTML=`<div class="gdbox fbmkbox" role="dialog" aria-modal="true"><div class="gdhd"><b>${esc(o.tieuDe||'Mật khẩu mới')}</b>${o.batBuoc?'':'<button type="button" class="gdx" data-x aria-label="Đóng">✕</button>'}</div>
@@ -76,7 +83,7 @@ async function fbBatDoiMK(user){const hs=CLOUD.me.role==='hs';
       await FB.db.doc('users/'+user.uid).update({mustChange:false});CLOUD.me.mustChange=false}})}
 async function fbDoiMK(){const p=await fbHoiMK({tieuDe:'Đổi mật khẩu',nhacLai:true,nut:'Đổi',luu:async p=>{await FB.auth.currentUser.updatePassword(p)}});if(p)toast('Đã đổi mật khẩu')}
 /* tạo tài khoản cho người khác bằng một phiên phụ (không làm đăng xuất quản lý) */
-async function fbTaoTK(tk,pw){await fbInit();const app2=firebase.apps.find(a=>a.name==='tao')||firebase.initializeApp(FB.app.options,'tao');
+export async function fbTaoTK(tk,pw){await fbInit();const app2=firebase.apps.find(a=>a.name==='tao')||firebase.initializeApp(FB.app.options,'tao');
   const c=await app2.auth().createUserWithEmailAndPassword(fbEmail(tk),pw);const uid=c.user.uid;await app2.auth().signOut();return uid}
 /* thiết lập lần đầu: tài khoản quản lý đầu tiên + dữ liệu trung tâm trống */
 async function fbThietLap(ten,tk,pw){const{auth,db}=await fbInit();const ref=db.doc('org/main');
@@ -87,11 +94,12 @@ async function fbThietLap(ten,tk,pw){const{auth,db}=await fbInit();const ref=db.
   await db.doc('users/'+uid).set({role:'ql',tk,ten,gvId:tk});return fbNapMe(c.user)}
 
 /* ---------- ghi lên máy chủ (gom lại 1,5 giây) ---------- */
-{const _s=save;save=function(){const r=_s.apply(this,arguments);try{if(CLOUD&&!fbDangGhi){clearTimeout(fbHen);fbHen=setTimeout(fbDay,1500)}}catch(e){}return r}}
-function fbDayNgay(){clearTimeout(fbHen);return fbDay()}
+{const _s=hooks.cu('save');hooks.de('save',function(){const r=_s.apply(this,arguments);try{if(CLOUD&&!fbDangGhi){clearTimeout(fbHen);fbHen=setTimeout(fbDay,1500)}}catch(e){}return r})}
+export function fbDayNgay(...a){return hooks.goi('fbDayNgay',this,a)}
+hooks.ham('fbDayNgay',function(){clearTimeout(fbHen);return fbDay()});
 function fbOrgSach(){const o=Object.assign({},S.org);['hsOn'].forEach(k=>delete o[k]);return o}
 function fbPc(o){const pc={};(o.lop||[]).forEach(l=>(l.gv||[]).forEach(g=>{(pc[g]=pc[g]||[]).push(l.id)}));return pc}
-async function fbDay(){if(!CLOUD||!FB)return;const db=FB.db,me=CLOUD.me,ghi=[];
+export async function fbDay(){if(!CLOUD||!FB)return;const db=FB.db,me=CLOUD.me,ghi=[];
   try{
   if(me.role==='hs'){const tk=me.tk,st=S.st[tk];if(!st)return;const j=JSON.stringify(fbTach(st).hs),ev=JSON.stringify((S.events||[]).filter(e=>e.actor.account.name===tk).slice(-200));
     if(fbLast['hs/'+tk]!==j||fbLast['ev/'+tk]!==ev){fbLast['hs/'+tk]=j;fbLast['ev/'+tk]=ev;ghi.push(db.doc('hs/'+tk).set({j,ev,lop:(S.lopHS||''),t:fbTS()}))}}
@@ -104,10 +112,13 @@ async function fbDay(){if(!CLOUD||!FB)return;const db=FB.db,me=CLOUD.me,ghi=[];
   }
   if(ghi.length){fbBan++;try{await Promise.all(ghi)}finally{fbBan--}fbTrangThai('Đã lưu lên máy chủ')}
   }catch(e){console.error(e);fbTrangThai('Chưa lưu được: '+fbLoi(e),1)}}
-function fbTrangThai(t,loi){const el=document.getElementById('fbSt');if(el){el.textContent=t;el.classList.toggle('loi',!!loi)}}
+function fbTrangThai(...a){return hooks.goi('fbTrangThai',this,a)}
+hooks.ham('fbTrangThai',function(t,loi){const el=document.getElementById('fbSt');if(el){el.textContent=t;el.classList.toggle('loi',!!loi)}});
 
 /* ---------- học sinh ---------- */
-async function fbHsBoot(){const me=CLOUD.me,tk=me.tk,db=FB.db;
+export function fbHsBoot(...a){return hooks.goi('fbHsBoot',this,a)}
+hooks.ham('fbHsBoot',function(...a){return hooks.goi('fbHsBoot',this,a)});
+hooks.ham('fbHsBoot',async function(){const me=CLOUD.me,tk=me.tk,db=FB.db;
   const [h,o]=await Promise.all([db.doc('hs/'+tk).get(),db.doc('org/main').get()]);
   const org=o.exists?fbJ(o.data().j)||{}:{},lop=(org.gd||{})[tk]||'',L=(org.lop||[]).find(l=>l.id===lop),khoi=(L&&L.khoi)||me.khoi||1;
   if(!L)throw{code:'chua-lop'};
@@ -123,12 +134,13 @@ async function fbHsBoot(){const me=CLOUD.me,tk=me.tk,db=FB.db;
   fbSub.push(fbNghe(db.doc('hsgv/'+tk),d=>{const g=d.exists?fbJ(d.data().j)||{}:{};GV_F.forEach(k=>{if(g[k]!==undefined)S.st[tk][k]=g[k]});fbVe()},e=>{}));
   fbSub.push(fbNghe(db.doc('org/main'),d=>{const og=d.exists?fbJ(d.data().j)||{}:{};S.open=Object.assign({},(og.mo||{})[lop]||{});const L2=(og.lop||[]).find(l=>l.id===lop);S.st[tk].active=!!((L2&&L2.tj&&L2.tj.on)||(og.nl||{})[tk]);fbVe()},e=>{}));
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
-}
-let fbVeHen=null;function fbVe(){clearTimeout(fbVeHen);fbVeHen=setTimeout(()=>{try{const g=scr;if(g&&(g.k==='game'||g.k==='mini'||g.k==='xg')&&!g.end)return;render()}catch(e){}},120)}
+});
+let fbVeHen=null;export function fbVe(){clearTimeout(fbVeHen);fbVeHen=setTimeout(()=>{try{const g=scr;if(g&&(g.k==='game'||g.k==='mini'||g.k==='xg')&&!g.end)return;render()}catch(e){}},120)}
 
 /* ---------- giáo viên / quản lý / phụ huynh ---------- */
 const fbDaNghe=new Set();
-async function fbGvBoot(){const me=CLOUD.me,db=FB.db;document.body.classList.add('cloud');
+function fbGvBoot(...a){return hooks.goi('fbGvBoot',this,a)}
+hooks.ham('fbGvBoot',async function(){const me=CLOUD.me,db=FB.db;document.body.classList.add('cloud');
   window.dayNow=fbNgay;
   S={day:fbNgay(),events:[],st:{},cbi:{},asg:[],asgSeed:2,mk2:1,org:null};STUDENTS.length=0;
   role=window.TRANG||(me.role==='ph'?'ph':'gv');gvMe=me.gvId||me.tk;gvLop=null;scr={k:'home'};
@@ -143,14 +155,14 @@ async function fbGvBoot(){const me=CLOUD.me,db=FB.db;document.body.classList.add
   const theoLop={};const gop=()=>{const A=[];Object.values(theoLop).forEach(L=>L.forEach(a=>A.push(a)));S.asg=A;fbVe()};
   lops.forEach(l=>{const q=l===null?db.collection('asg'):fbAsgLop(db,l);
     fbSub.push(fbNghe(q,s=>{const A=[];s.docs.forEach(d=>{const j=d.data().j;if(me.role!=='ph')fbLast['asg/'+d.id]=j;const a=fbJ(j);if(a)A.push(a)});theoLop[l===null?'*':l]=A;gop()},e=>console.error('asg',l,e)))});
-}
+});
 /* danh sách em được xem: quản lý = tất cả; giáo viên = lớp được phân công; phụ huynh = con */
 function fbDanhSach(){const o=S.org,me=CLOUD.me;if(!o)return;
   const ds=(o.hs||[]).filter(([tk])=>me.role==='ql'||(me.role==='ph'?(me.con||[]).includes(tk):(o.lop||[]).some(l=>l.id===(o.gd||{})[tk]&&(l.gv||[]).includes(me.gvId||me.tk))));
   STUDENTS.length=0;ds.forEach(r=>{STUDENTS.push(r);if(!S.st[r[0]])S.st[r[0]]=newStudent(r[1],r[2]);fbNgheHS(r[0])});
   if(me.role==='ph'&&!ds.some(r=>r[0]===sid)&&ds[0])sid=ds[0][0];}
 /* P-20: cô/QL/PH đọc xu từ ví vi/{tk} (hs.j không còn coins); fbVi[tk] = null khi em chưa có ví */
-const fbVi={},fbHsDa={};
+export const fbVi={},fbHsDa={};
 function fbViAp(tk){const v=fbVi[tk],st=S.st[tk];if(v&&st){st.coins=Math.max(0,Math.round(+v.coins||0));if(typeof XU_THUONG!=='undefined')st.items=Object.keys(v.items||{}).filter(n=>XU_THUONG.includes(n))}}
 function fbNgheHS(tk){if(fbDaNghe.has(tk))return;fbDaNghe.add(tk);const db=FB.db;
   fbSub.push(fbNghe(db.doc('vi/'+tk),d=>{fbVi[tk]=d.exists?d.data():null;fbViAp(tk);fbVe()},e=>{}));
@@ -174,7 +186,7 @@ async function fbQLTaoHS(e){e.preventDefault();const o=S.org,n=document.getEleme
     (o.hs=o.hs||[]).push([tk,n,l?l.khoi:0]);if(l)o.gd[tk]=lid;(o.nk=o.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Tạo tài khoản ${n} (${tk})`+(l?` · lớp ${lid}`:' · chưa xếp lớp')});
     fbMKNho(tk,pw);S.st[tk]=st;fbDanhSach();save();await fbDayNgay();render();toast(`Đã tạo tài khoản ${tk}. Mật khẩu tạm trên phiếu in (In phiếu).`)}catch(err){toast(fbLoi(err))}}
 /* mật khẩu khi tạo tài khoản: ô để trống hoặc còn mặc định cũ → ngẫu nhiên; QL gõ thì phải đủ mạnh (fbMKLoi) */
-const fbMKTao=v=>{v=String(v||'').trim();return(!v||/^jenny\d{3}$/.test(v))?fbMKGoiY():v};/* 'jenny' + 3 số = mặc định cũ → coi như trống */
+export const fbMKTao=v=>{v=String(v||'').trim();return(!v||/^jenny\d{3}$/.test(v))?fbMKGoiY():v};/* 'jenny' + 3 số = mặc định cũ → coi như trống */
 async function fbQLTaoGV(e){e.preventDefault();const o=S.org,n=document.getElementById('ngTen').value.trim(),tk=(document.getElementById('ngTk').value||'').trim().toLowerCase(),pw=fbMKTao(document.getElementById('ngPw').value);
   if(n.length<3){toast('Nhập tên giáo viên');return}if(!fbTkOk(tk)){toast('Tên đăng nhập 3–24 kí tự: chữ thường không dấu, số, dấu chấm');return}if(fbMKLoi(pw,pw)){toast(fbMKLoi(pw,pw));return}
   if((o.gv||[]).some(g=>g.id===tk)){toast('Đã có giáo viên này');return}toast('Đang tạo tài khoản…');
@@ -210,28 +222,28 @@ async function fbDatLaiMKLop(lid){const o=S.org,l=(o.lop||[]).find(x=>x.id===lid
   const xong=[],loi=[];for(let i=0;i<ids.length;i++){const tk=ids[i];toast(`Đang đặt lại ${i+1}/${ids.length}: ${tk}…`);try{await fbDatLaiMKLoi(tk,fbMKGoiY());xong.push(tk)}catch(e){console.error(tk,e);loi.push(tk)}}
   save();render();toast(`Đã đặt lại ${xong.length} em`+(loi.length?`, lỗi ${loi.length}: ${loi.join(', ')}`:''));
   if(xong.length&&typeof window.qlInPhieu==='function')setTimeout(()=>{try{qlInPhieu(xong,'hs')}catch(e){}},300)}
-function fbTaiKhoanBox(){const o=S.org;if(!o||!o.cloud)return'';const lopTen=tk=>{const l=(o.lop||[]).find(x=>x.id===(o.gd||{})[tk]);return l?'Lớp '+l.ten:'chưa xếp lớp'};
+export function fbTaiKhoanBox(){const o=S.org;if(!o||!o.cloud)return'';const lopTen=tk=>{const l=(o.lop||[]).find(x=>x.id===(o.gd||{})[tk]);return l?'Lớp '+l.ten:'chưa xếp lớp'};
   const R=[...(o.gv||[]).map(g=>({ten:g.ten,vai:(g.tk||g.id)===CLOUD.me.tk&&CLOUD.me.role==='ql'?'Quản lý · Giáo viên':'Giáo viên',tk:g.tk||g.id,them:(o.lop||[]).filter(l=>(l.gv||[]).includes(g.id)).map(l=>l.ten).join(', ')||'chưa có lớp'})),
     ...(o.hs||[]).map(([tk,ten])=>({ten,vai:'Học sinh',tk,them:lopTen(tk)})),
     ...Object.entries(o.ph||{}).map(([con,tk])=>{const h=(o.hs||[]).find(x=>x[0]===con);return{ten:'Phụ huynh '+(h?h[1]:con),vai:'Phụ huynh',tk,them:'con: '+(h?h[1]:con)}})];
   return`<section class="card"><h2>Tài khoản</h2><p class="muted" style="margin:4px 0 0">Tên đăng nhập của mọi người. Ai quên mật khẩu thì bấm "Đặt lại mật khẩu": người đó nhận mật khẩu tạm và phải tự đổi khi đăng nhập. Dữ liệu học không mất.</p>
    ${fbMKPhien.length?`<div class="task" style="margin-top:10px;border-left:4px solid var(--leaf)"><b>Mật khẩu tạm trong phiên này</b> <span class="muted">(mất khi đăng xuất; học sinh/phụ huynh in phiếu)</span><div>${fbMKPhien.slice(0,30).map(x=>`${esc(x.tk)} / <code>${esc(x.pw)}</code>`).join(' · ')}</div></div>`:''}
    <div class="tablewrap"><table><tr><th>Họ tên</th><th>Vai trò</th><th>Tên đăng nhập</th><th>Lớp / con</th><th></th></tr>${R.map(r=>`<tr><td><b>${esc(r.ten)}</b></td><td>${r.vai}</td><td><code>${esc(r.tk)}</code></td><td>${esc(r.them)}</td><td>${r.tk===CLOUD.me.tk?'<span class="muted">dùng "Đổi mật khẩu"</span>':`<button class="btn sm" onclick="fbDatLaiMK('${esc(r.tk)}')">Đặt lại mật khẩu</button>`}</td></tr>`).join('')}</table></div></section>`}
-{const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);try{if(role==='ql'&&CLOUD&&S.org&&S.org.cloud){
+{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){let r=_p.apply(this,arguments);try{if(role==='ql'&&CLOUD&&S.org&&S.org.cloud){
   /* P-05: trang một lớp → nút đặt lại mật khẩu cả lớp (75 chèn nút In phiếu vào cùng chỗ) */
   if(typeof qlTrang!=='undefined'&&qlTrang==='lopct')r=r.replace(/(<span class="pill">Khối \d+ · \d+ em<\/span><\/div>)/,`$1<div class="qlin"><button type="button" class="btn" onclick="fbDatLaiMKLop('${esc(qlLopId)}')">🔑 Đặt lại mật khẩu cả lớp</button></div>`);
-  const m='<p class="muted" style="margin:0">Sắp có:';const i=r.lastIndexOf(m);const box=fbTaiKhoanBox();return i<0?r.replace(/<\/div>\s*$/,box+'</div>'):r.slice(0,i)+box+r.slice(i)}}catch(e){console.error(e)}return r}}
+  const m='<p class="muted" style="margin:0">Sắp có:';const i=r.lastIndexOf(m);const box=fbTaiKhoanBox();return i<0?r.replace(/<\/div>\s*$/,box+'</div>'):r.slice(0,i)+box+r.slice(i)}}catch(e){console.error(e)}return r})}
 
 /* ---------- giao diện khi dùng máy chủ ---------- */
-{const _h=header;header=function(){try{if(CLOUD&&S&&S.st&&!S.st[sid]){const f=STUDENTS.find(r=>S.st[r[0]]);if(f)sid=f[0];else S.st[sid]=newStudent('Chưa có học sinh',1)}}catch(e){}_h();try{if(!CLOUD||CLOUD.me.role==='hs')return;const me=CLOUD.me,t=document.getElementById('tabs');
+{const _h=hooks.cu('header');hooks.de('header',function(){try{if(CLOUD&&S&&S.st&&!S.st[sid]){const f=STUDENTS.find(r=>S.st[r[0]]);if(f)sid=f[0];else S.st[sid]=newStudent('Chưa có học sinh',1)}}catch(e){}_h();try{if(!CLOUD||CLOUD.me.role==='hs')return;const me=CLOUD.me,t=document.getElementById('tabs');
   t.querySelectorAll('button').forEach(b=>{const r=b.dataset.ql!==undefined?'ql':(b.getAttribute('onclick')||'').match(/setRole\('(\w+)'\)/);const k=r==='ql'?'ql':r&&r[1];
     const cho=me.role==='ql'?['gv','ql','ph']:me.role==='gv'?['gv']:['ph'];b.hidden=!cho.includes(k)||cho.length<2});
   const wb=document.getElementById('whoBox');wb.style.display=(role==='ph'&&STUDENTS.length>1)?'':'none';
   t.style.display=window.TRANG||![...t.querySelectorAll('button')].some(b=>!b.hidden)?'none':'';
-  if(!document.getElementById('fbMe'))t.insertAdjacentHTML('afterend',`<div id="fbMe" class="fbme"><span class="pill">${esc(me.ten||me.tk)} · ${({ql:'Quản lý',gv:'Giáo viên',ph:'Phụ huynh'})[me.role]||''}</span><span id="fbSt" class="muted fbst"></span><button class="btn sm" onclick="fbDoiMK()">Đổi mật khẩu</button><button class="btn sm" onclick="fbDangXuat()">Đăng xuất</button></div>`)}catch(e){}}}
-{const _g=gvMau;gvMau=function(){if(S&&S.org&&S.org.cloud)return;return _g.apply(this,arguments)}}
-{const _a=asgSeed;asgSeed=function(){if(CLOUD){S.asgSeed=2;return}return _a.apply(this,arguments)}}
-{const _n=gvNow;gvNow=function(){return CLOUD?Date.now():_n()}}
+  if(!document.getElementById('fbMe'))t.insertAdjacentHTML('afterend',`<div id="fbMe" class="fbme"><span class="pill">${esc(me.ten||me.tk)} · ${({ql:'Quản lý',gv:'Giáo viên',ph:'Phụ huynh'})[me.role]||''}</span><span id="fbSt" class="muted fbst"></span><button class="btn sm" onclick="fbDoiMK()">Đổi mật khẩu</button><button class="btn sm" onclick="fbDangXuat()">Đăng xuất</button></div>`)}catch(e){}})}
+{const _g=hooks.cu('gvMau');hooks.de('gvMau',function(){if(S&&S.org&&S.org.cloud)return;return _g.apply(this,arguments)})}
+{const _a=hooks.cu('asgSeed');hooks.de('asgSeed',function(){if(CLOUD){S.asgSeed=2;return}return _a.apply(this,arguments)})}
+{const _n=hooks.cu('gvNow');hooks.de('gvNow',function(){return CLOUD?Date.now():_n()})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 body.cloud .demo{display:none!important}
 body[class*="trang-"] #tabs{display:none!important}body.trang-gv #whoBox,body.trang-ql #whoBox{display:none!important}
@@ -329,7 +341,7 @@ function fbDayV3(me,db,ghi){const o=fbOrgSach(),D=orgV3Tach(o),gv=me.role==='gv'
     if(ghi.length){fbBan++;try{await Promise.all(ghi)}finally{fbBan--}fbTrangThai('Đã lưu lên máy chủ')}
   }catch(e){console.error(e);fbTrangThai('Chưa lưu được: '+fbLoi(e),1)}}}
 /* fbGvBoot: v3 nghe collection; v2 như cũ. Chế độ quyết định bởi org/main.v */
-{const _b=fbGvBoot;fbGvBoot=async function(){const me=CLOUD.me,db=FB.db;const m=await db.doc('org/main').get();
+{const _b=hooks.cu('fbGvBoot');hooks.de('fbGvBoot',async function(){const me=CLOUD.me,db=FB.db;const m=await db.doc('org/main').get();
   if(!m.exists||m.data().v!==3)return _b.apply(this,arguments);
   V3.on=true;document.body.classList.add('cloud');window.dayNow=fbNgay;
   S={day:fbNgay(),events:[],st:{},cbi:{},asg:[],asgSeed:2,mk2:1,org:null};STUDENTS.length=0;
@@ -342,13 +354,13 @@ function fbDayV3(me,db,ghi){const o=fbOrgSach(),D=orgV3Tach(o),gv=me.role==='gv'
   const lops=me.role==='ql'?[null]:me.role==='ph'?[...new Set((me.con||[]).map(c=>(o.gd||{})[c]).filter(Boolean))]:fbLopCua(V3.main,gvId);
   const theoLop={};const gop=()=>{const A=[];Object.values(theoLop).forEach(L=>L.forEach(a=>A.push(a)));S.asg=A;fbVe()};
   lops.forEach(l=>{const q=l===null?db.collection('asg'):fbAsgLop(db,l);
-    fbSub.push(fbNghe(q,s=>{const A=[];s.docs.forEach(d=>{const j=d.data().j;if(me.role!=='ph')fbLast['asg/'+d.id]=j;const a=fbJ(j);if(a)A.push(a)});theoLop[l===null?'*':l]=A;gop()},e=>console.error('asg',l,e)))});}}
+    fbSub.push(fbNghe(q,s=>{const A=[];s.docs.forEach(d=>{const j=d.data().j;if(me.role!=='ph')fbLast['asg/'+d.id]=j;const a=fbJ(j);if(a)A.push(a)});theoLop[l===null?'*':l]=A;gop()},e=>console.error('asg',l,e)))});})}
 /* học sinh: dữ liệu trung tâm cần cho em (lop của em, gd, nl, nghi, namCu) — v3 đọc org/main + lop/{lop}; v2 đọc j */
-async function fbOrgHS(tk){const db=FB.db,o=await db.doc('org/main').get();if(!o.exists)return{};const m=o.data();
+export async function fbOrgHS(tk){const db=FB.db,o=await db.doc('org/main').get();if(!o.exists)return{};const m=o.data();
   if(m.v!==3)return fbJ(m.j)||{};V3.on=true;
   const lop=(m.gd||{})[tk]||'',L=lop?await db.doc('lop/'+lop).get():null,l=L&&L.exists?L.data():null;
   return{v3:1,ten:m.ten,nam:m.nam,gd:m.gd||{},nl:m.nl||{},nghi:m.nghi||{},namCu:m.namCu||[],lop:l?[Object.assign({id:lop},l)]:[],mo:l?{[lop]:l.mo||{}}:{}}}
-{const _b=fbHsBoot;fbHsBoot=async function(){const me=CLOUD.me,tk=me.tk,db=FB.db;const o0=await db.doc('org/main').get();
+{const _b=hooks.cu('fbHsBoot');hooks.de('fbHsBoot',async function(){const me=CLOUD.me,tk=me.tk,db=FB.db;const o0=await db.doc('org/main').get();
   if(!o0.exists||o0.data().v!==3)return _b.apply(this,arguments);
   const [h,org]=await Promise.all([db.doc('hs/'+tk).get(),fbOrgHS(tk)]);
   const lop=(org.gd||{})[tk]||'',L=(org.lop||[]).find(l=>l.id===lop),khoi=(L&&L.khoi)||me.khoi||1;
@@ -367,7 +379,7 @@ async function fbOrgHS(tk){const db=FB.db,o=await db.doc('org/main').get();if(!o
   let nlOn=!!(org.nl||{})[tk],tjOn=!!(L.tj&&L.tj.on);const capActive=()=>{S.st[tk].active=nlOn||tjOn;fbVe()};
   fbSub.push(fbNghe(db.doc('lop/'+lop),d=>{if(!d.exists)return;const l=d.data();S.open=Object.assign({},l.mo||{});tjOn=!!(l.tj&&l.tj.on);capActive()},e=>{}));
   fbSub.push(fbNghe(db.doc('org/main'),d=>{if(!d.exists)return;const m=d.data();if(m.v!==3){fbTaiLai();return}nlOn=!!((m.nl||{})[tk]);if(((m.gd||{})[tk]||'')!==lop){fbTaiLai();return}capActive()},e=>{}));
-  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}}
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}})}
 /* QL chuyển lớp cho em: giao dịch org/main.gd + hsdm/{tk} (v3) để hai nơi luôn khớp */
 if(typeof window.qlChuyen==='function'){const _c=window.qlChuyen;window.qlChuyen=function(tk,lid){const r=_c.apply(this,arguments);
   try{if(fbV3()&&CLOUD&&CLOUD.me.role==='ql'){const db=FB.db,L=(S.org.lop||[]).find(x=>x.id===lid),khoi=L?+L.khoi:((S.org.hs||[]).find(x=>x[0]===tk)||[])[2]||0;
@@ -375,7 +387,8 @@ if(typeof window.qlChuyen==='function'){const _c=window.qlChuyen;window.qlChuyen
       const h=await tx.get(db.doc('hsdm/'+tk));tx.update(db.doc('org/main'),{gd,t:fbTS()});if(h.exists)tx.update(db.doc('hsdm/'+tk),{lop:lid||'',khoi:khoi||h.data().khoi||0,t:fbTS()})})
     .catch(e=>{console.error(e);fbTrangThai('Chưa lưu được: '+fbLoi(e),1)})}}catch(e){console.error(e)}return r}}
 /* Nâng cấp dữ liệu v3 (QL bấm một lần; chạy lại không trùng): chiếu S.org ra các doc, ghi theo lô, đặt org/main.v = 3, giữ j */
-async function fbNangCapV3(){if(!CLOUD||CLOUD.me.role!=='ql'||!S.org){toast('Chỉ quản lý mới nâng cấp được');return}
+function fbNangCapV3(...a){return hooks.goi('fbNangCapV3',this,a)}
+hooks.ham('fbNangCapV3',async function(){if(!CLOUD||CLOUD.me.role!=='ql'||!S.org){toast('Chỉ quản lý mới nâng cấp được');return}
   const o=fbOrgSach(),D=orgV3Tach(o),n=c=>Object.keys(D[c]).length,nk=(o.nk||[]).filter(e=>e&&!e.id);
   if(!await fbXacNhan('Nâng cấp dữ liệu v3',`Tách dữ liệu trung tâm thành ${n('lop')} lớp, ${n('hsdm')} học sinh, ${n('hoso')} hồ sơ, ${n('gv')} giáo viên, ${n('ph')} phụ huynh, ${nk.length} dòng nhật ký. Bản cũ (j) vẫn giữ 30 ngày. Sau khi xong, mọi người tải lại trang.`,'Nâng cấp'))return;
   const db=FB.db;toast('Đang nâng cấp…');
@@ -384,7 +397,7 @@ async function fbNangCapV3(){if(!CLOUD||CLOUD.me.role!=='ql'||!S.org){toast('Ch�
     nk.forEach(e=>{e.id=db.collection('nk').doc().id;them(db.doc('nk/'+e.id),{d:+e.d||0,ai:String(e.ai||''),t:String(e.t||''),luc:fbTS()})});
     b.update(db.doc('org/main'),Object.assign({},D.main,{jCu:fbTS(),t:fbTS()}));ghi.push(b.commit());await Promise.all(ghi);
     await fbTaoVi(true);/* P-20: ví xu từng em + bảng giá cfg/shop */
-    toast('Đã nâng cấp dữ liệu v3. Đang tải lại…');setTimeout(()=>fbTaiLai(),1200)}catch(e){console.error(e);toast('Chưa nâng cấp được: '+fbLoi(e))}}
+    toast('Đã nâng cấp dữ liệu v3. Đang tải lại…');setTimeout(()=>fbTaiLai(),1200)}catch(e){console.error(e);toast('Chưa nâng cấp được: '+fbLoi(e))}});
 {const _t=fbTaiKhoanBox;fbTaiKhoanBox=function(){const r=_t.apply(this,arguments);if(!r||fbV3()||!CLOUD||CLOUD.me.role!=='ql')return r;
   return r.replace('</section>',`<div class="task" style="margin-top:10px;border-left:4px solid var(--coral)"><b>Dữ liệu còn ở dạng cũ (một khối JSON)</b><div class="muted" style="margin:4px 0 8px">Nâng cấp lên v3 để tách lớp, học sinh, hồ sơ, nhật ký thành từng bản ghi riêng (bảo mật theo từng trường, cô không ghi đè được dữ liệu trung tâm). Làm một lần, sau đó dán quy tắc Firestore mới.</div><button type="button" class="btn pri" onclick="fbNangCapV3()">⬆ Nâng cấp dữ liệu v3</button></div></section>`)}}
 /* thiết lập lần đầu tạo thẳng v3 */
@@ -402,8 +415,8 @@ async function fbTaoVi(im){if(!CLOUD||CLOUD.me.role!=='ql'||!FB){if(!im)toast('C
 {const _t=fbTaiKhoanBox;fbTaiKhoanBox=function(){const r=_t.apply(this,arguments);if(!r||!fbV3()||!CLOUD||CLOUD.me.role!=='ql')return r;
   const thieu=((S.org&&S.org.hs)||[]).filter(([tk])=>fbVi[tk]===null).length;
   return r.replace('</section>',`<div class="task" style="margin-top:10px;border-left:4px solid ${thieu?'var(--coral)':'var(--leaf)'}"><b>Ví xu (P-20)</b> <span class="muted">${thieu?`${thieu} em chưa có ví vi/{tk} — em đó vẫn giữ xu trong hs.j kiểu cũ.`:'Mọi em đã có ví; xu, đồ mua ghi theo luật máy chủ.'} Nút này cũng ghi lại bảng giá cfg/shop từ danh mục trong app.</span> <button type="button" class="btn sm" onclick="fbTaoVi()">Tạo ví + bảng giá</button></div></section>`)}}
-const fbXuCache={t:0,d:{},dang:false};
-async function fbXuNgay(tks){if(!FB||!FB.db||fbXuCache.dang||!window.firebase||!firebase.firestore.Timestamp)return;fbXuCache.dang=true;const db=FB.db,dau=new Date();dau.setHours(0,0,0,0);const T0=firebase.firestore.Timestamp.fromDate(dau);
+export const fbXuCache={t:0,d:{},dang:false};
+export async function fbXuNgay(tks){if(!FB||!FB.db||fbXuCache.dang||!window.firebase||!firebase.firestore.Timestamp)return;fbXuCache.dang=true;const db=FB.db,dau=new Date();dau.setHours(0,0,0,0);const T0=firebase.firestore.Timestamp.fromDate(dau);
   try{await Promise.all(tks.map(async tk=>{const c=db.collection('ev/'+tk+'/d');if(!c.where)return;try{const q=await c.where('t','>=',T0).get();let xu=0,n=0;const gio={};
     q.forEach(d=>{const x=d.data()||{};n++;if(x.d>0)xu+=x.d;if(x.k==='man'){const h=x.t&&x.t.toDate?x.t.toDate().getHours():0;gio[h]=(gio[h]||0)+1}});
     const man1h=Math.max(0,...Object.values(gio));fbXuCache.d[tk]={xu,n,man1h,la:xu>300||man1h>15}}catch(e){console.warn('ev',tk,e&&e.code)}}));fbXuCache.t=Date.now()}

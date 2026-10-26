@@ -1,12 +1,43 @@
 # Kiến trúc
 
-Ứng dụng là **một file HTML duy nhất** (không cần máy chủ), ghép từ nhiều file nguồn bằng `tools/build.py`.
-Mọi file JS chạy chung một phạm vi toàn cục, theo đúng thứ tự trong `app.template.html`, nên file sau dùng được hàm/hằng của file trước.
-Lưu ý: khai báo `function` trùng tên thì bản viết sau thắng (một số màn hình đã được viết lại theo cách này).
+Ứng dụng ghép từ nhiều file nguồn bằng **Vite** (`npm run build:lop-hoc-ao`, từ P-14a; `python3 tools/build.py` vẫn chạy được và gọi lệnh này; `npm run build` ở gốc kho = `tools/build_all.py` dựng cả kho).
+Từ P-14b (26/10/2026) **mỗi file JS là một ES module**: đầu file `import { … }` đúng những tên nó dùng, khai báo được file khác dùng có `export`
+(dòng import do `tools/vite/tim-import.mjs` sinh, không viết tay). Khi dựng, plugin bỏ import/export rồi nối thành **một** `<script>` thường theo đúng thứ tự
+trong `app.template.html` (một phạm vi chung, hoisting như cũ) — xem mục "Module và hooks". Không còn `function` trùng tên hay gán lại hàm của file khác: đè bằng `hooks.de`.
+
+## Dựng bản (Vite, P-14a — 25/10/2026)
+
+| Lệnh | Làm gì |
+|---|---|
+| `npm run build` (= `vite build src/lop-hoc-ao`; `python3 tools/build.py` gọi lệnh này, tự `npm ci` nếu chưa có `node_modules`) | Ra `dist/` rồi chép 4 trang + `assets/` sang `games/lop-hoc-ao/` |
+| `npm run dev` (= `vite src/lop-hoc-ao`) | http://localhost:5173/JennyMathClubGame/games/lop-hoc-ao/ — dựng lại mỗi lần tải trang (một file, không hash); `/JennyMathClubGame/…` phục vụ file tĩnh của kho (chữ tự host…). Sửa file rồi tải lại trang |
+| `node tools/vite/tim-import.mjs` (`--xem`: chỉ báo) | Sinh lại dòng import/export mọi file JS + `toan-cuc-sinh.json`; lỗi khi còn tên chưa khai báo / gán chéo |
+| `node tools/vite/chuyen-hooks.mjs` (`--xem`) | Đổi chỗ còn kiểu đè cũ (`X=function`, `function` trùng tên) sang hooks; chạy rồi mới `tim-import` |
+| `npm run lint` (gốc kho) | ESLint `no-undef` + `no-import-assign` trên `src/lop-hoc-ao/js/**` (`eslint.config.mjs`) |
+| `node tools/vite/so-anh.mjs <ra>` · `so-anh.mjs <A> <B>` | Chụp 44 ảnh (7 trang × 4 khổ, bản đầy đủ thêm 4 màn) rồi so hai thư mục, ngưỡng 0,1 % |
+
+- `vite.config.js`: 9 entry (`hoc-sinh` → `index.html`, `giao-vien/`, `phu-huynh/`, `quan-ly/`; bản thử `thu-*` → `demo/…` (P-07, không vào git); `day-du` → `day-du.html` bản đầy đủ chỉ ở `dist/`), `base: '/JennyMathClubGame/games/lop-hoc-ao/'`. Trang là ảo: không có file `.html` trên đĩa.
+- `tools/vite/noi-file.js` (plugin): đọc `app.template.html`, nối `/*@include …*/` theo đúng thứ tự (khối `<style>` và khối `<script>` chỉ gồm dòng include, mỗi loại đúng 1 khối — sai thì build dừng), file `.js` bỏ import/export (`tools/vite/module.js`), kiểm tra import khớp export, thay `__APP_VER__` (ngày commit · sha). Từ bản đầy đủ, `vai.js` dựng từng trang; plugin tách khối CSS → `assets/lop-hoc-ao-[hash].css` (chung 5 trang) và khối JS → `assets/<trang>-[hash].js`. Mã JS là asset: Rollup không đọc, không đổi tên, không minify.
+- Giữ y bản cũ: script nhỏ trong `<head>` (`data-theme=light`, chữ tự host P-08, CSP, referrer) vẫn inline, chạy **trước** CSS; `<link>` CSS và `<script src>` đứng đúng chỗ khối cũ (thứ tự CSS, giờ chạy JS không đổi). Mỗi trang JS vẫn là **một** script (tách đôi sẽ đổi hoisting của hàm trùng tên). Khoá `localStorage` không đổi (mã giống từng byte).
+- Đường dẫn asset ghi **tương đối** (`assets/…`, `../assets/…`): cùng một bản chạy trên Pages (dưới `base`), ở máy chủ thử phục vụ gốc kho tại `/` (`npm test`) và trong `dist/`.
+- `dist/lop-hoc-ao-jenny.html`: bản đầy đủ **một file** (CSS/JS inline, không doctype) — y build cũ; bộ kiểm tra §7 và Artifact dùng file này. `dist/day-du.html` = cùng nội dung nhưng CSS/JS ra file có hash.
+- `games/lop-hoc-ao/assets/` sinh ra mỗi lần build (xoá cũ trước), có `.gitignore` tự sinh (`*`) nên không vào git.
+- So với build Python (25/10/2026, tip 78be60f): 4 trang dạng một file giống từng byte; ảnh 4 trang × 4 khổ (320/375/414/900) giống từng byte; `demo.html` ≤ 0,001 %.
+
+## Module và hooks (P-14b — 26/10/2026)
+
+- **Import/export**: mỗi file khai báo ở phạm vi module; tên dùng mà không khai báo phải import từ đúng file khai báo nó. `tools/vite/tim-import.mjs` tính bằng acorn + eslint-scope rồi ghi lại đầu file (bỏ import/export cũ, sinh mới; mã còn lại giữ từng byte) — **sau mỗi lần rebase chạy lại lệnh này, không giải xung đột tay ở dòng import**. Import "ngược" (file trước dùng hàm của file sau) được phép vì chỉ gọi trong thân hàm; không file nào dùng giá trị của file sau ngay lúc nạp (tim-import kiểm).
+- **Khi chạy**: vẫn một script thường (plugin bỏ import/export rồi nối) → hoisting, `onclick="…"`, mã `vai.js` chèn, `page.evaluate` của bộ kiểm tra như cũ. Bước 14c (chưa làm): cho Rollup gộp thật — cần hết `onclick` inline (xem CSP) và lớp phơi tên ra `window`.
+- **Hooks** (`js/core/00-hooks.js`, nạp trước `01`): thay kiểu đè bằng gán lại / `function` trùng tên.
+  - File định nghĩa: `function render(...a){return hooks.goi('render',this,a)}` rồi `hooks.ham('render',function(){…})` (vẫn là khai báo `function` → hoisting, `window.render`, `onclick` như cũ; hàm dạng biến: `const X=hooks.ham('X',…)`).
+  - File sau đè: `hooks.de('render',function(){…})`; lấy bản ngay trước: `const cu=hooks.cu('render')` rồi `cu.apply(this,arguments)`. Đè tạm: `hooks.de` … `hooks.bo`. Mã `vai.js` chèn cuối trang thay **bản gốc**: `hooks.goc('header',…)` (đúng như khai báo `function` trùng tên thắng từ đầu nhờ hoisting). Thứ tự đè = thứ tự file. Mã mới nên dùng `hooks.on('render:sau',fn)`/`hooks.run`.
+  - Xem mọi chỗ đè: `grep -n "hooks.de('" js/**/*.js`. `tools/vite/chuyen-hooks.mjs` đổi tự động chỗ còn kiểu cũ (sau rebase).
+- **Trạng thái dùng chung** (biến được gán ở ≥ 2 file: `S`, `role`, `sid`, `scr`, `KEY`, `STUDENTS`, `CLOUD`, `LANG`, `UNL`, `gvGrade`… 23 tên): khai báo `globalThis.X=…` tại chỗ cũ (toàn cục tường minh, không import). Danh sách sinh ra: `tools/vite/toan-cuc-sinh.json`; tên do mã chèn/SDK đặt (`ACC`, `firebase`, `fbMKVua`): `tools/vite/toan-cuc.json` (viết tay, có lý do). ESLint đọc cả hai.
+- **ESLint** (`eslint.config.mjs` gốc kho, `npm run lint`): `no-undef`, `no-import-assign` → 0 lỗi trên 178 file.
 
 ## Thứ tự nạp (rút gọn)
 
-1. `core/01` tiện ích (`R`, `pick`, `shuf`, `range`, `esc`…), `content/hk1/02–08` dữ liệu lớp 6–9 và Toán Jenny lớp 6.
+1. `core/00` hooks; `core/01` tiện ích (`R`, `pick`, `shuf`, `range`, `esc`…), `content/hk1/02–08` dữ liệu lớp 6–9 và Toán Jenny lớp 6.
 2. `core/09–20` dữ liệu demo, lưu trữ, giao diện chung, học sinh / giáo viên / phụ huynh, chơi màn lớp 6.
 3. `core/23b` vùng biển: `BIOME` (màu nước, kiểu đảo, hiệu ứng), `BIOME_ORDER[lớp]`, `OCEAN[lớp]`, `biomeOf(lớp, chủ đề, tên)`, `biomeFx()`.
    `core/22–23` đồ hoạ pixel (`PXS`, `spr()`, `pixelize()`), biển động (`startSea()`).
@@ -51,7 +82,7 @@ Kích thước chữ phương án tự co cho vừa nút và đồng đều (`op
 
 ## Bản học sinh
 
-`tools/_student.py` lấy bản đầy đủ rồi: đổi khoá lưu theo tài khoản, thêm màn đăng nhập (mật khẩu băm SHA-256),
+`tools/vite/vai.js` (`hocSinh`; trước P-14a là `tools/_student.py`, đã xoá 26/10) lấy bản đầy đủ rồi: đổi khoá lưu theo tài khoản, thêm màn đăng nhập (mật khẩu băm SHA-256),
 ẩn vai trò giáo viên/phụ huynh và thanh demo, tính "ngày học" theo lịch (từ 05/09/2026).
 
 ## Chơi thêm (lớp 1–5)

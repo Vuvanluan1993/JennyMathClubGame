@@ -3,8 +3,12 @@
    - EN: dịch chữ giao diện (nút, thanh điều hướng, tiêu đề, thông báo) bằng bảng từ + mẫu câu.
      Đề bài, tên chủ đề, tên đảo, lời Jenny đọc vẫn tiếng Việt — giai đoạn 2 làm dần theo từng lớp.
    - Không dịch vùng nội dung bài: .g1bub .qtxt .g1pic .lslide .gdq .g1opts .xcq .tl b … (xem I18N_SKIP). */
-let LANG='vi';try{LANG=localStorage.getItem('jennyLang')==='en'?'en':'vi'}catch(e){}
-const I18N={
+import { hooks } from './00-hooks.js';
+import { render } from './13-giao-dien-chung.js';
+import { sfx } from './33b-am-thanh.js';
+import { enOn } from './48-dich-tieng-anh.js';
+globalThis.LANG='vi';try{LANG=localStorage.getItem('jennyLang')==='en'?'en':'vi'}catch(e){}
+export const I18N={
  'Bản đồ':'Map','Toán Jenny':'Jenny Math','Luyện lỗi':'Fix mistakes','Sưu tập':'Collection','Hồ sơ':'Profile','← Bản đồ':'← Map',
  'Học sinh':'Student','Giáo viên':'Teacher','Phụ huynh':'Parent','Quản lý':'Admin','Đăng xuất':'Log out','Nghe Jenny':'Listen to Jenny','Đang học':'You are here','Trùm':'Boss',
  'Tiếp tục':'Continue','Thử lại':'Try again','Chơi lại':'Play again','Về đảo':'Back to island','Kiểm tra':'Check','Nộp':'Submit','Đúng':'True','Sai':'False','Xếp lại':'Reset',
@@ -36,7 +40,7 @@ const I18N={
  'Em chơi thêm các đảo nhé! Khi đủ bài, Jenny sẽ vẽ Sức mạnh Toán cho em.':'Play more islands! When you have done enough, Jenny will draw your Math power chart.',
  'Tìm khung đúng số lượng':'Find the box with the right amount','Đếm số lượng':'Count how many','Điền số theo thứ tự':'Fill in numbers in order',
  'T2':'Mon','T3':'Tue','T4':'Wed','T5':'Thu','T6':'Fri','T7':'Sat','CN':'Sun'};
-const I18N_RE=[
+export const I18N_RE=[
  [/^(.+) · Toán (\d+) · Chủ đề (\d+)$/,'$1 · Maths $2 · Topic $3'],[/^Khoảng (\d+) đòn · (\d+) tim · rương$/,'About $1 hits · $2 hearts · chest'],[/^Trùm đảo · (.+)$/,'Island boss · $1'],
  [/^Tuần (\d+) · (\d+)\/(\d+) sao$/,'Week $1 · $2/$3 stars'],[/^Tuần (\d+) · đang soạn$/,'Week $1 · coming soon'],[/^sai (\d+) lần$/,'missed $1×'],[/^Kỷ lục (\d+)$/,'Record $1'],
  [/^Buổi (\d+) · (.+)$/,(m,n,t)=>'Session '+n+' · '+({'Quy luật xếp hình':'Shape patterns','Đếm khéo, thứ tự':'Clever counting and order','Giống nhau, khác nhau':'Same and different','Cân thăng bằng':'Balance scales'}[t]||t)],
@@ -60,13 +64,15 @@ const I18N_PLACE={'Vịnh Tí Hon':'Tiny Bay','Biển Ngọc Bích':'Emerald Sea
  'Bạch tuộc khổng lồ':'Giant Octopus','Cá mập khổng lồ':'Giant Shark','Sứa khổng lồ':'Giant Jellyfish','Mực khổng lồ':'Giant Squid','Rắn biển khổng lồ':'Giant Sea Snake','Rồng biển':'Sea Dragon','Cua khổng lồ':'Giant Crab','Toán Jenny':'Jenny Math',
  'Thứ Hai':'Mon','Thứ Ba':'Tue','Thứ Tư':'Wed','Thứ Năm':'Thu','Thứ Sáu':'Fri','Thứ Bảy':'Sat','Chủ nhật':'Sun'};
 const I18N_PLACE_RE=new RegExp(Object.keys(I18N_PLACE).sort((a,b)=>b.length-a.length).join('|'),'g');
-function i18nText(t){const s=t.trim();if(!s)return null;if(I18N[s])return t.replace(s,I18N[s]);const p=s.replace(I18N_PLACE_RE,m=>I18N_PLACE[m]);for(const [re,to] of I18N_RE){if(re.test(p))return t.replace(s,p.replace(re,to))}return p!==s?t.replace(s,p):null}
+function i18nText(...a){return hooks.goi('i18nText',this,a)}
+hooks.ham('i18nText',function(t){const s=t.trim();if(!s)return null;if(I18N[s])return t.replace(s,I18N[s]);const p=s.replace(I18N_PLACE_RE,m=>I18N_PLACE[m]);for(const [re,to] of I18N_RE){if(re.test(p))return t.replace(s,p.replace(re,to))}return p!==s?t.replace(s,p):null});
 function i18nApply(root){if(LANG!=='en')return;root=root||document.body;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;const todo=[];while(n=w.nextNode()){const p=n.parentElement;if(!p||p.closest('script,style')||(!(typeof enOn==='function'&&enOn())&&p.closest(I18N_SKIP)))continue;const r=i18nText(n.nodeValue);if(r!=null)todo.push([n,r])}todo.forEach(([n,r])=>n.nodeValue=r)}
-function setLang(l){LANG=l==='en'?'en':'vi';try{localStorage.setItem('jennyLang',LANG)}catch(e){}document.documentElement.lang=LANG;render();langUI();try{sfx('tap')}catch(e){}}
+function setLang(...a){return hooks.goi('setLang',this,a)}
+hooks.ham('setLang',function(l){LANG=l==='en'?'en':'vi';try{localStorage.setItem('jennyLang',LANG)}catch(e){}document.documentElement.lang=LANG;render();langUI();try{sfx('tap')}catch(e){}});
 function langUI(){const bar=document.querySelector('.appbar .wrap');if(!bar)return;let b=document.getElementById('langSw');
  if(!b){b=document.createElement('div');b.id='langSw';b.className='nb-lang';b.setAttribute('role','group');b.setAttribute('aria-label','Ngôn ngữ / Language');b.innerHTML='<button type="button" data-l="vi">VI</button><button type="button" data-l="en">EN</button>';b.addEventListener('click',e=>{const l=e.target.closest('button');if(l)setLang(l.dataset.l)});bar.appendChild(b)}
  b.querySelectorAll('button').forEach(x=>{x.classList.toggle('on',x.dataset.l===LANG);x.setAttribute('aria-pressed',x.dataset.l===LANG)})}
-{const _r=render;render=function(){const a=_r.apply(this,arguments);try{langUI();i18nApply()}catch(e){}return a}}
+{const _r=hooks.cu('render');hooks.de('render',function(){const a=_r.apply(this,arguments);try{langUI();i18nApply()}catch(e){}return a})}
 /* hộp thoại tạo ngoài render (hướng dẫn, nhắc luyện lỗi, thông báo) */
 new MutationObserver(ms=>{if(LANG!=='en')return;for(const m of ms)m.addedNodes.forEach(x=>{if(x.nodeType===1)i18nApply(x);else if(x.nodeType===3&&x.parentElement&&!x.parentElement.closest('script,style')&&((typeof enOn==='function'&&enOn())||!x.parentElement.closest(I18N_SKIP))){const r=i18nText(x.nodeValue);if(r!=null)x.nodeValue=r}})}).observe(document.body,{childList:true,subtree:true});
 document.documentElement.lang=LANG;

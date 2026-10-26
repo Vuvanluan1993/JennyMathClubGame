@@ -1,3 +1,7 @@
+import { F } from '../hk1/26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { circSvg } from '../hk1/28-chu-de-3-lop-1-5.js';
+import { colPic, trapSvg, triSvg } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { LES, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 Object.assign(LES[5]=LES[5]||{},{
  1:[{t:'Các lớp của số',h:`${lsTab(['Lớp triệu','Lớp nghìn','Lớp đơn vị'],[['2','508','316']])}<p>Số <b>2 508 316</b> đọc là: hai triệu năm trăm linh tám nghìn ba trăm mười sáu.</p>`,say:'Chào các em! Số này có ba lớp: lớp triệu, lớp nghìn và lớp đơn vị. Đọc từng lớp từ trái sang: hai triệu, năm trăm linh tám nghìn, ba trăm mười sáu.'},
     {t:'Viết số thành tổng',h:`<p class="g1big" style="font-size:28px">2 508 316 =<br>2 000 000 + 500 000<br>+ 8 000 + 300 + 10 + 6</p><p>Hàng nào có chữ số 0 thì không cần viết vào tổng.</p>`,say:'Viết số thành tổng giá trị các hàng: hai triệu, cộng năm trăm nghìn, cộng tám nghìn, cộng ba trăm, cộng mười, cộng sáu.'},

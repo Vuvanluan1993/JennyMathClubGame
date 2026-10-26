@@ -2,11 +2,21 @@
 /* Mỗi lớp một cuốn hộ chiếu. Hạ trùm ở đảo cuối của một chủ đề → đóng dấu vùng biển của chủ đề đó.
    Mỗi vùng biển mới mở một trang phục Jenny (đổi màu áo, giày, nút). Đủ mọi vùng biển trong hộ chiếu → Trang phục Huyền thoại.
    Lưu: st.pass = {'lớp:chủ đề': {bk, d}}, st.outfit = mã trang phục ('' = áo gốc). */
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { save } from './09-du-lieu-demo.js';
+import { render, toast } from './13-giao-dien-chung.js';
+import { pixelize, PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { BIOME, OCEAN } from './23b-vung-bien.js';
+import { sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { mHz, noise, sfx, SFX, tone } from './33b-am-thanh.js';
+import { biomeOfTopic } from './33d-jenny-bieu-cam.js';
 Object.assign(PXS,{
  crownS:["y.y.y.y","yaywyay","yyyyyyy","araryra"],
  ancS:["..k..",".kyk.","..k..","kkkkk","..k..","k.k.k",".kkk."],
 });
-const OUTFIT={
+export const OUTFIT={
  trop:{n:'Áo Thủy thủ',m:{g:'b',G:'B',y:'w'}},
  snow:{n:'Áo len Băng',m:{g:'e',G:'E',y:'b',o:'B'}},
  volc:{n:'Áo Lửa',m:{g:'r',G:'R',y:'y',o:'R'}},
@@ -20,17 +30,18 @@ const OUTFIT={
  leg:{n:'Trang phục Huyền thoại',m:{g:'y',G:'a',y:'r',o:'a'},acc:'crownS'},
 };
 const OF_KEYS=['trop','snow','volc','dese','cand','crys','jung','autu','nigh','suns'];
-function ofVariant(name,of){const o=OUTFIT[of];if(!o||!PXS[name])return name;const key=`${name}__of_${of}`;if(!PXS[key])PXS[key]=PXS[name].map(r=>r.replace(/./g,ch=>o.m[ch]||ch));return key}
+export function ofVariant(name,of){const o=OUTFIT[of];if(!o||!PXS[name])return name;const key=`${name}__of_${of}`;if(!PXS[key])PXS[key]=PXS[name].map(r=>r.replace(/./g,ch=>o.m[ch]||ch));return key}
 ['jenny','jennyBlink','jennyHappy','jennySad','jennyCheer'].forEach(n=>Object.keys(OUTFIT).forEach(o=>ofVariant(n,o)));
 
 /* trang phục đang mặc (chỉ học sinh tiểu học) */
-function jOutfit(){try{if(role!=='hs')return null;const st=S.st[sid];if(!st||!st.outfit)return null;return ofOwn(st).has(st.outfit)?st.outfit:null}catch(e){return null}}
+export function jOutfit(){try{if(role!=='hs')return null;const st=S.st[sid];if(!st||!st.outfit)return null;return ofOwn(st).has(st.outfit)?st.outfit:null}catch(e){return null}}
 /* các vùng biển của một lớp (theo thứ tự chủ đề) */
 const passTopics=g=>(PRIM[g]&&PRIM[g].T||[]).map((t,ti)=>({ti,name:t[0],bk:biomeOfTopic(g,ti)}));
 const passGradeBiomes=g=>[...new Set(passTopics(g).map(t=>t.bk))];
 /* trang phục đã mở: vùng có dấu; Huyền thoại khi đủ mọi vùng của hộ chiếu (tối đa 10) */
-function ofOwn(st){const P=st.pass||{},got=new Set(Object.values(P).map(v=>v.bk)),own=new Set(got);
-  const g=st.grade<=5?st.grade:1,need=passGradeBiomes(g);if(got.size>=10||(need.length&&need.every(k=>got.has(k))))own.add('leg');return own}
+export function ofOwn(...a){return hooks.goi('ofOwn',this,a)}
+hooks.ham('ofOwn',function(st){const P=st.pass||{},got=new Set(Object.values(P).map(v=>v.bk)),own=new Set(got);
+  const g=st.grade<=5?st.grade:1,need=passGradeBiomes(g);if(got.size>=10||(need.length&&need.every(k=>got.has(k))))own.add('leg');return own});
 /* đảo trùm của chủ đề: đảo có trùm, nếu không có thì đảo cuối */
 function passBossIsl(g,ti){const L=(PRIM[g]&&PRIM[g].isl||[]).filter(x=>x.ti===ti);return L.find(x=>x.boss)||L[L.length-1]}
 const passDone=(st,x)=>{const p=st.p1&&st.p1[x.id];return!!(p&&p.m&&p.m[x.nm-1])};
@@ -63,6 +74,6 @@ function viewPass(st){const g=st.grade<=5?st.grade:1,P=st.pass||{},T=passTopics(
    <div class="pbook">${slots}</div>
    <h3 class="ofh">Tủ đồ của Jenny</h3><div class="ofgrid">${ofs}</div></section>`}
 /* Sưu tập: hộ chiếu ở trên, thẻ sinh vật ở dưới */
-{const _va=viewAlbum;viewAlbum=function(st){const a=_va(st);return a.replace('<div class="grid">',`<div class="grid">${viewPass(st)}`)}}
+{const _va=hooks.cu('viewAlbum');hooks.de('viewAlbum',function(st){const a=_va(st);return a.replace('<div class="grid">',`<div class="grid">${viewPass(st)}`)})}
 /* sau mỗi lần vẽ màn hình: kiểm tra dấu mới */
-{const _r=render;render=function(){const a=_r.apply(this,arguments);try{passSync()}catch(e){}return a}}
+{const _r=hooks.cu('render');hooks.de('render',function(){const a=_r.apply(this,arguments);try{passSync()}catch(e){}return a})}

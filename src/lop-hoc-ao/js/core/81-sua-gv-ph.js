@@ -1,6 +1,11 @@
 /* 81 — Sửa thông tin giáo viên và phụ huynh (Quản lý, 24/10/2026).
    Giáo viên: Họ tên, Giới tính, SĐT, Gmail, Mật khẩu mới (máy chủ). Phụ huynh: SĐT, Gmail, Mật khẩu mới (máy chủ); con thì sửa ở nút 👪 Con.
    Tên đăng nhập không đổi ở đây. Đổi mật khẩu trên máy chủ = cấp đăng nhập mới cho cùng tên (dùng mayChu của 70). */
+import { esc } from './01-tien-ich.js';
+import { save } from './09-du-lieu-demo.js';
+import { render, toast } from './13-giao-dien-chung.js';
+import { viewPH } from './20-phu-huynh.js';
+import { FB, fbDayNgay, fbLoi } from './62-may-chu.js';
 (function(){
 if(typeof viewPH==='undefined')return;
 const O=()=>S.org,e=s=>esc(String(s==null?'':s));

@@ -1,5 +1,6 @@
 /* ===================== Đồ hoạ pixel (màu logo Clb) ===================== */
-const PXC={k:'#1F2A5A',w:'#FFFFFF',s:'#FFD9B8',c:'#F26249',g:'#2AB563',G:'#1E8A4A',l:'#CFDB6E',o:'#F37A1F',O:'#C95A0E',y:'#FCD655',a:'#FCB40C',b:'#12B5E8',B:'#0079C1',p:'#8656A8',P:'#5E3A7A',r:'#F04A1B',R:'#B8320F',n:'#9A6234',N:'#6B3F1D',e:'#E3E7F0',E:'#9AA4C0',t:'#F6D98B',T:'#E2B85E',u:'#C8783A',m:'#C3CBDD',x:'#7FD3F0'};
+import { hooks } from './00-hooks.js';
+export const PXC={k:'#1F2A5A',w:'#FFFFFF',s:'#FFD9B8',c:'#F26249',g:'#2AB563',G:'#1E8A4A',l:'#CFDB6E',o:'#F37A1F',O:'#C95A0E',y:'#FCD655',a:'#FCB40C',b:'#12B5E8',B:'#0079C1',p:'#8656A8',P:'#5E3A7A',r:'#F04A1B',R:'#B8320F',n:'#9A6234',N:'#6B3F1D',e:'#E3E7F0',E:'#9AA4C0',t:'#F6D98B',T:'#E2B85E',u:'#C8783A',m:'#C3CBDD',x:'#7FD3F0'};
 const PXJ=[
 "..kkk......kkk..",
 ".kkckk....kkckk.",
@@ -22,8 +23,8 @@ const PXJ=[
 "...ooo....ooo..."].map(r=>r.slice(0,16));
 const PXJS=PXJ.map((r,i)=>i==8?".kscsssssssscsk.":i==9?".ksssskkkkssssk.":r);
 const PXCAT=["k..........k","kok......kok","kook....kook","kookkkkkkook","koooooooooook","kokoooooooko k","koooocccoooo k","kkoowwwwwookk",".kooowwwooook.","..kkkkkkkkkk..","..koowwwwook..","..koowwwwookko","..koowwwwook.o","..kkkk..kkkk.."].map(r=>r.replace(/ /g,''));
-const ring=(n,f)=>{const R=[];for(let j=0;j<n;j++){let s='';for(let i=0;i<n;i++){const dx=i-(n-1)/2,dy=j-(n-1)/2;s+=f(Math.hypot(dx,dy),dx,dy,n/2)||'.'}R.push(s)}return R};
-const PXS={
+export const ring=(n,f)=>{const R=[];for(let j=0;j<n;j++){let s='';for(let i=0;i<n;i++){const dx=i-(n-1)/2,dy=j-(n-1)/2;s+=f(Math.hypot(dx,dy),dx,dy,n/2)||'.'}R.push(s)}return R};
+export const PXS={
  jenny:PXJ, jennyS:PXJS,
  cat:PXCAT,
  catH:PXCAT.map((r,i)=>i==5?"kokkoooookkok":r),
@@ -67,15 +68,16 @@ const PXS={
 PXS.medS=PXS.medG.map(r=>r.replace(/y/g,'m').replace(/a/g,'E'));
 PXS.medB=PXS.medG.map(r=>r.replace(/y/g,'u').replace(/a/g,'N'));
 PXS.islandG=PXS.island.map(r=>r.replace(/[gGtTn]/g,c=>c=='n'?'E':c=='t'||c=='T'?'e':'m').replace(/[bx]/g,'.'));
-const PXURI={};
-function pxURI(name){if(PXURI[name])return PXURI[name];const rows=PXS[name];const W=Math.max(...rows.map(r=>r.length)),H=rows.length;let s='';
+export const PXURI={};
+export function pxURI(name){if(PXURI[name])return PXURI[name];const rows=PXS[name];const W=Math.max(...rows.map(r=>r.length)),H=rows.length;let s='';
   rows.forEach((r,j)=>{let i=0;while(i<r.length){const ch=r[i];if(!PXC[ch]){i++;continue}let e=i;while(e<r.length&&r[e]===ch)e++;s+=`<rect x="${i}" y="${j}" width="${e-i}" height="1" fill="${PXC[ch]}"/>`;i=e}});
   return PXURI[name]={u:'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" shape-rendering="crispEdges">${s}</svg>`),w:W,h:H}}
-function spr(name,h,cls=''){const d=pxURI(name);return`<img class="px ${cls}" src="${d.u}" alt="" aria-hidden="true" draggable="false" style="height:${h}px;width:${Math.round(h*d.w/d.h)}px">`}
+export function spr(...a){return hooks.goi('spr',this,a)}
+hooks.ham('spr',function(name,h,cls=''){const d=pxURI(name);return`<img class="px ${cls}" src="${d.u}" alt="" aria-hidden="true" draggable="false" style="height:${h}px;width:${Math.round(h*d.w/d.h)}px">`});
 /* emoji -> sprite (hiển thị bằng em theo cỡ chữ chỗ đó) */
 const PXMAP={'🔒':'lock','⛈':'storm','🏝':'island','⛵':'boat','🥉':'medB','🥈':'medS','🥇':'medG','🪙':'coin','🔥':'fire','🎯':'target','🗺':'map','🎒':'bag','📒':'book','💡':'bulb','💔':'heartB','❤':'heart','♥':'heart','★':'star','🛟':'buoy','🐙':'octo','🦀':'crab','🐍':'snake','🦈':'shark','🪼':'jelly','🐉':'dragon','🦑':'squid','🌴':'palm','⛱':'umb','🐢':'turtle','🏰':'castle','🚩':'flag','🗼':'light','😺':'catH','🐱':'cat','😿':'catS','🐟':'fish','🥛':'milk','🔊':'sound','🔇':'mute','▶':'play'};
 const PXRE=new RegExp('('+Object.keys(PXMAP).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\uFE0F?','gu');
-function pixelize(root){if(!root)return;const tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{const p=n.parentNode;if(!p||/^(SCRIPT|STYLE|OPTION|TEXTAREA|TITLE)$/.test(p.nodeName))return NodeFilter.FILTER_REJECT;PXRE.lastIndex=0;return PXRE.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP}});
+export function pixelize(root){if(!root)return;const tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{const p=n.parentNode;if(!p||/^(SCRIPT|STYLE|OPTION|TEXTAREA|TITLE)$/.test(p.nodeName))return NodeFilter.FILTER_REJECT;PXRE.lastIndex=0;return PXRE.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP}});
   const list=[];while(tw.nextNode())list.push(tw.currentNode);
   list.forEach(n=>{const f=document.createDocumentFragment();let last=0;const v=n.nodeValue;PXRE.lastIndex=0;let m;while((m=PXRE.exec(v))){if(m.index>last)f.appendChild(document.createTextNode(v.slice(last,m.index)));const d=pxURI(PXMAP[m[1]]),im=document.createElement('img');im.className='px pxe';im.src=d.u;im.alt='';im.setAttribute('aria-hidden','true');im.style.width=(d.w/d.h*1.15).toFixed(2)+'em';f.appendChild(im);last=m.index+m[0].length}if(last<v.length)f.appendChild(document.createTextNode(v.slice(last)));n.parentNode.replaceChild(f,n)})}
 

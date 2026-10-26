@@ -1,0 +1,9 @@
+if(!load())fresh();
+const TRANG='__TRANG__',TRANG_VAI=__VAI__;window.TRANG=TRANG;document.body.classList.add('trang-'+TRANG);
+const TRANG_TEN={gv:'giáo viên',ph:'phụ huynh',ql:'quản lý',hs:'học sinh'},TRANG_LINK={gv:'../giao-vien/',ph:'../phu-huynh/',ql:'../quan-ly/',hs:'../'};
+/* ===== Bản thử: dữ liệu mẫu trên máy này, mở sẵn vai ===== */
+document.body.insertAdjacentHTML('afterbegin',`<div class="demoband" role="note">Bản thử — dữ liệu chỉ trên máy này · ${[['gv','Giáo viên','giao-vien'],['ph','Phụ huynh','phu-huynh'],['ql','Quản lý','quan-ly']].filter(x=>x[0]!==TRANG).map(x=>`<a href="../${x[2]}/">${x[1]}</a>`).join(' · ')} · <a href="../">Học sinh</a> · <a href="../../__DIR__/">Bản chính</a></div>`);
+document.head.insertAdjacentHTML('beforeend',`<style>.demoband{position:fixed;top:0;left:0;right:0;z-index:9999;height:24px;line-height:24px;text-align:center;font-size:13px;font-weight:700;background:#FCB40C;color:#1F2A5A;border-bottom:2px solid #1F2A5A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px}
+.demoband a{color:#1F2A5A}body{padding-top:24px}.appbar{top:calc(24px + env(safe-area-inset-top,0px))!important}</style>`);
+try{gvGrade=1}catch(e){}try{setRole(TRANG)}catch(e){role=TRANG;go({k:'home'})}render()
+</script>

@@ -1,5 +1,11 @@
 /* ===================== ÂM THANH: nhạc nền 8-bit + hiệu ứng từng trò chơi ===================== */
 /* Tự tổng hợp bằng Web Audio (không cần file nhạc). Cài đặt lưu ở localStorage 'jennySound': {m: nhạc, s: hiệu ứng}. */
+import { hooks } from './00-hooks.js';
+import { R } from './01-tien-ich.js';
+import { render, toast } from './13-giao-dien-chung.js';
+import { biomeOf } from './23b-vung-bien.js';
+import { curT1, isl1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { curG, PT } from './25-lop-1-so-loi-sai-toan-jenny.js';
 const SND=(()=>{let o={m:1,s:1};try{const v=JSON.parse(localStorage.getItem('jennySound')||'null');if(v)o=Object.assign(o,v)}catch(e){}try{if(localStorage.getItem('jennyMute')==='1')o={m:0,s:0}}catch(e){}return o})();
 muted=!SND.s;
 let AUD=null;
@@ -7,12 +13,12 @@ function aud(){if(AUD)return AUD;try{const C=window.AudioContext||window.webkitA
   const fx=ac.createGain();fx.gain.value=.55;fx.connect(master);const mu=ac.createGain();mu.gain.value=0;mu.connect(master);AUD={ac,master,fx,mu};AC=ac}catch(e){AUD=null}return AUD}
 function sndSave(){try{localStorage.setItem('jennySound',JSON.stringify(SND));localStorage.setItem('jennyMute',(!SND.m&&!SND.s)?'1':'0')}catch(e){}muted=!SND.s}
 /* một nốt: tần số, bắt đầu (giây, tính từ bây giờ), dài, dạng sóng, âm lượng, trượt tần số */
-function tone(f,at,dur,type='square',vol=.22,slide=0,bus){const A=aud();if(!A)return;const t=A.ac.currentTime+at;const os=A.ac.createOscillator(),g=A.ac.createGain();os.type=type;os.frequency.setValueAtTime(f,t);if(slide)os.frequency.exponentialRampToValueAtTime(Math.max(30,f*slide),t+dur);
+export function tone(f,at,dur,type='square',vol=.22,slide=0,bus){const A=aud();if(!A)return;const t=A.ac.currentTime+at;const os=A.ac.createOscillator(),g=A.ac.createGain();os.type=type;os.frequency.setValueAtTime(f,t);if(slide)os.frequency.exponentialRampToValueAtTime(Math.max(30,f*slide),t+dur);
   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0008,t+dur);os.connect(g);g.connect(bus||A.fx);os.start(t);os.stop(t+dur+.03)}
-function noise(at,dur,vol=.2,hp=800,bus){const A=aud();if(!A)return;const t=A.ac.currentTime+at,n=Math.floor(A.ac.sampleRate*dur),buf=A.ac.createBuffer(1,n,A.ac.sampleRate),d=buf.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);
+export function noise(at,dur,vol=.2,hp=800,bus){const A=aud();if(!A)return;const t=A.ac.currentTime+at,n=Math.floor(A.ac.sampleRate*dur),buf=A.ac.createBuffer(1,n,A.ac.sampleRate),d=buf.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);
   const s=A.ac.createBufferSource();s.buffer=buf;const f=A.ac.createBiquadFilter();f.type='highpass';f.frequency.value=hp;const g=A.ac.createGain();g.gain.value=vol;s.connect(f);f.connect(g);g.connect(bus||A.fx);s.start(t)}
-const mHz=(n)=>440*Math.pow(2,(n-69)/12); /* số MIDI → Hz */
-const SFX={
+export const mHz=(n)=>440*Math.pow(2,(n-69)/12); /* số MIDI → Hz */
+export const SFX={
  tap:()=>tone(mHz(84),0,.05,'square',.12),
  ok:()=>{tone(mHz(76),0,.09);tone(mHz(84),.08,.14)},
  bad:()=>{tone(mHz(52),0,.14,'sawtooth',.18,.7);tone(mHz(47),.12,.22,'sawtooth',.16,.7)},
@@ -42,7 +48,7 @@ const SFX={
  timeup:()=>{[0,.2,.4].forEach(t=>tone(mHz(84),t,.12,'square',.2));tone(mHz(72),.6,.4,'square',.2)},
 };
 /* thay hàm sfx cũ (bản sau thắng) */
-function sfx(kind){if(!SND.s)return;try{const A=aud();if(A&&A.ac.state==='suspended')A.ac.resume();(SFX[kind]||SFX.tap)()}catch(e){}}
+export function sfx(kind){if(!SND.s)return;try{const A=aud();if(A&&A.ac.state==='suspended')A.ac.resume();(SFX[kind]||SFX.tap)()}catch(e){}}
 
 /* ---------- nhạc nền ---------- */
 /* mỗi bài: nhịp (bpm), giai điệu 16 phách (MIDI, 0 = nghỉ), bè trầm 8 nốt, dạng sóng */
@@ -68,9 +74,10 @@ const THEMES={
  m_suns:{bpm:80,w:'triangle',v:.05,mel:[77,0,76,0,74,0,72,0,74,0,76,0,72,0,0,0, 69,0,72,0,77,0,76,0,74,0,72,0,70,0,69,0],bass:[41,41,46,46,48,48,41,41]},
 };
 let muCur=null,muTimer=null,muStep=0,muNext=0;
-function musicTheme(){if(role!=='hs')return null;const k=scr.k;if(k==='mini')return scr.end?null:(scr.mode==='fish'?'fish':'balloon');
+function musicTheme(...a){return hooks.goi('musicTheme',this,a)}
+hooks.ham('musicTheme',function(){if(role!=='hs')return null;const k=scr.k;if(k==='mini')return scr.end?null:(scr.mode==='fish'?'fish':'balloon');
   if(k==='game'){if(scr.end||(scr.sheet&&scr.sheet.kind!=='ok'))return null;if(scr.race)return'race';if(scr.tre)return'game';if(scr.cbo)return'boss';return null}/* các màn Học trên đảo: không nhạc nền */
-  if(k==='lslide'||k==='jslide'||k==='video'||k==='jex'||k==='example'||k==='jenny')return null;return mapTheme()}
+  if(k==='lslide'||k==='jslide'||k==='video'||k==='jex'||k==='example'||k==='jenny')return null;return mapTheme()});
 /* nhạc bản đồ: theo vùng biển của chủ đề đang học (trang đảo: vùng của đảo đó) */
 function mapTheme(){try{const st=S.st[sid];if(!st||st.grade>5||typeof biomeOf!=='function')return'map';const g=curG();let ti;if(scr.k==='island'&&scr.id){const x=isl1(scr.id);ti=x?x.ti:0}else ti=curT1(st);const T=PT()[ti],t='m_'+biomeOf(g,ti,T?T[0]:'');return THEMES[t]?t:'map'}catch(e){return'map'}}
 function musicSync(){const want=SND.m?musicTheme():null;if(want===muCur)return;muCur=want;const A=aud();if(!A)return;
@@ -99,12 +106,12 @@ function sndUI(){const lbl=SND.m?'Nhạc và hiệu ứng đang bật':SND.s?'Ch
   document.querySelectorAll('.sndmini').forEach(m=>{m.innerHTML=`<span aria-hidden="true">${sndIcon()}</span>`;m.title=lbl;m.setAttribute('aria-label',lbl)})}
 
 /* ---------- hiệu ứng mất tim ---------- */
-function hurtFx(quiet){if(!quiet)sfx('hurt');const h=document.querySelector('.game .hearts, #mgl');if(h){h.classList.remove('hurt');void h.offsetWidth;h.classList.add('hurt')}
+export function hurtFx(quiet){if(!quiet)sfx('hurt');const h=document.querySelector('.game .hearts, #mgl');if(h){h.classList.remove('hurt');void h.offsetWidth;h.classList.add('hurt')}
   const g=document.querySelector('.game');if(g){g.classList.remove('shake');void g.offsetWidth;g.classList.add('shake');setTimeout(()=>g.classList.remove('shake'),450)}
   try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}}
 
 function toggleMute(){if(SND.m||SND.s){SND.m=0;SND.s=0}else{SND.m=1;SND.s=1}sndSave();musicSync();render()}
 /* nhạc nhỏ lại khi Jenny đang nói */
-function duck(on){const A=AUD;if(!A||!muCur)return;const t=A.ac.currentTime;A.mu.gain.cancelScheduledValues(t);A.mu.gain.setValueAtTime(A.mu.gain.value,t);A.mu.gain.linearRampToValueAtTime(on?.2:1,t+.25)}
+export function duck(on){const A=AUD;if(!A||!muCur)return;const t=A.ac.currentTime;A.mu.gain.cancelScheduledValues(t);A.mu.gain.setValueAtTime(A.mu.gain.value,t);A.mu.gain.linearRampToValueAtTime(on?.2:1,t+.25)}
 /* gắn vào vẽ màn hình: đổi nhạc theo màn, vẽ nút âm thanh */
-{const _r=render;render=function(){const a=_r.apply(this,arguments);try{sndUI();musicSync()}catch(e){}return a}}
+{const _r=hooks.cu('render');hooks.de('render',function(){const a=_r.apply(this,arguments);try{sndUI();musicSync()}catch(e){}return a})}

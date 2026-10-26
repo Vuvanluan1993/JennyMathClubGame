@@ -1,5 +1,10 @@
 /* ===================== Học sinh: trang đảo / buổi ===================== */
-function viewIsland(){
+import { esc } from './01-tien-ich.js';
+import { BOOK, M1, P1_Q } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
+import { STAR2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { bigStars, unit, ustate } from './13-giao-dien-chung.js';
+import { jenny } from './33d-jenny-bieu-cam.js';
+export function viewIsland(){
   const {part,id}=scr,u=unit(part,id),s=ustate(part,id);
   const steps=[];
   steps.push({done:s.intro,can:true,t:'Video tổng hợp kiến thức',d:`${u.slides.length} trang · Jenny thuyết minh`,act:`go({k:'video',part:${part},id:'${id}'})`,lbl:s.intro?'Xem lại':'Xem video'});

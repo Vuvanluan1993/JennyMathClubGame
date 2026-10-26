@@ -1,6 +1,13 @@
 /* ===================== JENNY: biểu cảm pixel + TRÙM LỚP: hệ màu ===================== */
 /* Jenny: idle (nháy mắt, thở), happy (mắt cười, miệng mở, nhảy, lấp lánh), sad (lo lắng, rơm rớm, lắc đầu),
    cheer (giơ hai tay, nhảy ăn mừng), think (nghiêng đầu khi chờ lâu). */
+import { hooks } from './00-hooks.js';
+import { PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { biomeOf } from './23b-vung-bien.js';
+import { isl1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { CBN } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
+import { jOutfit, ofVariant, OUTFIT } from './33e-ho-chieu.js';
 {const J=PXS.jenny,row=(r,i,v)=>r.map((x,k)=>k===i?v:x);
  PXS.jennyBlink=row(J,7,".kssssssssssssk.");
  PXS.jennyHappy=[...J].map((r,i)=>({6:'.kssksssssskssk.',7:'.kskskssssksksk.',8:'.kscsskkkksscsk.',9:'.ksssskrrkssssk.'})[i]||r);
@@ -10,12 +17,13 @@
  PXS.fxTear=[".b.","bwb","bbb",".b."];}
 const JMOOD={idle:'jenny',happy:'jennyHappy',sad:'jennySad',cheer:'jennyCheer',think:'jenny'};
 /* thay hàm jenny(): thêm tham số biểu cảm; mặc định vẫn nháy mắt nhẹ */
-function jenny(size,mood='idle'){const s=Math.round(size*.86),of=typeof jOutfit==='function'?jOutfit():null,V=n=>of?ofVariant(n,of):n,sp=V(JMOOD[mood]||'jenny');
+export function jenny(...a){return hooks.goi('jenny',this,a)}
+hooks.ham('jenny',function(size,mood='idle'){const s=Math.round(size*.86),of=typeof jOutfit==='function'?jOutfit():null,V=n=>of?ofVariant(n,of):n,sp=V(JMOOD[mood]||'jenny');
   const fx=mood==='happy'||mood==='cheer'?`<span class="jfx s1">${spr('fxSpark',Math.round(size*.26))}</span><span class="jfx s2">${spr('fxSpark',Math.round(size*.2))}</span>`:mood==='sad'?`<span class="jfx tear">${spr('fxTear',Math.round(size*.16))}</span>`:'';
   const acc=of&&OUTFIT[of]&&OUTFIT[of].acc?`<span class="jacc">${spr(OUTFIT[of].acc,Math.round(size*.34))}</span>`:'';
-  return`<span class="jav jm-${mood}${of?' of-'+of:''}" style="width:${size}px;height:${size}px" aria-hidden="true"><span class="jbody">${spr(sp,s,'jf')}${mood==='idle'?spr(V('jennyBlink'),s,'jf jblink'):''}${acc}</span>${fx}</span>`}
+  return`<span class="jav jm-${mood}${of?' of-'+of:''}" style="width:${size}px;height:${size}px" aria-hidden="true"><span class="jbody">${spr(sp,s,'jf')}${mood==='idle'?spr(V('jennyBlink'),s,'jf jblink'):''}${acc}</span>${fx}</span>`});
 /* biểu cảm theo màn chơi */
-function jMood(g){if(!g)return'idle';if(g.end)return g.pass||g.won||g.ok?'cheer':'sad';if(g.sheet){return g.sheet.kind==='ok'?'happy':'sad'}return'idle'}
+export function jMood(g){if(!g)return'idle';if(g.end)return g.pass||g.won||g.ok?'cheer':'sad';if(g.sheet){return g.sheet.kind==='ok'?'happy':'sad'}return'idle'}
 
 /* ----- Trùm lớp: hệ màu (đổi bảng màu sprite) ----- */
 const CBHE=[
@@ -35,10 +43,10 @@ function cbVariant(name,he){const key=`${name}__${he.k}`;if(!PXS[key]&&PXS[name]
 const BIOME_HE={trop:null,snow:'bang',volc:'lua',dese:'cat',cand:'keo',crys:'phale',jung:'doc',autu:'thu',nigh:'dem',suns:'hh'};
 const heOf=k=>CBHE.find(h=>h.k===BIOME_HE[k])||null;
 /* vùng biển của một đảo / một chủ đề */
-function biomeOfTopic(g,ti){const T=PRIM[g]&&PRIM[g].T[ti];return biomeOf(g,ti,T?T[0]:'')}
+export function biomeOfTopic(g,ti){const T=PRIM[g]&&PRIM[g].T[ti];return biomeOf(g,ti,T?T[0]:'')}
 function biomeOfIsl(id){const m=String(id).match(/^g(\d)/),x=isl1(id);if(!m||!x)return'trop';return biomeOfTopic(+m[1],x.ti||0)}
 {const sp=new Set(CBN.map(c=>c[0]));for(const g in PRIM)(PRIM[g].boss||[]).forEach(b=>b&&sp.add(b[0]));sp.forEach(s=>CBHE.forEach(h=>cbVariant(s,h)))}
 /* trùm chủ đề (trùm đảo): đổi màu theo vùng biển, thêm tên hệ */
 for(const g in PRIM){if(!PRIM[g].boss||!PRIM[g].T)continue;PRIM[g].boss=PRIM[g].boss.map((b,ti)=>{if(!b)return b;const bk=biomeOfTopic(+g,ti),he=heOf(bk);const r=[he?cbVariant(b[0],he):b[0],b[1]];r.base=b[0];r.baseName=b[1];r.he=he?he.k:'bien';r.bk=bk;return r})}
 /* trùm lớp: hệ theo vùng biển của đảo (tính lại mỗi lần, kể cả dữ liệu đã lưu) */
-{const _cbI=cbI;cbI=function(id){const b=_cbI(id);if(!b.baseSpr){b.baseSpr=b.spr;b.baseName=b.name}const he=heOf(biomeOfIsl(id)),k=he?he.k:'bien';if(b.he!==k){b.he=k;b.spr=he?cbVariant(b.baseSpr,he):b.baseSpr;b.name=b.baseName}return b}}
+{const _cbI=hooks.cu('cbI');hooks.de('cbI',function(id){const b=_cbI(id);if(!b.baseSpr){b.baseSpr=b.spr;b.baseName=b.name}const he=heOf(biomeOfIsl(id)),k=he?he.k:'bien';if(b.he!==k){b.he=k;b.spr=he?cbVariant(b.baseSpr,he):b.baseSpr;b.name=b.baseName}return b})}

@@ -1,12 +1,22 @@
 /* ===================== Chơi màn ===================== */
-function startLevel(part,id,i){
+import { esc, pick } from './01-tien-ich.js';
+import { ansHint, ansText, isCorrect } from './03-phan-so-va-kiem-tra-dap-an.js';
+import { L1, M1, P1_PASS, P1_Q } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
+import { STAR2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { save } from './09-du-lieu-demo.js';
+import { log } from './10-su-kien-mau-xapi.js';
+import { addCoins, islandOpen, totalStars } from './11-sao-va-mo-khoa.js';
+import { bigStars, go, render, shortTitle, unit, ustate } from './13-giao-dien-chung.js';
+import { jenny } from './33d-jenny-bieu-cam.js';
+import { xuMua } from './64-xu.js';
+export function startLevel(part,id,i){
   const u=unit(part,id);let qs;
   if(part===1)qs=Array.from({length:P1_Q},()=>u.gen[i]());
   else qs=u.levels[i].map(x=>({...x}));
   go({k:'play',part,id,i,qs,j:0,ok:0,fb:null,res:[],t0:Date.now()});
 }
 const passNeed=(part,n)=>part===1?P1_PASS:Math.ceil(n*0.6);
-function viewPlay(){
+export function viewPlay(){
   const {part,id,i,qs,j}=scr,u=unit(part,id),n=qs.length,q=qs[j];
   const name=part===1?M1[i]:`Màn ${i+1} · ${'★'.repeat(i+1)}`;
   if(scr.end){const need=passNeed(part,n),pass=scr.ok>=need,earned=part===1?(pass?1:0):(pass?STAR2[i]:0);

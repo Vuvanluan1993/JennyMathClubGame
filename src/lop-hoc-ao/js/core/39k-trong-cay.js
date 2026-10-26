@@ -5,6 +5,22 @@
    Sai 1 lần: cây rũ xuống, mọc cỏ dại, đáp án sai bị khoá. Sai 2 lần: ốc sên gặm một chiếc lá (lượt này cây không lớn), hiện đáp án
    đúng, sang câu khác. Không bao giờ mất bậc đã lớn. Đủ 8 lần tưới hoặc hết 150 giây thì kết thúc. Không có tim.
    Loài cây theo đảo: táo, cam, xoài, dâu tây, hướng dương. Câu hỏi lấy từ frogQ (đã lọc kiến thức như Ếch nhảy). */
+import { hooks } from './00-hooks.js';
+import { save } from './09-du-lieu-demo.js';
+import { log } from './10-su-kien-mau-xapi.js';
+import { addCoins } from './11-sao-va-mo-khoa.js';
+import { go, render } from './13-giao-dien-chung.js';
+import { pixelize, PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { pxCanvas } from './23-bien-pixel-dong-phia-sau-ban-do.js';
+import { isl1, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { sfx } from './33b-am-thanh.js';
+import { jenny } from './33d-jenny-bieu-cam.js';
+import { jOutfit, ofVariant } from './33e-ho-chieu.js';
+import { stopXG, xgHash, XGN, xgRec } from './37-tro-choi-dot-1.js';
+import { frogQ, frogSay, xcv, xpx } from './39-tro-choi-dot-3.js';
+import { XG_ALL } from './39c-can-bang-tro-choi.js';
+import { ktOf, XG_BIAS } from './39e-kien-thuc-tro-choi.js';
 PXS.plantI=["................","......gg........",".....gllg..gg...",".....glllg.gllg.","......gllggllg..","..gg...glllgg...",".gllg...gG......",".gllllg.gG......","..gglllgG.......","....gggG........","......gG........","...nnnnnnnnnn...","..nuuuuuuuuuun..",".nuuNuuuuuNuuun.",".nnnnnnnnnnnnnn.","................"];
 PXS.canI=["......kkk..",".....k...k.","kk..kkkkkkk","kbk.kbbbbbk",".kbkkbxbbbk","..kbbbbbbbk","...kbbbbbbk","....kbbbbbk","....kkkkkkk"];
 const PLANT_SP=[
@@ -17,22 +33,22 @@ PLANT_SP.forEach(s=>{PXS['plantF_'+s.k]=s.kind==='sun'?[".nnn.","nNnNn","nnNnn",
 Object.assign(XGN,{plant:['plantI','Trồng cây','Trả lời đúng để tưới cây, cây lớn dần tới khi ra quả, 8 lần tưới']});
 if(!XG_ALL.includes('plant'))XG_ALL.push('plant');
 /* chọn trò: cho phép giống Ếch nhảy (nội dung lấy từ frogQ đã lọc kiến thức) */
-{const _a=ktAllowed;ktAllowed=function(x,mode){return _a.call(this,x,mode==='plant'?'frog':mode)}}
-{const _o=ktOwn;ktOwn=function(x,mode){return _o.call(this,x,mode==='plant'?'frog':mode)}}
-{const _e=xgElig;xgElig=function(x){const r=_e.apply(this,arguments);if(r&&r.E&&r.E.includes('frog')&&!r.E.includes('plant'))r.E.push('plant');return r}}
-{const _s=ktSample;ktSample=function(x,mode,n){if(mode!=='plant')return _s.apply(this,arguments);return _s.call(this,x,'frog',n)}}
+{const _a=hooks.cu('ktAllowed');hooks.de('ktAllowed',function(x,mode){return _a.call(this,x,mode==='plant'?'frog':mode)})}
+{const _o=hooks.cu('ktOwn');hooks.de('ktOwn',function(x,mode){return _o.call(this,x,mode==='plant'?'frog':mode)})}
+{const _e=hooks.cu('xgElig');hooks.de('xgElig',function(x){const r=_e.apply(this,arguments);if(r&&r.E&&r.E.includes('frog')&&!r.E.includes('plant'))r.E.push('plant');return r})}
+{const _s=hooks.cu('ktSample');hooks.de('ktSample',function(x,mode,n){if(mode!=='plant')return _s.apply(this,arguments);return _s.call(this,x,'frog',n)})}
 /* chia trò (ktBalance0 ở 39e): Trồng cây được ưu tiên ở lớp 1–2, ít hơn ở lớp 3–5 */
 const PLANT_BIAS={1:-14,2:-9,3:16,4:16,5:16};
 XG_BIAS.plant=PLANT_BIAS;
 
 const PLANT_N=8,PLANT_T=150;
-const PLANT_SKY=['#CFEFFB','#C3EBFB','#B6E6FA','#A8E0F8','#9DB7C9','#A6DCF5','#B6E1F2','#F3DDA0','#F6C79A'];
+export const PLANT_SKY=['#CFEFFB','#C3EBFB','#B6E6FA','#A8E0F8','#9DB7C9','#A6DCF5','#B6E1F2','#F3DDA0','#F6C79A'];
 const plantSp=id=>PLANT_SP[xgHash(String(id)+'plant')%PLANT_SP.length];
-{const _s=startXG;startXG=function(mode,id){if(mode!=='plant')return _s.apply(this,arguments);try{speechSynthesis.cancel()}catch(e){}const x=isl1(id);XG_KT=x?ktOf(x):null;
+{const _s=hooks.cu('startXG');hooks.de('startXG',function(mode,id){if(mode!=='plant')return _s.apply(this,arguments);try{speechSynthesis.cancel()}catch(e){}const x=isl1(id);XG_KT=x?ktOf(x):null;
   go({k:'xg',mode:'plant',id,score:0,stage:0,nib:0,lives:3,end:false,started:false,t:PLANT_T,ph:'ask',pt:0,q:x?frogQ(x):null,tries:0,bad:[],weed:0,droop:0,bitten:0,rainbow:0,sp:plantSp(id),
-    say:'Trồng cây! Mỗi lần em trả lời đúng, Jenny tưới cây một lần. Tưới đủ tám lần là cây ra quả nhé.'})}}
+    say:'Trồng cây! Mỗi lần em trả lời đúng, Jenny tưới cây một lần. Tưới đủ tám lần là cây ra quả nhé.'})})}
 /* ---- màn hình ---- */
-{const _v=viewXG;viewXG=function(){const g=scr;if(g.mode!=='plant')return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:plant`]||0,g.score),sp=g.sp;
+{const _v=hooks.cu('viewXG');hooks.de('viewXG',function(){const g=scr;if(g.mode!=='plant')return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:plant`]||0,g.score),sp=g.sp;
   if(g.end){const rec=g.score>(g.prev||0)&&g.score>0;
     return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr('plantI',72)}</span>${jenny(72,g.score?'cheer':'sad')}</div><h1>${rec?'Kỷ lục mới!':g.score>=PLANT_N?'Thu hoạch rồi!':'Hết giờ!'}</h1>
      <p class="muted">Tưới đúng <b>${g.score}</b>/${PLANT_N} lần · cây ${sp.n} ${PLANT_STAGE[g.stage]} · kỷ lục ${best}</p><div class="xpbasket">${plantBasketHTML(g)}</div>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}
@@ -41,7 +57,7 @@ const plantSp=id=>PLANT_SP[xgHash(String(id)+'plant')%PLANT_SP.length];
    <div class="mgrule"><span id="xpst">${plantStatus(g)}</span><button class="g1spk" type="button" onclick="sayJ(scr.ph==='ask'&&scr.q?frogSay(scr.q):scr.say)" aria-label="Nghe lại">🔊</button></div>
    <div class="xpt" id="xpt"><canvas class="xpcv" id="xpcv" width="114" height="100" aria-hidden="true"></canvas><span class="xpban" id="xpban"></span></div>
    <div class="xpq" id="xpq"></div>
-   <div id="xgfb" class="xgfb"></div></div>`}}
+   <div id="xgfb" class="xgfb"></div></div>`})}
 const PLANT_STAGE=['còn là hạt','vừa nảy mầm','có hai lá','là cây non','cao có cành','có nụ','nở hoa','có quả xanh','có quả chín'];
 function plantBar(g){return Array.from({length:PLANT_N},(_,i)=>`<i class="${i<g.score?'on':''}"></i>`).join('')}
 function plantBasketHTML(g){const n=g.score;return`<span class="xpbk">${Array.from({length:Math.max(0,n)},()=>`<i>${spr('plantF_'+g.sp.k,18)}</i>`).join('')||'<em>giỏ trống</em>'}</span>`}
@@ -50,7 +66,8 @@ function plantUI(){const g=scr;if(g.k!=='xg'||g.mode!=='plant'||g.end)return;con
   const st=$('xpst');if(st)st.innerHTML=plantStatus(g);const b=$('xpbar');if(b){b.innerHTML=plantBar(g);b.setAttribute('aria-label',`Đã tưới ${g.score}/${PLANT_N} lần`)}
   const qb=$('xpq');if(qb){if(g.ph==='ask'&&g.q){const q=g.q;qb.innerHTML=`<div class="xpqt">${q.t}</div><div class="xpopts">${q.opts.map((o,i)=>`<button type="button" class="xpo" ${g.bad.includes(i)?'disabled':''} onclick="plantAns(${i})"><b>${o}</b></button>`).join('')}</div>`;try{pixelize(qb)}catch(e){}}else qb.innerHTML=''}}
 /* ---- vẽ cảnh ---- */
-function plantDraw(){const x=xcv('xpcv');if(!x)return;const g=scr,p=xpx(x),now=performance.now(),f=Math.floor(now/120),S=g.stage,el=now-g.pt,sp=g.sp;
+function plantDraw(...a){return hooks.goi('plantDraw',this,a)}
+hooks.ham('plantDraw',function(){const x=xcv('xpcv');if(!x)return;const g=scr,p=xpx(x),now=performance.now(),f=Math.floor(now/120),S=g.stage,el=now-g.pt,sp=g.sp;
   x.clearRect(0,0,114,100);
   /* trời đổi dần: sáng → trưa → chiều; mưa thì tối lại */
   const sky=g.ph==='rain'?'#9DB7C9':PLANT_SKY[S];p(sky,0,0,114,60);
@@ -77,7 +94,7 @@ function plantDraw(){const x=xcv('xpcv');if(!x)return;const g=scr,p=xpx(x),now=p
   /* bướm / ong bay */ [[0,40],[1,30]].forEach(([i,Y])=>{const bx=Math.round(((f*(0.6+i*.3))+i*60)%140-14),by=Y+Math.round(Math.sin((f+i*5)/3)*4),w=f%2;const c=S>=6&&i===1?'y':['c','p'][i];p(c,bx-1-w,by-1,2,2);p(c,bx+1+w,by-1,2,2);p('k',bx,by-1,1,3);if(S>=6&&i===1){p('k',bx-1,by+1,3,1)}});
   /* giỏ thu hoạch */ const bkx=92,bky=78;p('k',bkx,bky,16,9);p('u',bkx+1,bky+1,14,7);for(let X=bkx+2;X<bkx+15;X+=3)p('N',X,bky+1,1,7);p('k',bkx+3,bky-4,1,4);p('k',bkx+12,bky-4,1,4);p('k',bkx+3,bky-5,10,1);
   const inB=g.ph==='harvest'?Math.min(g.score,Math.floor(el/220)):g.end?g.score:0;for(let i=0;i<Math.min(inB,8);i++)x.drawImage(pxCanvas('plantF_'+sp.k),bkx+1+(i%3)*5,bky-3-Math.floor(i/3)*2);
-  /* quả đang rơi vào giỏ */ if(g.ph==='harvest'){const i=Math.floor(el/220),t=(el%220)/220;if(i<g.score){const fx=cx-6+((i*7)%14),fy=base-30+((i*5)%10);const X=Math.round(fx+(bkx+4-fx)*t),Y=Math.round(fy+(bky-4-fy)*t-Math.sin(t*Math.PI)*10);x.drawImage(pxCanvas('plantF_'+sp.k),X,Y)}}}
+  /* quả đang rơi vào giỏ */ if(g.ph==='harvest'){const i=Math.floor(el/220),t=(el%220)/220;if(i<g.score){const fx=cx-6+((i*7)%14),fy=base-30+((i*5)%10);const X=Math.round(fx+(bkx+4-fx)*t),Y=Math.round(fy+(bky-4-fy)*t-Math.sin(t*Math.PI)*10);x.drawImage(pxCanvas('plantF_'+sp.k),X,Y)}}});
 /* vẽ cây theo bậc */
 function plantTree(x,p0,cx,gy,S,sp,f,g){/* vẽ cây với ô to gấp đôi để cây nổi bật trong cảnh */const p=(c,X,Y,w=1,h=1)=>p0(c,cx+(X-cx)*2,gy+(Y-gy)*2,w*2,h*2);const sway=(f>>2)%2,droop=g.droop?1:0;const leafC=droop?'l':'g',leafD=droop?'g':'G';
   if(S===0){p('n',cx-2,gy-1,4,2);p('u',cx-1,gy-2,2,1);if((f>>2)%3===0)p('t',cx,gy-2,1,1);return}
@@ -130,8 +147,8 @@ function plantAns(i){const g=scr;if(g.k!=='xg'||g.mode!=='plant'||g.end||g.ph!==
 function plantEnd(){const g=scr;if(g.k!=='xg'||g.mode!=='plant'||g.end)return;stopXG();const st=S.st[sid];st.mg=st.mg||{};const key=`${g.id}:plant`;g.prev=st.mg[key]||0;st.mg[key]=Math.max(g.prev,g.score);
   g.coins=addCoins(sid,Math.min(20,g.score*2),'self');g.end=true;g.win=g.score>=PLANT_N;log(sid,'passed',`Trồng cây · ${isl1(g.id).title}`,0,{success:true,score:{raw:g.score}});
   sfx(g.win?'win':'timeup');sayJ(g.win?`Cây ${g.sp.n} ra quả chín rồi! Giỏi quá!`:`Em đã tưới cây ${g.score} lần!`);save();render()}
-{const _ar=xgAfterRender;xgAfterRender=function(){const g=scr;if(g.k==='xg'&&g.mode==='plant'){if(g.end)return;plantUI();plantDraw();if(!g.started){g.started=true;sayJ(g.say);setTimeout(()=>{if(scr===g&&!g.end&&curG()<=2&&g.q)sayJ(frogSay(g.q))},4200);plantLoop()}else if(!xgLoop)plantLoop();return}return _ar.apply(this,arguments)}}
-{const _mt=musicTheme;musicTheme=function(){try{if(role==='hs'&&scr.k==='xg'&&scr.mode==='plant')return scr.end?null:'map'}catch(e){}return _mt.apply(this,arguments)}}
+{const _ar=hooks.cu('xgAfterRender');hooks.de('xgAfterRender',function(){const g=scr;if(g.k==='xg'&&g.mode==='plant'){if(g.end)return;plantUI();plantDraw();if(!g.started){g.started=true;sayJ(g.say);setTimeout(()=>{if(scr===g&&!g.end&&curG()<=2&&g.q)sayJ(frogSay(g.q))},4200);plantLoop()}else if(!xgLoop)plantLoop();return}return _ar.apply(this,arguments)})}
+{const _mt=hooks.cu('musicTheme');hooks.de('musicTheme',function(){try{if(role==='hs'&&scr.k==='xg'&&scr.mode==='plant')return scr.end?null:'map'}catch(e){}return _mt.apply(this,arguments)})}
 (function(){const st=document.createElement('style');st.textContent=`
 .xplant .xpt{position:relative;width:342px;height:300px;margin:4px auto;border:3px solid #1F2A5A;overflow:hidden}
 .xplant .xpt canvas{position:absolute;inset:0;width:342px;height:300px;image-rendering:pixelated;image-rendering:crisp-edges}

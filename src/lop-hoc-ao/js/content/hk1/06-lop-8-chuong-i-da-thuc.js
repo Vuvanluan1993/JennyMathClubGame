@@ -1,5 +1,7 @@
 /* ===================== Lớp 8 · Chương I Đa thức ===================== */
-const P1_8=[
+import { pick, R } from '../../core/01-tien-ich.js';
+import { mono, nz, poly } from '../../core/03-phan-so-va-kiem-tra-dap-an.js';
+export const P1_8=[
  {id:'g8b1',title:'Bài 1. Đơn thức',video:true,slides:[
   {t:'Bài 1 · Đơn thức',h:'<p>Đơn thức là biểu thức đại số chỉ gồm <b>một số</b>, <b>một biến</b>, hoặc <b>một tích</b> giữa các số và các biến.</p><p>Ví dụ: 5; &nbsp;x; &nbsp;−3x<sup>2</sup>y; &nbsp;<span class="frac"><span>1</span><span>2</span></span>xy<sup>3</sup>z.</p><p class="muted">x + y không phải đơn thức (có phép cộng).</p>',say:'Chào các em lớp tám! Đơn thức là biểu thức đại số chỉ gồm một số, một biến, hoặc một tích giữa các số và các biến. Ví dụ năm, x, âm ba x bình phương y. Còn x cộng y không phải đơn thức vì có phép cộng.'},
   {t:'Đơn thức thu gọn',h:'<p>Thu gọn: nhân các số với nhau, nhân các lũy thừa cùng biến.</p><p>2x<sup>2</sup>y · (−3xy<sup>3</sup>) = <b>−6x<sup>3</sup>y<sup>4</sup></b></p><p>Hệ số: −6. &nbsp;Phần biến: x<sup>3</sup>y<sup>4</sup>.</p>',say:'Muốn thu gọn đơn thức, ta nhân các số với nhau và nhân các lũy thừa của cùng một biến. Hai x bình phương y nhân âm ba x y mũ ba bằng âm sáu x mũ ba y mũ bốn. Hệ số là âm sáu, phần biến là x mũ ba y mũ bốn.'},

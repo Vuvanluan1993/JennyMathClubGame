@@ -1,5 +1,8 @@
 /* 42 — Hướng dẫn khi đếm sai (lớp 1, trong phạm vi 10): khoanh lần lượt từng đối tượng, đánh số 1, 2, 3…
    Đếm từ trái sang phải, từ trên xuống dưới; đếm hình thì chỉ khoanh đúng loại hình được hỏi, các hình khác làm mờ. */
+import { PXS, pxURI } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { GD_EXT, gdEq, gdTxt } from './40-huong-dan-khi-sai.js';
 const GD_SHAPE={tr:'tam giác',sq:'vuông',ci:'tròn',rc:'chữ nhật'};
 let GD_SHSRC=null;
 function gdShapeOf(src){if(!GD_SHSRC){GD_SHSRC={};try{for(const k in PXS)if(/^sh_(tr|sq|ci|rc)_/.test(k))GD_SHSRC[pxURI(k).u]=k.slice(3,5)}catch(e){}}return GD_SHSRC[src]||null}

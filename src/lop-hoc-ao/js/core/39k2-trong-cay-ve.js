@@ -5,6 +5,12 @@
      0 hạt trong hố đất · 1 mầm cong với 2 lá mầm · 2 hai lá thật · 3 cây non 4–6 lá · 4 cây cao có thân, cành (mưa + cầu vồng)
      5 nụ · 6 hoa nở · 7 quả xanh · 8 quả chín. Mỗi loài một dáng: táo/cam/xoài tán tròn hoặc thuôn, dâu tây bụi thấp, hướng dương thân cao.
    - Đổi bậc có hiệu ứng lớn lên theo nấc + lấp lánh, không đổi ngay lập tức. Mọi luật chơi, giờ, điểm, sai/ốc sên, thu hoạch giữ nguyên (39k). */
+import { hooks } from './00-hooks.js';
+import { PXC, PXS, PXURI } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { pxCanvas, PXCV } from './23-bien-pixel-dong-phia-sau-ban-do.js';
+import { jOutfit, ofVariant } from './33e-ho-chieu.js';
+import { xcv, xpx } from './39-tro-choi-dot-3.js';
+import { PLANT_SKY } from './39k-trong-cay.js';
 {
 /* ---- quả chín cho giỏ (đẹp hơn, đúng loài) ---- */
 const FR={tao:["..N..","..Ng.",".kkk.","krwrk","krrrk","kRrRk",".kkk."],
@@ -100,7 +106,7 @@ function plantArt(p,cx,gy,S,sp,f,g,hide){const C=LEAF(g.droop),sway=(f>>2)%2,fru
 /* ---- vẽ cảnh ---- */
 let PL={off:null,last:-1,growT:0,fr:[]};
 const CX=62,GY=86,HOME=12,POUR=22,BKX=95,BKY=82;
-plantDraw=function(){const x=xcv('xpcv');if(!x)return;const g=scr;if(!g||g.mode!=='plant')return;const p=xpx(x),now=performance.now(),f=Math.floor(now/120),S=g.stage,el=now-g.pt,sp=g.sp;
+hooks.de('plantDraw',function(){const x=xcv('xpcv');if(!x)return;const g=scr;if(!g||g.mode!=='plant')return;const p=xpx(x),now=performance.now(),f=Math.floor(now/120),S=g.stage,el=now-g.pt,sp=g.sp;
   if(!g._pl){g._pl={last:S,growT:0}}const L=g._pl;if(L.last!==S){L.prev=L.last;L.last=S;L.growT=now}
   x.clearRect(0,0,114,100);
   const sky=g.ph==='rain'?'#9DB7C9':PLANT_SKY[S];p(sky,0,0,114,60);
@@ -142,5 +148,5 @@ plantDraw=function(){const x=xcv('xpcv');if(!x)return;const g=scr;if(!g||g.mode!
   [[0,40],[1,30]].forEach(([i,Y])=>{const bx=Math.round(((f*(0.6+i*.3))+i*60)%140-14),by=Y+Math.round(Math.sin((f+i*5)/3)*4),w=f%2;const c=S>=6&&i===1?'y':['c','p'][i];p(c,bx-1-w,by-1,2,2);p(c,bx+1+w,by-1,2,2);p('k',bx,by-1,1,3);if(S>=6&&i===1)p('k',bx-1,by+1,3,1)});
   /* giỏ */ p('k',BKX,BKY,17,10);p('u',BKX+1,BKY+1,15,8);for(let X=BKX+2;X<BKX+16;X+=3)p('N',X,BKY+1,1,8);p('n',BKX+1,BKY+1,15,1);p('k',BKX+3,BKY-5,1,5);p('k',BKX+13,BKY-5,1,5);p('k',BKX+3,BKY-6,11,1);
   const inB=g.ph==='harvest'?Math.min(g.score,Math.floor(el/220)):g.end?g.score:0;for(let i=0;i<Math.min(inB,8);i++)x.drawImage(pxCanvas('plantF_'+sp.k),BKX+1+(i%3)*5,BKY-4-Math.floor(i/3)*2);
-  if(g.ph==='harvest'){const i=Math.floor(el/220),t=(el%220)/220;if(i<g.score){const fr=PL.fr.length?PL.fr:[[CX,GY-30]];const s0=fr[i%fr.length]||[CX,GY-30];const X=Math.round(s0[0]+(BKX+5-s0[0])*t),Y=Math.round(s0[1]+(BKY-5-s0[1])*t-Math.sin(t*Math.PI)*12);x.drawImage(pxCanvas('plantF_'+sp.k),X-2,Y-3)}}};
+  if(g.ph==='harvest'){const i=Math.floor(el/220),t=(el%220)/220;if(i<g.score){const fr=PL.fr.length?PL.fr:[[CX,GY-30]];const s0=fr[i%fr.length]||[CX,GY-30];const X=Math.round(s0[0]+(BKX+5-s0[0])*t),Y=Math.round(s0[1]+(BKY-5-s0[1])*t-Math.sin(t*Math.PI)*12);x.drawImage(pxCanvas('plantF_'+sp.k),X-2,Y-3)}}});
 }

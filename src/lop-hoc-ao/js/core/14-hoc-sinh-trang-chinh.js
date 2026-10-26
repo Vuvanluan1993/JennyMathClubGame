@@ -1,11 +1,31 @@
 /* ===================== Học sinh: trang chính ===================== */
-function petFace(e){return e>=70?'😺':e>=35?'🐱':'😿'}
-function nextAction(st){
+import { hooks } from './00-hooks.js';
+import { esc, starsHtml } from './01-tien-ich.js';
+import { BOOK, L1, NEED, P1_PASS, P1_Q } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
+import { P2, STAR2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { save } from './09-du-lieu-demo.js';
+import { log } from './10-su-kien-mau-xapi.js';
+import { curIsland, islandOpen, p1Stars, totalStars } from './11-sao-va-mo-khoa.js';
+import { activeDays } from './12-so-lieu.js';
+import { islandArt, render, shortTitle, toast } from './13-giao-dien-chung.js';
+import { viewIsland } from './15-hoc-sinh-trang-dao-buoi.js';
+import { viewVideo } from './16-video-slide-thuyet-minh.js';
+import { viewExample } from './17-vi-du-dan-dat-phan-ii.js';
+import { viewPlay } from './18-choi-man.js';
+import { viewGame, viewHome6, viewIsland6 } from './21-lop-6-che-do-tro-choi.js';
+import { viewGame1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { viewHome1t, viewJenny1, viewJEx1, viewJSlide1 } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { viewLes } from '../content/hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
+import { viewIsland1, viewMini } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
+import { jenny } from './33d-jenny-bieu-cam.js';
+export function petFace(e){return e>=70?'😺':e>=35?'🐱':'😿'}
+export function nextAction(st){
   if(st.grade===6&&st.active){const b=P2.find(x=>!x.draft&&S.open[x.id]&&!st.p2[x.id].m.every(Boolean));if(b)return{label:`Học tiếp: ${b.title}`,go:`{k:'island',part:2,id:'${b.id}'}`,why:'Cô giáo vừa mở buổi Toán Jenny'}}
   const k=curIsland(st);if(k>=0){const x=L1(st)[k];return{label:`Học tiếp: Bài ${k+1}`,go:`{k:'island',part:1,id:'${x.id}'}`,why:shortTitle(x.title)}}
   return null;
 }
-function viewHS(){
+export function viewHS(...a){return hooks.goi('viewHS',this,a)}
+hooks.ham('viewHS',function(){
   {const st6=S.st[sid];if(st6.grade<=5){if(scr.k==='game')return viewGame1();if(scr.k==='island')return viewIsland1();if(scr.k==='jenny')return viewJenny1();if(scr.k==='jslide')return viewJSlide1();if(scr.k==='lslide')return viewLes();if(scr.k==='jex')return viewJEx1();if(scr.k==='mini')return viewMini();return viewHome1t()}if(st6.grade===6){if(scr.k==='game')return viewGame();if(scr.k==='island'&&scr.part===1)return viewIsland6();if(scr.k==='home')return viewHome6();}}
   if(scr.k==='island')return viewIsland();
   if(scr.k==='video')return viewVideo();
@@ -45,6 +65,6 @@ function viewHS(){
       ${st.items.length?`<p class="muted" style="margin:10px 0 0">Đồ hiếm: ${st.items.map(esc).join(', ')}</p>`:''}</section>
     <section class="card"><h3>Huy hiệu</h3><div class="badges" style="margin-top:10px">${st.badges.length?st.badges.map(b=>`<span class="badge ${b.from==='cô'?'t':''}"><i>${b.from==='cô'?'♥':'✓'}</i>${esc(b.t)}</span>`).join(''):'<p class="muted" style="margin:0">Qua đủ 3 màn của một đảo để nhận huy hiệu đầu tiên.</p>'}</div></section>
   </aside></div></div>`;
-}
+});
 function buy(cost,en,name){const st=S.st[sid];if(st.coins<cost){toast('Chưa đủ xu. Làm thêm bài để kiếm xu nhé!');return}st.coins-=cost;st.energy=Math.min(100,st.energy+en);log(sid,'purchased',name,0,{score:{raw:-cost}});save();render();toast('Mèo Mướp rất vui!')}
 

@@ -1,19 +1,7 @@
-# Trang Giáo viên · Phụ huynh · Quản lý (P-07, 25/10/2026): tạo từ dist/lop-hoc-ao-jenny.html
-#   python3 tools/_teacher.py         → games/lop-hoc-ao/{giao-vien,phu-huynh,quan-ly}/index.html  bản THẬT: chỉ đăng nhập máy chủ (Firebase)
-#   python3 tools/_teacher.py --demo  → games/lop-hoc-ao/demo/{…}/index.html                      bản THỬ: dữ liệu mẫu, mở sẵn vai, chỉ lưu trên máy này
-# Không còn mật khẩu bản demo cố định trong mã: bản thử nằm ở demo/, noindex, không commit.
-import os,sys,json
-DEMO='--demo' in sys.argv
-ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-t=open(os.path.join(ROOT,'dist','lop-hoc-ao-jenny.html'),encoding='utf-8').read()
-boot="if(!load())fresh();\nrender();\n</script>"
-assert boot in t
-CHUNG='''if(!load())fresh();
+if(!load())fresh();
 const TRANG='__TRANG__',TRANG_VAI=__VAI__;window.TRANG=TRANG;document.body.classList.add('trang-'+TRANG);
 const TRANG_TEN={gv:'giáo viên',ph:'phụ huynh',ql:'quản lý',hs:'học sinh'},TRANG_LINK={gv:'../giao-vien/',ph:'../phu-huynh/',ql:'../quan-ly/',hs:'../'};
-'''
-# ---- bản THẬT: màn đăng nhập máy chủ ----
-GATE=CHUNG+'''/* ===== Màn đăng nhập máy chủ ===== */
+/* ===== Màn đăng nhập máy chủ ===== */
 function gvOpen(){const g=document.getElementById('gvGate');if(g)g.remove();document.body.classList.remove('locked')}
 document.body.insertAdjacentHTML('afterbegin',`<div id="gvGate" class="gvgate"><div class="gvcard"><div class="gvhd">${jenny(56)}<div><h1>__TIEUDE__</h1><p>Lớp học ảo Jenny · Clb Học Toán cùng Jenny</p></div></div>
  <form onsubmit="gvCloudLogin(event)" class="gvf"><label for="gvU">Tên đăng nhập</label><input id="gvU" autocapitalize="off" spellcheck="false" autocomplete="username" required>
@@ -53,24 +41,4 @@ body.locked{overflow:hidden}</style>`);
 document.body.classList.add('locked');
 render();setTimeout(()=>{const i=document.getElementById('gvU');if(i)i.focus()},50);
 fbInit().then(()=>{const off=FB.auth.onAuthStateChanged(async u=>{off();if(!u||CLOUD)return;try{await fbNapMe(u);if(!TRANG_VAI.includes(CLOUD.me.role)){const m=document.getElementById('gvMsg2');if(m){gvSaiTrang(m);m.insertAdjacentHTML('beforeend',' <button type="button" class="btn sm" onclick="FB.auth.signOut().then(()=>location.reload())">Đăng xuất tài khoản này</button>')}CLOUD=null;return}await gvCloudOpen()}catch(e){CLOUD=null}})}).catch(()=>{})
-</script>'''
-# ---- bản THỬ: không máy chủ, không mật khẩu; mở sẵn vai với dữ liệu mẫu ----
-GATE_DEMO=CHUNG+'''/* ===== Bản thử: dữ liệu mẫu trên máy này, mở sẵn vai ===== */
-document.body.insertAdjacentHTML('afterbegin',`<div class="demoband" role="note">Bản thử — dữ liệu chỉ trên máy này · ${[['gv','Giáo viên','giao-vien'],['ph','Phụ huynh','phu-huynh'],['ql','Quản lý','quan-ly']].filter(x=>x[0]!==TRANG).map(x=>`<a href="../${x[2]}/">${x[1]}</a>`).join(' · ')} · <a href="../">Học sinh</a> · <a href="../../__DIR__/">Bản chính</a></div>`);
-document.head.insertAdjacentHTML('beforeend',`<style>.demoband{position:fixed;top:0;left:0;right:0;z-index:9999;height:24px;line-height:24px;text-align:center;font-size:13px;font-weight:700;background:#FCB40C;color:#1F2A5A;border-bottom:2px solid #1F2A5A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px}
-.demoband a{color:#1F2A5A}body{padding-top:24px}.appbar{top:calc(24px + env(safe-area-inset-top,0px))!important}</style>`);
-try{gvGrade=1}catch(e){}try{setRole(TRANG)}catch(e){role=TRANG;go({k:'home'})}render()
-</script>'''
-base=t
-for TR,TEN,DIR,VAI in [('gv','Giáo viên','giao-vien',['gv','ql']),('ph','Phụ huynh','phu-huynh',['ph']),('ql','Quản lý trung tâm','quan-ly',['ql'])]:
-    g=(GATE_DEMO if DEMO else GATE).replace('__TRANG__',TR).replace('__VAI__',json.dumps(VAI)).replace('__TIEUDE__',TEN).replace('__DIR__',DIR)
-    t=base.replace(boot,g).replace('<title>','<meta name="robots" content="noindex"><title>',1)
-    # khung trang đầy đủ (doctype + viewport) để điện thoại hiển thị đúng khổ màn hình
-    t='<!doctype html>\n<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'+t
-    i=t.find('</style>')+len('</style>')
-    t=t[:i]+'\n</head>\n<body class="px">\n'+t[i:]+'\n</body></html>\n'
-    t=t.replace('<title>Lớp học ảo Jenny',('<title>Bản thử · ' if DEMO else '<title>')+TEN+' · Lớp học ảo Jenny',1)
-    rel=['games','lop-hoc-ao']+(['demo'] if DEMO else [])+[DIR]
-    out=os.path.join(ROOT,'..','..',*rel);os.makedirs(out,exist_ok=True)
-    open(os.path.join(out,'index.html'),'w',encoding='utf-8').write(t)
-    print('/'.join(rel)+'/index.html',len(t))
+</script>

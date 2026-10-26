@@ -1,3 +1,9 @@
+import { pick, R } from '../../core/01-tien-ich.js';
+import { shuf } from '../../core/21-lop-6-che-do-tro-choi.js';
+import { CQ, F, NQ, ORD, SG } from '../hk1/26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { fN } from '../hk1/28-chu-de-3-lop-1-5.js';
+import { colPic, dz, WQ } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { addTopic, LES, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 (()=>{
 /* ===== LỚP 5 · CHỦ ĐỀ 10–12: Thời gian, vận tốc · Thống kê, xác suất · Ôn tập cuối năm ===== */
 const G=5;

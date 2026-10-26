@@ -1,4 +1,13 @@
 /* ===================== Trò chơi nhỏ dạng pixel ===================== */
+import { R } from './01-tien-ich.js';
+import { PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { pxCanvas } from './23-bien-pixel-dong-phia-sau-ban-do.js';
+import { sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { stopMini } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
+import { endMini } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
+import { hurtFx, sfx } from './33b-am-thanh.js';
+import { jOutfit, ofVariant } from './33e-ho-chieu.js';
+import { fishFrames } from './39i-nhan-dai.js';
 PXS.fishO=PXS.fish.map(r=>r.replace(/b/g,'o'));PXS.fishY=PXS.fish.map(r=>r.replace(/b/g,'a'));PXS.fishP=PXS.fish.map(r=>r.replace(/b/g,'p'));PXS.fishG=PXS.fish.map(r=>r.replace(/b/g,'g'));
 PXS.balloonG=PXS.balloon.map(r=>r.replace(/c/g,'g'));
 PXS.burst=["....y....",".y..y..y.","..y.a.y..","...yay...","yyaawaayy","...yay...","..y.a.y..",".y..y..y.","....y...."];
@@ -17,7 +26,7 @@ function mgBg(f,mode){const Z=4,W=Math.ceil(f.clientWidth/Z),H=Math.ceil(f.clien
   f.appendChild(cv);
   if(mode==='fish'){for(let i=0;i<7;i++){const b=document.createElement('i');b.className='mgbub';b.style.left=(8+rnd()*84)+'%';b.style.animationDelay=(rnd()*4).toFixed(1)+'s';b.style.animationDuration=(3+rnd()*3).toFixed(1)+'s';f.appendChild(b)}
     const boat=document.createElement('div');boat.className='mgboat';boat.innerHTML=spr('boat',56)+`<span class="mgjen">${spr(typeof ofVariant==='function'?ofVariant('jenny',jOutfit()):'jenny',30)}</span>`;f.appendChild(boat)}}
-function miniAfterRender(){if(scr.k!=='mini'||scr.end||scr.started)return;scr.started=true;stopMini();const f=document.getElementById('mgf');if(!f)return;sayJ(scr.say);mgBg(f,scr.mode);
+export function miniAfterRender(){if(scr.k!=='mini'||scr.end||scr.started)return;scr.started=true;stopMini();const f=document.getElementById('mgf');if(!f)return;sayJ(scr.say);mgBg(f,scr.mode);
   const items=[];let last=0,spawnGap=2000,n=0;const W=()=>f.clientWidth,H=()=>f.clientHeight,fish=scr.mode==='fish';
   const FS=['fishO','fishY','fishP','fishG','fish'],BS=['balloon','balloonB','balloonP','balloonG'];
   const spawn=()=>{const it=scr._r.item(),el=document.createElement('button');el.type='button';n++;
