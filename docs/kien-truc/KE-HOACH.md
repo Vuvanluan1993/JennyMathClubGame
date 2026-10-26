@@ -15,7 +15,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy 
 | Q3 | **Chốt 25/10: B — Cowork vẫn đẩy thẳng `main`**; bảo vệ nhánh bắt buộc PR + CI xanh nhưng chủ kho được miễn (bypass). Claude Code vẫn qua PR. CI vẫn chạy trên mỗi push `main` để thấy đỏ ngay | P-02 (dòng `CLAUDE.md`, cách bật bảo vệ) |
 | Q4 | **Chốt 25/10: A — dựng design system Jenny trong Claude Design**, 2 theme Pixel + Classroom, mở từ tip FE1 | P-18 |
 | Q6 | **Chốt 25/10: không gộp gì vào `main` cho tới khi cả kế hoạch xong.** Mọi PR gộp vào nhánh tích hợp `tich-hop/kien-truc-2026-10` (phiên TH, bảng kết quả `TICH-HOP-2026-10-25.md`); thử bằng **dự án Firebase thử riêng** `jenny-lop-hoc-ao-thu` (Spark; đổi lại 25/10 tối: dự án đang chạy giữ nguyên để bản `main` không lỗi). Đã tạo 26/10 qua Claude in Chrome: không Gemini, không Analytics; Firestore asia-southeast1 production; Auth Email/Password; app web `lop-hoc-ao-thu`; rules và chỉ mục của tip `d0d7ad7` đã dán. FB6 thêm công tắc cấu hình theo bản dựng (`FB_ENV=thu` → cấu hình dự án thử). RF2, FB6 cắt từ tip nhánh tích hợp; cuối cùng một PR tích hợp → `main` | mọi hàng còn lại |
-| Q5 | **Chờ thầy:** nâng Firebase lên gói Blaze (trả theo dùng, cần thẻ; đặt cảnh báo ngân sách 1 USD; ở quy mô CLB chi phí ≈ 0) để có Cloud Functions chấm xu, tạo tài khoản, chặn tự đăng ký, xuất sao lưu quản lý? Không nâng thì P-20 là mức bảo vệ cuối (giảm mạnh, không chặn hẳn) | P-22 |
+| Q5 | **Chốt 26/10: A — giữ Spark, không nâng Blaze.** P-22 ✗. P-20 là mức bảo vệ cuối cho xu (giảm mạnh, không chặn hẳn); tự đăng ký để bật vì tạo tài khoản bằng phiên phụ; sao lưu chỉ P-10. Xem lại khi có tên thật và thấy gian lận xu | P-22 ✗ |
 
 ## Giai đoạn 0 — Nền (chạy được mọi kiểm tra, build trên CI)
 - ☑ **P-01 Node + CI kiểm tra** (25/10, PR #4, `npm test` 8/8 ĐẠT). `plans/P-01-ci-kiem-tra.md`
@@ -41,7 +41,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy 
 - ✗ **P-11, P-12, P-13 Supabase** — bỏ theo Q1 (25/10). Kế hoạch con giữ lại để tham khảo, đầu file ghi "Bỏ".
 - ☐ **P-20 Ví xu và sao kiểm soát bằng rules** — `vi/{tk}` có kiểu; mỗi lần ghi cộng tối đa 40 xu và cách lần trước ≥ 3 giây; mua đồ khớp bảng giá `cfg/shop`; sổ sự kiện `ev/{tk}/{id}` chỉ-thêm; trang cô cảnh báo bất thường. Giảm mạnh gian lận; chặn hẳn cần P-22. `plans/P-20-vi-xu-rules.md`
 - ☑ **P-21 Firestore ngoại tuyến và tiết kiệm đọc** (26/10, PR #15 base nhánh tích hợp; thử trên dự án thử: 2 ca ngoại tuyến ĐẠT, phiên HS 20 phút 31 đọc so với 35 trước, listener 4 so với 6; công tắc `FB_ENV`; trang cô lớp 12 em chưa đo). `plans/P-21-firestore-ngoai-tuyen.md`
-- ⏸ **P-22 Blaze 0 đồng + Cloud Functions** (chỉ khi Q5 = Blaze) — hàm `taoTaiKhoan`, `chamXu`, `xoaHocSinh`, chặn tự đăng ký bằng blocking function, xuất sao lưu quản lý theo lịch; HS không còn ghi `vi`. `plans/P-22-blaze-functions.md`
+- ✗ **P-22 Blaze 0 đồng + Cloud Functions** (bỏ 26/10 theo Q5 = A; giữ kế hoạch con để xem lại khi có tên thật) — hàm `taoTaiKhoan`, `chamXu`, `xoaHocSinh`, chặn tự đăng ký bằng blocking function, xuất sao lưu quản lý theo lịch; HS không còn ghi `vi`. `plans/P-22-blaze-functions.md`
 
 ## Giai đoạn 4 — Tái cấu trúc front-end
 - ◐ **P-14 Vite + ES module cho Lớp học ảo** — 14a ☑ (RF1, 26/10), 14b ☑ (RF2, PR #12 base nhánh tích hợp: 118 file import/export, hàm đè qua hooks, ESLint 0 lỗi); còn **14c** bỏ `'unsafe-inline'` khỏi CSP (520 `onclick` inline cần đổi sang `addEventListener`), làm sau RF5. `plans/P-14-vite-module.md`
