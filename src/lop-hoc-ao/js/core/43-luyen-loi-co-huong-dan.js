@@ -9,7 +9,7 @@ import { save } from './09-du-lieu-demo.js';
 import { go, toast } from './13-giao-dien-chung.js';
 import { mist } from './21-lop-6-che-do-tro-choi.js';
 import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { isl1, q1, right1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1, q1, right1 } from './30b-may-tieu-hoc.js';
 import { curG, mist1Add } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { gdKind, gdTxt } from './40-huong-dan-khi-sai.js';
 const GD_GAME={frog:'Ếch nhảy',bait:'Thả mồi câu cá',plant:'Trồng cây',climb:'Leo núi',mole:'Đập chuột',pair:'Lật thẻ',star:'Hứng sao',tug:'Kéo co',clock:'Đồng hồ',scale:'Cân thăng bằng',shop:'Cửa hàng',train:'Tàu hoả',shape:'Ghép hình'};

@@ -35,16 +35,30 @@ trong `app.template.html` (một phạm vi chung, hoisting như cũ) — xem m�
 - **Trạng thái dùng chung** (biến được gán ở ≥ 2 file: `S`, `role`, `sid`, `scr`, `KEY`, `STUDENTS`, `CLOUD`, `LANG`, `UNL`, `gvGrade`… 23 tên): khai báo `globalThis.X=…` tại chỗ cũ (toàn cục tường minh, không import). Danh sách sinh ra: `tools/vite/toan-cuc-sinh.json`; tên do mã chèn/SDK đặt (`ACC`, `firebase`, `fbMKVua`): `tools/vite/toan-cuc.json` (viết tay, có lý do). ESLint đọc cả hai.
 - **ESLint** (`eslint.config.mjs` gốc kho, `npm run lint`): `no-undef`, `no-import-assign` → 0 lỗi trên 178 file.
 
+## Nội dung theo khối (P-15a — 26/10/2026)
+
+- Nội dung bài học nằm ở `content/lop-1` … `content/lop-5`, `content/lop-6-9` (ngoài `js/`). Mỗi thư mục: `index.js` **`export function dangKy(reg)`** + các file con
+  (`10-hk1.js` đảo chủ đề 1–5 và bộ câu chỉ lớp đó dùng, `20-bai-giang.js` slide, `30-hk2-phan-a.js`, `31-hk2-phan-b.js`; lớp 6–9: `02`…`08` như số cũ).
+  `dangKy` đổ vào trạng thái chung qua `reg` = `{PRIM, P1BY, ALLP1, P2, LES, MG, MGT, addTopic}` (`core/30a-dang-ky-khoi.js`; `PRIM` khai ở `core/25`).
+- **Helper dùng từ hai lớp trở lên ở core** (`core/30b` bộ máy tiểu học, `30c` câu hỏi chung `NQ/CQ/SG/ORD/F/buildIsl`, `30d` hình phẳng/góc/đồng hồ, `30e` hình học/số lớn,
+  `30f` hình vẽ/lời văn, `30` khung Bài giảng). Bộ câu chỉ một lớp dùng (`QT2`, `QL5`, `QDC5`…) ở `content/lop-N/10-hk1.js`. Content chỉ import từ core hoặc thư mục mình.
+- **Khi dựng** (`tools/vite/noi-file.js`): dòng `/*@include content/lop-N/index.js*/` trong `app.template.html` = cả thư mục, gói thành **một phạm vi hàm riêng**
+  rồi gọi `dangKyKhoi('lop-N', {dangKy})` ngay tại chỗ (tên trùng giữa các khối không đụng nhau). `lop-6-9` đứng sau `core/30a` (trước `core/09`: `core/21` đọc `P1BY[6]`
+  lúc nạp), `lop-1` … `lop-5` sau `core/30-bai-giang` (trước `core/33d`, `45`, `48`: ba file này duyệt `PRIM` lúc nạp) → thứ tự chạy như trước P-15a.
+- `tim-import.mjs`: tên khai báo trong một khối chỉ thấy trong khối đó; core không import từ content; `dangKy` của `index.js` luôn export. `chuyen-hooks.mjs` bỏ qua `content/`.
+- `vite.config.js`: `manualChunks` = `chunkKhoi` (mỗi `content/lop-*` một chunk). P-15a chưa tải động nên chưa có chunk; P-15b đổi dòng include thành `await import()`.
+- Gzip (26/10): core 437 KB · lop-1 24 · lop-2 42 · lop-3 47 · lop-4 44 · lop-5 50 · lop-6-9 18 KB. Trang học sinh hiện 685 KB (tĩnh, đủ 6 khối); khi chỉ tải một khối ≈ 489–515 KB.
+
 ## Thứ tự nạp (rút gọn)
 
-1. `core/00` hooks; `core/01` tiện ích (`R`, `pick`, `shuf`, `range`, `esc`…), `content/hk1/02–08` dữ liệu lớp 6–9 và Toán Jenny lớp 6.
+1. `core/00` hooks; `core/01` tiện ích (`R`, `pick`, `shuf`, `range`, `esc`…), `core/03`, `core/30a` đăng ký khối, rồi khối `content/lop-6-9` (lớp 6–9, Toán Jenny lớp 6).
 2. `core/09–20` dữ liệu demo, lưu trữ, giao diện chung, học sinh / giáo viên / phụ huynh, chơi màn lớp 6.
 3. `core/23b` vùng biển: `BIOME` (màu nước, kiểu đảo, hiệu ứng), `BIOME_ORDER[lớp]`, `OCEAN[lớp]`, `biomeOf(lớp, chủ đề, tên)`, `biomeFx()`.
    `core/22–23` đồ hoạ pixel (`PXS`, `spr()`, `pixelize()`), biển động (`startSea()`).
-4. `content/hk1/24` **bộ máy tiểu học**: `startG1`, `ans1`, `render` các dạng câu, `viewIsland1`, bản đồ chủ đề…
-   (nằm chung với Chủ đề 1 lớp 1). `core/25` Sổ lỗi sai và Toán Jenny tiểu học.
-5. `content/hk1/26–29` lớp 2–5 Chủ đề 1, Chủ đề 2–5 lớp 1–5. `content/hk1/30` khung Bài giảng Jenny,
-   trong đó ghép `content/lessons/*` và `content/hk2/*`, rồi `addTopic`, `lesOf`, `viewLes`.
+4. `core/30b` **bộ máy tiểu học**: `startG1`, `ans1`, `render` các dạng câu, `viewIsland1`, bản đồ chủ đề…
+   `core/25` Sổ lỗi sai và Toán Jenny tiểu học (`PRIM={}`).
+5. `core/30c–30f` helper câu hỏi, hình vẽ dùng chung; `core/30` khung Bài giảng Jenny (`addTopic`, `lesOf`, `viewLes`);
+   rồi khối `content/lop-1` … `lop-5` (mỗi khối đăng ký đảo chủ đề 1–5, slide, học kì 2).
 6. `core/33b` âm thanh: `sfx(tên)` (thư viện `SFX`), nhạc nền `THEMES` chọn theo màn trong `musicTheme()`, `hurtFx()` hiệu ứng mất tim; bọc `render()` để đổi nhạc và vẽ nút âm thanh.
 7. `core/33c–33e`: trùm hoạt hình, Jenny biểu cảm + hệ màu trùm theo vùng (`BIOME_HE`), Hộ chiếu đại dương (`st.pass`, `st.outfit`, `ofVariant`).
 8. `core/35` Hồ sơ của em: ghi nhận (`hsRec` bọc `ans1`), 6 trục (`HS_AX`, `hsAxOf`), điểm trục (`hsScores`), màn Luyện (`startLuyen`, chạy trên chế độ Sổ lỗi sai với cờ `lz`), giao diện `viewHoSo`.
@@ -58,7 +72,7 @@ trong `app.template.html` (một phạm vi chung, hoisting như cũ) — xem m�
 | `PRIM[g]` | Lớp `g` (1–5): `T` danh sách chủ đề, `isl` mảng đảo, `boss` trùm từng chủ đề. |
 | đảo `x` | `{id, title, lesson, b (số bài), tiet, ntiet, ti (chủ đề, từ 0), lv:[[gen Màn1],[gen Màn2],[gen Trùm]?], nm, boss, goal}` |
 | `s1(st,id)` | Tiến độ một đảo của học sinh: `{m:[đã qua màn?], fails:[], les:đã xem bài giảng}` |
-| `MG[g]` | Luật Câu cá / Bóng bay chủ đề 1. `MGT[ti][g]` cho chủ đề `ti ≥ 1`. |
+| `MG[g]` | Luật Câu cá / Bóng bay chủ đề 1. `MGT[ti][g]` cho chủ đề `ti ≥ 1`. Khai ở `core/30a`, khối `content/lop-N` đăng ký. |
 | `LES[g][bài]` | Slide Bài giảng Jenny: `[{t, h, say}]`. Trang cuối luôn là "Em nhớ nhé". |
 | `st.dd` | Số liệu theo ngày `'YYYY-MM-DD' → {n câu, c đúng, sec giây}` (bản học sinh theo lịch thật; bản demo: ngày 1 = 05/09/2026). |
 | `st.sk` | Theo dạng bài (`q.kind`): `{r:[10 kết quả gần nhất 1/0], t:lần cuối, ax:trục}`. Câu Trùm ghi 2 lần. |

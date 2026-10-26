@@ -3,17 +3,17 @@
    Tùy chọn theo nội dung đảo: Câu cá, Bóng bay, Đua giờ 60 giây. Kho báu vẫn trôi trên biển. */
 import { hooks } from './00-hooks.js';
 import { esc, pick, starsHtml } from './01-tien-ich.js';
+import { MG, MGT } from './30a-dang-ky-khoi.js';
 import { gvCLS, save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { addCoins } from './11-sao-va-mo-khoa.js';
 import { go, render, toast } from './13-giao-dien-chung.js';
 import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { isl1, q1, s1, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1, q1, s1, sayJ } from './30b-may-tieu-hoc.js';
 import { curG, PI, PRIM, QN } from './25-lop-1-so-loi-sai-toan-jenny.js';
-import { bossOf } from '../content/hk1/27-chu-de-2-lop-1-5.js';
-import { MGT } from '../content/hk1/28-chu-de-3-lop-1-5.js';
-import { lesOf } from '../content/hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
-import { CREAT, giveCard, MG, mkQ, randCommon, stopMini, TRE, treLeft } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
+import { bossOf } from './30d-hinh-phang-va-cau-hoi.js';
+import { lesOf } from './30-bai-giang-jenny.js';
+import { CREAT, giveCard, mkQ, randCommon, stopMini, TRE, treLeft } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
 import { sfx } from './33b-am-thanh.js';
 import { bossHTML } from './33c-trum-hoat-hinh.js';
 import { jenny } from './33d-jenny-bieu-cam.js';

@@ -6,8 +6,8 @@
    - Không thấy khuôn cả chuỗi thì dịch từng câu; vẫn không thấy thì giữ nguyên (công cụ rà sẽ báo).
    Giữ tên người Việt (Lan, Nam, Mai, Việt) và tiền đồng như sách. */
 import { hooks } from './00-hooks.js';
+import { LES } from './30a-dang-ky-khoi.js';
 import { curG, PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
-import { LES } from '../content/hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 import { duck } from './33b-am-thanh.js';
 export const EN_T={},EN_NOUN={};
 const VI_DIG={'không':0,'một':1,'mốt':1,'hai':2,'ba':3,'bốn':4,'tư':4,'năm':5,'lăm':5,'sáu':6,'bảy':7,'tám':8,'chín':9};

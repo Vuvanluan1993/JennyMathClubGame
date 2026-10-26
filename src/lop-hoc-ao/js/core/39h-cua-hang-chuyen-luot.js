@@ -4,9 +4,9 @@
 import { hooks } from './00-hooks.js';
 import { render } from './13-giao-dien-chung.js';
 import { PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { sayJ } from './30b-may-tieu-hoc.js';
 import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
-import { fN } from '../content/hk1/28-chu-de-3-lop-1-5.js';
+import { fN } from './30e-hinh-hoc-so-lon.js';
 import { hurtFx, sfx } from './33b-am-thanh.js';
 import { xgHearts, xgRec } from './37-tro-choi-dot-1.js';
 import { shopPaid, shopRound, shopSay, xg2End, xgVnd } from './38-tro-choi-dot-2.js';

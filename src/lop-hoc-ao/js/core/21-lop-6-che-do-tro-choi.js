@@ -5,16 +5,14 @@
    - 3 trái tim, combo, xây cầu, trùm đảo, rương, đảo nhà, bão đảo cũ, nhiệm vụ ngày
    ===================================================================== */
 import { esc, fmt, pick, R, range, roman, sup } from './01-tien-ich.js';
-import { P1_6 } from '../content/hk1/02-phan-i-sgk-ket-noi-tri-thuc-6-chuong-i.js';
-import { L1, NEED, P1_Q } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
-import { P2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { L1, NEED, P1_Q, P1BY, P2 } from './30a-dang-ky-khoi.js';
 import { save } from './09-du-lieu-demo.js';
 import { evDay, log } from './10-su-kien-mau-xapi.js';
 import { addCoins, curIsland, islandOpen, p1Stars, totalStars } from './11-sao-va-mo-khoa.js';
 import { bigStars, go, render, shortTitle, toast, unit } from './13-giao-dien-chung.js';
 import { nextAction, petFace } from './14-hoc-sinh-trang-chinh.js';
 import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { key1, q1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { key1, q1 } from './30b-may-tieu-hoc.js';
 import { hurtFx, sfx } from './33b-am-thanh.js';
 import { jenny } from './33d-jenny-bieu-cam.js';
 export const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=R(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -97,7 +95,7 @@ const G6={
 };
 // sửa câu “số chục” của b2 (cần đáp án tính ngay)
 G6.b2.lv[2][2]=()=>{const n=R(1000,9999);return N(`Số ${fmt(n)} có bao nhiêu <b>chục</b>?`,Math.floor(n/10),`Bỏ chữ số cuối: ${Math.floor(n/10)} chục.`)};
-const HINT6=Object.fromEntries(P1_6.map(x=>[x.id,x.slides[x.slides.length-1].h.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()]));
+const HINT6=Object.fromEntries(P1BY[6].map(x=>[x.id,x.slides[x.slides.length-1].h.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()]));
 
 /* ---------- Đảo nhà, nhiệm vụ, âm thanh ---------- */
 const DECOR=[['palm','🌴','Cây dừa',30],['crab','🦀','Bạn cua',40],['umb','⛱️','Ô che nắng',45],['turtle','🐢','Rùa biển',50],['castle','🏰','Lâu đài cát',60],['boat','⛵','Thuyền buồm',80],['flag','🚩','Cờ CLB Jenny',100],['light','🗼','Hải đăng',120]];

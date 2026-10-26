@@ -1,8 +1,7 @@
 /* ===================== Học sinh: trang chính ===================== */
 import { hooks } from './00-hooks.js';
 import { esc, starsHtml } from './01-tien-ich.js';
-import { BOOK, L1, NEED, P1_PASS, P1_Q } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
-import { P2, STAR2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { BOOK, L1, NEED, P1_PASS, P1_Q, P2, STAR2 } from './30a-dang-ky-khoi.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { curIsland, islandOpen, p1Stars, totalStars } from './11-sao-va-mo-khoa.js';
@@ -13,9 +12,9 @@ import { viewVideo } from './16-video-slide-thuyet-minh.js';
 import { viewExample } from './17-vi-du-dan-dat-phan-ii.js';
 import { viewPlay } from './18-choi-man.js';
 import { viewGame, viewHome6, viewIsland6 } from './21-lop-6-che-do-tro-choi.js';
-import { viewGame1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { viewGame1 } from './30b-may-tieu-hoc.js';
 import { viewHome1t, viewJenny1, viewJEx1, viewJSlide1 } from './25-lop-1-so-loi-sai-toan-jenny.js';
-import { viewLes } from '../content/hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
+import { viewLes } from './30-bai-giang-jenny.js';
 import { viewIsland1, viewMini } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
 import { jenny } from './33d-jenny-bieu-cam.js';
 export function petFace(e){return e>=70?'😺':e>=35?'🐱':'😿'}

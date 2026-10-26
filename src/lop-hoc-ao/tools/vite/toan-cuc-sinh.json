@@ -11,7 +11,7 @@
     "MAP_TI": "trạng thái dùng chung (globalThis.*), đặt ở js/core/39m-leo-nui-khoi-dong.js",
     "S": "trạng thái dùng chung (globalThis.*), đặt ở js/core/09-du-lieu-demo.js",
     "STUDENTS": "trạng thái dùng chung (globalThis.*), đặt ở js/core/09-du-lieu-demo.js",
-    "UNL": "trạng thái dùng chung (globalThis.*), đặt ở js/content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js",
+    "UNL": "trạng thái dùng chung (globalThis.*), đặt ở js/core/30b-may-tieu-hoc.js",
     "XG_KT": "trạng thái dùng chung (globalThis.*), đặt ở js/core/39e-kien-thuc-tro-choi.js",
     "dayNow": "gán tường minh window.*, ở js/core/62-may-chu.js",
     "gvBoQua": "gán tường minh window.*, ở js/core/59-ho-so-giao-vien.js",
@@ -123,7 +123,7 @@
     "tlPC": "gán tường minh window.*, ở js/core/72-tu-luyen.js",
     "tlXong": "gán tường minh window.*, ở js/core/72-tu-luyen.js",
     "toast": "gán tường minh window.*, ở js/core/75-nhap-excel.js",
-    "v1Said": "trạng thái dùng chung (globalThis.*), đặt ở js/content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js",
+    "v1Said": "trạng thái dùng chung (globalThis.*), đặt ở js/core/30b-may-tieu-hoc.js",
     "vaoLop": "gán tường minh window.*, ở js/core/58-lop-va-quan-ly.js",
     "viewQL": "gán tường minh window.*, ở js/core/58-lop-va-quan-ly.js",
     "xgLoop": "trạng thái dùng chung (globalThis.*), đặt ở js/core/37-tro-choi-dot-1.js"

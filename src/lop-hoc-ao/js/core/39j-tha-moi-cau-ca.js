@@ -12,7 +12,7 @@ import { addCoins } from './11-sao-va-mo-khoa.js';
 import { go, render } from './13-giao-dien-chung.js';
 import { pixelize, PXC, PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { pxCanvas } from './23-bien-pixel-dong-phia-sau-ban-do.js';
-import { isl1, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1, sayJ } from './30b-may-tieu-hoc.js';
 import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { sfx } from './33b-am-thanh.js';
 import { jenny } from './33d-jenny-bieu-cam.js';

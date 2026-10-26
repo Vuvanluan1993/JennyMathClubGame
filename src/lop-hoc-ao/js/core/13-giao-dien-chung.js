@@ -1,7 +1,6 @@
 /* ===================== Giao diện chung ===================== */
 import { hooks } from './00-hooks.js';
-import { ALLP1 } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
-import { P2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { ALLP1, P2 } from './30a-dang-ky-khoi.js';
 import { fresh, save } from './09-du-lieu-demo.js';
 import { viewHS } from './14-hoc-sinh-trang-chinh.js';
 import { startPlayer } from './16-video-slide-thuyet-minh.js';
@@ -10,7 +9,7 @@ import { viewPH } from './20-phu-huynh.js';
 import { centerMap } from './21-lop-6-che-do-tro-choi.js';
 import { pixelize, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { startSea } from './23-bien-pixel-dong-phia-sau-ban-do.js';
-import { fitOpts, g1AfterRender, healAll } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { fitOpts, g1AfterRender, healAll } from './30b-may-tieu-hoc.js';
 import { P2_1 } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { raceAfterRender, stopMini } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
 import { miniAfterRender } from './33-tro-choi-nho-dang-pixel.js';

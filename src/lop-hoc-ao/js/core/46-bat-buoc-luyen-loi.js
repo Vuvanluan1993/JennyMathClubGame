@@ -9,7 +9,7 @@ import { save } from './09-du-lieu-demo.js';
 import { go, render, toast } from './13-giao-dien-chung.js';
 import { mist } from './21-lop-6-che-do-tro-choi.js';
 import { pixelize, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { isl1, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1, sayJ } from './30b-may-tieu-hoc.js';
 import { curG, startJ1 } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { jenny } from './33d-jenny-bieu-cam.js';
 import { gdTxt } from './40-huong-dan-khi-sai.js';

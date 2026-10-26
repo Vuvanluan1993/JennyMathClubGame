@@ -1,7 +1,6 @@
 /* ===================== Học sinh: trang đảo / buổi ===================== */
 import { esc } from './01-tien-ich.js';
-import { BOOK, M1, P1_Q } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
-import { STAR2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { BOOK, M1, P1_Q, STAR2 } from './30a-dang-ky-khoi.js';
 import { bigStars, unit, ustate } from './13-giao-dien-chung.js';
 import { jenny } from './33d-jenny-bieu-cam.js';
 export function viewIsland(){

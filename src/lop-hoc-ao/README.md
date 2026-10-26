@@ -30,9 +30,8 @@ src/lop-hoc-ao/
   css/app.css            toàn bộ giao diện (pixel, khung, điện thoại)
   js/core/               phần chạy chung: tiện ích, dữ liệu demo, giao diện, chơi màn, giáo viên, phụ huynh,
                          đồ hoạ pixel, biển động, Sổ lỗi sai, tính năng chơi thêm, trò chơi nhỏ, khởi động
-  js/content/hk1/        nội dung: lớp 6–9 chương I, Toán Jenny, lớp 1–5 Chủ đề 1–5, khung Bài giảng Jenny
-  js/content/hk2/        nội dung lớp 1–5 các chủ đề học kì 2 (mỗi file 1 phần của 1 lớp)
-  js/content/lessons/    Bài giảng Jenny lớp 1–5 (slide theo bài)
+  content/lop-1 … lop-5  nội dung từng lớp (P-15a): 10-hk1 (chủ đề 1–5), 20-bai-giang (slide), 30/31-hk2; index.js export dangKy(reg)
+  content/lop-6-9/       lớp 6–9 chương I, Toán Jenny lớp 6
   data/plan.json         cấu trúc vở bài tập: chủ đề → bài → số tiết (dùng để kiểm tra số đảo)
   tools/build.py         = npm run build:lop-hoc-ao (Vite): bản đầy đủ + 4 trang thật + 4 trang thử
   tools/vite/            vite plugin nối file (noi-file.js), trang theo vai (vai.js), sinh import (tim-import.mjs),

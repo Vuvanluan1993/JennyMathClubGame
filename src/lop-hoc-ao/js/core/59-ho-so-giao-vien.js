@@ -14,7 +14,7 @@ import { alerts } from './12-so-lieu.js';
 import { go, initials, render, shortTitle, toast } from './13-giao-dien-chung.js';
 import { viewGV } from './19-giao-vien.js';
 import { mist } from './21-lop-6-che-do-tro-choi.js';
-import { isl1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { isl1 } from './30b-may-tieu-hoc.js';
 import { PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { HS_AX, HS_AXN, HS_MIN, HS_OPEN, HS_TH, hsAxFix, hsDayDate, hsHeal, hsIndex, hsKey, hsLogic, hsLoiVan,
   hsMakeQ, hsMonth, hsMuc, hsScores, hsSnap, hsStreaks, hsSuy, hsToday, hsTodayKey, hsWord } from './35-ho-so.js';

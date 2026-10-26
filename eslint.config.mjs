@@ -10,7 +10,7 @@ const toanCuc = Object.fromEntries([...Object.keys(doc('toan-cuc.json')), ...Obj
 
 export default [
   {
-    files: ['src/lop-hoc-ao/js/**/*.js'],
+    files: ['src/lop-hoc-ao/js/**/*.js', 'src/lop-hoc-ao/content/**/*.js'], // content/lop-*: nội dung theo khối (P-15a)
     languageOptions: { ecmaVersion: 'latest', sourceType: 'module', globals: { ...globals.browser, ...globals.es2025, ...toanCuc } },
     rules: {
       'no-undef': 'error',          // tên chưa khai báo (không còn toàn cục ngầm)

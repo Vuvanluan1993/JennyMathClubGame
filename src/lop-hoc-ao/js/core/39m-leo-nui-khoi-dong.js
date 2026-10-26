@@ -3,8 +3,8 @@
 import { hooks } from './00-hooks.js';
 import { pick, R } from './01-tien-ich.js';
 import { shuf } from './21-lop-6-che-do-tro-choi.js';
-import { isl1, jumpT1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
-import { fN } from '../content/hk1/28-chu-de-3-lop-1-5.js';
+import { isl1, jumpT1 } from './30b-may-tieu-hoc.js';
+import { fN } from './30e-hinh-hoc-so-lon.js';
 import { xgGr } from './39-tro-choi-dot-3.js';
 import { ktOf } from './39e-kien-thuc-tro-choi.js';
 import { CLIMB_N } from './39l-leo-nui.js';

@@ -4,7 +4,7 @@ import { hooks } from './00-hooks.js';
 import { R } from './01-tien-ich.js';
 import { render, toast } from './13-giao-dien-chung.js';
 import { biomeOf } from './23b-vung-bien.js';
-import { curT1, isl1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { curT1, isl1 } from './30b-may-tieu-hoc.js';
 import { curG, PT } from './25-lop-1-so-loi-sai-toan-jenny.js';
 const SND=(()=>{let o={m:1,s:1};try{const v=JSON.parse(localStorage.getItem('jennySound')||'null');if(v)o=Object.assign(o,v)}catch(e){}try{if(localStorage.getItem('jennyMute')==='1')o={m:0,s:0}}catch(e){}return o})();
 muted=!SND.s;

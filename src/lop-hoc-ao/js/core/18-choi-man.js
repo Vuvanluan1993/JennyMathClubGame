@@ -1,8 +1,7 @@
 /* ===================== Chơi màn ===================== */
 import { esc, pick } from './01-tien-ich.js';
 import { ansHint, ansText, isCorrect } from './03-phan-so-va-kiem-tra-dap-an.js';
-import { L1, M1, P1_PASS, P1_Q } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
-import { STAR2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { L1, M1, P1_PASS, P1_Q, STAR2 } from './30a-dang-ky-khoi.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { addCoins, islandOpen, totalStars } from './11-sao-va-mo-khoa.js';
