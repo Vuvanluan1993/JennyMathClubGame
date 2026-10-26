@@ -17,8 +17,8 @@ hooks.ham('gvTen',function(){return'Cô Jenny'});
 export const DEMO_CODE='JENNY-DEMO';
 globalThis.S=undefined;globalThis.role='hs';globalThis.sid='na';globalThis.scr={k:'home'};globalThis.player=null;
 
-const blankP1=g=>Object.fromEntries(P1BY[g].map(x=>[x.id,{intro:false,m:Array(x.nm||3).fill(false),fails:Array(x.nm||3).fill(0)}]));
-const blankP2=()=>Object.fromEntries([...P2,...P2_1].map(x=>[x.id,{intro:false,ex:false,m:[false,false,false],fails:[0,0,0]}]));
+export const blankP1=g=>Object.fromEntries((P1BY[g]||[]).map(x=>[x.id,{intro:false,m:Array(x.nm||3).fill(false),fails:Array(x.nm||3).fill(0)}]));
+export const blankP2=()=>Object.fromEntries([...P2,...P2_1].map(x=>[x.id,{intro:false,ex:false,m:[false,false,false],fails:[0,0,0]}]));
 export function newStudent(...a){return hooks.goi('newStudent',this,a)}
 hooks.ham('newStudent',function(name,grade){return{name,grade,coins:40,energy:70,items:[],badges:[],comments:[],selfCoins:{},active:false,p1:blankP1(grade),p2:blankP2()}});
 export function simDay(id,d,n,acc,obj){S.day=d;for(let i=0;i<n;i++)log(id,'answered',obj,obj,{success:Math.random()<acc,duration:`PT${R(25,110)}S`})}

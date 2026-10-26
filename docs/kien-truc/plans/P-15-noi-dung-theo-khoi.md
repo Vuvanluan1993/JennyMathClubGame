@@ -13,6 +13,11 @@ Gzip trang học sinh 670 → 685 KB (tách khối làm gzip ít gộp chữ gi�
 (gợi ý `hooks.khi('khoi:sau', g => …)` trong `dangKyKhoi`): `core/21` `HINT6` (P1BY[6]), `core/33d` đổi `PRIM[g].boss`, `core/45` và `core/48` bọc hàm sinh câu trong `PRIM[g].isl`.
 Chunk ES cho `import()`: transform bỏ dòng import từ `js/core` trong `content/**` (tên core là toàn cục của script chung) rồi để Rollup tách theo `chunkKhoi`.
 
+⟳ 26/10 (RF4, nhánh `claude/tai-dong-theo-khoi-a2439e`, PR vào `tich-hop/kien-truc-2026-10`): **P-15b xong** — mỗi khối là chunk `assets/lop-N-[hash].js`, `core/30a` `napKhoi()` = `import()`,
+`core/34` chờ khối của màn đang vẽ với màn chờ pixel; cô/phụ huynh/quản lý tải theo lớp đang xem; đổi lớp không tải lại trang. Bản một file và `npm run dev` vẫn tĩnh.
+Thêm so với kế hoạch: `core/72` cũng gắn câu lúc nạp (đặt tính lớp 2) → chạy lại qua `hooks.khi('khoi:sau')` như 33d/45/48; `core/39e` cần kiến thức cuối lớp trước → khối mang `90-kien-thuc-truoc.js`;
+`core/59` dữ liệu mẫu bản thử cần mọi khối ở lần mở đầu. Trang học sinh 680 → 492–517 KB gzip; `tools/test/kich-co.mjs` kiểm kích cỡ, lop-6-9, tải thật, và dữ liệu từng khối = bản một file.
+
 ## File sửa
 - Di chuyển: `src/lop-hoc-ao/js/content/hk1/*`, `hk2/*`, `lessons/*` → `src/lop-hoc-ao/content/lop-1/index.js` … `lop-5/index.js`, `lop-6-9/index.js` (mỗi thư mục `export function dangKy(reg)` gọi `addTopic`, `LES[g]`, `MG/MGT`).
 - `js/core/30-bai-giang-jenny…js`, `34-khoi-dong.js`: sau đăng nhập biết khối → `await import(`../content/lop-${g}/index.js`)` rồi `render()`; màn chờ pixel "Jenny đang chuẩn bị bài…".

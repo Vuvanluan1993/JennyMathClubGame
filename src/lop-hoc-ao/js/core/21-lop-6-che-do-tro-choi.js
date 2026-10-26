@@ -95,7 +95,8 @@ const G6={
 };
 // sửa câu “số chục” của b2 (cần đáp án tính ngay)
 G6.b2.lv[2][2]=()=>{const n=R(1000,9999);return N(`Số ${fmt(n)} có bao nhiêu <b>chục</b>?`,Math.floor(n/10),`Bỏ chữ số cuối: ${Math.floor(n/10)} chục.`)};
-const HINT6=Object.fromEntries(P1BY[6].map(x=>[x.id,x.slides[x.slides.length-1].h.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()]));
+/* P-15b: P1BY[6] ở khối lop-6-9 (tải sau) → tính khi dùng lần đầu */
+let HINT6_=null;const hint6=()=>HINT6_||(HINT6_=Object.fromEntries(P1BY[6].map(x=>[x.id,x.slides[x.slides.length-1].h.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()])));
 
 /* ---------- Đảo nhà, nhiệm vụ, âm thanh ---------- */
 const DECOR=[['palm','🌴','Cây dừa',30],['crab','🦀','Bạn cua',40],['umb','⛱️','Ô che nắng',45],['turtle','🐢','Rùa biển',50],['castle','🏰','Lâu đài cát',60],['boat','⛵','Thuyền buồm',80],['flag','🚩','Cờ CLB Jenny',100],['light','🗼','Hải đăng',120]];
@@ -191,7 +192,7 @@ export function viewIsland6(){
 /* ---------- Màn chơi ---------- */
 function startGame(id,lv,base){
   const G=G6[id];let qs,mode='main';
-  const mk=(L,gi,isl)=>{const q=G6[isl].lv[L][gi]();return{...q,src:[isl,L,gi],key:`${isl}:${L}:${gi}`,label:qLabel(isl,q),hint:q.hint||HINT6[isl]}};
+  const mk=(L,gi,isl)=>{const q=G6[isl].lv[L][gi]();return{...q,src:[isl,L,gi],key:`${isl}:${L}:${gi}`,label:qLabel(isl,q),hint:q.hint||hint6()[isl]}};
   if(lv==='storm'){mode='storm';qs=[0,1,2].map(L=>mk(L,R(0,G.lv[L].length-1),id))}
   else if(lv==='fix'){mode='fix';const es=Object.values(mist(S.st[sid])).sort((a,b)=>a.day-b.day);qs=es.slice(0,3).flatMap(e=>[mk(e.lv,e.gi,e.id),mk(e.lv,e.gi,e.id)])}
   else if(lv==='easy'){mode='easy';const L=Math.max(0,base-1),pool=shuf(G.lv[L].map((_,i)=>i));qs=Array.from({length:P1_Q},(_,k)=>mk(L,pool[k%pool.length],id))}

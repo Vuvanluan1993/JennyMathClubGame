@@ -8,6 +8,10 @@
 // - Các script nhỏ trong <head> (data-theme light, chữ tự host, CSP) giữ nguyên chỗ, chạy TRƯỚC CSS.
 // - Đường dẫn asset ghi tương đối (../assets/…) nên một bản chạy được cả trên Pages (base), máy chủ thử ở "/" và dist/.
 // - Xong build: chép 4 trang thật + 4 trang thử sang games/lop-hoc-ao/ (assets/.gitignore tự sinh = "*", không vào git).
+// - P-15b (26/10/2026): nội dung theo khối (content/lop-*) KHÔNG nối vào trang; mỗi khối là một chunk ES (assets/lop-N-[hash].js, Rollup dựng,
+//   bỏ dòng import từ js/core vì tên core là toàn cục của script chung). Trang ghi <script type="application/json" id="khoi-url"> (khối → đường dẫn)
+//   ngay trước <script src>; core/30a napKhoi() tải bằng import(). Bản học sinh (thật + thử) không có lop-6-9.
+//   Bản một file (lop-hoc-ao-jenny.html) và npm run dev vẫn nối nội dung tại chỗ (tĩnh) như P-15a.
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -63,15 +67,15 @@ function goiKhoi(goc, k) {
   return `dangKyKhoi('${k}',(()=>{\n${ma}\nreturn {dangKy};\n})());`;
 }
 
-function noi(goc, text, sau = 0) {
+function noi(goc, text, sau = 0, tinh = true) {
   if (sau >= 5) throw new Error('include lồng quá sâu');
   return text.replace(INC, (_, f) => {
     f = f.trim();
     const k = f.match(KHOI);
-    if (k) return goiKhoi(goc, k[1]);
+    if (k) return tinh ? goiKhoi(goc, k[1]) : `/* khối ${k[1]}: tải bằng import() (core/30a napKhoi) */`;
     let m = fs.readFileSync(path.join(goc, f), 'utf8');
     if (f.endsWith('.js')) m = boModule(m, f); // P-14b: file JS là ES module; khi nối thành một script thường thì bỏ dòng import và chữ "export "
-    return noi(goc, m.replace(/\n$/, ''), sau + 1);
+    return noi(goc, m.replace(/\n$/, ''), sau + 1, tinh);
   });
 }
 
@@ -82,8 +86,16 @@ export function thuTu(goc, tep = 'app.template.html', sau = 0) {
   return [...t.matchAll(INC)].flatMap(m => { const f = m[1].trim(), k = f.match(KHOI); return k ? tepKhoi(goc, k[1]) : [f, ...thuTu(goc, f, sau + 1)]; });
 }
 
-/** Bản đầy đủ. coMoc = true: đánh dấu khối CSS/JS chính để tách ra file (mốc là chú thích HTML, nằm ngoài thẻ). */
-export function banDayDu(goc, coMoc = false) {
+/** Các khối nội dung theo thứ tự trong app.template.html: ['lop-6-9', 'lop-1', …]. */
+export function dsKhoi(goc) {
+  return [...fs.readFileSync(path.join(goc, 'app.template.html'), 'utf8').matchAll(INC)].map(m => (m[1].trim().match(KHOI) || [])[1]).filter(Boolean);
+}
+/** Bản học sinh chỉ có tiểu học: không đưa khối lop-6-9 vào danh sách tải. */
+export const khoiCuaTrang = (ten, ds) => /hoc-sinh$/.test(ten) ? ds.filter(k => k !== 'lop-6-9') : ds;
+
+/** Bản đầy đủ. coMoc = true: đánh dấu khối CSS/JS chính để tách ra file (mốc là chú thích HTML, nằm ngoài thẻ).
+ *  tinh = true: nối nội dung các khối tại chỗ (bản một file, dev); false: bỏ, trang tải khối bằng import() (P-15b). */
+export function banDayDu(goc, coMoc = false, tinh = true) {
   const lk = kiemTraLienKet(docFileJs(goc, thuTu(goc))); // import phải khớp export của file đích (như bộ liên kết module)
   if (lk.length) throw new Error('import/export không khớp (chạy node tools/vite/tim-import.mjs):\n' + lk.join('\n'));
   let t = fs.readFileSync(path.join(goc, 'app.template.html'), 'utf8');
@@ -92,7 +104,7 @@ export function banDayDu(goc, coMoc = false) {
     if (n !== 1) throw new Error(`app.template.html: cần đúng 1 khối ${dau} (chỉ gồm dòng /*@include*/), thấy ${n}`);
     if (coMoc) t = t.replace(re, k => dau + k + cuoi);
   }
-  return noi(goc, t).split('__APP_VER__').join(soBan(goc));
+  return noi(goc, t, 0, tinh).split('__APP_VER__').join(soBan(goc));
 }
 
 /** Bỏ mốc → trang một file (y như build cũ). */
@@ -123,20 +135,30 @@ export default function noiFile({ goc, repo, trang, base }) {
   const ao = Object.fromEntries(Object.entries(trang).map(([ten, f]) => [path.join(goc, f), ten])); // id ảo → tên entry
   const ra = {}; // tên entry → { phan, cssRef, jsRef }
   const BAN_RA = path.join(repo, 'games', 'lop-hoc-ao');
+  const khoi = {}; // P-15b: tên khối → referenceId chunk
+  const thuMucNoiDung = path.join(goc, 'content') + path.sep;
+  const IMPORT_CORE = /^import \{[^}]*\} from '(?:\.\.\/)+js\/core\/[^']+';\n/gm;
   return {
     name: 'jenny-noi-file',
     enforce: 'pre',
     resolveId(id) { const p = path.resolve(goc, id); return ao[p] ? p : null; },
     load(id) { return ao[id] ? '<!doctype html>\n<html><head></head><body></body></html>\n' : null; },
 
+    // P-15b: file trong content/** là ES module của chunk khối; tên của core (import từ js/core) là toàn cục của script chung → bỏ dòng import đó
+    transform(code, id) {
+      if (!id.startsWith(thuMucNoiDung)) return null;
+      return { code: code.replace(IMPORT_CORE, m => '\n'.repeat(m.split('\n').length - 1)), map: null };
+    },
+
     buildStart() {
-      const ban = banDayDu(goc, true), css = new Map();
+      for (const k of dsKhoi(goc)) khoi[k] = this.emitFile({ type: 'chunk', id: path.join(goc, 'content', k, 'index.js'), name: k, preserveSignature: 'strict' });
+      const ban = banDayDu(goc, true, false), css = new Map();
       for (const ten of Object.values(ao)) {
         const phan = tach(LAM[ten](ban));
         if (!css.has(phan.css)) css.set(phan.css, this.emitFile({ type: 'asset', name: 'lop-hoc-ao.css', source: phan.css }));
         ra[ten] = { phan, cssRef: css.get(phan.css), jsRef: this.emitFile({ type: 'asset', name: ten + '.js', source: phan.js }) };
       }
-      this.emitFile({ type: 'asset', fileName: 'lop-hoc-ao-jenny.html', source: motFile(ban) });
+      this.emitFile({ type: 'asset', fileName: 'lop-hoc-ao-jenny.html', source: motFile(banDayDu(goc, true, true)) }); // một file: nội dung tĩnh
     },
 
     generateBundle: {
@@ -149,8 +171,10 @@ export default function noiFile({ goc, repo, trang, base }) {
           if (!a || a.type !== 'asset') this.error('không thấy trang ' + f + ' trong bundle');
           const toi = ref => path.posix.relative(path.posix.dirname(f), this.getFileName(ref)) || '.';
           const { phan, cssRef, jsRef } = ra[ten];
-          ra[ten].tep = [f, this.getFileName(cssRef), this.getFileName(jsRef)];
-          a.source = phan.truoc + `<link rel="stylesheet" href="${toi(cssRef)}">` + phan.giua + `<script src="${toi(jsRef)}"></script>` + phan.sau;
+          const ks = khoiCuaTrang(ten, Object.keys(khoi)), url = JSON.stringify(Object.fromEntries(ks.map(k => [k, toi(khoi[k])])));
+          ra[ten].tep = [f, this.getFileName(cssRef), this.getFileName(jsRef), ...ks.map(k => this.getFileName(khoi[k]))];
+          a.source = phan.truoc + `<link rel="stylesheet" href="${toi(cssRef)}">` + phan.giua
+            + `<script type="application/json" id="khoi-url">${url}</script><script src="${toi(jsRef)}"></script>` + phan.sau;
         }
       },
     },

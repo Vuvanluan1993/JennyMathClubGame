@@ -63,7 +63,9 @@ export const EN_GR=new Set();/* các lớp đã dịch xong (48b… tự thêm) 
 const enCap=h=>typeof h==='string'?h.replace(/^((?:\s|<[^>]*>)*)([a-z])/,(m,a,c)=>a+c.toUpperCase()):h;
 export function trQ(q){if(!q||!enOn()||q.en)return q;const c={...q,en:1};for(const f of ['q','say','sol','pic','label'])if(typeof c[f]==='string')c[f]=trEN(c[f]);for(const f of ['q','say','sol'])c[f]=enCap(c[f]);
  if(Array.isArray(c.opts))c.opts=c.opts.map(o=>o&&typeof o==='object'?{...o,h:trEN(o.h)}:trEN(o));if(Array.isArray(c.tiles))c.tiles=c.tiles.map(trEN);return c}
-for(const G in PRIM){if(!PRIM[G].isl)continue;for(const x of PRIM[G].isl)(x.lv||[]).forEach(gs=>gs.forEach((gn,i)=>{if(typeof gn==='function'&&!gn.en){const w=function(){return trQ(gn.apply(this,arguments))};w.en=1;w.gdFlip=gn.gdFlip;gs[i]=w}}))}
+/* P-15b: chạy cho khối có lúc nạp và mỗi khối tải sau (hooks 'khoi:sau') */
+function bocTiengAnh(k){for(const G in PRIM){if(!PRIM[G].isl)continue;for(const x of PRIM[G].isl)(x.lv||[]).forEach(gs=>gs.forEach((gn,i)=>{if(typeof gn==='function'&&!gn.en){const w=function(){return trQ(gn.apply(this,arguments))};w.en=1;w.gdFlip=gn.gdFlip;gs[i]=w}}))}if(k)try{enSwapAll()}catch(e){}}
+bocTiengAnh();hooks.khi('khoi:sau',bocTiengAnh);
 /* nội dung tĩnh của lớp: tên chủ đề, đảo, bài giảng, trùm, vùng biển — đổi tại chỗ, giữ bản gốc trong _vi */
 function enSwapObj(o,fields){if(!o)return;o._vi=o._vi||{};for(const f of fields){if(typeof o[f]!=='string'&&!(f in o._vi))continue;if(!(f in o._vi))o._vi[f]=o[f];o[f]=LANG==='en'?trEN(o._vi[f]):o._vi[f]}}
 export function enSwapAll(){for(const G of EN_GR){const P=PRIM[G];if(!P)continue;(P.isl||[]).forEach(x=>enSwapObj(x,['lesson','short','goal','title']));
