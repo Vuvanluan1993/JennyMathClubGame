@@ -41,5 +41,5 @@ const petStageName=p=>{const n='pet_'+p.sp+pStage(p);return PXS[n]?n:p.sp};
 hooks.de('petSpr',function(p,H,cls){const st=S.st[sid],stg=pStage(p),nm=petStageName(p),sc=P_SC[stg],h=Math.round(H*sc),d=pxURI(nm),w=Math.round(h*d.w/d.h);let wear='';
  const g=p.wear&&ghSt(st).gear.find(x=>x.u===p.wear);if(g&&P_WEAR[g.id]&&stg>0){const[wn,x,y,ww]=P_WEAR[g.id],dd=pxURI(wn),W=w*ww;wear=`<img class="px pwear" src="${dd.u}" alt="" style="left:${x*w}px;top:${y*h}px;width:${W}px;height:${W*dd.h/dd.w}px">`}
  return`<span class="pspr st${stg} ${p.sick?'sick':''} ${cls||''}" style="width:${w}px;height:${h}px">${spr(nm,h)}${wear}</span>`});
-{const _p=hooks.cu('petSim');hooks.de('petSim',function(st){const r=_p.apply(this,arguments);try{const P=petsOf(st),n=P.eggs.length;P.eggs=P.eggs.filter(e=>PET_EGG[e.sp]);if(P.eggs.length<n)P.ev=P.ev.filter(e=>!/Có trứng mới/.test(e.msg))}catch(e){}return r})}
+{hooks.on('petSim',_p=>function(st){const r=_p.apply(this,arguments);try{const P=petsOf(st),n=P.eggs.length;P.eggs=P.eggs.filter(e=>PET_EGG[e.sp]);if(P.eggs.length<n)P.ev=P.ev.filter(e=>!/Có trứng mới/.test(e.msg))}catch(e){}return r})}
 Object.assign(I18N,{'Ếch xanh':'Green frog','Mèo con':'Kitten','Cún con':'Puppy'});

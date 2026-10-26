@@ -47,7 +47,7 @@ const TK_PRICE=30,TK_DAY=3,TK_MIN=5;
 export const ghSt=st=>{st.shop=st.shop||{own:[],acc:'',frame:'',dec:[]};const s=st.shop;s.bag=s.bag||{};s.gear=s.gear||[];return s};
 const ghFind=id=>{for(const c of GH){const x=c.it.find(i=>i[0]===id);if(x)return{c,x}}return null};
 /* trang phục mua được tính là "đã có" trong tủ đồ */
-{const _o=hooks.cu('ofOwn');hooks.de('ofOwn',function(st){const s=_o.apply(this,arguments);try{(st.shop&&st.shop.own||[]).forEach(k=>{if(OUTFIT[k])s.add(k)})}catch(e){}return s})}
+{hooks.on('ofOwn',_o=>function(st){const s=_o.apply(this,arguments);try{(st.shop&&st.shop.own||[]).forEach(k=>{if(OUTFIT[k])s.add(k)})}catch(e){}return s})}
 /* Jenny xem trước: áo + mũ/kính + thú cưng + khung */
 export function ghJenny(...a){return hooks.goi('ghJenny',this,a)}
 hooks.ham('ghJenny',function(H,L){const u=H/19,of=L.of,body=spr(of?ofVariant('jenny',of):'jenny',H);
@@ -87,8 +87,8 @@ hooks.ham('viewShop',function(st){const s=ghSt(st),cat=scr.ghCat||'of',C=GH.find
   <nav class="ghtabs" aria-label="Loại hàng">${tabs}</nav>${body}
   <p class="muted ghnote">${LANG==='en'?'Earn coins: each correct answer +5 · pass a level +10, island boss +30 · fix a mistake +5 · practice page task +5, ★ challenge +15 · games up to +20 each · class boss +20–30 · homework +20. No daily limit.':'Kiếm xu: mỗi câu đúng +5 · qua màn +10, trùm đảo +30 · sửa xong 1 lỗi +5 · Tự luyện mỗi bài +5, ★ +15 · trò chơi tới +20 mỗi lượt · trùm lớp +20–30 · bài về nhà +20. Không giới hạn xu trong ngày.'}</p></div>`});
 /* gắn vào trang chính tiểu học: tab 'shop' + nút xu ở thẻ chào */
-{const _v=hooks.cu('viewHome1t');hooks.de('viewHome1t',function(){const r=_v.apply(this,arguments);if(scr.tab!=='shop')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewShop(st)+(i>=0?r.slice(i):'')})}
-{const _h=hooks.cu('viewHome1');hooks.de('viewHome1',function(){return _h.apply(this,arguments).replace(/<span class="chip">🪙 <b>(\d+)<\/b><\/span>/,`<button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})" aria-label="$1 xu, mở Cửa hàng">🪙 <b>$1</b> <span>Cửa hàng ▸</span></button>`)})}
+{hooks.on('viewHome1t',_v=>function(){const r=_v.apply(this,arguments);if(scr.tab!=='shop')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewShop(st)+(i>=0?r.slice(i):'')})}
+{hooks.on('viewHome1',_h=>function(){return _h.apply(this,arguments).replace(/<span class="chip">🪙 <b>(\d+)<\/b><\/span>/,`<button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})" aria-label="$1 xu, mở Cửa hàng">🪙 <b>$1</b> <span>Cửa hàng ▸</span></button>`)})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .ghchip{cursor:pointer;background:#FFF4D6!important;color:#7A4E00}.ghchip span{font-family:var(--f-display);font-size:16px;margin-left:2px}
 .ghtop{padding:12px!important}.ghhead{display:flex;align-items:center;gap:8px}.ghhead h2{display:flex;align-items:center;gap:6px;margin:0;font-size:24px}.ghcoin{margin-left:auto;display:flex;align-items:center;gap:4px;font-family:var(--f-display);font-size:22px;background:#FFF4D6;color:#7A4E00;padding:2px 8px;box-shadow:var(--f2)}
@@ -112,7 +112,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .ghnote{font-size:13px;margin:14px 2px}
 </style>`);
 /* thanh mua nổi ở đáy màn hình (thầy góp ý 23/10): chọn món nào thì nút Mua/Dùng hiện ngay bên dưới, không phải kéo lên */
-{const _v=hooks.cu('viewShop');hooks.de('viewShop',function(st){let r=_v.apply(this,arguments);try{const T=scr.ghTry,f=T&&ghFind(T.id);if(!f)return r;
+{hooks.on('viewShop',_v=>function(st){let r=_v.apply(this,arguments);try{const T=scr.ghTry,f=T&&ghFind(T.id);if(!f)return r;
   const m=r.match(/<div class="ghinfo">[\s\S]*?(<button[^>]*class="gobtn ghgo[^"]*"[\s\S]*?<\/button>)<\/div><\/div><\/section>/);if(!m)return r;
   const note=r.match(/<div class="ghinfo"><b>([\s\S]*?)<\/b><small>([\s\S]*?)<\/small>/);
   const bar=`<div class="ghbar" role="region" aria-label="Mua món đã chọn"><div class="grow"><b>${note?note[1]:''}</b><small>${note?note[2]:''}</small></div>${m[1].replace('gobtn ghgo','gobtn ghgo ghbarbtn')}<button type="button" class="ghbarx" onclick="scr.ghTry=null;render()" aria-label="Bỏ chọn">✕</button></div>`;

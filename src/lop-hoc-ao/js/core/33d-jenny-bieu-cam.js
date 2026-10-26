@@ -49,4 +49,4 @@ function biomeOfIsl(id){const m=String(id).match(/^g(\d)/),x=isl1(id);if(!m||!x)
 /* trùm chủ đề (trùm đảo): đổi màu theo vùng biển, thêm tên hệ */
 for(const g in PRIM){if(!PRIM[g].boss||!PRIM[g].T)continue;PRIM[g].boss=PRIM[g].boss.map((b,ti)=>{if(!b)return b;const bk=biomeOfTopic(+g,ti),he=heOf(bk);const r=[he?cbVariant(b[0],he):b[0],b[1]];r.base=b[0];r.baseName=b[1];r.he=he?he.k:'bien';r.bk=bk;return r})}
 /* trùm lớp: hệ theo vùng biển của đảo (tính lại mỗi lần, kể cả dữ liệu đã lưu) */
-{const _cbI=hooks.cu('cbI');hooks.de('cbI',function(id){const b=_cbI(id);if(!b.baseSpr){b.baseSpr=b.spr;b.baseName=b.name}const he=heOf(biomeOfIsl(id)),k=he?he.k:'bien';if(b.he!==k){b.he=k;b.spr=he?cbVariant(b.baseSpr,he):b.baseSpr;b.name=b.baseName}return b})}
+{hooks.on('cbI',_cbI=>function(id){const b=_cbI(id);if(!b.baseSpr){b.baseSpr=b.spr;b.baseName=b.name}const he=heOf(biomeOfIsl(id)),k=he?he.k:'bien';if(b.he!==k){b.he=k;b.spr=he?cbVariant(b.baseSpr,he):b.baseSpr;b.name=b.baseName}return b})}

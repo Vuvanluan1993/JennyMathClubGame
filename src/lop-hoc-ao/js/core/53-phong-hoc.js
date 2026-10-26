@@ -76,15 +76,15 @@ hooks.ham('phSubmit',function(){const g=scr,st=S.st[sid],a=asgAll().find(x=>x.id
  log(sid,'completed',`Phiếu bài · ${asgName(a)}`,0,{success:true,score:{raw:res.ok,max:res.n}});sfx(res.ok/res.n>=.8?'win':'ok');save();
  go({k:'home',tab:'baikq',aid:a.id});render()});
 /* trả lời trong phiếu: ghi lại, không báo đúng/sai, sang câu chưa làm */
-{const _a=hooks.cu('ans1');hooks.de('ans1',function(v){const g=scr;if(!(g&&g.ph))return _a.apply(this,arguments);if(g.sheet)return;
+{hooks.on('ans1',_a=>function(v){const g=scr;if(!(g&&g.ph))return _a.apply(this,arguments);if(g.sheet)return;
  const q=q1(),ok=right1(q,v),st=S.st[sid];g.ans[g.j]={ok,v:typeof v==='object'?JSON.stringify(v):v};
  if(!ok){try{mist1Add(q);st.gate=(st.gate||[]).filter(k=>k!==q.key)}catch(e){}}
  log(sid,'answered',`Phiếu bài · ${q.label}`,0,{success:ok});const r=asgR(st)[g.ph];if(r&&r.cur)r.cur.ans=g.ans.slice();save();sfx('tap');
  if(!phNext())g.sheet={kind:'phall',left:0};render()})}
-{const _s=hooks.cu('sheet1');hooks.de('sheet1',function(){const g=scr,s=g.sheet;if(!(g&&g.ph&&s&&/^ph/.test(s.kind)))return _s.apply(this,arguments);
+{hooks.on('sheet1',_s=>function(){const g=scr,s=g.sheet;if(!(g&&g.ph&&s&&/^ph/.test(s.kind)))return _s.apply(this,arguments);
  if(s.kind==='phall')return`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${arcT(`Em đã làm hết ${g.qs.length} câu`,`You answered all ${g.qs.length}`)}</b><div>${arcT('Bấm Nộp bài để xem kết quả.','Hand in to see your score.')}</div></div></div><button class="gobtn" type="button" onclick="phSubmit()">${arcT('Nộp bài','Hand in')}</button></div>`;
  return`<div class="sheet warn"><div class="sh"><span class="ic">?</span><div><b>${arcT(`Còn ${s.left} câu chưa làm`,`${s.left} not answered`)}</b><div>${arcT('Câu chưa làm tính là sai. Em vẫn nộp chứ?','Unanswered count as wrong. Hand in anyway?')}</div></div></div><div class="phask"><button class="gobtn ghost" type="button" onclick="scr.sheet=null;render()">${arcT('Làm tiếp','Keep going')}</button><button class="gobtn" type="button" onclick="phSubmit()">${arcT('Vẫn nộp','Hand in')}</button></div></div>`})}
-{const _v=hooks.cu('viewGame1');hooks.de('viewGame1',function(){const g=scr;if(!(g&&g.ph))return _v.apply(this,arguments);let h=_v.apply(this,arguments);
+{hooks.on('viewGame1',_v=>function(){const g=scr;if(!(g&&g.ph))return _v.apply(this,arguments);let h=_v.apply(this,arguments);
  const done=g.ans.filter(Boolean).length,n=g.qs.length;
  const planks=`<div class="planks phpl" aria-label="${arcT(`Đã làm ${done}/${n} câu`,`${done}/${n} answered`)}">${g.qs.map((_,k)=>`<i class="${k===g.j?'cur':g.ans[k]?'phd':''}"></i>`).join('')}</div>`;
  h=h.replace(/<div class="planks"[^>]*>(?:<i[^>]*><\/i>)*<\/div>/,planks)
@@ -124,9 +124,9 @@ hooks.ham('phongBox',function(st){const nt=asgTodo(st),nm=Object.keys(mist(st)).
   ${tile(`go({k:'home',tab:'bai'})`,spr('asgS',44),arcT('Bài cô giao','Homework'),nt?arcT(`${nt} bài chưa làm xong`,`${nt} not done`):arcT('Đã làm hết','All done'),nt>9?'9+':nt||'')}
   ${tile(`go({k:'home',tab:'fix'})`,spr('book',44),arcT('Luyện lỗi','Fix mistakes'),nm?arcT(`${nm} lỗi cần sửa`,`${nm} to fix`):arcT('Không có lỗi','No mistakes'),nm>9?'9+':nm||'')}
   ${tile(`toast(arcT('Phần Tự luyện sắp có nhé!','Self-practice is coming soon!'))`,spr('selfS',44),arcT('Tự luyện','Self-practice'),arcT('Sắp có','Coming soon'),'')}</div></section>`});
-{const _n=hooks.cu('viewNha');hooks.de('viewNha',function(st){const r=_n.apply(this,arguments);try{asgSeed();const i=r.indexOf('<section class="card tdhome">');const box=phongBox(st);return i<0?r.replace(/<\/div>\s*$/,box+'</div>'):r.slice(0,i)+box+r.slice(i)}catch(e){return r}})}
+{hooks.on('viewNha',_n=>function(st){const r=_n.apply(this,arguments);try{asgSeed();const i=r.indexOf('<section class="card tdhome">');const box=phongBox(st);return i<0?r.replace(/<\/div>\s*$/,box+'</div>'):r.slice(0,i)+box+r.slice(i)}catch(e){return r}})}
 NHA_TABS.push('bai','baikq','fix');
-{const _v=hooks.cu('viewHome1t');hooks.de('viewHome1t',function(){const st=S.st[sid];let r;
+{hooks.on('viewHome1t',_v=>function(){const st=S.st[sid];let r;
  if(scr.tab==='bai'||scr.tab==='baikq'){const t=scr.tab;scr.tab='nha';try{r=_v.apply(this,arguments)}finally{scr.tab=t}const i=r.indexOf('<nav class="bnav"');asgSeed();r=(t==='bai'?viewAsg(st):viewAsgKQ(st))+(i>=0?r.slice(i):'')}
  else{r=_v.apply(this,arguments);if(scr.tab==='fix')r=`<div class="crumb nhacrumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← ${arcT('Phòng học','Study room')}</button></div>`+r}
  try{if(!st||st.grade>5)return r;
@@ -154,7 +154,7 @@ function gvAsgAdd(){const tiets=[...document.getElementById('asgIsl').selectedOp
  const n=+document.getElementById('asgN').value,d=+document.getElementById('asgDue').value,now=(typeof gvNow==='function'?gvNow():Date.now());
  const a={id:'a'+now.toString(36),g:gvGrade,lop:gvLop,bat:1,dat:80,tiets,n,t:now,due:d?now+d*DAYMS:0,by:gvTen()};asgAll().push(a);log('gv','assigned',`Phiếu bài · ${asgName(a)}`,0,{});save();render();toast('Đã giao phiếu cho lớp '+(gvLop||gvGrade))}
 function gvAsgDel(id){S.asg=asgAll().filter(a=>a.id!==id);save();render();toast('Đã xoá phiếu')}
-{const _g=hooks.cu('viewGV');hooks.de('viewGV',function(){const r=_g.apply(this,arguments);try{const b=gvAsgBox();if(!b)return r;const i=r.lastIndexOf('<section class="card"><details>');return i<0?r:r.slice(0,i)+b+r.slice(i)}catch(e){return r}})}
+{hooks.on('viewGV',_g=>function(){const r=_g.apply(this,arguments);try{const b=gvAsgBox();if(!b)return r;const i=r.lastIndexOf('<section class="card"><details>');return i<0?r:r.slice(0,i)+b+r.slice(i)}catch(e){return r}})}
 Object.assign(I18N,{'Phòng học của em':'My study room','Bài cô giao':'Homework','Tự luyện':'Self-practice'});
 document.head.insertAdjacentHTML('beforeend',`<style>
 .pghome{margin-top:14px}

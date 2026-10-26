@@ -93,7 +93,7 @@ function ktRule(x,mode){const key=x.id+':'+mode;if(XG_RULE[key])return XG_RULE[k
 /* Câu cá / Bóng bay trong đảo */
 const ktVerb=(t,pre)=>String(t||'').replace(/^Chọn (những )?/,pre);
 hooks.de('startMini',function(mode,id){const x=id?isl1(id):null,r0=x?ktRule(x,mode).fn():MG[curG()][mode](),pre=mode==='fish'?'Câu cá mang ':'Bắn bóng mang ',r={...r0,rule:ktVerb(r0.rule,pre),say:ktVerb(r0.say,mode==='fish'?'Câu những con cá mang ':'Bắn những quả bóng mang ')};try{speechSynthesis.cancel()}catch(e){}go({k:'mini',id,mode,rule:r.rule,say:r.say,score:0,lives:3,t:45,end:false,started:false});scr._r=r});
-{const _s=hooks.cu('startXG');hooks.de('startXG',function(mode,id){const x=isl1(id);XG_KT=x?ktOf(x):null;
+{hooks.on('startXG',_s=>function(mode,id){const x=isl1(id);XG_KT=x?ktOf(x):null;
   if((mode==='star'||mode==='mole')&&x){const G=xgGr(x),fn=ktRule(x,'fish').fn,useT=!!(x.ti&&MGT[x.ti]&&MGT[x.ti][G]),box=useT?MGT[x.ti]:MG,old=box[G];box[G]={fish:fn,balloon:fn};
     try{const v=_s.apply(this,arguments);if(scr.k==='xg'){scr.rule=ktVerb(scr.rule,mode==='star'?'Hứng sao mang ':'Đập chuột cầm ');scr.say=String(scr.say).replace(/Chọn (những )?/,mode==='star'?'Hứng những ngôi sao mang ':'Đập những chú chuột cầm ');const el=document.querySelector('.mgrule span');if(el)el.innerHTML=scr.rule}return v}finally{box[G]=old}}
   return _s.apply(this,arguments)})}
@@ -119,23 +119,23 @@ hooks.de('pairDeck',function(x){const K=ktOf(x),G=xgGr(x),pairs=[],seenA=new Set
   /* chưa học phép tính: ghép nhóm chấm ↔ số */
   if(pairs.length<6){const M=Math.min(K.max,10),ns=shuf(range(0,M)).filter(v=>!seenA.has(String(v))).slice(0,6-pairs.length);ns.forEach((v,j)=>{const i=pairs.length+j;cards.push({id:i,k:'q',t:ktDots(v),q:null});cards.push({id:i,k:'a',t:String(v),q:null})})}
   return shuf(cards)});
-{const _f=hooks.cu('frogQ');hooks.de('frogQ',function(x){const K=ktOf(x),G=xgGr(x);
+{hooks.on('frogQ',_f=>function(x){const K=ktOf(x),G=xgGr(x);
   for(const y of [x,...ktPrev(x,4)]){const pool=islPool(y);for(let i=0;i<50&&pool.length;i++){let q;try{q=mkQ(pick(pool))}catch(e){continue}const f=frogFromQ(q);if(f&&!ktViol(K,f.t+' | '+f.ans+' | '+f.d.join(' | ')).length)return frogMk(f)}}
   for(let i=0;i<20;i++){const [t,a]=ktFacts(K,G,1)[0]||[];if(!t)break;const d=xNear(a).filter(v=>xNum(v)<=K.max);if(d.length>=2)return frogMk({t:esc(t)+' = ?',ans:a,d:d.slice(0,2),q:null})}
   const M=Math.min(K.max,10),n=R(1,M),d=shuf(range(0,M).filter(v=>v!==n)).slice(0,2);return frogMk({t:`Bể có mấy con cá? ${ktDots(n)}`,ans:String(n),d:d.map(String),q:null})})}
 
 /* ---------- Cân / Tàu hoả / Cửa hàng / Đồng hồ / Ghép hình: nắn theo kiến thức ---------- */
-{const _s=hooks.cu('scaleRound');hooks.de('scaleRound',function(x){const K=ktOf(x);const r=_s.apply(this,arguments);
+{hooks.on('scaleRound',_s=>function(x){const K=ktOf(x);const r=_s.apply(this,arguments);
   if(ktViol(K,r.left).some(v=>['+','-','×',':'].includes(v)))r.left=r.fmt(r.T);return r})}
-{const _t=hooks.cu('trainRound');hooks.de('trainRound',function(x){const K=ktOf(x),r=_t.apply(this,arguments);
+{hooks.on('trainRound',_t=>function(x){const K=ktOf(x),r=_t.apply(this,arguments);
   if(r.kind==='Xếp thứ tự số'&&Math.max(...r.vals)>K.max){const M=K.max,n=Math.min(r.vals.length,M+1),s=new Set();let k=0;while(s.size<n&&k++<300)s.add(R(0,M));const vals=[...s];r.vals=shuf(vals);r.order=[...vals].sort((a,b)=>r.up?a-b:b-a)}return r})}
-{const _p=hooks.cu('shopPrice');hooks.de('shopPrice',function(G){const M=ktMax();let p=_p.apply(this,arguments);if(p>M){const st=M>=10000?1000:100;p=Math.max(st,Math.floor(R(Math.ceil(M*.3),M)/st)*st)}return p})}
-{const _r=hooks.cu('shopRound');hooks.de('shopRound',function(G,k,N){let r=_r.apply(this,arguments);for(let i=0;i<6;i++){const need=r.t==='multi'?'+':r.t==='chg'||r.t==='disc'?'-':null;if((!need||ktHas(need))&&(r.t==='pay'||r.total<=ktMax()))break;r={...(_r(G,0,N)),t:'pay'};if(r.t==='pay'&&r.total<=ktMax())break}
+{hooks.on('shopPrice',_p=>function(G){const M=ktMax();let p=_p.apply(this,arguments);if(p>M){const st=M>=10000?1000:100;p=Math.max(st,Math.floor(R(Math.ceil(M*.3),M)/st)*st)}return p})}
+{hooks.on('shopRound',_r=>function(G,k,N){let r=_r.apply(this,arguments);for(let i=0;i<6;i++){const need=r.t==='multi'?'+':r.t==='chg'||r.t==='disc'?'-':null;if((!need||ktHas(need))&&(r.t==='pay'||r.total<=ktMax()))break;r={...(_r(G,0,N)),t:'pay'};if(r.t==='pay'&&r.total<=ktMax())break}
   const big=o=>Math.max(o.total||0,o.give||0,...(o.opts||[0]),...o.items.map(i=>i[1]))>ktMax();
   if(big(r)){for(let i=0;i<8&&big(r);i++)r=_r(G,k,N);if(big(r)){const p=shopPrice(G);r={t:'pay',items:[[r.items[0][0],p]],total:p,kind:'Trả tiền mua hàng'}}}return r})}
-{const _n=hooks.cu('shopNotes');hooks.de('shopNotes',function(G){const v=_n.apply(this,arguments),M=ktMax(),f=v.filter(n=>n<=M);return f.length>=2?f:v.slice(0,2)})}
-{const _c=hooks.cu('clockTarget');hooks.de('clockTarget',function(G){const r=_c.apply(this,arguments);if(XG_KT&&!XG_KT.f.has('minute'))r.m=0;return r})}
-{const _set=hooks.cu('shapeSet');hooks.de('shapeSet',function(x){const K=ktOf(x),own=_set.apply(this,arguments).filter(k=>K.f.has('sh:'+k));if(own.length>=3)return own;
+{hooks.on('shopNotes',_n=>function(G){const v=_n.apply(this,arguments),M=ktMax(),f=v.filter(n=>n<=M);return f.length>=2?f:v.slice(0,2)})}
+{hooks.on('clockTarget',_c=>function(G){const r=_c.apply(this,arguments);if(XG_KT&&!XG_KT.f.has('minute'))r.m=0;return r})}
+{hooks.on('shapeSet',_set=>function(x){const K=ktOf(x),own=_set.apply(this,arguments).filter(k=>K.f.has('sh:'+k));if(own.length>=3)return own;
   const all=KTSH.map(([k])=>k).filter(k=>K.f.has('sh:'+k)),fam=k=>k[0]==='g'&&k!=='gvuong'||k==='gvuong'?'goc':['lapphuong','hop','tru','cau'].includes(k)?'khoi':'phang';
   const pref=own.length?fam(own[0]):null,more=all.filter(k=>!own.includes(k)&&(!pref||fam(k)===pref));return[...own,...more].slice(0,6)})}
 hooks.de('shapeTray',function(g){const sl=g.pics[g.pi].slots[g.si];return shuf([sl.s,...shuf(g.set.filter(k=>k!==sl.s)).slice(0,3)])});
@@ -210,8 +210,8 @@ function ktAuditBefore(G,n){const rows=[];
 
 /* Lời Jenny đọc luật luôn khớp dòng luật trên màn hình (Câu cá, Bóng bay, Hứng sao, Đập chuột) */
 function ktSayFromRule(rule){const t=String(rule||'').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').trim();return t?`Em ${t.charAt(0).toLowerCase()+t.slice(1)} nhé.`:''}
-{const _m=hooks.cu('startMini');hooks.de('startMini',function(mode,id){const v=_m.apply(this,arguments);try{if(scr.k==='mini'&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v})}
-{const _x=hooks.cu('startXG');hooks.de('startXG',function(mode,id){const v=_x.apply(this,arguments);try{if(scr.k==='xg'&&(mode==='star'||mode==='mole')&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v})}
+{hooks.on('startMini',_m=>function(mode,id){const v=_m.apply(this,arguments);try{if(scr.k==='mini'&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v})}
+{hooks.on('startXG',_x=>function(mode,id){const v=_x.apply(this,arguments);try{if(scr.k==='xg'&&(mode==='star'||mode==='mole')&&scr.rule)scr.say=ktSayFromRule(scr.rule)}catch(e){}return v})}
 
 /* Lật thẻ dùng bể cá: đổi lời hướng dẫn cho đúng */
-{const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='pair'&&scr.cards&&scr.cards.some(c=>/xtank/.test(c.t))){const sp=document.querySelector('.mgrule span');if(sp)sp.innerHTML='Lật 2 thẻ: ghép <b>bể cá</b> với <b>số con cá</b>';scr.say='Em lật hai thẻ, ghép bể cá với số con cá trong bể nhé.'}}catch(e){}return v})}
+{hooks.on('render',_r=>function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='pair'&&scr.cards&&scr.cards.some(c=>/xtank/.test(c.t))){const sp=document.querySelector('.mgrule span');if(sp)sp.innerHTML='Lật 2 thẻ: ghép <b>bể cá</b> với <b>số con cá</b>';scr.say='Em lật hai thẻ, ghép bể cá với số con cá trong bể nhé.'}}catch(e){}return v})}

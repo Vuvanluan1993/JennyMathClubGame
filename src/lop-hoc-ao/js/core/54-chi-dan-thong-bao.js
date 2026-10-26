@@ -18,7 +18,7 @@ const ntfGo=sel=>`(function(){var e=document.querySelector('${sel}');if(e)e.scro
 function petNeeds(st){try{petSim(st)}catch(e){}const P=petsOf(st),out=[];
  P.list.forEach(p=>{const n=esc(p.name||PET_SP[p.sp][0]);if(!p.name)out.push(arcT(`Đặt tên cho ${n}`,`Name your ${n}`));if(p.sick)out.push(arcT(`${n} bị ốm — cần Thuốc`,`${n} is sick — needs medicine`));if(p.no<25)out.push(arcT(`${n} đang đói — cho ăn`,`${n} is hungry — feed it`));if(p.sach<25)out.push(arcT(`${n} bẩn rồi — tắm cho bạn ấy`,`${n} is dirty — give a bath`))});
  if(P.eggs.some(e=>!e.inc))out.push(arcT('Có trứng chưa ấp — đặt vào Máy ấp','An egg needs the incubator'));if(P.bye)out.push(arcT('Có thư tạm biệt từ thú cưng','A goodbye letter from your pet'));return out}
-{const _v=hooks.cu('viewHome1t');hooks.de('viewHome1t',function(){let r=_v.apply(this,arguments);const st=S.st[sid];if(role!=='hs'||!st||st.grade>5)return r;const tab=scr.tab||'map';
+{hooks.on('viewHome1t',_v=>function(){let r=_v.apply(this,arguments);const st=S.st[sid];if(role!=='hs'||!st||st.grade>5)return r;const tab=scr.tab||'map';
  try{const nav=r.indexOf('<nav class="bnav"'),body=nav>=0?r.slice(0,nav):r,rest=nav>=0?r.slice(nav):'';let b=body,box='';
   if(tab==='map'){const v=seenOf(st),ids=[];ISL(st).forEach((x,k)=>{if(!v.isl[x.id]&&natOpen(st,k))ids.push(x.id)});
    if(ids.length){ids.forEach(id=>{b=ntfMark(b,new RegExp(`(<button class="node[^"]*"[^>]*onclick="go\\(\\{k:'island'(?:,part:1)?,id:'${id}'\\}\\)"[^>]*>)()`),arcT('Mới','New'))});

@@ -288,14 +288,14 @@ window.tlKey=function(k){const g=scr,q=q1();if(g.sheet||!q||q.type!=='cells'||q.
  g.cbad=null;sfx('tap');render()};
 
 /* ---------- nối vào bộ chơi ---------- */
-{const _r=hooks.cu('right1');hooks.de('right1',function(q,v){if(q&&q.type==='cells')return Array.isArray(v)&&v.length===q.a.length&&v.every((x,i)=>Number(x)===q.a[i]);return _r.apply(this,arguments)})}
-{const _s=hooks.cu('show1');hooks.de('show1',function(q){if(q&&q.type==='cells')return q.lay==='color'||q.lay==='ds'?'':q.lay==='vert'?q.a.join(''):q.a.join(', ');return _s.apply(this,arguments)})}
-{const _i=hooks.cu('input1');hooks.de('input1',function(q){if(!(q&&q.type==='cells'))return _i.apply(this,arguments);
+{hooks.on('right1',_r=>function(q,v){if(q&&q.type==='cells')return Array.isArray(v)&&v.length===q.a.length&&v.every((x,i)=>Number(x)===q.a[i]);return _r.apply(this,arguments)})}
+{hooks.on('show1',_s=>function(q){if(q&&q.type==='cells')return q.lay==='color'||q.lay==='ds'?'':q.lay==='vert'?q.a.join(''):q.a.join(', ');return _s.apply(this,arguments)})}
+{hooks.on('input1',_i=>function(q){if(!(q&&q.type==='cells'))return _i.apply(this,arguments);
  if(q.lay==='color')return`<div class="tlpal">${q.vals.map((v,k)=>`<button type="button" class="pc ${(scr.pc||0)===k?'on':''}" onclick="tlPC(${k})" aria-pressed="${(scr.pc||0)===k}" aria-label="${T(TL_MAU[k][1],TL_MAU[k][2])} ${v}"><i style="background:${TL_MAU[k][0]}"></i>= ${v}</button>`).join('')}</div><button class="gobtn" type="button" onclick="tlXong()">${T('Xong','Done')}</button>`;
  if(q.lay==='ds')return`<button class="gobtn" type="button" onclick="tlXong()">${T('Xong','Done')}</button>`;
  return`<div class="pad">${['1','2','3','4','5','6','7','8','9','⌫','0','✓'].map(k=>`<button type="button" class="${k==='✓'?'go':k==='⌫'?'del':''}" onclick="tlKey('${k}')" aria-label="${k==='⌫'?T('Xóa','Delete'):k==='✓'?T('Xong','Done'):k}">${k==='✓'?T('Xong','Done'):k}</button>`).join('')}</div>`})}
 function tlSave(){const g=scr,st=S.st[sid];if(g.tlDay)return;const r=tlR(st)[g.id];if(r&&r.cur){r.cur.j=g.j;r.cur.res=g.res.slice()}}
-{const _a=hooks.cu('ans1');hooks.de('ans1',function(v){const g=scr;if(!(g&&g.tl))return _a.apply(this,arguments);if(g.sheet||g.end)return;
+{hooks.on('ans1',_a=>function(v){const g=scr;if(!(g&&g.tl))return _a.apply(this,arguments);if(g.sheet||g.end)return;
  const q=q1(),ok=right1(q,v),st=S.st[sid],x=isl1(g.id),first=!g.tries,fromIsl=!!(q.key&&q.src);
  try{hsRec(q,ok,first,1,(q.src&&q.src[0])||g.id)}catch(e){}
  if(!ok&&first&&fromIsl){try{mist1Add(q);gdMistNote(q,{wa:gdShowAns(q,v),from:T('Tự luyện','Self-practice')})}catch(e){}}
@@ -307,11 +307,11 @@ function tlSave(){const g=scr,st=S.st[sid];if(g.tlDay)return;const r=tlR(st)[g.i
    g.sheet={kind:'tlretry'};sayJ(T('Chưa đúng rồi. Em thử lại nhé.','Not quite. Try again.'))}
   else{g.res[g.j]=false;g.sheet={kind:'bad'};sayJ(String(q.sol||'').replace(/<[^>]+>/g,' ').replace(/−/g,' trừ ').replace(/=/g,' bằng '))}}
  tlSave();save();render()})}
-{const _s=hooks.cu('sheet1');hooks.de('sheet1',function(){const g=scr;if(g&&g.tl&&g.sheet&&g.sheet.kind==='tlretry')
+{hooks.on('sheet1',_s=>function(){const g=scr;if(g&&g.tl&&g.sheet&&g.sheet.kind==='tlretry')
   return`<div class="sheet warn"><div class="sh"><span class="ic">?</span><div><b>${T('Chưa đúng.','Not quite.')}</b><div>${q1().type==='cells'?T('Ô sai đã được xoá. Em điền lại nhé.','Wrong boxes were cleared. Try again.'):T('Em nhìn kỹ và thử lại nhé.','Look carefully and try again.')}</div></div></div><button class="gobtn" type="button" onclick="retry1()">${T('Thử lại','Try again')}</button></div>`;
  return _s.apply(this,arguments)})}
-{const _r=hooks.cu('retry1');hooks.de('retry1',function(){const g=scr;if(!(g&&g.tl))return _r.apply(this,arguments);const cv=g.cv,cc=g.cc,cb=g.cbad,r=_r.apply(this,arguments);g.cv=cv;g.cc=cc;g.cbad=cb;render();return r})}
-{const _n=hooks.cu('next1');hooks.de('next1',function(){const g=scr;if(!(g&&g.tl))return _n.apply(this,arguments);
+{hooks.on('retry1',_r=>function(){const g=scr;if(!(g&&g.tl))return _r.apply(this,arguments);const cv=g.cv,cc=g.cc,cb=g.cbad,r=_r.apply(this,arguments);g.cv=cv;g.cc=cc;g.cbad=cb;render();return r})}
+{hooks.on('next1',_n=>function(){const g=scr;if(!(g&&g.tl))return _n.apply(this,arguments);
  if(g.j>=g.qs.length-1){tlEnd();return}g.j++;tlBlank(g);tlSave();save();render()})}
 function tlEnd(){const g=scr,st=S.st[sid],x=isl1(g.id),tt=g.qs.findIndex(q=>q.tt),nb=g.qs.filter(q=>!q.tt).length;
  const ok=g.res.filter((v,i)=>v&&!g.qs[i].tt).length,tok=tt>=0&&g.res[tt]===true;g.end=true;
@@ -330,7 +330,7 @@ function tlEndView(){const g=scr,x=isl1(g.id),R=g.tlRes||{},st=S.st[sid];
   <div style="margin:8px 0">${R.hasTT?`<span class="pill ${R.tt?'warn':''}">${R.tt?T('★ Thử thách đúng','★ Challenge solved'):T('☆ Thử thách chưa đúng','☆ Challenge not solved')}</span>`:''}</div>
   ${R.wrong?`<p class="muted" style="font-size:13px;margin:6px 0 0">${T('Câu làm sai đã ghi vào Sổ lỗi sai.','Mistakes were saved to your mistake book.')}</p>`:''}
   <div class="row" style="justify-content:center;gap:8px;margin-top:12px"><button class="btn sm ghost" type="button" onclick="go({k:'home',tab:'tl'})">${T('Về Tự luyện','Back to practice')}</button>${nx?`<button class="btn sm pri" type="button" onclick="tlGo('${nx.id}')">${T('Trang tiếp','Next page')}</button>`:`<button class="btn sm pri" type="button" onclick="tlGo('${g.id}')">${T('Làm lại (số mới)','Again (new numbers)')}</button>`}</div></section></div></div>`}
-{const _v=hooks.cu('viewGame1');hooks.de('viewGame1',function(){const g=scr;if(!(g&&g.tl))return _v.apply(this,arguments);if(g.end)return tlEndView();
+{hooks.on('viewGame1',_v=>function(){const g=scr;if(!(g&&g.tl))return _v.apply(this,arguments);if(g.end)return tlEndView();
  const q=q1();if(q.type==='cells'&&(!g.cv||g.cv.length!==nBl(q))){g.cv=q.a.map(()=>'');g.cc=q.lay==='vert'?q.a.length-1:0;g.nho=[]}
  let h=_v.apply(this,arguments);const n=g.qs.length,nb=g.qs.filter(x=>!x.tt).length;
  h=h.replace('<div class="game g1"','<div class="game g1 tlgame"')
@@ -345,20 +345,20 @@ function tlEndView(){const g=scr,x=isl1(g.id),R=g.tlRes||{},st=S.st[sid];
 const TL_DT={19:['100','+',1],20:['100','+',2],21:['100','+'],22:['100','−',1],23:['100','−',2],24:['100'],33:['100'],60:['1000','+'],62:['1000','−'],63:['1000'],69:['100'],70:['1000']};
 try{(PRIM[2]?PRIM[2].isl:[]).forEach(x=>{const d=TL_DT[x.b];if(!d||x.dt)return;x.dt=1;[0,1].forEach(L=>{if(x.lv[L])x.lv[L].push(()=>datTinh(...d))})})}catch(e){}
 /* ngoài Tự luyện: vẽ ô, khởi tạo ô theo câu, câu sai lần 1 xoá chữ số sai */
-{const _v=hooks.cu('viewGame1');hooks.de('viewGame1',function(){const g=scr;if(!g||g.tl||g.end||!g.qs)return _v.apply(this,arguments);const q=q1();
+{hooks.on('viewGame1',_v=>function(){const g=scr;if(!g||g.tl||g.end||!g.qs)return _v.apply(this,arguments);const q=q1();
  if(q&&q.type==='cells'&&(g.cvj!==g.j||!g.cv||g.cv.length!==nBl(q))){g.cvj=g.j;g.cv=q.a.map(()=>'');g.cc=q.lay==='vert'?q.a.length-1:0;g.nho=[];g.cbad=null}
  let h=_v.apply(this,arguments);if(q&&q.type==='cells')h=h.replace(/<div class="g1pic">@@TLFIG@@<\/div>/,`<div class="g1pic tlfig">${tlFig(q)}</div>`);return h})}
-{const _a=hooks.cu('ans1');hooks.de('ans1',function(v){const g=scr,q=g&&g.qs&&!g.tl?q1():null;const r=_a.apply(this,arguments);
+{hooks.on('ans1',_a=>function(v){const g=scr,q=g&&g.qs&&!g.tl?q1():null;const r=_a.apply(this,arguments);
  try{if(q&&q.type==='cells'&&g.sheet&&g.sheet.kind==='retry'&&Array.isArray(v)){g.cbad=[];g.cv=v.map((x,i)=>{if(Number(x)===q.a[i])return String(x);g.cbad.push(i);return''});g.cc=q.lay==='vert'?g.cbad[g.cbad.length-1]:g.cbad[0]||0;render()}}catch(e){}return r})}
-{const _r=hooks.cu('retry1');hooks.de('retry1',function(){const g=scr;if(!g||g.tl)return _r.apply(this,arguments);const cv=g.cv,cc=g.cc,cb=g.cbad,nho=g.nho,r=_r.apply(this,arguments);if(cv){g.cv=cv;g.cc=cc;g.cbad=cb;g.nho=nho;render()}return r})}
+{hooks.on('retry1',_r=>function(){const g=scr;if(!g||g.tl)return _r.apply(this,arguments);const cv=g.cv,cc=g.cc,cb=g.cbad,nho=g.nho,r=_r.apply(this,arguments);if(cv){g.cv=cv;g.cc=cc;g.cbad=cb;g.nho=nho;render()}return r})}
 /* hướng dẫn khi sai (đặt tính có nhớ) đọc được dạng ô */
-if(typeof gdColParse==='function'){const _p=hooks.cu('gdColParse');hooks.de('gdColParse',function(q){if(q&&q.lay==='vert')return _p({...q,pic:`g1col"><span>${q.va}</span><span><em>${q.op}</em>${q.vb}</span>`});return _p.apply(this,arguments)})}
+if(typeof gdColParse==='function'){hooks.on('gdColParse',_p=>function(q){if(q&&q.lay==='vert')return _p({...q,pic:`g1col"><span>${q.va}</span><span><em>${q.op}</em>${q.vb}</span>`});return _p.apply(this,arguments)})}
 
 /* ---------- gợi ý của cô ---------- */
 function tlGoiY(st){const id=Object.keys(S.st).find(k=>S.st[k]===st);const l=(typeof ORG_ON!=='undefined'&&ORG_ON&&S.org)?S.org.gd[id]:null;
  return(S.asg||[]).filter(a=>a.loai==='goiy'&&a.g===st.grade&&(!a.hs||a.hs.includes(id))&&(!a.lop||!l||a.lop===l)).sort((p,q)=>q.t-p.t)}
 /* asgSeed (53) đổi mục không có tiets thành phiếu: giữ riêng các gợi ý ra ngoài khi nó chạy */
-{const _s=hooks.cu('asgSeed');hooks.de('asgSeed',function(){const G=(S.asg||[]).filter(a=>a.loai==='goiy');if(G.length)S.asg=S.asg.filter(a=>a.loai!=='goiy');
+{hooks.on('asgSeed',_s=>function(){const G=(S.asg||[]).filter(a=>a.loai==='goiy');if(G.length)S.asg=S.asg.filter(a=>a.loai!=='goiy');
  try{return _s.apply(this,arguments)}finally{if(G.length)S.asg=(S.asg||[]).concat(G)}})}
 function tlGoiYIsl(st){const s=new Set();tlGoiY(st).forEach(a=>(a.isl||[]).forEach(i=>{if(isl1(i))s.add(i)}));return[...s]}
 
@@ -387,11 +387,11 @@ function viewTL(st){const g=curG(),back=`<div class="crumb"><button class="btn s
   <p class="vnote">${T('Trang vở mở khi em qua đảo. Mỗi bài đúng +5 xu, ★ Thử thách +15 xu. Sai thì vào Sổ lỗi sai. Không bắt buộc.','A page opens when you pass its island. +5 coins per task, ★ challenge +15. Mistakes go to your mistake book. Not compulsory.')}</p></section></div>`}
 
 /* ô Tự luyện trong Phòng học */
-{const _p=hooks.cu('phongBox');hooks.de('phongBox',function(st){let r=_p.apply(this,arguments);try{const g=curG(),on=TL_G(g),n=on?tlGoiYIsl(st).filter(i=>{const x=isl1(i);return x&&tlOpen(st,x)&&!((tlR(st)[i]||{}).best)}).length:0;
+{hooks.on('phongBox',_p=>function(st){let r=_p.apply(this,arguments);try{const g=curG(),on=TL_G(g),n=on?tlGoiYIsl(st).filter(i=>{const x=isl1(i);return x&&tlOpen(st,x)&&!((tlR(st)[i]||{}).best)}).length:0;
  const sub=!on?T('Sắp có','Coming soon'):n?T(`${n} trang cô gợi ý`,`${n} suggested`):T(`Đã làm ${tlDone(st)} trang`,`${tlDone(st)} pages done`);
  r=r.replace(/<button type="button" class="nhat" onclick="toast\(arcT\('Phần Tự luyện sắp có nhé!'[^"]*">([\s\S]*?)<\/button>/,(m,inner)=>`<button type="button" class="nhat" onclick="go({k:'home',tab:'tl'})">${inner.replace(/<small>[^<]*<\/small>/,`<small>${sub}</small>`).replace(/(<span class="nhic">[\s\S]*?)(<\/span>)/,(m2,a,b)=>a+(n?`<i class="herbang">${n>9?'9+':n}</i>`:'')+b)}</button>`)}catch(e){}return r})}
 NHA_TABS.push('tl');
-{const _v=hooks.cu('viewHome1t');hooks.de('viewHome1t',function(){if(scr.tab!=='tl')return _v.apply(this,arguments);const st=S.st[sid];scr.tab='nha';let r;try{r=_v.apply(this,arguments)}finally{scr.tab='tl'}
+{hooks.on('viewHome1t',_v=>function(){if(scr.tab!=='tl')return _v.apply(this,arguments);const st=S.st[sid];scr.tab='nha';let r;try{r=_v.apply(this,arguments)}finally{scr.tab='tl'}
  const i=r.indexOf('<nav class="bnav"');return viewTL(st)+(i>=0?r.slice(i):'')})}
 
 /* ---------- trang giáo viên: gợi ý trang + xem em tự luyện ---------- */
@@ -410,11 +410,11 @@ window.gvTLAdd=function(){const isl=[...document.getElementById('tlIsl').selecte
  try{asgSeed()}catch(e){}const now=(typeof gvNow==='function'?gvNow():Date.now());(S.asg||(S.asg=[])).push({id:'g'+now.toString(36),loai:'goiy',g:gvGrade,lop:gvLop,isl,t:now,by:gvTen()});
  log('gv','assigned',`Gợi ý Tự luyện · ${isl.length} trang`,0,{});save();render();toast('Đã gợi ý cho lớp '+(gvLop||gvGrade))};
 window.gvTLDel=function(id){S.asg=(S.asg||[]).filter(a=>a.id!==id);save();render();toast('Đã bỏ gợi ý')};
-{const _g=hooks.cu('viewGV');hooks.de('viewGV',function(){const r=_g.apply(this,arguments);try{const b=gvTLBox();if(!b)return r;const i=r.lastIndexOf('<section class="card"><details>');return i<0?r:r.slice(0,i)+b+r.slice(i)}catch(e){return r}})}
+{hooks.on('viewGV',_g=>function(){const r=_g.apply(this,arguments);try{const b=gvTLBox();if(!b)return r;const i=r.lastIndexOf('<section class="card"><details>');return i<0?r:r.slice(0,i)+b+r.slice(i)}catch(e){return r}})}
 
 /* phép tính trong ô Tô màu luôn nằm trên 1 dòng: chữ to quá thì tự nhỏ lại */
 function tlFitCol(){const B=[...document.querySelectorAll('.tlcol .cc')];if(!B.length)return;B.forEach(b=>b.style.fontSize='');let f=parseFloat(getComputedStyle(B[0]).fontSize);const over=()=>B.some(b=>{const t=b.querySelector('.cct');return t&&t.offsetWidth>b.clientWidth-4});while(over()&&f>11){f-=1;B.forEach(b=>b.style.fontSize=f+'px')}}/* cả lưới cùng một cỡ chữ */
-{const _a=hooks.cu('g1AfterRender');hooks.de('g1AfterRender',function(){const r=_a.apply(this,arguments);try{if(scr&&scr.tl)tlFitCol()}catch(e){}return r})}
+{hooks.on('g1AfterRender',_a=>function(){const r=_a.apply(this,arguments);try{if(scr&&scr.tl)tlFitCol()}catch(e){}return r})}
 Object.assign(I18N,{'Chuỗi phép tính':'Number chain','Bảng thành phần phép tính':'Calculation table','Chữ số bí ẩn':'Missing digits','Mỗi hình là một số':'Shape puzzle','Tách số theo hàng':'Place value split','Đếm nhảy':'Skip counting','Đặt tính rồi tính':'Column method','Lưới phép tính':'Number grid','Tô màu theo kết quả':'Colour by answer','Đúng hay sai':'True or false','Nhà số':'Number house','Gia đình phép tính':'Fact family','Tháp số':'Number pyramid','Tam giác số':'Number triangle'});
 document.head.insertAdjacentHTML('beforeend',`<style>
 .vbt h2{margin:0}.vsub{font-size:13px;color:var(--muted);margin:2px 0 10px}.vstat{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px}

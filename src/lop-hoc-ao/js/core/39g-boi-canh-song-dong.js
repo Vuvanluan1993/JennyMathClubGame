@@ -77,6 +77,6 @@ function lvSetup(){lvStop();if(role!=='hs')return;const add=(L)=>{if(L)LV.layers
   else if(scr.k==='game'&&scr.race&&(h=q('#app .game .gmid')))add(lvLayer(h,'strip',LVD.strip,{h:24,cls:'xlstrip'}));
   if(!LV.layers.length)return;LV.tok=scr;lvTick();if(lvReduce())return;
   LV.tid=setInterval(()=>{if(scr!==LV.tok||scr.end||!LV.layers.some(L=>L.cv.isConnected)){lvStop();return}LV.f++;lvTick()},120)}
-{const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{if(role==='hs'&&(scr.k==='mini'||scr.k==='xg'||(scr.k==='game'&&scr.race))&&!scr.end)lvSetup();else lvStop()}catch(e){}return v})}
+{hooks.on('render',_r=>function(){const v=_r.apply(this,arguments);try{if(role==='hs'&&(scr.k==='mini'||scr.k==='xg'||(scr.k==='game'&&scr.race))&&!scr.end)lvSetup();else lvStop()}catch(e){}return v})}
 /* Ghép hình: go() vẽ trước khi có khay hình nên màn chưa hiện — vẽ lại khi cần */
-{const _x=hooks.cu('startXG');hooks.de('startXG',function(mode,id){const v=_x.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='shape'&&!document.querySelector('.xspic'))render()}catch(e){}return v})}
+{hooks.on('startXG',_x=>function(mode,id){const v=_x.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='shape'&&!document.querySelector('.xspic'))render()}catch(e){}return v})}

@@ -13,9 +13,9 @@ function isTestSt(st){try{st=st||S.st[sid];if(!st)return false;if(sid==='na'||si
 let UNL_MAN=(()=>{try{return localStorage.getItem('jennyUnlockAll')==='1'}catch(e){return false}})();
 function unlNow(){return(role==='hs'&&isTestSt())||(!HS_BUILD()&&UNL_MAN)}
 hooks.de('toggleUnl',function(){UNL_MAN=!UNL_MAN;try{localStorage.setItem('jennyUnlockAll',UNL_MAN?'1':'0')}catch(e){}UNL=unlNow();render();toast(UNL_MAN?'Đã mở khóa tất cả đảo (chỉ để xem demo)':'Đã khoá lại: đảo mở dần theo tiến độ')});
-{const _r=hooks.cu('render');hooks.de('render',function(){try{UNL=unlNow();if(role==='hs'){const st=S.st[sid];if(st&&isTestSt(st)&&!st.t10k){st.coins=Math.max(st.coins||0,10000);st.t10k=1;st.active=true;save()}}}catch(e){}return _r.apply(this,arguments)})}
-{const _g=hooks.cu('go');hooks.de('go',function(){try{UNL=unlNow()}catch(e){}return _g.apply(this,arguments)})}
+{hooks.on('render',_r=>function(){try{UNL=unlNow();if(role==='hs'){const st=S.st[sid];if(st&&isTestSt(st)&&!st.t10k){st.coins=Math.max(st.coins||0,10000);st.t10k=1;st.active=true;save()}}}catch(e){}return _r.apply(this,arguments)})}
+{hooks.on('go',_g=>function(){try{UNL=unlNow()}catch(e){}return _g.apply(this,arguments)})}
 /* Bài cô giao mẫu chỉ có ở bản đầy đủ và tài khoản thử (học sinh thật chỉ thấy bài cô giao thật) */
-{const _s=hooks.cu('asgSeed');hooks.de('asgSeed',function(){if(HS_BUILD()&&!isTestSt())return;return _s.apply(this,arguments)})}
+{hooks.on('asgSeed',_s=>function(){if(HS_BUILD()&&!isTestSt())return;return _s.apply(this,arguments)})}
 UNL=false;
 Object.assign(I18N,{'Sổ đang trống. Câu nào em làm sai lần đầu sẽ được ghi vào đây để luyện lại.':'Your book is empty. Any question you get wrong the first time will be saved here to practise again.','Sổ đang trống. Câu nào em làm sai sẽ được ghi vào đây để luyện lại.':'Your book is empty. Any question you get wrong will be saved here to practise again.'});

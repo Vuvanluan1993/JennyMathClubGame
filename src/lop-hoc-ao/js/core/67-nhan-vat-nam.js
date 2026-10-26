@@ -17,7 +17,7 @@ const BOY_HAIR=["......kk.k......","....kkkkkkkk....","..kkkkkkkkkkkk..",".kkkkk
 ['jenny','jennyBlink','jennyHappy','jennySad','jennyCheer'].forEach(n=>{if(PXS[n])PXS[n.replace(/^jenny/,'boy')]=PXS[n].map((r,i)=>i<5?BOY_HAIR[i]:r)});
 const avBoy=()=>{try{return role==='hs'&&S.st[sid]&&S.st[sid].gender==='nam'}catch(e){return false}};
 function boyName(n){const m=/^jenny(Blink|Happy|Sad|Cheer)?(?:__of_(\w+))?$/.exec(n);if(!m)return n;const b='boy'+(m[1]||'');if(!PXS[b])return n;return m[2]?ofVariant(b,m[2]):b}
-{const _s=hooks.cu('spr');hooks.de('spr',function(n,...a){if(typeof n==='string'&&n.startsWith('jenny')&&avBoy())n=boyName(n);return _s.call(this,n,...a)})}
+{hooks.on('spr',_s=>function(n,...a){if(typeof n==='string'&&n.startsWith('jenny')&&avBoy())n=boyName(n);return _s.call(this,n,...a)})}
 /* ---- đồ mới ---- */
 Object.assign(PXS,{
  btieS:["RR..RR","RRrrRR","RR..RR"],
@@ -36,7 +36,7 @@ Object.assign(OUTFIT,{s_ball:{n:'Áo cầu thủ',m:{g:'r',G:'R',y:'w',o:'w'}},s
 export const GH_GEN={s_peach:'nu',bow:'nu',flower:'nu',s_ball:'nam',s_ninja:'nam',btie:'nam',hband:'nam'};
 const genOf=st=>st&&st.gender==='nam'?'nam':'nu';
 /* Cửa hàng: ẩn đồ riêng của bạn kia (trừ đồ đã có) */
-{const _v=hooks.cu('viewShop');hooks.de('viewShop',function(st){const s=ghSt(st),g=genOf(st),sv=[];GH.forEach(c=>{if(c.k==='of'||c.k==='acc'){sv.push([c,c.it]);c.it=c.it.filter(x=>!GH_GEN[x[0]]||GH_GEN[x[0]]===g||s.own.includes(x[0]))}});try{return _v.apply(this,arguments)}finally{sv.forEach(([c,it])=>c.it=it)}})}
+{hooks.on('viewShop',_v=>function(st){const s=ghSt(st),g=genOf(st),sv=[];GH.forEach(c=>{if(c.k==='of'||c.k==='acc'){sv.push([c,c.it]);c.it=c.it.filter(x=>!GH_GEN[x[0]]||GH_GEN[x[0]]===g||s.own.includes(x[0]))}});try{return _v.apply(this,arguments)}finally{sv.forEach(([c,it])=>c.it=it)}})}
 /* ---- chọn nhân vật ---- */
 function setGender(g){const st=S.st[sid];if(!st)return;st.gender=g==='nam'?'nam':'nu';save();const o=document.getElementById('genov');if(o)o.remove();try{sfx('card')}catch(e){}render()}
 function genPick(cls){const st=S.st[sid],cur=st&&st.gender;const b=(g,sp,t)=>`<button type="button" class="genb ${cur===g?'on':''}" onclick="setGender('${g}')" aria-pressed="${cur===g}"><span class="genpic">${spr(sp,72)}</span><b>${t}</b></button>`;
@@ -46,7 +46,7 @@ function genAsk(){if(document.getElementById('genov'))return;const el=document.c
  el.innerHTML=`<div class="gdbox genbox"><div class="gdhd"><b>${arcT('Chọn nhân vật của em','Choose your character')}</b></div><p class="genq">${arcT('Em là bạn nữ hay bạn nam? Em có thể đổi lại trong Tủ đồ.','Are you a girl or a boy? You can change it later in the Wardrobe.')}</p>${genPick()}</div>`;document.body.appendChild(el)}
 /* (đã bỏ) hỏi chọn nhân vật lần đầu */
 /* Tủ đồ: hàng chọn nhân vật + đổi tên "Tủ đồ của em" */
-{const _t=hooks.cu('viewTudo');hooks.de('viewTudo',function(st){let r=_t.apply(this,arguments);try{
+{hooks.on('viewTudo',_t=>function(st){let r=_t.apply(this,arguments);try{
  r=r.replace(arcT('Tủ đồ của Jenny','Jenny’s wardrobe'),arcT('Tủ đồ của em','My wardrobe'));}catch(e){}return r})}
 Object.assign(I18N,{'Áo cầu thủ':'Football shirt','Áo Ninja':'Ninja suit','Áo phi hành gia':'Astronaut suit','Nơ cổ':'Bow tie','Băng đô ninja':'Ninja headband','Kính râm':'Sunglasses','Tai nghe':'Headphones','Mũ bảo hiểm':'Helmet','Bạn nữ':'Girl','Bạn nam':'Boy'});
 document.head.insertAdjacentHTML('beforeend',`<style>

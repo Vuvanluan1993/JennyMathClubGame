@@ -84,7 +84,7 @@ function hsScFix(st){if(st.scv===2)return;st.scv=2;try{const ms=Object.keys(st.s
   ms.forEach(k=>{const m=st.skm[k];Object.keys(m).forEach(x=>{m[x]=Math.round(50+(m[x]-50)*.83)})});if(cuoi){const sc=hsScores(st),m=st.skm[cuoi];HS_AX.forEach(a=>{if(sc[a.k].ok)m[a.k]=sc[a.k].s;else delete m[a.k]})}}catch(e){}}
 export function hsHeal(st,id){if(!st||st.grade>5)return;if(!st.dd)st.dd={};if(!st.sk)st.sk={};if(!st.skm)st.skm={};hsAxFix(st);hsScFix(st);
   if(!st.ddv){st.ddv=1;try{(S.events||[]).forEach(e=>{if(e.actor.account.name!==id||!e.verb.id.endsWith('answered'))return;const k=hsKey(hsDayDate(evDay(e))),o=st.dd[k]||(st.dd[k]={n:0,c:0,sec:0});o.n++;if(e.result.success)o.c++;o.sec+=Math.min(180,parseInt(String(e.result.duration||'PT0S').slice(2))||0)})}catch(e){}}}
-{const _h=hooks.cu('healAll');hooks.de('healAll',function(){_h.apply(this,arguments);try{Object.entries(S.st||{}).forEach(([id,st])=>hsHeal(st,id))}catch(e){}})}
+{hooks.on('healAll',_h=>function(){_h.apply(this,arguments);try{Object.entries(S.st||{}).forEach(([id,st])=>hsHeal(st,id))}catch(e){}})}
 
 /* ----- điểm trục ----- */
 export function hsScores(st){const g=st.grade<=5?st.grade:1,idx=hsIndex(g),o={};
@@ -102,7 +102,7 @@ hooks.ham('hsRec',function(q,ok,first,w,islId){const st=S.st[sid];if(!st||st.gra
   o.sec+=Math.round(Math.min(180,Math.max(0,(now-(scr._la||scr.t0||now))/1000)));scr._la=now;
   if(!first)return;const kd=q.kind||q.label;if(!kd)return;const ax=hsAxOf(kd,hsTopicOf(islId));if(!ax)return;
   const e=st.sk[kd]||(st.sk[kd]={r:[],t:0,ax});for(let i=0;i<w;i++)e.r.push(ok?1:0);if(e.r.length>10)e.r.splice(0,e.r.length-10);e.t=now;e.ax=ax;hsSnap(st)});
-{const _a=hooks.cu('ans1');hooks.de('ans1',function(v){let lz=null;try{const g=scr;if(g&&g.k==='game'&&g.g1&&!g.end&&!g.sheet){const q=q1();if(q){const ok=right1(q,v),first=g.race?true:!g.tries;
+{hooks.on('ans1',_a=>function(v){let lz=null;try{const g=scr;if(g&&g.k==='game'&&g.g1&&!g.end&&!g.sheet){const q=q1();if(q){const ok=right1(q,v),first=g.race?true:!g.tries;
     const w=((g.lv===2&&!g.fix&&g.part!==2&&!g.race&&!g.tre)||g.cbo)?2:1;hsRec(q,ok,first,w,(q.src&&q.src[0])||g.id);lz=g.lz||null}}}catch(e){}
   const r=_a.apply(this,arguments);
   if(lz){try{const ev=S.events[S.events.length-1];if(ev&&ev.verb.id.endsWith('answered')){const nm=`Luyện · ${HS_AXN[lz]}`;ev.object.definition.name.vi=nm;ev.object.id='jenny:'+encodeURIComponent(nm)}
@@ -130,14 +130,14 @@ function startLuyen(){const st=S.st[sid],g=st.grade<=5?st.grade:1,idx=hsIndex(g)
   strong.slice(0,2).forEach(kd=>qs.splice(R(1,qs.length),0,hsMakeQ(pick(inS(kd)),kd)));
   const before=plan.sc[ax].s;v1Said='';
   go({k:'game',g1:1,fix:1,lz:ax,lzb:before,lzok:plan.sc[ax].ok,id:qs[0].src[0],lv:0,qs,j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,hp:0,fixed:0,t0:Date.now()})}
-{const _e=hooks.cu('endFix1');hooks.de('endFix1',function(){if(!scr.lz)return _e.apply(this,arguments);const g=scr,st=S.st[sid];g.end=true;g.pass=true;st.coins+=5;
+{hooks.on('endFix1',_e=>function(){if(!scr.lz)return _e.apply(this,arguments);const g=scr,st=S.st[sid];g.end=true;g.pass=true;st.coins+=5;
   const sc=hsScores(st);g.lza=sc[g.lz].s;g.lzaok=sc[g.lz].ok;log(sid,'passed',`Luyện · ${HS_AXN[g.lz]}`,0,{success:true,score:{raw:g.ok,max:g.qs.length}});
   sfx('win');sayJ(g.lza>g.lzb?`Sức mạnh ${HS_AXN[g.lz]} của em tăng lên rồi! Giỏi quá!`:'Em luyện chăm lắm! Jenny rất vui.');save();render()})}
-{const _v=hooks.cu('viewEnd1');hooks.de('viewEnd1',function(){if(!scr.lz)return _v.apply(this,arguments);const g=scr,up=g.lzaok&&g.lza>g.lzb;
+{hooks.on('viewEnd1',_v=>function(){if(!scr.lz)return _v.apply(this,arguments);const g=scr,up=g.lzaok&&g.lza>g.lzb;
   return`<div class="game g1"><div class="gend"><div class="bigicon bossend">${jenny(84,'cheer')}</div><h1>Luyện xong!</h1><p class="muted">${g.ok}/${g.qs.length} câu đúng · +5 xu</p>
    <div class="hs-up${up?' on':''}"><span>${esc(HS_AXN[g.lz])}</span><b>${g.lzok?hsMuc(g.lzb):'–'}</b><span aria-hidden="true">▶</span><b class="hs-new">${g.lzaok?hsMuc(g.lza):'chưa đủ'}</b></div>
    <div class="gendbtn"><button class="gobtn" type="button" onclick="startLuyen()">Luyện tiếp</button><button class="gobtn ghost" type="button" onclick="go({k:'home',tab:'hoso'})">Về Hồ sơ</button><button class="gobtn ghost" type="button" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`})}
-{const _g=hooks.cu('viewGame1');hooks.de('viewGame1',function(){const h=_g.apply(this,arguments);if(!scr.lz||scr.end)return h;
+{hooks.on('viewGame1',_g=>function(){const h=_g.apply(this,arguments);if(!scr.lz||scr.end)return h;
   return h.replace(`go({k:'home',tab:'fix'})`,`go({k:'home',tab:'hoso'})`).replace('📒 Luyện lỗi',`Luyện · ${esc(HS_AXN[scr.lz])}`).replace('aria-label="Sổ lỗi sai"',`aria-label="Luyện ${esc(HS_AXN[scr.lz])}"`)})}
 
 /* ----- GIAO DIỆN ----- */
@@ -194,5 +194,5 @@ function hsDrawRadar(){const cv=document.getElementById('hsRadar');if(!cv)return
   const box=cv.parentNode,W=box.clientWidth,sc=Math.min(2.2,(W-120)/100);cv.style.width=100*sc+'px';cv.style.height=84*sc+'px';cv.style.left=(W-100*sc)/2+'px';cv.style.top='30px';box.style.height=(84*sc+64)+'px';
   box.querySelectorAll('.hs-lb').forEach(l=>{const[p,q]=pt(+l.dataset.i,128);l.style.left=((W-100*sc)/2+p*sc)+'px';l.style.top=(30+q*sc)+'px'})}
 function hsAfter(){if(!document.querySelector('.hs'))return;hsDrawRadar();const s=document.getElementById('hsScroll');if(s&&!s.dataset.done){s.dataset.done=1;s.scrollLeft=Math.max(0,(+s.dataset.col)*16-s.clientWidth+80)}}
-{const _r=hooks.cu('render');hooks.de('render',function(){const a=_r.apply(this,arguments);try{hsAfter()}catch(e){}return a})}
+{hooks.on('render',_r=>function(){const a=_r.apply(this,arguments);try{hsAfter()}catch(e){}return a})}
 try{addEventListener('resize',()=>{try{hsDrawRadar()}catch(e){}})}catch(e){}

@@ -11,7 +11,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 /* tên quá dài (hơn 2 dòng) thì riêng tên đó nhỏ bớt vừa đủ 2 dòng */
 function fitTopicNames(){document.querySelectorAll('.t1sec .secthead h2').forEach(h=>{h.style.fontSize='';const lines=()=>new Set([...h.getClientRects()].map(r=>Math.round(r.top))).size;
   let f=parseFloat(getComputedStyle(h).fontSize);while(lines()>2&&f>16){f-=1;h.style.fontSize=f+'px'}})}
-{const _a=hooks.cu('g1AfterRender');hooks.de('g1AfterRender',function(){const r=_a.apply(this,arguments);try{if(scr.k==='home'){moveTopicStars();fitTopicNames();document.fonts&&document.fonts.ready.then(fitTopicNames)}}catch(e){}return r})}
+{hooks.on('g1AfterRender',_a=>function(){const r=_a.apply(this,arguments);try{if(scr.k==='home'){moveTopicStars();fitTopicNames();document.fonts&&document.fonts.ready.then(fitTopicNames)}}catch(e){}return r})}
 addEventListener('resize',()=>{clearTimeout(fitTopicNames.t);fitTopicNames.t=setTimeout(()=>{try{fitTopicNames()}catch(e){}},120)});
 
 /* dòng 2: [vùng biển] [★ sao]; dòng 3: Bài … · … đảo · trùm … (đủ sao thì nhãn sao xanh lá) */

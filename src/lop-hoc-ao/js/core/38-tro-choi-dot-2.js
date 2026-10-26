@@ -45,8 +45,7 @@ export const xgNum=x=>/Các số|số có|so sánh|thứ tự|xếp|sắp xếp|
 export const xgMeasTopic=x=>/đo|đơn vị|khối lượng|diện tích|thể tích|độ dài|thời gian|đại lượng/i.test(xgTopic(x)+' '+xgTxt2(x));
 export const xgWord=x=>/bài toán|lời văn|giải toán|giải bài/i.test(xgTxt2(x));
 /* ---------- chọn trò cho đảo: thêm đợt 2 vào danh sách của đợt 1 ---------- */
-const _islOpts2v1=hooks.cu('islOpts2');
-hooks.de('islOpts2',function(x){const base=_islOpts2v1(x),h=xgHash(x.id+'w2'),G=+(String(x.id).match(/^g(\d)/)||[0,curG()])[1],prac=x.tiet>1||/Luyện tập|Ôn tập/i.test(xgTxt2(x));
+hooks.on('islOpts2',_islOpts2v1=>function(x){const base=_islOpts2v1(x),h=xgHash(x.id+'w2'),G=+(String(x.id).match(/^g(\d)/)||[0,curG()])[1],prac=x.tiet>1||/Luyện tập|Ôn tập/i.test(xgTxt2(x));
   const want=[];
   if(xgMoney(x))want.push('shop');
   if(xgMass(x))want.push('scale');
@@ -163,7 +162,7 @@ function trainCheck(){const g=scr,r=g.r,ok=g.att.every((v,i)=>v===r.order[i]),fb
 const trainSay=r=>`Em chạm các toa để xếp ${r.up?'từ bé đến lớn':'từ lớn đến bé'} nhé.`;
 
 /* ---------- khung: bắt đầu, màn chơi, kết thúc ---------- */
-{const _s=hooks.cu('startXG');hooks.de('startXG',function(mode,id){if(!W2.includes(mode))return _s.apply(this,arguments);try{speechSynthesis.cancel()}catch(e){}const x=isl1(id),G=curG();
+{hooks.on('startXG',_s=>function(mode,id){if(!W2.includes(mode))return _s.apply(this,arguments);try{speechSynthesis.cancel()}catch(e){}const x=isl1(id),G=curG();
   const base={k:'xg',mode,id,score:0,lives:3,end:false,started:false,t0:Date.now(),ri:0};
   if(mode==='scale'){const r=scaleRound(x);go({...base,N:8,r,on:[],say:'Cân thăng bằng! Em đặt quả cân lên đĩa bên phải cho hai bên bằng nhau nhé.'})}
   if(mode==='shop'){const r=shopRound(G,0,8);go({...base,N:8,r,pay:[],say:'Chào em đến Cửa hàng Jenny! '+shopSay(r)})}
@@ -172,7 +171,7 @@ export function xg2End(){const g=scr;if(g.k!=='xg'||g.end)return;stopXG();const 
   g.coins=addCoins(sid,Math.min(20,g.score*(g.mode==='train'?3:2)),'self');g.end=true;g.win=g.lives>0;
   log(sid,'passed',`${XGN[g.mode][1]} · ${isl1(g.id).title}`,0,{success:g.win,score:{raw:g.score}});sfx(g.win?'win':'lose');
   sayJ(g.mode==='scale'?`Em cân đúng ${g.score} lần!`:g.mode==='shop'?`Em trả đúng ${g.score} lần. Cảm ơn em đã ghé cửa hàng!`:`Em xếp đúng ${g.score} đoàn tàu!`);save();render()}
-{const _v=hooks.cu('viewXG');hooks.de('viewXG',function(){const g=scr;if(!W2.includes(g.mode))return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:${g.mode}`]||0,g.score),[sp]=XGN[g.mode];
+{hooks.on('viewXG',_v=>function(){const g=scr;if(!W2.includes(g.mode))return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:${g.mode}`]||0,g.score),[sp]=XGN[g.mode];
   if(g.end){const rec=g.score>(g.prev||0)&&g.score>0,unit=g.mode==='scale'?'lần cân':g.mode==='shop'?'lần trả tiền':'đoàn tàu';
     return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr(sp,72)}</span>${jenny(72,g.win||g.score?'cheer':'sad')}</div><h1>${rec?'Kỷ lục mới!':g.win?'Giỏi quá!':'Hết lượt!'}</h1><p class="muted">Đúng <b>${g.score}</b>/${g.N} ${unit} · kỷ lục ${best}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="startXG('${g.mode}','${g.id}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}
   const top=`<div class="gtop"><button class="gx" onclick="stopXG();go({k:'island',id:'${g.id}'})" aria-label="Thoát">✕</button><span class="mgsc">${spr('star',22)} <b id="xgs">${g.score}</b></span><span class="grow"></span><span class="mgsc">${spr(sp,22)} <b id="xgr">${g.ri+1}/${g.N}</b></span><span class="hearts" id="xgl">${[0,1,2].map(i=>spr(i<g.lives?'heart':'heartE',18)).join(' ')}</span></div>`;
@@ -181,5 +180,5 @@ export function xg2End(){const g=scr;if(g.k!=='xg'||g.end)return;stopXG();const 
   if(g.mode==='shop')return`<div class="game g1 mini xg xg2">${top}${rule('Cửa hàng Jenny: trả đúng tiền')}<div class="xshop">${shopHTML(g)}</div><div id="xgfb" class="xgfb"></div></div>`;
   if(g.mode==='train')return`<div class="game g1 mini xg xg2">${top}${rule(`Xếp toa <b>${g.r.up?'từ bé đến lớn':'từ lớn đến bé'}</b>`)}<div class="xtbox" id="xtb">${trainHTML(g)}</div><div id="xgfb" class="xgfb"></div></div>`;
   return''})}
-{const _ar=hooks.cu('xgAfterRender');hooks.de('xgAfterRender',function(){const g=scr;if(g.k==='xg'&&W2.includes(g.mode)){if(g.end)return;if(g.mode==='shop')shopPaint();if(g.started)return;g.started=true;sayJ(g.say);return}return _ar.apply(this,arguments)})}
-{const _mt=hooks.cu('musicTheme');hooks.de('musicTheme',function(){try{if(role==='hs'&&scr.k==='xg'&&W2.includes(scr.mode))return scr.end?null:({scale:'game',shop:'fish',train:'race'})[scr.mode]}catch(e){}return _mt.apply(this,arguments)})}
+{hooks.on('xgAfterRender',_ar=>function(){const g=scr;if(g.k==='xg'&&W2.includes(g.mode)){if(g.end)return;if(g.mode==='shop')shopPaint();if(g.started)return;g.started=true;sayJ(g.say);return}return _ar.apply(this,arguments)})}
+{hooks.on('musicTheme',_mt=>function(){try{if(role==='hs'&&scr.k==='xg'&&W2.includes(scr.mode))return scr.end?null:({scale:'game',shop:'fish',train:'race'})[scr.mode]}catch(e){}return _mt.apply(this,arguments)})}

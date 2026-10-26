@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 26/10/2026 — Hàm đè viết bằng `hooks.on` (P-14b, RF2 — tiếp)
+- `js/core/00-hooks.js`: `hooks.on('render', cu => function(){ … cu.apply(this,arguments) … })` là cách đè chính (bọc bản ngay trước); `hooks.de` chỉ còn cho chỗ thay hẳn hoặc đè tạm, `hooks.cu` cho chỗ giữ bản cũ dùng ở nhiều nơi; hook sự kiện đổi tên `hooks.on` → `hooks.khi` (`run` giữ). `tools/vite/chuyen-hooks.mjs` bước 4 gộp cặp `cu`+`de` liền nhau thành `on` (218 chỗ; còn 27 `de`, 12 `cu`).
+- Không đổi hành vi: ESLint 0 lỗi, 44 ảnh giống (cùng số bản), `npm test` 13/13.
+
 ## 26/10/2026 — Firestore ngoại tuyến, tiết kiệm đọc (P-21, lane FB6, PR vào `tich-hop/kien-truc-2026-10`)
 - **Mới `js/core/63-firestore-tiet-kiem.js`** (include ngay sau `62`): `fbTietKiem()` bật bộ nhớ đệm bền `enablePersistence({synchronizeTabs:true})` ngay khi tạo `FB` (lỗi `failed-precondition`/`unimplemented` chỉ `console.info`); `fbNghe(ref, cb, err)` — **một listener thật cho mỗi document/truy vấn**, chỗ gọi thứ hai cùng ref chỉ nhận thêm bản chụp; lần đầu trên máy (`localStorage.jennyV3 !== '1'`) bỏ qua bản từ đệm, chờ bản máy chủ rồi đặt cờ; `fbNgheTat()` tắt hết khi bắt đầu `fbHsBoot`/`fbGvBoot` (đổi vai, đăng nhập lại) và khi đăng xuất; `FB.dem` đếm `doc` (đọc máy chủ), `cache`, `ghi`, `nghe` (listener đang mở) qua nguyên mẫu SDK + trong `fbNghe`, lưu `localStorage.jennyDem`, in Console khi đăng xuất; đăng xuất → `terminate()` + `clearPersistence()` (máy dùng chung không giữ dữ liệu em), xoá cờ `jennyV3`; `fbNangCapV3` xoá cờ để máy QL lấy máy chủ trước.
 - `62-may-chu.js`: **chỉ** thêm một dòng gọi `fbTietKiem()` trong `fbInit` và đổi 17 chỗ `X.onSnapshot(cb, err)` → `fbNghe(X, cb, err)` (đổi tên hàm, không đổi logic; `grep -c onSnapshot` = 0). **Không chạm `79-dong-bo.js`** (P-16); listener `hs/{tk}` của 79 và `vi/{tk}` của 64 vẫn gọi `onSnapshot` thẳng (2 chỗ ngoài 63).

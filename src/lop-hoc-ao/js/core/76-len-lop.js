@@ -94,15 +94,15 @@ window.llChay=async function(){const o=O(),r=tinh();if(!confirm(`Kết thúc nă
 {const _c=window.qlChuyen;window.qlChuyen=function(id,lid){if(lid&&O().nghi&&O().nghi[id])delete O().nghi[id];return _c.apply(this,arguments)}}
 
 /* máy chủ: học sinh đăng nhập — nghỉ/học xong thì báo; lớp mới cao hơn thì tự lên lớp */
-if(typeof fbHsBoot==='function'){const _b=hooks.cu('fbHsBoot');hooks.de('fbHsBoot',async function(){const me=CLOUD.me,tk=me.tk;
+if(typeof fbHsBoot==='function'){hooks.on('fbHsBoot',_b=>async function(){const me=CLOUD.me,tk=me.tk;
   const org=typeof fbOrgHS==='function'?await fbOrgHS(tk):(()=>{return{}})(),ng=(org.nghi||{})[tk];/* P-06a: v3 đọc org/main + lop/{lớp}, không đọc j */
   if(ng)throw{code:ng.ly==='xong'?'hoc-xong':'nghi-hoc'};
   const r=await _b.apply(this,arguments);
   try{const L=(org.lop||[]).find(l=>l.id===(org.gd||{})[tk]),st=S.st[tk];if(L&&st&&L.khoi>st.grade){(STUDENTS[0]||[])[2]=L.khoi;lenLopHS(st,L.khoi,(org.namCu||[]).slice(-1)[0]?.nam||'',(((org.namCu||[]).slice(-1)[0]||{}).lop||[]).find(x=>x.id===(((org.namCu||[]).slice(-1)[0]||{}).gd||{})[tk])?.ten||'');save();render()}}catch(x){}
   return r})}
-if(typeof fbLoi==='function'){const _l=hooks.cu('fbLoi');hooks.de('fbLoi',function(x){const c=x&&x.code;if(c==='hoc-xong')return'Em đã học xong chương trình tiểu học ở trung tâm. Chúc mừng em! 🎓';if(c==='nghi-hoc')return'Tài khoản đang tạm khoá. Phụ huynh liên hệ trung tâm nhé.';return _l.apply(this,arguments)})}
+if(typeof fbLoi==='function'){hooks.on('fbLoi',_l=>function(x){const c=x&&x.code;if(c==='hoc-xong')return'Em đã học xong chương trình tiểu học ở trung tâm. Chúc mừng em! 🎓';if(c==='nghi-hoc')return'Tài khoản đang tạm khoá. Phụ huynh liên hệ trung tâm nhé.';return _l.apply(this,arguments)})}
 
-{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='nam'){try{return trang()}catch(x){console.error(x);LL=null;return trang0()}}if(role==='ql'&&qlTrang!=='nam')LL=null;return _p.apply(this,arguments)})}
+{hooks.on('viewPH',_p=>function(){if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='nam'){try{return trang()}catch(x){console.error(x);LL=null;return trang0()}}if(role==='ql'&&qlTrang!=='nam')LL=null;return _p.apply(this,arguments)})}
 
 document.head.insertAdjacentHTML('beforeend',`<style>
 .llstep{display:flex;gap:6px;flex-wrap:wrap}.llstep span{padding:6px 10px;font-weight:700;font-size:13px;box-shadow:var(--f2);opacity:.6}.llstep span.on{opacity:1;background:#FCB40C;color:#2b1a00}.llstep span.xong{opacity:.9}

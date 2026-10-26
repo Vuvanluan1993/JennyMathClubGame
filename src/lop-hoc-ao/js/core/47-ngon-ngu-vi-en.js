@@ -72,7 +72,7 @@ hooks.ham('setLang',function(l){LANG=l==='en'?'en':'vi';try{localStorage.setItem
 function langUI(){const bar=document.querySelector('.appbar .wrap');if(!bar)return;let b=document.getElementById('langSw');
  if(!b){b=document.createElement('div');b.id='langSw';b.className='nb-lang';b.setAttribute('role','group');b.setAttribute('aria-label','Ngôn ngữ / Language');b.innerHTML='<button type="button" data-l="vi">VI</button><button type="button" data-l="en">EN</button>';b.addEventListener('click',e=>{const l=e.target.closest('button');if(l)setLang(l.dataset.l)});bar.appendChild(b)}
  b.querySelectorAll('button').forEach(x=>{x.classList.toggle('on',x.dataset.l===LANG);x.setAttribute('aria-pressed',x.dataset.l===LANG)})}
-{const _r=hooks.cu('render');hooks.de('render',function(){const a=_r.apply(this,arguments);try{langUI();i18nApply()}catch(e){}return a})}
+{hooks.on('render',_r=>function(){const a=_r.apply(this,arguments);try{langUI();i18nApply()}catch(e){}return a})}
 /* hộp thoại tạo ngoài render (hướng dẫn, nhắc luyện lỗi, thông báo) */
 new MutationObserver(ms=>{if(LANG!=='en')return;for(const m of ms)m.addedNodes.forEach(x=>{if(x.nodeType===1)i18nApply(x);else if(x.nodeType===3&&x.parentElement&&!x.parentElement.closest('script,style')&&((typeof enOn==='function'&&enOn())||!x.parentElement.closest(I18N_SKIP))){const r=i18nText(x.nodeValue);if(r!=null)x.nodeValue=r}})}).observe(document.body,{childList:true,subtree:true});
 document.documentElement.lang=LANG;

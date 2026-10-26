@@ -74,6 +74,6 @@ function viewPass(st){const g=st.grade<=5?st.grade:1,P=st.pass||{},T=passTopics(
    <div class="pbook">${slots}</div>
    <h3 class="ofh">Tủ đồ của Jenny</h3><div class="ofgrid">${ofs}</div></section>`}
 /* Sưu tập: hộ chiếu ở trên, thẻ sinh vật ở dưới */
-{const _va=hooks.cu('viewAlbum');hooks.de('viewAlbum',function(st){const a=_va(st);return a.replace('<div class="grid">',`<div class="grid">${viewPass(st)}`)})}
+{hooks.on('viewAlbum',_va=>function(st){const a=_va(st);return a.replace('<div class="grid">',`<div class="grid">${viewPass(st)}`)})}
 /* sau mỗi lần vẽ màn hình: kiểm tra dấu mới */
-{const _r=hooks.cu('render');hooks.de('render',function(){const a=_r.apply(this,arguments);try{passSync()}catch(e){}return a})}
+{hooks.on('render',_r=>function(){const a=_r.apply(this,arguments);try{passSync()}catch(e){}return a})}

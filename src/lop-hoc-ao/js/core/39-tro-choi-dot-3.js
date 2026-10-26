@@ -45,8 +45,7 @@ export const xgGeo=x=>XGEO.test(xgTxt2(x))||/hình phẳng|hình khối|một s�
 export const xgGr=x=>+(String(x.id).match(/^g(\d)/)||[0,curG()])[1];
 
 /* ---------- chọn trò cho đảo: thêm đợt 3 ---------- */
-const _islOpts2v2=hooks.cu('islOpts2');
-hooks.de('islOpts2',function(x){let out=[..._islOpts2v2(x)];const h=xgHash(x.id+'w3'),G=xgGr(x),t=xgTxt2(x),strictPrac=/Luyện tập|Ôn tập/i.test(t);
+hooks.on('islOpts2',_islOpts2v2=>function(x){let out=[..._islOpts2v2(x)];const h=xgHash(x.id+'w3'),G=xgGr(x),t=xgTxt2(x),strictPrac=/Luyện tập|Ôn tập/i.test(t);
   const fixed=o=>o==='clock'||o==='shop'||o==='scale'||o==='shape';
   const put=(w,pref)=>{if(out.includes(w))return;if(out.length<3){out.push(w);return}
     for(const p of pref){const i=out.indexOf(p);if(i>=0){out[i]=w;return}}
@@ -68,7 +67,7 @@ export function xcv(id){const cv=document.getElementById(id);if(!cv)return null;
 export const xgRand=seed=>{let s=seed||7;return()=>(s=(s*9301+49297)%233280)/233280};
 
 /* ---------- khung: bắt đầu, màn chơi, kết thúc ---------- */
-{const _s=hooks.cu('startXG');hooks.de('startXG',function(mode,id){if(!W3.includes(mode))return _s.apply(this,arguments);try{speechSynthesis.cancel()}catch(e){}stopXG();const x=isl1(id),G=curG();
+{hooks.on('startXG',_s=>function(mode,id){if(!W3.includes(mode))return _s.apply(this,arguments);try{speechSynthesis.cancel()}catch(e){}stopXG();const x=isl1(id),G=curG();
   const base={k:'xg',mode,id,score:0,lives:3,end:false,started:false,t0:Date.now()};
   if(mode==='mole'){const src=((x&&x.ti&&MGT[x.ti]&&MGT[x.ti][G])?MGT[x.ti][G]:MG[G]),r=(src.fish||src.balloon)();const fx=s=>String(s||'').replace(/^(Câu cá|Câu|Bắn bóng|Bắn|Chạm)\s+(?:con\s+cá\s+|cá\s+|quả\s+bóng\s+|bóng\s+)?/i,'Đập chuột ');
     go({...base,t:60,rule:fx(r.rule),say:'Đập chuột chũi! '+fx(r.say)});scr._r=r;return}
@@ -79,7 +78,7 @@ export function xg3End(){const g=scr;if(g.k!=='xg'||g.end)return;stopXG();const 
   g.coins=addCoins(sid,Math.min(20,g.mode==='mole'?g.score:g.score*2),'self');g.end=true;
   log(sid,'passed',`${XGN[g.mode][1]} · ${isl1(g.id).title}`,0,{success:g.win,score:{raw:g.score}});sfx(g.win?'win':g.lives<=0?'lose':'timeup');
   sayJ(g.mode==='mole'?`Em đập trúng ${g.score} chú chuột!`:g.mode==='frog'?(g.win?'Ếch đã qua sông rồi! Giỏi quá!':`Ếch nhảy được ${g.ri} hàng lá súng.`):(g.win?'Em ghép xong cả hai bức tranh rồi!':`Em đặt đúng ${g.score} hình.`));save();render()}
-{const _v=hooks.cu('viewXG');hooks.de('viewXG',function(){const g=scr;if(!W3.includes(g.mode))return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:${g.mode}`]||0,g.score),[sp]=XGN[g.mode];
+{hooks.on('viewXG',_v=>function(){const g=scr;if(!W3.includes(g.mode))return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:${g.mode}`]||0,g.score),[sp]=XGN[g.mode];
   if(g.end){const rec=g.score>(g.prev||0)&&g.score>0,line=g.mode==='mole'?`Đập trúng <b>${g.score}</b> chú chuột`:g.mode==='frog'?`Nhảy qua <b>${g.ri}</b>/${g.N} hàng lá súng`:`Đặt đúng <b>${g.score}</b>/${g.N} hình`;
     return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr(sp,72)}</span>${jenny(72,g.win||g.score?'cheer':'sad')}</div><h1>${rec?'Kỷ lục mới!':g.win?'Giỏi quá!':'Hết lượt!'}</h1><p class="muted">${line} · kỷ lục ${best}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="startXG('${g.mode}','${g.id}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}
   const hearts=`<span class="hearts" id="xgl">${[0,1,2].map(i=>spr(i<g.lives?'heart':'heartE',18)).join(' ')}</span>`;
@@ -93,11 +92,11 @@ export function xg3End(){const g=scr;if(g.k!=='xg'||g.end)return;stopXG();const 
   if(g.mode==='shape'){const p=g.pics[g.pi],sl=p&&p.slots[g.si];return`<div class="game g1 mini xg xg3">${top}${rule(g.reveal?'<b>Hoàn thành bức tranh!</b>':`Đặt <b>${XSHN[sl.s]}</b> vào chỗ trống`,'shapeSay(scr)')}<div class="xshp3"><div class="xspic ${g.reveal?'rev':''}"><canvas class="xpcv" id="xscv3" width="114" height="72" aria-hidden="true"></canvas>${!g.reveal&&sl?`<span class="xsslot" style="left:${sl.x*XZ}px;top:${sl.y*XZ}px;width:${sl.w*XZ}px;height:${sl.h*XZ}px"></span>`:''}${g.reveal?'<span class="xsdone">Tuyệt vời!</span>':''}</div>
     <div class="xstray3">${g.tray.map((k,i)=>`<button type="button" class="xstile ${g.badT&&g.badT.includes(i)?'bad':''}" onclick="shapeTap(${i})" ${g.reveal?'disabled':''} aria-label="Hình thứ ${i+1}"><canvas class="xpcv" data-shape="${k}" width="22" height="22"></canvas></button>`).join('')}</div></div><div id="xgfb" class="xgfb">${g.fb||''}</div></div>`}
   return''})}
-{const _ar=hooks.cu('xgAfterRender');hooks.de('xgAfterRender',function(){const g=scr;if(g.k==='xg'&&W3.includes(g.mode)){if(g.end)return;
+{hooks.on('xgAfterRender',_ar=>function(){const g=scr;if(g.k==='xg'&&W3.includes(g.mode)){if(g.end)return;
   if(g.mode==='mole'){moleBg();if(!g.started){g.started=true;sayJ(g.say);moleRun()}return}
   if(g.mode==='frog')frogBg();if(g.mode==='shape')shapeDraw();
   if(!g.started){g.started=true;sayJ(g.say)}return}return _ar.apply(this,arguments)})}
-{const _mt=hooks.cu('musicTheme');hooks.de('musicTheme',function(){try{if(role==='hs'&&scr.k==='xg'&&W3.includes(scr.mode))return scr.end?null:({mole:'race',frog:'fish',shape:'game'})[scr.mode]}catch(e){}return _mt.apply(this,arguments)})}
+{hooks.on('musicTheme',_mt=>function(){try{if(role==='hs'&&scr.k==='xg'&&W3.includes(scr.mode))return scr.end?null:({mole:'race',frog:'fish',shape:'game'})[scr.mode]}catch(e){}return _mt.apply(this,arguments)})}
 function xg3Hearts(){xgHearts()}
 
 /* ---------- 1. ĐẬP CHUỘT CHŨI ---------- */

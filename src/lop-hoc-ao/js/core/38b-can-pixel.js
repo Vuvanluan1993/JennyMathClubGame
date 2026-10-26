@@ -38,4 +38,4 @@ function scaleDraw(){const cv=document.getElementById('xscv');if(!cv||scr.k!=='x
 export function scalePaint(){const b=document.getElementById('xsb');if(b)b.innerHTML=scaleHTML(scr);const t=document.getElementById('xstray');if(t)t.innerHTML=scaleTray(scr);const s=document.getElementById('xssum');if(s)s.textContent=scr.r.fmt(scaleRight(scr));scaleDraw();xsSprites()}
 /* nền sprite cho quả cân / hộp */
 function xsSprites(){try{const W=pxCanvas('xsWt').toDataURL(),G=pxCanvas('xsWtG').toDataURL(),B=pxCanvas('xsBox').toDataURL(),r=document.documentElement.style;r.setProperty('--xsWt',`url(${W})`);r.setProperty('--xsWtG',`url(${G})`);r.setProperty('--xsBox',`url(${B})`)}catch(e){}}
-{const _r=hooks.cu('render');hooks.de('render',function(){const a=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='scale'){scaleDraw();xsSprites()}}catch(e){}return a})}
+{hooks.on('render',_r=>function(){const a=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='scale'){scaleDraw();xsSprites()}}catch(e){}return a})}

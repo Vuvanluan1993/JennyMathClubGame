@@ -19,7 +19,7 @@ import { asgAll, asgD, asgMine, asgName, asgR, asgState } from './53-phong-hoc.j
 export const BVN_XU=20;
 function bvnId(st){return Object.keys(S.st).find(k=>S.st[k]===st)}
 function bvnLoiCon(st,a){const M=mist(st);return(a.keys||[]).filter(k=>M[k])}
-{const _s=hooks.cu('asgState');hooks.de('asgState',function(st,a){const o=_s.apply(this,arguments);try{
+{hooks.on('asgState',_s=>function(st,a){const o=_s.apply(this,arguments);try{
   if(a.loai==='loi'){const con=bvnLoiCon(st,a).length;
     /* đã xong một lần (sửa hết các lỗi cô giao) là xong hẳn: em sai lại cùng dạng sau đó thì chỉ ghi vào sổ, không mở lại bài cô giao (sửa 24/10/2026) */
     if(con===0&&!o.r.xong){o.r.xong=Date.now()}
@@ -30,17 +30,17 @@ export function bvnCho(st){if(!st||st.grade>5)return[];return asgMine(st).filter
 function bvnThuong(st,a){const r=asgR(st)[a.id]||(asgR(st)[a.id]={});if(r.thuong||!asgState(st,a).done)return false;r.thuong=Date.now();const xu=a.xu||BVN_XU;st.coins+=xu;
   log(bvnId(st),'passed',`Bài về nhà · ${asgName(a)}`,0,{success:true});save();setTimeout(()=>{try{toast(`Xong bài về nhà! +${xu} xu`);sfx('win')}catch(e){}},300);return true}
 /* Luyện lỗi có mục tiêu: bắt đầu */
-{const _g=hooks.cu('asgGo');hooks.de('asgGo',function(aid){const a=asgAll().find(x=>x.id===aid);if(!a||a.loai!=='loi')return _g.apply(this,arguments);
+{hooks.on('asgGo',_g=>function(aid){const a=asgAll().find(x=>x.id===aid);if(!a||a.loai!=='loi')return _g.apply(this,arguments);
   const st=S.st[sid],M=mist(st),con=bvnLoiCon(st,a);const r=asgR(st)[aid]||(asgR(st)[aid]={});r.seen=1;r.lam=1;
   if(!con.length){bvnThuong(st,a);render();return}
   const mk=e=>{const x=isl1(e.id);const q=x.lv[e.lv][e.gi]();return{...q,src:[e.id,e.lv,e.gi],key:`${e.id}:${e.lv}:${e.gi}`,label:e.label}};
   const E=con.map(k=>M[k]).filter(e=>isl1(e.id));if(!E.length){toast('Các lỗi này không còn bài tương ứng.');return}
   save();v1Said='';go({k:'game',g1:1,fix:1,bvn:aid,id:E[0].id,lv:0,qs:E.flatMap(e=>[mk(e),mk(e)]),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,hp:0,fixed:0,t0:Date.now()})})}
-{const _e=hooks.cu('endFix1');hooks.de('endFix1',function(){const g=scr,r=_e.apply(this,arguments);try{if(g&&g.bvn){const st=S.st[sid],a=asgAll().find(x=>x.id===g.bvn);if(a){const M=mist(st);(a.keys||[]).forEach(k=>delete M[k]);const r0=asgR(st)[a.id]||(asgR(st)[a.id]={});r0.xong=r0.xong||Date.now();bvnThuong(st,a);g.bvnKq='xong';save();render()}}}catch(e){}return r})}
+{hooks.on('endFix1',_e=>function(){const g=scr,r=_e.apply(this,arguments);try{if(g&&g.bvn){const st=S.st[sid],a=asgAll().find(x=>x.id===g.bvn);if(a){const M=mist(st);(a.keys||[]).forEach(k=>delete M[k]);const r0=asgR(st)[a.id]||(asgR(st)[a.id]={});r0.xong=r0.xong||Date.now();bvnThuong(st,a);g.bvnKq='xong';save();render()}}}catch(e){}return r})}
 /* Phiếu: xong thì thưởng */
-{const _p=hooks.cu('phSubmit');hooks.de('phSubmit',function(){const g=scr,aid=g&&g.ph,r=_p.apply(this,arguments);try{const st=S.st[sid],a=asgAll().find(x=>x.id===aid);if(a&&a.bat)bvnThuong(st,a)}catch(e){}return r})}
+{hooks.on('phSubmit',_p=>function(){const g=scr,aid=g&&g.ph,r=_p.apply(this,arguments);try{const st=S.st[sid],a=asgAll().find(x=>x.id===aid);if(a&&a.bat)bvnThuong(st,a)}catch(e){}return r})}
 /* màn kết thúc luyện lỗi (bài về nhà): thêm dòng kết quả + nút quay về */
-{const _a=hooks.cu('g1AfterRender');hooks.de('g1AfterRender',function(){const r=_a.apply(this,arguments);try{const g=scr;if(g&&g.end&&g.bvn&&!document.querySelector('.bvnend')){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');
+{hooks.on('g1AfterRender',_a=>function(){const r=_a.apply(this,arguments);try{const g=scr;if(g&&g.end&&g.bvn&&!document.querySelector('.bvnend')){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');
   if(box)box.insertAdjacentHTML('afterbegin',`<div class="gatenote bvnend">${g.bvnKq==='xong'?'Em đã luyện xong các lỗi cô giao. Các lỗi này đã ra khỏi Sổ lỗi sai. Giỏi quá!':`Còn ${g.bvnKq} lỗi chưa đúng 2 lần liền. Mình luyện lại nhé!`}</div><button type="button" class="gobtn" onclick="go({k:'home'})">${g.bvnKq==='xong'?'Xong ▶':'Về bài về nhà ▶'}</button>`)}}catch(e){}return r})}
 
 /* ---------- chặn: chưa xong bài về nhà thì không làm gì khác ---------- */
@@ -56,12 +56,12 @@ function viewBVN(st,L){const a=L[0],s=asgState(st,a),nx=L.slice(1);
    <button class="gobtn bvn-go" type="button" onclick="asgGo('${a.id}')">${s.chuaDat||(a.loai==='loi'&&s.r.lam)?'Làm lại ▶':s.doing?'Làm tiếp ▶':'Làm ngay ▶'}</button>
    ${nx.length?`<div class="bvn-sau"><b>Bài tiếp theo</b>${nx.map((b,i)=>`<div class="bvn-li"><span class="bvn-so sm">${i+2}</span>${esc(asgName(b))}</div>`).join('')}</div>`:''}
    <p class="bvn-note">Nút Đăng xuất ở trên cùng vẫn dùng được.</p></div>`}
-{const _r=hooks.cu('render');hooks.de('render',function(){const r=_r.apply(this,arguments);try{
+{hooks.on('render',_r=>function(){const r=_r.apply(this,arguments);try{
   document.body.classList.remove('bvnlock');
   if(role==='hs'){const st=S.st[sid],L=bvnCho(st);if(L.length&&!bvnTrongBai()){const app=document.getElementById('app');app.innerHTML=viewBVN(st,L);document.body.classList.add('bvnlock');document.body.classList.remove('hasnav','gaming');try{pixelize(app)}catch(e){}}}}catch(e){console.error(e)}return r})}
 /* sửa khóa lỗi mẫu cũ (dạng id|lv|gi) cho khớp khóa luyện lỗi (id:lv:gi) */
 function bvnSuaKhoa(){Object.values(S.st||{}).forEach(st=>{const M=st.mist;if(!M)return;Object.keys(M).forEach(k=>{if(k.includes('|')){const n=k.replace(/\|/g,':');if(!M[n])M[n]=M[k];delete M[k]}})})}
-{const _r=hooks.cu('render');hooks.de('render',function(){try{if(S&&!S.mk2){bvnSuaKhoa();S.mk2=1}}catch(e){}return _r.apply(this,arguments)})}
+{hooks.on('render',_r=>function(){try{if(S&&!S.mk2){bvnSuaKhoa();S.mk2=1}}catch(e){}return _r.apply(this,arguments)})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .bvn{max-width:560px;margin:8px auto;display:flex;flex-direction:column;gap:12px}
 .bvn-hd{display:flex;gap:14px;align-items:center;padding:16px;background:linear-gradient(#FFF4D6,#FFE9B8);color:#1F2A5A;box-shadow:var(--f2),0 4px 0 0 #1F2A5A}

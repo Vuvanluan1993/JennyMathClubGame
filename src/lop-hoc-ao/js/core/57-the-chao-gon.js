@@ -1,7 +1,7 @@
 /* 57 — Thẻ chào gọn (thầy chốt 23/10/2026): bỏ nút "Nghe Jenny", bỏ chữ "Đảo nhà" dưới hình;
    ô sao và ô xu thành cột bên phải, 2 hàng, cạnh "Vịnh … · Lớp n" và "Chào …!"; ô xu chỉ còn "🪙 số ▸" (vẫn bấm mở Cửa hàng). Giữ dòng "Bản …". */
 import { hooks } from './00-hooks.js';
-{const _h=hooks.cu('viewHome1');hooks.de('viewHome1',function(){let r=_h.apply(this,arguments);try{
+{hooks.on('viewHome1',_h=>function(){let r=_h.apply(this,arguments);try{
  r=r.replace(/<span class="herlbl">[^<]*<\/span>/,'')
   .replace(/<button class="chip g1say"[^>]*>[\s\S]*?<\/button>/,'')
   .replace(/(<button type="button" class="chip ghchip"[^>]*>[\s\S]*?<b>\d+<\/b>)\s*<span>[^<]*<\/span>/,'$1 <i class="hcarr">▸</i>')

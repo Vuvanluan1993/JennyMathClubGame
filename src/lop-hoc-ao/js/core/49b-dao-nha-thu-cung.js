@@ -184,14 +184,14 @@ function petPat(i){const st=S.st[sid],P=petsOf(st),p=P.list[i];if(!p)return;cons
 function petName(i){const st=S.st[sid],p=petsOf(st).list[i];if(!p)return;const el=document.createElement('div');el.className='gdov';el.innerHTML=`<div class="gdbox"><div class="gdhd"><b>${spr(p.sp,20)} Đặt tên cho bạn ${PET_SP[p.sp][0]}</b><button type="button" class="gdx" onclick="this.closest('.gdov').remove()" aria-label="Đóng">✕</button></div><div class="gatebd">${petSpr(p,56)}<input id="pnIn" maxlength="12" value="${esc(p.name||PET_NAMES[Math.floor(Math.random()*PET_NAMES.length)])}" aria-label="Tên thú cưng"></div><div class="gdctl"><button type="button" class="gdgo" id="pnOk">Xong ▶</button></div></div>`;document.body.appendChild(el);
  const inp=el.querySelector('#pnIn');inp.focus();inp.select();el.querySelector('#pnOk').onclick=()=>{const v=inp.value.replace(/[<>"'&]/g,'').trim().slice(0,12);if(!v){inp.focus();return}p.name=v;save();el.remove();render()}}
 /* học giỏi → thú cưng vui */
-{const _e=hooks.cu('end1');hooks.de('end1',function(){const r=_e.apply(this,arguments);try{if(scr&&scr.pass&&!scr.fix){const st=S.st[sid];petsOf(st).list.forEach(p=>{p.vui=clamp(p.vui+6)});save()}}catch(e){}return r})}
+{hooks.on('end1',_e=>function(){const r=_e.apply(this,arguments);try{if(scr&&scr.pass&&!scr.fix){const st=S.st[sid];petsOf(st).list.forEach(p=>{p.vui=clamp(p.vui+6)});save()}}catch(e){}return r})}
 /* trang chính: chạm ảnh Jenny ở thẻ chào → Đảo nhà; có dấu ! khi thú cần chăm */
-{const _h=hooks.cu('viewHome1');hooks.de('viewHome1',function(){let r=_h.apply(this,arguments);try{const st=S.st[sid];petSim(st);const P=petsOf(st),need=P.list.some(p=>p.no<25||p.sick||p.sach<25||!p.name)||P.eggs.some(e=>!e.inc)||P.bye,fr=ghSt(st).frame;
+{hooks.on('viewHome1',_h=>function(){let r=_h.apply(this,arguments);try{const st=S.st[sid];petSim(st);const P=petsOf(st),need=P.list.some(p=>p.no<25||p.sick||p.sach<25||!p.name)||P.eggs.some(e=>!e.inc)||P.bye,fr=ghSt(st).frame;
   const i=r.indexOf('<section class="hero');if(i>=0){const j=r.indexOf('<span class="jav',i);if(j>=0){let d=0,k=j;const re=/<span\b|<\/span>/g;re.lastIndex=j;let m;while((m=re.exec(r))){d+=m[0]==='</span>'?-1:1;if(!d){k=re.lastIndex;break}}
    r=r.slice(0,j)+`<button type="button" class="herojav ${fr?'fr-'+fr:''}" onclick="go({k:'home',tab:'isle'})" aria-label="Vào Đảo nhà của em${need?' — thú cưng cần em chăm':''}">${r.slice(j,k)}${P.list[0]?`<span class="herpet">${petSpr(P.list[0],26)}</span>`:''}${need?'<i class="herbang">!</i>':''}<span class="herlbl">Đảo nhà</span></button>`+r.slice(k)}}}catch(e){}return r})}
-{const _v=hooks.cu('viewHome1t');hooks.de('viewHome1t',function(){const r=_v.apply(this,arguments);if(scr.tab!=='isle')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewIsle(st)+(i>=0?r.slice(i):'')})}
+{hooks.on('viewHome1t',_v=>function(){const r=_v.apply(this,arguments);if(scr.tab!=='isle')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewIsle(st)+(i>=0?r.slice(i):'')})}
 /* Jenny đội mũ/kính đã mua ở mọi nơi */
-{const _j=hooks.cu('jenny');hooks.de('jenny',function(size,mood){const r=_j.apply(this,arguments);try{if(role!=='hs')return r;const st=S.st[sid],a=st&&st.shop&&st.shop.acc;if(!a||!GH_ACC[a])return r;const[nm,x,y]=GH_ACC[a],d=pxURI(nm),u=Math.round(size*.86)/19;
+{hooks.on('jenny',_j=>function(size,mood){const r=_j.apply(this,arguments);try{if(role!=='hs')return r;const st=S.st[sid],a=st&&st.shop&&st.shop.acc;if(!a||!GH_ACC[a])return r;const[nm,x,y]=GH_ACC[a],d=pxURI(nm),u=Math.round(size*.86)/19;
   return r.replace('<span class="jbody">',`<span class="jbody"><img class="px jsacc" src="${d.u}" alt="" style="left:${x*u}px;top:${y*u}px;width:${d.w*u}px;height:${d.h*u}px">`)}catch(e){return r}})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .jsacc{position:absolute;z-index:2;image-rendering:pixelated;pointer-events:none}.jbody{position:relative}
@@ -239,7 +239,7 @@ hooks.ham('viewNha',function(st){petSim(st);const P=petsOf(st),need=P.list.some(
  return`<div class="page nhapage"><section class="card"><h2 class="nhah">${spr('houseS',24)} Nhà của ${esc(st.name.split(' ').pop())}</h2>
   <div class="nhagrid">${tile('isle',spr('island',54)+(p0?`<span class="nhpet">${petSpr(p0,28)}</span>`:''),'Đảo nhà',p0?`${esc(p0.name||PET_SP[p0.sp][0])} đang chờ em`:'Nuôi thú cưng',need)}
   ${tile('album',spr('fish',44),'Sưu tập','Hộ chiếu, thẻ sinh vật')}${tile('hoso',spr('hoso',44),'Hồ sơ','Chuỗi ngày học, đăng xuất')}</div></section></div>`});
-{const _v=hooks.cu('viewHome1t');hooks.de('viewHome1t',function(){const st=S.st[sid];let r;
+{hooks.on('viewHome1t',_v=>function(){const st=S.st[sid];let r;
   if(scr.tab==='nha'){const t=scr.tab;scr.tab='map';r=_v.apply(this,arguments);scr.tab=t;const i=r.indexOf('<nav class="bnav"');r=viewNha(st)+(i>=0?r.slice(i):'').replace(/<button class="on([^"]*)" aria-current="page" onclick="go\(\{k:'home',tab:'map'\}\)"/,`<button class="$1" aria-current="false" onclick="go({k:'home',tab:'map'})"`)}
   else{r=_v.apply(this,arguments);if(scr.tab==='album'||scr.tab==='hoso')r=`<div class="crumb nhacrumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← Nhà em</button></div>`+r}
   const tab=scr.tab||'map',P=petsOf(st),need=P.list.some(p=>p.no<25||p.sick||p.sach<25)||!!P.bye;

@@ -61,7 +61,7 @@ function frogDraw(x){const p0=xpx(x),g=scr,F=frogFx,f=F.f,SC=Math.round(F.sc||0)
   /* lau sậy đung đưa */ [[2,4],[5,6],[108,2],[111,5]].forEach(([X,Y],i)=>{const s=Math.round(Math.sin((f+i*3)/4));for(let k=0;k<12;k++){const off=k<4?s:0;p('G',X+off,Y+k,1,1)}p('N',X+s,Y-2,1,3);p('n',X+s,Y-1,1,1)});
   /* bờ gần: hàng đầu là bãi cỏ; các hàng sau ếch đứng trên lá súng vừa nhảy tới */ if(g.ri>0){for(let y=84;y<100;y++)p0(B[3],0,y,114,1);const cx=57,cy=94;p0('k',cx-15,cy-5,30,11);p0('G',cx-14,cy-4,28,9);p0('g',cx-13,cy-4,24,7);p0('#26996C',cx-2,cy-4,3,4);p0('l',cx-11,cy-3,6,1)}else{ p('k',0,84,114,1);p('G',0,85,114,15);p('g',0,86,114,10);for(let X=1;X<114;X+=4){const w=((X>>2)+(f>>1))%4===0?1:0;p('l',X+w,85+(X%3),1,2);p('G',X+1,85,1,1)}}
   /* cờ đích bay phấp phới */ if(far){p('N',56,1,1,10);const fl=(f>>1)%2;p('r',57,1,6-fl,4);p('r',57,1,6,3-fl);p('y',58,2,2,1)}}
-{let tid=0;const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{clearInterval(tid);if(scr.k==='xg'&&scr.mode==='frog'&&!scr.end&&document.getElementById('xfcv')){frogFx=null;frogBg();
+{let tid=0;hooks.on('render',_r=>function(){const v=_r.apply(this,arguments);try{clearInterval(tid);if(scr.k==='xg'&&scr.mode==='frog'&&!scr.end&&document.getElementById('xfcv')){frogFx=null;frogBg();
   tid=setInterval(()=>{const x=xcv('xfcv');if(!x||scr.k!=='xg'||scr.mode!=='frog'||scr.end){clearInterval(tid);return}frogFx.f++;frogDraw(x)},120)}}catch(e){}return v})}
 
 /* đồ vật khác nhau mỗi hàng: đá, khúc gỗ, rùa, vịt, chuồn chuồn, khóm sen */
@@ -81,7 +81,7 @@ function frogAdvance(g,i,el,pad){if(scr!==g)return;const z=document.getElementBy
   if(pad)frogAnim(pad,[{transform:'translate(0,0)'},{transform:`translate(${FROG_BANK[0]-P[0]}px,${FROG_BANK[1]-P[1]+30}px)`}],520,6);
   let k=0;const t=setInterval(()=>{k++;if(frogFx)frogFx.sc=Math.min(30,k*5);if(k>=6)clearInterval(t)},85);
   setTimeout(()=>{if(frogFx)frogFx.sc=0;g.enter=1;frogDone(g,i,true)},600)}
-{const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='frog'&&scr.enter){scr.enter=0;document.querySelectorAll('.xfpad').forEach((b,j)=>{b.classList.add('xfin');b.style.animationDelay=(j*80)+'ms'})}}catch(e){}return v})}
+{hooks.on('render',_r=>function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='frog'&&scr.enter){scr.enter=0;document.querySelectorAll('.xfpad').forEach((b,j)=>{b.classList.add('xfin');b.style.animationDelay=(j*80)+'ms'})}}catch(e){}return v})}
 (function(){const st=document.createElement('style');st.textContent=`
 .xfgo .xfpad:not(.carry){transition:transform .45s steps(5),opacity .45s steps(5);transform:translateY(120px);opacity:0}
 .xfpad.xfin{animation:xfin .5s steps(5) backwards,xfbob 1.6s steps(2) .5s infinite}

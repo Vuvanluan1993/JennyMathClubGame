@@ -79,7 +79,7 @@ export function xuMua(loai,id){const st=S.st[sid],gia=xuGia(loai,id);if(!st||gia
 const xuBan=(delta,ref)=>xuCong(delta,'ban',ref);
 const xuCo=(loai,id)=>!!(VI[loai]&&VI[loai][id])||VI.q.some(x=>x.mua&&x.mua.loai===loai&&x.mua.id===id);
 /* addCoins (11) đã gọi xuCong; ở đây chỉ tách thống kê trò chơi (gameCoins) khỏi selfCoins và gắn k = 'game' */
-{const _a=hooks.cu('addCoins');hooks.de('addCoins',function(id,n,kind,k){const st=S.st[id];if(kind==='self'&&st&&xuTroChoi()){st.gameCoins=st.gameCoins||{};st.gameCoins[S.day]=(st.gameCoins[S.day]||0)+n;
+{hooks.on('addCoins',_a=>function(id,n,kind,k){const st=S.st[id];if(kind==='self'&&st&&xuTroChoi()){st.gameCoins=st.gameCoins||{};st.gameCoins[S.day]=(st.gameCoins[S.day]||0)+n;
     Object.keys(st.gameCoins).forEach(d=>{if(+d<S.day-14)delete st.gameCoins[d]});return _a(id,n,'game',k||'game')}return _a.apply(this,arguments)})}
 /* 49b (ngoài danh sách file P-20): mua thú cưng, đồ nuôi và bán thanh lý đi qua ví bằng cách bọc hàm */
 function xuBoc(ten,f){try{if(typeof window[ten]!=='function')return;const _f=window[ten];window[ten]=function(){const st=S.st[sid],tr=st?st.coins||0:0;const r=_f.apply(this,arguments);try{f(st,tr-((st&&st.coins)||0),arguments)}catch(e){}return r}}catch(e){}}
@@ -87,7 +87,7 @@ xuBoc('petBuy',(st,da,a)=>{if(da>0)xuGhiMua('pets',a[0],da)});
 xuBoc('careBuy',(st,da,a)=>{if(da>0)xuGhiMua('items',a[0],da)});
 ['bagSell','gearSell','eggSell'].forEach(n=>xuBoc(n,(st,da,a)=>{if(da<0){st.coins+=da;xuBan(-da,String(a[0]||n))}}));
 /* save(): st.coins phải bằng xu máy chủ + hàng đợi; lệch thì xử lý */
-{const _s=hooks.cu('save');hooks.de('save',function(){try{if(xuOn()){const st=S.st[sid];if(st){const d=Math.round((st.coins||0)-xuMong());
+{hooks.on('save',_s=>function(){try{if(xuOn()){const st=S.st[sid];if(st){const d=Math.round((st.coins||0)-xuMong());
  if(d>0&&d<=XU_LECH){st.coins-=d;xuCong(d,'khac',undefined)}else if(d){console.warn('Xu: thay đổi '+(d>0?'+':'')+d+' xu ngoài luồng bị bỏ (P-20: chỉ xuCong/xuMua được đổi xu)');st.coins=xuMong()}}}}catch(e){}return _s.apply(this,arguments)})}
 /* ---- vào app: đọc ví + bảng giá, nối hàng đợi còn dở, gỡ đồ ví không có ---- */
 function xuDongBoDo(st){try{const g=xuBangGia(),trong=id=>(id in g.tudo)||(id in g.items);

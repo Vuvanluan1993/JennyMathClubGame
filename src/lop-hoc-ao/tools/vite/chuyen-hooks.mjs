@@ -1,10 +1,11 @@
 // Chuyển kiểu "đè" cũ sang hooks (P-14b, 26/10/2026) — chạy lại được (chỉ đổi những chỗ còn kiểu cũ), dùng sau mỗi lần rebase.
 //   node tools/vite/chuyen-hooks.mjs          đổi mã trong js/** và tools/vite/vai/*.js.txt (rồi chạy tim-import.mjs)
 //   node tools/vite/chuyen-hooks.mjs --xem    chỉ in sẽ đổi gì
-// Ba việc, theo phân tích phạm vi (acorn + eslint-scope), mã còn lại giữ nguyên từng byte:
+// Bốn việc, theo phân tích phạm vi (acorn + eslint-scope), mã còn lại giữ nguyên từng byte:
 // 1. Hàm trùng tên (function X ở ≥ 2 file): xoá bản ở file TRƯỚC (script thường: bản sau thắng từ đầu nên bản trước là mã chết).
 // 2. Hàm bị gán lại ở file khác ("hàm đè"): ở file định nghĩa → function X(...a){return hooks.goi('X',this,a)} + hooks.ham('X',function(…){…});
 //    (hoặc const X=hooks.ham('X',<hàm>)); ở chỗ gán X=<hàm> → hooks.de('X',<hàm>); chỗ giữ bản cũ const _x=X → const _x=hooks.cu('X');
+//    rồi (bước 4, lần chạy sau) cặp cu+de liền nhau → hooks.on('X',_x=><hàm>) — dạng đè chính.
 //    mã vai.js chèn (tools/vite/vai/*.js.txt) khai báo function X trùng tên → hooks.goc('X',function(){…}) (thay bản gốc, như hoisting cũ).
 // 3. Biến (không phải hàm) bị gán ở file khác ("trạng thái dùng chung"): let X=… ở file định nghĩa → globalThis.X=…;
 //    tim-import.mjs thấy globalThis.X= thì ghi X vào tools/vite/toan-cuc-sinh.json để ESLint coi là toàn cục tường minh.
@@ -28,8 +29,8 @@ for (const f of fs.readdirSync(VAI).filter(f => f.endsWith('.js.txt')).sort()) {
   files.push({ ten: 'tools/vite/vai/' + f, duong: path.join(VAI, f), code: code.slice(0, code.length - duoi.length), duoi, that: false });
 }
 for (const f of files) {
-  const { ast, module } = phanTich(f.code, f.ten);
-  f.ast = ast; f.module = module; f.khai = new Map(); f.doi = []; // doi: [từ, đến, chuỗi mới]
+  const { ast, module, scopes } = phanTich(f.code, f.ten);
+  f.ast = ast; f.module = module; f.scopes = scopes; f.khai = new Map(); f.doi = []; // doi: [từ, đến, chuỗi mới]
   for (const v of module.variables) if (v.defs.length) f.khai.set(v.name, v.defs[0]);
   /** Gán lại tên do chính file này khai báo (X=function…; không tính dòng khai báo) → [tham chiếu ghi] */
   f.ganTrong = n => { const v = module.set.get(n); return v ? v.references.filter(r => r.isWrite() && !r.init && r.writeExpr) : []; };
@@ -130,6 +131,30 @@ for (const f of files) for (const [n, d] of f.khai) {
 function timCha(ast, nut) { let ra = null; (function di(n, cha) { if (ra || !n || typeof n.type !== 'string') return; if (n === nut) { ra = cha; return; } for (const k in n) { if (k === 'loc') continue; const v = n[k]; if (Array.isArray(v)) v.forEach(x => di(x, n)); else if (v && typeof v.type === 'string') di(v, n); } })(ast, null); return ra; }
 /** const _x = N; (khai báo biến, giá trị là đúng tên N) ở bất kì phạm vi nào trong file */
 function layCapture(f, n) { const ra = []; (function di(x) { if (!x || typeof x.type !== 'string') return; if (x.type === 'VariableDeclarator' && x.init && x.init.type === 'Identifier' && x.init.name === n && x.id.type === 'Identifier') ra.push(x); for (const k in x) { if (k === 'loc') continue; const v = x[k]; if (Array.isArray(v)) v.forEach(di); else if (v && typeof v.type === 'string') di(v); } })(f.ast); return ra; }
+
+// 4. Cặp liền nhau  const _x=hooks.cu('X');  hooks.de('X',<hàm>)  → hooks.on('X',_x=><hàm>)  (chỉ ở file chưa có phép đổi nào ở bước 1–3)
+for (const f of files) {
+  if (f.doi.length) continue;
+  const la = (n, k) => n && n.type === 'CallExpression' && n.callee.type === 'MemberExpression' && n.callee.object.name === 'hooks' && n.callee.property.name === k && n.arguments[0] && n.arguments[0].type === 'Literal';
+  (function di(x) {
+    if (!x || typeof x.type !== 'string') return;
+    const body = x.type === 'Program' || x.type === 'BlockStatement' ? x.body : null;
+    if (body) for (let i = 0; i + 1 < body.length; i++) {
+      const a = body[i], b = body[i + 1];
+      if (a.type !== 'VariableDeclaration' || a.declarations.length !== 1 || a.declarations[0].id.type !== 'Identifier' || !la(a.declarations[0].init, 'cu')) continue;
+      if (b.type !== 'ExpressionStatement' || !la(b.expression, 'de') || b.expression.arguments.length !== 2) continue;
+      const ten = a.declarations[0].init.arguments[0].value;
+      if (b.expression.arguments[0].value !== ten) continue;
+      const bien = a.declarations[0].id.name, fn = b.expression.arguments[1];
+      // biến giữ bản cũ chỉ được dùng trong hàm đè (nếu còn dùng chỗ khác thì giữ nguyên cu + de)
+      const v = f.scopes.scopes.flatMap(s => s.variables).find(v => v.name === bien && v.defs[0] && v.defs[0].node === a.declarations[0]);
+      if (!v || v.references.some(r => !r.init && (r.identifier.start < fn.start || r.identifier.end > fn.end))) continue;
+      f.doi.push([a.start, fn.start, `hooks.on('${ten}',${bien}=>`]);
+      ghiChu.push(`cu+de → on: ${ten} ở ${path.basename(f.ten)}:${a.loc.start.line}`);
+    }
+    for (const k in x) { if (k === 'loc') continue; const v = x[k]; if (Array.isArray(v)) v.forEach(di); else if (v && typeof v.type === 'string') di(v); }
+  })(f.ast);
+}
 
 // Ghi
 let soFile = 0;
