@@ -7,6 +7,14 @@
         { "fieldPath": "k", "order": "ASCENDING" },
         { "fieldPath": "t", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "asg",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "lop", "order": "ASCENDING" },
+        { "fieldPath": "t", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": [

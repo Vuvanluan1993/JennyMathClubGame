@@ -21,7 +21,8 @@ function fbNap(){if(window.firebase&&firebase.firestore&&firebase.auth)return Pr
   let p=one('app').then(()=>one('auth')).then(()=>one('firestore'));if(FB_CFG.appCheckKey)p=p.then(()=>one('app-check'));return p}
 async function fbInit(){await fbNap();if(!FB){const cfg=Object.assign({},FB_CFG);delete cfg.appCheckKey;const app=firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
   if(FB_CFG.appCheckKey&&firebase.appCheck){try{firebase.appCheck(app).activate(FB_CFG.appCheckKey,true)}catch(e){console.warn('App Check chưa bật được:',e)}}
-  FB={app,auth:app.auth(),db:app.firestore()}}return FB}
+  FB={app,auth:app.auth(),db:app.firestore()};
+  if(typeof fbTietKiem==='function')fbTietKiem();/* P-21 (63): bộ nhớ đệm bền + đếm đọc ghi; phải chạy trước lần đọc đầu */}return FB}
 function fbLoi(e){const c=(e&&e.code)||'';return({'chua-lop':'Tài khoản của em chưa được xếp lớp. Em nhờ cô giáo nhé!','auth/invalid-credential':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/invalid-login-credentials':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/wrong-password':'Mật khẩu chưa đúng.','auth/user-not-found':'Không có tài khoản này.','auth/too-many-requests':'Thử sai nhiều lần. Đợi vài phút rồi thử lại.','auth/network-request-failed':'Không kết nối được mạng.','auth/email-already-in-use':'Tên đăng nhập này đã có người dùng.','auth/weak-password':'Mật khẩu cần ít nhất 6 kí tự.','auth/invalid-email':'Tên đăng nhập không hợp lệ.','auth/requires-recent-login':'Phiên đăng nhập đã cũ. Đăng xuất, đăng nhập lại rồi làm tiếp.','permission-denied':'Tài khoản không có quyền làm việc này.','no-profile':'Tài khoản chưa được gán vai trò. Hỏi quản lý trung tâm.','network':e.message})[c]||('Có lỗi: '+((e&&e.message)||e))}
 const fbJ=s=>{try{return JSON.parse(s)}catch(e){return null}};
 const fbTach=st=>{const a={},b={};Object.keys(st||{}).forEach(k=>(GV_F.includes(k)?b:a)[k]=st[k]);GV_F.forEach(k=>{if(b[k]===undefined)b[k]=k==='gvSkip'?{}:[]});if(typeof xuOn==='function'&&xuOn()){delete a.coins;delete a.items}return{hs:a,gv:b}};/* P-20: xu, quà trùm ở ví vi/{tk}, không còn trong hs.j */
@@ -118,9 +119,9 @@ async function fbHsBoot(){const me=CLOUD.me,tk=me.tk,db=FB.db;
   STUDENTS=[[tk,st.name,st.grade]];sid=tk;role='hs';KEY='jennyHSc_'+tk;
   fbLast['hs/'+tk]=JSON.stringify(fbTach(st).hs);fbLast['ev/'+tk]=JSON.stringify(ev);
   const mine=a=>a.hs?a.hs.includes(tk):(a.lop?a.lop===lop:a.g===st.grade&&!a.mau);
-  fbSub.push(fbAsgLop(db,lop).onSnapshot(q=>{S.asg=q.docs.map(d=>fbJ(d.data().j)).filter(a=>a&&mine(a));fbVe()},e=>console.error(e)));
-  fbSub.push(db.doc('hsgv/'+tk).onSnapshot(d=>{const g=d.exists?fbJ(d.data().j)||{}:{};GV_F.forEach(k=>{if(g[k]!==undefined)S.st[tk][k]=g[k]});fbVe()},e=>{}));
-  fbSub.push(db.doc('org/main').onSnapshot(d=>{const og=d.exists?fbJ(d.data().j)||{}:{};S.open=Object.assign({},(og.mo||{})[lop]||{});const L2=(og.lop||[]).find(l=>l.id===lop);S.st[tk].active=!!((L2&&L2.tj&&L2.tj.on)||(og.nl||{})[tk]);fbVe()},e=>{}));
+  fbSub.push(fbNghe(fbAsgLop(db,lop),q=>{S.asg=q.docs.map(d=>fbJ(d.data().j)).filter(a=>a&&mine(a));fbVe()},e=>console.error(e)));
+  fbSub.push(fbNghe(db.doc('hsgv/'+tk),d=>{const g=d.exists?fbJ(d.data().j)||{}:{};GV_F.forEach(k=>{if(g[k]!==undefined)S.st[tk][k]=g[k]});fbVe()},e=>{}));
+  fbSub.push(fbNghe(db.doc('org/main'),d=>{const og=d.exists?fbJ(d.data().j)||{}:{};S.open=Object.assign({},(og.mo||{})[lop]||{});const L2=(og.lop||[]).find(l=>l.id===lop);S.st[tk].active=!!((L2&&L2.tj&&L2.tj.on)||(og.nl||{})[tk]);fbVe()},e=>{}));
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
 }
 let fbVeHen=null;function fbVe(){clearTimeout(fbVeHen);fbVeHen=setTimeout(()=>{try{const g=scr;if(g&&(g.k==='game'||g.k==='mini'||g.k==='xg')&&!g.end)return;render()}catch(e){}},120)}
@@ -132,7 +133,7 @@ async function fbGvBoot(){const me=CLOUD.me,db=FB.db;document.body.classList.add
   S={day:fbNgay(),events:[],st:{},cbi:{},asg:[],asgSeed:2,mk2:1,org:null};STUDENTS.length=0;
   role=window.TRANG||(me.role==='ph'?'ph':'gv');gvMe=me.gvId||me.tk;gvLop=null;scr={k:'home'};
   await new Promise(ok=>{let lan=0;
-    fbSub.push(db.doc('org/main').onSnapshot(d=>{if(d.exists&&d.data().v===3&&!V3.on){fbTaiLai();return}const j=d.exists?d.data().j:null;if(!j){ok();return}
+    fbSub.push(fbNghe(db.doc('org/main'),d=>{if(d.exists&&d.data().v===3&&!V3.on){fbTaiLai();return}const j=d.exists?d.data().j:null;if(!j){ok();return}
       if(j!==fbLast['org/main']||!S.org){fbLast['org/main']=j;const o=fbJ(j);o.cloud=1;o.v=2;['mauHS','mauHS2','mauHS3','mauHS4','mauHS5','mauHS6','mauHS7'].forEach(k=>o[k]=1);
         const giu=S.org&&Object.getOwnPropertyDescriptor(S,'open');S.org=o;fbDanhSach();if(lan++)fbVe()}ok()},e=>{console.error(e);ok()}))});
   /* bài về nhà (P-04): QL nghe cả kho; GV nghe từng lớp mình dạy; PH nghe lớp của con — rules chỉ cho đọc theo lớp */
@@ -141,7 +142,7 @@ async function fbGvBoot(){const me=CLOUD.me,db=FB.db;document.body.classList.add
     :[...new Set((o.lop||[]).filter(l=>(l.gv||[]).includes(gvId)).map(l=>l.id))];
   const theoLop={};const gop=()=>{const A=[];Object.values(theoLop).forEach(L=>L.forEach(a=>A.push(a)));S.asg=A;fbVe()};
   lops.forEach(l=>{const q=l===null?db.collection('asg'):fbAsgLop(db,l);
-    fbSub.push(q.onSnapshot(s=>{const A=[];s.docs.forEach(d=>{const j=d.data().j;if(me.role!=='ph')fbLast['asg/'+d.id]=j;const a=fbJ(j);if(a)A.push(a)});theoLop[l===null?'*':l]=A;gop()},e=>console.error('asg',l,e)))});
+    fbSub.push(fbNghe(q,s=>{const A=[];s.docs.forEach(d=>{const j=d.data().j;if(me.role!=='ph')fbLast['asg/'+d.id]=j;const a=fbJ(j);if(a)A.push(a)});theoLop[l===null?'*':l]=A;gop()},e=>console.error('asg',l,e)))});
 }
 /* danh sách em được xem: quản lý = tất cả; giáo viên = lớp được phân công; phụ huynh = con */
 function fbDanhSach(){const o=S.org,me=CLOUD.me;if(!o)return;
@@ -152,10 +153,10 @@ function fbDanhSach(){const o=S.org,me=CLOUD.me;if(!o)return;
 const fbVi={},fbHsDa={};
 function fbViAp(tk){const v=fbVi[tk],st=S.st[tk];if(v&&st){st.coins=Math.max(0,Math.round(+v.coins||0));if(typeof XU_THUONG!=='undefined')st.items=Object.keys(v.items||{}).filter(n=>XU_THUONG.includes(n))}}
 function fbNgheHS(tk){if(fbDaNghe.has(tk))return;fbDaNghe.add(tk);const db=FB.db;
-  fbSub.push(db.doc('vi/'+tk).onSnapshot(d=>{fbVi[tk]=d.exists?d.data():null;fbViAp(tk);fbVe()},e=>{}));
-  fbSub.push(db.doc('hs/'+tk).onSnapshot(d=>{fbHsDa[tk]=1;if(!d.exists)return;const x=d.data(),st=fbJ(x.j);if(!st)return;const cu=S.st[tk]||{};GV_F.forEach(k=>{if(cu[k]!==undefined)st[k]=cu[k]});S.st[tk]=st;fbViAp(tk);
+  fbSub.push(fbNghe(db.doc('vi/'+tk),d=>{fbVi[tk]=d.exists?d.data():null;fbViAp(tk);fbVe()},e=>{}));
+  fbSub.push(fbNghe(db.doc('hs/'+tk),d=>{fbHsDa[tk]=1;if(!d.exists)return;const x=d.data(),st=fbJ(x.j);if(!st)return;const cu=S.st[tk]||{};GV_F.forEach(k=>{if(cu[k]!==undefined)st[k]=cu[k]});S.st[tk]=st;fbViAp(tk);
     const ev=fbJ(x.ev||'[]')||[];S.events=S.events.filter(e=>e.actor.account.name!==tk).concat(ev).sort((a,b)=>String(a.timestamp).localeCompare(String(b.timestamp)));fbVe()},e=>console.error('hs',tk,e)));
-  fbSub.push(db.doc('hsgv/'+tk).onSnapshot(d=>{const j=d.exists?d.data().j:JSON.stringify(fbTach(S.st[tk]||{}).gv);fbLast['hsgv/'+tk]=j;const g=fbJ(j)||{};if(S.st[tk])GV_F.forEach(k=>{if(g[k]!==undefined)S.st[tk][k]=g[k]});fbVe()},e=>console.error('hsgv',tk,e)));}
+  fbSub.push(fbNghe(db.doc('hsgv/'+tk),d=>{const j=d.exists?d.data().j:JSON.stringify(fbTach(S.st[tk]||{}).gv);fbLast['hsgv/'+tk]=j;const g=fbJ(j)||{};if(S.st[tk])GV_F.forEach(k=>{if(g[k]!==undefined)S.st[tk][k]=g[k]});fbVe()},e=>console.error('hsgv',tk,e)));}
 
 /* ---------- quản lý tạo tài khoản thật ---------- */
 const fbKhongDau=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase();
@@ -295,13 +296,13 @@ const fbLopCua=(m,gvId)=>fbSao(((m&&m.pc)||{})[gvId]||[]);
 const fbSub3={};function fbNghe3(k,lam){if(fbSub3[k])return;fbSub3[k]=1;fbSub.push(lam())}
 /* nghe các collection theo vai: QL cả kho; cô: lớp mình (pc) + hsdm từng lớp; phụ huynh: hsdm/lop của con */
 function fbV3Nghe(me,db,ok){const vai=me.role,gvId=me.gvId||me.tk;
-  const docL=(col,id)=>fbNghe3(col+'/'+id,()=>db.doc(col+'/'+id).onSnapshot(d=>{if(d.metadata.hasPendingWrites)return;if(fbV3Nhan(col,id,d.exists?d.data():null))fbV3Cap()},e=>console.error(col,id,e)));
-  const colL=(col,q,tag)=>fbNghe3(col+'?'+(tag||'*'),()=>q.onSnapshot(s=>{if(s.metadata.hasPendingWrites)return;let doi=false;const thay=new Set();
+  const docL=(col,id)=>fbNghe3(col+'/'+id,()=>fbNghe(db.doc(col+'/'+id),d=>{if(d.metadata.hasPendingWrites)return;if(fbV3Nhan(col,id,d.exists?d.data():null))fbV3Cap()},e=>console.error(col,id,e)));
+  const colL=(col,q,tag)=>fbNghe3(col+'?'+(tag||'*'),()=>fbNghe(q,s=>{if(s.metadata.hasPendingWrites)return;let doi=false;const thay=new Set();
       s.docs.forEach(d=>{thay.add(d.id);if(fbV3Nhan(col,d.id,d.data()))doi=true});
       if(!tag)Object.keys(V3[col]).forEach(id=>{if(!thay.has(id)){delete V3[col][id];delete fbLast[col+'/'+id];doi=true}});
       else s.docChanges().forEach(c=>{if(c.type==='removed'&&!thay.has(c.doc.id)){delete V3[col][c.doc.id];delete fbLast[col+'/'+c.doc.id];doi=true}});
       V3.san[col]=1;if(doi)fbV3Cap()},e=>console.error(col,tag,e)));
-  fbSub.push(db.doc('org/main').onSnapshot(d=>{if(d.metadata.hasPendingWrites)return;const m=d.exists?d.data():null;
+  fbSub.push(fbNghe(db.doc('org/main'),d=>{if(d.metadata.hasPendingWrites)return;const m=d.exists?d.data():null;
     if(V3.on&&(!m||m.v!==3)){fbTaiLai();return}
     const doi=fbV3Nhan('main','',m?Object.assign({},m,{j:undefined,jCu:undefined,admins:undefined}):null);V3.san.main=1;
     if(vai==='ql')V3_COLS.forEach(c=>colL(c,db.collection(c)));
@@ -334,14 +335,14 @@ function fbDayV3(me,db,ghi){const o=fbOrgSach(),D=orgV3Tach(o),gv=me.role==='gv'
   S={day:fbNgay(),events:[],st:{},cbi:{},asg:[],asgSeed:2,mk2:1,org:null};STUDENTS.length=0;
   role=window.TRANG||(me.role==='ph'?'ph':'gv');gvMe=me.gvId||me.tk;gvLop=null;scr={k:'home'};
   await new Promise(ok=>fbV3Nghe(me,db,ok));
-  if(me.role==='ql')fbSub.push(db.collection('nk').orderBy('luc','desc').limit(200).onSnapshot(s=>{if(!s.metadata.hasPendingWrites)fbV3NkNhan(s)},e=>console.error('nk',e)));
+  if(me.role==='ql')fbSub.push(fbNghe(db.collection('nk').orderBy('luc','desc').limit(200),s=>{if(!s.metadata.hasPendingWrites)fbV3NkNhan(s)},e=>console.error('nk',e)));
   await new Promise(ok=>setTimeout(ok,350));fbV3Cap(true);
   /* bài về nhà như P-04 */
   const o=S.org||{},gvId=me.gvId||me.tk;
   const lops=me.role==='ql'?[null]:me.role==='ph'?[...new Set((me.con||[]).map(c=>(o.gd||{})[c]).filter(Boolean))]:fbLopCua(V3.main,gvId);
   const theoLop={};const gop=()=>{const A=[];Object.values(theoLop).forEach(L=>L.forEach(a=>A.push(a)));S.asg=A;fbVe()};
   lops.forEach(l=>{const q=l===null?db.collection('asg'):fbAsgLop(db,l);
-    fbSub.push(q.onSnapshot(s=>{const A=[];s.docs.forEach(d=>{const j=d.data().j;if(me.role!=='ph')fbLast['asg/'+d.id]=j;const a=fbJ(j);if(a)A.push(a)});theoLop[l===null?'*':l]=A;gop()},e=>console.error('asg',l,e)))});}}
+    fbSub.push(fbNghe(q,s=>{const A=[];s.docs.forEach(d=>{const j=d.data().j;if(me.role!=='ph')fbLast['asg/'+d.id]=j;const a=fbJ(j);if(a)A.push(a)});theoLop[l===null?'*':l]=A;gop()},e=>console.error('asg',l,e)))});}}
 /* học sinh: dữ liệu trung tâm cần cho em (lop của em, gd, nl, nghi, namCu) — v3 đọc org/main + lop/{lop}; v2 đọc j */
 async function fbOrgHS(tk){const db=FB.db,o=await db.doc('org/main').get();if(!o.exists)return{};const m=o.data();
   if(m.v!==3)return fbJ(m.j)||{};V3.on=true;
@@ -361,11 +362,11 @@ async function fbOrgHS(tk){const db=FB.db,o=await db.doc('org/main').get();if(!o
   if(typeof xuBoot==='function')await xuBoot(tk,db);/* P-20: ví xu + bảng giá; sau đó hs.j không còn coins */
   fbLast['hs/'+tk]=JSON.stringify(fbTach(st).hs);fbLast['ev/'+tk]=JSON.stringify(ev);
   const mine=a=>a.hs?a.hs.includes(tk):(a.lop?a.lop===lop:a.g===st.grade&&!a.mau);
-  fbSub.push(fbAsgLop(db,lop).onSnapshot(q=>{S.asg=q.docs.map(d=>fbJ(d.data().j)).filter(a=>a&&mine(a));fbVe()},e=>console.error(e)));
-  fbSub.push(db.doc('hsgv/'+tk).onSnapshot(d=>{const g=d.exists?fbJ(d.data().j)||{}:{};GV_F.forEach(k=>{if(g[k]!==undefined)S.st[tk][k]=g[k]});fbVe()},e=>{}));
+  fbSub.push(fbNghe(fbAsgLop(db,lop),q=>{S.asg=q.docs.map(d=>fbJ(d.data().j)).filter(a=>a&&mine(a));fbVe()},e=>console.error(e)));
+  fbSub.push(fbNghe(db.doc('hsgv/'+tk),d=>{const g=d.exists?fbJ(d.data().j)||{}:{};GV_F.forEach(k=>{if(g[k]!==undefined)S.st[tk][k]=g[k]});fbVe()},e=>{}));
   let nlOn=!!(org.nl||{})[tk],tjOn=!!(L.tj&&L.tj.on);const capActive=()=>{S.st[tk].active=nlOn||tjOn;fbVe()};
-  fbSub.push(db.doc('lop/'+lop).onSnapshot(d=>{if(!d.exists)return;const l=d.data();S.open=Object.assign({},l.mo||{});tjOn=!!(l.tj&&l.tj.on);capActive()},e=>{}));
-  fbSub.push(db.doc('org/main').onSnapshot(d=>{if(!d.exists)return;const m=d.data();if(m.v!==3){fbTaiLai();return}nlOn=!!((m.nl||{})[tk]);if(((m.gd||{})[tk]||'')!==lop){fbTaiLai();return}capActive()},e=>{}));
+  fbSub.push(fbNghe(db.doc('lop/'+lop),d=>{if(!d.exists)return;const l=d.data();S.open=Object.assign({},l.mo||{});tjOn=!!(l.tj&&l.tj.on);capActive()},e=>{}));
+  fbSub.push(fbNghe(db.doc('org/main'),d=>{if(!d.exists)return;const m=d.data();if(m.v!==3){fbTaiLai();return}nlOn=!!((m.nl||{})[tk]);if(((m.gd||{})[tk]||'')!==lop){fbTaiLai();return}capActive()},e=>{}));
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}}
 /* QL chuyển lớp cho em: giao dịch org/main.gd + hsdm/{tk} (v3) để hai nơi luôn khớp */
 if(typeof window.qlChuyen==='function'){const _c=window.qlChuyen;window.qlChuyen=function(tk,lid){const r=_c.apply(this,arguments);
