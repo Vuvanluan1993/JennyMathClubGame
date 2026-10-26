@@ -46,8 +46,25 @@ trong `app.template.html` (một phạm vi chung, hoisting như cũ) — xem m�
   rồi gọi `dangKyKhoi('lop-N', {dangKy})` ngay tại chỗ (tên trùng giữa các khối không đụng nhau). `lop-6-9` đứng sau `core/30a` (trước `core/09`: `core/21` đọc `P1BY[6]`
   lúc nạp), `lop-1` … `lop-5` sau `core/30-bai-giang` (trước `core/33d`, `45`, `48`: ba file này duyệt `PRIM` lúc nạp) → thứ tự chạy như trước P-15a.
 - `tim-import.mjs`: tên khai báo trong một khối chỉ thấy trong khối đó; core không import từ content; `dangKy` của `index.js` luôn export. `chuyen-hooks.mjs` bỏ qua `content/`.
-- `vite.config.js`: `manualChunks` = `chunkKhoi` (mỗi `content/lop-*` một chunk). P-15a chưa tải động nên chưa có chunk; P-15b đổi dòng include thành `await import()`.
+- `vite.config.js`: P-15a đặt `manualChunks` = `chunkKhoi`; P-15b bỏ (mỗi khối là một điểm vào, xem mục dưới).
 - Gzip (26/10): core 437 KB · lop-1 24 · lop-2 42 · lop-3 47 · lop-4 44 · lop-5 50 · lop-6-9 18 KB. Trang học sinh hiện 685 KB (tĩnh, đủ 6 khối); khi chỉ tải một khối ≈ 489–515 KB.
+
+### Tải theo khối (P-15b — 26/10/2026)
+- **Các trang** (học sinh, giáo viên, phụ huynh, quản lý, bản thử `demo/…`, `dist/day-du.html`) không nối nội dung: dòng include khối thành chú thích. Mỗi khối là chunk ES
+  `assets/lop-N-[hash].js` (`noi-file.js` `emitFile` điểm vào `content/lop-N/index.js`; transform bỏ dòng import từ `js/core`: tên core là toàn cục của script chung, module đọc được).
+  Trang có `<script type="application/json" id="khoi-url">{"lop-1":"assets/lop-1-….js",…}</script>` ngay trước `<script src>`. **Bản học sinh không có `lop-6-9`.**
+  **Bản một file** (`dist/lop-hoc-ao-jenny.html`) và `npm run dev` vẫn nối tĩnh như P-15a (Artifact, 6 kiểm tra §7 mở file này qua `file://`).
+- `core/30a`: `napKhoi(k)` → `import(new URL(đường, document.baseURI))` rồi `dangKyKhoi(k, module)` → `hooks.run('khoi:sau', k)`. `khoiCua(lớp)` (1–5 → `lop-N`, ≥ 6 → `lop-6-9`),
+  `khoiXong(k)`, `khoiCo(k)` (trang có khối này), `window.__ready(g)` (bộ kiểm tra chờ trước khi đọc `PRIM[g]`).
+- `core/34`: hook ngoài cùng của `render()` tính khối cần (`khoiCan`: học sinh/phụ huynh = lớp của em đang xem; cô = lớp đang mở hoặc các lớp của cô; quản lý = lớp đang xem chi tiết hoặc mọi khối có học sinh;
+  bản thử chưa có dữ liệu mẫu = mọi khối), thiếu thì hiện màn chờ pixel và tải, xong gọi lại `render()`. `body.locked` (màn đăng nhập) thì chỉ hiện màn chờ, chưa tải.
+  Màn vẽ lỗi vì cần khối của em khác → tải thêm khối của mọi em trong danh sách rồi vẽ lại (`console.warn` ghi lại).
+- **Mã core đụng nội dung lúc nạp phải chạy lại cho khối đến sau**: viết thành hàm, gọi ngay một lần (bản một file) và `hooks.khi('khoi:sau', hàm)`, có cờ để chạy lại không làm hai lần
+  (`33d` `bossHe`, `45` `gdFlip`, `48` `en`, `72` `x.dt`). Không đọc `P1BY`/`PRIM` ở cấp module (`21` `hint6()` tính khi dùng). `kich-co.mjs` so dữ liệu từng khối với bản một file để bắt chỗ sót.
+- Học sinh tạo khi chưa có khối (`newStudent` → `blankP1` rỗng): `healAll` (`30b`) điền ô `p1`/`p2` còn thiếu theo mẫu `blankP1`/`blankP2`.
+- Kiến thức trò chơi (`core/39e` `ktGrade(G)`) cần đảo cuối của lớp G−1: khối lớp 2–5 mang `KT_TRUOC` (`content/lop-N/90-kien-thuc-truoc.js`, sinh bằng `node tools/test/kich-co.mjs --ghi`;
+  `npm test` báo khi lệch — sinh lại sau khi đổi nội dung lớp dưới hoặc `39e`).
+- Kích cỡ (26/10, gzip -9): trang học sinh 3,8 + CSS 24,9 + JS 440,6 + một khối 22–47 KB = 492–517 KB (trước 680 KB). `tools/test/kich-co.mjs` fail nếu > 700 KB hoặc bản học sinh có `lop-6-9`.
 
 ## Thứ tự nạp (rút gọn)
 

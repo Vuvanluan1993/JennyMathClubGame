@@ -9,7 +9,7 @@
 /* bản gốc (để so sánh trước/sau trong kiểm tra) */
 import { hooks } from './00-hooks.js';
 import { esc, pick, R, range } from './01-tien-ich.js';
-import { MG, MGT } from './30a-dang-ky-khoi.js';
+import { KT_TRUOC, MG, MGT } from './30a-dang-ky-khoi.js';
 import { go } from './13-giao-dien-chung.js';
 import { shuf } from './21-lop-6-che-do-tro-choi.js';
 import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
@@ -63,7 +63,8 @@ const ktQText=q=>[q.q,q.sol,(q.opts||[]).map(ktOpt).join(' | '),typeof q.a==='ob
 function ktSeeded(seed,fn){const mr=Math.random;let s=(seed>>>0)||1;Math.random=()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296};try{return fn()}finally{Math.random=mr}}
 const KT={};
 function ktGrade(G){if(KT[G])return KT[G];return KT[G]=ktSeeded(97+G,()=>ktGrade0(G))}
-function ktGrade0(G){const I=(PRIM[G]&&PRIM[G].isl)||[],prev=G>1&&PRIM[G-1]?ktGrade(G-1):null,last=prev&&prev[prev.length-1],acc=new Set(last?last.f:[]);let mx=last?last.mx:0;const out=[];
+/* P-15b: chưa tải khối lớp trước thì lấy kiến thức cuối lớp trước đã tính sẵn (KT_TRUOC, trong khối lớp G; kiểm bằng tools/test/kich-co.mjs) */
+function ktGrade0(G){const I=(PRIM[G]&&PRIM[G].isl)||[],prev=G>1&&PRIM[G-1]?ktGrade(G-1):null,last=prev?prev[prev.length-1]:G>1&&KT_TRUOC[G]||null,acc=new Set(last?last.f:[]);let mx=last?last.mx:0;const out=[];
   const num=v=>{const n=typeof v==='number'?v:typeof v==='string'&&/^\d{1,3}( \d{3})*$|^\d+$/.test(v.trim())?+v.replace(/ /g,''):NaN;if(isFinite(n)&&n>mx)mx=n};
   I.forEach((x,k)=>{const tt=ktFeat(`${x.title} ${x.lesson} ${x.goal}`,{title:1});tt.f.forEach(v=>acc.add(v));mx=Math.max(mx,tt.mx);
     (x.lv||[]).forEach(gs=>gs.forEach(gn=>{for(let i=0;i<5;i++){let q;try{q=gn()}catch(e){continue}if(!q)continue;

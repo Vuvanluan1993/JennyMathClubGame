@@ -3,14 +3,15 @@
 /* Mỗi tiết trong Vở BT-TH Toán 1 là một đảo. Đề viết lại (đồ vật, bối cảnh, số liệu khác), giữ đúng kiến thức của tiết. */
 import { hooks } from './00-hooks.js';
 import { esc, fmt, pick, range } from './01-tien-ich.js';
-import { save } from './09-du-lieu-demo.js';
+import { P1BY, P2 } from './30a-dang-ky-khoi.js';
+import { blankP1, blankP2, save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { addCoins, p1Stars } from './11-sao-va-mo-khoa.js';
 import { go, render, toast } from './13-giao-dien-chung.js';
 import { mist, quest, shuf } from './21-lop-6-che-do-tro-choi.js';
 import { PXS, pxURI, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { BIOME, biomeOf, OCEAN } from './23b-vung-bien.js';
-import { curG, endFix1, endJ1, ju1, mist1Add, needOf, PB, PI, PRIM, PT, QN, qW, viewEnd1b } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { curG, endFix1, endJ1, ju1, mist1Add, needOf, P2_1, PB, PI, PRIM, PT, QN, qW, viewEnd1b } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { vnRead } from './30c-cau-hoi-chung.js';
 import { bossOf, PLAY } from './30d-hinh-phang-va-cau-hoi.js';
 import { raceAns, TRE, treOverlay } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
@@ -89,7 +90,10 @@ try{window.speechSynthesis&&window.speechSynthesis.addEventListener&&window.spee
 /* ---- trạng thái ---- */
 export const isl1=id=>Object.values(PRIM).flatMap(p=>p.isl).find(x=>x.id===id);
 export function healAll(...a){return hooks.goi('healAll',this,a)}
-hooks.ham('healAll',function(){try{Object.values(S.st||{}).forEach(st=>{if(!st.p1)st.p1={};if(st.grade<=5)ISL(st).forEach(x=>s1(st,x.id))})}catch(e){}});
+hooks.ham('healAll',function(){try{Object.values(S.st||{}).forEach(st=>{if(!st.p1)st.p1={};if(st.grade<=5)ISL(st).forEach(x=>s1(st,x.id))})}catch(e){}
+  /* P-15b: khối tải sau khi tạo học sinh (newStudent lúc chưa có nội dung) → điền ô còn thiếu y như blankP1/blankP2, không đụng ô đã có */
+  try{Object.values(S.st||{}).forEach(st=>{st.p2=st.p2||{};if([...P2,...P2_1].some(x=>!st.p2[x.id])){const b=blankP2();for(const k in b)if(!st.p2[k])st.p2[k]=b[k]}
+    const L=st.grade>=6&&P1BY[st.grade];if(L&&L.some(x=>!st.p1[x.id])){const b=blankP1(st.grade);for(const k in b)if(!st.p1[k])st.p1[k]=b[k]}})}catch(e){}});
 export const s1=(st,id)=>{const x=isl1(id),s=st.p1[id]||(st.p1[id]={intro:false,m:[],fails:[]});while(s.m.length<x.nm){s.m.push(false);s.fails.push(0)}return s};
 export const ISL=st=>PRIM[st.grade<=5?st.grade:1].isl;
 globalThis.UNL=(()=>{try{return localStorage.getItem('jennyLockOn')!=='1'}catch(e){return true}})();

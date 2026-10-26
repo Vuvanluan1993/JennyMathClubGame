@@ -25,7 +25,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 - ◐ **T-18 Dùng xu** — Gian hàng Jenny (49) + Đảo nhà & nuôi thú cưng (49b) đã làm; kho trò chơi 3 trò + vé lượt chơi đã làm (51-kho-game.js).
 - ☐ **T-14 Đánh giá cho giáo viên, phụ huynh** — dùng `st.dd`, `st.sk`, `st.skm`; thiết kế riêng sau.
 - ☐ **T-11 Chế độ ngoại tuyến (PWA)** — cài lên màn hình điện thoại, chơi khi không có mạng.
-- ◐ **T-12 Tối ưu dung lượng** — file ~1,1 MB; tách nội dung theo lớp, chỉ tải lớp của học sinh. 26/10: P-15a xong (nội dung ở `content/lop-1` … `lop-5`, `lop-6-9`, mỗi khối `dangKy(reg)`; vẫn nạp tĩnh). Còn P-15b: `import()` theo khối sau đăng nhập.
+- ☑ **T-12 Tối ưu dung lượng** — tách nội dung theo lớp, chỉ tải lớp của học sinh. 26/10: P-15a (nội dung ở `content/lop-1` … `lop-5`, `lop-6-9`, mỗi khối `dangKy(reg)`) và P-15b (tải `import()` theo khối sau đăng nhập, màn chờ pixel, cô/phụ huynh/quản lý tải theo lớp đang xem, đổi lớp không tải lại trang): trang học sinh 680 → 492–517 KB gzip, `tools/test/kich-co.mjs` giữ dưới 700 KB.
 
 ## Đã xong (tóm tắt)
 - ☑ Giao diện pixel, biển động, bản đồ theo chủ đề, tự cuộn tới chủ đề đang học, chạy tốt trên điện thoại.

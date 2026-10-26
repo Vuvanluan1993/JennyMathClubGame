@@ -5,4 +5,5 @@ import { dangKyHk1 } from './10-hk1.js';
 import { dangKyBaiGiang } from './20-bai-giang.js';
 import { dangKyHk2A } from './30-hk2-phan-a.js';
 import { dangKyHk2B } from './31-hk2-phan-b.js';
-export function dangKy(reg){dangKyHk1(reg);dangKyBaiGiang(reg);dangKyHk2A(reg);dangKyHk2B(reg);}
+import { KT_TRUOC_LOP } from './90-kien-thuc-truoc.js';
+export function dangKy(reg){reg.KT_TRUOC[3]=KT_TRUOC_LOP;dangKyHk1(reg);dangKyBaiGiang(reg);dangKyHk2A(reg);dangKyHk2B(reg);}

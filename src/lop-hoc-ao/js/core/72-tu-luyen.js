@@ -343,7 +343,9 @@ function tlEndView(){const g=scr,x=isl1(g.id),R=g.tlRes||{},st=S.st[sid];
 /* ---------- Đặt tính rồi tính trong đảo và phiếu bài (T-05, thầy chốt 24/10/2026) ----------
    Lớp 2, các bài có nhớ: thêm bộ sinh "Đặt tính rồi tính" vào Màn 1 và Màn 2 của đảo. Phiếu bài, Luyện lỗi lấy câu từ đảo nên cũng có. */
 const TL_DT={19:['100','+',1],20:['100','+',2],21:['100','+'],22:['100','−',1],23:['100','−',2],24:['100'],33:['100'],60:['1000','+'],62:['1000','−'],63:['1000'],69:['100'],70:['1000']};
-try{(PRIM[2]?PRIM[2].isl:[]).forEach(x=>{const d=TL_DT[x.b];if(!d||x.dt)return;x.dt=1;[0,1].forEach(L=>{if(x.lv[L])x.lv[L].push(()=>datTinh(...d))})})}catch(e){}
+/* P-15b: chạy cho khối có lúc nạp và khi khối lớp 2 tải sau (cờ x.dt: gắn một lần) */
+function ganDatTinh(){try{(PRIM[2]?PRIM[2].isl:[]).forEach(x=>{const d=TL_DT[x.b];if(!d||x.dt)return;x.dt=1;[0,1].forEach(L=>{if(x.lv[L])x.lv[L].push(()=>datTinh(...d))})})}catch(e){}}
+ganDatTinh();hooks.khi('khoi:sau',ganDatTinh);
 /* ngoài Tự luyện: vẽ ô, khởi tạo ô theo câu, câu sai lần 1 xoá chữ số sai */
 {hooks.on('viewGame1',_v=>function(){const g=scr;if(!g||g.tl||g.end||!g.qs)return _v.apply(this,arguments);const q=q1();
  if(q&&q.type==='cells'&&(g.cvj!==g.j||!g.cv||g.cv.length!==nBl(q))){g.cvj=g.j;g.cv=q.a.map(()=>'');g.cc=q.lay==='vert'?q.a.length-1:0;g.nho=[];g.cbad=null}

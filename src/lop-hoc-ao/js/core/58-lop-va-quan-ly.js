@@ -62,6 +62,7 @@ window.orgHeal=orgHeal;
 hooks.de('gvCLS',function(){return gvLop?hsCuaLop(gvLop):STUDENTS.filter(s=>s[2]===gvGrade)});
 hooks.de('gvTen',function(){return(gvById(gvMe)||{ten:'Cô giáo'}).ten});
 const lopCuaToi=()=>O().lop.filter(l=>l.gv.includes(gvMe)||(O().cloud&&typeof CLOUD!=='undefined'&&CLOUD&&CLOUD.me.role==='ql')).sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten));
+window.lopCuaToi=lopCuaToi; /* P-15b: core/34 tải khối các lớp của cô khi chưa vào lớp */
 const chonGV=()=>`<div class="field" style="min-width:0;max-width:360px"><label for="gvMe" class="muted" style="font-size:12.5px">Đang xem với tài khoản (chỉ có ở bản thử)</label><select id="gvMe" style="width:100%" onchange="gvMe=this.value;gvLop=null;go({k:'home'})">${O().gv.map(g=>`<option value="${g.id}" ${g.id===gvMe?'selected':''}>${esc(g.ten)} · ${O().lop.filter(l=>l.gv.includes(g.id)).map(l=>l.ten).join(', ')||'chưa có lớp'}</option>`).join('')}</select></div>`;
 window.vaoLop=id=>{const l=lopById(id);if(!l)return;gvLop=id;gvGrade=l.khoi;go({k:'home'})};
 hooks.de('gvHead',function(){

@@ -10,10 +10,17 @@ const path=require('path'),fs=require('fs');const {chromium}=require('playwright
 const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME; // không đặt → Chromium của Playwright
 const grades=process.argv[2]?[Number(process.argv[2])]:[1,2,3,4,5];const only=process.argv[3]?process.argv[3].split(',').map(n=>Number(n)-1):null;
 const plan=JSON.parse(fs.readFileSync(path.join(ROOT,'data','plan.json'))).grades;
+// P-15b: chạy trên dist/day-du.html (bản đầy đủ, nội dung tải theo khối bằng import() thật) qua máy chủ cục bộ; mỗi lớp chờ window.__ready(g).
+const http=require('http');const MIME={'.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.html':'text/html; charset=utf-8'};
+const may=http.createServer((req,res)=>{const u=decodeURIComponent(new URL(req.url,'http://x').pathname);
+  if(u==='/_test.html'){res.writeHead(200,{'Content-Type':MIME['.html']});return res.end('<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'+fs.readFileSync(path.join(ROOT,'dist','day-du.html'),'utf8')+'</body></html>')}
+  const f=path.join(ROOT,'dist',u);if(!f.startsWith(path.join(ROOT,'dist'))||!fs.existsSync(f)||fs.statSync(f).isDirectory()){res.writeHead(404);return res.end()}
+  res.writeHead(200,{'Content-Type':MIME[path.extname(f)]||'application/octet-stream'});fs.createReadStream(f).pipe(res)});
 (async()=>{const b=await chromium.launch({executablePath:fs.existsSync(EXE)?EXE:undefined});
- const tmp=path.join(ROOT,'dist','_test.html');fs.writeFileSync(tmp,'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'+fs.readFileSync(path.join(ROOT,'dist','lop-hoc-ao-jenny.html'),'utf8')+'</body></html>');
+ await new Promise(r=>may.listen(0,'127.0.0.1',r));const URL_TEST=`http://127.0.0.1:${may.address().port}/_test.html`;
  let fail=0;
- for(const g of grades){const p=await b.newPage({viewport:{width:360,height:780},isMobile:true,hasTouch:true});const er=[];p.on('pageerror',e=>er.push(e.message));await p.goto('file://'+tmp);await p.waitForTimeout(400);
+ for(const g of grades){const p=await b.newPage({viewport:{width:360,height:780},isMobile:true,hasTouch:true});const er=[];p.on('pageerror',e=>er.push(e.message));await p.goto(URL_TEST);await p.waitForTimeout(400);
+  await p.evaluate(g=>window.__ready(g),g); // khối lớp g (import())
   const T=plan[String(g)].map((r,ti)=>({ti,name:r.name,so_dao:r.isl.length,bai:[...new Set(r.isl.map(i=>i.b))].map(bn=>({bai:bn,so_tiet:r.isl.filter(i=>i.b===bn).length}))})).filter(t=>!only||only.includes(t.ti));
   const SID={1:'na',2:'lam',3:'quan',4:'thao',5:'duc'}[g];
   const r=await p.evaluate(([g,SID,plan])=>{try{localStorage.clear()}catch(e){};fresh();role='hs';(0,eval)("sid='"+SID+"'");const bad=[],lay=[],mathc=[];let nq=0,ns=0;
@@ -33,4 +40,4 @@ const plan=JSON.parse(fs.readFileSync(path.join(ROOT,'data','plan.json'))).grade
    return{nq,ns,bad:[...new Set(bad)],lay:[...new Set(lay)],mathc}},[g,SID,T]);
   const ok=!r.bad.length&&!r.lay.length&&!er.length;if(!ok)fail++;
   console.log(`Lớp ${g}: ${ok?'ĐẠT':'CHƯA ĐẠT'} · ${r.nq} câu · ${r.ns} trang slide`);[...r.bad.slice(0,20),...r.lay.slice(0,10),...er.slice(0,5)].forEach(s=>console.log('   - '+s));if(r.mathc.length)console.log('   (xem lại phép tính: '+r.mathc.slice(0,8).join(' | ')+')');await p.close()}
- fs.unlinkSync(tmp);await b.close();process.exit(fail?1:0)})();
+ may.close();await b.close();process.exit(fail?1:0)})();

@@ -45,8 +45,10 @@ const heOf=k=>CBHE.find(h=>h.k===BIOME_HE[k])||null;
 /* vùng biển của một đảo / một chủ đề */
 export function biomeOfTopic(g,ti){const T=PRIM[g]&&PRIM[g].T[ti];return biomeOf(g,ti,T?T[0]:'')}
 function biomeOfIsl(id){const m=String(id).match(/^g(\d)/),x=isl1(id);if(!m||!x)return'trop';return biomeOfTopic(+m[1],x.ti||0)}
-{const sp=new Set(CBN.map(c=>c[0]));for(const g in PRIM)(PRIM[g].boss||[]).forEach(b=>b&&sp.add(b[0]));sp.forEach(s=>CBHE.forEach(h=>cbVariant(s,h)))}
+/* P-15b: nội dung tải theo khối → chạy cho khối đã có lúc nạp (bản một file) và mỗi khối tải sau (hooks 'khoi:sau'); bossHe: mỗi lớp đổi một lần */
+function trumVungBien(){{const sp=new Set(CBN.map(c=>c[0]));for(const g in PRIM)(PRIM[g].boss||[]).forEach(b=>b&&sp.add(b[0]));sp.forEach(s=>CBHE.forEach(h=>cbVariant(s,h)))}
 /* trùm chủ đề (trùm đảo): đổi màu theo vùng biển, thêm tên hệ */
-for(const g in PRIM){if(!PRIM[g].boss||!PRIM[g].T)continue;PRIM[g].boss=PRIM[g].boss.map((b,ti)=>{if(!b)return b;const bk=biomeOfTopic(+g,ti),he=heOf(bk);const r=[he?cbVariant(b[0],he):b[0],b[1]];r.base=b[0];r.baseName=b[1];r.he=he?he.k:'bien';r.bk=bk;return r})}
+for(const g in PRIM){if(!PRIM[g].boss||!PRIM[g].T||PRIM[g].bossHe)continue;PRIM[g].bossHe=1;PRIM[g].boss=PRIM[g].boss.map((b,ti)=>{if(!b)return b;const bk=biomeOfTopic(+g,ti),he=heOf(bk);const r=[he?cbVariant(b[0],he):b[0],b[1]];r.base=b[0];r.baseName=b[1];r.he=he?he.k:'bien';r.bk=bk;return r})}}
+trumVungBien();hooks.khi('khoi:sau',trumVungBien);
 /* trùm lớp: hệ theo vùng biển của đảo (tính lại mỗi lần, kể cả dữ liệu đã lưu) */
 {hooks.on('cbI',_cbI=>function(id){const b=_cbI(id);if(!b.baseSpr){b.baseSpr=b.spr;b.baseName=b.name}const he=heOf(biomeOfIsl(id)),k=he?he.k:'bien';if(b.he!==k){b.he=k;b.spr=he?cbVariant(b.baseSpr,he):b.baseSpr;b.name=b.baseName}return b})}
