@@ -44,7 +44,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy 
 - ⏸ **P-22 Blaze 0 đồng + Cloud Functions** (chỉ khi Q5 = Blaze) — hàm `taoTaiKhoan`, `chamXu`, `xoaHocSinh`, chặn tự đăng ký bằng blocking function, xuất sao lưu quản lý theo lịch; HS không còn ghi `vi`. `plans/P-22-blaze-functions.md`
 
 ## Giai đoạn 4 — Tái cấu trúc front-end
-- ☐ **P-14 Vite + ES module cho Lớp học ảo** — thay `build.py` bằng Vite, giữ hành vi; 4 entry dùng chung chunk. `plans/P-14-vite-module.md`
+- ◐ **P-14 Vite + ES module cho Lớp học ảo** — 14a ☑ (RF1, 26/10), 14b ☑ (RF2, PR #12 base nhánh tích hợp: 118 file import/export, hàm đè qua hooks, ESLint 0 lỗi); còn **14c** bỏ `'unsafe-inline'` khỏi CSP (520 `onclick` inline cần đổi sang `addEventListener`), làm sau RF5. `plans/P-14-vite-module.md`
 - ☐ **P-15 Nội dung theo khối, tải động** — `js/content/**` thành gói mỗi khối, `import()` khi đăng nhập. `plans/P-15-noi-dung-theo-khoi.md`
 - ☐ **P-16 PWA ngoại tuyến** — manifest, service worker, nút "có bản mới". `plans/P-16-pwa.md`
 - ◐ **P-17 Kiểm tra giao diện tự động** — đang chạy (KT, PR #6); đã thấy 2 lỗi tràn ở 1920×950 (Hành trình · vườn, · cửa hàng), sửa ở task riêng. `plans/P-17-kiem-tra-giao-dien.md`
