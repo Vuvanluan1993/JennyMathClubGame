@@ -5,6 +5,11 @@
    - Giáo viên: Họ tên, Giới tính, Điện thoại, Gmail (+ tên đăng nhập, mật khẩu). Lớp: Khối, Tên lớp, Giáo viên.
    - Trong bảng Học sinh: nút "Bỏ khỏi lớp"; "Xếp lớp" chọn nhiều em cùng khối đưa vào 1 lớp.
    - Anh chị em cùng bố mẹ: 1 tài khoản phụ huynh gắn được nhiều con (S.org.ph[con]=tk; máy chủ: users.con là danh sách). */
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { ORG_ON, save } from './09-du-lieu-demo.js';
+import { render, toast } from './13-giao-dien-chung.js';
+import { FB, fbDayNgay, fbLoi, fbMKLoi, fbMKNho, fbMKTao, fbTaoTK } from './62-may-chu.js';
 (function(){
 if(typeof ORG_ON==='undefined'||!ORG_ON)return;
 const O=()=>S.org,cloud=()=>!!(S.org&&S.org.cloud&&typeof FB!=='undefined'&&FB&&FB.db);
@@ -87,13 +92,13 @@ function phCard(){const ds=phDs(),info=O().phInfo||{},tks=Object.keys(ds).sort()
  return`<section class="card qlphcard"><div class="qlhead"><h2>Phụ huynh</h2><button type="button" class="btn sm pri" onclick="qlMoPH('')">👪 Tài khoản phụ huynh</button></div>
  <p class="muted" style="margin:4px 0 0">Một tài khoản phụ huynh gắn được nhiều con (anh chị em cùng bố mẹ).</p>
  ${tks.length?tks.map(t=>`<div class="task"><b>${esc((info[t]||{}).ten||t)}</b> <span class="muted">· ${esc(t)}${(info[t]||{}).dt?' · '+esc(info[t].dt):''}</span> <button type="button" class="btn sm" onclick="qlMoPH('${t}')">Sửa con</button><div class="row" style="gap:6px;margin-top:6px">${ds[t].map(c=>`<span class="pill">${esc((S.st[c]||{}).name||c)}</span>`).join('')}</div></div>`).join(''):'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>`}
-{const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);if(role!=='ql')return r;try{
+{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){let r=_p.apply(this,arguments);if(role!=='ql')return r;try{
  r=r.replace('<h2>Lớp học</h2>','<div class="qlhead"><h2>Lớp học</h2><span><button type="button" class="btn sm pri" onclick="qlMoLop()">+ Thêm lớp</button> <button type="button" class="btn sm" onclick="qlMoXep()">⇄ Xếp lớp</button></span></div>')
   .replace(/(<div class="row" style="justify-content:space-between"><h2>Học sinh<\/h2>)/,'<div class="qlhead" style="margin-bottom:8px"><span></span><span><button type="button" class="btn sm pri" onclick="qlMoHS()">+ Thêm học sinh</button> <button type="button" class="btn sm" onclick="qlMoXep()">⇄ Xếp lớp</button></span></div>$1')
   .replace('<h2>Giáo viên</h2>','<div class="qlhead"><h2>Giáo viên</h2><button type="button" class="btn sm pri" onclick="qlMoGV()">+ Thêm giáo viên</button></div>')
   .replace(/(<select aria-label="Lớp của [^"]*" onchange="qlChuyen\('([a-z0-9._-]+)',this\.value\)">[\s\S]*?<\/select>)/g,(m,s,id)=>O().gd[id]?`${s} <button type="button" class="btn sm qlbo" onclick="qlChuyen('${id}','')">Bỏ khỏi lớp</button>`:m)
   .replace(/(<div class="grid gpair">\s*<section class="card"><div class="qlhead"><h2>Giáo viên)/,phCard()+'$1')
-  .replace(/(<section class="card"><h2>Giáo viên<\/h2>)/,'$1')}catch(e){console.error(e)}return r}}
+  .replace(/(<section class="card"><h2>Giáo viên<\/h2>)/,'$1')}catch(e){console.error(e)}return r})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 form[onsubmit="qlTaoHS(event)"],form[onsubmit="qlTaoGV(event)"],form[onsubmit="qlTaoLop(event)"],form[onsubmit="qlTaoPH(event)"]{display:none!important}
 .qlhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.qlhead h2{margin:0}

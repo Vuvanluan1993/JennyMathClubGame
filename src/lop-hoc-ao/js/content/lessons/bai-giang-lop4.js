@@ -1,3 +1,6 @@
+import { angSvg } from '../hk1/27-chu-de-2-lop-1-5.js';
+import { colPic } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { LES, lsLine, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 Object.assign(LES[4]=LES[4]||{},{
  7:[{t:'Đơn vị đo góc là độ',h:`<div class="g1grp">${angSvg(90)}</div><p>Đơn vị đo góc là <b>độ</b>, kí hiệu <b>°</b>.</p><p>Góc vuông có số đo <b>90°</b>.</p>`,say:'Chào các em! Để đo góc, ta dùng đơn vị độ. Góc vuông có số đo chín mươi độ.'},
     {t:'Dùng thước đo góc',h:`<ol class="lsol"><li>Đặt tâm thước trùng với đỉnh của góc.</li><li>Một cạnh của góc đi qua vạch 0.</li><li>Đọc số đo ở chỗ cạnh còn lại đi qua.</li></ol>`,say:'Khi đo góc, em đặt tâm của thước trùng với đỉnh góc, cho một cạnh đi qua vạch không, rồi đọc số ở chỗ cạnh còn lại đi qua.'},

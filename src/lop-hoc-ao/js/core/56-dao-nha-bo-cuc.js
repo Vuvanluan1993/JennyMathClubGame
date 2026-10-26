@@ -4,8 +4,13 @@
    - Cây dừa: bãi cỏ bên trái · Cờ CLB: bãi cỏ bên phải · Hải đăng: mỏm đá ngoài biển bên trái
    - Lâu đài cát: bãi cát phía trước · Ô che nắng: bãi cát trước bên phải · Thuyền buồm: mặt nước bên phải
    - Ổ rơm, máy ấp: bãi cỏ giữa · Máng ăn: bãi cát trái · Thú cưng: đi lại trên bãi cát giữa. */
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { ghSt } from './49-gian-hang.js';
+import { careOf, gearHas, petsOf, petSpr } from './49b-dao-nha-thu-cung.js';
 const IS2_W=640,IS2_H=400;
-const IS2_POS={palm:[150,226,104],flag:[478,222,64],light:[50,262,92],castle:[226,352,56],umb:[430,326,70],boat:[594,372,56],
+export const IS2_POS={palm:[150,226,104],flag:[478,222,64],light:[50,262,92],castle:[226,352,56],umb:[430,326,70],boat:[594,372,56],
  nest:[318,246,40],inc:[392,246,46],feeder:[200,312,34]};
 const IS2_PET=[[304,300],[376,308]];
 function is2Bg(){const R=(x,y,w,h,c)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"/>`;
@@ -29,11 +34,11 @@ function is2Scene(st,o){o=o||{};const s=ghSt(st),P=petsOf(st),list=o.dec||s.dec;
  return`<div class="is2wrap ${o.small?'small':''}"><div class="is2" ${o.pets?'id="iscene"':''}>${is2Bg()}${dec}${home}${pets}</div></div>`}
 function is2Fit(){document.querySelectorAll('.is2wrap').forEach(w=>{const k=w.clientWidth/IS2_W;const s=w.querySelector('.is2');if(s)s.style.transform=`scale(${k})`})}
 addEventListener('resize',is2Fit);
-{const _r=render;render=function(){const v=_r.apply(this,arguments);try{is2Fit()}catch(e){}return v}}
+{const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{is2Fit()}catch(e){}return v})}
 /* Đảo nhà: thay khung cảnh cũ */
-{const _v=viewIsle;viewIsle=function(st){const r=_v.apply(this,arguments);try{return r.replace(/<div class="iscene" id="iscene"><div class="isky"><\/div>[\s\S]*?<\/div>/,is2Scene(st,{pets:true}))}catch(e){return r}}}
+{const _v=hooks.cu('viewIsle');hooks.de('viewIsle',function(st){const r=_v.apply(this,arguments);try{return r.replace(/<div class="iscene" id="iscene"><div class="isky"><\/div>[\s\S]*?<\/div>/,is2Scene(st,{pets:true}))}catch(e){return r}})}
 /* Cửa hàng › Đảo nhà: xem trước cùng bố cục */
-ghIsle=function(st){const s=ghSt(st),T=scr.ghTry,list=s.dec.concat(T&&T.k==='dec'&&!s.dec.includes(T.id)?[T.id]:[]);return is2Scene(st,{dec:list,tryId:T&&T.id,small:true})};
+hooks.de('ghIsle',function(st){const s=ghSt(st),T=scr.ghTry,list=s.dec.concat(T&&T.k==='dec'&&!s.dec.includes(T.id)?[T.id]:[]);return is2Scene(st,{dec:list,tryId:T&&T.id,small:true})});
 document.head.insertAdjacentHTML('beforeend',`<style>
 .is2wrap{position:relative;width:100%;max-width:640px;margin:0 auto;aspect-ratio:16/10;overflow:hidden;box-shadow:var(--f2)}
 .is2wrap.small{width:min(220px,56%);flex:none;max-width:none}

@@ -1,10 +1,18 @@
 /* ===================== CHỦ ĐỀ 3 · LỚP 1–5 ===================== */
 /* Lớp 1: Cộng, trừ trong phạm vi 10 · Lớp 2: Ki-lô-gam, lít · Lớp 3: Hình phẳng, hình khối · Lớp 4: Số có nhiều chữ số · Lớp 5: Đơn vị đo diện tích.
    Đề viết mới theo kiến thức từng tiết trong Vở BT-TH (đổi đồ vật, bối cảnh, số liệu). */
-const OQ=(q,say,n,lo,hi,sol,kind,pic)=>{const o=optN(n,lo,hi,3);return{type:'opt',big:1,q,say,pic,...o,sol,kind}};
-const fN=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+import { pick, R, range } from '../../core/01-tien-ich.js';
+import { ALLP1, P1BY } from './07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
+import { shuf } from '../../core/21-lop-6-che-do-tro-choi.js';
+import { PXS, spr } from '../../core/22-do-hoa-pixel-mau-logo-clb.js';
+import { grp, grp2, NUMW, optN, pickObj } from './24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { PRIM } from '../../core/25-lop-1-so-loi-sai-toan-jenny.js';
+import { buildIsl, CQ, F, NQ, ORD, SG, vnRead } from './26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { angSvg, MG2, QS1 } from './27-chu-de-2-lop-1-5.js';
+export const OQ=(q,say,n,lo,hi,sol,kind,pic)=>{const o=optN(n,lo,hi,3);return{type:'opt',big:1,q,say,pic,...o,sol,kind}};
+export const fN=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
 /* ---- lớp 1: cộng, trừ trong phạm vi 10 ---- */
-const QA1={
+export const QA1={
  addPic:()=>()=>{const [s1,w]=pickObj(),a=R(1,6),b=R(1,Math.min(4,10-a));return OQ(`Có ${a} ${w}, thêm ${b} ${w}. Có tất cả mấy ${w}?`,`Có ${NUMW[a]} ${w}, thêm ${NUMW[b]} ${w}. Có tất cả mấy ${w}?`,a+b,1,10,`${a} + ${b} = ${a+b}.`,'Phép cộng qua hình',grp2(s1,a,s1,b,32))},
  add:()=>()=>{const a=R(0,9),b=R(0,10-a);return OQ(`<b>${a} + ${b} = ?</b>`,`${NUMW[a]} cộng ${NUMW[b]} bằng mấy?`,a+b,0,10,`${a} + ${b} = ${a+b}.`,'Cộng trong phạm vi 10')},
  addMiss:()=>()=>{const a=R(1,8),b=R(1,9-a+1>9?9:10-a);const n=a+b;return OQ(`<b>${a} + ☐ = ${n}</b>`,`${NUMW[a]} cộng mấy bằng ${NUMW[n]}?`,b,0,10,`${n} gồm ${a} và ${b}, nên ô trống là ${b}.`,'Tìm số trong phép cộng')},
@@ -24,7 +32,7 @@ const QA1={
 /* ---- lớp 2: ki-lô-gam, lít ---- */
 const KGOBJ=[['quả dưa hấu','bag'],['bó cà rốt','carrot'],['túi gạo','bag'],['bao đường','bag'],['con ngỗng','chick'],['thùng sách','book'],['chú cún','cat'],['nải chuối','apple']];
 const wts=L=>L.map(v=>`<span class="wt">${v} kg</span>`).join('');
-const QK2={
+export const QK2={
  scale:()=>()=>{const [w,s]=pick(KGOBJ),L=shuf([1,2,5,R(1,5)]).slice(0,R(2,3));const n=L.reduce((a,b)=>a+b,0);return OQ(`Cân thăng bằng. <b>${w.charAt(0).toUpperCase()+w.slice(1)}</b> nặng mấy ki-lô-gam?`,`Cân thăng bằng. ${w} nặng mấy ki-lô-gam?`,n,1,15,`${L.join(' kg + ')} kg = ${n} kg.`,'Cân đồ vật bằng quả cân',`<div class="g1scale"><span class="pan">${spr(PXS[s]?s:'bag',44)}</span><b class="g1big">=</b><span class="pan">${wts(L)}</span></div>`)},
  heavy:()=>()=>{const [[a],[b]]=shuf(KGOBJ).slice(0,2),x=R(2,15);let y=R(2,15);while(y===x)y=R(2,15);const hv=Math.random()<.5;const good=(hv?x>y:x<y)?a:b;return CQ(`${a.charAt(0).toUpperCase()+a.slice(1)} nặng ${x} kg, ${b} nặng ${y} kg. Vật nào <b>${hv?'nặng hơn':'nhẹ hơn'}</b>?`,`${a} nặng ${x} ki-lô-gam, ${b} nặng ${y} ki-lô-gam. Vật nào ${hv?'nặng hơn':'nhẹ hơn'}?`,good,[good===a?b:a],`${Math.max(x,y)} kg > ${Math.min(x,y)} kg.`,'So sánh nặng, nhẹ')},
  kgCalc:()=>()=>{const add=Math.random()<.5,a=R(10,60),b=R(5,30);return add?NQ(`<b>${a} kg + ${b} kg = ? kg</b>`,`${a} ki-lô-gam cộng ${b} ki-lô-gam bằng bao nhiêu ki-lô-gam?`,a+b,`${a} + ${b} = ${a+b} (kg).`,'Tính với đơn vị kg'):NQ(`<b>${a+b} kg − ${b} kg = ? kg</b>`,`${a+b} ki-lô-gam trừ ${b} ki-lô-gam bằng bao nhiêu ki-lô-gam?`,a,`${a+b} − ${b} = ${a} (kg).`,'Tính với đơn vị kg')},
@@ -37,12 +45,12 @@ const QK2={
 };
 /* ---- lớp 3: hình phẳng, hình khối ---- */
 const LET=['A','B','C','D','E','G','H','I','K','M','N','O','P','Q'];
-function circSvg(o,a,c,d,m,n){const C=70,r=52,P=t=>[C+r*Math.cos(t),C-r*Math.sin(t)],t1=R(30,150)*Math.PI/180,t2=t1+R(60,100)*Math.PI/180,t3=t2+R(40,70)*Math.PI/180,t4=t3+R(50,80)*Math.PI/180;const A=P(t1),Cc=P(t2),D=[2*C-Cc[0],2*C-Cc[1]],M=P(t3),N=P(t4);const lab=(p,s)=>`<text x="${(C+(p[0]-C)*1.22).toFixed(0)}" y="${(C+(p[1]-C)*1.22+6).toFixed(0)}" text-anchor="middle" font-size="16" font-weight="700" fill="#1F2A5A">${s}</text>`;const ln=(p,q,col)=>`<line x1="${p[0].toFixed(1)}" y1="${p[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}" stroke="${col}" stroke-width="4"/>`;
+export function circSvg(o,a,c,d,m,n){const C=70,r=52,P=t=>[C+r*Math.cos(t),C-r*Math.sin(t)],t1=R(30,150)*Math.PI/180,t2=t1+R(60,100)*Math.PI/180,t3=t2+R(40,70)*Math.PI/180,t4=t3+R(50,80)*Math.PI/180;const A=P(t1),Cc=P(t2),D=[2*C-Cc[0],2*C-Cc[1]],M=P(t3),N=P(t4);const lab=(p,s)=>`<text x="${(C+(p[0]-C)*1.22).toFixed(0)}" y="${(C+(p[1]-C)*1.22+6).toFixed(0)}" text-anchor="middle" font-size="16" font-weight="700" fill="#1F2A5A">${s}</text>`;const ln=(p,q,col)=>`<line x1="${p[0].toFixed(1)}" y1="${p[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}" stroke="${col}" stroke-width="4"/>`;
   return`<svg viewBox="0 0 140 140" width="150" height="150" aria-hidden="true"><circle cx="${C}" cy="${C}" r="${r}" fill="#fff" stroke="#1F2A5A" stroke-width="4"/>${ln([C,C],A,'#F04A1B')}${ln(Cc,D,'#12B5E8')}${ln(M,N,'#2AB563')}<rect x="${C-4}" y="${C-4}" width="8" height="8" fill="#FCB40C"/><text x="${C+8}" y="${C+18}" font-size="16" font-weight="700" fill="#1F2A5A">${o}</text>${lab(A,a)}${lab(Cc,c)}${lab(D,d)}${lab(M,m)}${lab(N,n)}</svg>`}
-function polySvg(k,sz=64){const p=k==='tri'?[[R(4,20),56],[R(40,60),R(52,58)],[R(14,46),R(4,14)]]:k==='quad'?[[R(4,14),R(44,58)],[R(46,60),R(48,58)],[R(48,60),R(6,20)],[R(10,24),R(4,14)]]:k==='rect'?[[4,46],[60,46],[60,18],[4,18]]:[[10,56],[54,56],[54,12],[10,12]];return`<svg viewBox="0 0 64 64" width="${sz}" height="${sz}" aria-hidden="true"><polygon points="${p.map(q=>q.join(',')).join(' ')}" fill="#E6F4FD" stroke="#1F2A5A" stroke-width="4" stroke-linejoin="miter"/></svg>`}
+export function polySvg(k,sz=64){const p=k==='tri'?[[R(4,20),56],[R(40,60),R(52,58)],[R(14,46),R(4,14)]]:k==='quad'?[[R(4,14),R(44,58)],[R(46,60),R(48,58)],[R(48,60),R(6,20)],[R(10,24),R(4,14)]]:k==='rect'?[[4,46],[60,46],[60,18],[4,18]]:[[10,56],[54,56],[54,12],[10,12]];return`<svg viewBox="0 0 64 64" width="${sz}" height="${sz}" aria-hidden="true"><polygon points="${p.map(q=>q.join(',')).join(' ')}" fill="#E6F4FD" stroke="#1F2A5A" stroke-width="4" stroke-linejoin="miter"/></svg>`}
 const POLYN={tri:'hình tam giác',quad:'hình tứ giác',rect:'hình chữ nhật',sq:'hình vuông'};
-function segSvg(x,y){const W=260,u=(W-40)/(x+y),xm=20+x*u;return`<svg viewBox="0 0 ${W} 70" width="${W}" height="70" aria-hidden="true"><line x1="20" y1="30" x2="${W-20}" y2="30" stroke="#1F2A5A" stroke-width="4"/>${[[20,'A'],[xm,'M'],[W-20,'B']].map(([p,s])=>`<rect x="${p-4}" y="26" width="8" height="8" fill="#F04A1B"/><text x="${p}" y="18" text-anchor="middle" font-size="15" font-weight="700" fill="#1F2A5A">${s}</text>`).join('')}<text x="${(20+xm)/2}" y="56" text-anchor="middle" font-size="14" fill="#1F2A5A">${x} cm</text><text x="${(xm+W-20)/2}" y="56" text-anchor="middle" font-size="14" fill="#1F2A5A">${y} cm</text></svg>`}
-const QH3={
+export function segSvg(x,y){const W=260,u=(W-40)/(x+y),xm=20+x*u;return`<svg viewBox="0 0 ${W} 70" width="${W}" height="70" aria-hidden="true"><line x1="20" y1="30" x2="${W-20}" y2="30" stroke="#1F2A5A" stroke-width="4"/>${[[20,'A'],[xm,'M'],[W-20,'B']].map(([p,s])=>`<rect x="${p-4}" y="26" width="8" height="8" fill="#F04A1B"/><text x="${p}" y="18" text-anchor="middle" font-size="15" font-weight="700" fill="#1F2A5A">${s}</text>`).join('')}<text x="${(20+xm)/2}" y="56" text-anchor="middle" font-size="14" fill="#1F2A5A">${x} cm</text><text x="${(xm+W-20)/2}" y="56" text-anchor="middle" font-size="14" fill="#1F2A5A">${y} cm</text></svg>`}
+export const QH3={
  mid:()=>()=>{const h=R(2,12);return Math.random()<.5?NQ(`M là trung điểm của đoạn thẳng AB. Đoạn AB dài ${2*h} cm. Đoạn AM dài bao nhiêu xăng-ti-mét?`,`M là trung điểm của đoạn AB. AB dài ${2*h} xăng-ti-mét. AM dài bao nhiêu?`,h,`Trung điểm chia đoạn thẳng thành hai phần bằng nhau: ${2*h} : 2 = ${h} (cm).`,'Trung điểm của đoạn thẳng'):NQ(`M là trung điểm của đoạn thẳng AB. Đoạn MB dài ${h} cm. Đoạn AB dài bao nhiêu xăng-ti-mét?`,`M là trung điểm của đoạn AB. MB dài ${h} xăng-ti-mét. AB dài bao nhiêu?`,2*h,`AB = AM + MB = ${h} + ${h} = ${2*h} (cm).`,'Trung điểm của đoạn thẳng')},
  midTF:()=>()=>{const x=R(2,7),y=Math.random()<.5?x:R(2,7);return{type:'tf',q:'M là trung điểm của đoạn thẳng AB. Đúng hay sai?',say:'Nhìn độ dài hai đoạn. M có phải trung điểm của đoạn AB không?',pic:`<div class="g1grp">${segSvg(x,y)}</div>`,a:x===y,sol:x===y?`AM = MB = ${x} cm và M nằm giữa A, B nên M là trung điểm.`:`AM = ${x} cm, MB = ${y} cm không bằng nhau nên M không phải trung điểm.`,kind:'Trung điểm của đoạn thẳng'}},
  between:()=>()=>{const L=shuf(LET).slice(0,3);const [a,b,c]=L;return CQ(`Ba điểm ${a}, ${b}, ${c} thẳng hàng, điểm ${b} nằm giữa hai điểm ${a} và ${c}. Điểm nào là <b>điểm ở giữa</b>?`,`Ba điểm thẳng hàng, ${b} nằm giữa ${a} và ${c}. Điểm nào là điểm ở giữa?`,`Điểm ${b}`,[`Điểm ${a}`,`Điểm ${c}`],`${b} nằm giữa ${a} và ${c}.`,'Điểm ở giữa')},
@@ -64,9 +72,9 @@ const QH3={
 const HANG=['Hàng đơn vị','Hàng chục','Hàng trăm','Hàng nghìn','Hàng chục nghìn','Hàng trăm nghìn','Hàng triệu','Hàng chục triệu','Hàng trăm triệu'];
 const LOP=['Lớp đơn vị','Lớp nghìn','Lớp triệu'];
 const bigN=(lo,hi)=>{let n;do{n=R(lo,hi)}while(String(n).length>6&&Math.floor(n/1000)%1000===0);return n};
-const hlN=(n,k)=>{const s=String(n),L=s.length;let h='';for(let i=0;i<L;i++){const pos=L-1-i;h+=(pos===k?`<u class="hl">${s[i]}</u>`:s[i])+(pos%3===0&&pos>0?' ':'')}return h};
+export const hlN=(n,k)=>{const s=String(n),L=s.length;let h='';for(let i=0;i<L;i++){const pos=L-1-i;h+=(pos===k?`<u class="hl">${s[i]}</u>`:s[i])+(pos%3===0&&pos>0?' ':'')}return h};
 const nearStr=n=>{const s=String(n),o=new Set();for(let i=1;i<s.length;i++){if(s[i]!==s[i-1])o.add(s.slice(0,i-1)+s[i]+s[i-1]+s.slice(i+1))}const z=s.indexOf('0');if(z>0)o.add(s.slice(0,z)+s.slice(z+1)+'0');o.add(s.slice(0,1)+'0'+s.slice(1,-1));o.delete(s);return shuf([...o]).map(Number).filter(v=>v>0)};
-const QB4={
+export const QB4={
  read:(lo,hi)=>()=>{let n;do{n=bigN(lo,hi)}while(!String(n).slice(1).includes('0'));const w=vnRead(n);return CQ(`Số "<b>${w}</b>" viết là:`,`Số ${w} viết là số nào?`,fN(n),nearStr(n).map(fN),`${w}: ${fN(n)}.`,'Đọc, viết số',1)},
  word:(lo,hi)=>()=>{const n=bigN(lo,hi),good=vnRead(n);const bads=nearStr(n).slice(0,3).map(vnRead);return CQ(`Số <b>${fN(n)}</b> đọc là:`,`Số này đọc là gì?`,good,bads,`${fN(n)} đọc là: ${good}.`,'Đọc, viết số')},
  money:()=>()=>{const a=R(1,9),b=R(0,9),c=R(0,9);const v=a*100000+b*10000+c*1000;return CQ(`Có ${a} tờ 100 000 đồng${b?`, ${b} tờ 10 000 đồng`:''}${c?` và ${c} tờ 1 000 đồng`:''}. Có tất cả bao nhiêu tiền?`,`Có ${a} tờ một trăm nghìn${b?`, ${b} tờ mười nghìn`:''}${c?`, ${c} tờ một nghìn`:''}. Có tất cả bao nhiêu tiền?`,fN(v)+' đồng',[fN(a*10000+b*1000+c*100)+' đồng',fN(a*100000+c*10000+b*1000)+' đồng',fN(v*10)+' đồng'],`${a} × 100 000 + ${b} × 10 000 + ${c} × 1 000 = ${fN(v)} đồng.`,'Đếm tiền, số có sáu chữ số')},
@@ -85,9 +93,9 @@ const QB4={
 };
 /* ---- lớp 5: đơn vị đo diện tích ---- */
 const DU={'km²':1e12,'ha':1e10,'m²':1e6,'dm²':1e4,'cm²':100,'mm²':1};
-const DUN={'km²':'ki-lô-mét vuông','ha':'héc-ta','m²':'mét vuông','dm²':'đề-xi-mét vuông','cm²':'xăng-ti-mét vuông','mm²':'mi-li-mét vuông'};
+export const DUN={'km²':'ki-lô-mét vuông','ha':'héc-ta','m²':'mét vuông','dm²':'đề-xi-mét vuông','cm²':'xăng-ti-mét vuông','mm²':'mi-li-mét vuông'};
 const DPAIR=[['km²','ha'],['ha','m²'],['m²','dm²'],['dm²','cm²'],['cm²','mm²'],['km²','m²'],['m²','cm²']];
-const QD5={
+export const QD5={
  down:()=>()=>{const [u,v]=pick(DPAIR),a=R(2,30),f=DU[u]/DU[v],ans=a*f;return CQ(`<b>${a} ${u} = ? ${v}</b>`,`${a} ${DUN[u]} bằng bao nhiêu ${DUN[v]}?`,fN(ans),[fN(ans*10),fN(ans/10),fN(ans*100)].filter(x=>!/\./.test(x)),`1 ${u} = ${fN(f)} ${v}, nên ${a} ${u} = ${fN(ans)} ${v}.`,'Đổi đơn vị đo diện tích',1)},
  up:()=>()=>{const [u,v]=pick(DPAIR.filter(p=>DU[p[0]]/DU[p[1]]<=1e4)),a=R(2,90),f=DU[u]/DU[v];return NQ(`<b>${fN(a*f)} ${v} = ? ${u}</b>`,`${fN(a*f)} ${DUN[v]} bằng bao nhiêu ${DUN[u]}?`,a,`${fN(a*f)} : ${fN(f)} = ${a}, nên được ${a} ${u}.`,'Đổi đơn vị đo diện tích')},
  mixed:()=>()=>{const [u,v]=pick([['m²','dm²'],['dm²','cm²'],['cm²','mm²'],['km²','ha']]),a=R(1,9),b=R(1,99);const ans=a*100+b;return CQ(`<b>${a} ${u} ${b} ${v} = ? ${v}</b>`,`${a} ${DUN[u]} ${b} ${DUN[v]} bằng bao nhiêu ${DUN[v]}?`,fN(ans),[fN(Number(`${a}${b}`)),fN(a*1000+b),fN(a*100+b*10)].filter(x=>x!==fN(ans)),`${a} ${u} = ${a*100} ${v}; ${a*100} + ${b} = ${ans} (${v}).`,'Đổi đơn vị đo diện tích',1)},
@@ -139,4 +147,4 @@ const MG3={
 };
 /* ---- ghép vào dữ liệu lớp ---- */
 [1,2,3,4,5].forEach(g=>{const add=buildIsl(g,CDEF3[g],2);PRIM[g].isl=PRIM[g].isl.concat(add);P1BY[g]=PRIM[g].isl;ALLP1.push(...add)});
-const MGT={1:MG2,2:MG3};
+export const MGT={1:MG2,2:MG3};

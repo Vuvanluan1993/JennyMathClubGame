@@ -8,6 +8,17 @@
    - Toán có lời văn (lớp 2–5): câu hỏi gợi ý trắc nghiệm từng bước; tổng–hiệu, tổng–tỉ, hiệu–tỉ có sơ đồ đoạn thẳng. */
 
 /* ---------- bàn tay ngửa pixel ---------- */
+import { hooks } from './00-hooks.js';
+import { fmt } from './01-tien-ich.js';
+import { save } from './09-du-lieu-demo.js';
+import { addCoins } from './11-sao-va-mo-khoa.js';
+import { render } from './13-giao-dien-chung.js';
+import { pixelize, pxURI, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { isl1, next1, q1, right1, sayFull, sayJ, show1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { curG, ju1 } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { sfx } from './33b-am-thanh.js';
+import { xgRec } from './37-tro-choi-dot-1.js';
+import { ktClean } from './39e-kien-thuc-tro-choi.js';
 const HAND_CACHE={};
 function gdHand(f,mirror,nums,w){const key=f.join('')+(mirror?'m':'')+(nums||[]).join('.');let svg=HAND_CACHE[key];
  const S=4/3,W=56,H=56;let lab='';
@@ -52,9 +63,9 @@ function gdHands(st,nums){/* st[k]: 0 gập,1 duỗi,2 mới,3 đang gập ; num
  return `<div class="gdhands">${gdHand(L,true,nl)}${gdHand(R,false,nr)}</div>`}
 
 /* ---------- nhận dạng câu ---------- */
-const GD_NUM='\\d+(?:[  .]\\d{3})*(?:,\\d+)?';
-const gdN=s=>Number(String(s).replace(/[  .]/g,'').replace(',','.'));
-const gdTxt=h=>(typeof ktClean==='function'?ktClean(h):String(h||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim();
+export const GD_NUM='\\d+(?:[  .]\\d{3})*(?:,\\d+)?';
+export const gdN=s=>Number(String(s).replace(/[  .]/g,'').replace(',','.'));
+export const gdTxt=h=>(typeof ktClean==='function'?ktClean(h):String(h||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim();
 function gdOp(q){/* phép tính một bước a op b = c, hoặc có ô trống ☐ */const t=gdTxt(q.q),s=gdTxt(q.sol);
  let m=t.match(/(\d+|☐)\s*([+−-])\s*(\d+|☐)\s*=\s*(\d+|☐)/);
  if(m&&/☐/.test(m[0])){const v=x=>x==='☐'?null:+x;const a=v(m[1]),b=v(m[3]),c=v(m[4]),op=m[2]==='+'?'+':'−';
@@ -66,7 +77,7 @@ function gdOp(q){/* phép tính một bước a op b = c, hoặc có ô trống 
  /* chỉ nhận khi phép tính trong lời giải là toàn bộ lời giải (một bước) */
  if((s.match(/\d\s*[+−×:]\s*\d/g)||[]).length>1&&!/gồm/.test(s))return null;return{a,b,c,op,miss:'c'}}
 function gdWord(q){const t=gdTxt(q.q);return /Hỏi|bao nhiêu|mấy/.test(t)&&t.length>38&&/[.,]/.test(t.replace(/\?$/,''))}
-function gdKind(q){if(!q||!q.sol)return null;const G=(typeof curG==='function'?curG():1),kd=q.kind||'',s=gdTxt(q.sol);
+export function gdKind(q){if(!q||!q.sol)return null;const G=(typeof curG==='function'?curG():1),kd=q.kind||'',s=gdTxt(q.sol);
  if(/tổng và tỉ/i.test(kd)){const m=s.match(new RegExp(`Tổng số phần:\\s*(\\d+)\\s*\\+\\s*(\\d+)\\s*=\\s*(\\d+)\\.\\s*Một phần:\\s*(${GD_NUM})\\s*:\\s*\\d+\\s*=\\s*(${GD_NUM})\\.\\s*([^:]+):\\s*${GD_NUM}\\s*×\\s*(\\d+)`));if(m)return{t:'sr',m:+m[1],n:+m[2],p:+m[3],S:gdN(m[4]),u:gdN(m[5]),who:m[6].trim(),k:+m[7]}}
  if(/hiệu và tỉ/i.test(kd)){const m=s.match(new RegExp(`Hiệu số phần:\\s*(\\d+)\\s*−\\s*(\\d+)\\s*=\\s*(\\d+)\\.\\s*Một phần:\\s*(${GD_NUM})\\s*:\\s*\\d+\\s*=\\s*(${GD_NUM})\\.\\s*([^:]+):\\s*${GD_NUM}\\s*×\\s*(\\d+)`));if(m)return{t:'dr',n:+m[1],m:+m[2],p:+m[3],D:gdN(m[4]),u:gdN(m[5]),who:m[6].trim(),k:+m[7]}}
  if(/tổng và hiệu/i.test(kd)){const m=s.match(new RegExp(`(?:Nửa chu vi:\\s*(${GD_NUM})\\s*:\\s*2\\s*=\\s*(${GD_NUM})[^.]*\\.\\s*)?([^:.]+):\\s*\\((${GD_NUM})\\s*([+−])\\s*(${GD_NUM})\\)\\s*:\\s*2\\s*=\\s*(${GD_NUM})`));if(m)return{t:'sd',half:m[1]?gdN(m[1]):0,S:gdN(m[4]),op:m[5],D:gdN(m[6]),who:m[3].trim(),ans:gdN(m[7])}}
@@ -86,7 +97,7 @@ function gdSteps(q){if(/(^|[\s(])dư[\s)]/.test(gdTxt(q.sol)))return null;const 
  return out.length?out:null}
 
 /* ---------- dựng các khung hoạt cảnh ---------- */
-const gdEq=(h)=>`<div class="gdeq">${h}</div>`;
+export const gdEq=(h)=>`<div class="gdeq">${h}</div>`;
 const OPW={'+':'cộng','−':'trừ','×':'nhân',':':'chia'};
 /* thứ tự các ngón trên màn hình, từ trái sang phải (k theo thứ tự giơ ngón) */
 const GD_SCR=[4,0,1,2,3,8,7,6,5,9];
@@ -172,7 +183,7 @@ function gdFramesLineMiss(o){const F=[],{a,b,c,op,miss}=o,Y='#FCB40C',G='#1E9A52
  let n=0;for(let v=from+dir;dir>0?v<=to:v>=to;v+=dir){n++;F.push({h:gdLine(0,20,v,[[from,v,col]],[from,v])+gdEq(eq),say:op==='−'&&miss==='a'?`${v}`:`${n}`,dur:700})}
  const fin=op==='−'&&miss==='a'?`Ếch đứng ở ${a} lúc đầu. Ô trống là ${a}.`:`Nhảy ${ans} bước. Ô trống là ${ans}.`;
  F.push({h:gdLine(0,20,to,[[from,to,col]],[from,to])+gdEq(eq.replace('☐',`<em>${ans}</em>`)),say:fin,dur:2800});return F}
-function gdOpts(right,others){const set=[String(right)];for(const o of others){const v=String(o);if(!set.includes(v)&&!/^-|NaN/.test(v))set.push(v);if(set.length===3)break}let k=1;while(set.length<3){const v=String((+right||0)+k*(set.length+1));if(!set.includes(v))set.push(v);k++}return set.sort(()=>Math.random()-.5)}
+export function gdOpts(right,others){const set=[String(right)];for(const o of others){const v=String(o);if(!set.includes(v)&&!/^-|NaN/.test(v))set.push(v);if(set.length===3)break}let k=1;while(set.length<3){const v=String((+right||0)+k*(set.length+1));if(!set.includes(v))set.push(v);k++}return set.sort(()=>Math.random()-.5)}
 
 /* toán lời văn: tô số, câu hỏi, rồi từng bước chọn phép tính */
 const OPHINT={'+':'"Thêm", "tất cả", "cả hai", "nhiều hơn … là" thường là gộp lại: làm phép cộng.','−':'"Bớt", "còn lại", "ít hơn", "hơn … bao nhiêu" thường là phép trừ.','×':'"Mỗi … có …, mấy … như thế" là lấy nhiều lần: làm phép nhân.',':':'"Chia đều", "mỗi … được mấy", "xếp vào mỗi …" là phép chia.'};
@@ -223,15 +234,17 @@ function gdFramesSD(g,q){const F=[],t=gdTxt(q.q),Y='#FCB40C',G='#1E9A52';const c
 /* ---------- khung xem hướng dẫn ---------- */
 let GD=null;
 /* dạng mở rộng (Lô 2…): {t, on, kind(q)→k|null, frames(k,q)→F} */
-const GD_EXT=[];
+export const GD_EXT=[];
 {const _k=gdKind;gdKind=function(q){if(!q||!q.sol)return null;for(const e of GD_EXT){if(!e.on)continue;let k=null;try{k=e.kind(q)}catch(x){}if(k)return{...k,t:e.t}}return _k(q)}}
 function gdFrames(q,k){const e=GD_EXT.find(e=>e.t===k.t);if(e)return e.frames(k,q);return k.t==='hand'?gdFramesHand(k):k.t==='line'?(k.miss==='c'?gdFramesLine(k):gdFramesLineMiss(k)):k.t==='word'?gdFramesWord(q,k.steps):k.t==='sd'?gdFramesSD(k,q):gdFramesRatio(k,q)}
-function gdOpen(q,auto){const k=gdKind(q);if(!k)return false;return gdOpenF(gdFrames(q,k),auto,k.t)}
-function gdOpenF(F,auto,kind){
+function gdOpen(...a){return hooks.goi('gdOpen',this,a)}
+hooks.ham('gdOpen',function(q,auto){const k=gdKind(q);if(!k)return false;return gdOpenF(gdFrames(q,k),auto,k.t)});
+function gdOpenF(...a){return hooks.goi('gdOpenF',this,a)}
+hooks.ham('gdOpenF',function(F,auto,kind){
  gdClose(true);GD={F,i:0,slow:false,tm:null,auto,done:false,kind};
  const el=document.createElement('div');el.id='gdov';el.className='gdov';el.setAttribute('role','dialog');el.setAttribute('aria-label','Hướng dẫn');
  el.innerHTML=`<div class="gdbox"><div class="gdhd"><b>${spr('bulb',20)} Hướng dẫn</b><span class="gdstep"></span><button type="button" class="gdx" onclick="gdClose()" aria-label="Đóng hướng dẫn">Đóng ✕</button></div><div class="gdstage"></div><div class="gdsay">${spr('jennyHappy',40)}<div class="gdbub"></div></div><div class="gdmcq"></div><div class="gdctl"><button type="button" onclick="gdReplay()">↺ Xem lại</button><button type="button" class="gdslow" onclick="gdSlow()">🐢 Chậm hơn</button><button type="button" class="gdgo" onclick="gdFinish()" disabled>Em làm lại ▶</button></div></div>`;
- document.body.appendChild(el);try{pixelize(el)}catch(e){}gdShow();return true}
+ document.body.appendChild(el);try{pixelize(el)}catch(e){}gdShow();return true});
 function gdShow(){if(!GD)return;const el=document.getElementById('gdov');if(!el)return;const f=GD.F[GD.i];
  el.querySelector('.gdstage').innerHTML=f.h;el.querySelector('.gdbub').textContent=f.say||'';el.querySelector('.gdstep').textContent=`${GD.i+1}/${GD.F.length}`;
  const mq=el.querySelector('.gdmcq');if(f.mcq){const m=f.mcq;mq.innerHTML=`<div class="gdmq">${m.q}</div><div class="gdopts ${m.grid===2?'c2':m.opts.every(o=>String(o).length<=4)?'c3':''}">${m.opts.map(o=>`<button type="button" data-v="${String(o).replace(/"/g,'&quot;')}" onclick="gdPick(this)">${o}</button>`).join('')}</div>`}else mq.innerHTML='';
@@ -258,27 +271,27 @@ function gdSimilar(q){try{if(!q.src)return null;const x=isl1(q.src[0])||(typeof 
 const gdOn=()=>{const g=scr;return g&&g.k==='game'&&g.g1&&g.fix&&!g.race&&!g.tre&&!g.cbo&&role==='hs'};
 
 /* ---------- gắn vào luồng trả lời ---------- */
-{const _q1=q1;q1=function(){return scr&&scr.gdPq?scr.gdPq:_q1()}}
-{const _ans=ans1;ans1=function(v){const g=scr;if(!gdOn()||!g.gdRedo)return _ans(v);
+{const _q1=hooks.cu('q1');hooks.de('q1',function(){return scr&&scr.gdPq?scr.gdPq:_q1()})}
+{const _ans=hooks.cu('ans1');hooks.de('ans1',function(v){const g=scr;if(!gdOn()||!g.gdRedo)return _ans(v);
   const q=q1(),ok=right1(q,v);
   if(g.gdRedo.stage==='same'){if(ok){sfx('ok');const nx=g.qs&&g.qs[g.j+1],sim=nx&&nx.key&&nx.key===q.key?null:gdSimilar(q);g.sheet={kind:'gdok',msg:sim?'Em làm đúng rồi! Làm thêm 1 câu giống vậy nhé.':'Em làm đúng rồi!',sim};sayJ(sim?'Đúng rồi! Mình làm thêm một câu giống vậy nhé.':'Đúng rồi!')}
    else{sfx('bad');g.sheet={kind:'gdbad'};sayJ('Chưa đúng. Mình xem đáp án nhé.')}}
   else{if(ok){sfx('ok');const c=addCoins(sid,2,'self');g.sheet={kind:'gdok',msg:'Giỏi quá! Em đã hiểu cách làm.'+(c?` +${c} xu`:'')};sayJ('Giỏi quá! Em đã hiểu cách làm rồi.')}
    else{sfx('bad');g.sheet={kind:'gdbad'};sayJ('Chưa đúng. Mình xem đáp án nhé.')}}
-  try{if(typeof xgRec==='function'&&g.gdRedo.stage==='sim')xgRec(ok,q)}catch(e){}save();render()}}
-{const _sh=sheet1;sheet1=function(){const g=scr,s=g.sheet,q=q1();
+  try{if(typeof xgRec==='function'&&g.gdRedo.stage==='sim')xgRec(ok,q)}catch(e){}save();render()})}
+{const _sh=hooks.cu('sheet1');hooks.de('sheet1',function(){const g=scr,s=g.sheet,q=q1();
   if(s&&s.kind==='gdok')return`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${g.gdRedo&&g.gdRedo.stage==='sim'?'Tuyệt vời!':'Đúng rồi!'}</b><div>${s.msg}</div></div></div><button class="gobtn" type="button" onclick="gdAfter()">${s.sim?'Làm câu tương tự ▶':'Tiếp tục'}</button></div>`;
   if(s&&s.kind==='gdbad')return`<div class="sheet bad"><div class="sh"><span class="ic">✕</span><div><b>Đáp án đúng${show1(q)!==''?': '+show1(q):''}</b><div>${q.sol}</div></div></div><button class="gobtn" type="button" onclick="gdAfter(1)">Tiếp tục</button></div>`;
   let h=_sh();if(gdOn()&&!g.gdRedo&&s&&(s.kind==='retry'||s.kind==='bad')&&gdKind(q))h=h.replace(/(<button class="gobtn" type="button" onclick="(?:retry1|next1)\(\)">)/,`<button class="gobtn ghost gdbtn" type="button" onclick="gdOpen(q1())">${spr('bulb',18)} Xem hướng dẫn</button>$1`);
-  return h}}
+  return h})}
 function gdAfter(skip){const g=scr,s=g.sheet;if(!skip&&s&&s.sim&&g.gdRedo&&g.gdRedo.stage==='same'){g.gdRedo={stage:'sim'};g.gdPq=s.sim;g.sheet=null;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;g.t0=Date.now();render();return}
  g.gdRedo=null;g.gdPq=null;next1()}
-{const _n=next1;next1=function(){if(scr){scr.gdRedo=null;scr.gdPq=null}gdClose(true);return _n.apply(this,arguments)}}
+{const _n=hooks.cu('next1');hooks.de('next1',function(){if(scr){scr.gdRedo=null;scr.gdPq=null}gdClose(true);return _n.apply(this,arguments)})}
 /* sai lần 2: tự mở hướng dẫn (một lần cho mỗi câu) */
-{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(gdOn()&&g.sheet&&(g.sheet.kind==='bad'||g.sheet.kind==='retry')&&!g.gdRedo){const q=q1(),key=(g.id||'')+':'+g.lv+':'+g.j+':'+g.t0;if(g.gdAuto!==key&&gdKind(q)){g.gdAuto=key;setTimeout(()=>{if(scr===g&&g.sheet&&(g.sheet.kind==='bad'||g.sheet.kind==='retry')&&!document.getElementById('gdov'))gdOpen(q,true)},1200)}}
-  if(!(scr&&scr.k==='game'))gdClose(true)}catch(e){}return r}}
+{const _a=hooks.cu('g1AfterRender');hooks.de('g1AfterRender',function(){const r=_a.apply(this,arguments);try{const g=scr;if(gdOn()&&g.sheet&&(g.sheet.kind==='bad'||g.sheet.kind==='retry')&&!g.gdRedo){const q=q1(),key=(g.id||'')+':'+g.lv+':'+g.j+':'+g.t0;if(g.gdAuto!==key&&gdKind(q)){g.gdAuto=key;setTimeout(()=>{if(scr===g&&g.sheet&&(g.sheet.kind==='bad'||g.sheet.kind==='retry')&&!document.getElementById('gdov'))gdOpen(q,true)},1200)}}
+  if(!(scr&&scr.k==='game'))gdClose(true)}catch(e){}return r})}
 /* đọc đề câu làm lại / câu tương tự */
-{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const g=scr;if(gdOn()&&g.gdRedo&&!g.sheet){const key='gd'+g.gdRedo.stage+g.j;if(g.gdSaid!==key){g.gdSaid=key;const q=q1(),stg=g.gdRedo.stage;if(curG()<=2)setTimeout(()=>sayJ((stg==='same'?'Em làm lại câu này nhé. ':'Câu giống vậy nè. ')+sayFull(q.say,q.q)),300)}}}catch(e){}return r}}
+{const _a=hooks.cu('g1AfterRender');hooks.de('g1AfterRender',function(){const r=_a.apply(this,arguments);try{const g=scr;if(gdOn()&&g.gdRedo&&!g.sheet){const key='gd'+g.gdRedo.stage+g.j;if(g.gdSaid!==key){g.gdSaid=key;const q=q1(),stg=g.gdRedo.stage;if(curG()<=2)setTimeout(()=>sayJ((stg==='same'?'Em làm lại câu này nhé. ':'Câu giống vậy nè. ')+sayFull(q.say,q.q)),300)}}}catch(e){}return r})}
 
 document.head.insertAdjacentHTML('beforeend',`<style>
 .gdov{position:fixed;inset:0;z-index:80;background:rgba(31,42,90,.55);display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box}

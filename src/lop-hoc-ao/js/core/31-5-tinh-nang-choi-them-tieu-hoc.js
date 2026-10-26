@@ -1,80 +1,57 @@
 /* ===================== 5 TÍNH NĂNG CHƠI THÊM (Tiểu học) ===================== */
+import { hooks } from './00-hooks.js';
+import { esc, fmt, pick, R, range } from './01-tien-ich.js';
+import { save } from './09-du-lieu-demo.js';
+import { log } from './10-su-kien-mau-xapi.js';
+import { go, render, toast } from './13-giao-dien-chung.js';
+import { PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { NUMW, open1, q1, sayFull, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { curG, PI, PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { F } from '../content/hk1/26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { endRace } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
+import { sfx } from './33b-am-thanh.js';
 Object.assign(PXS,{clock:["...kkk...","....k....","..kkkkk..",".kwwkwwk.","kwwwkwwwk","kwwwkkkwk","kwwwwwwwk",".kwwwwwk.","..kkkkk.."],
  whale2:[".....kkkkk......","...kkBBBBBkk..kk","..kBBBBBBBBBk.kB",".kBwkBBBBBBBBkBk","kBBBBBBBBBBBBBk.",".kwwwwwwwwwwwk..","..kkkkkkkkkkk..."]});
 /* ---- phân bổ tính năng theo chủ đề ---- */
 const FEATN={fish:['fish','Câu cá'],balloon:['balloon','Bóng bay'],race:['clock','Đua giờ'],cboss:['octo','Trùm lớp'],sea:['bottle','Kho báu biển'],card:['book','Sưu tập']};
 function featOf(name,ti){const f=[];if(ti===0||/số|So sánh|Phân số|thập phân|Tỉ số|Các số/i.test(name))f.push('fish');if(ti===0||/phép|cộng|trừ|nhân|chia|tính|Bảng/i.test(name))f.push('balloon');f.push('race','sea');if(ti===0||/Ôn tập/i.test(name)||ti%3===2)f.push('cboss');f.push('card');return f}
 /* ---- trò chơi nhỏ: câu cá / bắn bóng ---- */
-const MG={
+export const MG={
  1:{fish:()=>{const k=R(3,6);return{rule:`Câu cá mang số <b>lớn hơn ${k}</b>`,say:`Câu những con cá mang số lớn hơn ${NUMW[k]}.`,item:()=>{const v=R(0,10);return{t:String(v),ok:v>k}}}},balloon:()=>{const k=R(4,7);return{rule:`Bắn bóng mang số <b>bé hơn ${k}</b>`,say:`Bắn những quả bóng mang số bé hơn ${NUMW[k]}.`,item:()=>{const v=R(0,10);return{t:String(v),ok:v<k}}}}},
  2:{fish:()=>({rule:'Câu cá mang <b>số tròn chục</b>',say:'Câu những con cá mang số tròn chục.',item:()=>{const v=Math.random()<.4?R(1,9)*10:R(11,99);return{t:String(v),ok:v%10===0}}}),balloon:()=>{const r=R(4,9)*10;return{rule:`Bắn bóng có kết quả <b>bằng ${r}</b>`,say:`Bắn những quả bóng có kết quả bằng ${r}.`,item:()=>{const s=Math.random()<.4?r:r+pick([-10,-2,-1,1,2,10]);const a=R(10,s-10);return{t:`${a} + ${s-a}`,ok:s===r}}}}},
  3:{fish:()=>{const k=pick([3,4,5]);return{rule:`Câu cá mang số <b>trong bảng nhân ${k}</b>`,say:`Câu những con cá mang kết quả trong bảng nhân ${NUMW[k]}.`,item:()=>{const v=Math.random()<.45?k*R(1,10):R(1,50);return{t:String(v),ok:v%k===0&&v<=k*10}}}},balloon:()=>{const t=pick([12,18,24,20,16,30,36]);return{rule:`Bắn bóng có tích <b>bằng ${t}</b>`,say:`Bắn những quả bóng có tích bằng ${t}.`,item:()=>{const ok=Math.random()<.45;if(ok){const ds=range(2,9).filter(d=>t%d===0&&t/d<=10);const d=pick(ds);return{t:`${d} × ${t/d}`,ok:true}}let a,b;do{a=R(2,9);b=R(2,9)}while(a*b===t);return{t:`${a} × ${b}`,ok:false}}}}},
  4:{fish:()=>({rule:'Câu cá mang <b>số chẵn</b>',say:'Câu những con cá mang số chẵn.',item:()=>{const v=R(100,9999);return{t:fmt(v),ok:v%2===0}}}),balloon:()=>({rule:'Bắn bóng mang số <b>lớn hơn 50 000</b>',say:'Bắn những quả bóng mang số lớn hơn năm mươi nghìn.',item:()=>{const v=R(30000,70000);return{t:fmt(v),ok:v>50000}}})},
  5:{fish:()=>({rule:`Câu cá mang phân số <b>bằng</b> ${F(1,2)}`,say:'Câu những con cá mang phân số bằng một phần hai.',item:()=>{const d=R(2,9),ok=Math.random()<.45;return ok?{t:F(d,2*d),ok:true}:{t:F(R(1,d),2*d+pick([1,-1,2])),ok:false}}}),balloon:()=>({rule:'Bắn bóng mang <b>phân số thập phân</b>',say:'Bắn những quả bóng mang phân số thập phân.',item:()=>{const ok=Math.random()<.45;return ok?{t:F(R(1,99),pick([10,100,1000])),ok:true}:{t:F(R(1,9),pick([3,4,5,6,7,8,20,25])),ok:false}}})},
 };
-let mgLoop=null;
-function startMini(mode){const g=curG(),r=MG[g][mode]();try{speechSynthesis.cancel()}catch(e){}go({k:'mini',mode,rule:r.rule,say:r.say,score:0,lives:3,t:45,end:false,started:false});scr._r=r;}
-function viewMini(){const g=scr,st=S.st[sid],key=`${curG()}:${g.mode}`,best=(st.mg||{})[key]||0;
-  if(g.end)return`<div class="game g1"><div class="gend"><div class="bigicon">${spr(g.mode==='fish'?'fish':'balloon',80)}</div><h1>${g.score>=best&&g.score?'Kỷ lục mới!':'Hết giờ!'}</h1><p class="muted">Em ${g.mode==='fish'?'câu':'bắn'} đúng <b>${g.score}</b> lần · kỷ lục ${Math.max(best,g.score)}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="startMini('${g.mode}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`;
-  return`<div class="game g1 mini"><div class="gtop"><button class="gx" onclick="stopMini();go({k:'home'})" aria-label="Thoát">✕</button><span class="mgsc">${spr('star',22)} <b id="mgs">${g.score}</b></span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="mgt">${g.t}</b></span><span class="hearts" id="mgl">${[0,1,2].map(i=>spr(i<g.lives?'heart':'heartE',18)).join(' ')}</span></div>
-   <div class="mgrule"><span>${g.rule}</span><button class="g1spk" type="button" onclick="sayJ(scr.say)" aria-label="Nghe lại">🔊</button></div>
-   <div class="mgf ${g.mode}" id="mgf"></div></div>`}
-function stopMini(){if(mgLoop){cancelAnimationFrame(mgLoop.raf);clearInterval(mgLoop.tick);mgLoop=null}}
-function miniAfterRender(){if(scr.k!=='mini'||scr.end||scr.started)return;scr.started=true;stopMini();const f=document.getElementById('mgf');if(!f)return;sayJ(scr.say);
-  const items=[];let last=0,spawnGap=1100;const W=()=>f.clientWidth,H=()=>f.clientHeight,fish=scr.mode==='fish';
-  const spawn=()=>{const it=scr._r.item(),el=document.createElement('button');el.type='button';el.className='mgi '+(fish?'fishi':'balloi');el.innerHTML=`<span class="mgt">${it.t}</span>`;const sp=(fish?60:50)+Math.random()*40+(45-scr.t)*1.4;const o={el,ok:it.ok,x:fish?-130:R(10,Math.max(20,W()-120)),y:fish?R(10,Math.max(20,H()-70)):H()+10,v:sp,dead:false};
-    el.addEventListener('pointerdown',e=>{e.preventDefault();if(o.dead)return;o.dead=true;if(o.ok){scr.score++;sfx('ok');el.classList.add('pop');document.getElementById('mgs').textContent=scr.score}else{scr.lives--;sfx('bad');el.classList.add('wrong');const l=document.getElementById('mgl');if(l)l.innerHTML=[0,1,2].map(i=>`<span class="${i<scr.lives?'':'lost'}">${spr('heart',18)}</span>`).join('');if(scr.lives<=0)endMini()}setTimeout(()=>el.remove(),300)});
-    f.appendChild(el);items.push(o)};
-  let prev=performance.now();
-  const step=ts=>{if(!mgLoop)return;const dt=Math.min(.05,(ts-prev)/1000);prev=ts;if(ts-last>spawnGap){spawn();last=ts;spawnGap=Math.max(650,spawnGap-12)}
-    items.forEach(o=>{if(o.dead&&!o.el.isConnected)return;if(fish)o.x+=o.v*dt;else o.y-=o.v*dt;o.el.style.transform=`translate(${o.x}px,${o.y}px)`;if((fish&&o.x>W()+20)||(!fish&&o.y<-90)){o.dead=true;o.el.remove()}});
-    mgLoop.raf=requestAnimationFrame(step)};
-  mgLoop={raf:requestAnimationFrame(step),tick:setInterval(()=>{scr.t--;const e=document.getElementById('mgt');if(e)e.textContent=scr.t;if(scr.t<=0)endMini()},1000)}}
-function endMini(){if(scr.k!=='mini'||scr.end)return;stopMini();const st=S.st[sid];st.mg=st.mg||{};const key=`${curG()}:${scr.mode}`;scr.coins=addCoins(sid,Math.min(20,scr.score),'self');st.mg[key]=Math.max(st.mg[key]||0,scr.score);scr.end=true;log(sid,'passed',`Trò chơi ${scr.mode==='fish'?'Câu cá':'Bóng bay'} · lớp ${curG()}`,0,{success:true,score:{raw:scr.score}});sfx('win');sayJ(`Em được ${scr.score} điểm!`);save();render()}
+globalThis.mgLoop=null;
+export function stopMini(){if(mgLoop){cancelAnimationFrame(mgLoop.raf);clearInterval(mgLoop.tick);mgLoop=null}}
 /* ---- câu hỏi lấy từ các đảo đã mở của chủ đề hiện tại ---- */
 function openGens(st){const out=[];PI().forEach((x,k)=>{if(open1(st,k))x.lv.slice(0,2).forEach((gs,L)=>gs.forEach((gn,gi)=>out.push([x,L,gi])))});return out.length?out:[[PI()[0],0,0]]}
-function mkQ([x,L,gi]){const q=x.lv[L][gi]();return{...q,src:[x.id,L,gi],key:`${x.id}:${L}:${gi}`,label:q.kind||'Câu hỏi'}}
+export function mkQ([x,L,gi]){const q=x.lv[L][gi]();return{...q,src:[x.id,L,gi],key:`${x.id}:${L}:${gi}`,label:q.kind||'Câu hỏi'}}
 /* ---- Đua giờ 60 giây ---- */
-let raceTick=null;
-function startRace(){const st=S.st[sid],pool=openGens(st);clearInterval(raceTick);v1Said='';go({k:'game',g1:1,race:1,pool,qs:[mkQ(pick(pool))],j:0,hearts:3,ok:0,bad:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,t:60,inp:'',t0:Date.now(),started:false})}
-function raceAfterRender(){if(scr.k!=='game'||!scr.race||scr.end||scr.started)return;scr.started=true;clearInterval(raceTick);raceTick=setInterval(()=>{scr.t--;const e=document.getElementById('rtime');if(e)e.textContent=scr.t;if(scr.t>0&&scr.t<=10)sfx(scr.t%2?'tick':'tock');if(scr.t<=0){clearInterval(raceTick);endRace()}},1000)}
-function raceAns(ok){const g=scr;if(ok){g.ok++;sfx('ok')}else{g.bad++;sfx('bad')}g.flash=ok?'ok':'bad';const q=mkQ(pick(g.pool));g.qs.push(q);g.j++;g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;g.inp='';render();if(curG()<=2)setTimeout(()=>{if(scr.race&&!scr.end)sayJ(sayFull(q1().say,q1().q))},150)}
-function endRace(){const g=scr,st=S.st[sid];if(!g.race||g.end)return;g.end=true;st.race=st.race||{};const key='g'+curG();g.prev=st.race[key]||0;st.race[key]=Math.max(g.prev,g.ok);g.coins=addCoins(sid,Math.min(20,g.ok*2),'self');log(sid,'passed',`Đua giờ 60 giây · lớp ${curG()}`,0,{success:true,score:{raw:g.ok}});sfx('win');sayJ(`Hết giờ! Em làm đúng ${g.ok} câu.`);save();render()}
-function raceBoard(){const g=curG();return STUDENTS.filter(s=>s[2]===g).map(([id,n])=>[n.split(' ').pop(),(S.st[id].race||{})['g'+g]||0,id]).sort((a,b)=>b[1]-a[1])}
+globalThis.raceTick=null;
+export function raceAfterRender(...a){return hooks.goi('raceAfterRender',this,a)}
+hooks.ham('raceAfterRender',function(){if(scr.k!=='game'||!scr.race||scr.end||scr.started)return;scr.started=true;clearInterval(raceTick);raceTick=setInterval(()=>{scr.t--;const e=document.getElementById('rtime');if(e)e.textContent=scr.t;if(scr.t>0&&scr.t<=10)sfx(scr.t%2?'tick':'tock');if(scr.t<=0){clearInterval(raceTick);endRace()}},1000)});
+export function raceAns(...a){return hooks.goi('raceAns',this,a)}
+hooks.ham('raceAns',function(ok){const g=scr;if(ok){g.ok++;sfx('ok')}else{g.bad++;sfx('bad')}g.flash=ok?'ok':'bad';const q=mkQ(pick(g.pool));g.qs.push(q);g.j++;g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;g.inp='';render();if(curG()<=2)setTimeout(()=>{if(scr.race&&!scr.end)sayJ(sayFull(q1().say,q1().q))},150)});
 /* ---- Kho báu trên biển (mỗi ngày 3 lần) ---- */
-const TRE={bottle:['bottle','Chai thư','+5 xu, có thể có thẻ sưu tập'],whale:['whale2','Cá voi vàng','+10 xu'],chest:['chest','Rương nổi','chắc chắn có thẻ sưu tập']};
-function treLeft(st){st.tre=st.tre||{};return Math.max(0,3-(st.tre[S.day]||0))}
+export const TRE={bottle:['bottle','Chai thư','+5 xu, có thể có thẻ sưu tập'],whale:['whale2','Cá voi vàng','+10 xu'],chest:['chest','Rương nổi','chắc chắn có thẻ sưu tập']};
+export function treLeft(st){st.tre=st.tre||{};return Math.max(0,3-(st.tre[S.day]||0))}
 function treKinds(){const r=[];let s=S.day*7+curG();for(let i=0;i<3;i++){s=(s*9301+49297)%233280;r.push(['bottle','whale','bottle','chest'][s%4])}return r}
-function treOverlay(st,pts){const left=treLeft(st),ks=treKinds().slice(3-left);return ks.map((k,i)=>{const p=pts[Math.min(pts.length-1,i*3+1)]||pts[0];return`<button class="tre" type="button" style="left:${p[0]+40}px;top:${i%2?210:8}px;animation-delay:${i*.7}s" onclick="startTre('${k}')" aria-label="${TRE[k][1]}: chạm để mở">${spr(TRE[k][0],k==='whale'?30:28)}<i>!</i></button>`}).join('')}
+export function treOverlay(st,pts){const left=treLeft(st),ks=treKinds().slice(3-left);return ks.map((k,i)=>{const p=pts[Math.min(pts.length-1,i*3+1)]||pts[0];return`<button class="tre" type="button" style="left:${p[0]+40}px;top:${i%2?210:8}px;animation-delay:${i*.7}s" onclick="startTre('${k}')" aria-label="${TRE[k][1]}: chạm để mở">${spr(TRE[k][0],k==='whale'?30:28)}<i>!</i></button>`}).join('')}
 function startTre(kind){const st=S.st[sid];if(!treLeft(st)){toast('Hôm nay em đã nhặt hết kho báu. Mai quay lại nhé!');return}st.tre[S.day]=(st.tre[S.day]||0)+1;save();v1Said='';go({k:'game',g1:1,tre:kind,qs:[mkQ(pick(openGens(st)))],j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,inp:'',t0:Date.now()});sayJ(`${TRE[kind][1]}! Trả lời đúng để nhận quà nhé.`)}
 /* ---- Bộ sưu tập ---- */
-const CREAT=[['fish','Cá Xanh'],['crab','Cua Đỏ'],['jelly','Sứa Hồng'],['octo','Bạch Tuộc Tím'],['turtle','Rùa Biển'],['shark','Cá Mập Con'],['squid','Mực Lửa'],['snake','Rắn Biển'],['chick','Gà Lạc Đảo'],['bug','Bọ Rùa Bay'],['cat','Mèo Thủy Thủ'],['whale2','Cá Voi Vàng'],['dragon','Rồng Biển'],['star','Sao Biển Vàng']];
+export const CREAT=[['fish','Cá Xanh'],['crab','Cua Đỏ'],['jelly','Sứa Hồng'],['octo','Bạch Tuộc Tím'],['turtle','Rùa Biển'],['shark','Cá Mập Con'],['squid','Mực Lửa'],['snake','Rắn Biển'],['chick','Gà Lạc Đảo'],['bug','Bọ Rùa Bay'],['cat','Mèo Thủy Thủ'],['whale2','Cá Voi Vàng'],['dragon','Rồng Biển'],['star','Sao Biển Vàng']];
 const RARE=['whale2','dragon','star'];
-function giveCard(st,id){st.cards=st.cards||{};st.cards[id]=(st.cards[id]||0)+1;return CREAT.find(c=>c[0]===id)}
-function randCommon(){return pick(CREAT.filter(c=>!RARE.includes(c[0])))[0]}
-function viewAlbum(st){const c=st.cards||{},own=CREAT.filter(x=>c[x[0]]).length;
+export function giveCard(st,id){st.cards=st.cards||{};st.cards[id]=(st.cards[id]||0)+1;return CREAT.find(c=>c[0]===id)}
+export function randCommon(){return pick(CREAT.filter(c=>!RARE.includes(c[0])))[0]}
+export function viewAlbum(...a){return hooks.goi('viewAlbum',this,a)}
+hooks.ham('viewAlbum',function(st){const c=st.cards||{},own=CREAT.filter(x=>c[x[0]]).length;
   return`<div class="grid"><section class="card"><div class="secthead"><h2>📖 Bộ sưu tập sinh vật biển</h2><span class="grow"></span><span class="pill ${own===CREAT.length?'ok':'acc'}">${own}/${CREAT.length}</span></div>
    <p class="muted" style="margin:4px 0 12px">Mỗi đảo có một thẻ sinh vật: cả lớp hạ trùm lớp của đảo là mỗi em nhận thẻ. Kho báu trên biển cũng có thể cho thẻ. Thẻ viền vàng là thẻ hiếm.</p>
-   <div class="album">${CREAT.map(([s,n])=>`<div class="ccard ${c[s]?'own':''} ${RARE.includes(s)?'rare':''}">${spr(s,48)}<b>${c[s]?esc(n):'???'}</b>${c[s]>1?`<i>×${c[s]}</i>`:''}</div>`).join('')}</div></section></div>`}
+   <div class="album">${CREAT.map(([s,n])=>`<div class="ccard ${c[s]?'own':''} ${RARE.includes(s)?'rare':''}">${spr(s,48)}<b>${c[s]?esc(n):'???'}</b>${c[s]>1?`<i>×${c[s]}</i>`:''}</div>`).join('')}</div></section></div>`});
 /* ---- Trùm lớp hằng tuần ---- */
 function cb(g){S.cb=S.cb||{};return S.cb[g]}
 function openCB(g){const n=STUDENTS.filter(s=>s[2]===g).length;const b=PRIM[g].boss[0];S.cb=S.cb||{};S.cb[g]={on:true,spr:'octo',name:'Bạch tuộc khổng lồ',max:n*20,hp:n*20,hits:{},won:false,claimed:{},day:S.day};log('gv','assigned',`Trùm lớp tuần · lớp ${g}`,0,{});save();render();toast('Đã mở trùm lớp tuần này')}
-function startCB(){const st=S.st[sid],b=cb(curG());if(!b||!b.on||b.won)return;const pool=openGens(st);v1Said='';go({k:'game',g1:1,cbo:1,qs:Array.from({length:5},()=>mkQ(pick(pool))),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,inp:'',hp:b.hp,t0:Date.now()})}
-function cbCard(st){const b=cb(curG());if(!b||!b.on)return'';if(b.won){if(!b.claimed[sid]){b.claimed[sid]=1;st.coins+=30;giveCard(st,'dragon');save();toast('Cả lớp đã hạ trùm! Em nhận 30 xu và thẻ Rồng Biển.')}return`<div class="pxq" style="--pq:#2AB563;--pq2:#1E8A4A"><span class="pxq-ic">${spr('medG',38)}</span><span class="pxq-tx"><b>Cả lớp đã hạ trùm!</b><span>Mỗi bạn nhận 30 xu và thẻ hiếm Rồng Biển</span></span></div>`}
-  const mine=b.hits[sid]||0;return`<button class="pxq storm" onclick="startCB()"><span class="pxq-ic">${spr(b.spr,40)}</span><span class="pxq-tx"><b>Trùm lớp: ${esc(b.name)}</b><span class="cbbar"><i style="width:${b.hp/b.max*100}%"></i></span><span>Còn ${b.hp}/${b.max} máu · em đã đánh ${mine} đòn</span></span><span class="pxq-go">Góp sức ▶</span></button>`}
-function gvCB(){if(gvGrade>5)return'';const b=cb(gvGrade),cls=gvCLS();
-  return`<section class="card"><div class="secthead"><h2>Trùm lớp tuần</h2><span class="grow"></span>${b&&b.on?`<span class="pill ${b.won?'ok':'warn'}">${b.won?'Đã hạ':'Đang đánh'}</span>`:''}</div>
-   ${b&&b.on?`<p class="muted" style="margin:4px 0 8px">${esc(b.name)} · còn ${b.hp}/${b.max} máu. Mỗi câu đúng của học sinh trừ 1 máu.</p><div class="cbbar big"><i style="width:${b.hp/b.max*100}%"></i></div><div class="row" style="gap:6px;margin-top:10px">${cls.map(([id,n])=>`<span class="pill">${esc(n.split(' ').pop())}: ${b.hits[id]||0} đòn</span>`).join('')}</div>`:'<p class="muted" style="margin:4px 0 0">Cả lớp cùng góp sức hạ một trùm lớn trong tuần. Hạ được thì mọi em nhận thưởng.</p>'}
-   <button class="btn sm ${b&&b.on&&!b.won?'':'pri'}" type="button" style="margin-top:10px" onclick="openCB(${gvGrade})">${b&&b.on?'Mở trùm mới':'Mở trùm tuần này'}</button></section>`}
 /* ---- kết thúc các chế độ phụ ---- */
-function endExtra(){const g=scr,st=S.st[sid];g.end=true;
-  if(g.tre){const ok=g.ok>0;g.reward='';if(ok){if(g.tre==='whale'){st.coins+=10;g.reward='+10 xu'}else if(g.tre==='chest'){const c=giveCard(st,Math.random()<.25?'star':randCommon());g.card=c;g.reward='Thẻ mới: '+c[1]}else{st.coins+=5;g.reward='+5 xu';if(Math.random()<.4){const c=giveCard(st,randCommon());g.card=c;g.reward+=' · thẻ '+c[1]}}sfx('win');sayJ('Em nhận được quà rồi!')}else{sfx('bad');sayJ('Tiếc quá! Mai em lại săn kho báu nhé.')}log(sid,ok?'passed':'failed',`Kho báu biển · lớp ${curG()}`,0,{success:ok})}
-  if(g.cbo){const b=cb(curG());g.won=b&&b.won;sfx('win');log(sid,'passed',`Trùm lớp · lớp ${curG()}`,0,{success:true,score:{raw:g.ok}})}
-  save();render()}
-function viewEndExtra(){const g=scr,st=S.st[sid];
-  if(g.race){const bd=raceBoard();return`<div class="game g1"><div class="gend"><div class="bigicon">${spr('clock',80)}</div><h1>${g.ok>g.prev?'Kỷ lục mới!':'Hết giờ!'}</h1><p class="muted">Đúng <b>${g.ok}</b> câu, sai ${g.bad} câu trong 60 giây${g.coins?` · +${g.coins} xu`:''}</p>
-    <div class="board">${bd.map(([n,v,id],i)=>`<div class="${id===sid?'me':''}"><span>${i+1}</span><b>${esc(n)}</b><em>${v}</em></div>`).join('')}</div>
-    <div class="gendbtn"><button class="gobtn" type="button" onclick="startRace()">Đua lại</button><button class="gobtn ghost" type="button" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`}
-  if(g.tre)return`<div class="game g1"><div class="gend"><div class="bigicon">${g.card?spr(g.card[0],84):spr(TRE[g.tre][0],84)}</div><h1>${g.ok?'Mở được kho báu!':'Kho báu trôi mất rồi'}</h1>${g.ok?`<p class="earn">${esc(g.reward)}</p>`:`<p class="muted">Đáp án đúng: ${q1().sol}</p>`}<p class="muted">Hôm nay còn ${treLeft(st)} kho báu trên biển.</p><div class="gendbtn"><button class="gobtn" type="button" onclick="go({k:'home'})">Về biển</button>${g.card?`<button class="gobtn ghost" type="button" onclick="go({k:'home',tab:'album'})">Xem bộ sưu tập</button>`:''}</div></div></div>`;
-  const b=cb(curG());return`<div class="game g1"><div class="gend"><div class="bigicon">${spr(b?b.spr:'octo',84)}</div><h1>${b&&b.won?'Cả lớp hạ được trùm!':'Em đã góp sức!'}</h1><p class="muted">Em đánh trúng <b>${g.ok}</b> đòn. Trùm còn ${b?b.hp:0}/${b?b.max:0} máu.</p>${b&&b.won?'<p class="earn">+30 xu · thẻ Rồng Biển</p>':''}<div class="gendbtn"><button class="gobtn" type="button" onclick="go({k:'home'})">Về bản đồ</button></div></div></div>`}
 

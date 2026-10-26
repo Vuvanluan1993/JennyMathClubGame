@@ -3,6 +3,10 @@
    - cmp: so sánh số — bảng hàng (nghìn, trăm, chục, đơn vị), so từ hàng cao; số ≤ 99 có thêm que chục, khối đơn vị.
    - mul: bảng nhân, bảng chia — hàng kẹo bằng nhau, đếm thêm theo từng hàng.
    Bật/tắt từng dạng bằng .on trong GD_EXT. */
+import { hooks } from './00-hooks.js';
+import { fmt } from './01-tien-ich.js';
+import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { GD_EXT, GD_NUM, gdEq, gdN, gdOpts, gdTxt } from './40-huong-dan-khi-sai.js';
 const GD_PL=['đơn vị','chục','trăm','nghìn','chục nghìn'],GD_PLS=['Đ','C','Tr','N','CN'];
 const gdDig=n=>String(n).split('').reverse().map(Number);
 /* ---------- đặt tính ---------- */
@@ -12,13 +16,14 @@ function gdColGrid(o){/* o:{a,b,op,res:[digits shown by place or null], carry:{p
  if(o.op!=='−')h+=`<div class="gcr gcc"><b class="gco"></b>${Array.from({length:n},(_,k)=>{const p=n-1-k,c=o.carry&&o.carry[p];return`<i class="${p===o.hl?'hl':''}">${c?c:''}</i>`}).join('')}</div>`;
  h+=row(da,'','');h+=row(o.op==='×'?[o.b]:db,o.op,'',true);
  h+=`<div class="gcl"></div>`;h+=row(o.res||[],'','gcres');return h+'</div>'}
-function gdColParse(q){const G=curG();if(G<2||G>4)return null;const pic=String(q.pic||''),t=gdTxt(q.q),s=gdTxt(q.sol);let a,b,op;
+export function gdColParse(...a){return hooks.goi('gdColParse',this,a)}
+hooks.ham('gdColParse',function(q){const G=curG();if(G<2||G>4)return null;const pic=String(q.pic||''),t=gdTxt(q.q),s=gdTxt(q.sol);let a,b,op;
  const m=pic.match(/g1col"><span>([\d  ]+)<\/span><span><em>([+−×])<\/em>([\d  ]+)<\/span>/);
  if(m){a=gdN(m[1]);op=m[2];b=gdN(m[3])}else{const m2=t.match(new RegExp(`^\\s*(${GD_NUM})\\s*([+−×])\\s*(${GD_NUM})\\s*=\\s*\\?\\s*$`));if(!m2||!/nhớ|đặt tính|Nhân số có/i.test((q.kind||'')+s))return null;a=gdN(m2[1]);op=m2[2];b=gdN(m2[3])}
  if(!(a>=0&&b>=0)||!Number.isInteger(a)||!Number.isInteger(b))return null;const r=op==='+'?a+b:op==='−'?a-b:a*b;if(r<0||String(Math.max(a,r)).length>5)return null;
  if(op==='×'&&b>9)return null;if(Number(q.type==='num'?q.a:NaN)!==r&&q.type==='num')return null;
  /* chỉ khi thật sự có nhớ */const da=gdDig(a),db=gdDig(b);let carry=0,has=false;for(let p=0;p<Math.max(da.length,db.length);p++){const x=da[p]||0,y=op==='×'?(p===0?b:0):(db[p]||0);if(op==='+'){if(x+y+carry>9)has=true;carry=x+y+carry>9?1:0}else if(op==='−'){if(x<y+carry)has=true;carry=x<y+carry?1:0}else{if(x*b+carry>9)has=true;carry=Math.floor((x*b+carry)/10)}}
- if(!has)return null;return{a,b,op,r}}
+ if(!has)return null;return{a,b,op,r}});
 function gdFramesCol(k){const F=[],{a,b,op,r}=k,da=gdDig(a),db=op==='×'?[b]:gdDig(b),dr=gdDig(r),n=Math.max(da.length,op==='×'?1:db.length,dr.length),res=[],carry={},borrow={};
  const opw={'+':'cộng','−':'trừ','×':'nhân'}[op],grid=(hl)=>gdColGrid({a,b,op,n,res:res.slice(),carry:{...carry},borrow:{...borrow},hl});
  F.push({h:grid(-1)+gdEq(`${fmt(a)} ${op} ${fmt(b)} = ?`),say:op==='×'?`Đặt tính: viết thừa số ${b} thẳng cột với hàng đơn vị. Nhân lần lượt từ phải sang trái.`:`Đặt tính: các hàng thẳng cột với nhau. Tính từ phải sang trái, bắt đầu từ hàng đơn vị.`,dur:3200});

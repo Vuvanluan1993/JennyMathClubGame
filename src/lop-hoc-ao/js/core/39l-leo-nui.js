@@ -5,6 +5,28 @@
    Sai 2 lần: Jenny ngồi nghỉ ở trại, hiện đáp án đúng và lời giải ngắn, sang bài khác (không mất chặng nào).
    Lên đỉnh: mở rương (vàng, đá quý, huy hiệu "Nhà leo núi"), pháo giấy. 300 giây. Không có tim.
    Nội dung: bài toán lời văn của chính đảo, thiếu thì lấy của 1–4 đảo trước (cùng lớp), luôn lọc theo kiến thức đã học (39e). */
+import { hooks } from './00-hooks.js';
+import { pick } from './01-tien-ich.js';
+import { save } from './09-du-lieu-demo.js';
+import { log } from './10-su-kien-mau-xapi.js';
+import { addCoins } from './11-sao-va-mo-khoa.js';
+import { go, render } from './13-giao-dien-chung.js';
+import { shuf } from './21-lop-6-che-do-tro-choi.js';
+import { pixelize, PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { pxCanvas } from './23-bien-pixel-dong-phia-sau-ban-do.js';
+import { isl1, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { fN } from '../content/hk1/28-chu-de-3-lop-1-5.js';
+import { mkQ } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
+import { islPool } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
+import { sfx } from './33b-am-thanh.js';
+import { jenny } from './33d-jenny-bieu-cam.js';
+import { jOutfit, ofVariant } from './33e-ho-chieu.js';
+import { stopXG, XGN, xgRec, xgTxt } from './37-tro-choi-dot-1.js';
+import { xgTxt2 } from './38-tro-choi-dot-2.js';
+import { frogQ, xcv, xgGr, xpx } from './39-tro-choi-dot-3.js';
+import { XG_ALL } from './39c-can-bang-tro-choi.js';
+import { ktClean, ktOf, ktPrev, ktViol, XG_BIAS } from './39e-kien-thuc-tro-choi.js';
 PXS.climbI=["........r.......","........rr......","........rrr.....","........k.......",".......kek......","......kewek.....",".....kemwwek....","....kemmeeeek...","...kemmmmmmeek..","..kEmmmEmmmmmek.",".kEEmmEEEmmmmmek","kEEEEEEEEEEEEEEk","kkkkkkkkkkkkkkkk"];
 PXS.climbChest=["..kkkkkkkk..",".kaaaaaaaak.","kaTTTTTTTTak","kkkkkkkkkkkk","kaaaayyaaaak","kTTTykkyTTTk","kaaaayyaaaak","kTTTTTTTTTTk","kkkkkkkkkkkk"];
 PXS.climbBadge=[".kr.....bk..",".krr...bbk..","..krr.bbk...","...krbbk....","...kkkkkk...","..kaaaaaak..",".kayywyyyak.",".kaywwwyyak.","kaywwwwwyyak",".kayywwyyak.",".kaywyywyak.","..kaaaaaak..","...kkkkkk..."];
@@ -12,7 +34,7 @@ Object.assign(XGN,{climb:['climbI','Leo núi tìm kho báu','Giải bài toán l
 if(!XG_ALL.includes('climb'))XG_ALL.push('climb');
 
 /* ---------- nội dung: bài toán lời văn ---------- */
-const CLIMB_N=5,CLIMB_T=300;
+export const CLIMB_N=5,CLIMB_T=300;
 function climbIsWord(q){if(!q||!(q.type==='num'||q.type==='opt'))return false;if(q.type==='opt'&&!(q.opts&&q.opts[q.a]))return false;
   const t=ktClean(q.q);if(t.length<26||!/\d/.test(t))return false;
   if(/lời văn|bài toán|hơn, kém|bài toán/i.test(q.kind||'')&&/[?.]/.test(t))return true;
@@ -29,29 +51,30 @@ function climbFromQ(q,K){if(!climbIsWord(q))return null;let opts,a;
   else{const c=q.opts[q.a].h,others=shuf(q.opts.filter((_,i)=>i!==q.a)).slice(0,3).map(o=>o.h);const all=shuf([c,...others]);opts=all;a=all.indexOf(c)}
   const pic=q.pic?String(q.pic):'';
   return{t:String(q.q).replace(/<svg[\s\S]*?<\/svg>/gi,''),pic,opts,a,q,sol:String(q.sol||'')}}
-function climbQ(x,seen){const K=ktOf(x),G=xgGr(x);seen=seen||new Set();
+function climbQ(...a){return hooks.goi('climbQ',this,a)}
+hooks.ham('climbQ',function(x,seen){const K=ktOf(x),G=xgGr(x);seen=seen||new Set();
   for(const y of [x,...ktPrev(x,4)]){const pool=islPool(y);for(let i=0;i<60&&pool.length;i++){let q;try{q=mkQ(pick(pool))}catch(e){continue}
     const f=climbFromQ(q,K);if(!f)continue;const key=ktClean(f.t);if(seen.has(key))continue;
     if(ktViol(K,f.t+' | '+f.opts.join(' | ')).length)continue;seen.add(key);return f}}
-  const f=frogQ(x);return{t:f.t,pic:'',opts:f.opts,a:f.a,q:f.q,sol:''}}
+  const f=frogQ(x);return{t:f.t,pic:'',opts:f.opts,a:f.a,q:f.q,sol:''}});
 /* có bài lời văn (của đảo hoặc 1–4 đảo trước) trong phạm vi kiến thức? */
 const CLIMB_HAS={},CLIMB_OWN={};
 function climbScan(y,K,n){const pool=islPool(y);let c=0;for(let i=0;i<n&&pool.length;i++){let q;try{q=mkQ(pick(pool))}catch(e){continue}const f=climbFromQ(q,K);if(f&&!ktViol(K,f.t+' | '+f.opts.join(' | ')).length)c++}return c}
 function climbHas(x){if(x.id in CLIMB_HAS)return CLIMB_HAS[x.id];const K=ktOf(x);let ok=false;for(const y of [x,...ktPrev(x,4)]){if(climbScan(y,K,24)>=1){ok=true;break}}return CLIMB_HAS[x.id]=ok}
 function climbOwn(x){if(x.id in CLIMB_OWN)return CLIMB_OWN[x.id];const K=ktOf(x),t=xgTxt2(x);return CLIMB_OWN[x.id]=climbScan(x,K,30)>=3||(/lời văn|bài toán|giải toán/i.test(t)&&climbScan(x,K,30)>=1)}
 /* chọn trò: chỉ cho đảo có bài lời văn; "đúng nội dung" khi chính đảo có nhiều bài lời văn */
-{const _a=ktAllowed;ktAllowed=function(x,mode){if(mode!=='climb')return _a.apply(this,arguments);return climbHas(x)&&_a.call(this,x,'climb')}}
-{const _o=ktOwn;ktOwn=function(x,mode){if(mode!=='climb')return _o.apply(this,arguments);return climbOwn(x)}}
-{const _e=xgElig;xgElig=function(x){const r=_e.apply(this,arguments);if(r&&r.E&&!r.E.includes('climb')&&climbHas(x))r.E.push('climb');return r}}
-{const _s=ktSample;ktSample=function(x,mode,n){if(mode!=='climb')return _s.apply(this,arguments);const out=[],prev=XG_KT;XG_KT=ktOf(x);try{const seen=new Set();for(let i=0;i<(n||5);i++){const f=climbQ(x,seen);out.push(f.t+' | '+f.opts.join(' | '))}}catch(e){out.push('LỖI '+e.message)}XG_KT=prev;return out}}
+{const _a=hooks.cu('ktAllowed');hooks.de('ktAllowed',function(x,mode){if(mode!=='climb')return _a.apply(this,arguments);return climbHas(x)&&_a.call(this,x,'climb')})}
+{const _o=hooks.cu('ktOwn');hooks.de('ktOwn',function(x,mode){if(mode!=='climb')return _o.apply(this,arguments);return climbOwn(x)})}
+{const _e=hooks.cu('xgElig');hooks.de('xgElig',function(x){const r=_e.apply(this,arguments);if(r&&r.E&&!r.E.includes('climb')&&climbHas(x))r.E.push('climb');return r})}
+{const _s=hooks.cu('ktSample');hooks.de('ktSample',function(x,mode,n){if(mode!=='climb')return _s.apply(this,arguments);const out=[],prev=XG_KT;XG_KT=ktOf(x);try{const seen=new Set();for(let i=0;i<(n||5);i++){const f=climbQ(x,seen);out.push(f.t+' | '+f.opts.join(' | '))}}catch(e){out.push('LỖI '+e.message)}XG_KT=prev;return out})}
 XG_BIAS.climb={1:-4,2:-8,3:-6,4:-6,5:-8};
 
 /* ---------- bắt đầu ---------- */
-{const _s=startXG;startXG=function(mode,id){if(mode!=='climb')return _s.apply(this,arguments);try{speechSynthesis.cancel()}catch(e){}const x=isl1(id);XG_KT=x?ktOf(x):null;
+{const _s=hooks.cu('startXG');hooks.de('startXG',function(mode,id){if(mode!=='climb')return _s.apply(this,arguments);try{speechSynthesis.cancel()}catch(e){}const x=isl1(id);XG_KT=x?ktOf(x):null;
   const seen=new Set();go({k:'xg',mode:'climb',id,score:0,stage:0,lives:3,end:false,started:false,t:CLIMB_T,ph:'ask',pt:0,seen,q:x?climbQ(x,seen):null,tries:0,bad:[],rest:0,miss:0,
-    say:'Leo núi tìm kho báu! Mỗi bài toán em giải đúng, Jenny leo lên một chặng. Leo đủ sáu chặng là tới đỉnh mở rương báu nhé.'})}}
+    say:'Leo núi tìm kho báu! Mỗi bài toán em giải đúng, Jenny leo lên một chặng. Leo đủ sáu chặng là tới đỉnh mở rương báu nhé.'})})}
 /* ---------- màn hình ---------- */
-{const _v=viewXG;viewXG=function(){const g=scr;if(g.mode!=='climb')return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:climb`]||0,g.score);
+{const _v=hooks.cu('viewXG');hooks.de('viewXG',function(){const g=scr;if(g.mode!=='climb')return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:climb`]||0,g.score);
   if(g.end){const rec=g.score>(g.prev||0)&&g.score>0;
     return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr(g.win?'climbChest':'climbI',72)}</span>${jenny(72,g.score?'cheer':'sad')}</div><h1>${g.win?'Tới đỉnh núi rồi!':rec?'Kỷ lục mới!':'Hết giờ!'}</h1>
      <p class="muted">Leo được <b>${g.score}</b>/${CLIMB_N} chặng · kỷ lục ${best}</p>${g.win?`<div class="xcbadge">${spr('climbBadge',48)}<span><b>Huy hiệu Nhà leo núi</b><small>Em đã giải 6 bài toán lời văn!</small></span></div>`:''}${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}
@@ -59,7 +82,7 @@ XG_BIAS.climb={1:-4,2:-8,3:-6,4:-6,5:-8};
   return`<div class="game g1 mini xg xclimb"><div class="gtop"><button class="gx" onclick="stopXG();go({k:'island',id:'${g.id}'})" aria-label="Thoát">✕</button><span class="mgsc xcflags" id="xcbar" aria-label="Đã leo ${g.score}/${CLIMB_N} chặng">${climbBar(g)}</span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="xctm">${g.t}</b></span></div>
    <div class="mgrule"><span id="xcst">${climbStatus(g)}</span><button class="g1spk" type="button" onclick="climbSpeak()" aria-label="Nghe đọc đề">🔊</button></div>
    <div class="xct" id="xct"><canvas class="xpcv" id="xccv" width="114" height="84" aria-hidden="true"></canvas><span class="xcban" id="xcban"></span></div>
-   <div class="xcq" id="xcq"></div><div id="xgfb" class="xgfb"></div></div>`}}
+   <div class="xcq" id="xcq"></div><div id="xgfb" class="xgfb"></div></div>`})}
 function climbBar(g){return Array.from({length:CLIMB_N},(_,i)=>`<i class="${i<g.score?'on':''}"></i>`).join('')}
 function climbStatus(g){return g.ph==='ask'?(g.tries?'<b>Cẩn thận!</b> Đọc lại đề rồi thử lại nhé':`Giải bài toán để leo <b>chặng ${g.score+1}/${CLIMB_N}</b>`):g.ph==='climb'?'<b>Jenny đang leo…</b>':g.ph==='slip'?'<b>Đá lăn!</b> Cẩn thận!':g.ph==='rest'?'<b>Nghỉ ở trại</b> · xem lời giải':g.ph==='chest'?'<b>Tới đỉnh!</b> Mở rương báu':''}
 const climbSayText=q=>q?(q.q&&q.q.say?q.q.say:xgTxt(q.t)):'';
@@ -171,8 +194,8 @@ function climbGoOn(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end||g.ph!==
 function climbEnd(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end)return;stopXG();const st=S.st[sid];st.mg=st.mg||{};const key=`${g.id}:climb`;g.prev=st.mg[key]||0;st.mg[key]=Math.max(g.prev,g.score);
   g.coins=addCoins(sid,Math.min(20,g.score*3+(g.score>=CLIMB_N?2:0)),'self');g.end=true;g.win=g.score>=CLIMB_N;log(sid,'passed',`Leo núi · ${isl1(g.id).title}`,0,{success:true,score:{raw:g.score}});
   sfx(g.win?'win':'timeup');sayJ(g.win?'Jenny đã lên tới đỉnh núi và mở được rương báu! Em giỏi quá!':`Em đã leo được ${g.score} chặng!`);save();render()}
-{const _ar=xgAfterRender;xgAfterRender=function(){const g=scr;if(g.k==='xg'&&g.mode==='climb'){if(g.end)return;climbUI();climbDraw();if(!g.started){g.started=true;sayJ(g.say);setTimeout(()=>{if(scr===g&&!g.end&&curG()<=2&&g.q&&g.ph==='ask')sayJ(climbSayText(g.q))},5200);climbLoop()}else if(!xgLoop)climbLoop();return}return _ar.apply(this,arguments)}}
-{const _mt=musicTheme;musicTheme=function(){try{if(role==='hs'&&scr.k==='xg'&&scr.mode==='climb')return scr.end?null:'m_snow'}catch(e){}return _mt.apply(this,arguments)}}
+{const _ar=hooks.cu('xgAfterRender');hooks.de('xgAfterRender',function(){const g=scr;if(g.k==='xg'&&g.mode==='climb'){if(g.end)return;climbUI();climbDraw();if(!g.started){g.started=true;sayJ(g.say);setTimeout(()=>{if(scr===g&&!g.end&&curG()<=2&&g.q&&g.ph==='ask')sayJ(climbSayText(g.q))},5200);climbLoop()}else if(!xgLoop)climbLoop();return}return _ar.apply(this,arguments)})}
+{const _mt=hooks.cu('musicTheme');hooks.de('musicTheme',function(){try{if(role==='hs'&&scr.k==='xg'&&scr.mode==='climb')return scr.end?null:'m_snow'}catch(e){}return _mt.apply(this,arguments)})}
 (function(){const st=document.createElement('style');st.textContent=`
 .xclimb .xct{position:relative;width:342px;height:252px;margin:4px auto;border:3px solid #1F2A5A;overflow:hidden}
 .xclimb .xct canvas{position:absolute;inset:0;width:342px;height:252px;image-rendering:pixelated;image-rendering:crisp-edges}

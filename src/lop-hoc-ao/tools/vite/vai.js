@@ -41,7 +41,7 @@ export function hocSinh(t, thu = false) {
     for (let g = 1; g <= 5; g++) for (const suf of ['', '-1', '-2', '-3', '-4', '-5']) { const u = `jenny0${g}${suf}`; acc[u] = { g, h: h(u, 'jenny123') }; }
   }
   // khoá lưu localStorage giữ nguyên (healAll giữ tiến độ): KEY 'jennyHS' → 'jennyHS2_<tk>' trong đoạn đăng nhập bản thử
-  const R = [["const STUDENTS=[", "let STUDENTS=["], ["const ORG_ON=true;", "const ORG_ON=false;"], ["const KEY='jennyVirtualDemo_v10'", "let KEY='jennyHS'"],
+  const R = [["const ORG_ON=true;", "const ORG_ON=false;"], ["globalThis.KEY='jennyVirtualDemo_v10'", "globalThis.KEY='jennyHS'"],
     ['<div class="seg" id="tabs" role="group" aria-label="Chọn vai trò"></div>', '<div class="seg" id="tabs" role="group" aria-label="Chọn vai trò"></div><div class="hsme" id="hsme"></div>']];
   for (const [a, b] of R) t = thay1(t, a, b);
   canCo(t, BOOT);

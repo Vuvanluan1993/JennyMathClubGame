@@ -1,4 +1,6 @@
 /* 39n — Tên chủ đề trên bản đồ: cùng một cỡ chữ cho mọi chủ đề; dòng 1 nằm ngay cạnh nhãn "CHỦ ĐỀ n", tên dài xuống dòng 2 */
+import { hooks } from './00-hooks.js';
+import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 document.head.insertAdjacentHTML('beforeend',`<style>
 .t1sec .secthead{display:block!important}
 .t1sec .secthead .tno{display:inline-block;vertical-align:.18em;margin-right:8px}
@@ -9,7 +11,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 /* tên quá dài (hơn 2 dòng) thì riêng tên đó nhỏ bớt vừa đủ 2 dòng */
 function fitTopicNames(){document.querySelectorAll('.t1sec .secthead h2').forEach(h=>{h.style.fontSize='';const lines=()=>new Set([...h.getClientRects()].map(r=>Math.round(r.top))).size;
   let f=parseFloat(getComputedStyle(h).fontSize);while(lines()>2&&f>16){f-=1;h.style.fontSize=f+'px'}})}
-{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{if(scr.k==='home'){moveTopicStars();fitTopicNames();document.fonts&&document.fonts.ready.then(fitTopicNames)}}catch(e){}return r}}
+{const _a=hooks.cu('g1AfterRender');hooks.de('g1AfterRender',function(){const r=_a.apply(this,arguments);try{if(scr.k==='home'){moveTopicStars();fitTopicNames();document.fonts&&document.fonts.ready.then(fitTopicNames)}}catch(e){}return r})}
 addEventListener('resize',()=>{clearTimeout(fitTopicNames.t);fitTopicNames.t=setTimeout(()=>{try{fitTopicNames()}catch(e){}},120)});
 
 /* dòng 2: [vùng biển] [★ sao]; dòng 3: Bài … · … đảo · trùm … (đủ sao thì nhãn sao xanh lá) */

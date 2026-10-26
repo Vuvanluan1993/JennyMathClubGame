@@ -11,10 +11,15 @@
 - `package.json`: `scripts.build = vite build`, `scripts.dev = vite`.
 - DONE 14a: `npm run build` ra 4 trang chạy y như build cũ (so ảnh chụp + 7 kiểm tra §7); `dist/` có hash tên file; `games/lop-hoc-ao/` không còn trong git (P-02).
 
+⟳ 26/10 (RF2, nhánh `claude/vite-es-module-ed2d3e`, PR vào `tich-hop/kien-truc-2026-10`): 14b **xong phần module + hooks**: 118 file có import/export sinh bởi `tim-import.mjs`; `00-hooks.js` (`ham/goi/de/cu/goc/bo/on/run`), 110 hàm gốc + 243 chỗ đè, 0 `function` trùng tên, 23 trạng thái dùng chung `globalThis.*`; ESLint `no-undef` + `no-import-assign` 0 lỗi; 44 ảnh giống 0,000 %; `npm test` 13/13. Khi chạy vẫn **một script thường** (plugin bỏ import/export rồi nối) — Rollup gộp thật để sang 14c. **Chưa làm:** bỏ `'unsafe-inline'` khỏi `script-src`: còn 520 `onclick="…"` trong chuỗi HTML (244 có `${…}`), phải viết lại thành `data-*` + uỷ quyền sự kiện → tách thành 14c. `document.write` vốn không có. Thêm: vai.js có bản thử (P-07), xoá `_student.py`/`_teacher.py`.
+
 ## 14b — module hoá
 - Thứ tự: `01-tien-ich` → `export`; mọi file `core/*` thêm `import` những gì dùng (script `tools/vite/tim-import.mjs` liệt kê biến toàn cục dùng/định nghĩa mỗi file bằng acorn → sinh dòng import); hàm "đè" (`save`, `render`, `header`… bọc 3–8 lần) đổi thành **chuỗi hook** rõ: `hooks.on('render:after', fn)` trong `core/00-hooks.js`.
 - Bỏ `document.write`, bỏ `'unsafe-inline'` khỏi CSP của trang Lớp học ảo.
-- DONE 14b: `grep -c "^function render\b"` còn 1; không `window.*` ngầm (ESLint `no-undef` xanh); 7 kiểm tra §7 ĐẠT; ảnh chụp giống.
+- DONE 14b: `grep -c "^function render\b"` còn 1; không `window.*` ngầm (ESLint `no-undef` xanh); 7 kiểm tra §7 ĐẠT; ảnh chụp giống. (26/10: đạt, trừ `'unsafe-inline'` → 14c.)
+
+## 14c — gộp thật bằng Rollup, bỏ `'unsafe-inline'` (chưa làm)
+- Viết lại 520 `onclick="…"` (244 có `${…}`) thành `data-act` + một trình uỷ quyền sự kiện (không eval); lớp phơi tên ra `window` cho mã `vai.js` chèn và `page.evaluate`; đổi `hooks.goc` của mã chèn thành module riêng theo vai; sau đó cho Rollup gộp (`format: 'iife'`), bỏ `'unsafe-inline'` khỏi `script-src`, 3 script nhỏ trong `<head>` ra file.
 
 ## Bẫy
 - 24/10 thầy chốt "luôn nền sáng": `data-theme=light` inline script phải thành module `theme.js` chạy **trước** CSS (đặt trong `<head>` với `type=module` không được vì defer → dùng `<script>` nhỏ có hash CSP).

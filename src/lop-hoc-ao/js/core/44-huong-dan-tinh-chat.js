@@ -2,6 +2,8 @@
    - swap: "Biết 1 + 7 = 8. Vậy 7 + 1 = ?" và "a + b = b + ☐" → đổi chỗ các số hạng (thừa số) thì kết quả không đổi.
    - rel:  "Biết 2 × 10 = 20. Vậy 20 : 2 = ?" → từ một phép nhân viết được hai phép chia.
    Đặt trước các dạng khác để không bị nhận nhầm thành bài tính (bàn tay, đếm thêm). */
+import { fmt } from './01-tien-ich.js';
+import { GD_EXT, GD_NUM, gdN, gdOpts, gdTxt } from './40-huong-dan-khi-sai.js';
 const gdChip=(v,c)=>`<b class="gdchip" style="--cc:${c}">${fmt(v)}</b>`;
 const GD_C1='#FCB40C',GD_C2='#3FC1EC',GD_C3='#1E9A52';
 function gdSwapParse(q){const t=gdTxt(q.q),kd=q.kind||'';if(!/giao hoán/i.test(kd)&&!/^Biết/.test(t))return null;const N=GD_NUM;

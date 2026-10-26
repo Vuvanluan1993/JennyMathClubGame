@@ -1,5 +1,24 @@
 /* ===================== LỚP 1 · CHỦ ĐỀ 1: CÁC SỐ TỪ 0 ĐẾN 10 ===================== */
 /* Mỗi tiết trong Vở BT-TH Toán 1 là một đảo. Đề viết lại (đồ vật, bối cảnh, số liệu khác), giữ đúng kiến thức của tiết. */
+import { hooks } from '../../core/00-hooks.js';
+import { esc, fmt, pick, R, range } from '../../core/01-tien-ich.js';
+import { ALLP1, P1BY } from './07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
+import { save } from '../../core/09-du-lieu-demo.js';
+import { log } from '../../core/10-su-kien-mau-xapi.js';
+import { addCoins, p1Stars } from '../../core/11-sao-va-mo-khoa.js';
+import { go, render, toast } from '../../core/13-giao-dien-chung.js';
+import { mist, quest, shuf } from '../../core/21-lop-6-che-do-tro-choi.js';
+import { PXS, pxURI, spr } from '../../core/22-do-hoa-pixel-mau-logo-clb.js';
+import { BIOME, biomeOf, OCEAN } from '../../core/23b-vung-bien.js';
+import { curG, endFix1, endJ1, ju1, mist1Add, needOf, PB, PI, PRIM, PT, QN, qW, viewEnd1b } from '../../core/25-lop-1-so-loi-sai-toan-jenny.js';
+import { vnRead } from './26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { bossOf, PLAY } from './27-chu-de-2-lop-1-5.js';
+import { raceAns, TRE, treOverlay } from '../../core/31-5-tinh-nang-choi-them-tieu-hoc.js';
+import { cbI, endExtra, viewEndExtra } from '../../core/32-tinh-nang-choi-them-dat-trong-tung-dao.js';
+import { duck, hurtFx, sfx } from '../../core/33b-am-thanh.js';
+import { bossHTML } from '../../core/33c-trum-hoat-hinh.js';
+import { jenny, jMood } from '../../core/33d-jenny-bieu-cam.js';
+import { jOutfit, ofVariant } from '../../core/33e-ho-chieu.js';
 Object.assign(PXS,{
  apple:["....kk.gg.","....kNgGg.","..kkkNkkk.",".krrwrrrrk.","krrwrrrrrRk","krrrrrrrrRk","krrrrrrrrRk",".krrrrrrRk.","..kRrrrRk..","...kk.kk..."],
  chick:["...kkkk...","..kyyyyk..",".kyykyyyk.",".kyyyyyykoo",".kyyyyyyk..","kyyayyyyyk.","kyyaayyyak.","kyyyaaayyk.",".kyyyyyyk..","..ko..ok..."],
@@ -14,21 +33,21 @@ Object.assign(PXS,{
  egg:["..kkk..",".kwwwk.","kwwwwek","kwwwwek","kwwwwek",".kweek.","..kkk.."],
 });
 PXS.balloonB=PXS.balloon.map(r=>r.replace(/c/g,'b'));PXS.balloonP=PXS.balloon.map(r=>r.replace(/c/g,'p'));
-const OBJ1=[['apple','quả táo'],['chick','chú gà con'],['balloon','quả bóng bay'],['flower','bông hoa'],['fish','con cá'],['star','ngôi sao'],['carrot','củ cà rốt'],['cup','cái cốc'],['car','chiếc ô tô'],['bug','chú bọ rùa'],['ball','quả bóng'],['egg','quả trứng']];
-const NUMW=['không','một','hai','ba','bốn','năm','sáu','bảy','tám','chín','mười'];
-const pickObj=(not)=>{let o;do{o=pick(OBJ1)}while(not&&not.includes(o[0]));return o};
-const grp=(s,n,sz=40,cls='')=>`<div class="g1grp ${cls}">${n?Array.from({length:n},()=>spr(s,sz)).join(''):'<span class="g1zero">trống</span>'}</div>`;
-const grp2=(s1,a,s2,b,sz=40)=>`<div class="g1grp">${Array.from({length:a},()=>spr(s1,sz)).join('')}${Array.from({length:b},()=>spr(s2,sz,'g1b')).join('')}</div>`;
+export const OBJ1=[['apple','quả táo'],['chick','chú gà con'],['balloon','quả bóng bay'],['flower','bông hoa'],['fish','con cá'],['star','ngôi sao'],['carrot','củ cà rốt'],['cup','cái cốc'],['car','chiếc ô tô'],['bug','chú bọ rùa'],['ball','quả bóng'],['egg','quả trứng']];
+export const NUMW=['không','một','hai','ba','bốn','năm','sáu','bảy','tám','chín','mười'];
+export const pickObj=(not)=>{let o;do{o=pick(OBJ1)}while(not&&not.includes(o[0]));return o};
+export const grp=(s,n,sz=40,cls='')=>`<div class="g1grp ${cls}">${n?Array.from({length:n},()=>spr(s,sz)).join(''):'<span class="g1zero">trống</span>'}</div>`;
+export const grp2=(s1,a,s2,b,sz=40)=>`<div class="g1grp">${Array.from({length:a},()=>spr(s1,sz)).join('')}${Array.from({length:b},()=>spr(s2,sz,'g1b')).join('')}</div>`;
 /* hai hàng ghép đôi: mỗi đồ vật nằm trong một ô cùng bề rộng để thẳng cột, cả khung vừa màn hình 360px */
 const pxAsp=s=>{try{const u=pxURI(s);return u.w/u.h}catch(e){return 1}};
 const fitH=(s,cw,maxH)=>Math.max(14,Math.min(maxH,Math.floor((cw-6)/Math.max(1,pxAsp(s)))));
-const rowPair=(s1,a,s2,b)=>{const n=Math.max(a,b,1),cw=Math.min(52,Math.floor(286/n)),h1=fitH(s1,cw,36),h2=fitH(s2,cw,36),cell=(s,h)=>`<span class="g1cell" style="width:${cw}px">${spr(s,h)}</span>`;
+export const rowPair=(s1,a,s2,b)=>{const n=Math.max(a,b,1),cw=Math.min(52,Math.floor(286/n)),h1=fitH(s1,cw,36),h2=fitH(s2,cw,36),cell=(s,h)=>`<span class="g1cell" style="width:${cw}px">${spr(s,h)}</span>`;
  return`<div class="g1rows"><div class="g1row">${Array.from({length:a},()=>cell(s1,h1)).join('')}</div><div class="g1row">${Array.from({length:b},()=>cell(s2,h2)).join('')}</div></div>`};
-const near=(n,lo,hi,k=3)=>{const s=new Set([n]);let d=1;while(s.size<k){[n-d,n+d].forEach(v=>{if(s.size<k&&v>=lo&&v<=hi)s.add(v)});d++;if(d>12)break}return shuf([...s])};
-const optN=(n,lo,hi,k=3)=>{const o=near(n,lo,hi,k);return{opts:o.map(v=>({h:String(v),v})),a:o.indexOf(n)}};
-const dice=n=>{const P={0:[],1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};return`<span class="g1dice">${range(0,8).map(i=>`<i class="${(P[n]||[]).includes(i)?'on':''}"></i>`).join('')}</span>`};
+export const near=(n,lo,hi,k=3)=>{const s=new Set([n]);let d=1;while(s.size<k){[n-d,n+d].forEach(v=>{if(s.size<k&&v>=lo&&v<=hi)s.add(v)});d++;if(d>12)break}return shuf([...s])};
+export const optN=(n,lo,hi,k=3)=>{const o=near(n,lo,hi,k);return{opts:o.map(v=>({h:String(v),v})),a:o.indexOf(n)}};
+export const dice=n=>{const P={0:[],1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};return`<span class="g1dice">${range(0,8).map(i=>`<i class="${(P[n]||[]).includes(i)?'on':''}"></i>`).join('')}</span>`};
 /* ---- các dạng câu ---- */
-const Q1={
+export const Q1={
  count:(lo,hi)=>()=>{const n=R(Math.max(lo,1),hi),[s,w]=pickObj();const o=optN(n,lo,hi,3);return{type:'opt',big:1,q:`Có mấy ${w}?`,say:`Có mấy ${w}? Em đếm rồi chạm vào số đúng nhé.`,pic:grp(s,n),...o,sol:`Đếm từng ${w.split(' ')[0]}: có ${n} ${w}.`}},
  find:(lo,hi)=>()=>{const n=R(Math.max(lo,1),hi),[s,w]=pickObj();const c=near(n,Math.max(lo,1),hi,3);return{type:'opt',cols:3,q:`Chạm vào khung có <b>${n}</b> ${w}.`,say:`Chạm vào khung có ${NUMW[n]} ${w}.`,opts:c.map(v=>({h:grp(s,v,30,'sm'),v})),a:c.indexOf(n),sol:`Khung đúng có ${n} ${w}.`}},
  word:(lo,hi)=>()=>{const n=R(lo,hi),o=optN(n,lo,hi,4);return{type:'opt',big:1,q:`Chạm vào số <b>${NUMW[n]}</b>.`,say:`Em hãy chạm vào số ${NUMW[n]}.`,...o,sol:`Số ${NUMW[n]} viết là ${n}.`}},
@@ -80,11 +99,11 @@ const C1=[
    ['Ôn cả chủ đề và đánh trùm',[Q1.moreless(8),Q1.tfmore(8)],[Q1.bond(10),Q1.seq(0,10)],[Q1.count(1,10),Q1.sign(10),Q1.split(10),Q1.order(10),Q1.build(3,9),Q1.find(1,10)]]]],
 ];
 const BOSS1=['crab','Cua Số Đếm'];
-const P1_1=C1.flatMap(([bid,bn,title,short,ts])=>ts.map((t,i)=>({id:`g1${bid}t${i+1}`,title:`Bài ${bn} · Tiết ${i+1}`,lesson:title,short:`${short} · T${i+1}`,goal:t[0],lv:[t[1],t[2]].concat(t[3]?[t[3]]:[]),nm:t[3]?3:2,boss:!!t[3],slides:[],tiet:i+1,ntiet:ts.length,b:bn})));
+export const P1_1=C1.flatMap(([bid,bn,title,short,ts])=>ts.map((t,i)=>({id:`g1${bid}t${i+1}`,title:`Bài ${bn} · Tiết ${i+1}`,lesson:title,short:`${short} · T${i+1}`,goal:t[0],lv:[t[1],t[2]].concat(t[3]?[t[3]]:[]),nm:t[3]?3:2,boss:!!t[3],slides:[],tiet:i+1,ntiet:ts.length,b:bn})));
 const NEXT1=['Làm quen với một số hình phẳng','Phép cộng, phép trừ trong phạm vi 10','Làm quen với một số hình khối','Ôn tập học kì 1','Các số đến 100','Độ dài và đo độ dài','Phép cộng, phép trừ (không nhớ) trong phạm vi 100','Thời gian. Giờ và lịch','Ôn tập cuối năm'];
 const Q1N=3,BOSSN=5;
 /* ---- giọng Jenny ---- */
-let v1Voice=null,v1Said='';
+let v1Voice=null;globalThis.v1Said='';
 /* chuyển đề (có thể chứa HTML, kí hiệu toán) thành lời đọc tiếng Việt */
 function spoken(t){t=String(t).normalize('NFC');
   t=t.replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g,' $1 phần $2 ');
@@ -104,7 +123,7 @@ function spoken(t){t=String(t).normalize('NFC');
    .replace(/bằng\s*\?/g,'bằng bao nhiêu').replace(/(\S)\s+(?:…|\.\.\.)\s+(?=\S)/g,(m,c)=>/[,:]/.test(c)?c+' chỗ trống ':c+' và ').replace(/(?:…|\.\.\.)(?=\s*,)/g,' chỗ trống ').replace(/☐/g,' mấy ').replace(/(^|\s)\?(?=\s+(?:cộng|trừ|nhân|chia|bằng|lớn hơn|bé hơn)(?:\s|$))/g,'$1 mấy ').replace(/(^|\s)(cộng|trừ|nhân|chia)\s+\?/g,'$1$2 mấy').replace(/…|\.\.\./g,', ').replace(/[→⟶]/g,', ');
   return t.replace(/\s+/g,' ').replace(/\s+([.,:;!?])/g,'$1').replace(/([.,])(?:\s*[.,])+/g,'$1').trim()}
 /* lời đọc đầy đủ: lời Jenny + các dòng phép tính trên màn hình mà lời Jenny chưa nhắc tới */
-function sayFull(say,html){say=String(say||'');if(!html)return say;
+export function sayFull(say,html){say=String(say||'');if(!html)return say;
   const lines=String(html).replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g,'$1/$2').split(/<\/?(?:p|li|tr|div|br|h\d|ol|ul|table)\b[^>]*>/i).map(l=>l.replace(/<\/?[a-zA-Z][^<>]*>/g,' ')).map(l=>{try{const d=document.createElement('textarea');d.innerHTML=l;return d.value}catch(e){return l}}).map(l=>l.replace(/[ \t\n\r]+/g,' ').trim()).filter(l=>/\d/.test(l)&&/[=<>+−×:…☐?]/.test(l));
   const S=say.toLowerCase().normalize('NFC'),SD=S.replace(/(\d)[  ](?=\d{3}(?!\d))/g,'$1');
   const has=n=>{const raw=n.replace(/[  ]/g,'');if(new RegExp('(^|[^\\d,])'+raw.replace(',','[,.]')+'(?![\\d])').test(SD))return true;if(raw.includes(','))return raw.split(',').every(p=>S.includes(vnRead(Number(p)))||S.includes(p));const v=Number(raw);return v<1e12&&S.includes(vnRead(v).toLowerCase())};
@@ -120,21 +139,25 @@ let viHintShown=false;
 function viVoiceHint(){if(viHintShown)return;let n=0;try{n=speechSynthesis.getVoices().length}catch(e){}if(!n)return;viHintShown=true;
   const mac=/Mac/i.test(navigator.platform||navigator.userAgent),win=/Win/i.test(navigator.platform||'');
   toast(mac?'Máy chưa có giọng tiếng Việt. Vào Cài đặt hệ thống → Trợ năng → Nội dung được đọc → Giọng hệ thống → Quản lý giọng → tải "Linh". Hoặc mở bằng Chrome.':win?'Máy chưa có giọng tiếng Việt. Nên mở bằng Microsoft Edge hoặc Chrome để Jenny đọc rõ.':'Máy chưa có giọng tiếng Việt. Hãy mở bằng Chrome để Jenny đọc rõ.')}
-function sayJ(text){if(muted||!text)return;try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(!v1Voice)v1Voice=pickViVoice();if(!v1Voice)viVoiceHint();const u=new SpeechSynthesisUtterance(spoken(text));u.lang='vi-VN';if(v1Voice)u.voice=v1Voice;u.rate=.9;u.pitch=1;u.onstart=()=>{try{duck(1)}catch(e){}};u.onend=u.onerror=()=>{try{duck(0)}catch(e){}};s.speak(u)}catch(e){}}
+export function sayJ(...a){return hooks.goi('sayJ',this,a)}
+hooks.ham('sayJ',function(text){if(muted||!text)return;try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(!v1Voice)v1Voice=pickViVoice();if(!v1Voice)viVoiceHint();const u=new SpeechSynthesisUtterance(spoken(text));u.lang='vi-VN';if(v1Voice)u.voice=v1Voice;u.rate=.9;u.pitch=1;u.onstart=()=>{try{duck(1)}catch(e){}};u.onend=u.onerror=()=>{try{duck(0)}catch(e){}};s.speak(u)}catch(e){}});
 try{window.speechSynthesis&&window.speechSynthesis.addEventListener&&window.speechSynthesis.addEventListener('voiceschanged',()=>{v1Voice=null})}catch(e){}
 /* ---- trạng thái ---- */
-const isl1=id=>Object.values(PRIM).flatMap(p=>p.isl).find(x=>x.id===id);
-function healAll(){try{Object.values(S.st||{}).forEach(st=>{if(!st.p1)st.p1={};if(st.grade<=5)ISL(st).forEach(x=>s1(st,x.id))})}catch(e){}}
-const s1=(st,id)=>{const x=isl1(id),s=st.p1[id]||(st.p1[id]={intro:false,m:[],fails:[]});while(s.m.length<x.nm){s.m.push(false);s.fails.push(0)}return s};
-const ISL=st=>PRIM[st.grade<=5?st.grade:1].isl;
-let UNL=(()=>{try{return localStorage.getItem('jennyLockOn')!=='1'}catch(e){return true}})();
-function toggleUnl(){UNL=!UNL;try{localStorage.setItem('jennyLockOn',UNL?'0':'1')}catch(e){}render();toast(UNL?'Đã mở khóa tất cả đảo để kiểm tra':'Đã khóa lại theo tiến độ')}
-const open1=(st,k)=>{const L=ISL(st);if(k<=0||UNL)return true;const x=L[k],p=L[k-1];return x.ti!==p.ti?s1(st,p.id).m.every(Boolean):!!s1(st,p.id).m[0]};
+export const isl1=id=>Object.values(PRIM).flatMap(p=>p.isl).find(x=>x.id===id);
+export function healAll(...a){return hooks.goi('healAll',this,a)}
+hooks.ham('healAll',function(){try{Object.values(S.st||{}).forEach(st=>{if(!st.p1)st.p1={};if(st.grade<=5)ISL(st).forEach(x=>s1(st,x.id))})}catch(e){}});
+export const s1=(st,id)=>{const x=isl1(id),s=st.p1[id]||(st.p1[id]={intro:false,m:[],fails:[]});while(s.m.length<x.nm){s.m.push(false);s.fails.push(0)}return s};
+export const ISL=st=>PRIM[st.grade<=5?st.grade:1].isl;
+globalThis.UNL=(()=>{try{return localStorage.getItem('jennyLockOn')!=='1'}catch(e){return true}})();
+function toggleUnl(...a){return hooks.goi('toggleUnl',this,a)}
+hooks.ham('toggleUnl',function(){UNL=!UNL;try{localStorage.setItem('jennyLockOn',UNL?'0':'1')}catch(e){}render();toast(UNL?'Đã mở khóa tất cả đảo để kiểm tra':'Đã khóa lại theo tiến độ')});
+export const open1=(st,k)=>{const L=ISL(st);if(k<=0||UNL)return true;const x=L[k],p=L[k-1];return x.ti!==p.ti?s1(st,p.id).m.every(Boolean):!!s1(st,p.id).m[0]};
 const cur1=st=>{for(let k=0;k<ISL(st).length;k++){if(open1(st,k)&&s1(st,ISL(st)[k].id).m.some(v=>!v))return k}return ISL(st).length-1};
 /* ---- bản đồ ---- */
-const T1=[["Các số từ 0 đến 10", [[1, 1, "Các số 0, 1, 2, 3, 4, 5"], [1, 2, "Các số 0, 1, 2, 3, 4, 5"], [1, 3, "Các số 0, 1, 2, 3, 4, 5"], [2, 1, "Các số 6, 7, 8, 9, 10"], [2, 2, "Các số 6, 7, 8, 9, 10"], [2, 3, "Các số 6, 7, 8, 9, 10"], [3, 1, "Nhiều hơn, ít hơn, bằng nhau"], [3, 2, "Nhiều hơn, ít hơn, bằng nhau"], [4, 1, "So sánh số"], [4, 2, "So sánh số"], [4, 3, "So sánh số"], [4, 4, "So sánh số"], [5, 1, "Mấy và mấy"], [5, 2, "Mấy và mấy"], [5, 3, "Mấy và mấy"], [6, 1, "Luyện tập chung"], [6, 2, "Luyện tập chung"], [6, 3, "Luyện tập chung"], [6, 4, "Luyện tập chung"]]], ["Làm quen với một số hình phẳng", [[7, 1, "Hình vuông, hình tròn, hình tam giác, hình chữ nhật"], [7, 2, "Hình vuông, hình tròn, hình tam giác, hình chữ nhật"], [8, 1, "Thực hành lắp ghép, xếp hình"], [8, 2, "Thực hành lắp ghép, xếp hình"], [9, 1, "Luyện tập chung"]]], ["Phép cộng, phép trừ trong phạm vi 10", [[10, 1, "Phép cộng trong phạm vi 10"], [10, 2, "Phép cộng trong phạm vi 10"], [10, 3, "Phép cộng trong phạm vi 10"], [10, 4, "Phép cộng trong phạm vi 10"], [10, 5, "Phép cộng trong phạm vi 10"], [10, 6, "Phép cộng trong phạm vi 10"], [11, 1, "Phép trừ trong phạm vi 10"], [11, 2, "Phép trừ trong phạm vi 10"], [11, 3, "Phép trừ trong phạm vi 10"], [11, 4, "Phép trừ trong phạm vi 10"], [11, 5, "Phép trừ trong phạm vi 10"], [11, 6, "Phép trừ trong phạm vi 10"], [12, 1, "Bảng cộng, bảng trừ trong phạm vi 10"], [12, 2, "Bảng cộng, bảng trừ trong phạm vi 10"], [12, 3, "Bảng cộng, bảng trừ trong phạm vi 10"], [13, 1, "Luyện tập chung"], [13, 2, "Luyện tập chung"], [13, 3, "Luyện tập chung"]]], ["Làm quen với một số hình khối", [[14, 1, "Khối lập phương, khối hộp chữ nhật"], [14, 2, "Khối lập phương, khối hộp chữ nhật"], [15, 1, "Vị trí, định hướng trong không gian"], [15, 2, "Vị trí, định hướng trong không gian"], [16, 1, "Luyện tập chung"]]], ["Ôn tập học kì 1", [[17, 1, "Ôn tập các số trong phạm vi 10"], [17, 2, "Ôn tập các số trong phạm vi 10"], [18, 1, "Ôn tập phép cộng, phép trừ trong phạm vi 10"], [18, 2, "Ôn tập phép cộng, phép trừ trong phạm vi 10"], [19, 1, "Ôn tập hình học"], [20, 1, "Ôn tập chung"]]], ["Các số đến 100", [[21, 1, "Số có hai chữ số"], [21, 2, "Số có hai chữ số"], [21, 3, "Số có hai chữ số"], [21, 4, "Số có hai chữ số"], [21, 5, "Số có hai chữ số"], [21, 6, "Số có hai chữ số"], [22, 1, "So sánh số có hai chữ số"], [22, 2, "So sánh số có hai chữ số"], [22, 3, "So sánh số có hai chữ số"], [23, 1, "Bảng các số từ 1 đến 100"], [24, 1, "Luyện tập chung"], [24, 2, "Luyện tập chung"]]], ["Độ dài và đo độ dài", [[25, 1, "Dài hơn, ngắn hơn"], [25, 2, "Dài hơn, ngắn hơn"], [26, 1, "Đơn vị đo độ dài"], [26, 2, "Đơn vị đo độ dài"], [27, 1, "Thực hành ước lượng và đo độ dài"], [27, 2, "Thực hành ước lượng và đo độ dài"], [28, 1, "Luyện tập chung"], [28, 2, "Luyện tập chung"]]], ["Phép cộng, phép trừ (không nhớ) trong phạm vi 100", [[29, 1, "Phép cộng số có hai chữ số với số có một chữ số"], [29, 2, "Phép cộng số có hai chữ số với số có một chữ số"], [30, 1, "Phép cộng số có hai chữ số với số có hai chữ số"], [30, 2, "Phép cộng số có hai chữ số với số có hai chữ số"], [31, 1, "Phép trừ số có hai chữ số cho số có một chữ số"], [31, 2, "Phép trừ số có hai chữ số cho số có một chữ số"], [31, 3, "Phép trừ số có hai chữ số cho số có một chữ số"], [32, 1, "Phép trừ số có hai chữ số cho số có hai chữ số"], [32, 2, "Phép trừ số có hai chữ số cho số có hai chữ số"], [32, 3, "Phép trừ số có hai chữ số cho số có hai chữ số"], [33, 1, "Luyện tập chung"], [33, 2, "Luyện tập chung"], [33, 3, "Luyện tập chung"], [33, 4, "Luyện tập chung"]]], ["Thời gian. Giờ và lịch", [[34, 1, "Xem giờ đúng trên đồng hồ"], [34, 2, "Xem giờ đúng trên đồng hồ"], [35, 1, "Các ngày trong tuần"], [35, 2, "Các ngày trong tuần"], [36, 1, "Thực hành xem lịch và giờ"], [36, 2, "Thực hành xem lịch và giờ"], [37, 1, "Luyện tập chung"], [37, 2, "Luyện tập chung"]]], ["Ôn tập cuối năm", [[38, 1, "Ôn tập các số và phép tính trong phạm vi 10"], [38, 2, "Ôn tập các số và phép tính trong phạm vi 10"], [38, 3, "Ôn tập các số và phép tính trong phạm vi 10"], [39, 1, "Ôn tập các số và phép tính trong phạm vi 100"], [39, 2, "Ôn tập các số và phép tính trong phạm vi 100"], [39, 3, "Ôn tập các số và phép tính trong phạm vi 100"], [40, 1, "Ôn tập hình học và đo lường"], [40, 2, "Ôn tập hình học và đo lường"], [41, 1, "Ôn tập chung"]]]];
-const BOSSES1=[['crab','Cua Số Đếm'],['octo','Bạch tuộc Hình Phẳng'],['shark','Cá mập Cộng Trừ'],['jelly','Sứa Hình Khối'],['dragon','Rồng Học Kì'],['snake','Rắn Số 100'],['squid','Mực Thước Đo'],['crab','Cua Hàng Chục'],['octo','Bạch tuộc Đồng Hồ'],['dragon','Rồng Cuối Năm']];
-function viewHome1(){
+export const T1=[["Các số từ 0 đến 10", [[1, 1, "Các số 0, 1, 2, 3, 4, 5"], [1, 2, "Các số 0, 1, 2, 3, 4, 5"], [1, 3, "Các số 0, 1, 2, 3, 4, 5"], [2, 1, "Các số 6, 7, 8, 9, 10"], [2, 2, "Các số 6, 7, 8, 9, 10"], [2, 3, "Các số 6, 7, 8, 9, 10"], [3, 1, "Nhiều hơn, ít hơn, bằng nhau"], [3, 2, "Nhiều hơn, ít hơn, bằng nhau"], [4, 1, "So sánh số"], [4, 2, "So sánh số"], [4, 3, "So sánh số"], [4, 4, "So sánh số"], [5, 1, "Mấy và mấy"], [5, 2, "Mấy và mấy"], [5, 3, "Mấy và mấy"], [6, 1, "Luyện tập chung"], [6, 2, "Luyện tập chung"], [6, 3, "Luyện tập chung"], [6, 4, "Luyện tập chung"]]], ["Làm quen với một số hình phẳng", [[7, 1, "Hình vuông, hình tròn, hình tam giác, hình chữ nhật"], [7, 2, "Hình vuông, hình tròn, hình tam giác, hình chữ nhật"], [8, 1, "Thực hành lắp ghép, xếp hình"], [8, 2, "Thực hành lắp ghép, xếp hình"], [9, 1, "Luyện tập chung"]]], ["Phép cộng, phép trừ trong phạm vi 10", [[10, 1, "Phép cộng trong phạm vi 10"], [10, 2, "Phép cộng trong phạm vi 10"], [10, 3, "Phép cộng trong phạm vi 10"], [10, 4, "Phép cộng trong phạm vi 10"], [10, 5, "Phép cộng trong phạm vi 10"], [10, 6, "Phép cộng trong phạm vi 10"], [11, 1, "Phép trừ trong phạm vi 10"], [11, 2, "Phép trừ trong phạm vi 10"], [11, 3, "Phép trừ trong phạm vi 10"], [11, 4, "Phép trừ trong phạm vi 10"], [11, 5, "Phép trừ trong phạm vi 10"], [11, 6, "Phép trừ trong phạm vi 10"], [12, 1, "Bảng cộng, bảng trừ trong phạm vi 10"], [12, 2, "Bảng cộng, bảng trừ trong phạm vi 10"], [12, 3, "Bảng cộng, bảng trừ trong phạm vi 10"], [13, 1, "Luyện tập chung"], [13, 2, "Luyện tập chung"], [13, 3, "Luyện tập chung"]]], ["Làm quen với một số hình khối", [[14, 1, "Khối lập phương, khối hộp chữ nhật"], [14, 2, "Khối lập phương, khối hộp chữ nhật"], [15, 1, "Vị trí, định hướng trong không gian"], [15, 2, "Vị trí, định hướng trong không gian"], [16, 1, "Luyện tập chung"]]], ["Ôn tập học kì 1", [[17, 1, "Ôn tập các số trong phạm vi 10"], [17, 2, "Ôn tập các số trong phạm vi 10"], [18, 1, "Ôn tập phép cộng, phép trừ trong phạm vi 10"], [18, 2, "Ôn tập phép cộng, phép trừ trong phạm vi 10"], [19, 1, "Ôn tập hình học"], [20, 1, "Ôn tập chung"]]], ["Các số đến 100", [[21, 1, "Số có hai chữ số"], [21, 2, "Số có hai chữ số"], [21, 3, "Số có hai chữ số"], [21, 4, "Số có hai chữ số"], [21, 5, "Số có hai chữ số"], [21, 6, "Số có hai chữ số"], [22, 1, "So sánh số có hai chữ số"], [22, 2, "So sánh số có hai chữ số"], [22, 3, "So sánh số có hai chữ số"], [23, 1, "Bảng các số từ 1 đến 100"], [24, 1, "Luyện tập chung"], [24, 2, "Luyện tập chung"]]], ["Độ dài và đo độ dài", [[25, 1, "Dài hơn, ngắn hơn"], [25, 2, "Dài hơn, ngắn hơn"], [26, 1, "Đơn vị đo độ dài"], [26, 2, "Đơn vị đo độ dài"], [27, 1, "Thực hành ước lượng và đo độ dài"], [27, 2, "Thực hành ước lượng và đo độ dài"], [28, 1, "Luyện tập chung"], [28, 2, "Luyện tập chung"]]], ["Phép cộng, phép trừ (không nhớ) trong phạm vi 100", [[29, 1, "Phép cộng số có hai chữ số với số có một chữ số"], [29, 2, "Phép cộng số có hai chữ số với số có một chữ số"], [30, 1, "Phép cộng số có hai chữ số với số có hai chữ số"], [30, 2, "Phép cộng số có hai chữ số với số có hai chữ số"], [31, 1, "Phép trừ số có hai chữ số cho số có một chữ số"], [31, 2, "Phép trừ số có hai chữ số cho số có một chữ số"], [31, 3, "Phép trừ số có hai chữ số cho số có một chữ số"], [32, 1, "Phép trừ số có hai chữ số cho số có hai chữ số"], [32, 2, "Phép trừ số có hai chữ số cho số có hai chữ số"], [32, 3, "Phép trừ số có hai chữ số cho số có hai chữ số"], [33, 1, "Luyện tập chung"], [33, 2, "Luyện tập chung"], [33, 3, "Luyện tập chung"], [33, 4, "Luyện tập chung"]]], ["Thời gian. Giờ và lịch", [[34, 1, "Xem giờ đúng trên đồng hồ"], [34, 2, "Xem giờ đúng trên đồng hồ"], [35, 1, "Các ngày trong tuần"], [35, 2, "Các ngày trong tuần"], [36, 1, "Thực hành xem lịch và giờ"], [36, 2, "Thực hành xem lịch và giờ"], [37, 1, "Luyện tập chung"], [37, 2, "Luyện tập chung"]]], ["Ôn tập cuối năm", [[38, 1, "Ôn tập các số và phép tính trong phạm vi 10"], [38, 2, "Ôn tập các số và phép tính trong phạm vi 10"], [38, 3, "Ôn tập các số và phép tính trong phạm vi 10"], [39, 1, "Ôn tập các số và phép tính trong phạm vi 100"], [39, 2, "Ôn tập các số và phép tính trong phạm vi 100"], [39, 3, "Ôn tập các số và phép tính trong phạm vi 100"], [40, 1, "Ôn tập hình học và đo lường"], [40, 2, "Ôn tập hình học và đo lường"], [41, 1, "Ôn tập chung"]]]];
+export const BOSSES1=[['crab','Cua Số Đếm'],['octo','Bạch tuộc Hình Phẳng'],['shark','Cá mập Cộng Trừ'],['jelly','Sứa Hình Khối'],['dragon','Rồng Học Kì'],['snake','Rắn Số 100'],['squid','Mực Thước Đo'],['crab','Cua Hàng Chục'],['octo','Bạch tuộc Đồng Hồ'],['dragon','Rồng Cuối Năm']];
+export function viewHome1(...a){return hooks.goi('viewHome1',this,a)}
+hooks.ham('viewHome1',function(){
   const st=S.st[sid],tot=p1Stars(st),W=140,Hh=280,cur=curT1(st);
   const strip=PT().map(([name],ti)=>{const ts=topicSt1(st,ti);return`<button type="button" class="tchip ${ts.cls}${ti===cur?' on':''}" onclick="jumpT1(${ti},1)" aria-label="Chủ đề ${ti+1}: ${esc(name)}"><b>${ti+1}</b><span>${ts.cls==='lock'?'🔒':ts.cls==='soon'?'…':ts.done?'✓':'★'+ts.got}</span></button>`}).join('');
   const G=curG(),secs=PT().map(([name,isl],ti)=>{const ts=topicSt1(st,ti),live=ti===cur,boss=PB()[ti],bk=biomeOf(G,ti,name),bm=BIOME[bk];
@@ -153,31 +176,21 @@ function viewHome1(){
    <section class="hero sm ocean${G}" style="--oc:${OCEAN[G][1]}">${jenny(56)}<div class="grow"><span class="ocname">🌊 ${OCEAN[G][0]} · Lớp ${G}</span><h1>Chào ${esc(st.name.split(' ').pop())}!</h1><div class="chips"><span class="chip">★ <b>${tot}</b></span><span class="chip">🪙 <b>${st.coins}</b></span><button class="chip g1say" type="button" onclick="sayJ('Chào em! Mình là Jenny. Em chạm vào hòn đảo có Jenny đứng để học tiếp nhé.')">🔊 Nghe Jenny</button></div></div></section>
    <nav class="tstrip" aria-label="Các chủ đề Toán 1">${strip}</nav>
    ${secs}</div>`;
-}
-function featRow(st,name,ti,ts){const on=ts.cls==='open'||ts.cls==='done';return featOf(name,ti).map(f=>{const [s,n]=FEATN[f];let act='',extra='';
-  if(on){if(f==='fish'||f==='balloon'){act=`startMini('${f}')`;const b=(st.mg||{})[`${curG()}:${f}`];if(b)extra=` · ${b}`}else if(f==='race'){act='startRace()';const b=(st.race||{})['g'+curG()];if(b)extra=` · ${b}`}else if(f==='cboss'){const b=cb(curG());act=b&&b.on&&!b.won?'startCB()':`toast('${b&&b.won?'Cả lớp đã hạ trùm tuần này!':'Cô giáo chưa mở trùm lớp tuần này.'}')`}else if(f==='sea'){act=`toast('Kho báu đang trôi trên biển. Hôm nay còn ${treLeft(st)} lần, chạm vào chai thư hoặc cá voi nhé!')`;extra=` · ${treLeft(st)}`}else if(f==='card'){act="go({k:'home',tab:'album'})";extra=` · ${Object.keys(st.cards||{}).length}/${CREAT.length}`}}
-  return`<button type="button" class="fchip" ${on?`onclick="${act}"`:'disabled'}>${spr(s,20)}<span>${n}${extra}</span></button>`}).join('')}
+});
 function topicSt1(st,ti){const IL=PI(),L=IL.filter(x=>x.ti===ti);if(L.length){const op=open1(st,IL.indexOf(L[0])),got=L.reduce((a,x)=>a+s1(st,x.id).m.filter(Boolean).length,0),done=L.every(x=>s1(st,x.id).m.every(Boolean));return{cls:done?'done':op?'open':'lock',done,got}}
   const prev=ti>0?topicSt1(st,ti-1):{done:false};return{cls:prev.done?'soon':'lock',done:false,got:0}}
-function curT1(st){for(let i=0;i<PT().length;i++){const ts=topicSt1(st,i);if(!ts.done)return ts.cls==='open'?i:Math.max(0,i-1)}return PT().length-1}
-function jumpT1(ti,smooth){const el=document.getElementById('t1_'+ti);if(!el)return;const top=el.getBoundingClientRect().top+window.scrollY-(document.querySelector('.appbar')?.offsetHeight||0)-12;try{window.scrollTo({top,behavior:smooth&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto'})}catch(e){window.scrollTo(0,top)}}
+export function curT1(st){for(let i=0;i<PT().length;i++){const ts=topicSt1(st,i);if(!ts.done)return ts.cls==='open'?i:Math.max(0,i-1)}return PT().length-1}
+export function jumpT1(...a){return hooks.goi('jumpT1',this,a)}
+hooks.ham('jumpT1',function(ti,smooth){const el=document.getElementById('t1_'+ti);if(!el)return;const top=el.getBoundingClientRect().top+window.scrollY-(document.querySelector('.appbar')?.offsetHeight||0)-12;try{window.scrollTo({top,behavior:smooth&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto'})}catch(e){window.scrollTo(0,top)}});
 /* ---- trang đảo ---- */
-function viewIsland1(){
-  const st=S.st[sid],x=isl1(scr.id),s=s1(st,x.id);
-  const items=x.lv.map((_,L)=>{const boss=L===2,done=s.m[L],can=UNL||L===0||s.m[L-1];return{L,done,can,t:boss?`Trùm · ${bossOf(scr.id)[1]}`:`Màn ${L+1}`,d:(boss?`Khoảng ${QN()} đòn · 3 tim · rương`:`Khoảng ${QN()} câu · 3 tim`)+(curG()>=3?' · bài lời văn ít câu hơn':'')}});
-  const nx=items.findIndex(i=>!i.done&&i.can);
-  return`<div class="page"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home'})">← Bản đồ</button></div>
-   <div class="card"><div class="lesson">${jenny(64)}<div class="grow"><h1>${esc(x.title)}</h1><div class="muted">${esc(x.lesson)} · Toán ${curG()} · Chủ đề ${(x.ti||0)+1}</div></div>${starsHtml(s.m.filter(Boolean).length,x.nm)}</div>
-    <div class="g1goal"><b>Hôm nay em học:</b> ${esc(x.goal)}. <button class="btn sm" type="button" onclick="sayJ('${esc(x.title)}. Hôm nay em học: ${esc(x.goal)}. Mỗi màn có khoảng ${QN()} câu.${curG()<=2?' Jenny sẽ đọc đề cho em nghe.':''}')">🔊 Nghe Jenny</button></div>
-    <ul class="tl">${items.map((i,k)=>`<li class="${i.done?'done':''} ${k===nx?'next':''} ${!i.can&&!i.done?'off':''}"><span class="n">${i.done?'✓':i.L===2?spr('crab',22):i.L+1}</span><div class="grow"><b>${i.t}</b><span class="muted">${i.d}</span></div><button class="btn sm ${k===nx?'pri':''}" ${i.can?'':'disabled'} onclick="startG1('${x.id}',${i.L})">${i.can?(i.done?'Chơi lại':i.L===2?'Đánh trùm':'Chơi'):'🔒'}</button></li>`).join('')}</ul>
-    <p class="muted" style="margin:10px 0 0">Mỗi màn đúng khoảng 3/4 số câu và còn tim là được 1 sao. Qua Màn 1 là mở đảo tiếp theo.</p></div></div>`;
-}
 /* ---- chơi ---- */
-function startG1(id,L){const x=isl1(id),gens=x.lv[L],n=QN();const order=shuf(gens.map((_,i)=>i));const qs=[];let w=0,k=0;while(w<n-0.01&&qs.length<n){const gi=order[k%gens.length],q=gens[gi]();k++;qs.push({...q,src:[id,L,gi],key:`${id}:${L}:${gi}`,label:q.kind||'Câu hỏi'});w+=qW(q)}
-  v1Said='';go({k:'game',g1:1,id,lv:L,qs,j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,hp:L===2?n:0,t0:Date.now()});}
-function q1(){return scr.qs[scr.j]}
+function startG1(...a){return hooks.goi('startG1',this,a)}
+hooks.ham('startG1',function(id,L){const x=isl1(id),gens=x.lv[L],n=QN();const order=shuf(gens.map((_,i)=>i));const qs=[];let w=0,k=0;while(w<n-0.01&&qs.length<n){const gi=order[k%gens.length],q=gens[gi]();k++;qs.push({...q,src:[id,L,gi],key:`${id}:${L}:${gi}`,label:q.kind||'Câu hỏi'});w+=qW(q)}
+  v1Said='';go({k:'game',g1:1,id,lv:L,qs,j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,hp:L===2?n:0,t0:Date.now()});});
+export function q1(...a){return hooks.goi('q1',this,a)}
+hooks.ham('q1',function(){return scr.qs[scr.j]});
 /* tự co chữ đồng đều cho vừa nút; nếu quá bé thì giảm số cột */
-function fitOpts(){document.querySelectorAll('.g1opts.big').forEach(box=>{const bs=[...box.querySelectorAll('button')].filter(b=>b.textContent.trim());if(!bs.length)return;
+export function fitOpts(){document.querySelectorAll('.g1opts.big').forEach(box=>{const bs=[...box.querySelectorAll('button')].filter(b=>b.textContent.trim());if(!bs.length)return;
   const bad=()=>bs.some(b=>{if(b.scrollWidth>b.clientWidth+1)return true;if(b.querySelector('.frac,svg,img'))return false;const rg=document.createRange();rg.selectNodeContents(b);return new Set([...rg.getClientRects()].map(r=>Math.round(r.top))).size>1});
   const set=v=>bs.forEach(b=>b.style.fontSize=v?v+'px':'');set(46);if(!bad())return;
   const base=46;const cols=['c4','c3','c2','c1'];
@@ -189,7 +202,8 @@ function optLay(hs,big,def){const T=hs.map(h=>String(h).replace(/<[^>]*>/g,'').t
   if(pic&&!M)return[wide?Math.min(def,2):def,''];
   if(big){if(M<=3)return[def,''];if(M<=5)return[Math.min(def,2),''];if(M<=8)return[Math.min(def,2),'lg'];if(M<=12)return[Math.min(def,2),'xl'];return[1,M<=20?'lg':'xl']}
   if(M<=8)return[def,''];if(M<=24)return[Math.min(def,2),''];return[1,'']}
-function viewGame1(){
+export function viewGame1(...a){return hooks.goi('viewGame1',this,a)}
+hooks.ham('viewGame1',function(){
   const g=scr,x=g.race||g.tre||g.cbo?{title:g.race?'Đua giờ 60 giây':g.tre?TRE[g.tre][1]:'Trùm lớp'}:g.fix?{title:'Sổ lỗi sai'}:g.part===2?ju1(g.id):isl1(g.id),boss=!g.fix&&!(g.race||g.tre||g.cbo)&&g.part!==2&&g.lv===2,n=g.qs.length;
   if(g.end)return (g.race||g.tre||g.cbo)?viewEndExtra():viewEnd1();
   const q=q1();
@@ -202,10 +216,11 @@ function viewGame1(){
     <div class="g1q">${jenny(54,jMood(g))}<div class="g1bub"><div>${q.q}</div><button class="g1spk" type="button" onclick="sayJ(sayFull(q1().say,q1().q))" aria-label="Nghe lại đề">🔊</button></div></div>
     ${q.pic?`<div class="g1pic">${q.pic}</div>`:''}${q.type==='num'?`<div class="slotbox ${g.inp?'':'empty'}" aria-live="polite">${g.inp?esc(g.inp):'?'}</div>`:''}${q.type==='slots'?slotsView(q):q.type==='build'?buildView(q):q.type==='order'?`<div class="g1seq">${q.a.map((_,k)=>`<span>${g.seq[k]!==undefined?q.opts[g.seq[k]]:''}</span>`).join('')}</div>`:''}</div>
    <div class="gbot">${g.sheet?sheet1():input1(q)}</div></div>`;
-}
+});
 function slotsView(q){const g=scr;let b=0;return`<div class="g1cells">${q.cells.map(v=>{if(v!==null)return`<span class="c">${v}</span>`;const i=b++;return`<button type="button" class="c slot ${g.fill[i]!==null?'full':''}" data-slot="${i}" onclick="slotTap(${i})" aria-label="Ô trống ${i+1}">${g.fill[i]!==null?q.tiles[g.fill[i]]:''}</button>`}).join('')}</div>`}
 function buildView(q){const g=scr;return`<div class="g1build"><div class="g1grp">${Array.from({length:g.cnt},(_,i)=>spr(q.obj,40,i>=q.start?'g1add':'')).join('')}</div></div>`}
-function input1(q){const g=scr;
+function input1(...a){return hooks.goi('input1',this,a)}
+hooks.ham('input1',function(q){const g=scr;
   if(q.type==='num')return`<div class="pad">${['1','2','3','4','5','6','7','8','9','⌫','0','✓'].map(k=>`<button type="button" class="${k==='✓'?'go':k==='⌫'?'del':''}" onclick="key1('${k}')" aria-label="${k==='⌫'?'Xóa':k==='✓'?'Nộp':k}">${k==='✓'?'Nộp':k}</button>`).join('')}</div>`;
   if(q.type==='opt'){const [cc,sz]=optLay(q.opts.map(o=>o.h),q.big,q.cols||(q.opts.length===4?2:3));return`<div class="g1opts c${cc} ${q.big?'big':''}">${q.opts.map((o,i)=>`<button type="button" class="${sz}" onclick="ans1(${i})">${o.h}</button>`).join('')}</div>`}
   if(q.type==='tf')return`<div class="g1opts c2 big"><button type="button" class="t" onclick="ans1(true)">Đúng</button><button type="button" class="f" onclick="ans1(false)">Sai</button></div>`;
@@ -215,7 +230,7 @@ function input1(q){const g=scr;
   if(q.type==='slots')return`<div class="g1tiles">${q.tiles.map((v,i)=>`<button type="button" class="g1tile" data-t="${i}" ${g.used.includes(i)?'disabled':''}>${v}</button>`).join('')}</div><p class="g1hint">Kéo số vào ô trống, hoặc chạm vào số.</p><button class="gobtn" type="button" ${g.fill.every(v=>v!==null)?'':'disabled'} onclick="ans1(scr.fill.map(i=>q1().tiles[i]))">Kiểm tra</button>`;
   if(q.type==='build')return`<div class="g1opts c2 big"><button type="button" onclick="cnt1(-1)" aria-label="Bớt 1">− Bớt</button><button type="button" onclick="cnt1(1)" aria-label="Thêm 1">+ Thêm</button></div><button class="gobtn" type="button" onclick="ans1(scr.cnt)">Kiểm tra</button>`;
   return'';
-}
+});
 function pick1(i){const g=scr;g.picks=g.picks.includes(i)?g.picks.filter(x=>x!==i):[...g.picks,i];sfx('tap');render()}
 function ord1(i){const g=scr,q=q1();if(g.seq.includes(i))return;g.seq.push(i);sfx('tap');if(g.seq.length===q.opts.length){ans1(g.seq);return}render()}
 function cnt1(d){const g=scr,q=q1();g.cnt=Math.max(q.start,Math.min(10,g.cnt+d));sfx('tap');render()}
@@ -228,10 +243,13 @@ function placeTile(t,slot){const g=scr;if(g.sheet||g.used.includes(t))return;if(
  const end=e=>{if(!drag)return;const d=drag;drag=null;d.gh.style.visibility='hidden';const el=document.elementFromPoint(e.clientX,e.clientY);d.gh.remove();const s=el&&el.closest&&el.closest('.slot');if(s)placeTile(d.t,+s.dataset.slot);else if(!d.moved)placeTile(d.t);};
  document.addEventListener('pointerup',end);document.addEventListener('pointercancel',e=>{if(drag){drag.gh.remove();drag=null}});
 })();
-function key1(k){const g=scr;if(g.sheet)return;if(k==='⌫')g.inp=(g.inp||'').slice(0,-1);else if(k==='✓'){if(g.inp)ans1(Number(g.inp));return}else if((g.inp||'').length<9)g.inp=(g.inp||'')+k;sfx('tap');render()}
-function right1(q,v){if(q.type==='num')return Number(v)===q.a;if(q.type==='opt')return v===q.a;if(q.type==='tf'||q.type==='build')return v===q.a;if(q.type==='pick'){const a=[...v].sort((x,y)=>x-y);return a.length===q.a.length&&a.every((x,i)=>x===q.a[i])}if(q.type==='order')return v.every((x,i)=>q.opts[x]===q.opts[q.a[i]]);if(q.type==='slots')return v.every((x,i)=>x===q.a[i]);return false}
-function show1(q){if(q.type==='num')return fmt(q.a);if(q.type==='opt')return q.opts[q.a].h.length>40?'khung đúng được tô xanh':q.opts[q.a].h;if(q.type==='tf')return q.a?'Đúng':'Sai';if(q.type==='build')return q.a;return''}
-function ans1(v){if(scr.race){const q=q1(),ok=right1(q,v);log(sid,'answered',`Đua giờ · lớp ${curG()}`,0,{success:ok});if(!ok)mist1Add(q);raceAns(ok);return}const g=scr,q=q1(),ok=right1(q,v),st=S.st[sid],x=(g.tre||g.cbo)?{title:g.tre?'Kho báu biển':'Trùm lớp'}:g.fix?{title:'Sổ lỗi sai'}:g.part===2?ju1(g.id):isl1(g.id),qd=quest(st);let extra='';
+export function key1(k){const g=scr;if(g.sheet)return;if(k==='⌫')g.inp=(g.inp||'').slice(0,-1);else if(k==='✓'){if(g.inp)ans1(Number(g.inp));return}else if((g.inp||'').length<9)g.inp=(g.inp||'')+k;sfx('tap');render()}
+export function right1(...a){return hooks.goi('right1',this,a)}
+hooks.ham('right1',function(q,v){if(q.type==='num')return Number(v)===q.a;if(q.type==='opt')return v===q.a;if(q.type==='tf'||q.type==='build')return v===q.a;if(q.type==='pick'){const a=[...v].sort((x,y)=>x-y);return a.length===q.a.length&&a.every((x,i)=>x===q.a[i])}if(q.type==='order')return v.every((x,i)=>q.opts[x]===q.opts[q.a[i]]);if(q.type==='slots')return v.every((x,i)=>x===q.a[i]);return false});
+export function show1(...a){return hooks.goi('show1',this,a)}
+hooks.ham('show1',function(q){if(q.type==='num')return fmt(q.a);if(q.type==='opt')return q.opts[q.a].h.length>40?'khung đúng được tô xanh':q.opts[q.a].h;if(q.type==='tf')return q.a?'Đúng':'Sai';if(q.type==='build')return q.a;return''});
+export function ans1(...a){return hooks.goi('ans1',this,a)}
+hooks.ham('ans1',function(v){if(scr.race){const q=q1(),ok=right1(q,v);log(sid,'answered',`Đua giờ · lớp ${curG()}`,0,{success:ok});if(!ok)mist1Add(q);raceAns(ok);return}const g=scr,q=q1(),ok=right1(q,v),st=S.st[sid],x=(g.tre||g.cbo)?{title:g.tre?'Kho báu biển':'Trùm lớp'}:g.fix?{title:'Sổ lỗi sai'}:g.part===2?ju1(g.id):isl1(g.id),qd=quest(st);let extra='';
   if(g.fix){const M=mist(st),e=M[q.key];if(ok&&e){e.streak++;if(e.streak>=2){delete M[q.key];g.fixed++;qd.fix=(qd.fix||0)+1;extra=' · Sửa xong lỗi này!'}else extra=' · Đúng thêm 1 lần nữa là sửa xong'}else if(e)e.streak=0}
   else if(!ok&&g.tries===0&&g.part!==2)mist1Add(q);
   log(sid,'answered',`Toán ${curG()} · ${x.title}`,0,{success:ok,duration:`PT${Math.round((Date.now()-g.t0)/1000)}S`});
@@ -240,29 +258,35 @@ function ans1(v){if(scr.race){const q=q1(),ok=right1(q,v);log(sid,'answered',`Đ
     if(g.hearts<=0){g.res[g.j]=false;g.sheet={kind:'dead'};sayJ('Hết tim rồi. Mình chơi lại nhé!')}
     else if(g.tries===1){g.sheet={kind:'retry'};sayJ('Chưa đúng rồi. Em thử lại nhé.')}
     else{g.res[g.j]=false;g.sheet={kind:'bad'};sayJ(q.sol.replace(/&gt;/g,' lớn hơn ').replace(/&lt;/g,' bé hơn ').replace(/=/g,' bằng '))}}
-  save();render()}
-function sheet1(){const g=scr,q=q1(),s=g.sheet;
+  save();render()});
+function sheet1(...a){return hooks.goi('sheet1',this,a)}
+hooks.ham('sheet1',function(){const g=scr,q=q1(),s=g.sheet;
   if(s.kind==='ok')return`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${pick(['Giỏi quá!','Đúng rồi!','Tuyệt vời!'])}</b><div>${s.msg}</div></div></div><button class="gobtn" type="button" onclick="next1()">Tiếp tục</button></div>`;
   if(s.kind==='retry')return`<div class="sheet warn"><div class="sh"><span class="ic">?</span><div><b>Chưa đúng, mất 1 tim.</b><div>Em nhìn kỹ hình và thử lại nhé.</div></div></div><button class="gobtn" type="button" onclick="retry1()">Thử lại</button></div>`;
   if(s.kind==='bad')return`<div class="sheet bad"><div class="sh"><span class="ic">✕</span><div><b>Đáp án đúng${show1(q)!==''?': '+show1(q):''}</b><div>${q.sol}</div></div></div><button class="gobtn" type="button" onclick="next1()">Tiếp tục</button></div>`;
-  return`<div class="sheet bad"><div class="sh"><span class="ic">💔</span><div><b>Hết tim rồi!</b><div>${q.sol}</div></div></div><button class="gobtn" type="button" onclick="end1(false)">Xem kết quả</button></div>`}
-function retry1(){const g=scr;g.sheet=null;g.mad=0;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;render()}
-function next1(){const g=scr;g.hit=false;g.mad=0;g.inp='';if(g.j<g.qs.length-1){g.j++;g.sheet=null;g.tries=0;g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;g.t0=Date.now();render()}else end1(true)}
-function end1(alive){if(scr.race||scr.tre||scr.cbo)return endExtra();if(scr.fix)return endFix1();if(scr.part===2)return endJ1(alive);const g=scr,st=S.st[sid],x=isl1(g.id),s=s1(st,x.id),qd=quest(st),k=PI().indexOf(x);
+  return`<div class="sheet bad"><div class="sh"><span class="ic">💔</span><div><b>Hết tim rồi!</b><div>${q.sol}</div></div></div><button class="gobtn" type="button" onclick="end1(false)">Xem kết quả</button></div>`});
+function retry1(...a){return hooks.goi('retry1',this,a)}
+hooks.ham('retry1',function(){const g=scr;g.sheet=null;g.mad=0;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;render()});
+export function next1(...a){return hooks.goi('next1',this,a)}
+hooks.ham('next1',function(){const g=scr;g.hit=false;g.mad=0;g.inp='';if(g.j<g.qs.length-1){g.j++;g.sheet=null;g.tries=0;g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;g.t0=Date.now();render()}else end1(true)});
+function end1(...a){return hooks.goi('end1',this,a)}
+hooks.ham('end1',function(alive){if(scr.race||scr.tre||scr.cbo)return endExtra();if(scr.fix)return endFix1();if(scr.part===2)return endJ1(alive);const g=scr,st=S.st[sid],x=isl1(g.id),s=s1(st,x.id),qd=quest(st),k=PI().indexOf(x);
   const need=needOf(g.qs.length);g.end=true;g.pass=alive&&g.hearts>0&&g.ok>=need;g.newStar=false;g.unlock=null;
   if(g.pass){qd.pass++;if(!s.m[g.lv]){s.m[g.lv]=true;g.newStar=true;log(sid,'earned',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{score:{raw:1}})}st.coins+=g.lv===2?30:10;
     if(g.lv===0&&g.newStar&&PI()[k+1])g.unlock=PI()[k+1];
     if(g.lv===2)st.badges.push({t:`Huy hiệu Chủ đề ${(x.ti||0)+1} · Toán ${curG()}`,day:S.day,from:'máy'});
     log(sid,'passed',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{success:true,score:{raw:g.ok,max:g.qs.length}});sfx(g.lv===2?'bossdown':'win');sayJ(g.lv===2?`Em đã hạ được ${bossOf(g.id)[1]}! Giỏi lắm!`:'Em qua màn rồi! Giỏi quá!')}
   else{s.fails[g.lv]=(s.fails[g.lv]||0)+1;log(sid,'failed',`Toán ${curG()} · ${x.title} · màn ${g.lv+1}`,0,{success:false});sfx('bad');sfx(scr.lv===2?'bosslaugh':'lose');sayJ('Không sao cả. Mình chơi lại nhé!')}
-  save();render()}
-function viewEnd1(){if(scr.fix||scr.part===2)return viewEnd1b();const g=scr,x=isl1(g.id),k=PI().indexOf(x),boss=g.lv===2,nextL=x.lv[g.lv+1]?g.lv+1:-1;
+  save();render()});
+function viewEnd1(...a){return hooks.goi('viewEnd1',this,a)}
+hooks.ham('viewEnd1',function(){if(scr.fix||scr.part===2)return viewEnd1b();const g=scr,x=isl1(g.id),k=PI().indexOf(x),boss=g.lv===2,nextL=x.lv[g.lv+1]?g.lv+1:-1;
   return`<div class="game g1"><div class="gend">${g.pass?(boss?`<div class="bigicon bossend">${jenny(70,'cheer')}${bossHTML(bossOf(scr.id)[0],80,'dead')}${spr('chest',60)}</div>`:`<div class="bigicon bossend">${jenny(76,'cheer')}${spr('star',70)}</div>`):(boss?`<div class="bigicon bossend">${jenny(64,'sad')}${bossHTML(bossOf(scr.id)[0],90,'win')}</div>`:jenny(84,'sad'))}
    <h1>${g.pass?(boss?`Hạ gục ${bossOf(scr.id)[1]}!`:'Qua màn!'):'Mình chơi lại nhé!'}</h1>
    <p class="muted">${g.ok}/${g.qs.length} câu đúng · còn ${Math.max(0,g.hearts)} tim${g.pass?` · +${boss?30:10} xu`:''}</p>
    ${g.newStar?'<p class="earn">+1 sao</p>':''}${g.card?`<p class="earn">Thẻ mới: ${spr(g.card[0],28)} ${esc(g.card[1])}</p>`:''}${g.unlock?`<p class="muted">Đã mở đảo mới: <b>${esc(g.unlock.short)}</b></p>`:''}
-   <div class="gendbtn">${g.pass&&nextL>0?`<button class="gobtn" type="button" onclick="startG1('${x.id}',${nextL})">${nextL===2?'Đánh trùm':'Màn '+(nextL+1)}</button>`:''}${!g.pass?`<button class="gobtn" type="button" onclick="startG1('${x.id}',${g.lv})">Chơi lại</button>`:''}${g.pass&&nextL<0&&PI()[k+1]?`<button class="gobtn" type="button" onclick="go({k:'island',id:'${PI()[k+1].id}'})">Đảo tiếp theo →</button>`:''}<button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${x.id}'})">Về đảo</button><button class="gobtn ghost" type="button" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`}
+   <div class="gendbtn">${g.pass&&nextL>0?`<button class="gobtn" type="button" onclick="startG1('${x.id}',${nextL})">${nextL===2?'Đánh trùm':'Màn '+(nextL+1)}</button>`:''}${!g.pass?`<button class="gobtn" type="button" onclick="startG1('${x.id}',${g.lv})">Chơi lại</button>`:''}${g.pass&&nextL<0&&PI()[k+1]?`<button class="gobtn" type="button" onclick="go({k:'island',id:'${PI()[k+1].id}'})">Đảo tiếp theo →</button>`:''}<button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${x.id}'})">Về đảo</button><button class="gobtn ghost" type="button" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`});
 /* đọc đề khi câu mới hiện ra */
-function g1AfterRender(){if(role==='hs'&&S.st[sid]&&S.st[sid].grade<=5&&scr.k==='home'&&(scr.tab||'map')==='map'&&!scr.noJump){const c=curT1(S.st[sid]);setTimeout(()=>{if(c>0)jumpT1(c);const ch=document.querySelector('.tchip.on');if(ch&&ch.parentNode)ch.parentNode.scrollLeft=ch.offsetLeft-ch.parentNode.clientWidth/2+ch.offsetWidth/2},0)}if(role!=='hs'||!S.st[sid]||S.st[sid].grade>2||scr.k!=='game'||scr.end||scr.sheet)return;const key=scr.id+scr.lv+':'+scr.j+':'+scr.t0;if(v1Said===key)return;v1Said=key;setTimeout(()=>{if(scr.k==='game'&&scr.g1&&scr.qs&&!scr.end&&!scr.sheet)sayJ(sayFull(q1().say,q1().q))},250)}
+export function g1AfterRender(...a){return hooks.goi('g1AfterRender',this,a)}
+hooks.ham('g1AfterRender',function(){if(role==='hs'&&S.st[sid]&&S.st[sid].grade<=5&&scr.k==='home'&&(scr.tab||'map')==='map'&&!scr.noJump){const c=curT1(S.st[sid]);setTimeout(()=>{if(c>0)jumpT1(c);const ch=document.querySelector('.tchip.on');if(ch&&ch.parentNode)ch.parentNode.scrollLeft=ch.offsetLeft-ch.parentNode.clientWidth/2+ch.offsetWidth/2},0)}if(role!=='hs'||!S.st[sid]||S.st[sid].grade>2||scr.k!=='game'||scr.end||scr.sheet)return;const key=scr.id+scr.lv+':'+scr.j+':'+scr.t0;if(v1Said===key)return;v1Said=key;setTimeout(()=>{if(scr.k==='game'&&scr.g1&&scr.qs&&!scr.end&&!scr.sheet)sayJ(sayFull(q1().say,q1().q))},250)});
 
 P1BY[1]=P1_1;ALLP1.push(...P1_1);

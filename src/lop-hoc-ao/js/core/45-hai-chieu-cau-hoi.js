@@ -2,6 +2,8 @@
    - "Sắp xếp … từ bé đến lớn" → một nửa số câu hỏi "từ lớn đến bé".
    - "… nào lớn nhất?" ↔ "… nào bé nhất?" (chọn một): một nửa số câu hỏi đổi chiều, khi tính được giá trị từng phương án.
    Bọc mọi bộ sinh câu của lớp 1–5 nên áp dụng cho màn học, trò chơi và Luyện lỗi. */
+import { PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { GD_NUM, gdN, gdTxt } from './40-huong-dan-khi-sai.js';
 function gdVal(t){t=gdTxt(t).replace(/\s+/g,' ').trim();let m=t.match(/^(\d+)\s*⁄\s*(\d+)$/);if(m)return +m[1]/+m[2];m=t.match(new RegExp(`^${GD_NUM}$`));if(m)return gdN(t);return NaN}
 function gdFlip(q){if(!q||Math.random()<.5)return q;
  if(q.type==='order'&&/từ bé đến lớn/.test(q.q||'')&&Array.isArray(q.a)&&Array.isArray(q.opts)){const a=[...q.a].reverse(),ops=a.map(i=>gdTxt(q.opts[i]));const sep=ops.some(x=>/,/.test(x))?'; ':', ';

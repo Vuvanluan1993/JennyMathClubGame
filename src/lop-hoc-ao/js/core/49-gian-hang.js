@@ -3,6 +3,15 @@
    Thú cưng và đồ nuôi: xem 49b (Đảo nhà của em).
    Chạm món đồ = thử miễn phí trên khung xem trước; bấm Mua để trừ xu. Đồ đã mua bấm Dùng/Bỏ.
    Lưu: st.shop = {own:[mã], acc:'', pet:'', frame:'', dec:[mã]} ; trang phục mua dùng chung st.outfit. */
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { save } from './09-du-lieu-demo.js';
+import { render, toast } from './13-giao-dien-chung.js';
+import { PXS, pxURI, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { sfx } from './33b-am-thanh.js';
+import { ofVariant, OUTFIT } from './33e-ho-chieu.js';
+import { careBuy, careGrid, careNote, careStage, petAct, petBuy, petCard, petNote } from './49b-dao-nha-thu-cung.js';
+import { xuMua } from './64-xu.js';
 Object.assign(PXS,{
  capS:["...bbbbbb.....","..bbbwwbbb....",".bbbbbbbbbb...",".BBBBBBBBBBBBB"],
  bowS:["rr...rr","rrr.rrr","rrrRrrr","rrr.rrr","rr...rr"],
@@ -22,10 +31,10 @@ Object.assign(OUTFIT,{
 });
 ['jenny','jennyBlink','jennyHappy','jennySad','jennyCheer'].forEach(n=>['s_lime','s_peach','s_sky','s_hero','s_gold'].forEach(o=>ofVariant(n,o)));
 /* phụ kiện: vị trí theo ô lưới của Jenny (16×19) */
-const GH_ACC={cap:['capS',1,-1],bow:['bowS',10,-1],glass:['glassS',2,6],flower:['flowerS',11,-2],witch:['witchS',1,-5],crown:['crown2S',2,-3]};
-const GH_SLOT={palm:[18,34],umb:[40,44],castle:[60,40],flag:[78,26],light:[8,62],boat:[90,78]};
+export const GH_ACC={cap:['capS',1,-1],bow:['bowS',10,-1],glass:['glassS',2,6],flower:['flowerS',11,-2],witch:['witchS',1,-5],crown:['crown2S',2,-3]};
+export const GH_SLOT={palm:[18,34],umb:[40,44],castle:[60,40],flag:[78,26],light:[8,62],boat:[90,78]};
 const FRAMES={wood:['#9A6234','#6B3F1D'],silver:['#E3E7F0','#9AA4C0'],gold:['#FCD655','#C97A00'],rainbow:null};
-const GH=[
+export const GH=[
  {k:'of',n:'Áo váy',ic:'jenny',it:[['s_lime','Áo Chanh tươi',120],['s_peach','Váy Hoa đào',150],['s_sky','Áo Bầu trời',180],['s_hero','Áo Siêu nhân Toán',300],['s_gold','Áo Hoàng kim',400]]},
  {k:'acc',n:'Mũ kính',ic:'capS',it:[['bow','Nơ đỏ',60],['flower','Kẹp hoa',60],['cap','Mũ lưỡi trai',80],['glass','Kính tròn',100],['witch','Mũ phù thuỷ',150],['crown','Vương miện',250]]},
  {k:'frame',n:'Khung',ic:'medG',it:[['wood','Khung Gỗ',60],['silver','Khung Bạc',120],['gold','Khung Vàng',200],['rainbow','Khung Cầu vồng',300]]},
@@ -35,31 +44,37 @@ const GH=[
  {k:'tk',n:'Vé game',ic:'tkS',it:[]},
 ];
 const TK_PRICE=30,TK_DAY=3,TK_MIN=5;
-const ghSt=st=>{st.shop=st.shop||{own:[],acc:'',frame:'',dec:[]};const s=st.shop;s.bag=s.bag||{};s.gear=s.gear||[];return s};
+export const ghSt=st=>{st.shop=st.shop||{own:[],acc:'',frame:'',dec:[]};const s=st.shop;s.bag=s.bag||{};s.gear=s.gear||[];return s};
 const ghFind=id=>{for(const c of GH){const x=c.it.find(i=>i[0]===id);if(x)return{c,x}}return null};
 /* trang phục mua được tính là "đã có" trong tủ đồ */
-{const _o=ofOwn;ofOwn=function(st){const s=_o.apply(this,arguments);try{(st.shop&&st.shop.own||[]).forEach(k=>{if(OUTFIT[k])s.add(k)})}catch(e){}return s}}
+{const _o=hooks.cu('ofOwn');hooks.de('ofOwn',function(st){const s=_o.apply(this,arguments);try{(st.shop&&st.shop.own||[]).forEach(k=>{if(OUTFIT[k])s.add(k)})}catch(e){}return s})}
 /* Jenny xem trước: áo + mũ/kính + thú cưng + khung */
-function ghJenny(H,L){const u=H/19,of=L.of,body=spr(of?ofVariant('jenny',of):'jenny',H);
+export function ghJenny(...a){return hooks.goi('ghJenny',this,a)}
+hooks.ham('ghJenny',function(H,L){const u=H/19,of=L.of,body=spr(of?ofVariant('jenny',of):'jenny',H);
  const a=L.acc&&GH_ACC[L.acc]?(()=>{const[nm,x,y]=GH_ACC[L.acc],d=pxURI(nm);return`<img class="px ghacc" src="${d.u}" alt="" style="left:${x*u}px;top:${y*u}px;width:${d.w*u}px;height:${d.h*u}px">`})():'';
  const p=L.pet?`<span class="ghpet">${spr(L.pet,Math.round(H*.42))}</span>`:'';
- return`<span class="ghj ${L.frame?'fr-'+L.frame:''}"><span class="ghjb" style="width:${16*u}px;height:${H}px">${body}${a}</span>${p}</span>`}
-function ghLook(st){const s=ghSt(st),T=scr.ghTry||{};return{of:'of' in T?T.of:(st.outfit||''),acc:'acc' in T?T.acc:s.acc,pet:T.pet||'',frame:'frame' in T?T.frame:s.frame}}
-function ghCard(c,x,st){if((c.k==='pet'||c.k==='care')&&typeof petCard==='function')return petCard(c,x,st);const s=ghSt(st),[id,n,pr]=x,own=s.own.includes(id),T=scr.ghTry||{},use=c.k==='of'?st.outfit===id:c.k==='dec'?s.dec.includes(id):s[c.k]===id,sel=T.id===id;
+ return`<span class="ghj ${L.frame?'fr-'+L.frame:''}"><span class="ghjb" style="width:${16*u}px;height:${H}px">${body}${a}</span>${p}</span>`});
+function ghLook(...a){return hooks.goi('ghLook',this,a)}
+hooks.ham('ghLook',function(st){const s=ghSt(st),T=scr.ghTry||{};return{of:'of' in T?T.of:(st.outfit||''),acc:'acc' in T?T.acc:s.acc,pet:T.pet||'',frame:'frame' in T?T.frame:s.frame}});
+function ghCard(...a){return hooks.goi('ghCard',this,a)}
+hooks.ham('ghCard',function(c,x,st){if((c.k==='pet'||c.k==='care')&&typeof petCard==='function')return petCard(c,x,st);const s=ghSt(st),[id,n,pr]=x,own=s.own.includes(id),T=scr.ghTry||{},use=c.k==='of'?st.outfit===id:c.k==='dec'?s.dec.includes(id):s[c.k]===id,sel=T.id===id;
  const pic=c.k==='of'?spr(ofVariant('jenny',id),54):c.k==='acc'?spr(GH_ACC[id][0],30):c.k==='frame'?`<span class="ghfr fr-${id}">${spr('jenny',38)}</span>`:spr(id,c.k==='pet'?44:46);
- return`<button type="button" class="ghit ${own?'own':''} ${use?'use':''} ${sel?'sel':''}" onclick="ghTry('${c.k}','${id}')" aria-label="${esc(n)}, ${own?'đã có':pr+' xu'}"><span class="ghpic">${pic}</span><b>${esc(n)}</b>${use?'<i class="ghtag on">Đang dùng</i>':own?'<i class="ghtag">Đã có</i>':`<i class="ghpr">${spr('coin',14)} ${pr}</i>`}</button>`}
+ return`<button type="button" class="ghit ${own?'own':''} ${use?'use':''} ${sel?'sel':''}" onclick="ghTry('${c.k}','${id}')" aria-label="${esc(n)}, ${own?'đã có':pr+' xu'}"><span class="ghpic">${pic}</span><b>${esc(n)}</b>${use?'<i class="ghtag on">Đang dùng</i>':own?'<i class="ghtag">Đã có</i>':`<i class="ghpr">${spr('coin',14)} ${pr}</i>`}</button>`});
 function ghTry(k,id){const T={k,id};if(k==='of')T.of=id;else if(k==='acc')T.acc=id;else if(k==='pet')T.pet=id;else if(k==='frame')T.frame=id;scr.ghTry=T;try{sfx('tap')}catch(e){}render()}
 function ghBuy(){const st=S.st[sid],s=ghSt(st),T=scr.ghTry;if(!T)return;const f=ghFind(T.id);if(!f)return;if(T.k==='pet')return petBuy(T.id);if(T.k==='care')return careBuy(T.id);const pr=f.x[2];
  if(st.coins<pr){toast(`Em cần thêm ${pr-st.coins} xu. Làm bài để kiếm xu nhé!`);return}
  /* P-20: trừ xu qua ví (vi/{tk}); áo váy, mũ kính, khung = tudo; đảo nhà = items */
  if(!xuMua(f.c.k==='dec'?'items':'tudo',T.id)){toast('Chưa mua được. Em thử lại sau nhé!');return}
  s.own.push(T.id);ghUse(1);try{sfx('win')}catch(e){}toast(`Đã mua ${f.x[1]}!`)}
-function ghUse(silent){const st=S.st[sid],s=ghSt(st),T=scr.ghTry;if(!T||!s.own.includes(T.id))return;const k=T.k,id=T.id;
+function ghUse(...a){return hooks.goi('ghUse',this,a)}
+hooks.ham('ghUse',function(silent){const st=S.st[sid],s=ghSt(st),T=scr.ghTry;if(!T||!s.own.includes(T.id))return;const k=T.k,id=T.id;
  if(k==='of')st.outfit=st.outfit===id?'':id;else if(k==='dec'){s.dec=s.dec.includes(id)?s.dec.filter(x=>x!==id):s.dec.concat(id)}else s[k]=s[k]===id?'':id;
- scr.ghTry=null;save();if(!silent)try{sfx('card')}catch(e){}render()}
-function ghIsle(st){const s=ghSt(st),T=scr.ghTry,list=s.dec.concat(T&&T.k==='dec'&&!s.dec.includes(T.id)?[T.id]:[]);
- return`<div class="ghisle">${spr('island',120)}${list.map(id=>{const p=GH_SLOT[id]||[50,50];return`<span class="ghdec ${T&&T.id===id&&!s.dec.includes(id)?'try':''}" style="left:${p[0]}%;top:${p[1]}%">${spr(id,id==='boat'?30:36)}</span>`}).join('')}</div>`}
-function viewShop(st){const s=ghSt(st),cat=scr.ghCat||'of',C=GH.find(c=>c.k===cat),T=scr.ghTry,f=T&&ghFind(T.id),L=ghLook(st);
+ scr.ghTry=null;save();if(!silent)try{sfx('card')}catch(e){}render()});
+function ghIsle(...a){return hooks.goi('ghIsle',this,a)}
+hooks.ham('ghIsle',function(st){const s=ghSt(st),T=scr.ghTry,list=s.dec.concat(T&&T.k==='dec'&&!s.dec.includes(T.id)?[T.id]:[]);
+ return`<div class="ghisle">${spr('island',120)}${list.map(id=>{const p=GH_SLOT[id]||[50,50];return`<span class="ghdec ${T&&T.id===id&&!s.dec.includes(id)?'try':''}" style="left:${p[0]}%;top:${p[1]}%">${spr(id,id==='boat'?30:36)}</span>`}).join('')}</div>`});
+function viewShop(...a){return hooks.goi('viewShop',this,a)}
+hooks.ham('viewShop',function(st){const s=ghSt(st),cat=scr.ghCat||'of',C=GH.find(c=>c.k===cat),T=scr.ghTry,f=T&&ghFind(T.id),L=ghLook(st);
  const tabs=GH.map(c=>`<button type="button" class="ghtab ${c.k===cat?'on':''}" onclick="scr.ghCat='${c.k}';scr.ghTry=null;render()" aria-pressed="${c.k===cat}"><span class="ghti">${spr(c.ic,c.k==='of'?22:c.k==='acc'?11:c.k==='tk'?14:20)}</span><span>${c.n}</span></button>`).join('');
  const catB=cat==='care'?careGrid(st):'';
  let act='';if(f&&(T.k==='pet'||T.k==='care')&&typeof petAct==='function')act=petAct(T,f,st);else if(f){const own=s.own.includes(T.id),use=T.k==='of'?st.outfit===T.id:T.k==='dec'?s.dec.includes(T.id):s[T.k]===T.id,pr=f.x[2],short=Math.max(0,pr-st.coins);
@@ -70,10 +85,10 @@ function viewShop(st){const s=ghSt(st),cat=scr.ghCat||'of',C=GH.find(c=>c.k===ca
  return`<div class="page ghpage"><section class="card ghtop"><div class="ghhead"><h2>${spr('shopI',26)} Cửa hàng Jenny</h2><span class="ghcoin">${spr('coin',20)} <b>${st.coins}</b> xu</span></div>
   <div class="ghstage ${cat==='dec'?'isle':''}">${stage}<div class="ghinfo">${f?`<b>${esc(f.x[1])}</b><small>${T.k==='pet'?petNote(st,T.id):T.k==='care'?esc(careNote(T.id)):s.own.includes(T.id)?'Em đã có món này':'Đang thử — chưa mua'}</small>`:`<b>Chạm món đồ để thử</b><small>Thử miễn phí. Thích thì mua bằng xu.</small>`}${act}</div></div></section>
   <nav class="ghtabs" aria-label="Loại hàng">${tabs}</nav>${body}
-  <p class="muted ghnote">${LANG==='en'?'Earn coins: each correct answer +5 · pass a level +10, island boss +30 · fix a mistake +5 · practice page task +5, ★ challenge +15 · games up to +20 each · class boss +20–30 · homework +20. No daily limit.':'Kiếm xu: mỗi câu đúng +5 · qua màn +10, trùm đảo +30 · sửa xong 1 lỗi +5 · Tự luyện mỗi bài +5, ★ +15 · trò chơi tới +20 mỗi lượt · trùm lớp +20–30 · bài về nhà +20. Không giới hạn xu trong ngày.'}</p></div>`}
+  <p class="muted ghnote">${LANG==='en'?'Earn coins: each correct answer +5 · pass a level +10, island boss +30 · fix a mistake +5 · practice page task +5, ★ challenge +15 · games up to +20 each · class boss +20–30 · homework +20. No daily limit.':'Kiếm xu: mỗi câu đúng +5 · qua màn +10, trùm đảo +30 · sửa xong 1 lỗi +5 · Tự luyện mỗi bài +5, ★ +15 · trò chơi tới +20 mỗi lượt · trùm lớp +20–30 · bài về nhà +20. Không giới hạn xu trong ngày.'}</p></div>`});
 /* gắn vào trang chính tiểu học: tab 'shop' + nút xu ở thẻ chào */
-{const _v=viewHome1t;viewHome1t=function(){const r=_v.apply(this,arguments);if(scr.tab!=='shop')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewShop(st)+(i>=0?r.slice(i):'')}}
-{const _h=viewHome1;viewHome1=function(){return _h.apply(this,arguments).replace(/<span class="chip">🪙 <b>(\d+)<\/b><\/span>/,`<button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})" aria-label="$1 xu, mở Cửa hàng">🪙 <b>$1</b> <span>Cửa hàng ▸</span></button>`)}}
+{const _v=hooks.cu('viewHome1t');hooks.de('viewHome1t',function(){const r=_v.apply(this,arguments);if(scr.tab!=='shop')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewShop(st)+(i>=0?r.slice(i):'')})}
+{const _h=hooks.cu('viewHome1');hooks.de('viewHome1',function(){return _h.apply(this,arguments).replace(/<span class="chip">🪙 <b>(\d+)<\/b><\/span>/,`<button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})" aria-label="$1 xu, mở Cửa hàng">🪙 <b>$1</b> <span>Cửa hàng ▸</span></button>`)})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .ghchip{cursor:pointer;background:#FFF4D6!important;color:#7A4E00}.ghchip span{font-family:var(--f-display);font-size:16px;margin-left:2px}
 .ghtop{padding:12px!important}.ghhead{display:flex;align-items:center;gap:8px}.ghhead h2{display:flex;align-items:center;gap:6px;margin:0;font-size:24px}.ghcoin{margin-left:auto;display:flex;align-items:center;gap:4px;font-family:var(--f-display);font-size:22px;background:#FFF4D6;color:#7A4E00;padding:2px 8px;box-shadow:var(--f2)}
@@ -97,11 +112,11 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .ghnote{font-size:13px;margin:14px 2px}
 </style>`);
 /* thanh mua nổi ở đáy màn hình (thầy góp ý 23/10): chọn món nào thì nút Mua/Dùng hiện ngay bên dưới, không phải kéo lên */
-{const _v=viewShop;viewShop=function(st){let r=_v.apply(this,arguments);try{const T=scr.ghTry,f=T&&ghFind(T.id);if(!f)return r;
+{const _v=hooks.cu('viewShop');hooks.de('viewShop',function(st){let r=_v.apply(this,arguments);try{const T=scr.ghTry,f=T&&ghFind(T.id);if(!f)return r;
   const m=r.match(/<div class="ghinfo">[\s\S]*?(<button[^>]*class="gobtn ghgo[^"]*"[\s\S]*?<\/button>)<\/div><\/div><\/section>/);if(!m)return r;
   const note=r.match(/<div class="ghinfo"><b>([\s\S]*?)<\/b><small>([\s\S]*?)<\/small>/);
   const bar=`<div class="ghbar" role="region" aria-label="Mua món đã chọn"><div class="grow"><b>${note?note[1]:''}</b><small>${note?note[2]:''}</small></div>${m[1].replace('gobtn ghgo','gobtn ghgo ghbarbtn')}<button type="button" class="ghbarx" onclick="scr.ghTry=null;render()" aria-label="Bỏ chọn">✕</button></div>`;
-  const i=r.lastIndexOf('</div>');return r.slice(0,i)+bar+r.slice(i)}catch(e){return r}}}
+  const i=r.lastIndexOf('</div>');return r.slice(0,i)+bar+r.slice(i)}catch(e){return r}})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .ghbar{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(74px + env(safe-area-inset-bottom,0px));z-index:40;max-width:560px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--sun-soft);color:var(--ink);box-shadow:var(--f2),4px 4px 0 0 var(--pxk,#1F2A5A);animation:ghup .2s steps(3)}
 @keyframes ghup{from{transform:translateY(20px);opacity:0}}

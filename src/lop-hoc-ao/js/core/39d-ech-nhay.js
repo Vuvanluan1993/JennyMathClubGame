@@ -1,6 +1,15 @@
 /* ===================== ẾCH NHẢY LÁ SÚNG: hiệu ứng nhảy / rơi / bơi về bờ ===================== */
 /* Chạm lá súng → ếch nhảy vòng cung từ bờ lên lá đó. Đúng: đứng trên lá rồi sang hàng mới.
    Sai: lá chìm, ếch rơi xuống nước (bọt bắn), rồi bơi lại bờ (chỉ thấy đầu, có gợn sóng); bơi về tới bờ mới được chọn tiếp. */
+import { hooks } from './00-hooks.js';
+import { render } from './13-giao-dien-chung.js';
+import { pixelize, PXC, PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { BIOME } from './23b-vung-bien.js';
+import { isl1, sayJ } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { hurtFx, sfx } from './33b-am-thanh.js';
+import { xgHearts, xgRec } from './37-tro-choi-dot-1.js';
+import { frogQ, frogSay, xblit, xcv, xg3End, xgRand, xpx, XSHC } from './39-tro-choi-dot-3.js';
 PXS.frogSwim=["...kk.....kk....","..kwwk...kwwk...","..kwkk...kwkk...",".kggggggggggggk.","kgggggggggggggGk","kgGgggggggggGggk","bbbbbbbbbbbbbbbb",".bwb..bwb..bwb..","................"];
 const FROG_BANK=[147,254],FROG_PAD=[[33,96],[147,96],[261,96]];
 function frogAnim(el,frames,ms,steps){return new Promise(res=>{try{const a=el.animate(frames,{duration:ms,easing:`steps(${steps||Math.max(4,Math.round(ms/60))})`,fill:'forwards'});a.onfinish=()=>res();a.oncancel=()=>res()}catch(e){setTimeout(res,ms)}})}
@@ -33,7 +42,7 @@ function frogDone(g,i,ok){if(scr!==g)return;g.lock=0;
 
 /* ---- Ao sống động: nước lấp lánh trôi, cá bơi, lau sậy và cỏ rung rinh, sen và lá súng nhấp nhô, gợn sóng ---- */
 let frogFx=null;
-function frogBg(){const x=xcv('xfcv');if(!x)return;const g=scr;if(!g||g.mode!=='frog')return;
+export function frogBg(){const x=xcv('xfcv');if(!x)return;const g=scr;if(!g||g.mode!=='frog')return;
   if(!frogFx||frogFx.cv!==x.canvas){frogFx={cv:x.canvas,f:0,fish:[{x:10,y:70,v:.6,c:'o'},{x:80,y:20,v:-.45,c:'y'},{x:50,y:77,v:-.35,c:'r'}],rip:[]}}
   frogDraw(x)}
 function frogDraw(x){const p0=xpx(x),g=scr,F=frogFx,f=F.f,SC=Math.round(F.sc||0),p=(c,X,Y,w,h)=>p0(c,X,Y+SC,w,h),B=(typeof BIOME!=='undefined'&&BIOME.jung)?BIOME.jung.band:['#8DDFB9','#62CD9E','#3EB585','#26996C'],rn=xgRand(5+g.ri*7);
@@ -52,8 +61,8 @@ function frogDraw(x){const p0=xpx(x),g=scr,F=frogFx,f=F.f,SC=Math.round(F.sc||0)
   /* lau sậy đung đưa */ [[2,4],[5,6],[108,2],[111,5]].forEach(([X,Y],i)=>{const s=Math.round(Math.sin((f+i*3)/4));for(let k=0;k<12;k++){const off=k<4?s:0;p('G',X+off,Y+k,1,1)}p('N',X+s,Y-2,1,3);p('n',X+s,Y-1,1,1)});
   /* bờ gần: hàng đầu là bãi cỏ; các hàng sau ếch đứng trên lá súng vừa nhảy tới */ if(g.ri>0){for(let y=84;y<100;y++)p0(B[3],0,y,114,1);const cx=57,cy=94;p0('k',cx-15,cy-5,30,11);p0('G',cx-14,cy-4,28,9);p0('g',cx-13,cy-4,24,7);p0('#26996C',cx-2,cy-4,3,4);p0('l',cx-11,cy-3,6,1)}else{ p('k',0,84,114,1);p('G',0,85,114,15);p('g',0,86,114,10);for(let X=1;X<114;X+=4){const w=((X>>2)+(f>>1))%4===0?1:0;p('l',X+w,85+(X%3),1,2);p('G',X+1,85,1,1)}}
   /* cờ đích bay phấp phới */ if(far){p('N',56,1,1,10);const fl=(f>>1)%2;p('r',57,1,6-fl,4);p('r',57,1,6,3-fl);p('y',58,2,2,1)}}
-{let tid=0;const _r=render;render=function(){const v=_r.apply(this,arguments);try{clearInterval(tid);if(scr.k==='xg'&&scr.mode==='frog'&&!scr.end&&document.getElementById('xfcv')){frogFx=null;frogBg();
-  tid=setInterval(()=>{const x=xcv('xfcv');if(!x||scr.k!=='xg'||scr.mode!=='frog'||scr.end){clearInterval(tid);return}frogFx.f++;frogDraw(x)},120)}}catch(e){}return v}}
+{let tid=0;const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{clearInterval(tid);if(scr.k==='xg'&&scr.mode==='frog'&&!scr.end&&document.getElementById('xfcv')){frogFx=null;frogBg();
+  tid=setInterval(()=>{const x=xcv('xfcv');if(!x||scr.k!=='xg'||scr.mode!=='frog'||scr.end){clearInterval(tid);return}frogFx.f++;frogDraw(x)},120)}}catch(e){}return v})}
 
 /* đồ vật khác nhau mỗi hàng: đá, khúc gỗ, rùa, vịt, chuồn chuồn, khóm sen */
 function frogDecor(p,g,f){const r=xgRand(101+g.ri*13),pick=['rock','log','turtle','duck','fly','lotus2'].sort(()=>r()-.5).slice(0,2);
@@ -72,7 +81,7 @@ function frogAdvance(g,i,el,pad){if(scr!==g)return;const z=document.getElementBy
   if(pad)frogAnim(pad,[{transform:'translate(0,0)'},{transform:`translate(${FROG_BANK[0]-P[0]}px,${FROG_BANK[1]-P[1]+30}px)`}],520,6);
   let k=0;const t=setInterval(()=>{k++;if(frogFx)frogFx.sc=Math.min(30,k*5);if(k>=6)clearInterval(t)},85);
   setTimeout(()=>{if(frogFx)frogFx.sc=0;g.enter=1;frogDone(g,i,true)},600)}
-{const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='frog'&&scr.enter){scr.enter=0;document.querySelectorAll('.xfpad').forEach((b,j)=>{b.classList.add('xfin');b.style.animationDelay=(j*80)+'ms'})}}catch(e){}return v}}
+{const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='frog'&&scr.enter){scr.enter=0;document.querySelectorAll('.xfpad').forEach((b,j)=>{b.classList.add('xfin');b.style.animationDelay=(j*80)+'ms'})}}catch(e){}return v})}
 (function(){const st=document.createElement('style');st.textContent=`
 .xfgo .xfpad:not(.carry){transition:transform .45s steps(5),opacity .45s steps(5);transform:translateY(120px);opacity:0}
 .xfpad.xfin{animation:xfin .5s steps(5) backwards,xfbob 1.6s steps(2) .5s infinite}
@@ -83,9 +92,9 @@ function frogAdvance(g,i,el,pad){if(scr!==g)return;const z=document.getElementBy
 /* ===================== GHÉP HÌNH: vẽ khối chính xác (trụ, lập phương, hộp chữ nhật, cầu) ===================== */
 /* Vẽ viền đầy đủ như hình trong sách: khối trụ có mặt đáy trên là hình elip đủ, hai đường sinh thẳng đứng, nửa elip đáy dưới
    (nửa sau nét đứt khi đủ chỗ); khối lập phương / hộp có mặt trước, mặt trên, mặt bên và đủ các cạnh; khối cầu tròn có bóng và đốm sáng. */
-{const _sf=shapeFill;
+{const _sf=hooks.cu('shapeFill');
  const LIGHT={b:'x',B:'b',o:'t',O:'o',y:'y',a:'y',c:'#F8B3A6',R:'c',p:'#C9A6E0',P:'p',g:'l',G:'g',x:'e',r:'#F8B3A6'};
- shapeFill=function(ctx,k,X,Y,W,H,cols,ghost){if(!['tru','lapphuong','hop','cau'].includes(k))return _sf.apply(this,arguments);
+ hooks.de('shapeFill',function(ctx,k,X,Y,W,H,cols,ghost){if(!['tru','lapphuong','hop','cau'].includes(k))return _sf.apply(this,arguments);
   const p=xpx(ctx),[c1,c2]=cols||XSHC[k]||['b','B'],cl=LIGHT[c1]||'w',G1=ghost?'#E3E7F0':c1,G2=ghost?'#C3CBDD':c2,GL=ghost?'#F1F3F8':cl;
   const line=(x0,y0,x1,y1,c,dash)=>{x0=Math.round(x0);y0=Math.round(y0);x1=Math.round(x1);y1=Math.round(y1);const dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1;let e=dx+dy,n=0;for(;;){if(!dash||(n++>>1)%2===0)p(c,x0,y0);if(x0===x1&&y0===y1)break;const e2=2*e;if(e2>=dy){e+=dy;x0+=sx}if(e2<=dx){e+=dx;y0+=sy}}};
   const fillPoly=(pts,c)=>{const ys=pts.map(q=>q[1]);for(let py=Math.floor(Math.min(...ys));py<=Math.ceil(Math.max(...ys));py++){const xs=[];for(let i=0,j=pts.length-1;i<pts.length;j=i++){const[xi,yi]=pts[i],[xj,yj]=pts[j];if((yi>py+.5)!==(yj>py+.5))xs.push(xi+(py+.5-yi)*(xj-xi)/(yj-yi))}xs.sort((a,b)=>a-b);for(let m=0;m+1<xs.length;m+=2)for(let px=Math.round(xs[m]);px<Math.round(xs[m+1]);px++)p(c,px,py)}};
@@ -115,4 +124,4 @@ function frogAdvance(g,i,el,pad){if(scr!==g)return;const z=document.getElementBy
   fillPoly([A,A2,B2,B],GL);fillPoly([B,B2,C2,C],G2);fillPoly([A,B,C,D],G1);
   [[A,B],[B,C],[C,D],[D,A],[A,A2],[A2,B2],[B2,B],[B2,C2],[C2,C]].forEach(([u,v])=>line(u[0],u[1],v[0],v[1],'k'));
   if(fw+d>=20&&!ghost){const D2=[ox+d,oy+fh-1-d];line(D2[0],D2[1],A2[0],A2[1],'#5E6B8C',true);line(D2[0],D2[1],C2[0],C2[1],'#5E6B8C',true);line(D2[0],D2[1],D[0],D[1],'#5E6B8C',true)}
- }}
+ })}

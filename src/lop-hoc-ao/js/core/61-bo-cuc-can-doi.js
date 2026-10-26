@@ -2,11 +2,12 @@
    Các dãy ô (số liệu, thẻ lớp) không để hàng cuối lẻ loi: số cột chọn theo số ô và độ rộng.
    6 ô → 3 cột (2 hàng) · 4 ô → 4 cột hoặc 2 cột · 3 ô → 3 cột · 5 ô → 3 + 2 · điện thoại: 2 cột (3 ô thì 1 cột nếu quá hẹp).
    Đánh dấu số ô vào data-n sau mỗi lần vẽ; CSS lo phần còn lại. */
+import { hooks } from './00-hooks.js';
 function bcBang(){try{if(role==='hs')return;document.querySelectorAll('#app table').forEach(t=>{const rows=[...t.rows];if(!rows.length)return;const h=rows.find(r=>r.querySelector('th'));if(!h)return;
   const L=[...h.cells].map(c=>c.textContent.trim());h.classList.add('mth');t.classList.add('mtable');
   rows.forEach(r=>{if(r===h)return;[...r.cells].forEach((c,i)=>{if(!c.dataset.l&&L[i])c.dataset.l=L[i];if(i>0&&c.childNodes.length&&!(c.children.length===1&&c.firstElementChild.classList.contains('mv')&&c.childNodes.length===1)){const d=document.createElement('div');d.className='mv';while(c.firstChild)d.appendChild(c.firstChild);c.appendChild(d)}})})})}catch(e){}}
 function bcCanDoi(){bcBang();try{document.querySelectorAll('.kpis,.lopgrid').forEach(k=>{const n=k.children.length;if(k.dataset.n!=String(n))k.dataset.n=n})}catch(e){}}
-{const _r=render;render=function(){const r=_r.apply(this,arguments);bcCanDoi();return r}}
+{const _r=hooks.cu('render');hooks.de('render',function(){const r=_r.apply(this,arguments);bcCanDoi();return r})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .kpis[data-n]{grid-template-columns:repeat(var(--bc,3),minmax(0,1fr))}
 .kpis[data-n="1"]{--bc:1}.kpis[data-n="2"]{--bc:2}.kpis[data-n="3"]{--bc:3}.kpis[data-n="4"]{--bc:4}.kpis[data-n="5"],.kpis[data-n="6"],.kpis[data-n="9"]{--bc:3}.kpis[data-n="8"]{--bc:4}

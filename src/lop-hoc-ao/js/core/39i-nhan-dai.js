@@ -2,6 +2,7 @@
 /* Nhãn (số, phép tính, tên đồ vật) trên cá, bóng bay, ngôi sao, biển chuột, lá súng, toa tàu… được xếp loại theo độ dài:
    l2 (6–9 kí tự): chữ nhỏ lại; l3 (từ 10 kí tự, hoặc tên đồ vật nhiều chữ): xuống 2 dòng, chữ nhỏ, đặt thành thẻ tên
    bên dưới (cá, sao) để hình vẫn hiện rõ; vật mang nhãn dài to hơn một chút. */
+import { PXS, pxURI } from './22-do-hoa-pixel-mau-logo-clb.js';
 const LBL_SEL='.mgt,.xmsign,.xfpad b,.xtw b,.xstag';
 function lblMark(el){if(!el||!el.classList)return;const t=(el.textContent||'').replace(/\s+/g,' ').trim(),n=t.length,words=t.split(' ').length;
   const word=/[a-zà-ỹđ]{2,}/i.test(t.replace(/\b(cm|dm|mm|km|kg|g|m|l|ml|giờ|phút|đồng)\b/gi,''));const cls=word&&n>=5?'l3':n>=10?'l4':n>=6?'l2':'';el.classList.remove('l2','l3','l4');if(cls)el.classList.add(cls);
@@ -44,7 +45,7 @@ function lblMark(el){if(!el||!el.classList)return;const t=(el.textContent||'').r
  COL.forEach(([B,b],i)=>['A','B'].forEach(f=>{const T=f==='A'?TA:TB;PXS[`fsh${f}${i}`]=BODY.map((r,j)=>(T[j]+r).replace(/B/g,B).replace(/b/g,b))}));}
 for(let i=0;i<6;i++)PXS['fshS'+i]=PXS['fshA'+i].map((r,j)=>r+PXS['fshB'+i][j]);
 /* một tấm ảnh 2 khung, đổi khung bằng dịch nền theo bước: không nhấp nháy */
-function fishFrames(n){const i=n%6,d=pxURI('fshS'+i);return`<span class="fswim"><span class="fsheet" style="background-image:url(&quot;${d.u}&quot;)"></span></span>`}
+export function fishFrames(n){const i=n%6,d=pxURI('fshS'+i);return`<span class="fswim"><span class="fsheet" style="background-image:url(&quot;${d.u}&quot;)"></span></span>`}
 (function(){const st=document.createElement('style');st.textContent=`
 .fishi{width:96px!important;height:auto!important;display:flex!important;flex-direction:column;align-items:center}
 .fishi .fswim{position:relative;display:block;width:71px;height:40px;animation:fbob 1s steps(2) infinite}

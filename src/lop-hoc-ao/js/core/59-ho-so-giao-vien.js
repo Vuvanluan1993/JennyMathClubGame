@@ -5,18 +5,35 @@
    2) Trang hồ sơ 5 thẻ: Tổng quan · Học tập · Lỗi & bài về nhà · Hoạt động · Ghi chú & giao bài.
    3) Phiếu bài có thể giao riêng cho 1 em (a.hs) và theo lớp (a.lop).
    4) Bản đầy đủ: tạo dữ liệu mẫu 5 tuần cho học sinh lớp 1–5 (trừ Lê Bảo Na). */
-{const _r=hsRec;hsRec=function(q,ok,first){let dt=-1;try{dt=(Date.now()-(scr._la||scr.t0||Date.now()))/1000}catch(e){}
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { gvCLS, gvTen, newStudent, ORG_ON, save, simDay } from './09-du-lieu-demo.js';
+import { evDay, log } from './10-su-kien-mau-xapi.js';
+import { p1Stars, p2Stars, totalStars } from './11-sao-va-mo-khoa.js';
+import { alerts } from './12-so-lieu.js';
+import { go, initials, render, shortTitle, toast } from './13-giao-dien-chung.js';
+import { viewGV } from './19-giao-vien.js';
+import { mist } from './21-lop-6-che-do-tro-choi.js';
+import { isl1 } from '../content/hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { PRIM } from './25-lop-1-so-loi-sai-toan-jenny.js';
+import { HS_AX, HS_AXN, HS_MIN, HS_OPEN, HS_TH, hsAxFix, hsDayDate, hsHeal, hsIndex, hsKey, hsLogic, hsLoiVan,
+  hsMakeQ, hsMonth, hsMuc, hsScores, hsSnap, hsStreaks, hsSuy, hsToday, hsTodayKey, hsWord } from './35-ho-so.js';
+import { PET_SP } from './49b-dao-nha-thu-cung.js';
+import { asgAll, asgD, asgMine, asgName, asgR, asgState, DAYMS, phQs, seedRnd } from './53-phong-hoc.js';
+import { BVN_XU, bvnCho } from './60-bai-ve-nha.js';
+import { LOI_NGAY, loiConNgay, loiGiu } from './63-loi-tu-bo.js';
+{const _r=hooks.cu('hsRec');hooks.de('hsRec',function(q,ok,first){let dt=-1;try{dt=(Date.now()-(scr._la||scr.t0||Date.now()))/1000}catch(e){}
   const res=_r.apply(this,arguments);
   try{const st=S.st[sid];if(st&&st.grade<=5){const o=st.dd[hsTodayKey()];if(o){
     if(first){o.f=(o.f||0)+1;if(ok)o.fc=(o.fc||0)+1}else if(ok)o.fx=(o.fx||0)+1;
     if(dt>=0&&dt<3)o.fast=(o.fast||0)+1;
     const h=new Date().getHours(),i=h<12?0:h<18?1:2;o.h=o.h||[0,0,0];o.h[i]++}}}catch(e){}
-  return res}}
-{const _g=gdOpen;gdOpen=function(){const r=_g.apply(this,arguments);try{if(r!==false&&role==='hs'){const st=S.st[sid];if(st&&st.grade<=5){hsHeal(st,sid);const k=hsTodayKey(),o=st.dd[k]||(st.dd[k]={n:0,c:0,sec:0});o.gd=(o.gd||0)+1}}}catch(e){}return r}}
+  return res})}
+{const _g=hooks.cu('gdOpen');hooks.de('gdOpen',function(){const r=_g.apply(this,arguments);try{if(r!==false&&role==='hs'){const st=S.st[sid];if(st&&st.grade<=5){hsHeal(st,sid);const k=hsTodayKey(),o=st.dd[k]||(st.dd[k]={n:0,c:0,sec:0});o.gd=(o.gd||0)+1}}}catch(e){}return r})}
 /* Phiếu: theo lớp (a.lop) và riêng từng em (a.hs) */
-{const _m=asgMine;asgMine=function(st){const id=Object.keys(S.st).find(k=>S.st[k]===st);
+{const _m=hooks.cu('asgMine');hooks.de('asgMine',function(st){const id=Object.keys(S.st).find(k=>S.st[k]===st);
   const l=(typeof ORG_ON!=='undefined'&&ORG_ON&&S.org)?S.org.gd[id]:null;
-  return _m.apply(this,arguments).filter(a=>(!a.hs||a.hs.includes(id))&&(!a.lop||!l||a.lop===l))}}
+  return _m.apply(this,arguments).filter(a=>(!a.hs||a.hs.includes(id))&&(!a.lop||!l||a.lop===l))})}
 
 /* ---------- số liệu ---------- */
 function gvTong(st){const t={n:0,c:0,sec:0,f:0,fc:0,fx:0,fast:0,gd:0,h:[0,0,0]};Object.values(st.dd||{}).forEach(o=>{['n','c','sec','f','fc','fx','fast','gd'].forEach(k=>t[k]+=o[k]||0);(o.h||[]).forEach((v,i)=>t.h[i]+=v)});return t}
@@ -157,13 +174,13 @@ window.gvBoQua=(id,i,on)=>{const kd=gvKk(id,i);const st=S.st[id];st.gvSkip=st.gv
 window.gvGiaoDang=(id,i)=>{const kd=gvKk(id,i);const st=S.st[id];if(!gvNguon(st,kd).length){toast('Em chưa học đảo nào có dạng này');return}const a=gvPhieuMoi(id,kd);asgAll().push(a);scr.pv=null;
   log('gv','assigned','Phiếu riêng · '+a.ten+' · '+st.name,0,{});save();render();toast('Đã giao phiếu "'+kd+'" cho '+st.name)};
 /* phiếu theo dạng: câu dễ trước, vừa sau; kết quả tính vào tỉ lệ đúng của dạng */
-{const _q=phQs;phQs=function(a,seed){if(!a||!a.kinds)return _q.apply(this,arguments);const mr=Math.random;Math.random=seedRnd(seed);const qs=[];
+{const _q=hooks.cu('phQs');hooks.de('phQs',function(a,seed){if(!a||!a.kinds)return _q.apply(this,arguments);const mr=Math.random;Math.random=seedRnd(seed);const qs=[];
   try{const ix=hsIndex(a.g),T=new Set(a.tiets);let lan=0;for(let k=0;k<a.n&&lan<a.n*4;lan++){const kd=a.kinds[k%a.kinds.length],src=((ix.kinds[kd]||{}).src||[]).filter(s=>T.has(s[0]));if(!src.length)break;
     const de=Math.min(...src.map(s=>s[1])),D0=src.filter(s=>s[1]===de),V=src.filter(s=>s[1]>de),pool=k<a.n/2||!V.length?D0:V,sr=pool[Math.floor(Math.random()*pool.length)];
-    let q=null;try{q=hsMakeQ(sr,kd)}catch(e){}if(q){qs.push(q);k++}}}finally{Math.random=mr}return qs}}
-{const _s=phSubmit;phSubmit=function(){try{const g=scr,a=asgAll().find(x=>x.id===g.ph),st=S.st[sid];if(a&&a.kinds&&st&&g.qs){
+    let q=null;try{q=hsMakeQ(sr,kd)}catch(e){}if(q){qs.push(q);k++}}}finally{Math.random=mr}return qs})}
+{const _s=hooks.cu('phSubmit');hooks.de('phSubmit',function(){try{const g=scr,a=asgAll().find(x=>x.id===g.ph),st=S.st[sid];if(a&&a.kinds&&st&&g.qs){
     g.qs.forEach((q,k)=>{const kd=q.label;if(!a.kinds.includes(kd))return;const v=hsIndex(st.grade).kinds[kd],e=st.sk[kd]||(st.sk[kd]={r:[],t:0,ax:v?v.ax:'so'});e.r.push(g.ans[k]&&g.ans[k].ok?1:0);if(e.r.length>10)e.r.splice(0,e.r.length-10);e.t=Date.now()});hsSnap(st)}}catch(e){}
-  return _s.apply(this,arguments)}}
+  return _s.apply(this,arguments)})}
 
 window.gvGhiChu=(e,id)=>{e.preventDefault();const t=document.getElementById('gcT').value.trim();if(!t)return;const st=S.st[id];(st.gvNote=st.gvNote||[]).push({d:S.day,by:gvTen(),t});save();render();toast('Đã lưu ghi chú')};
 window.gvXoaGC=(id,i)=>{const st=S.st[id];st.gvNote.splice(i,1);save();render();toast('Đã xóa ghi chú')};
@@ -190,7 +207,7 @@ function viewGVHS(id){
     <div class="row" style="gap:6px;margin-top:6px"><span class="pill">${totalStars(st)} ★</span><span class="pill">${st.coins} xu</span>${st.active?`<span class="pill acc">Toán Jenny${S.org&&S.org.nl[id]&&!(l&&l.tj.on)?' · ngoại lệ':' · theo lớp'}</span>`:''}</div></div></section>
    ${st.grade>5?'':`<div class="seg gtabs" role="tablist" aria-label="Hồ sơ">${GV_TABS.map(([k,t])=>`<button role="tab" class="${k===tab?'on':''}" aria-selected="${k===tab}" onclick="go({k:'gvhs',id:'${id}',tab:'${k}'})">${t}</button>`).join('')}</div>`}
    ${body}</div>`}
-{const _vg=viewGV;viewGV=function(){if(scr&&scr.k==='gvhs')return viewGVHS(scr.id);return _vg.apply(this,arguments)}}
+{const _vg=hooks.cu('viewGV');hooks.de('viewGV',function(){if(scr&&scr.k==='gvhs')return viewGVHS(scr.id);return _vg.apply(this,arguments)})}
 
 /* ---------- trang phụ huynh: như hồ sơ giáo viên (không có ghi chú riêng, không có nút giao bài) ---------- */
 const PH_TABS=[['tq','Tổng quan'],['hdht','Hoạt động học tập'],['loi','Lỗi & bài về nhà']];
@@ -211,12 +228,13 @@ function viewPHHS(id){const st=S.st[id];hsHeal(st,id);const l=typeof lopCua==='f
       <p class="muted" style="margin:6px 0 0">Lỗi ra khỏi sổ khi con đúng 2 lần liền, hoặc khi con làm xong bài luyện lỗi cô giao. Xem chi tiết ở thẻ "Lỗi &amp; bài về nhà".</p></section>`:''})()}
    <div class="seg gtabs" role="tablist" aria-label="Kết quả học tập">${PH_TABS.map(([k,t])=>`<button role="tab" class="${k===tab?'on':''}" aria-selected="${k===tab}" onclick="scr.phTab='${k}';render()">${t}</button>`).join('')}</div>
    ${body}</div>`}
-{const _p=viewPH;viewPH=function(){try{if(role==='ph'&&typeof ORG_ON!=='undefined'&&ORG_ON&&S.st[sid]&&S.st[sid].grade<=5)return viewPHHS(sid)}catch(e){console.error(e)}return _p.apply(this,arguments)}}
+{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){try{if(role==='ph'&&typeof ORG_ON!=='undefined'&&ORG_ON&&S.st[sid]&&S.st[sid].grade<=5)return viewPHHS(sid)}catch(e){console.error(e)}return _p.apply(this,arguments)})}
 
 /* ---------- dữ liệu mẫu (bản đầy đủ) ---------- */
 /* Giả định các em đã học 8 tháng (5/9/2026 → 2/5/2027, ngày demo 240). Sau này sẽ xóa khi có dữ liệu thật. */
 const GV_NG=240;
-function gvNow(){try{if(typeof ORG_ON!=='undefined'&&ORG_ON&&S&&S.org)return hsDayDate(S.day).getTime()+(Date.now()%864e5)}catch(e){}return Date.now()}
+export function gvNow(...a){return hooks.goi('gvNow',this,a)}
+hooks.ham('gvNow',function(){try{if(typeof ORG_ON!=='undefined'&&ORG_ON&&S&&S.org)return hsDayDate(S.day).getTime()+(Date.now()%864e5)}catch(e){}return Date.now()});
 const GV_NX=[
  f=>`${f} học đều đặn, cô rất vui. Bố mẹ khen con mỗi tối nhé.`,
  (f,w)=>`${f} còn nhầm ở phần ${w}. Bố mẹ cho con đọc to đề trước khi làm giúp cô.`,
@@ -226,7 +244,8 @@ const GV_NX=[
  (f,w)=>`Cô đã giao thêm phiếu ${w} cho ${f}. Bố mẹ nhắc con làm trong 2 ngày nhé.`,
  f=>`${f} nghỉ học mấy hôm. Bố mẹ giúp con giữ thói quen 15 phút mỗi ngày.`,
  (f,w,b)=>`${f} làm tốt phần ${b}, hay giúp bạn trong lớp. Cô tặng con thẻ "Giúp bạn".`];
-function gvMau(){
+function gvMau(...a){return hooks.goi('gvMau',this,a)}
+hooks.ham('gvMau',function(){
   if(typeof ORG_ON==='undefined'||!ORG_ON||!S||!S.org||S.org.mauHS7||role==='hs')return; /* chỉ tạo khi mở trang giáo viên/quản lý/phụ huynh */S.org.mauHS7=1;
   try{window.orgHeal&&window.orgHeal()}catch(e){}
   const NG=GV_NG;S.day=NG;const thang=[];for(let d=1;d<=NG;d+=1){const m=hsMonth(hsDayDate(d));if(!thang.includes(m))thang.push(m)}
@@ -267,8 +286,8 @@ function gvMau(){
       S.asg.push({id:'m'+id+'x',mau:1,bat:1,g,lop:S.org.gd[id],hs:[id],kinds:[kd],ten:`Luyện dạng: ${kd}`,tiets:[...new Set(src.map(sr=>sr[0]))],n:8,dat:80,t,due:t+2*DAYMS,by:co})}
   });
   S.day=NG;save();
-}
-{const _r=render;render=function(){try{gvMau()}catch(e){console.error(e)}return _r.apply(this,arguments)}}
+});
+{const _r=hooks.cu('render');hooks.de('render',function(){try{gvMau()}catch(e){console.error(e)}return _r.apply(this,arguments)})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .gbar{position:relative;display:inline-block;width:100%;max-width:220px;height:10px;background:var(--surface2);border:1px solid var(--line);vertical-align:middle}
 .gbar i{position:absolute;left:0;top:0;bottom:0}.gprev{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.45}

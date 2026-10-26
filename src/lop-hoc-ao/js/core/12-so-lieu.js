@@ -1,12 +1,17 @@
 /* ===================== Số liệu ===================== */
-function dayStats(id,d){
+import { P1_6 } from '../content/hk1/02-phan-i-sgk-ket-noi-tri-thuc-6-chuong-i.js';
+import { L1, M1 } from '../content/hk1/07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
+import { P2 } from '../content/hk1/08-phan-ii-toan-jenny-sach-clb-lop-6-chuong.js';
+import { evDay } from './10-su-kien-mau-xapi.js';
+import { j1s, P2_1 } from './25-lop-1-so-loi-sai-toan-jenny.js';
+export function dayStats(id,d){
   const ev=S.events.filter(e=>e.actor.account.name===id&&evDay(e)===d&&e.verb.id.endsWith('answered'));
   const sec=ev.reduce((a,e)=>a+Math.min(180,parseInt(String(e.result.duration||'PT0S').slice(2))||0),0);
   const stars=S.events.filter(e=>e.actor.account.name===id&&evDay(e)===d&&e.verb.id.endsWith('earned')).reduce((a,e)=>a+(e.result.score?e.result.score.raw:0),0);
   return{n:ev.length,c:ev.filter(e=>e.result.success).length,min:Math.round(sec/60),stars};
 }
-function activeDays(id){let a=0;const from=Math.max(1,S.day-6);for(let d=from;d<=S.day;d++)if(dayStats(id,d).n)a++;return{a,span:S.day-from+1}}
-function alerts(id){
+export function activeDays(id){let a=0;const from=Math.max(1,S.day-6);for(let d=from;d<=S.day;d++)if(dayStats(id,d).n)a++;return{a,span:S.day-from+1}}
+export function alerts(id){
   const st=S.st[id],out=[];
   L1(st).forEach(x=>{const s=st.p1[x.id];s.fails.forEach((f,i)=>{if(f>=2&&!s.m[i])out.push({t:`Kẹt ${x.title.split('.')[0]} · ${M1[i].split(' · ')[0]}`,c:'bad'})})});
   P2.forEach(x=>{const s=st.p2[x.id];s.fails.forEach((f,i)=>{if(f>=2&&!s.m[i])out.push({t:`Kẹt ${x.title.split(' · ')[0]} · màn ${'★'.repeat(i+1)}`,c:'bad'})})});

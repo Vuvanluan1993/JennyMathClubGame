@@ -1,11 +1,13 @@
 /* 80 — Phong cách kiểu Google Classroom cho trang Quản lý, Giáo viên, Phụ huynh (thầy chọn phương án 1, 24/10/2026).
    Giữ nguyên bố cục, khung, nút, vị trí; chỉ đổi chữ (Lexend), màu, cỡ chữ, bo góc, đường viền. Trang học sinh giữ phong cách pixel.
    Màu từ logo Clb: xanh đậm #1F2A5A, xanh biển #0079C1, xanh lá #1E9A52, cam #E0441A, xanh trời #12B5E8, vàng #FCB40C. */
+import { hooks } from './00-hooks.js';
+import { render, setRole } from './13-giao-dien-chung.js';
 (function(){
 const lms=()=>typeof role!=='undefined'&&role!=='hs';
 const dat=()=>{try{document.body.classList.toggle('lms',lms())}catch(e){}};
-if(typeof render==='function'){const _r=render;render=function(){dat();const r=_r.apply(this,arguments);dat();return r}}
-if(typeof setRole==='function'){const _s=setRole;setRole=function(){const r=_s.apply(this,arguments);dat();return r};window.setRole=setRole}
+if(typeof render==='function'){const _r=hooks.cu('render');hooks.de('render',function(){dat();const r=_r.apply(this,arguments);dat();return r})}
+if(typeof setRole==='function'){const _s=hooks.cu('setRole');hooks.de('setRole',function(){const r=_s.apply(this,arguments);dat();return r});window.setRole=setRole}
 document.addEventListener('DOMContentLoaded',dat);
 /* Lexend nằm trong assets/fonts/fonts.css (chữ tự host, P-08) — không chèn Google Fonts nữa. */
 const L='body.px.lms',FF='"Lexend","Be Vietnam Pro",system-ui,sans-serif';

@@ -2,6 +2,9 @@
 /* Mỗi màn chơi gắn thêm 1 lớp canvas pixel (độ phân giải thấp, phóng ×3) chỉ để trang trí: mây trôi, cỏ lay, cá bơi, sao nhấp nháy…
    Lớp này không nhận chạm (pointer-events:none), nằm dưới các vật chơi. Một bộ đếm 120 ms cho cả màn; tự dừng khi rời màn hoặc hết lượt.
    Máy bật "giảm chuyển động" thì chỉ vẽ 1 khung tĩnh. (Ếch nhảy đã có ao động riêng ở 39d.) */
+import { hooks } from './00-hooks.js';
+import { render } from './13-giao-dien-chung.js';
+import { PXC } from './22-do-hoa-pixel-mau-logo-clb.js';
 const LV={tid:0,f:0,layers:[],tok:null};
 const lvReduce=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
 function lvRand(s){return()=>(s=(s*9301+49297)%233280)/233280}
@@ -74,6 +77,6 @@ function lvSetup(){lvStop();if(role!=='hs')return;const add=(L)=>{if(L)LV.layers
   else if(scr.k==='game'&&scr.race&&(h=q('#app .game .gmid')))add(lvLayer(h,'strip',LVD.strip,{h:24,cls:'xlstrip'}));
   if(!LV.layers.length)return;LV.tok=scr;lvTick();if(lvReduce())return;
   LV.tid=setInterval(()=>{if(scr!==LV.tok||scr.end||!LV.layers.some(L=>L.cv.isConnected)){lvStop();return}LV.f++;lvTick()},120)}
-{const _r=render;render=function(){const v=_r.apply(this,arguments);try{if(role==='hs'&&(scr.k==='mini'||scr.k==='xg'||(scr.k==='game'&&scr.race))&&!scr.end)lvSetup();else lvStop()}catch(e){}return v}}
+{const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{if(role==='hs'&&(scr.k==='mini'||scr.k==='xg'||(scr.k==='game'&&scr.race))&&!scr.end)lvSetup();else lvStop()}catch(e){}return v})}
 /* Ghép hình: go() vẽ trước khi có khay hình nên màn chưa hiện — vẽ lại khi cần */
-{const _x=startXG;startXG=function(mode,id){const v=_x.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='shape'&&!document.querySelector('.xspic'))render()}catch(e){}return v}}
+{const _x=hooks.cu('startXG');hooks.de('startXG',function(mode,id){const v=_x.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='shape'&&!document.querySelector('.xspic'))render()}catch(e){}return v})}

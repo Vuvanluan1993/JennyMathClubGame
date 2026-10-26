@@ -2,6 +2,13 @@
 /* Lớp 1: Hình phẳng · Lớp 2: Cộng, trừ trong phạm vi 20 · Lớp 3: Bảng nhân, bảng chia · Lớp 4: Góc · Lớp 5: Số thập phân.
    Đề viết mới theo kiến thức từng bài trong Vở BT-TH (đổi đồ vật, bối cảnh, số liệu). */
 /* ---- hình phẳng pixel ---- */
+import { pick, R, range } from '../../core/01-tien-ich.js';
+import { ALLP1, P1BY } from './07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
+import { shuf } from '../../core/21-lop-6-che-do-tro-choi.js';
+import { PXS, spr } from '../../core/22-do-hoa-pixel-mau-logo-clb.js';
+import { isl1, near, optN } from './24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { PB, PI, PRIM } from '../../core/25-lop-1-so-loi-sai-toan-jenny.js';
+import { buildIsl, CQ, F, NQ, ORD, QL3, SG, THINGS, vnRead } from './26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
 const SHN={sq:'hình vuông',ci:'hình tròn',tr:'hình tam giác',rc:'hình chữ nhật'},SHK=Object.keys(SHN),SHC=['r','b','g','a','p','o'];
 function shapeRows(k,c){const W=k==='rc'?16:12,H=k==='rc'?9:12,R=[];for(let y=0;y<H;y++){let s='';for(let x=0;x<W;x++){let ch='.';
   if(k==='sq'||k==='rc'){ch=(x===0||y===0||x===W-1||y===H-1)?'k':c}
@@ -9,9 +16,9 @@ function shapeRows(k,c){const W=k==='rc'?16:12,H=k==='rc'?9:12,R=[];for(let y=0;
   else{const half=(y+1)*W/(2*H),cx=(W-1)/2;const inn=Math.abs(x-cx)<=half;const edge=inn&&(Math.abs(x-cx)>half-1.2||y===H-1);ch=inn?(edge?'k':c):'.'}
   s+=ch}R.push(s)}return R}
 SHK.forEach(k=>SHC.forEach(c=>{PXS[`sh_${k}_${c}`]=shapeRows(k,c)}));
-const shp=(k,sz=40,c)=>spr(`sh_${k}_${c||pick(SHC)}`,k==='rc'?Math.round(sz*.75):sz);
+export const shp=(k,sz=40,c)=>spr(`sh_${k}_${c||pick(SHC)}`,k==='rc'?Math.round(sz*.75):sz);
 const OBJSH=[['Mặt chiếc đồng hồ treo tường','ci'],['Bánh xe đạp','ci'],['Chiếc đĩa ăn cơm','ci'],['Đồng xu','ci'],['Viên gạch xây nhà','rc'],['Quyển vở','rc'],['Cánh cửa ra vào','rc'],['Mặt bàn học','rc'],['Ô cửa sổ nhỏ hình bốn cạnh bằng nhau','sq'],['Mặt con xúc xắc','sq'],['Chiếc khăn tay vuông','sq'],['Biển báo nguy hiểm','tr'],['Lá cờ đuôi nheo','tr'],['Miếng bánh mì kẹp cắt chéo','tr']];
-const QS1={
+export const QS1={
  name:()=>()=>{const k=pick(SHK),o=shuf(SHK);return{type:'opt',cols:2,q:'Đây là hình gì?',say:'Đây là hình gì? Em chọn tên đúng nhé.',pic:`<div class="g1grp">${shp(k,80)}</div>`,opts:o.map(v=>({h:SHN[v].replace(/^h/,'H'),v})),a:o.indexOf(k),sol:`Đây là ${SHN[k]}.`,kind:'Nhận biết hình'}},
  find:()=>()=>{const o=shuf(SHK).slice(0,3),k=pick(o);return{type:'opt',cols:3,q:`Chạm vào <b>${SHN[k]}</b>.`,say:`Em chạm vào ${SHN[k]} nhé.`,opts:o.map(v=>({h:shp(v,48),v})),a:o.indexOf(k),sol:`Đó là ${SHN[k]}.`,kind:'Nhận biết hình'}},
  count:()=>()=>{const k=pick(SHK),n=R(1,5),others=Array.from({length:R(3,5)},()=>pick(SHK.filter(v=>v!==k)));const all=shuf([...Array(n).fill(k),...others]);const o=optN(n,0,9,3);return{type:'opt',big:1,q:`Có mấy <b>${SHN[k]}</b>?`,say:`Có mấy ${SHN[k]}? Em đếm kỹ nhé.`,pic:`<div class="g1grp">${all.map(v=>shp(v,34)).join('')}</div>`,...o,sol:`Có ${n} ${SHN[k]}.`,kind:'Đếm hình'}},
@@ -24,7 +31,7 @@ const QS1={
  pat:()=>()=>{const [a,b,c]=shuf(SHK),t3=Math.random()<.5,seq=range(0,R(4,6)).map(i=>t3?[a,b,c][i%3]:[a,b][i%2]),nx=t3?[a,b,c][seq.length%3]:[a,b][seq.length%2];const ops=shuf([a,b,c]);return{type:'opt',cols:3,q:'Hình nào xếp tiếp theo?',say:'Các hình được xếp theo quy luật. Hình nào xếp tiếp theo?',pic:`<div class="g1grp">${seq.map(v=>shp(v,30,'b')).join('')}<span class="g1qm">?</span></div>`,opts:ops.map(v=>({h:shp(v,44,'b'),v})),a:ops.indexOf(nx),sol:'Các hình lặp lại theo đúng thứ tự.',kind:'Quy luật xếp hình'}},
 };
 /* ---- lớp 2: cộng, trừ trong phạm vi 20 ---- */
-const QT2={
+export const QT2={
  add:()=>()=>{const a=R(2,9),b=R(11-a,9);return NQ(`<b>${a} + ${b} = ?</b>`,`${a} cộng ${b} bằng bao nhiêu?`,a+b,`${a} + ${b} = ${a+b}.`,'Cộng qua 10 trong phạm vi 20')},
  split:()=>()=>{const a=R(6,9),b=R(11-a,9),r=10-a;return NQ(`<b>${a} + ${b} = ${a} + ${r} + ☐</b>`,`${a} cộng ${b} bằng ${a} cộng ${r} cộng mấy?`,b-r,`Tách ${b} = ${r} + ${b-r}; ${a} + ${r} = 10, 10 + ${b-r} = ${a+b}.`,'Tách số để cộng qua 10')},
  miss:()=>()=>{const a=R(2,9),b=R(11-a,9);return Math.random()<.5?NQ(`<b>${a} + ☐ = ${a+b}</b>`,`${a} cộng mấy bằng ${a+b}?`,b,`${a+b} − ${a} = ${b}.`,'Tìm số trong phép cộng'):NQ(`<b>☐ + ${b} = ${a+b}</b>`,`Mấy cộng ${b} bằng ${a+b}?`,a,`${a+b} − ${b} = ${a}.`,'Tìm số trong phép cộng')},
@@ -48,11 +55,11 @@ const QT3={
  word:(ks)=>()=>{const k=pick(ks),n=R(2,9),[th,box]=pick(THINGS),div=Math.random()<.5;return div?NQ(`Có ${k*n} ${th} chia đều vào ${k} ${box}. Mỗi ${box} có bao nhiêu ${th}?`,`Có ${k*n} ${th} chia đều vào ${k} ${box}. Mỗi ${box} có bao nhiêu?`,n,`${k*n} : ${k} = ${n}.`,`Toán lời văn bảng ${k}`):NQ(`Mỗi ${box} có ${k} ${th}. Hỏi ${n} ${box} có bao nhiêu ${th}?`,`Mỗi ${box} có ${k} ${th}. ${n} ${box} có bao nhiêu?`,k*n,`${k} × ${n} = ${k*n}.`,`Toán lời văn bảng ${k}`)},
 };
 /* ---- lớp 4: góc ---- */
-function angSvg(deg,size=130){const r=size*.62,cx=size*.18,cy=size*.78,rad=deg*Math.PI/180,x2=cx+r*Math.cos(rad),y2=cy-r*Math.sin(rad);const ar=size*.16,ax=cx+ar*Math.cos(rad),ay=cy-ar*Math.sin(rad);
+export function angSvg(deg,size=130){const r=size*.62,cx=size*.18,cy=size*.78,rad=deg*Math.PI/180,x2=cx+r*Math.cos(rad),y2=cy-r*Math.sin(rad);const ar=size*.16,ax=cx+ar*Math.cos(rad),ay=cy-ar*Math.sin(rad);
   const mark=deg===90?`<path d="M${cx+14} ${cy}V${cy-14}H${cx}" fill="none" stroke="#F04A1B" stroke-width="4"/>`:`<path d="M${cx+ar} ${cy}A${ar} ${ar} 0 ${deg>180?1:0} 0 ${ax.toFixed(1)} ${ay.toFixed(1)}" fill="none" stroke="#F04A1B" stroke-width="4"/>`;
   return`<svg class="angsvg" viewBox="${deg>90?-size*.62:0} 0 ${deg>90?size*1.62:size} ${size}" width="${deg>90?size*1.4:size}" height="${size}" shape-rendering="crispEdges" aria-hidden="true">${mark}<line x1="${cx}" y1="${cy}" x2="${cx+r}" y2="${cy}" stroke="#1F2A5A" stroke-width="6" stroke-linecap="square"/><line x1="${cx}" y1="${cy}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#1F2A5A" stroke-width="6" stroke-linecap="square"/><rect x="${cx-5}" y="${cy-5}" width="10" height="10" fill="#FCB40C"/></svg>`}
 const ANG=['Góc nhọn','Góc vuông','Góc tù','Góc bẹt'];const angType=d=>d<90?0:d===90?1:d<180?2:3;
-const QT4={
+export const QT4={
  type:()=>()=>{const d=pick([R(2,8)*10,90,R(10,17)*10,180,R(2,8)*10+5]);const o=[0,1,2,3];return{type:'opt',cols:2,q:'Góc dưới đây là góc gì?',say:'Góc dưới đây là góc gì?',pic:`<div class="g1grp">${angSvg(d)}</div>`,opts:o.map(v=>({h:ANG[v],v})),a:angType(d),sol:`Góc này ${d<90?'bé hơn góc vuông':d===90?'là góc vuông (90°)':d<180?'lớn hơn góc vuông, bé hơn góc bẹt':'là góc bẹt (180°)'}.`,kind:'Nhận biết góc'}},
  byDeg:()=>()=>{const d=pick([R(1,17)*5+1,90,180,R(19,35)*5]);const dd=Math.min(d,180);const o=[0,1,2,3];return{type:'opt',cols:2,q:`Góc có số đo <b>${dd}°</b> là góc gì?`,say:`Góc có số đo ${dd} độ là góc gì?`,opts:o.map(v=>({h:ANG[v],v})),a:angType(dd),sol:`Góc nhọn bé hơn 90°, góc vuông bằng 90°, góc tù từ trên 90° đến dưới 180°, góc bẹt bằng 180°.`,kind:'Góc theo số đo'}},
  est:()=>()=>{const d=pick([30,45,60,90,120,150]);const c=shuf([d,...shuf([30,60,90,120,150,180].filter(v=>Math.abs(v-d)>=45)).slice(0,2)]);return{type:'opt',big:1,cols:3,q:'Góc dưới đây có số đo khoảng bao nhiêu độ?',say:'Em ước lượng xem góc này khoảng bao nhiêu độ.',pic:`<div class="g1grp">${angSvg(d)}</div>`,opts:c.map(v=>({h:v+'°',v})),a:c.indexOf(d),sol:`Góc này khoảng ${d}°.`,kind:'Ước lượng số đo góc'}},
@@ -61,10 +68,10 @@ const QT4={
  pickA:()=>()=>{const tiles=shuf([R(1,8)*10,R(1,8)*10+5,90,R(10,17)*10,180,R(10,17)*10+5,R(2,6)*10]).slice(0,6);if(!tiles.some(v=>v<90))tiles[0]=40;return{type:'pick',q:'Chạm vào <b>tất cả</b> số đo của góc nhọn.',say:'Chạm vào tất cả số đo của góc nhọn, rồi bấm kiểm tra.',opts:tiles.map(v=>v+'°'),a:tiles.map((v,i)=>v<90?i:-1).filter(i=>i>=0),sol:'Góc nhọn có số đo bé hơn 90°.',kind:'Góc nhọn'}},
  cmp:()=>()=>{const a=R(2,17)*10,b=R(2,17)*10;return SG(a,b,a+'°',b+'°','So sánh số đo góc')},
 };
-function clockSvg(h){const c=60,r=50,hr=(h%12)*30*Math.PI/180;const hx=c+28*Math.sin(hr),hy=c-28*Math.cos(hr);return`<svg viewBox="0 0 120 120" width="120" height="120" shape-rendering="crispEdges" aria-hidden="true"><rect x="10" y="10" width="100" height="100" fill="#fff" stroke="#1F2A5A" stroke-width="6"/>${[0,3,6,9].map(i=>{const a=i*30*Math.PI/180;return`<rect x="${(c+40*Math.sin(a)-3).toFixed(0)}" y="${(c-40*Math.cos(a)-3).toFixed(0)}" width="6" height="6" fill="#1F2A5A"/>`}).join('')}<line x1="${c}" y1="${c}" x2="${c}" y2="${c-38}" stroke="#12B5E8" stroke-width="5"/><line x1="${c}" y1="${c}" x2="${hx.toFixed(0)}" y2="${hy.toFixed(0)}" stroke="#F04A1B" stroke-width="7"/><rect x="${c-5}" y="${c-5}" width="10" height="10" fill="#FCB40C"/></svg>`}
+export function clockSvg(h){const c=60,r=50,hr=(h%12)*30*Math.PI/180;const hx=c+28*Math.sin(hr),hy=c-28*Math.cos(hr);return`<svg viewBox="0 0 120 120" width="120" height="120" shape-rendering="crispEdges" aria-hidden="true"><rect x="10" y="10" width="100" height="100" fill="#fff" stroke="#1F2A5A" stroke-width="6"/>${[0,3,6,9].map(i=>{const a=i*30*Math.PI/180;return`<rect x="${(c+40*Math.sin(a)-3).toFixed(0)}" y="${(c-40*Math.cos(a)-3).toFixed(0)}" width="6" height="6" fill="#1F2A5A"/>`}).join('')}<line x1="${c}" y1="${c}" x2="${c}" y2="${c-38}" stroke="#12B5E8" stroke-width="5"/><line x1="${c}" y1="${c}" x2="${hx.toFixed(0)}" y2="${hy.toFixed(0)}" stroke="#F04A1B" stroke-width="7"/><rect x="${c-5}" y="${c-5}" width="10" height="10" fill="#FCB40C"/></svg>`}
 /* ---- lớp 5: số thập phân ---- */
-const dv=(n,d)=>{const s=(n/10**d).toFixed(d);return s.replace('.',',')};
-const QT5={
+export const dv=(n,d)=>{const s=(n/10**d).toFixed(d);return s.replace('.',',')};
+export const QT5={
  fr:()=>()=>{const d=pick([1,2,3]),den=10**d,n=R(1,den*3-1);const good=dv(n,d);const bads=[dv(n,d===3?2:d+1),dv(n,Math.max(1,d-1)),String(n)+','+'0'].filter(x=>x!==good);const o=CQ(`Viết ${F(n,den)} dưới dạng số thập phân:`,`${n} phần ${den} viết dưới dạng số thập phân là gì?`,good,bads,`${F(n,den)} = ${good}.`,'Phân số thập phân và số thập phân',1);return o},
  place:()=>()=>{const n=R(10000,99999),s=dv(n,3),digits=s.replace(',','');const k=R(0,4);const names=['Hàng chục','Hàng đơn vị','Hàng phần mười','Hàng phần trăm','Hàng phần nghìn'];let html='',c=0;for(const ch of s){if(ch===','){html+=ch;continue}html+=c===k?`<u class="hl">${ch}</u>`:ch;c++}return CQ(`Trong số <b>${html}</b>, chữ số được gạch chân thuộc hàng nào?`,`Trong số này, chữ số ${digits[k]} được gạch chân thuộc hàng nào?`,names[k],names.filter((_,i)=>i!==k),`Chữ số ${digits[k]} ở ${names[k].toLowerCase()}.`,'Hàng của số thập phân')},
  read:()=>()=>{const a=R(1,99),b=R(1,99),s=`${a},${String(b).padStart(2,'0')}`;const w=`${vnRead(a)} phẩy ${b<10?'không '+vnRead(b):vnRead(b)}`;return CQ(`Số <b>${w}</b> viết là:`,`Số ${w} viết là số nào?`,s,[`${a},${b}`,`${a}${String(b).padStart(2,'0')}`,`${b},${a}`].filter(x=>x!==s),`${w}: ${s}.`,'Đọc, viết số thập phân',1)},
@@ -105,7 +112,7 @@ const CDEF2={
     ['b14',14,'Bài 14. Luyện tập chung','Luyện tập',2,[QT5.fr(),QT5.cmp()],[QT5.unit(),QT5.round()],[QT5.place(),QT5.ord(),QT5.unit(),QT5.round(),QT5.big()]]],
 };
 /* ---- trò chơi nhỏ riêng cho chủ đề 2 ---- */
-const MG2={
+export const MG2={
  1:{fish:()=>{const k=pick(SHK);return{rule:`Câu cá mang <b>${SHN[k]}</b>`,say:`Câu những con cá mang ${SHN[k]}.`,item:()=>{const v=Math.random()<.4?k:pick(SHK);return{t:shp(v,26),ok:v===k}}}},balloon:()=>{const k=pick(SHK);return{rule:`Bắn bóng mang <b>${SHN[k]}</b>`,say:`Bắn những quả bóng mang ${SHN[k]}.`,item:()=>{const v=Math.random()<.4?k:pick(SHK);return{t:shp(v,26),ok:v===k}}}}},
  2:{fish:()=>{const r=R(11,16);return{rule:`Câu cá có kết quả <b>bằng ${r}</b>`,say:`Câu những con cá có kết quả bằng ${r}.`,item:()=>{const v=Math.random()<.4?r:R(11,18);const a=R(Math.max(2,v-9),9);return{t:`${a} + ${v-a}`,ok:v===r}}}},balloon:()=>{const r=R(5,8);return{rule:`Bắn bóng có kết quả <b>bằng ${r}</b>`,say:`Bắn những quả bóng có kết quả bằng ${r}.`,item:()=>{const v=Math.random()<.4?r:R(2,9);const a=R(Math.max(11,v+1),Math.min(18,v+9));return{t:`${a} − ${a-v}`,ok:v===r}}}}},
  3:{fish:()=>{const k=pick([6,7,8,9]);return{rule:`Câu cá mang số <b>trong bảng nhân ${k}</b>`,say:`Câu những con cá mang kết quả trong bảng nhân ${k}.`,item:()=>{const v=Math.random()<.45?k*R(1,10):R(2,90);return{t:String(v),ok:v%k===0&&v<=k*10}}}},balloon:()=>{const r=R(3,9);return{rule:`Bắn bóng có thương <b>bằng ${r}</b>`,say:`Bắn những quả bóng có kết quả phép chia bằng ${r}.`,item:()=>{const d=R(6,9),v=Math.random()<.45?r:R(2,10);return{t:`${d*v} : ${d}`,ok:v===r}}}}},
@@ -114,5 +121,5 @@ const MG2={
 };
 /* ---- ghép vào dữ liệu lớp ---- */
 [1,2,3,4,5].forEach(g=>{PRIM[g].isl.forEach(x=>{if(x.ti===undefined)x.ti=0});const add=buildIsl(g,CDEF2[g],1);PRIM[g].isl=PRIM[g].isl.concat(add);P1BY[g]=PRIM[g].isl;ALLP1.push(...add)});
-const PLAY=ti=>PI().some(x=>x.ti===ti);
-const bossOf=id=>{const x=id&&isl1(id);return PB()[x&&x.ti?x.ti:0]};
+export const PLAY=ti=>PI().some(x=>x.ti===ti);
+export const bossOf=id=>{const x=id&&isl1(id);return PB()[x&&x.ti?x.ti:0]};

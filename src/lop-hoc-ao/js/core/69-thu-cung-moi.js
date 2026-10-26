@@ -3,6 +3,11 @@
      Gà: gà con nhỏ → gà choai → gà mái; Rùa: mai lớn dần; Ếch: nòng nọc → ếch con còn đuôi → ếch lớn; Cún, Mèo: con nhỏ → lớn.
      Già: màu nhạt đi, lông mày bạc.
    - Loài mới: Ếch xanh 180 xu (60–80 ngày, đẻ trứng), Mèo con 280 xu (110–150 ngày), Cún con 300 xu (120–160 ngày). Mèo, Cún không đẻ trứng. */
+import { hooks } from './00-hooks.js';
+import { PXS, pxURI, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { I18N } from './47-ngon-ngu-vi-en.js';
+import { GH, ghSt } from './49-gian-hang.js';
+import { P_SC, P_WEAR, PET_SP, petsOf, pStage } from './49b-dao-nha-thu-cung.js';
 Object.assign(PXS,{
  pet_chick0:["................", "................", "................", "................", "......kkkk......", ".....kyyyyk.....", "....kyyyyyyk....", "....kykyyyyk....", "...ooyyyyyyk....", "....kyyyyyyk....", ".....kyyyyk.....", "......koko......", ".......o.o......", "................"],
  pet_chick1:["................", "................", ".....kk.........", "....kyyk........", "...kyyyykk......", "...kykyyyyk.....", "..ooyyyyyyyk....", "...kyyyyyyyyk...", "...kyyyyyayyk...", "...kyyyyyyayk...", "....kyyyyyyk....", ".....kyyyyk.....", "......kokko.....", ".......o..o....."],
@@ -33,8 +38,8 @@ GH.find(c=>c.k==='pet').it.push(['pfrog','Ếch xanh',180],['pcat','Mèo con',28
 const PET_EGG={chick:1,turtle:1,pfrog:1};
 P_SC[0]=.82;P_SC[1]=.92;
 const petStageName=p=>{const n='pet_'+p.sp+pStage(p);return PXS[n]?n:p.sp};
-petSpr=function(p,H,cls){const st=S.st[sid],stg=pStage(p),nm=petStageName(p),sc=P_SC[stg],h=Math.round(H*sc),d=pxURI(nm),w=Math.round(h*d.w/d.h);let wear='';
+hooks.de('petSpr',function(p,H,cls){const st=S.st[sid],stg=pStage(p),nm=petStageName(p),sc=P_SC[stg],h=Math.round(H*sc),d=pxURI(nm),w=Math.round(h*d.w/d.h);let wear='';
  const g=p.wear&&ghSt(st).gear.find(x=>x.u===p.wear);if(g&&P_WEAR[g.id]&&stg>0){const[wn,x,y,ww]=P_WEAR[g.id],dd=pxURI(wn),W=w*ww;wear=`<img class="px pwear" src="${dd.u}" alt="" style="left:${x*w}px;top:${y*h}px;width:${W}px;height:${W*dd.h/dd.w}px">`}
- return`<span class="pspr st${stg} ${p.sick?'sick':''} ${cls||''}" style="width:${w}px;height:${h}px">${spr(nm,h)}${wear}</span>`};
-{const _p=petSim;petSim=function(st){const r=_p.apply(this,arguments);try{const P=petsOf(st),n=P.eggs.length;P.eggs=P.eggs.filter(e=>PET_EGG[e.sp]);if(P.eggs.length<n)P.ev=P.ev.filter(e=>!/Có trứng mới/.test(e.msg))}catch(e){}return r}}
+ return`<span class="pspr st${stg} ${p.sick?'sick':''} ${cls||''}" style="width:${w}px;height:${h}px">${spr(nm,h)}${wear}</span>`});
+{const _p=hooks.cu('petSim');hooks.de('petSim',function(st){const r=_p.apply(this,arguments);try{const P=petsOf(st),n=P.eggs.length;P.eggs=P.eggs.filter(e=>PET_EGG[e.sp]);if(P.eggs.length<n)P.ev=P.ev.filter(e=>!/Có trứng mới/.test(e.msg))}catch(e){}return r})}
 Object.assign(I18N,{'Ếch xanh':'Green frog','Mèo con':'Kitten','Cún con':'Puppy'});

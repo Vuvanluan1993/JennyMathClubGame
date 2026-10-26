@@ -1,4 +1,11 @@
 /* ===== LỚP 3 · CHỦ ĐỀ 6–10 (ti 5–9) ===== */
+import { pick, R, range } from '../../core/01-tien-ich.js';
+import { shuf } from '../../core/21-lop-6-che-do-tro-choi.js';
+import { spr } from '../../core/22-do-hoa-pixel-mau-logo-clb.js';
+import { CQ, NQ, ORD, SG, vnRead } from '../hk1/26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { fN, OQ, polySvg, QB4, QH3 } from '../hk1/28-chu-de-3-lop-1-5.js';
+import { colPic, QG2, QN3, QU3, WQ } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { addTopic, LES, lsLine, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 (()=>{
 const G=3;
 const rom=n=>{const T=[[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];let s='';for(const[v,r]of T)while(n>=v){s+=r;n-=v}return s};

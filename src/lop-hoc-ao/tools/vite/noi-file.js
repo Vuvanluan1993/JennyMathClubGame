@@ -1,4 +1,4 @@
-// Plugin Vite "nối file" (P-14a, 25/10/2026): bọc mã cũ, không đổi 90 file JS.
+// Plugin Vite "nối file" (P-14a, 25/10/2026; P-14b 26/10: file JS là ES module, nối xong vẫn là một script thường).
 // - Đọc app.template.html, nối mọi /*@include …*/ theo ĐÚNG thứ tự trong template (như build.py cũ),
 //   thay __APP_VER__ → ra bản đầy đủ (dist/lop-hoc-ao-jenny.html, một file, bộ kiểm tra §7 và Artifact dùng).
 // - Mỗi trang vai (vai.js) tách khối <style> chính → assets/lop-hoc-ao-[hash].css (chung) và khối <script> chính
@@ -12,6 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { hocSinh, giaoVien, TRANG_GV } from './vai.js';
+import { boModule, docFileJs, kiemTraLienKet } from './module.js';
 
 const INC = /\/\*@include ([^*]+?)\*\//g;
 const MOC = { cssDau: '<!--@vite:css-->', cssCuoi: '<!--/@vite:css-->', jsDau: '<!--@vite:js-->', jsCuoi: '<!--/@vite:js-->' };
@@ -48,17 +49,25 @@ export function soBan(goc) {
 
 function noi(goc, text, sau = 0) {
   if (sau >= 5) throw new Error('include lồng quá sâu');
-  return text.replace(INC, (_, f) => noi(goc, fs.readFileSync(path.join(goc, f.trim()), 'utf8').replace(/\n$/, ''), sau + 1));
+  return text.replace(INC, (_, f) => {
+    f = f.trim();
+    let m = fs.readFileSync(path.join(goc, f), 'utf8');
+    if (f.endsWith('.js')) m = boModule(m, f); // P-14b: file JS là ES module; khi nối thành một script thường thì bỏ dòng import và chữ "export "
+    return noi(goc, m.replace(/\n$/, ''), sau + 1);
+  });
 }
 
-/** Danh sách file theo thứ tự nạp (CSS rồi JS) — đọc từ app.template.html, không danh sách cứng. */
-export function thuTu(goc) {
-  const t = fs.readFileSync(path.join(goc, 'app.template.html'), 'utf8');
-  return [...t.matchAll(INC)].map(m => m[1].trim());
+/** Danh sách file theo thứ tự nối (CSS rồi JS), kể cả include lồng (vd. content/lessons/*, content/hk2/* trong file 30) — đọc từ app.template.html, không danh sách cứng. */
+export function thuTu(goc, tep = 'app.template.html', sau = 0) {
+  if (sau >= 5) throw new Error('include lồng quá sâu');
+  const t = fs.readFileSync(path.join(goc, tep), 'utf8');
+  return [...t.matchAll(INC)].flatMap(m => { const f = m[1].trim(); return [f, ...thuTu(goc, f, sau + 1)]; });
 }
 
 /** Bản đầy đủ. coMoc = true: đánh dấu khối CSS/JS chính để tách ra file (mốc là chú thích HTML, nằm ngoài thẻ). */
 export function banDayDu(goc, coMoc = false) {
+  const lk = kiemTraLienKet(docFileJs(goc, thuTu(goc))); // import phải khớp export của file đích (như bộ liên kết module)
+  if (lk.length) throw new Error('import/export không khớp (chạy node tools/vite/tim-import.mjs):\n' + lk.join('\n'));
   let t = fs.readFileSync(path.join(goc, 'app.template.html'), 'utf8');
   for (const [re, dau, cuoi] of [[KHOI_CSS, MOC.cssDau, MOC.cssCuoi], [KHOI_JS, MOC.jsDau, MOC.jsCuoi]]) {
     const n = (t.match(re) || []).length;

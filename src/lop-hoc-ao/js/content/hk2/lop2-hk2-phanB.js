@@ -1,4 +1,12 @@
 /* ===== LỚP 2 · CHỦ ĐỀ 11–14: Độ dài, tiền · Cộng trừ phạm vi 1 000 · Thống kê, xác suất · Ôn tập cuối năm ===== */
+import { pick, R } from '../../core/01-tien-ich.js';
+import { shuf } from '../../core/21-lop-6-che-do-tro-choi.js';
+import { spr } from '../../core/22-do-hoa-pixel-mau-logo-clb.js';
+import { dice, OBJ1 } from '../hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { CQ, NQ, ORD, SG, vnRead } from '../hk1/26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { fN, OQ } from '../hk1/28-chu-de-3-lop-1-5.js';
+import { colPic, QC2, QG2, rulerSvg, WQ } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { addTopic, LES, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 (()=>{
 const G=2;
 const NOTE=v=>`<span class="wt" style="background:${{100:'#6E6233',200:'#9C4F2A',500:'#A8385A',1000:'#64438A',2000:'#82552A',5000:'#2D5294',10000:'#7C7A22'}[v]||'#1F2A5A'};padding:0 8px">${fN(v)} đồng</span>`;

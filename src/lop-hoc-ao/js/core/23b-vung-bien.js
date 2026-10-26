@@ -2,6 +2,8 @@
 /* Mỗi chủ đề là một vùng biển riêng: màu nước, kiểu đảo, vật trang trí động. Mỗi lớp là một đại dương có tên và màu nhấn riêng,
    thứ tự vùng biển của mỗi lớp khác nhau. Ôn tập học kì 1 luôn là Biển Băng, Ôn tập cuối năm luôn là Biển Hoàng Hôn. */
 /* Đảo 26×18 ô và vật thể trong nước: sinh từ bản vẽ (xem docs), thêm 12 màu riêng cho vùng biển (v,V tím nhạt; q,Q hồng; i băng; d,D đá bazan; f dung nham; h,H bóng tối; z kem sáng; j lá non). */
+import { PXC, PXS } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { pxCanvas } from './23-bien-pixel-dong-phia-sau-ban-do.js';
 Object.assign(PXC,{"v": "#CDB8F7", "V": "#A07FE3", "q": "#FBB9DA", "Q": "#E8649F", "i": "#BFF1FF", "d": "#3A3F52", "D": "#585F78", "f": "#FFB13B", "h": "#4B2A4A", "H": "#2E1A33", "z": "#FFF3C4", "j": "#8FD14F"});
 Object.assign(PXS,{
  isl_trop:["....kk..kk................", "..kkggkkgGkk..............", ".kggGggggGggk.............", ".kGgkgNNgkgGk...kk.kk.....", ".kk.k.NNk.kkk.kkggkgGkk...", ".k....knk...k.kgGgNgGgk...", "......knk.....k.kNNkk.k...", ".......knk....k..knk.k....", ".......knk.......knk.kkk..", ".......knk......knk.krwrk.", "........knk.....knk.kw.wk.", ".....kkkknkNktttknkkkrwrk.", "...kktttttttkNkttttttkkk..", "..kttttttttttttttttttttk..", ".kttttttttttttttttttttttk.", ".kTTTTTTTTTTTTTTTTTTTTTTk.", "..kTTuTTTTTTuTTTTTTuTTkk..", "...kkkkkkkkkkkkkkkkkkk...."],
@@ -50,7 +52,7 @@ Object.assign(PXS,{
  candyS:[".c.","cwc",".c.",".w.",".w."],
  rockL:["..kkk...",".kNrNk..","kNNNrNk.","kNNNNNNk"],
 });
-const BIOME={
+export const BIOME={
  trop:{n:'Quần đảo Nhiệt đới',ic:'🏝',isl:'isl_trop',band:['#9CE0F6','#6FD0F2','#3FC1EC','#1FA9DD'],fx:'reef'},
  snow:{n:'Biển Băng',ic:'❄️',isl:'isl_snow',band:['#E4F6FC','#C3EAF7','#9BD9EF','#74C4E3'],foam:'#FFFFFF',spark:'#FFFFFF',shade:'#5AA9C9',fx:'snow'},
  volc:{n:'Đảo Núi lửa',ic:'🌋',isl:'isl_volc',band:['#66789A','#55657F','#45526B','#364159'],foam:'#C3CBDD',spark:'#F37A1F',shade:'#29324A',fx:'ember'},
@@ -65,11 +67,11 @@ const BIOME={
 const BIOME_ORDER={1:['trop','cand','jung','crys','snow','autu','dese','volc','nigh','suns'],2:['jung','trop','dese','crys','cand','autu','snow','volc','nigh','trop','jung','dese','crys','suns'],
  3:['dese','crys','trop','volc','jung','cand','snow','autu','nigh','trop','dese','jung','crys','volc','cand','suns'],4:['crys','volc','autu','trop','nigh','jung','snow','dese','cand','crys','volc','trop','suns'],
  5:['volc','nigh','crys','dese','autu','snow','jung','cand','trop','volc','crys','suns']};
-const OCEAN={1:['Vịnh Tí Hon','#FCB40C'],2:['Biển Ngọc Bích','#2AB563'],3:['Quần đảo Mây Trắng','#12B5E8'],4:['Đại dương Sao Băng','#8656A8'],5:['Biển Huyền Thoại','#F04A1B']};
-function biomeOf(g,ti,name){const n=String(name||'');if(/ôn tập học kì 1/i.test(n))return'snow';if(/ôn tập cuối năm/i.test(n))return'suns';const L=BIOME_ORDER[g]||BIOME_ORDER[1];return L[ti%L.length]}
+export const OCEAN={1:['Vịnh Tí Hon','#FCB40C'],2:['Biển Ngọc Bích','#2AB563'],3:['Quần đảo Mây Trắng','#12B5E8'],4:['Đại dương Sao Băng','#8656A8'],5:['Biển Huyền Thoại','#F04A1B']};
+export function biomeOf(g,ti,name){const n=String(name||'');if(/ôn tập học kì 1/i.test(n))return'snow';if(/ôn tập cuối năm/i.test(n))return'suns';const L=BIOME_ORDER[g]||BIOME_ORDER[1];return L[ti%L.length]}
 /* hiệu ứng riêng từng vùng biển, vẽ trên canvas biển mỗi khung hình.
    Vật thể tĩnh đặt tránh chỗ các đảo (isl: toạ độ tâm đảo theo đơn vị canvas). Sprite dựng sẵn bằng pxCanvas, không tạo mới mỗi khung. */
-function biomeFx(kind,W,H,isl){let s=7;const rnd=()=>(s=(s*9301+49297)%233280)/233280;const N=(k)=>Array.from({length:k},()=>({x:rnd()*W,y:rnd()*H,p:Math.floor(rnd()*16),v:.2+rnd()*.4}));
+export function biomeFx(kind,W,H,isl){let s=7;const rnd=()=>(s=(s*9301+49297)%233280)/233280;const N=(k)=>Array.from({length:k},()=>({x:rnd()*W,y:rnd()*H,p:Math.floor(rnd()*16),v:.2+rnd()*.4}));
  const IS=isl||[];const free=(x,y,w,h)=>!IS.some(([cx,cy])=>x+w>cx-20&&x<cx+20&&y+h>cy-14&&y<cy+30);
  /* vật thể tĩnh: n cái, rải đều theo chiều ngang, tránh đảo */
  const place=(n,w,h,y0=4,y1=H-4)=>{const L=[];for(let i=0;i<n;i++){for(let t=0;t<14;t++){const x=Math.round((i+rnd())*W/n-w/2),y=Math.round(y0+rnd()*Math.max(1,y1-y0-h));if(free(x,y,w,h)||t===13){L.push({x,y,p:Math.floor(rnd()*40),k:Math.floor(rnd()*3)});break}}}return L};

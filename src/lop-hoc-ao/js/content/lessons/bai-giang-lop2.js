@@ -1,3 +1,8 @@
+import { spr } from '../../core/22-do-hoa-pixel-mau-logo-clb.js';
+import { grp, grp2, rowPair } from '../hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { polySvg } from '../hk1/28-chu-de-3-lop-1-5.js';
+import { colPic, lineSvg, ptsSvg, rulerSvg, stripSvg, zigSvg } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { LES, lsLine, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 Object.assign(LES[2]=LES[2]||{},{
  1:[{t:'Số có hai chữ số',h:`${lsTab(['Chục','Đơn vị','Số','Đọc'],[['5','3','53','năm mươi ba'],['8','0','80','tám mươi']])}`,say:'Chào các em! Số năm mươi ba gồm năm chục và ba đơn vị. Số tám mươi gồm tám chục và không đơn vị.'},
     {t:'Viết số thành tổng',h:`<p class="g1big" style="font-size:34px">53 = 50 + 3</p><p class="g1big" style="font-size:34px">71 = 70 + 1</p><p>Chục cộng với đơn vị.</p>`,say:'Ta viết số thành tổng của chục và đơn vị. Năm mươi ba bằng năm mươi cộng ba.'},

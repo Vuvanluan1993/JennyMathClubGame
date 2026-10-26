@@ -1,6 +1,11 @@
 /* ===================== CÂN THĂNG BẰNG: đồ hoạ pixel ===================== */
 /* Vẽ cân trên canvas độ phân giải thấp (114×70, phóng ×3): đế bậc thang, cột gỗ, trục vàng, đòn cân nghiêng theo bậc,
    xích, đĩa cân. Quả cân và vật bên trái là nút HTML có nền sprite pixel. Lệch ít vẫn nghiêng rõ (tối thiểu 2 bậc). */
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { PXC, PXS } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { pxCanvas } from './23-bien-pixel-dong-phia-sau-ban-do.js';
+import { scaleRight, scaleTray } from './38-tro-choi-dot-2.js';
 Object.assign(PXS,{
  xsWt:["....kkkk....","...k....k...","...k....k...","..kkkkkkkk..",".kmeeeeeemk.",".kmewwweemk.","kmeeeeeeeemk","kmeeeeeeeemk","kmmmmmmmmmmk","kkkkkkkkkkkk"],
  xsWtG:["....kkkk....","...k....k...","...k....k...","..kkkkkkkk..",".kayyyyyyak.",".kaywwyyyak.","kayyyyyyyyak","kayyyyyyyyak","kaaaaaaaaaak","kkkkkkkkkkkk"],
@@ -8,7 +13,7 @@ Object.assign(PXS,{
 });
 const XSZ=3,XSW=114,XSH=70,XSCX=57,XSPY=13,XSARM=38;
 function xsTilt(g){const L=g.r.T,R_=scaleRight(g);if(R_===L)return 0;if(!g.on.length)return -6;const k=Math.max(2,Math.min(6,Math.round(Math.abs(R_-L)/Math.max(1,L)*14)));return R_>L?k:-k}
-function scaleHTML(g){const r=g.r,R_=scaleRight(g),eq=R_===r.T&&g.on.length,t=xsTilt(g);
+export function scaleHTML(g){const r=g.r,R_=scaleRight(g),eq=R_===r.T&&g.on.length,t=xsTilt(g);
   const ly=XSPY-t,ry=XSPY+t,panY=y=>(y+21)*XSZ;  /* đỉnh đĩa (px) */
   const wt=i=>`<button type="button" class="xsw on" onclick="scaleTap(${i})" aria-label="Bỏ quả cân ${esc(r.fmt(r.tray[i].v))}"><span>${r.fmt(r.tray[i].v)}</span></button>`;
   return`<div class="xsbal ${eq?'eq':''}" aria-label="Cân: bên trái ${esc(r.left)}, bên phải ${r.fmt(R_)}" data-t="${t}">
@@ -30,7 +35,7 @@ function scaleDraw(){const cv=document.getElementById('xscv');if(!cv||scr.k!=='x
     p(C.k,ex-15,py+3,31,1);p(C.k,ex-12,py+4,25,1);p(C.E,ex-14,py+3,29,1);p(C.k,ex-15,py+3,1,1);p(C.k,ex+15,py+3,1,1)});
   /* trục vàng */ p(C.k,XSCX-3,XSPY-3,7,7);p(eq?C.g:C.a,XSCX-2,XSPY-2,5,5);p(eq?C.l:C.y,XSCX-2,XSPY-2,2,2);
   if(eq){[[XSCX-8,4],[XSCX+8,3],[XSCX,0]].forEach(([X,Y])=>{p(C.y,X,Y+1,3,1);p(C.y,X+1,Y,1,3)})}}
-function scalePaint(){const b=document.getElementById('xsb');if(b)b.innerHTML=scaleHTML(scr);const t=document.getElementById('xstray');if(t)t.innerHTML=scaleTray(scr);const s=document.getElementById('xssum');if(s)s.textContent=scr.r.fmt(scaleRight(scr));scaleDraw();xsSprites()}
+export function scalePaint(){const b=document.getElementById('xsb');if(b)b.innerHTML=scaleHTML(scr);const t=document.getElementById('xstray');if(t)t.innerHTML=scaleTray(scr);const s=document.getElementById('xssum');if(s)s.textContent=scr.r.fmt(scaleRight(scr));scaleDraw();xsSprites()}
 /* nền sprite cho quả cân / hộp */
 function xsSprites(){try{const W=pxCanvas('xsWt').toDataURL(),G=pxCanvas('xsWtG').toDataURL(),B=pxCanvas('xsBox').toDataURL(),r=document.documentElement.style;r.setProperty('--xsWt',`url(${W})`);r.setProperty('--xsWtG',`url(${G})`);r.setProperty('--xsBox',`url(${B})`)}catch(e){}}
-{const _r=render;render=function(){const a=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='scale'){scaleDraw();xsSprites()}}catch(e){}return a}}
+{const _r=hooks.cu('render');hooks.de('render',function(){const a=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='scale'){scaleDraw();xsSprites()}}catch(e){}return a})}

@@ -1,5 +1,12 @@
 /* 68 — Thêm mặt hàng Cửa hàng (thầy yêu cầu 24/10/2026). Giá trong bảng đã duyệt:
    Áo 120–400 · Mũ kính 60–250 · Khung 60–300 · Đảo nhà 40–140. Đồ riêng bạn nữ/nam ghi ở GH_GEN. */
+import { PXS } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { ofVariant, OUTFIT } from './33e-ho-chieu.js';
+import { I18N } from './47-ngon-ngu-vi-en.js';
+import { GH, GH_ACC } from './49-gian-hang.js';
+import { ACC_SLOT } from './52-tu-do.js';
+import { IS2_POS } from './56-dao-nha-bo-cuc.js';
+import { GH_GEN } from './67-nhan-vat-nam.js';
 Object.assign(OUTFIT,{
  s_mint:{n:'Áo Bạc hà',m:{g:'x',G:'b',y:'w'}},
  s_choco:{n:'Áo Sô-cô-la',m:{g:'n',G:'N',y:'t',o:'N'}},

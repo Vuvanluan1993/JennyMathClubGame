@@ -3,6 +3,11 @@
    Không sửa khối, xu, sao, đồ, tiến độ… (đã bỏ ô "Tên của em" ở trang đăng nhập nên tên do quản lý nhập).
    Bản có máy chủ: đổi tên đăng nhập = chuyển hồ sơ hs/, hsgv/, login/, tài khoản users/ và lớp sang tên mới (dữ liệu học giữ nguyên);
    đổi mật khẩu = tạo đăng nhập mới cho cùng tên (như "Đặt lại mật khẩu"). Bản demo (không máy chủ): chỉ đổi tên và tên đăng nhập trên máy này. */
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { ORG_ON, save } from './09-du-lieu-demo.js';
+import { render, toast } from './13-giao-dien-chung.js';
+import { FB, FB_CFG, fbDayNgay, fbInit, fbLoi, fbTach, fbTS } from './62-may-chu.js';
 (function(){
 if(typeof ORG_ON==='undefined'||!ORG_ON)return;
 const cloud=()=>!!(S.org&&S.org.cloud&&typeof FB!=='undefined'&&FB&&FB.db);
@@ -68,8 +73,8 @@ window.qlLuu=async function(e,a){e.preventDefault();const st=S.st[a];if(!st)retu
    if(cloud()){try{await FB.db.doc('hs/'+id).set({j:JSON.stringify(fbTach(S.st[id]).hs),t:fbTS()},{merge:true})}catch(err){}}}
   if(moi.length){save();if(cloud()){try{await fbDayNgay()}catch(err){}}render()}}}catch(err){}return r}}
 /* nút Sửa ở bảng Học sinh của Quản lý */
-{const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);try{if(role==='ql')r=r.replace(/(<input id="nhTen"[^>]*>)/,`$1<select id="nhGt" aria-label="Giới tính" style="width:100px"><option value="">Giới tính</option><option value="nu">Nữ</option><option value="nam">Nam</option></select>`).replace(/<tr><td><b>([^<]*)<\/b><div class="muted">([a-z0-9._-]+) · /g,(m,n,id)=>{if(!S.st[id])return m;const H=hoSo(id),x=[H.gt?(H.gt==='nu'?'Nữ':'Nam'):'',H.nam?((H.ng&&H.th?H.ng+'/'+H.th+'/':'')+H.nam):'',H.dt?'PH '+H.dt:'',H.mail||''].filter(Boolean).join(' · ');
-  return`<tr><td><b>${n}</b> <button type="button" class="btn sm qlsuab" onclick="qlSua('${id}')" aria-label="Sửa ${n}">✎ Sửa</button>${x?`<div class="muted qlhs">${esc(x)}</div>`:'<div class="muted qlhs qlthieu">Chưa có hồ sơ (giới tính, ngày sinh, liên hệ phụ huynh)</div>'}<div class="muted">${id} · `})}catch(e){}return r}}
+{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){let r=_p.apply(this,arguments);try{if(role==='ql')r=r.replace(/(<input id="nhTen"[^>]*>)/,`$1<select id="nhGt" aria-label="Giới tính" style="width:100px"><option value="">Giới tính</option><option value="nu">Nữ</option><option value="nam">Nam</option></select>`).replace(/<tr><td><b>([^<]*)<\/b><div class="muted">([a-z0-9._-]+) · /g,(m,n,id)=>{if(!S.st[id])return m;const H=hoSo(id),x=[H.gt?(H.gt==='nu'?'Nữ':'Nam'):'',H.nam?((H.ng&&H.th?H.ng+'/'+H.th+'/':'')+H.nam):'',H.dt?'PH '+H.dt:'',H.mail||''].filter(Boolean).join(' · ');
+  return`<tr><td><b>${n}</b> <button type="button" class="btn sm qlsuab" onclick="qlSua('${id}')" aria-label="Sửa ${n}">✎ Sửa</button>${x?`<div class="muted qlhs">${esc(x)}</div>`:'<div class="muted qlhs qlthieu">Chưa có hồ sơ (giới tính, ngày sinh, liên hệ phụ huynh)</div>'}<div class="muted">${id} · `})}catch(e){}return r})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .qsbox{max-width:420px}.qsform{display:flex;flex-direction:column;gap:10px;margin-top:10px;padding:0 14px 14px;color:#1F2A5A}
 .qsform label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700}.qsform label small{font-weight:400;color:#3D4A70}

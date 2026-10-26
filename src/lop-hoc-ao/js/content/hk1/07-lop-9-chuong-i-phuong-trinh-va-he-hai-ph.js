@@ -1,4 +1,10 @@
 /* ===================== Lớp 9 · Chương I Phương trình và hệ hai phương trình bậc nhất hai ẩn ===================== */
+import { pick, R } from '../../core/01-tien-ich.js';
+import { P1_6 } from './02-phan-i-sgk-ket-noi-tri-thuc-6-chuong-i.js';
+import { mono, nz } from '../../core/03-phan-so-va-kiem-tra-dap-an.js';
+import { SLIDES6 } from './04-lop-6-video-day-du-cho-bai-2-bai-3.js';
+import { P1_7 } from './05-lop-7-chuong-i-so-huu-ti.js';
+import { P1_8 } from './06-lop-8-chuong-i-da-thuc.js';
 const neg=c=>c<0?'−'+(-c):''+c;
 const lin=(a,b,c)=>`${mono(a,[['x',1]],true)}${mono(b,[['y',1]],false)} = ${neg(c)}`;
 const sys=(e1,e2)=>`<span class="sys"><span>${e1}</span><span>${e2}</span></span>`;
@@ -36,11 +42,11 @@ const P1_9=[
 
 P1_6.find(x=>x.id==='b2').slides=SLIDES6.b2;P1_6.find(x=>x.id==='b2').video=true;
 P1_6.find(x=>x.id==='b3').slides=SLIDES6.b3;P1_6.find(x=>x.id==='b3').video=true;
-const P1BY={6:P1_6,7:P1_7,8:P1_8,9:P1_9};
-const ALLP1=[...P1_6,...P1_7,...P1_8,...P1_9];
-const L1=st=>P1BY[st.grade];
-const NEED=k=>2*k;   // tổng sao cần có để mở đảo thứ k của Phần I
-const BOOK={6:'Chương I. Tập hợp các số tự nhiên',7:'Chương I. Số hữu tỉ',8:'Chương I. Đa thức',9:'Chương I. Phương trình và hệ hai phương trình bậc nhất hai ẩn'};
-const M1=['Màn 1 · Cơ bản','Màn 2 · Hiểu','Màn 3 · Vận dụng'];
-const P1_Q=5, P1_PASS=4;
+export const P1BY={6:P1_6,7:P1_7,8:P1_8,9:P1_9};
+export const ALLP1=[...P1_6,...P1_7,...P1_8,...P1_9];
+export const L1=st=>P1BY[st.grade];
+export const NEED=k=>2*k;   // tổng sao cần có để mở đảo thứ k của Phần I
+export const BOOK={6:'Chương I. Tập hợp các số tự nhiên',7:'Chương I. Số hữu tỉ',8:'Chương I. Đa thức',9:'Chương I. Phương trình và hệ hai phương trình bậc nhất hai ẩn'};
+export const M1=['Màn 1 · Cơ bản','Màn 2 · Hiểu','Màn 3 · Vận dụng'];
+export const P1_Q=5, P1_PASS=4;
 

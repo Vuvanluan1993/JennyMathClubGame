@@ -2,6 +2,11 @@
    Muốn giữ dữ liệu thì dùng "Nghỉ học" (Lên lớp) thay vì xoá. Phụ huynh ph.… không còn con thì xoá theo.
    P-09b (25/10/2026): ⬇ Xuất dữ liệu của em (qlXuatHS) ra file JSON trước khi xoá (LUAT §6h: xuất rồi mới xoá, có nhật ký).
    Q2 = B: không đổi trường hồ sơ. Không xoá tự động. */
+import { hooks } from './00-hooks.js';
+import { save } from './09-du-lieu-demo.js';
+import { render, toast } from './13-giao-dien-chung.js';
+import { viewPH } from './20-phu-huynh.js';
+import { FB, fbDayNgay, fbLoi, fbTach, fbVi } from './62-may-chu.js';
 (function(){
 if(typeof viewPH==='undefined')return;
 const O=()=>S.org;
@@ -69,9 +74,9 @@ if(typeof orgHeal==='function'){const _h=orgHeal;orgHeal=function(){const r=_h.a
   const xuat=`<button type="button" class="btn qlxuat" title="Tải file JSON dữ liệu của em (hồ sơ, tiến độ, ví xu, nhận xét). Nên xuất trước khi xoá." onclick="qlXuatHS('${id}')">⬇ Xuất dữ liệu</button>`;
   const bt=f.querySelector('.qsbtn');if(bt)bt.insertAdjacentHTML('afterbegin',`<button type="button" class="btn qlxbtn qlxoa" title="Xoá hẳn tài khoản. Em chỉ tạm nghỉ thì dùng Nghỉ học (Năm học · Lên lớp) để giữ dữ liệu." onclick="qlXoaHS(['${id}'])">🗑 Xoá học sinh</button>${xuat}`);else f.insertAdjacentHTML('beforeend',`<div class="qsbtn"><button type="button" class="btn qlxbtn qlxoa" onclick="qlXoaHS(['${id}'])">🗑 Xoá học sinh</button>${xuat}</div>`)}}catch(x){}return r}}
 /* nút Xoá ở thanh chọn nhiều em */
-{const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&(qlTrang==='hs'||qlTrang==='lopct'))r=r.replace(/(<button type="button" class="btn sm" onclick="qlSua\('([a-z0-9._-]+)'\)">✎ Sửa<\/button>)/g,(m,b,id)=>`${b}<button type="button" class="btn sm qlxbtn qlx1" title="Xoá học sinh" aria-label="Xoá học sinh" onclick="qlXoaHS(['${id}'])">🗑 Xoá</button>`);
+{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&(qlTrang==='hs'||qlTrang==='lopct'))r=r.replace(/(<button type="button" class="btn sm" onclick="qlSua\('([a-z0-9._-]+)'\)">✎ Sửa<\/button>)/g,(m,b,id)=>`${b}<button type="button" class="btn sm qlxbtn qlx1" title="Xoá học sinh" aria-label="Xoá học sinh" onclick="qlXoaHS(['${id}'])">🗑 Xoá</button>`);
  if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='hs')
-  r=r.replace(`<button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`,`<button type="button" class="btn sm qlxbtn" onclick="qlXoaHS(Object.keys(qlChon).filter(k=>qlChon[k]))">🗑 Xoá</button><button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`);return r}}
+  r=r.replace(`<button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`,`<button type="button" class="btn sm qlxbtn" onclick="qlXoaHS(Object.keys(qlChon).filter(k=>qlChon[k]))">🗑 Xoá</button><button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`);return r})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .qlx1{margin-left:6px}
 .gdbox{max-height:calc(100vh - 20px)!important;overflow:auto}.gdbox .gdhd{position:sticky;top:0;z-index:3}.gdbox .qsbtn{position:sticky;bottom:0;z-index:2;background:#fff;margin:8px -14px -14px;padding:10px 14px;border-top:1px solid #E8EAED}

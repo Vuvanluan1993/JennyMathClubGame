@@ -1,5 +1,11 @@
 /* 75 — Nhập danh sách học sinh từ Excel (.xlsx) hoặc .csv, gom anh chị em chung phụ huynh, in phiếu đăng nhập.
    Không cần thư viện ngoài: tự đọc/ghi file .xlsx (zip) bằng DecompressionStream. */
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { save } from './09-du-lieu-demo.js';
+import { render, toast } from './13-giao-dien-chung.js';
+import { viewPH } from './20-phu-huynh.js';
+import { FB, fbDayNgay, fbMKGoiY, fbTaoTK } from './62-may-chu.js';
 (function(){
 if(typeof viewPH==='undefined')return;
 const O=()=>S.org,e=s=>esc(String(s==null?'':s));
@@ -185,12 +191,12 @@ window.qlInPhieu=function(ids,loai){const o=O(),lopTen=id=>((o.lop||[]).find(l=>
 window.qlInLop=function(lid){const ids=STUDENTS.filter(s=>(O().gd||{})[s[0]]===lid).map(s=>s[0]);qlInPhieu(ids,'hs')};
 
 /* ---------- gắn nút ---------- */
-{const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);if(role!=='ql')return r;try{
+{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){let r=_p.apply(this,arguments);if(role!=='ql')return r;try{
  if(qlTrang==='hs')r=r.replace(`onclick="qlMoHS()">+ Thêm học sinh</button>`,`onclick="qlMoHS()">+ Thêm học sinh</button><button type="button" class="btn pri" onclick="qlMoNhap()">⬆ Nhập từ Excel</button><button type="button" class="btn" onclick="qlTaiDS()">⬇ Tải danh sách</button>`)
   .replace(`<button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`,`<button type="button" class="btn sm" onclick="qlInPhieu(Object.keys(qlChon).filter(k=>qlChon[k]),'hs')">🖨 In phiếu</button><button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`);
  if(qlTrang==='lopct')r=r.replace(/(<span class="pill">Khối \d+ · \d+ em<\/span><\/div>)/,`$1<div class="qlin"><button type="button" class="btn" onclick="qlInLop('${qlLopId}')">🖨 In phiếu cả lớp</button></div>`);
  if(qlTrang==='ph')r=r.replace(`<div class="row" style="gap:8px" id="phNut"></div>`,`<div class="row" style="gap:8px" id="phNut"><button type="button" class="btn" onclick="qlInPhieu([...new Set(Object.values(S.org.ph||{}))],'ph')">🖨 In phiếu phụ huynh</button></div>`);
- }catch(x){console.error(x)}return r}}
+ }catch(x){console.error(x)}return r})}
 
 document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox.qlnbox{width:min(980px,100%)!important;max-width:none!important}.qlnbd{padding:14px 16px;display:flex;flex-direction:column;gap:10px}

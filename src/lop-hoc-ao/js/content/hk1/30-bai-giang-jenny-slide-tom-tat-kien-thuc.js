@@ -1,10 +1,20 @@
 /* ===================== BÀI GIẢNG JENNY (slide tóm tắt kiến thức theo bài) ===================== */
 /* LES[lớp][bài] = các slide. Tiết 1 của bài xem đủ; các tiết sau xem "Nhắc lại nhanh" (slide cuối), có thể xem đủ. */
+import { esc, range } from '../../core/01-tien-ich.js';
+import { ALLP1, P1BY } from './07-lop-9-chuong-i-phuong-trinh-va-he-hai-ph.js';
+import { go } from '../../core/13-giao-dien-chung.js';
+import { spr } from '../../core/22-do-hoa-pixel-mau-logo-clb.js';
+import { dice, grp2, isl1, rowPair, sayFull, sayJ } from './24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { curG, PRIM } from '../../core/25-lop-1-so-loi-sai-toan-jenny.js';
+import { buildIsl } from './26-lop-2-5-chu-de-1-on-tap-va-bo-sung.js';
+import { MGT } from './28-chu-de-3-lop-1-5.js';
+import { colPic } from './29-chu-de-4-va-5-lop-1-5.js';
+import { jenny } from '../../core/33d-jenny-bieu-cam.js';
 const lsN=(n,s,sz=26)=>`<div class="lsrow"><b>${n}</b><span>${n?Array.from({length:n},()=>spr(s,sz)).join(''):'<i class="lsz">không có quả nào</i>'}</span></div>`;
-const lsLine=(a,b,hl)=>`<div class="lsline">${range(a,b).map(v=>`<span class="${hl&&hl.includes(v)?'on':''}">${v}</span>`).join('')}</div>`;
-const lsTab=(head,rows)=>`<table class="lstab"><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
-const lsMem=t=>`<div class="lsmem">${spr('star',22)}<span>${t}</span></div>`;
-const LES={
+export const lsLine=(a,b,hl)=>`<div class="lsline">${range(a,b).map(v=>`<span class="${hl&&hl.includes(v)?'on':''}">${v}</span>`).join('')}</div>`;
+export const lsTab=(head,rows)=>`<table class="lstab"><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
+export const lsMem=t=>`<div class="lsmem">${spr('star',22)}<span>${t}</span></div>`;
+export const LES={
  1:{
   1:[{t:'Đếm từ 1 đến 5',h:`${lsN(1,'apple')}${lsN(2,'apple')}${lsN(3,'apple')}${lsN(4,'apple')}${lsN(5,'apple')}`,say:'Chào các em! Mình cùng đếm nhé. Một quả táo, hai quả táo, ba quả táo, bốn quả táo, năm quả táo. Mỗi hàng có thêm một quả.'},
      {t:'Số 0',h:`${lsN(0,'apple')}<p>Đĩa trống, không có quả nào. Ta viết số <b>0</b>.</p>`,say:'Đĩa này trống, không có quả nào. Khi không có gì, ta viết số không.'},
@@ -58,7 +68,7 @@ const LES={
 /*@include js/content/lessons/bai-giang-lop4.js*/
 /*@include js/content/lessons/bai-giang-lop5.js*/
 /* đăng kí một chủ đề mới: các đảo (theo số tiết), trò chơi nhỏ riêng */
-function addTopic(g,ti,L,mg){const add=buildIsl(g,L,ti);PRIM[g].isl=PRIM[g].isl.concat(add).sort((p,q)=>(p.ti||0)-(q.ti||0));P1BY[g]=PRIM[g].isl;ALLP1.push(...add);if(mg){MGT[ti]=MGT[ti]||{};MGT[ti][g]=mg}}
+export function addTopic(g,ti,L,mg){const add=buildIsl(g,L,ti);PRIM[g].isl=PRIM[g].isl.concat(add).sort((p,q)=>(p.ti||0)-(q.ti||0));P1BY[g]=PRIM[g].isl;ALLP1.push(...add);if(mg){MGT[ti]=MGT[ti]||{};MGT[ti][g]=mg}}
 /*@include js/content/hk2/lop1-hk2-phanA.js*/
 /*@include js/content/hk2/lop2-hk2-phanA.js*/
 /*@include js/content/hk2/lop2-hk2-phanB.js*/
@@ -68,10 +78,10 @@ function addTopic(g,ti,L,mg){const add=buildIsl(g,L,ti);PRIM[g].isl=PRIM[g].isl.
 /*@include js/content/hk2/lop4-hk2-phanB.js*/
 /*@include js/content/hk2/lop5-hk2-phanA.js*/
 /*@include js/content/hk2/lop5-hk2-phanB.js*/
-const lesOf=x=>{const g=Number(String(x.id).slice(1,2));return(LES[g]||{})[x.b]||null};
+export const lesOf=x=>{const g=Number(String(x.id).slice(1,2));return(LES[g]||{})[x.b]||null};
 function startLes(id,full){try{speechSynthesis.cancel()}catch(e){}const x=isl1(id),L=lesOf(x);if(!L)return;const quick=!full&&x.tiet>1;go({k:'lslide',id,i:quick?L.length-1:0,quick})}
 let lesSaid='';
-function viewLes(){const x=isl1(scr.id),L=lesOf(x),i=scr.i,sl=L[i],last=i===L.length-1,first=scr.quick?true:i===0;
+export function viewLes(){const x=isl1(scr.id),L=lesOf(x),i=scr.i,sl=L[i],last=i===L.length-1,first=scr.quick?true:i===0;
   const key=scr.id+':'+i;if(curG()<=2&&lesSaid!==key){lesSaid=key;setTimeout(()=>{if(scr.k==='lslide'&&scr.i===i)sayJ(sayFull(sl.say,sl.h))},350)}
   const done=`const s=s1(S.st[sid],'${x.id}');s.les=true;save();try{speechSynthesis.cancel()}catch(e){};go({k:'island',id:'${x.id}'})`;
   return`<div class="page"><div class="crumb"><button class="btn sm ghost" onclick="try{speechSynthesis.cancel()}catch(e){};go({k:'island',id:'${x.id}'})">← ${esc(x.title)}</button></div>

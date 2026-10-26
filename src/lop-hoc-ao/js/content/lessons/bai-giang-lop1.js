@@ -1,3 +1,8 @@
+import { spr } from '../../core/22-do-hoa-pixel-mau-logo-clb.js';
+import { grp, grp2 } from '../hk1/24-lop-1-chu-de-1-cac-so-tu-0-den-10.js';
+import { shp } from '../hk1/27-chu-de-2-lop-1-5.js';
+import { cubeStack } from '../hk1/29-chu-de-4-va-5-lop-1-5.js';
+import { LES, lsLine, lsMem, lsTab } from '../hk1/30-bai-giang-jenny-slide-tom-tat-kien-thuc.js';
 Object.assign(LES[1]=LES[1]||{},{
  7:[{t:'Bốn hình quen thuộc',h:`<div class="g1grp">${shp('sq',54,'b')}${shp('ci',54,'r')}${shp('tr',54,'g')}${shp('rc',54,'o')}</div><p>Hình vuông, hình tròn, hình tam giác, hình chữ nhật.</p>`,say:'Chào các em! Hôm nay mình làm quen với bốn hình: hình vuông, hình tròn, hình tam giác và hình chữ nhật.'},
     {t:'Nhận ra từng hình',h:`<p>${shp('tr',40,'g')} Hình tam giác có <b>3 cạnh</b>.</p><p>${shp('sq',40,'b')} Hình vuông có <b>4 cạnh dài bằng nhau</b>.</p><p>${shp('rc',40,'o')} Hình chữ nhật có 2 cạnh dài, 2 cạnh ngắn.</p><p>${shp('ci',40,'r')} Hình tròn không có cạnh.</p>`,say:'Hình tam giác có ba cạnh. Hình vuông có bốn cạnh dài bằng nhau. Hình chữ nhật có hai cạnh dài và hai cạnh ngắn. Hình tròn thì tròn đều, không có cạnh.'},

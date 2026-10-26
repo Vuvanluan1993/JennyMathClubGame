@@ -32,11 +32,11 @@ Thầy chốt điều mới → ghi ngay vào `docs/LUAT-DA-CHOT.md`.
 
 ## Các trang trên GitHub Pages
 - Học sinh: `games/lop-hoc-ao/` (đăng nhập jenny01…jenny05 / jenny123, chỉ tiểu học; thử: lebaona / jenny123).
-- Giáo viên `games/lop-hoc-ao/giao-vien/` · Phụ huynh `games/lop-hoc-ao/phu-huynh/` · Quản lý `games/lop-hoc-ao/quan-ly/` (3 trang tạo từ `tools/_teacher.py`) — đăng nhập tài khoản thật (Firebase, `js/core/62-may-chu.js`); bản demo dữ liệu mẫu: mật khẩu `giaovien123` (đổi ở `tools/_teacher.py`).
+- Giáo viên `games/lop-hoc-ao/giao-vien/` · Phụ huynh `games/lop-hoc-ao/phu-huynh/` · Quản lý `games/lop-hoc-ao/quan-ly/` (3 trang tạo từ `tools/vite/vai.js`) — đăng nhập tài khoản thật (Firebase, `js/core/62-may-chu.js`); bản thử `demo/` mở sẵn vai, không mật khẩu (`tools/vite/vai.js`).
 - Máy chủ: Firebase `jenny-lop-hoc-ao` (Firestore asia-southeast1). Quy tắc: `firebase/firestore.rules` — đổi quy tắc thì nhờ thầy dán lại vào Firestore › Rules. Chạy thử bằng Playwright cần `proxy:{server:process.env.HTTPS_PROXY}`, `ignoreHTTPSErrors:true`, `waitUntil:'domcontentloaded'`.
 
 ## Lưu ý kĩ thuật
-- Tất cả file JS chung phạm vi toàn cục; file nội dung mới nên bọc IIFE.
-- `function` trùng tên: bản sau thắng.
+- Mỗi file JS là ES module (import/export do `node tools/vite/tim-import.mjs` sinh, chạy lại sau khi sửa/rebase); khi chạy vẫn nối thành một script thường. `npm run lint` phải 0 lỗi.
+- Không khai báo `function` trùng tên, không gán lại hàm của file khác: đè bằng `hooks.de('ten',…)` (xem `js/core/00-hooks.js`, `docs/KIEN-TRUC.md` mục Module và hooks).
 - Bàn phím số chỉ nhập số nguyên ≥ 0.
-- Đảo/màn **khoá mặc định**, mở dần theo tiến độ (`UNL` tính lại mỗi lần vẽ trong `55-khoa-dao-tai-khoan.js`). Tài khoản thử **Lê Bảo Na** (`na`, `lebaona`/jenny123, hoặc tên "Lê Bảo Na") mở tất cả + 10 000 xu. Muốn làm mới dữ liệu mọi máy: đổi khoá lưu (`KEY` ở 09, `jennyHS2_` ở tools/_student.py).
+- Đảo/màn **khoá mặc định**, mở dần theo tiến độ (`UNL` tính lại mỗi lần vẽ trong `55-khoa-dao-tai-khoan.js`). Tài khoản thử **Lê Bảo Na** (`na`, `lebaona`/jenny123, hoặc tên "Lê Bảo Na") mở tất cả + 10 000 xu. Muốn làm mới dữ liệu mọi máy: đổi khoá lưu (`KEY` ở 09, `jennyHS2_` ở `tools/vite/vai/hoc-sinh-dang-nhap-thu.js.txt`).

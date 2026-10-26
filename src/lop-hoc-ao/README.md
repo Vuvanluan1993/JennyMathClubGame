@@ -34,8 +34,9 @@ src/lop-hoc-ao/
   js/content/hk2/        nội dung lớp 1–5 các chủ đề học kì 2 (mỗi file 1 phần của 1 lớp)
   js/content/lessons/    Bài giảng Jenny lớp 1–5 (slide theo bài)
   data/plan.json         cấu trúc vở bài tập: chủ đề → bài → số tiết (dùng để kiểm tra số đảo)
-  tools/build.py         ghép thành bản đầy đủ + bản học sinh
-  tools/_student.py      tạo bản học sinh: tài khoản, màn đăng nhập, ẩn giáo viên/phụ huynh
+  tools/build.py         = npm run build:lop-hoc-ao (Vite): bản đầy đủ + 4 trang thật + 4 trang thử
+  tools/vite/            vite plugin nối file (noi-file.js), trang theo vai (vai.js), sinh import (tim-import.mjs),
+                         chuyển hàm đè sang hooks (chuyen-hooks.mjs), so ảnh (so-anh.mjs)
   tools/test/kiem-tra.js kiểm tra tự động
   docs/                  kiến trúc, cách thêm nội dung
   TASKS.md               danh sách việc tiếp theo

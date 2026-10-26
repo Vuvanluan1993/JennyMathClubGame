@@ -1,6 +1,7 @@
 /* ===================== PHẦN II · Toán Jenny (Sách CLB lớp 6, Chương 1) ===================== */
-const STAR2=[2,3,4];   // sao cho màn ★, ★★, ★★★
-const P2=[
+import { VENN_SVG } from './02-phan-i-sgk-ket-noi-tri-thuc-6-chuong-i.js';
+export const STAR2=[2,3,4];   // sao cho màn ★, ★★, ★★★
+export const P2=[
  {id:'j1',week:1,title:'Buổi 1 · Tập hợp',src:'Sách CLB lớp 6 · Chương 1 · Tuần 1',
   slides:[
   {t:'Tập hợp: những điều cần nhớ',h:'<p>• Viết tập hợp: liệt kê, hoặc chỉ ra tính chất đặc trưng. Mỗi phần tử chỉ liệt kê một lần.</p><p>• Tập rỗng ∅ không có phần tử nào.</p>',say:'Buổi một: tập hợp. Có hai cách viết tập hợp: liệt kê, hoặc chỉ ra tính chất đặc trưng. Mỗi phần tử chỉ liệt kê một lần. Tập hợp không có phần tử nào gọi là tập rỗng.'},

@@ -10,6 +10,14 @@
    - Đồ dùng hỏng dần (đồ mặc, ổ, máy ấp, máng ăn theo ngày; đồ chơi theo lần chơi). Bán thanh lý = 50% giá × độ mới.
    - Học cũng giúp thú: mỗi lần qua màn, thú cưng vui thêm.
    Lưu: st.pets={list:[…],eggs:[…],wait,mem:[…],ev:[…],layT}, st.shop.bag={mã:số}, st.shop.gear=[{u,id,dur}] */
+import { hooks } from './00-hooks.js';
+import { esc } from './01-tien-ich.js';
+import { save } from './09-du-lieu-demo.js';
+import { go, render, toast } from './13-giao-dien-chung.js';
+import { PXS, pxURI, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
+import { sfx } from './33b-am-thanh.js';
+import { I18N, I18N_RE } from './47-ngon-ngu-vi-en.js';
+import { GH, GH_ACC, GH_SLOT, ghSt } from './49-gian-hang.js';
 Object.assign(PXS,{
  bowlS:["..tTtT..",".kkkkkk.","kbbbbbbk",".kbbbbk.","..kkkk.."],
  seedS:["..kk..",".ktTk.","ktTtTk","kTtTtk","ktTtTk",".kkkk."],
@@ -31,9 +39,9 @@ Object.assign(PXS,{
  eggCS:["..kk..",".kttk.","kttttk","ktwttk","kttTtk","kTtttk",".kkkk."],
 });
 /* loài thú (bắt đầu 2 loài): [tên, giá, tuổi thọ ít nhất, nhiều nhất (ngày), mô tả] */
-const PET_SP={chick:['Gà con',150,40,50,'Nhanh lớn, ăn nhiều, hay đẻ trứng. Hợp với bạn mới nuôi lần đầu.'],turtle:['Rùa biển',250,100,200,'Lớn chậm nhưng sống rất lâu. Ăn ít hơn, cần tắm sạch thường xuyên.']};
+export const PET_SP={chick:['Gà con',150,40,50,'Nhanh lớn, ăn nhiều, hay đẻ trứng. Hợp với bạn mới nuôi lần đầu.'],turtle:['Rùa biển',250,100,200,'Lớn chậm nhưng sống rất lâu. Ăn ít hơn, cần tắm sạch thường xuyên.']};
 /* đồ nuôi: [mã, tên, giá, loại, hiệu quả, hình, số lượng mỗi lần mua] */
-const CARE=[
+export const CARE=[
  ['seed','Hạt dinh dưỡng',5,'food',{no:30},'seedS',1],['fishD','Cá khô',8,'food',{no:45,vui:5},'fishDS',1],['cake','Bánh thưởng',12,'food',{no:20,vui:20},'cakeS',1],
  ['med','Thuốc',40,'med',{hp:60},'medS',1],['soap','Xà phòng (5 lần)',15,'soap',{sach:60},'soapS',5],
  ['ball','Bóng',30,'toy',{vui:25},'ball',0],['teddy','Gấu bông',45,'toy',{vui:35},'teddyS',0],
@@ -42,21 +50,22 @@ const CARE=[
 const CARE_GRP=[['food','Thức ăn'],['med','Thuốc & tắm'],['toy','Đồ chơi'],['wear','Đồ mặc'],['home','Nhà & máy']];
 const CARE_NOTE={seed:'Ăn no +30',fishD:'Ăn no +45, vui +5',cake:'No +20, vui +20',med:'Chữa ốm, sức khoẻ +60',soap:'Mỗi lần tắm: sạch +60',ball:'Chơi: vui +25 (mòn dần)',teddy:'Chơi: vui +35 (mòn dần)',
  neck:'Cho thú mặc. Mặc lâu sẽ cũ',beanie:'Cho thú mặc. Mặc lâu sẽ cũ',scarf:'Cho thú mặc. Mặc lâu sẽ cũ',nest:'Cần có để thú đẻ trứng',feeder:'Tự cho ăn từ túi khi em vắng nhà',inc:'Ấp trứng 3 ngày cho nở'};
-const careOf=id=>CARE.find(c=>c[0]===id);
+export const careOf=id=>CARE.find(c=>c[0]===id);
 {const C=GH.find(c=>c.k==='care');if(C)C.it=CARE.map(c=>[c[0],c[1],c[2]])}
 const P_H=36e5,P_D=864e5,P_LIFE=42,P_WAIT=3,P_LEAVE=72;
 const pNow=()=>Date.now()+(window.PET_SHIFT||0);
 const PET_NAMES=['Bông','Mít','Na','Kẹo','Bơ','Su','Tí','Gạo','Bin','Mochi','Đậu','Cốm'];
-function petsOf(st){st.pets=st.pets||{list:[],eggs:[],wait:0,mem:[],ev:[],layT:0};const P=st.pets;P.list=P.list||[];P.eggs=P.eggs||[];P.mem=P.mem||[];P.ev=P.ev||[];return P}
+export function petsOf(st){st.pets=st.pets||{list:[],eggs:[],wait:0,mem:[],ev:[],layT:0};const P=st.pets;P.list=P.list||[];P.eggs=P.eggs||[];P.mem=P.mem||[];P.ev=P.ev||[];return P}
 const pAge=p=>(pNow()-p.born)/P_D;
-function pStage(p){const f=pAge(p)/p.life;return f<.15?0:f<.5?1:f<.85?2:3}
-const P_STN=['Bé','Lớn dần','Trưởng thành','Già'],P_SC=[.6,.8,1,1];
+export function pStage(p){const f=pAge(p)/p.life;return f<.15?0:f<.5?1:f<.85?2:3}
+export const P_STN=['Bé','Lớn dần','Trưởng thành','Già'],P_SC=[.6,.8,1,1];
 const clamp=v=>Math.max(0,Math.min(100,v));
-const gearHas=(st,id)=>ghSt(st).gear.some(g=>g.id===id&&g.dur>0);
+export const gearHas=(st,id)=>ghSt(st).gear.some(g=>g.id===id&&g.dur>0);
 const pUid=()=>Math.random().toString(36).slice(2,9);
 function pEv(P,msg,kind){P.ev.push({t:pNow(),msg,kind:kind||'info'});if(P.ev.length>12)P.ev=P.ev.slice(-12)}
 /* mô phỏng theo từng giờ kể từ lần xem trước */
-function petSim(st){const P=petsOf(st),s=ghSt(st),now=pNow();
+export function petSim(...a){return hooks.goi('petSim',this,a)}
+hooks.ham('petSim',function(st){const P=petsOf(st),s=ghSt(st),now=pNow();
  /* đồ dùng cũ dần theo ngày */
  const gT=P.gT||now,gd=(now-gT)/P_D;if(gd>0){s.gear.forEach(g=>{const c=careOf(g.id);if(!c)return;const worn=P.list.some(p=>p.wear===g.u);const r=c[3]==='wear'?(worn?3:.5):c[3]==='home'?1.5:.5;g.dur=Math.max(0,g.dur-r*gd)})}P.gT=now;
  for(const p of P.list.slice()){let t=p.last||now;let steps=Math.floor((now-t)/P_H);if(steps>24*30)steps=24*30;
@@ -76,7 +85,7 @@ function petSim(st){const P=petsOf(st),s=ghSt(st),now=pNow();
  /* trứng: không ấp thì hỏng sau 2 ngày; ấp đủ 3 ngày thì nở khi đảo còn chỗ */
  P.eggs=P.eggs.filter(e=>{if(!e.inc){if(now-e.laid>2*P_D){pEv(P,'Một quả trứng bị hỏng vì không được ấp.','warn');return false}return true}
   if(!gearHas(st,'inc')){e.inc=0;e.laid=now;return true}
-  if(now-e.inc>=3*P_D&&P.list.length<2){const b=petNew(e.sp,now);b.name='';P.list.push(b);pEv(P,`Trứng đã nở! Một bạn ${PET_SP[e.sp][0]} bé xíu ra đời. Em đặt tên cho bạn ấy nhé.`,'good');return false}return true})}
+  if(now-e.inc>=3*P_D&&P.list.length<2){const b=petNew(e.sp,now);b.name='';P.list.push(b);pEv(P,`Trứng đã nở! Một bạn ${PET_SP[e.sp][0]} bé xíu ra đời. Em đặt tên cho bạn ấy nhé.`,'good');return false}return true})});
 function petNew(sp,t){return{u:pUid(),sp,name:PET_NAMES[Math.floor(Math.random()*PET_NAMES.length)],born:t,last:t,life:(PET_SP[sp]?PET_SP[sp][2]+Math.floor(Math.random()*(PET_SP[sp][3]-PET_SP[sp][2]+1)):P_LIFE),no:80,vui:80,sach:90,hp:100,sick:false,ng:0,wear:'',fed:0,pats:0,plays:0,patT:0}}
 function petGone(st,p,how){const P=petsOf(st);P.list=P.list.filter(x=>x!==p);P.mem.unshift({sp:p.sp,name:p.name||PET_SP[p.sp][0],born:p.born,end:pNow(),how,days:Math.max(1,Math.round(pAge(p))),fed:p.fed,pats:p.pats,plays:p.plays});P.wait=pNow()+P_WAIT*P_D;
  if(p.wear){/* đồ đang mặc trả về túi */}
@@ -84,8 +93,8 @@ function petGone(st,p,how){const P=petsOf(st);P.list=P.list.filter(x=>x!==p);P.m
 /* ===== mua ở gian hàng ===== */
 function petBlock(st,sp){const P=petsOf(st);if(P.wait>pNow()){const d=Math.ceil((P.wait-pNow())/P_D);return`Còn ${d} ngày nữa em mới nuôi bạn mới được.`}
  if(P.list.length>=2)return'Đảo nhà đã đủ 2 bạn rồi.';if(P.list.length&&P.list[0].sp!==sp)return`Em đang nuôi ${PET_SP[P.list[0].sp][0]}. Mỗi lần chỉ nuôi 1 loài.`;return''}
-function petNote(st,sp){const d=PET_SP[sp];return petBlock(st,sp)||`Sống khoảng ${d[2]}–${d[3]} ngày. ${d[4]}${petsOf(st).list.length?' Nuôi thêm 1 bạn cùng loài: có thể có trứng!':''}`}
-function petCard(c,x,st){const[id,n,pr]=x,T=scr.ghTry||{},sel=T.id===id,s=ghSt(st),P=petsOf(st);
+export function petNote(st,sp){const d=PET_SP[sp];return petBlock(st,sp)||`Sống khoảng ${d[2]}–${d[3]} ngày. ${d[4]}${petsOf(st).list.length?' Nuôi thêm 1 bạn cùng loài: có thể có trứng!':''}`}
+export function petCard(c,x,st){const[id,n,pr]=x,T=scr.ghTry||{},sel=T.id===id,s=ghSt(st),P=petsOf(st);
  if(c.k==='pet'){const have=P.list.filter(p=>p.sp===id).length,bl=petBlock(st,id);return`<button type="button" class="ghit ${sel?'sel':''} ${bl&&!have?'dim':''}" onclick="ghTry('pet','${id}')" aria-label="${esc(n)}, ${pr} xu"><span class="ghpic">${spr(id,44)}</span><b>${esc(n)}</b>${have?`<i class="ghtag on">Đang nuôi ${have}</i>`:`<i class="ghpr">${spr('coin',14)} ${pr}</i>`}<small class="ghlife">${PET_SP[id][2]}–${PET_SP[id][3]} ngày</small></button>`}
  const cc=careOf(id),q=cc[6]?(s.bag[id]||0):s.gear.filter(g=>g.id===id).length;
  return`<button type="button" class="ghit ${sel?'sel':''}" onclick="ghTry('care','${id}')" aria-label="${esc(n)}, ${pr} xu"><span class="ghpic">${spr(cc[5],cc[3]==='food'||cc[3]==='med'||cc[3]==='soap'?30:cc[3]==='wear'?20:34)}</span><b>${esc(n)}</b><i class="ghpr">${spr('coin',14)} ${pr}</i>${q?`<i class="ghq">có ${q}</i>`:''}</button>`}
@@ -93,27 +102,30 @@ const CARE_IC={food:'bowlS',med:'medS',toy:'ball',wear:'beanieS',home:'eggCS'};
 const careG=c=>c[3]==='soap'?'med':c[3];
 /* nút chọn nhóm đồ (Thức ăn · Thuốc & tắm · Đồ chơi · Đồ mặc · Nhà & máy) — dùng ở Cửa hàng › Đồ nuôi và Túi đồ */
 function grpBtns(groups,cur,key){return`<div class="grpbtns" role="group">${groups.map(([g,n,c])=>`<button type="button" class="grpb ${g===cur?'on':''}" aria-pressed="${g===cur}" onclick="scr.${key}='${g}';render()"><span class="grpic">${spr(CARE_IC[g]||'bag',22)}</span><b>${n}</b>${c!=null?`<small>${c}</small>`:''}</button>`).join('')}</div>`}
-function careGrid(st){const cur=CARE_GRP.some(([g])=>g===scr.careG)?scr.careG:'food';const n=CARE_GRP.find(x=>x[0]===cur)[1];
- return grpBtns(CARE_GRP.map(([g,nn])=>[g,nn,null]),cur,'careG')+`<div class="ghgrid" aria-label="${n}" style="margin-top:12px">${CARE.filter(c=>careG(c)===cur).map(c=>petCard({k:'care'},[c[0],c[1],c[2]],st)).join('')}</div>`}
-const careNote=id=>CARE_NOTE[id]||'';
-function careStage(st,T,f){const P=petsOf(st),p=P.list[0];return`<span class="ghcare">${p?petSpr(p,70):spr('bowlS',40)}${f?`<span class="ghcarei">${spr(careOf(T.id)[5],34)}</span>`:''}</span>`}
-function petAct(T,f,st){const pr=f.x[2],short=Math.max(0,pr-st.coins);
+export function careGrid(...a){return hooks.goi('careGrid',this,a)}
+hooks.ham('careGrid',function(st){const cur=CARE_GRP.some(([g])=>g===scr.careG)?scr.careG:'food';const n=CARE_GRP.find(x=>x[0]===cur)[1];
+ return grpBtns(CARE_GRP.map(([g,nn])=>[g,nn,null]),cur,'careG')+`<div class="ghgrid" aria-label="${n}" style="margin-top:12px">${CARE.filter(c=>careG(c)===cur).map(c=>petCard({k:'care'},[c[0],c[1],c[2]],st)).join('')}</div>`});
+export const careNote=id=>CARE_NOTE[id]||'';
+export function careStage(st,T,f){const P=petsOf(st),p=P.list[0];return`<span class="ghcare">${p?petSpr(p,70):spr('bowlS',40)}${f?`<span class="ghcarei">${spr(careOf(T.id)[5],34)}</span>`:''}</span>`}
+export function petAct(T,f,st){const pr=f.x[2],short=Math.max(0,pr-st.coins);
  if(T.k==='pet'){const bl=petBlock(st,T.id);if(bl)return`<button type="button" class="gobtn ghgo off" onclick="toast(this.dataset.m)" data-m="${esc(bl)}">Chưa mua được</button>`}
  return short?`<button type="button" class="gobtn ghgo off" onclick="ghBuy()">Cần thêm ${spr('coin',16)} ${short}</button>`:`<button type="button" class="gobtn ghgo" onclick="ghBuy()">Mua ${esc(f.x[1])} · ${spr('coin',16)} ${pr}</button>`}
-function petBuy(sp){const st=S.st[sid],P=petsOf(st),pr=PET_SP[sp][1],bl=petBlock(st,sp);if(bl){toast(bl);return}if(st.coins<pr){toast(`Em cần thêm ${pr-st.coins} xu nhé!`);return}
+export function petBuy(sp){const st=S.st[sid],P=petsOf(st),pr=PET_SP[sp][1],bl=petBlock(st,sp);if(bl){toast(bl);return}if(st.coins<pr){toast(`Em cần thêm ${pr-st.coins} xu nhé!`);return}
  st.coins-=pr;petSim(st);const p=petNew(sp,pNow());p.name='';P.list.push(p);save();try{sfx('win')}catch(e){}scr.ghTry=null;go({k:'home',tab:'isle',name:p.u})}
-function careBuy(id){const st=S.st[sid],s=ghSt(st),c=careOf(id);if(st.coins<c[2]){toast(`Em cần thêm ${c[2]-st.coins} xu nhé!`);return}st.coins-=c[2];
+export function careBuy(id){const st=S.st[sid],s=ghSt(st),c=careOf(id);if(st.coins<c[2]){toast(`Em cần thêm ${c[2]-st.coins} xu nhé!`);return}st.coins-=c[2];
  if(c[6])s.bag[id]=(s.bag[id]||0)+c[6];else s.gear.push({u:pUid(),id,dur:100,t:pNow()});save();try{sfx('coin')}catch(e){try{sfx('win')}catch(e){}}toast(`Đã mua ${c[1]}! Xem ở Túi đồ trên Đảo nhà.`);render()}
 /* ===== hình thú cưng ===== */
-const P_WEAR={neck:['neckS',.35,.5,.3],beanie:['beanieS',.28,-.12,.44],scarf:['scarfS',.25,.52,.5]};
-function petSpr(p,H,cls){const st=S.st[sid],sc=P_SC[pStage(p)],h=Math.round(H*sc),d=pxURI(p.sp),w=Math.round(h*d.w/d.h);let wear='';
+export const P_WEAR={neck:['neckS',.35,.5,.3],beanie:['beanieS',.28,-.12,.44],scarf:['scarfS',.25,.52,.5]};
+export function petSpr(...a){return hooks.goi('petSpr',this,a)}
+hooks.ham('petSpr',function(p,H,cls){const st=S.st[sid],sc=P_SC[pStage(p)],h=Math.round(H*sc),d=pxURI(p.sp),w=Math.round(h*d.w/d.h);let wear='';
  const g=p.wear&&ghSt(st).gear.find(x=>x.u===p.wear);if(g&&P_WEAR[g.id]){const[nm,x,y,ww]=P_WEAR[g.id],dd=pxURI(nm),W=w*ww;wear=`<img class="px pwear" src="${dd.u}" alt="" style="left:${x*w}px;top:${y*h}px;width:${W}px;height:${W*dd.h/dd.w}px">`}
- return`<span class="pspr st${pStage(p)} ${p.sick?'sick':''} ${cls||''}" style="width:${w}px;height:${h}px">${spr(p.sp,h)}${wear}</span>`}
+ return`<span class="pspr st${pStage(p)} ${p.sick?'sick':''} ${cls||''}" style="width:${w}px;height:${h}px">${spr(p.sp,h)}${wear}</span>`});
 /* ===== Đảo nhà ===== */
 const P_POS=[[42,60],[64,64]];
 function petMood(p){if(p.sick)return['Mình mệt quá… mình cần thuốc.','sick'];if(p.no<25)return['Mình đói bụng lắm!','hungry'];if(p.sach<25)return['Mình bẩn quá, tắm cho mình nhé!','dirty'];if(p.vui<30)return['Chơi với mình đi!','sad'];if(pStage(p)===3)return['Mình già rồi, ở bên mình nhé.','old'];return['Mình vui lắm!','ok']}
 function pBar(n,v,c){return`<div class="pbar"><span>${n}</span><i><b style="width:${Math.round(v)}%;background:${v<25?'#F04A1B':c}"></b></i></div>`}
-function viewIsle(st){petSim(st);const P=petsOf(st),s=ghSt(st),now=pNow();
+function viewIsle(...a){return hooks.goi('viewIsle',this,a)}
+hooks.ham('viewIsle',function(st){petSim(st);const P=petsOf(st),s=ghSt(st),now=pNow();
  const dec=s.dec.map(id=>{const p=GH_SLOT[id]||[50,50];return`<span class="idec" style="left:${p[0]}%;top:${p[1]*.9}%">${spr(id,id==='boat'?34:42)}</span>`}).join('');
  const home=['nest','feeder','inc'].filter(id=>gearHas(st,id)).map((id,i)=>`<span class="ihome h${i}">${spr(careOf(id)[5],id==='inc'?30:26)}${id==='inc'?P.eggs.filter(e=>e.inc).map(()=>`<i class="iegg">${spr('eggCS',14)}</i>`).join(''):''}${id==='nest'?P.eggs.filter(e=>!e.inc).map(()=>`<i class="iegg">${spr('eggCS',14)}</i>`).join(''):''}</span>`).join('');
  const pets=P.list.map((p,i)=>{const[x,y]=P_POS[i];return`<button type="button" class="ipet" style="left:${x}%;top:${y}%" onclick="petPat(${i})" aria-label="Cưng nựng ${esc(p.name||'thú cưng')}">${petSpr(p,58)}${p.sick?`<i class="ifx">${spr('fxSweat',14)}</i>`:p.no<25?`<i class="ifx">${spr('bowlS',14)}</i>`:''}</button>`}).join('');
@@ -134,7 +146,7 @@ function viewIsle(st){petSim(st);const P=petsOf(st),s=ghSt(st),now=pNow();
  const nm=scr.name&&P.list.find(p=>p.u===scr.name);if(nm)setTimeout(()=>petName(P.list.indexOf(nm)),300);scr.name=null;
  save();
  return`<div class="page ipage"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← Nhà em</button></div>
-  <section class="card itop"><h2>${spr('island',24)} Đảo nhà của ${esc(st.name.split(' ').pop())}</h2>${scene}${ev}</section>${bye}${none}${cards}${eggs}${bag}${mem}</div>`}
+  <section class="card itop"><h2>${spr('island',24)} Đảo nhà của ${esc(st.name.split(' ').pop())}</h2>${scene}${ev}</section>${bye}${none}${cards}${eggs}${bag}${mem}</div>`});
 function petByeHTML(m){return`<div class="gdov pbye" id="pbye"><div class="gdbox"><div class="gdhd"><b>${spr(m.how==='old'?'star':'letterS',20)} ${m.how==='old'?'Tạm biệt bạn nhỏ':'Lá thư tạm biệt'}</b></div>
  <div class="gatebd">${spr(m.sp,56)}<p>${m.how==='old'?`<b>${esc(m.name)}</b> đã sống ${m.days} ngày vui vẻ bên em và ra đi thanh thản khi về già. Cảm ơn em đã chăm sóc bạn ấy thật chu đáo!`:`<b>${esc(m.name)}</b> đói quá lâu nên đã bỏ đi tìm nơi khác. Nuôi thú cưng cần chăm mỗi ngày em nhé.`}<br><small>Sau ${P_WAIT} ngày em có thể nuôi bạn mới. ${esc(m.name)} được ghi vào Sổ kỷ niệm.</small></p></div>
  <div class="gdctl"><button type="button" class="gdgo" onclick="petsOf(S.st[sid]).bye=null;save();render()">Em hiểu rồi</button></div></div></div>`}
@@ -172,15 +184,15 @@ function petPat(i){const st=S.st[sid],P=petsOf(st),p=P.list[i];if(!p)return;cons
 function petName(i){const st=S.st[sid],p=petsOf(st).list[i];if(!p)return;const el=document.createElement('div');el.className='gdov';el.innerHTML=`<div class="gdbox"><div class="gdhd"><b>${spr(p.sp,20)} Đặt tên cho bạn ${PET_SP[p.sp][0]}</b><button type="button" class="gdx" onclick="this.closest('.gdov').remove()" aria-label="Đóng">✕</button></div><div class="gatebd">${petSpr(p,56)}<input id="pnIn" maxlength="12" value="${esc(p.name||PET_NAMES[Math.floor(Math.random()*PET_NAMES.length)])}" aria-label="Tên thú cưng"></div><div class="gdctl"><button type="button" class="gdgo" id="pnOk">Xong ▶</button></div></div>`;document.body.appendChild(el);
  const inp=el.querySelector('#pnIn');inp.focus();inp.select();el.querySelector('#pnOk').onclick=()=>{const v=inp.value.replace(/[<>"'&]/g,'').trim().slice(0,12);if(!v){inp.focus();return}p.name=v;save();el.remove();render()}}
 /* học giỏi → thú cưng vui */
-{const _e=end1;end1=function(){const r=_e.apply(this,arguments);try{if(scr&&scr.pass&&!scr.fix){const st=S.st[sid];petsOf(st).list.forEach(p=>{p.vui=clamp(p.vui+6)});save()}}catch(e){}return r}}
+{const _e=hooks.cu('end1');hooks.de('end1',function(){const r=_e.apply(this,arguments);try{if(scr&&scr.pass&&!scr.fix){const st=S.st[sid];petsOf(st).list.forEach(p=>{p.vui=clamp(p.vui+6)});save()}}catch(e){}return r})}
 /* trang chính: chạm ảnh Jenny ở thẻ chào → Đảo nhà; có dấu ! khi thú cần chăm */
-{const _h=viewHome1;viewHome1=function(){let r=_h.apply(this,arguments);try{const st=S.st[sid];petSim(st);const P=petsOf(st),need=P.list.some(p=>p.no<25||p.sick||p.sach<25||!p.name)||P.eggs.some(e=>!e.inc)||P.bye,fr=ghSt(st).frame;
+{const _h=hooks.cu('viewHome1');hooks.de('viewHome1',function(){let r=_h.apply(this,arguments);try{const st=S.st[sid];petSim(st);const P=petsOf(st),need=P.list.some(p=>p.no<25||p.sick||p.sach<25||!p.name)||P.eggs.some(e=>!e.inc)||P.bye,fr=ghSt(st).frame;
   const i=r.indexOf('<section class="hero');if(i>=0){const j=r.indexOf('<span class="jav',i);if(j>=0){let d=0,k=j;const re=/<span\b|<\/span>/g;re.lastIndex=j;let m;while((m=re.exec(r))){d+=m[0]==='</span>'?-1:1;if(!d){k=re.lastIndex;break}}
-   r=r.slice(0,j)+`<button type="button" class="herojav ${fr?'fr-'+fr:''}" onclick="go({k:'home',tab:'isle'})" aria-label="Vào Đảo nhà của em${need?' — thú cưng cần em chăm':''}">${r.slice(j,k)}${P.list[0]?`<span class="herpet">${petSpr(P.list[0],26)}</span>`:''}${need?'<i class="herbang">!</i>':''}<span class="herlbl">Đảo nhà</span></button>`+r.slice(k)}}}catch(e){}return r}}
-{const _v=viewHome1t;viewHome1t=function(){const r=_v.apply(this,arguments);if(scr.tab!=='isle')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewIsle(st)+(i>=0?r.slice(i):'')}}
+   r=r.slice(0,j)+`<button type="button" class="herojav ${fr?'fr-'+fr:''}" onclick="go({k:'home',tab:'isle'})" aria-label="Vào Đảo nhà của em${need?' — thú cưng cần em chăm':''}">${r.slice(j,k)}${P.list[0]?`<span class="herpet">${petSpr(P.list[0],26)}</span>`:''}${need?'<i class="herbang">!</i>':''}<span class="herlbl">Đảo nhà</span></button>`+r.slice(k)}}}catch(e){}return r})}
+{const _v=hooks.cu('viewHome1t');hooks.de('viewHome1t',function(){const r=_v.apply(this,arguments);if(scr.tab!=='isle')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewIsle(st)+(i>=0?r.slice(i):'')})}
 /* Jenny đội mũ/kính đã mua ở mọi nơi */
-{const _j=jenny;jenny=function(size,mood){const r=_j.apply(this,arguments);try{if(role!=='hs')return r;const st=S.st[sid],a=st&&st.shop&&st.shop.acc;if(!a||!GH_ACC[a])return r;const[nm,x,y]=GH_ACC[a],d=pxURI(nm),u=Math.round(size*.86)/19;
-  return r.replace('<span class="jbody">',`<span class="jbody"><img class="px jsacc" src="${d.u}" alt="" style="left:${x*u}px;top:${y*u}px;width:${d.w*u}px;height:${d.h*u}px">`)}catch(e){return r}}}
+{const _j=hooks.cu('jenny');hooks.de('jenny',function(size,mood){const r=_j.apply(this,arguments);try{if(role!=='hs')return r;const st=S.st[sid],a=st&&st.shop&&st.shop.acc;if(!a||!GH_ACC[a])return r;const[nm,x,y]=GH_ACC[a],d=pxURI(nm),u=Math.round(size*.86)/19;
+  return r.replace('<span class="jbody">',`<span class="jbody"><img class="px jsacc" src="${d.u}" alt="" style="left:${x*u}px;top:${y*u}px;width:${d.w*u}px;height:${d.h*u}px">`)}catch(e){return r}})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .jsacc{position:absolute;z-index:2;image-rendering:pixelated;pointer-events:none}.jbody{position:relative}
 .herojav{position:relative;border:0;background:none;padding:0;cursor:pointer;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px}.herojav .herlbl{font-family:var(--f-display);font-size:15px;line-height:1;color:#fff;background:#1F2A5A;padding:1px 5px}
@@ -220,20 +232,21 @@ I18N_RE.push([/^Đảo nhà của (.+)$/,"$1's home isle"],[/^Mua (.+) · (\d+)$
 /* ===== Thanh dưới (thầy chốt 20/10): Bản đồ · Toán Jenny · Luyện lỗi · Nhà em · Cửa hàng =====
    "Nhà em" mở trang gồm 3 ô: Đảo nhà (thú cưng), Sưu tập, Hồ sơ. "Cửa hàng" = Cửa hàng Jenny. */
 Object.assign(PXS,{houseS:["....kk....","...krrk...","..krrrrk..",".krrrrrrk.","krrrrrrrrk","kkwwwwwwkk",".kwbbwnnk.",".kwbbwnnk.",".kwwwwnnk.",".kkkkkkkk."]});
-const NHA_TABS=['nha','album','hoso','isle'];
-function viewNha(st){petSim(st);const P=petsOf(st),need=P.list.some(p=>p.no<25||p.sick||p.sach<25||!p.name)||P.eggs.some(e=>!e.inc)||!!P.bye,p0=P.list[0];
+export const NHA_TABS=['nha','album','hoso','isle'];
+function viewNha(...a){return hooks.goi('viewNha',this,a)}
+hooks.ham('viewNha',function(st){petSim(st);const P=petsOf(st),need=P.list.some(p=>p.no<25||p.sick||p.sach<25||!p.name)||P.eggs.some(e=>!e.inc)||!!P.bye,p0=P.list[0];
  const tile=(tab,ic,n,sub,bang)=>`<button type="button" class="nhat" onclick="go({k:'home',tab:'${tab}'})"><span class="nhic">${ic}${bang?'<i class="herbang">!</i>':''}</span><b>${n}</b><small>${sub}</small></button>`;
  return`<div class="page nhapage"><section class="card"><h2 class="nhah">${spr('houseS',24)} Nhà của ${esc(st.name.split(' ').pop())}</h2>
   <div class="nhagrid">${tile('isle',spr('island',54)+(p0?`<span class="nhpet">${petSpr(p0,28)}</span>`:''),'Đảo nhà',p0?`${esc(p0.name||PET_SP[p0.sp][0])} đang chờ em`:'Nuôi thú cưng',need)}
-  ${tile('album',spr('fish',44),'Sưu tập','Hộ chiếu, thẻ sinh vật')}${tile('hoso',spr('hoso',44),'Hồ sơ','Chuỗi ngày học, đăng xuất')}</div></section></div>`}
-{const _v=viewHome1t;viewHome1t=function(){const st=S.st[sid];let r;
+  ${tile('album',spr('fish',44),'Sưu tập','Hộ chiếu, thẻ sinh vật')}${tile('hoso',spr('hoso',44),'Hồ sơ','Chuỗi ngày học, đăng xuất')}</div></section></div>`});
+{const _v=hooks.cu('viewHome1t');hooks.de('viewHome1t',function(){const st=S.st[sid];let r;
   if(scr.tab==='nha'){const t=scr.tab;scr.tab='map';r=_v.apply(this,arguments);scr.tab=t;const i=r.indexOf('<nav class="bnav"');r=viewNha(st)+(i>=0?r.slice(i):'').replace(/<button class="on([^"]*)" aria-current="page" onclick="go\(\{k:'home',tab:'map'\}\)"/,`<button class="$1" aria-current="false" onclick="go({k:'home',tab:'map'})"`)}
   else{r=_v.apply(this,arguments);if(scr.tab==='album'||scr.tab==='hoso')r=`<div class="crumb nhacrumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← Nhà em</button></div>`+r}
   const tab=scr.tab||'map',P=petsOf(st),need=P.list.some(p=>p.no<25||p.sick||p.sach<25)||!!P.bye;
   const btn=(k,ic,n,on,b)=>`<button class="${on?'on':''}${b?' bnfix':''}" aria-current="${on?'page':'false'}" onclick="go({k:'home',tab:'${k}'})"><span aria-hidden="true" class="bnic">${ic}${b?'<i class="pxq-n bnn">!</i>':''}</span>${n}</button>`;
   r=r.replace(/<button class="[^"]*" aria-current="\w+" onclick="go\(\{k:'home',tab:'album'\}\)"[^>]*>[\s\S]*?<\/button>/,btn('nha',spr('houseS',24),'Nhà em',NHA_TABS.includes(tab),need))
    .replace(/<button class="[^"]*" aria-current="\w+" onclick="go\(\{k:'home',tab:'hoso'\}\)"[^>]*>[\s\S]*?<\/button>/,btn('shop',spr('shopI',24),'Cửa hàng',tab==='shop',false));
-  return r}}
+  return r})}
 Object.assign(I18N,{'Nhà em':'My home','Cửa hàng':'Shop','← Nhà em':'← My home','Đảo nhà':'Home isle','Nuôi thú cưng':'Raise a pet','Hộ chiếu, thẻ sinh vật':'Passport, creature cards','Chuỗi ngày học, đăng xuất':'Study streak, log out'});
 I18N_RE.push([/^Nhà của (.+)$/,"$1's home"],[/^(.+) đang chờ em$/,'$1 is waiting for you'],[/^(\d+)–(\d+) ngày$/,'$1–$2 days']);
 document.head.insertAdjacentHTML('beforeend',`<style>
