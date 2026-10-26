@@ -45,7 +45,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy 
 
 ## Giai đoạn 4 — Tái cấu trúc front-end
 - ◐ **P-14 Vite + ES module cho Lớp học ảo** — 14a ☑ (RF1, 26/10), 14b ☑ (RF2, PR #12 base nhánh tích hợp: 118 file import/export, hàm đè qua hooks, ESLint 0 lỗi); còn **14c** bỏ `'unsafe-inline'` khỏi CSP (520 `onclick` inline cần đổi sang `addEventListener`), làm sau RF5. `plans/P-14-vite-module.md`
-- ◐ **P-15 Nội dung theo khối, tải động** — 15a ☑ (RF3, 26/10, PR #14 đã gộp nhánh tích hợp); 15b tải động chờ RF4. `plans/P-15-noi-dung-theo-khoi.md`
+- ☑ **P-15 Nội dung theo khối, tải động** (26/10; 15a PR #14, 15b PR #16 base nhánh tích hợp: trang học sinh 680 → 492–517 KB gzip, LCP 1,9 s, test 14/14; thầy chưa walk trên điện thoại). `plans/P-15-noi-dung-theo-khoi.md`
 - ☐ **P-16 PWA ngoại tuyến** — manifest, service worker, nút "có bản mới". `plans/P-16-pwa.md`
 - ◐ **P-17 Kiểm tra giao diện tự động** — đang chạy (KT, PR #6); đã thấy 2 lỗi tràn ở 1920×950 (Hành trình · vườn, · cửa hàng), sửa ở task riêng. `plans/P-17-kiem-tra-giao-dien.md`
   ⟳ 25/10: chỉ thêm file test mới + `giao-dien.yml`; không sửa `ci.yml`, `chay-tat-ca.mjs`.
