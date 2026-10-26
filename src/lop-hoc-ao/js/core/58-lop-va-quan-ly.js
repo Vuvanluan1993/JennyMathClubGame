@@ -56,7 +56,7 @@ function orgHeal(){
   if(gvLop){const l=lopById(gvLop);if(!l||(!l.gv.includes(gvMe)&&!(O().cloud&&CLOUD&&CLOUD.me.role==='ql')))gvLop=null}
 }
 window.orgHeal=orgHeal;
-{const _r=hooks.cu('render');hooks.de('render',function(){try{orgHeal()}catch(e){console.error(e)}return _r.apply(this,arguments)})}
+{hooks.on('render',_r=>function(){try{orgHeal()}catch(e){console.error(e)}return _r.apply(this,arguments)})}
 
 /* ---------- Giáo viên ---------- */
 hooks.de('gvCLS',function(){return gvLop?hsCuaLop(gvLop):STUDENTS.filter(s=>s[2]===gvGrade)});
@@ -82,8 +82,8 @@ function viewLopCuaToi(){
      :'<section class="card"><h2>Chưa có lớp</h2><p class="muted" style="margin:6px 0 0">Quản lý trung tâm chưa phân công lớp cho tài khoản này.</p></section>'}
    <p class="muted" style="margin:0">Lớp và học sinh do quản lý trung tâm xếp. Toán Jenny mở theo gói của từng lớp.</p></div>`;
 }
-{const _vg=hooks.cu('viewGV');hooks.de('viewGV',function(){orgHeal();if(!gvLop)return viewLopCuaToi();gvGrade=lopById(gvLop).khoi;return _vg.apply(this,arguments)})}
-{const _t=hooks.cu('toggleOpen');hooks.de('toggleOpen',function(id){_t(id);try{nk(`${S.open[id]?'Mở':'Đóng'} ${unit(2,id).title.split(' · ')[0]} Toán Jenny · lớp ${gvLop}`);save()}catch(e){}})}
+{hooks.on('viewGV',_vg=>function(){orgHeal();if(!gvLop)return viewLopCuaToi();gvGrade=lopById(gvLop).khoi;return _vg.apply(this,arguments)})}
+{hooks.on('toggleOpen',_t=>function(id){_t(id);try{nk(`${S.open[id]?'Mở':'Đóng'} ${unit(2,id).title.split(' · ')[0]} Toán Jenny · lớp ${gvLop}`);save()}catch(e){}})}
 
 /* ---------- Quản lý trung tâm ---------- */
 /* biến lọc để ở window: nút trong trang (onclick) đổi được (24/10: trước để let trong hàm nên bấm Khối không lọc) */
@@ -153,8 +153,8 @@ function viewQL(){
 window.viewQL=viewQL;
 function qlFormPH(o){const hs=STUDENTS.filter(x=>!(o.ph||{})[x[0]]);return`<form class="task" onsubmit="qlTaoPH(event)" style="margin-top:10px"><b>Tạo tài khoản phụ huynh</b><div class="row" style="gap:8px;margin-top:8px"><select id="phHs" aria-label="Con" onchange="document.getElementById('phTk').value='ph.'+this.value">${hs.map(x=>`<option value="${x[0]}">${esc(x[1])} (${x[0]})</option>`).join('')}</select><input id="phTk" value="${hs[0]?'ph.'+hs[0][0]:''}" aria-label="Tên đăng nhập phụ huynh" style="width:150px" autocapitalize="off" spellcheck="false" maxlength="28"><input id="phPw" placeholder="Mật khẩu (trống = ngẫu nhiên)" aria-label="Mật khẩu phụ huynh" style="width:110px" maxlength="30"><button class="btn" ${hs.length?'':'disabled'}>Tạo</button></div><div class="muted" style="margin-top:6px">Phụ huynh đăng nhập ở trang giáo viên &amp; phụ huynh, chỉ xem được con mình.</div></form>`}
 window.qlFormPH=qlFormPH;
-{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){if(role==='ql'){orgHeal();return viewQL()}return _p.apply(this,arguments)})}
-{const _h=hooks.cu('header');hooks.de('header',function(){_h();try{const t=document.getElementById('tabs');if(!t.querySelector('[data-ql]'))t.insertAdjacentHTML('beforeend',`<button data-ql class="${role==='ql'?'on':''}" aria-pressed="${role==='ql'}" onclick="setRole('ql')">Quản lý</button>`);
+{hooks.on('viewPH',_p=>function(){if(role==='ql'){orgHeal();return viewQL()}return _p.apply(this,arguments)})}
+{hooks.on('header',_h=>function(){_h();try{const t=document.getElementById('tabs');if(!t.querySelector('[data-ql]'))t.insertAdjacentHTML('beforeend',`<button data-ql class="${role==='ql'?'on':''}" aria-pressed="${role==='ql'}" onclick="setRole('ql')">Quản lý</button>`);
   document.getElementById('whoBox').hidden=role==='gv'||role==='ql';
   [...document.getElementById('who').options].forEach(op=>{const s=STUDENTS.find(x=>x[0]===op.value),l=s&&lopCua(s[0]);if(s)op.textContent=`${s[1]} · ${l?'lớp '+l.ten:'khối '+s[2]+' (chưa xếp lớp)'}`})}catch(e){}})}
 document.head.insertAdjacentHTML('beforeend',`<style>
@@ -174,4 +174,4 @@ function xuNgayCard(){try{if(!S.org||!S.org.cloud||typeof fbXuNgay!=='function'|
  const rows=hs.map(([id,n])=>{const x=C.d[id];return`<tr><td><button class="lnk" onclick="go({k:'gvhs',id:'${id}'})">${esc(n)}</button></td><td style="text-align:right"><b>${x?x.xu:'…'}</b></td><td style="text-align:right">${x?x.n:'…'}</td><td>${x&&x.la?'<span class="pill warn">Xu tăng lạ</span> ':x?'<span class="muted">bình thường</span> ':''}<button class="btn sm" type="button" onclick="fbXuSo('${id}')">Xem sổ</button></td></tr>`}).join('');
  return`<section class="card"><h2>Xu hôm nay</h2><p class="muted" style="margin:4px 0 0">Từ sổ xu trên máy chủ (mỗi lần cộng, mua là một dòng). <b>Xu tăng lạ</b> = hơn 300 xu trong ngày, hoặc hơn 15 dòng qua màn trong một giờ — cô bấm "Xem sổ" rồi hỏi em. ${C.t?'Cập nhật '+new Date(C.t).toLocaleTimeString('vi-VN'):'Đang tải…'} <button class="btn sm" type="button" onclick="fbXuCache.t=0;render()">Làm mới</button></p>
   <div class="tablewrap"><table class="gvbang"><tr><th>Học sinh</th><th>Xu hôm nay</th><th>Số dòng</th><th>Nhãn</th></tr>${rows}</table></div></section>`}catch(e){return''}}
-if(typeof viewGV==='function'){const _v=hooks.cu('viewGV');hooks.de('viewGV',function(){let r=_v.apply(this,arguments);try{if(gvLop&&typeof r==='string'){const c=xuNgayCard();if(c){const i=r.indexOf('<h2>Tiến độ từng em</h2>'),j=i>=0?r.indexOf('</section>',i):-1;r=j>=0?r.slice(0,j+10)+c+r.slice(j+10):r.replace(/<\/div>\s*$/,c+'</div>')}}}catch(e){}return r})}
+if(typeof viewGV==='function'){hooks.on('viewGV',_v=>function(){let r=_v.apply(this,arguments);try{if(gvLop&&typeof r==='string'){const c=xuNgayCard();if(c){const i=r.indexOf('<h2>Tiến độ từng em</h2>'),j=i>=0?r.indexOf('</section>',i):-1;r=j>=0?r.slice(0,j+10)+c+r.slice(j+10):r.replace(/<\/div>\s*$/,c+'</div>')}}}catch(e){}return r})}

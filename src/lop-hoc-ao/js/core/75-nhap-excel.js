@@ -191,7 +191,7 @@ window.qlInPhieu=function(ids,loai){const o=O(),lopTen=id=>((o.lop||[]).find(l=>
 window.qlInLop=function(lid){const ids=STUDENTS.filter(s=>(O().gd||{})[s[0]]===lid).map(s=>s[0]);qlInPhieu(ids,'hs')};
 
 /* ---------- gắn nút ---------- */
-{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){let r=_p.apply(this,arguments);if(role!=='ql')return r;try{
+{hooks.on('viewPH',_p=>function(){let r=_p.apply(this,arguments);if(role!=='ql')return r;try{
  if(qlTrang==='hs')r=r.replace(`onclick="qlMoHS()">+ Thêm học sinh</button>`,`onclick="qlMoHS()">+ Thêm học sinh</button><button type="button" class="btn pri" onclick="qlMoNhap()">⬆ Nhập từ Excel</button><button type="button" class="btn" onclick="qlTaiDS()">⬇ Tải danh sách</button>`)
   .replace(`<button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`,`<button type="button" class="btn sm" onclick="qlInPhieu(Object.keys(qlChon).filter(k=>qlChon[k]),'hs')">🖨 In phiếu</button><button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`);
  if(qlTrang==='lopct')r=r.replace(/(<span class="pill">Khối \d+ · \d+ em<\/span><\/div>)/,`$1<div class="qlin"><button type="button" class="btn" onclick="qlInLop('${qlLopId}')">🖨 In phiếu cả lớp</button></div>`);

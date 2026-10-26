@@ -94,7 +94,7 @@ async function fbThietLap(ten,tk,pw){const{auth,db}=await fbInit();const ref=db.
   await db.doc('users/'+uid).set({role:'ql',tk,ten,gvId:tk});return fbNapMe(c.user)}
 
 /* ---------- ghi lên máy chủ (gom lại 1,5 giây) ---------- */
-{const _s=hooks.cu('save');hooks.de('save',function(){const r=_s.apply(this,arguments);try{if(CLOUD&&!fbDangGhi){clearTimeout(fbHen);fbHen=setTimeout(fbDay,1500)}}catch(e){}return r})}
+{hooks.on('save',_s=>function(){const r=_s.apply(this,arguments);try{if(CLOUD&&!fbDangGhi){clearTimeout(fbHen);fbHen=setTimeout(fbDay,1500)}}catch(e){}return r})}
 export function fbDayNgay(...a){return hooks.goi('fbDayNgay',this,a)}
 hooks.ham('fbDayNgay',function(){clearTimeout(fbHen);return fbDay()});
 function fbOrgSach(){const o=Object.assign({},S.org);['hsOn'].forEach(k=>delete o[k]);return o}
@@ -229,21 +229,21 @@ export function fbTaiKhoanBox(){const o=S.org;if(!o||!o.cloud)return'';const lop
   return`<section class="card"><h2>Tài khoản</h2><p class="muted" style="margin:4px 0 0">Tên đăng nhập của mọi người. Ai quên mật khẩu thì bấm "Đặt lại mật khẩu": người đó nhận mật khẩu tạm và phải tự đổi khi đăng nhập. Dữ liệu học không mất.</p>
    ${fbMKPhien.length?`<div class="task" style="margin-top:10px;border-left:4px solid var(--leaf)"><b>Mật khẩu tạm trong phiên này</b> <span class="muted">(mất khi đăng xuất; học sinh/phụ huynh in phiếu)</span><div>${fbMKPhien.slice(0,30).map(x=>`${esc(x.tk)} / <code>${esc(x.pw)}</code>`).join(' · ')}</div></div>`:''}
    <div class="tablewrap"><table><tr><th>Họ tên</th><th>Vai trò</th><th>Tên đăng nhập</th><th>Lớp / con</th><th></th></tr>${R.map(r=>`<tr><td><b>${esc(r.ten)}</b></td><td>${r.vai}</td><td><code>${esc(r.tk)}</code></td><td>${esc(r.them)}</td><td>${r.tk===CLOUD.me.tk?'<span class="muted">dùng "Đổi mật khẩu"</span>':`<button class="btn sm" onclick="fbDatLaiMK('${esc(r.tk)}')">Đặt lại mật khẩu</button>`}</td></tr>`).join('')}</table></div></section>`}
-{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){let r=_p.apply(this,arguments);try{if(role==='ql'&&CLOUD&&S.org&&S.org.cloud){
+{hooks.on('viewPH',_p=>function(){let r=_p.apply(this,arguments);try{if(role==='ql'&&CLOUD&&S.org&&S.org.cloud){
   /* P-05: trang một lớp → nút đặt lại mật khẩu cả lớp (75 chèn nút In phiếu vào cùng chỗ) */
   if(typeof qlTrang!=='undefined'&&qlTrang==='lopct')r=r.replace(/(<span class="pill">Khối \d+ · \d+ em<\/span><\/div>)/,`$1<div class="qlin"><button type="button" class="btn" onclick="fbDatLaiMKLop('${esc(qlLopId)}')">🔑 Đặt lại mật khẩu cả lớp</button></div>`);
   const m='<p class="muted" style="margin:0">Sắp có:';const i=r.lastIndexOf(m);const box=fbTaiKhoanBox();return i<0?r.replace(/<\/div>\s*$/,box+'</div>'):r.slice(0,i)+box+r.slice(i)}}catch(e){console.error(e)}return r})}
 
 /* ---------- giao diện khi dùng máy chủ ---------- */
-{const _h=hooks.cu('header');hooks.de('header',function(){try{if(CLOUD&&S&&S.st&&!S.st[sid]){const f=STUDENTS.find(r=>S.st[r[0]]);if(f)sid=f[0];else S.st[sid]=newStudent('Chưa có học sinh',1)}}catch(e){}_h();try{if(!CLOUD||CLOUD.me.role==='hs')return;const me=CLOUD.me,t=document.getElementById('tabs');
+{hooks.on('header',_h=>function(){try{if(CLOUD&&S&&S.st&&!S.st[sid]){const f=STUDENTS.find(r=>S.st[r[0]]);if(f)sid=f[0];else S.st[sid]=newStudent('Chưa có học sinh',1)}}catch(e){}_h();try{if(!CLOUD||CLOUD.me.role==='hs')return;const me=CLOUD.me,t=document.getElementById('tabs');
   t.querySelectorAll('button').forEach(b=>{const r=b.dataset.ql!==undefined?'ql':(b.getAttribute('onclick')||'').match(/setRole\('(\w+)'\)/);const k=r==='ql'?'ql':r&&r[1];
     const cho=me.role==='ql'?['gv','ql','ph']:me.role==='gv'?['gv']:['ph'];b.hidden=!cho.includes(k)||cho.length<2});
   const wb=document.getElementById('whoBox');wb.style.display=(role==='ph'&&STUDENTS.length>1)?'':'none';
   t.style.display=window.TRANG||![...t.querySelectorAll('button')].some(b=>!b.hidden)?'none':'';
   if(!document.getElementById('fbMe'))t.insertAdjacentHTML('afterend',`<div id="fbMe" class="fbme"><span class="pill">${esc(me.ten||me.tk)} · ${({ql:'Quản lý',gv:'Giáo viên',ph:'Phụ huynh'})[me.role]||''}</span><span id="fbSt" class="muted fbst"></span><button class="btn sm" onclick="fbDoiMK()">Đổi mật khẩu</button><button class="btn sm" onclick="fbDangXuat()">Đăng xuất</button></div>`)}catch(e){}})}
-{const _g=hooks.cu('gvMau');hooks.de('gvMau',function(){if(S&&S.org&&S.org.cloud)return;return _g.apply(this,arguments)})}
-{const _a=hooks.cu('asgSeed');hooks.de('asgSeed',function(){if(CLOUD){S.asgSeed=2;return}return _a.apply(this,arguments)})}
-{const _n=hooks.cu('gvNow');hooks.de('gvNow',function(){return CLOUD?Date.now():_n()})}
+{hooks.on('gvMau',_g=>function(){if(S&&S.org&&S.org.cloud)return;return _g.apply(this,arguments)})}
+{hooks.on('asgSeed',_a=>function(){if(CLOUD){S.asgSeed=2;return}return _a.apply(this,arguments)})}
+{hooks.on('gvNow',_n=>function(){return CLOUD?Date.now():_n()})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 body.cloud .demo{display:none!important}
 body[class*="trang-"] #tabs{display:none!important}body.trang-gv #whoBox,body.trang-ql #whoBox{display:none!important}
@@ -341,7 +341,7 @@ function fbDayV3(me,db,ghi){const o=fbOrgSach(),D=orgV3Tach(o),gv=me.role==='gv'
     if(ghi.length){fbBan++;try{await Promise.all(ghi)}finally{fbBan--}fbTrangThai('Đã lưu lên máy chủ')}
   }catch(e){console.error(e);fbTrangThai('Chưa lưu được: '+fbLoi(e),1)}}}
 /* fbGvBoot: v3 nghe collection; v2 như cũ. Chế độ quyết định bởi org/main.v */
-{const _b=hooks.cu('fbGvBoot');hooks.de('fbGvBoot',async function(){const me=CLOUD.me,db=FB.db;const m=await db.doc('org/main').get();
+{hooks.on('fbGvBoot',_b=>async function(){const me=CLOUD.me,db=FB.db;const m=await db.doc('org/main').get();
   if(!m.exists||m.data().v!==3)return _b.apply(this,arguments);
   V3.on=true;document.body.classList.add('cloud');window.dayNow=fbNgay;
   S={day:fbNgay(),events:[],st:{},cbi:{},asg:[],asgSeed:2,mk2:1,org:null};STUDENTS.length=0;
@@ -360,7 +360,7 @@ export async function fbOrgHS(tk){const db=FB.db,o=await db.doc('org/main').get(
   if(m.v!==3)return fbJ(m.j)||{};V3.on=true;
   const lop=(m.gd||{})[tk]||'',L=lop?await db.doc('lop/'+lop).get():null,l=L&&L.exists?L.data():null;
   return{v3:1,ten:m.ten,nam:m.nam,gd:m.gd||{},nl:m.nl||{},nghi:m.nghi||{},namCu:m.namCu||[],lop:l?[Object.assign({id:lop},l)]:[],mo:l?{[lop]:l.mo||{}}:{}}}
-{const _b=hooks.cu('fbHsBoot');hooks.de('fbHsBoot',async function(){const me=CLOUD.me,tk=me.tk,db=FB.db;const o0=await db.doc('org/main').get();
+{hooks.on('fbHsBoot',_b=>async function(){const me=CLOUD.me,tk=me.tk,db=FB.db;const o0=await db.doc('org/main').get();
   if(!o0.exists||o0.data().v!==3)return _b.apply(this,arguments);
   const [h,org]=await Promise.all([db.doc('hs/'+tk).get(),fbOrgHS(tk)]);
   const lop=(org.gd||{})[tk]||'',L=(org.lop||[]).find(l=>l.id===lop),khoi=(L&&L.khoi)||me.khoi||1;

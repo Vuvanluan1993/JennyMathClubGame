@@ -8,7 +8,7 @@ import { render, toast } from './13-giao-dien-chung.js';
 import { viewPH } from './20-phu-huynh.js';
 import { I18N } from './47-ngon-ngu-vi-en.js';
 import { fbDayNgay, fbTaiKhoanBox } from './62-may-chu.js';
-if(typeof newStudent==='function'){const _ns=hooks.cu('newStudent');hooks.de('newStudent',function(n,g){return _ns(n,(+g>=1&&+g<=9)?+g:1)})}
+if(typeof newStudent==='function'){hooks.on('newStudent',_ns=>function(n,g){return _ns(n,(+g>=1&&+g<=9)?+g:1)})}
 (function(){
 if(typeof viewPH==='undefined')return;
 window.qlTrang='';window.qlLopId='';window.qlTrangSo=0;window.qlChon=window.qlChon||{};
@@ -153,7 +153,7 @@ function trangNam(){const o=O();return`<div class="grid">${head('🎓','Năm h�
 /* ô ẩn để các bảng nhập 70/71 dùng lại hàm tạo cũ (58/62) */
 const an=()=>`<div hidden aria-hidden="true"><input id="nhTen"><input id="nhLop"><select id="nhGt"><option value=""></option><option value="nu">Nữ</option><option value="nam">Nam</option></select><input id="nhTk"><input id="nhPw"><input id="ngTen"><input id="ngTk"><input id="ngPw"><select id="nlKhoi">${[1,2,3,4,5].map(k=>`<option value="${k}">${k}</option>`).join('')}</select><input id="nlTen"><select id="nlGV"><option value=""></option>${(O().gv||[]).map(g=>`<option value="${g.id}">x</option>`).join('')}</select></div>`;
 
-{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){if(role!=='ql')return _p.apply(this,arguments);
+{hooks.on('viewPH',_p=>function(){if(role!=='ql')return _p.apply(this,arguments);
  try{if(typeof orgHeal==='function')orgHeal()}catch(x){}
  const T={hs:trangHS,ph:trangPH,gv:trangGV,lop:trangLop,lopct:trangLopCT,nk:trangNK,nam:trangNam}[qlTrang]||home;
  try{return T()+an()}catch(x){console.error(x);qlTrang='';return home()+an()}})}

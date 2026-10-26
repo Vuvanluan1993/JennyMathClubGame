@@ -7,7 +7,7 @@ function bcBang(){try{if(role==='hs')return;document.querySelectorAll('#app tabl
   const L=[...h.cells].map(c=>c.textContent.trim());h.classList.add('mth');t.classList.add('mtable');
   rows.forEach(r=>{if(r===h)return;[...r.cells].forEach((c,i)=>{if(!c.dataset.l&&L[i])c.dataset.l=L[i];if(i>0&&c.childNodes.length&&!(c.children.length===1&&c.firstElementChild.classList.contains('mv')&&c.childNodes.length===1)){const d=document.createElement('div');d.className='mv';while(c.firstChild)d.appendChild(c.firstChild);c.appendChild(d)}})})})}catch(e){}}
 function bcCanDoi(){bcBang();try{document.querySelectorAll('.kpis,.lopgrid').forEach(k=>{const n=k.children.length;if(k.dataset.n!=String(n))k.dataset.n=n})}catch(e){}}
-{const _r=hooks.cu('render');hooks.de('render',function(){const r=_r.apply(this,arguments);bcCanDoi();return r})}
+{hooks.on('render',_r=>function(){const r=_r.apply(this,arguments);bcCanDoi();return r})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .kpis[data-n]{grid-template-columns:repeat(var(--bc,3),minmax(0,1fr))}
 .kpis[data-n="1"]{--bc:1}.kpis[data-n="2"]{--bc:2}.kpis[data-n="3"]{--bc:3}.kpis[data-n="4"]{--bc:4}.kpis[data-n="5"],.kpis[data-n="6"],.kpis[data-n="9"]{--bc:3}.kpis[data-n="8"]{--bc:4}

@@ -33,10 +33,10 @@ PLANT_SP.forEach(s=>{PXS['plantF_'+s.k]=s.kind==='sun'?[".nnn.","nNnNn","nnNnn",
 Object.assign(XGN,{plant:['plantI','Trồng cây','Trả lời đúng để tưới cây, cây lớn dần tới khi ra quả, 8 lần tưới']});
 if(!XG_ALL.includes('plant'))XG_ALL.push('plant');
 /* chọn trò: cho phép giống Ếch nhảy (nội dung lấy từ frogQ đã lọc kiến thức) */
-{const _a=hooks.cu('ktAllowed');hooks.de('ktAllowed',function(x,mode){return _a.call(this,x,mode==='plant'?'frog':mode)})}
-{const _o=hooks.cu('ktOwn');hooks.de('ktOwn',function(x,mode){return _o.call(this,x,mode==='plant'?'frog':mode)})}
-{const _e=hooks.cu('xgElig');hooks.de('xgElig',function(x){const r=_e.apply(this,arguments);if(r&&r.E&&r.E.includes('frog')&&!r.E.includes('plant'))r.E.push('plant');return r})}
-{const _s=hooks.cu('ktSample');hooks.de('ktSample',function(x,mode,n){if(mode!=='plant')return _s.apply(this,arguments);return _s.call(this,x,'frog',n)})}
+{hooks.on('ktAllowed',_a=>function(x,mode){return _a.call(this,x,mode==='plant'?'frog':mode)})}
+{hooks.on('ktOwn',_o=>function(x,mode){return _o.call(this,x,mode==='plant'?'frog':mode)})}
+{hooks.on('xgElig',_e=>function(x){const r=_e.apply(this,arguments);if(r&&r.E&&r.E.includes('frog')&&!r.E.includes('plant'))r.E.push('plant');return r})}
+{hooks.on('ktSample',_s=>function(x,mode,n){if(mode!=='plant')return _s.apply(this,arguments);return _s.call(this,x,'frog',n)})}
 /* chia trò (ktBalance0 ở 39e): Trồng cây được ưu tiên ở lớp 1–2, ít hơn ở lớp 3–5 */
 const PLANT_BIAS={1:-14,2:-9,3:16,4:16,5:16};
 XG_BIAS.plant=PLANT_BIAS;
@@ -44,11 +44,11 @@ XG_BIAS.plant=PLANT_BIAS;
 const PLANT_N=8,PLANT_T=150;
 export const PLANT_SKY=['#CFEFFB','#C3EBFB','#B6E6FA','#A8E0F8','#9DB7C9','#A6DCF5','#B6E1F2','#F3DDA0','#F6C79A'];
 const plantSp=id=>PLANT_SP[xgHash(String(id)+'plant')%PLANT_SP.length];
-{const _s=hooks.cu('startXG');hooks.de('startXG',function(mode,id){if(mode!=='plant')return _s.apply(this,arguments);try{speechSynthesis.cancel()}catch(e){}const x=isl1(id);XG_KT=x?ktOf(x):null;
+{hooks.on('startXG',_s=>function(mode,id){if(mode!=='plant')return _s.apply(this,arguments);try{speechSynthesis.cancel()}catch(e){}const x=isl1(id);XG_KT=x?ktOf(x):null;
   go({k:'xg',mode:'plant',id,score:0,stage:0,nib:0,lives:3,end:false,started:false,t:PLANT_T,ph:'ask',pt:0,q:x?frogQ(x):null,tries:0,bad:[],weed:0,droop:0,bitten:0,rainbow:0,sp:plantSp(id),
     say:'Trồng cây! Mỗi lần em trả lời đúng, Jenny tưới cây một lần. Tưới đủ tám lần là cây ra quả nhé.'})})}
 /* ---- màn hình ---- */
-{const _v=hooks.cu('viewXG');hooks.de('viewXG',function(){const g=scr;if(g.mode!=='plant')return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:plant`]||0,g.score),sp=g.sp;
+{hooks.on('viewXG',_v=>function(){const g=scr;if(g.mode!=='plant')return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:plant`]||0,g.score),sp=g.sp;
   if(g.end){const rec=g.score>(g.prev||0)&&g.score>0;
     return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr('plantI',72)}</span>${jenny(72,g.score?'cheer':'sad')}</div><h1>${rec?'Kỷ lục mới!':g.score>=PLANT_N?'Thu hoạch rồi!':'Hết giờ!'}</h1>
      <p class="muted">Tưới đúng <b>${g.score}</b>/${PLANT_N} lần · cây ${sp.n} ${PLANT_STAGE[g.stage]} · kỷ lục ${best}</p><div class="xpbasket">${plantBasketHTML(g)}</div>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}
@@ -147,8 +147,8 @@ function plantAns(i){const g=scr;if(g.k!=='xg'||g.mode!=='plant'||g.end||g.ph!==
 function plantEnd(){const g=scr;if(g.k!=='xg'||g.mode!=='plant'||g.end)return;stopXG();const st=S.st[sid];st.mg=st.mg||{};const key=`${g.id}:plant`;g.prev=st.mg[key]||0;st.mg[key]=Math.max(g.prev,g.score);
   g.coins=addCoins(sid,Math.min(20,g.score*2),'self');g.end=true;g.win=g.score>=PLANT_N;log(sid,'passed',`Trồng cây · ${isl1(g.id).title}`,0,{success:true,score:{raw:g.score}});
   sfx(g.win?'win':'timeup');sayJ(g.win?`Cây ${g.sp.n} ra quả chín rồi! Giỏi quá!`:`Em đã tưới cây ${g.score} lần!`);save();render()}
-{const _ar=hooks.cu('xgAfterRender');hooks.de('xgAfterRender',function(){const g=scr;if(g.k==='xg'&&g.mode==='plant'){if(g.end)return;plantUI();plantDraw();if(!g.started){g.started=true;sayJ(g.say);setTimeout(()=>{if(scr===g&&!g.end&&curG()<=2&&g.q)sayJ(frogSay(g.q))},4200);plantLoop()}else if(!xgLoop)plantLoop();return}return _ar.apply(this,arguments)})}
-{const _mt=hooks.cu('musicTheme');hooks.de('musicTheme',function(){try{if(role==='hs'&&scr.k==='xg'&&scr.mode==='plant')return scr.end?null:'map'}catch(e){}return _mt.apply(this,arguments)})}
+{hooks.on('xgAfterRender',_ar=>function(){const g=scr;if(g.k==='xg'&&g.mode==='plant'){if(g.end)return;plantUI();plantDraw();if(!g.started){g.started=true;sayJ(g.say);setTimeout(()=>{if(scr===g&&!g.end&&curG()<=2&&g.q)sayJ(frogSay(g.q))},4200);plantLoop()}else if(!xgLoop)plantLoop();return}return _ar.apply(this,arguments)})}
+{hooks.on('musicTheme',_mt=>function(){try{if(role==='hs'&&scr.k==='xg'&&scr.mode==='plant')return scr.end?null:'map'}catch(e){}return _mt.apply(this,arguments)})}
 (function(){const st=document.createElement('style');st.textContent=`
 .xplant .xpt{position:relative;width:342px;height:300px;margin:4px auto;border:3px solid #1F2A5A;overflow:hidden}
 .xplant .xpt canvas{position:absolute;inset:0;width:342px;height:300px;image-rendering:pixelated;image-rendering:crisp-edges}

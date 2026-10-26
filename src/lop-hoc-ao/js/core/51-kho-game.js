@@ -50,9 +50,9 @@ Object.assign(PXS,{
 Object.assign(GH_ACC,{bcap:['bcapS',1,-1],mhat:['mhatS',1,-3]});
 {const C=GH.find(c=>c.k==='acc');if(C)C.it.push(['bcap','Mũ vô địch Bowling',0,'rare'],['mhat','Mũ thợ mỏ',0,'rare'])}
 CARE.push(['dscarf','Khăn khủng long',0,'wear',{},'dscarfS',0,'rare']);P_WEAR.dscarf=['dscarfS',.25,.52,.5];
-{const _c=hooks.cu('careGrid');hooks.de('careGrid',function(st){const sv=CARE.splice(CARE.findIndex(c=>c[7]==='rare'),1);const r=_c.apply(this,arguments);CARE.push(...sv);return r})}
-{const _p=hooks.cu('petSim');hooks.de('petSim',function(st){const r=_p.apply(this,arguments);try{ghSt(st).gear.forEach(g=>{const c=careOf(g.id);if(c&&c[7]==='rare')g.dur=100})}catch(e){}return r})}
-{const _g=hooks.cu('ghCard');hooks.de('ghCard',function(c,x,st){if(x[3]==='rare'&&!ghSt(st).own.includes(x[0])){const g=Object.keys(ARC).find(k=>ARC[k].rare[0]===x[0]);return`<button type="button" class="ghit rare" onclick="toast('${arcT(`Thắng 3 cúp Vàng ở trò ${ARC[g].n} để nhận`,`Win 3 gold cups in ${ARC[g].en} to unlock`)}')"><span class="ghpic">${spr(GH_ACC[x[0]][0],30)}</span><b>${esc(x[1])}</b><i class="ghtag rare">${arcT('Đồ hiếm','Rare')}</i></button>`}return _g.apply(this,arguments)})}
+{hooks.on('careGrid',_c=>function(st){const sv=CARE.splice(CARE.findIndex(c=>c[7]==='rare'),1);const r=_c.apply(this,arguments);CARE.push(...sv);return r})}
+{hooks.on('petSim',_p=>function(st){const r=_p.apply(this,arguments);try{ghSt(st).gear.forEach(g=>{const c=careOf(g.id);if(c&&c[7]==='rare')g.dur=100})}catch(e){}return r})}
+{hooks.on('ghCard',_g=>function(c,x,st){if(x[3]==='rare'&&!ghSt(st).own.includes(x[0])){const g=Object.keys(ARC).find(k=>ARC[k].rare[0]===x[0]);return`<button type="button" class="ghit rare" onclick="toast('${arcT(`Thắng 3 cúp Vàng ở trò ${ARC[g].n} để nhận`,`Win 3 gold cups in ${ARC[g].en} to unlock`)}')"><span class="ghpic">${spr(GH_ACC[x[0]][0],30)}</span><b>${esc(x[1])}</b><i class="ghtag rare">${arcT('Đồ hiếm','Rare')}</i></button>`}return _g.apply(this,arguments)})}
 /* ---- Cửa hàng: mục Trò chơi ---- */
 {const T=GH.find(c=>c.k==='tk');if(T){T.n='Trò chơi';T.ic='joyS'}}
 function arcShop(...a){return hooks.goi('arcShop',this,a)}
@@ -64,7 +64,7 @@ hooks.ham('arcShop',function(st){const a=arcSt(st),en=arcEN();
    ${own?`<button type="button" class="gobtn ${can?'':'off'}" onclick="arcPlay('${k}')">${en?'Play':'Chơi'} ▶</button>`:`<button type="button" class="gobtn sun" onclick="arcBuy('${k}')">${spr('coin',16)} ${ARC_PRICE}</button>`}</div>`}).join('');
  return`<div class="arcbox"><div class="arctop"><div><b>${spr('tkS',20)} ${en?'Plays left':'Lượt chơi'}: <em>${a.plays}</em></b><small>${en?`Today ${a.used}/${ARC_DAY}`:`Hôm nay đã chơi ${a.used}/${ARC_DAY} lượt`}</small></div><button type="button" class="gobtn" onclick="arcTicket()">${en?'Buy 10 plays':'Mua 10 lượt'} · ${spr('coin',16)} ${ARC_TK}</button></div>
   <p class="arcnote">${en?`Buy a game: ${ARC_PRICE} coins, includes ${ARC_PER} plays. Each game you start uses 1 play. Up to ${ARC_DAY} plays a day.`:`Mua trò: ${ARC_PRICE} xu, kèm ${ARC_PER} lượt. Mỗi lần vào chơi một trò dùng 1 lượt. Tối đa ${ARC_DAY} lượt mỗi ngày.`}</p>${games}</div>`});
-{const _v=hooks.cu('viewShop');hooks.de('viewShop',function(st){const r=_v.apply(this,arguments);if((scr.ghCat||'of')!=='tk')return r;return r.replace(/<div class="ghtk">[\s\S]*?<\/span><\/div><\/div>/,arcShop(st))})}
+{hooks.on('viewShop',_v=>function(st){const r=_v.apply(this,arguments);if((scr.ghCat||'of')!=='tk')return r;return r.replace(/<div class="ghtk">[\s\S]*?<\/span><\/div><\/div>/,arcShop(st))})}
 function arcBuy(k){const st=S.st[sid],a=arcSt(st);if(a.own[k])return;if(st.coins<ARC_PRICE){toast(arcT(`Em cần thêm ${ARC_PRICE-st.coins} xu nhé!`,`You need ${ARC_PRICE-st.coins} more coins.`));return}if(!xuMua('items','game:'+k)){toast(arcT('Chưa mua được. Em thử lại sau nhé!','Could not buy. Try again later.'));return}a.own[k]=1;a.plays+=ARC_PER;save();try{sfx('win')}catch(e){}toast(arcT(`Đã mua ${ARC[k].n}! +${ARC_PER} lượt chơi`,`Bought ${ARC[k].en}! +${ARC_PER} plays`));render()}
 function arcTicket(){const st=S.st[sid],a=arcSt(st);if(st.coins<ARC_TK){toast(arcT(`Em cần thêm ${ARC_TK-st.coins} xu nhé!`,`You need ${ARC_TK-st.coins} more coins.`));return}if(!xuMua('items','ve')){toast(arcT('Chưa mua được. Em thử lại sau nhé!','Could not buy. Try again later.'));return}a.plays+=ARC_PER;save();try{sfx('coin')}catch(e){}toast(arcT(`+${ARC_PER} lượt chơi`,`+${ARC_PER} plays`));render()}
 function arcPlay(...a){return hooks.goi('arcPlay',this,a)}
@@ -199,8 +199,8 @@ function dinoDraw(g){const {c,W,H}=g.R,s=g.st;c.fillStyle='#BDEBFA';c.fillRect(0
 /* ---- vòng lặp ---- */
 function arcLoop(g,step,draw){arcStop();let last=performance.now();const f=now=>{if(scr!==g||g.end||!g.R||!g.R.cv.isConnected){ARCL=null;return}const dt=Math.min(.05,(now-last)/1000);last=now;try{step(g,dt);draw(g,dt)}catch(e){console.error(e)}ARCL=requestAnimationFrame(f)};ARCL=requestAnimationFrame(f)}
 /* ---- nối vào app ---- */
-{const _vh=hooks.cu('viewHS');hooks.de('viewHS',function(){try{if(scr.k==='arc')return viewArc()}catch(e){console.error(e)}return _vh.apply(this,arguments)})}
-{const _r=hooks.cu('render');hooks.de('render',function(){if(scr&&scr.k!=='arc')arcStop();const a=_r.apply(this,arguments);try{if(role==='hs'&&scr.k==='arc'){document.body.classList.add('gaming');if(!scr.end)({bowl:bowlInit,box:boxInit,dino:dinoInit})[scr.g](scr)}}catch(e){console.error(e)}return a})}
+{hooks.on('viewHS',_vh=>function(){try{if(scr.k==='arc')return viewArc()}catch(e){console.error(e)}return _vh.apply(this,arguments)})}
+{hooks.on('render',_r=>function(){if(scr&&scr.k!=='arc')arcStop();const a=_r.apply(this,arguments);try{if(role==='hs'&&scr.k==='arc'){document.body.classList.add('gaming');if(!scr.end)({bowl:bowlInit,box:boxInit,dino:dinoInit})[scr.g](scr)}}catch(e){console.error(e)}return a})}
 try{addEventListener('resize',()=>{if(scr&&scr.k==='arc'&&!scr.end)({bowl:bowlInit,box:boxInit,dino:dinoInit})[scr.g](scr)})}catch(e){}
 /* Nhà em: giữ 3 ô như cũ; thêm khung "Trò chơi" bên dưới — các trò em đã mua */
 function arcHome(...a){return hooks.goi('arcHome',this,a)}
@@ -209,7 +209,7 @@ hooks.ham('arcHome',function(st){const a=arcSt(st),own=Object.keys(ARC).filter(k
  return`<section class="card archome"><div class="archd"><h2>${spr('joyS',24)} ${arcT('Trò chơi','Games')}</h2><span class="grow"></span><span class="pill">${spr('tkS',16)} ${arcT(`${a.plays} lượt · hôm nay ${a.used}/${ARC_DAY}`,`${a.plays} plays · today ${a.used}/${ARC_DAY}`)}</span></div>
   ${own.length?rows:`<p class="muted">${arcT('Em chưa có trò chơi nào. Mua trò ở Cửa hàng › Trò chơi nhé!','No games yet. Buy one in Shop › Games!')}</p>`}
   <div class="archbtn"><button type="button" class="btn sm" onclick="go({k:'home',tab:'shop'});scr.ghCat='tk';render()">${own.length<3?arcT('Mua thêm trò chơi','Buy more games'):arcT('Mua thêm lượt','Buy more plays')} ▸</button></div></section>`});
-{const _n=hooks.cu('viewNha');hooks.de('viewNha',function(st){const r=_n.apply(this,arguments);const i=r.lastIndexOf('</div>');return i<0?r:r.slice(0,i)+arcHome(st)+r.slice(i)})}
+{hooks.on('viewNha',_n=>function(st){const r=_n.apply(this,arguments);const i=r.lastIndexOf('</div>');return i<0?r:r.slice(0,i)+arcHome(st)+r.slice(i)})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .archome{margin-top:14px;padding:14px!important}.archd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}.archd h2{display:flex;align-items:center;gap:8px;margin:0;font-size:26px}
 .arch{display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:10px;background:var(--surface,#fff);box-shadow:var(--f2),0 4px 0 0 var(--pxk,#1F2A5A)}.arch .grow{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px}.arch b{font-family:var(--f-display);font-size:22px;font-weight:400;line-height:1}.arch .arcic{width:44px;height:44px}.arch .gobtn{margin:0 0 0 auto;width:96px;flex:none;font-size:16px!important;padding:8px 6px!important;text-align:center}.arch .gobtn.off{opacity:.5}.archbtn{display:flex;justify-content:flex-end}
@@ -235,4 +235,4 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .bwsb{display:flex;gap:3px;flex:1;min-width:0;justify-content:center}.bwf,.bwt{display:flex;flex-direction:column;align-items:center;min-width:0;flex:1;max-width:58px;background:var(--surface,#fff);box-shadow:var(--f2);padding:1px 2px;font-family:var(--f-display);line-height:1}.bwf i,.bwt i{font-style:normal;font-size:12px;color:var(--muted)}.bwf span{display:flex;gap:2px;min-height:15px;font-size:16px}.bwf em{font-style:normal;color:var(--coral)}.bwf b,.bwt b{font-size:18px;font-weight:400;min-height:17px;color:var(--ink)}.bwf.on{box-shadow:0 0 0 3px #FCB40C}.bwt{background:var(--sun-soft)}
 </style>`);
 /* thầy yêu cầu 23/10: học sinh thử Lê Bảo Na (bản đầy đủ) có 10 000 xu để kiểm tra — nạp một lần cho dữ liệu đã lưu */
-{const _r=hooks.cu('render');hooks.de('render',function(){try{if(typeof S!=='undefined'&&S.st&&S.st.na&&!S.na10k){S.st.na.coins=Math.max(S.st.na.coins||0,10000);S.na10k=1;save()}}catch(e){}return _r.apply(this,arguments)})}
+{hooks.on('render',_r=>function(){try{if(typeof S!=='undefined'&&S.st&&S.st.na&&!S.na10k){S.st.na.coins=Math.max(S.st.na.coins||0,10000);S.na10k=1;save()}}catch(e){}return _r.apply(this,arguments)})}

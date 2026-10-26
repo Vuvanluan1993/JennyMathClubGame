@@ -67,6 +67,6 @@ window.phTaoThieu=async function(){const ds=STUDENTS.filter(s=>!(O().ph||{})[s[0
  if(!confirm(`Tạo tài khoản phụ huynh cho ${ds.length} em chưa có?\nEm có SĐT/Gmail trùng phụ huynh đã có sẽ được gắn chung; còn lại tạo "ph.tên đăng nhập", mật khẩu tạm ngẫu nhiên (in phiếu).`))return;
  let n=0,g=0,l=0;for(const [id] of ds){const h=(O().hoso||{})[id]||{};try{const f=phTim(h.dt,h.mail);await phGan(id,f.xung?f.xung[0]:f.tk,{dt:h.dt,mail:h.mail});(f.tk||f.xung)?g++:n++}catch(x){l++}}
  save();if(cloud()){try{await fbDayNgay()}catch(x){}}render();toast(`Đã tạo ${n} tài khoản, gắn chung ${g} em${l?`, ${l} lỗi`:''}`)};
-{const _p=hooks.cu('viewPH');hooks.de('viewPH',function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='ph'){const n=STUDENTS.filter(s=>!(O().ph||{})[s[0]]).length;
+{hooks.on('viewPH',_p=>function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='ph'){const n=STUDENTS.filter(s=>!(O().ph||{})[s[0]]).length;
  if(n)r=r.replace(/(<h2>Em chưa có phụ huynh \(\d+\)<\/h2>)/,`$1<div class="qlin" style="margin-bottom:10px"><button type="button" class="btn pri" onclick="phTaoThieu()">+ Tạo tài khoản phụ huynh cho ${n} em</button></div>`)}return r})}
 })();

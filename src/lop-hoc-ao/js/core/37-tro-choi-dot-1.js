@@ -49,7 +49,7 @@ hooks.ham('islOpts2',function(x){const t=`${x.title} ${x.lesson} ${x.goal}`,old=
   for(let k=0;out.length<target&&k<Math.max(nw.length,od.length);k++){const a=(h>>3)%2?[nw[k],od[k]]:[od[k],nw[k]];a.forEach(o=>{if(o&&out.length<target&&!out.includes(o))out.push(o)})}
   return [...new Set(out)].slice(0,3)});
 /* trang đảo: dựng lại mục Chơi thêm với cả trò cũ và mới */
-{const _v=hooks.cu('viewIsland1');hooks.de('viewIsland1',function(){const save_=hooks.cu('islOpts');hooks.de('islOpts',()=>[]);let h;try{h=_v.apply(this,arguments)}finally{hooks.de('islOpts',save_)}
+{hooks.on('viewIsland1',_v=>function(){const save_=hooks.cu('islOpts');hooks.de('islOpts',()=>[]);let h;try{h=_v.apply(this,arguments)}finally{hooks.de('islOpts',save_)}
   const st=S.st[sid],x=isl1(scr.id),mg=st.mg||{},opts=islOpts2(x);
   const OPT={fish:['fish','Câu cá','Câu cá theo luật của đảo trong 45 giây',`startMini('fish','${x.id}')`,mg[`${x.id}:fish`]],balloon:['balloon','Bóng bay','Bắn bóng theo luật của đảo trong 45 giây',`startMini('balloon','${x.id}')`,mg[`${x.id}:balloon`]],race:['clock','Đua giờ 60 giây','Làm liên tục câu của đảo này, có bảng xếp hạng lớp',`startRace('${x.id}')`,(st.race||{})[x.id]]};
   Object.keys(XGN).forEach(k=>{const [s,n,d]=XGN[k];OPT[k]=[k==='tug'?bossOf(x.id)[0]:s,n,d,`startXG('${k}','${x.id}')`,mg[`${x.id}:${k}`]]});
@@ -59,7 +59,7 @@ hooks.ham('islOpts2',function(x){const t=`${x.title} ${x.lesson} ${x.goal}`,old=
 /* ---------- khung chung ---------- */
 globalThis.xgLoop=null;
 export function stopXG(){if(xgLoop){cancelAnimationFrame(xgLoop.raf);clearInterval(xgLoop.tick);clearTimeout(xgLoop.to);if(xgLoop.off)xgLoop.off();xgLoop=null}}
-{const _go=hooks.cu('go');hooks.de('go',function(){stopXG();return _go.apply(this,arguments)})}
+{hooks.on('go',_go=>function(){stopXG();return _go.apply(this,arguments)})}
 export function xgRec(...a){return hooks.goi('xgRec',this,a)}
 hooks.ham('xgRec',function(ok,q){try{if(q)hsRec(q,ok,true,1,scr.id);else hsRec({},ok,false,1,scr.id)}catch(e){}});
 export function xgHearts(){const l=document.getElementById('xgl');if(l)l.innerHTML=[0,1,2].map(i=>spr(i<scr.lives?'heart':'heartE',18)).join(' ')}
@@ -88,9 +88,9 @@ hooks.ham('viewXG',function(){const g=scr,st=S.st[sid],best=Math.max((st.mg||{})
     ${G>=2?`<div class="xgrow"><span>Kim phút</span><button type="button" class="xgb" onclick="clockStep('m',-1)" aria-label="Lùi kim phút">−</button><button type="button" class="xgb" onclick="clockStep('m',1)" aria-label="Tiến kim phút">+</button>${G>=3?`<button type="button" class="xgb sm" onclick="clockStep('m',-5)">−5</button><button type="button" class="xgb sm" onclick="clockStep('m',5)">+5</button>`:''}</div>`:''}
     <button type="button" class="gobtn xgchk" onclick="clockCheck()">Kiểm tra</button></div></div><div id="xgfb" class="xgfb"></div></div>`}
   return''});
-{const _vh=hooks.cu('viewHS');hooks.de('viewHS',function(){try{const st=S.st[sid];if(st&&st.grade<=5&&scr.k==='xg')return viewXG()}catch(e){}return _vh.apply(this,arguments)})}
-{const _r=hooks.cu('render');hooks.de('render',function(){const a=_r.apply(this,arguments);try{if(role==='hs'&&scr.k==='xg')document.body.classList.toggle('gaming',true);xgAfterRender();tugAfterRender()}catch(e){console.error(e)}return a})}
-{const _mt=hooks.cu('musicTheme');hooks.de('musicTheme',function(){try{if(role==='hs'){if(scr.k==='xg')return scr.end?null:({star:'balloon',pair:'game',clock:'fish'})[scr.mode];if(scr.k==='game'&&scr.tug&&!scr.end&&!(scr.sheet&&scr.sheet.kind!=='ok'))return'boss'}}catch(e){}return _mt.apply(this,arguments)})}
+{hooks.on('viewHS',_vh=>function(){try{const st=S.st[sid];if(st&&st.grade<=5&&scr.k==='xg')return viewXG()}catch(e){}return _vh.apply(this,arguments)})}
+{hooks.on('render',_r=>function(){const a=_r.apply(this,arguments);try{if(role==='hs'&&scr.k==='xg')document.body.classList.toggle('gaming',true);xgAfterRender();tugAfterRender()}catch(e){console.error(e)}return a})}
+{hooks.on('musicTheme',_mt=>function(){try{if(role==='hs'){if(scr.k==='xg')return scr.end?null:({star:'balloon',pair:'game',clock:'fish'})[scr.mode];if(scr.k==='game'&&scr.tug&&!scr.end&&!(scr.sheet&&scr.sheet.kind!=='ok'))return'boss'}}catch(e){}return _mt.apply(this,arguments)})}
 function xgAfterRender(...a){return hooks.goi('xgAfterRender',this,a)}
 hooks.ham('xgAfterRender',function(){const g=scr;if(g.k!=='xg'||g.end)return;if(g.mode==='clock')clockBind();if(g.started)return;g.started=true;stopXG();sayJ(g.say);
   if(g.mode==='star')return starRun();
@@ -163,16 +163,16 @@ function tugBar(g){const b=bossOf(g.id),p=g.rope/TUGW;return`<div class="xgtug" 
   <span class="xgtr"><span class="xgtl"></span><span class="xgtm" style="left:${50-p*40}%"></span><span class="xgtz j"></span><span class="xgtz b"></span></span>
   <span class="xgtb">${bossHTML(b[0],52,g.flash==='ok'?'hit':g.flash==='bad'?'mad':'idle',Math.max(.05,(TUGW-g.rope)/(2*TUGW)))}</span></div>`}
 function tugAfterRender(){const g=scr;if(g.k!=='game'||!g.tug||g.end)return;const top=document.querySelector('.game .gtop');if(top&&!document.querySelector('.xgtug'))top.insertAdjacentHTML('afterend',tugBar(g))}
-{const _rar=hooks.cu('raceAfterRender');hooks.de('raceAfterRender',function(){const g=scr;if(g.k==='game'&&g.tug){if(g.end||g.started)return;g.started=true;clearInterval(raceTick);sayJ('Kéo co với trùm! Trả lời đúng để kéo dây về phía Jenny.');
+{hooks.on('raceAfterRender',_rar=>function(){const g=scr;if(g.k==='game'&&g.tug){if(g.end||g.started)return;g.started=true;clearInterval(raceTick);sayJ('Kéo co với trùm! Trả lời đúng để kéo dây về phía Jenny.');
   raceTick=setInterval(()=>{if(scr!==g||g.end){clearInterval(raceTick);return}g.t--;g.idle++;const e=document.getElementById('rtime');if(e)e.textContent=g.t;if(g.t>0&&g.t<=10)sfx(g.t%2?'tick':'tock');
     if(g.idle>=6){g.idle=0;g.rope--;g.flash='bad';sfx('bossmad');const bar=document.querySelector('.xgtug');if(bar)bar.outerHTML=tugBar(g);if(g.rope<=-TUGW)return endTug()}
     if(g.t<=0)endTug()},1000);return}return _rar.apply(this,arguments)})}
-{const _ra=hooks.cu('raceAns');hooks.de('raceAns',function(ok){const g=scr;if(g.tug){if(g.fin)return;g.rope=Math.max(-TUGW,Math.min(TUGW,g.rope+(ok?1:-1)));g.idle=0;const r=_ra.apply(this,arguments);if(ok)sfx('hit');if(g.rope>=TUGW||g.rope<=-TUGW){g.fin=1;setTimeout(endTug,250)}return r}return _ra.apply(this,arguments)})}
-{const _a=hooks.cu('ans1');hooks.de('ans1',function(){const tug=scr&&scr.tug,n=S.events.length,r=_a.apply(this,arguments);if(tug){try{const ev=S.events[n];if(ev&&ev.verb.id.endsWith('answered')){const nm=`Kéo co · ${isl1(scr.id).title}`;ev.object.definition.name.vi=nm;ev.object.id='jenny:'+encodeURIComponent(nm)}}catch(e){}}return r})}
+{hooks.on('raceAns',_ra=>function(ok){const g=scr;if(g.tug){if(g.fin)return;g.rope=Math.max(-TUGW,Math.min(TUGW,g.rope+(ok?1:-1)));g.idle=0;const r=_ra.apply(this,arguments);if(ok)sfx('hit');if(g.rope>=TUGW||g.rope<=-TUGW){g.fin=1;setTimeout(endTug,250)}return r}return _ra.apply(this,arguments)})}
+{hooks.on('ans1',_a=>function(){const tug=scr&&scr.tug,n=S.events.length,r=_a.apply(this,arguments);if(tug){try{const ev=S.events[n];if(ev&&ev.verb.id.endsWith('answered')){const nm=`Kéo co · ${isl1(scr.id).title}`;ev.object.definition.name.vi=nm;ev.object.id='jenny:'+encodeURIComponent(nm)}}catch(e){}}return r})}
 function endTug(){const g=scr,st=S.st[sid];if(!g.tug||g.end)return;clearInterval(raceTick);g.end=true;g.win=g.rope>0;st.mg=st.mg||{};const key=`${g.id}:tug`;g.prev=st.mg[key]||0;g.score=g.ok;st.mg[key]=Math.max(g.prev,g.ok);
   g.coins=addCoins(sid,Math.min(20,g.ok*2+(g.win?4:0)),'self');log(sid,'passed',`Kéo co với trùm · ${isl1(g.id).title}`,0,{success:g.win,score:{raw:g.ok}});sfx(g.win?'bossdown':'bosslaugh');setTimeout(()=>sfx(g.win?'win':'lose'),700);
   sayJ(g.win?'Jenny thắng rồi! Em giỏi quá!':'Trùm thắng mất rồi. Mình chơi lại nhé!');save();render()}
-{const _ve=hooks.cu('viewEndExtra');hooks.de('viewEndExtra',function(){const g=scr;if(g.tug){const b=bossOf(g.id),best=Math.max(g.prev||0,g.ok);
+{hooks.on('viewEndExtra',_ve=>function(){const g=scr;if(g.tug){const b=bossOf(g.id),best=Math.max(g.prev||0,g.ok);
   return`<div class="game g1"><div class="gend xgend"><div class="xgtend">${jenny(72,g.win?'cheer':'sad')}${bossHTML(b[0],72,g.win?'dead':'win')}</div><h1>${g.win?'Jenny thắng!':'Trùm thắng rồi!'}</h1><p class="muted">Đúng <b>${g.ok}</b> câu, sai ${g.bad} câu · kỷ lục ${best}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="startTug('${g.id}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}return _ve.apply(this,arguments)})}
 
 /* ---------- 4. ĐỒNG HỒ THẦN KÌ ---------- */

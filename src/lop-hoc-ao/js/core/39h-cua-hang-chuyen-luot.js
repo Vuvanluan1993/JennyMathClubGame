@@ -18,7 +18,7 @@ const SHOP_QUAY=[['Quầy bánh','#F26249','#FFE3DC','🧁'],['Sạp trái cây'
  ['Quầy kem','#12B5E8','#E3F7FD','🍦'],['Tiệm hoa','#E8508A','#FCE3EE','🌷'],['Sạp rau','#1E8A4A','#E6F5E1','🥕'],['Quầy nước','#F37A1F','#FFEBD6','🥤']];
 function shopQuay(ri){return SHOP_QUAY[ri%SHOP_QUAY.length]}
 /* trang trí quầy theo lượt */
-{const _h=hooks.cu('shopHTML');hooks.de('shopHTML',function(g){let s=_h.apply(this,arguments);const [n,c,bg,ic]=shopQuay(g.ri||0);
+{hooks.on('shopHTML',_h=>function(g){let s=_h.apply(this,arguments);const [n,c,bg,ic]=shopQuay(g.ri||0);
   const top=`<div class="xsquay" style="--qc:${c};--qb:${bg}"><span class="xsawn"></span><span class="xsname">${n} · Khách ${(g.ri||0)+1}/${g.N}</span></div>`;
   s=s.replace('<div class="xshelf">',`${top}<div class="xshelf" style="--qb:${bg}"><span class="xsreg" id="xsreg">${spr('xsReg',40)}</span><span class="xsbag" id="xsbag">${spr('xsBag',34)}</span>`);
   return s})}
@@ -39,7 +39,7 @@ function shopCheck(v){const g=scr;if(g.k!=='xg'||g.end||g.lockC)return;const r=g
   /* 3. bảng khách + quầy trượt đi */
   setTimeout(()=>{if(!box)return;const b=document.createElement('span');b.className='xsban';b.textContent=`Khách ${g.ri+1}/${g.N} ✓ Cảm ơn!`;box.appendChild(b);setTimeout(()=>box.classList.add('xsout'),1500)},1150);
   setTimeout(()=>{g.lockC=0;if(scr!==g||g.end)return;if(g.lives<=0||g.ri>=g.N-1)return xg2End();g.ri++;g.r=shopRound(curG(),g.ri,g.N);g.pay=[];g.enter=1;render();sayJ(shopSay(g.r))},3200)}
-{const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='shop'&&scr.enter){scr.enter=0;const b=document.querySelector('.xshop');if(b)b.classList.add('xsenter')}}catch(e){}return v})}
+{hooks.on('render',_r=>function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='shop'&&scr.enter){scr.enter=0;const b=document.querySelector('.xshop');if(b)b.classList.add('xsenter')}}catch(e){}return v})}
 (function(){const st=document.createElement('style');st.textContent=`
 .xshop{position:relative;overflow-x:clip;overflow-y:visible;padding-bottom:10px}
 .xsquay{position:relative;height:30px;margin:0 0 0;background:var(--qc);border:3px solid #1F2A5A;border-bottom:0;display:flex;align-items:center;justify-content:center}

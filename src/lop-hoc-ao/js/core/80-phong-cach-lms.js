@@ -6,8 +6,8 @@ import { render, setRole } from './13-giao-dien-chung.js';
 (function(){
 const lms=()=>typeof role!=='undefined'&&role!=='hs';
 const dat=()=>{try{document.body.classList.toggle('lms',lms())}catch(e){}};
-if(typeof render==='function'){const _r=hooks.cu('render');hooks.de('render',function(){dat();const r=_r.apply(this,arguments);dat();return r})}
-if(typeof setRole==='function'){const _s=hooks.cu('setRole');hooks.de('setRole',function(){const r=_s.apply(this,arguments);dat();return r});window.setRole=setRole}
+if(typeof render==='function'){hooks.on('render',_r=>function(){dat();const r=_r.apply(this,arguments);dat();return r})}
+if(typeof setRole==='function'){hooks.on('setRole',_s=>function(){const r=_s.apply(this,arguments);dat();return r});window.setRole=setRole}
 document.addEventListener('DOMContentLoaded',dat);
 /* Lexend nằm trong assets/fonts/fonts.css (chữ tự host, P-08) — không chèn Google Fonts nữa. */
 const L='body.px.lms',FF='"Lexend","Be Vietnam Pro",system-ui,sans-serif';

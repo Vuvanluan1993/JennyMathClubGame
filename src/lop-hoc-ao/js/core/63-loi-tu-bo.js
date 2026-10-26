@@ -11,4 +11,4 @@ export function loiConNgay(e){return Math.max(0,LOI_NGAY-(S.day-(e.day||S.day)))
 function loiBaiXong(id,st,M){let n=0;if(typeof CLOUD==='undefined'||!CLOUD)return 0;const R=st.asgR||{},ngay=t=>Math.floor((t-Date.UTC(2026,8,5))/864e5)+1;
   (S.asg||[]).forEach(a=>{const r=R[a.id];if(a.loai!=='loi'||!r||!(r.xong||r.thuong))return;const d=ngay(Math.min(r.xong||Infinity,r.thuong||Infinity));(a.keys||[]).forEach(k=>{if(M[k]&&(M[k].day||0)<=d){delete M[k];n++}})});return n}
 function loiDon(id,st){const M=st&&st.mist;if(!M)return 0;const giu=loiGiu(id);let n=loiBaiXong(id,st,M);Object.keys(M).forEach(k=>{if(!giu.has(k)&&loiConNgay(M[k])<=0){delete M[k];n++}});return n}
-{const _r=hooks.cu('render');hooks.de('render',function(){try{if(S&&S.st){if(role==='hs'){if(S.st[sid]&&loiDon(sid,S.st[sid]))save()}else STUDENTS.forEach(([id])=>loiDon(id,S.st[id]))}}catch(e){}return _r.apply(this,arguments)})}
+{hooks.on('render',_r=>function(){try{if(S&&S.st){if(role==='hs'){if(S.st[sid]&&loiDon(sid,S.st[sid]))save()}else STUDENTS.forEach(([id])=>loiDon(id,S.st[id]))}}catch(e){}return _r.apply(this,arguments)})}

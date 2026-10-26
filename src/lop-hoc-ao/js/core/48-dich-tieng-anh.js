@@ -72,12 +72,12 @@ export function enSwapAll(){for(const G of EN_GR){const P=PRIM[G];if(!P)continue
   const L=(typeof LES!=='undefined'&&LES[G])||{};for(const k in L)(L[k]||[]).forEach(sl=>enSwapObj(sl,['t','h','say']))}}
 /* Jenny đọc: tiếng Anh thì dịch câu và đọc giọng en-GB */
 let enVoice=null;function pickEnVoice(){try{const vs=speechSynthesis.getVoices();return vs.find(v=>/^en-GB/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null}catch(e){return null}}
-{const _s=hooks.cu('sayJ');hooks.de('sayJ',function(text){if(!enOn())return _s.apply(this,arguments);if(muted||!text)return;try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(!enVoice)enVoice=pickEnVoice();
+{hooks.on('sayJ',_s=>function(text){if(!enOn())return _s.apply(this,arguments);if(muted||!text)return;try{const s=window.speechSynthesis;if(!s)return;s.cancel();if(!enVoice)enVoice=pickEnVoice();
   const t=trEN(String(text)).replace(/<[^>]+>/g,' ').replace(/×/g,' times ').replace(/(\d)\s*:\s*(\d)/g,'$1 divided by $2').replace(/(\d)\s*cm\b/g,'$1 centimetres').replace(/−/g,' minus ').replace(/\+/g,' plus ').replace(/=/g,' equals ').replace(/☐/g,' blank ').replace(/\s+/g,' ');
   const u=new SpeechSynthesisUtterance(t);u.lang='en-GB';if(enVoice)u.voice=enVoice;u.rate=.92;u.onstart=()=>{try{duck(1)}catch(e){}};u.onend=u.onerror=()=>{try{duck(0)}catch(e){}};s.speak(u)}catch(e){}})}
 /* chữ trên màn hình còn sót (hướng dẫn, trò chơi, hình): dịch thêm bằng khuôn khi bật EN */
-{const _t=hooks.cu('i18nText');hooks.de('i18nText',function(t){const r=_t(t);if(r!=null||!enOn())return r;const s=t.trim();const x=trOne(s);return x==null?null:t.replace(s,x)})}
-{const _sl=hooks.cu('setLang');hooks.de('setLang',function(l){LANG=l==='en'?'en':'vi';try{enSwapAll()}catch(e){}if(scr&&scr.k==='game'&&scr.qs){scr.qs=scr.qs.map(q=>LANG==='en'?trQ(q):q)}return _sl.apply(this,arguments)})}
+{hooks.on('i18nText',_t=>function(t){const r=_t(t);if(r!=null||!enOn())return r;const s=t.trim();const x=trOne(s);return x==null?null:t.replace(s,x)})}
+{hooks.on('setLang',_sl=>function(l){LANG=l==='en'?'en':'vi';try{enSwapAll()}catch(e){}if(scr&&scr.k==='game'&&scr.qs){scr.qs=scr.qs.map(q=>LANG==='en'?trQ(q):q)}return _sl.apply(this,arguments)})}
 
 /* khung hướng dẫn khi sai */
-{const _g=hooks.cu('gdOpenF');hooks.de('gdOpenF',function(F,auto,kind){if(enOn())F=F.map(f=>{const g={...f,h:trEN(f.h),say:trEN(f.say)};if(f.mcq)g.mcq={...f.mcq,q:trEN(f.mcq.q),ok:trEN(f.mcq.ok),hint:trEN(f.mcq.hint),opts:f.mcq.opts.map(o=>trEN(String(o))),a:trEN(String(f.mcq.a))};return g});return _g.call(this,F,auto,kind)})}
+{hooks.on('gdOpenF',_g=>function(F,auto,kind){if(enOn())F=F.map(f=>{const g={...f,h:trEN(f.h),say:trEN(f.say)};if(f.mcq)g.mcq={...f.mcq,q:trEN(f.mcq.q),ok:trEN(f.mcq.ok),hint:trEN(f.mcq.hint),opts:f.mcq.opts.map(o=>trEN(String(o))),a:trEN(String(f.mcq.a))};return g});return _g.call(this,F,auto,kind)})}

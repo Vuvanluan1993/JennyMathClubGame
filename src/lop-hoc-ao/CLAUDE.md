@@ -37,6 +37,6 @@ Thầy chốt điều mới → ghi ngay vào `docs/LUAT-DA-CHOT.md`.
 
 ## Lưu ý kĩ thuật
 - Mỗi file JS là ES module (import/export do `node tools/vite/tim-import.mjs` sinh, chạy lại sau khi sửa/rebase); khi chạy vẫn nối thành một script thường. `npm run lint` phải 0 lỗi.
-- Không khai báo `function` trùng tên, không gán lại hàm của file khác: đè bằng `hooks.de('ten',…)` (xem `js/core/00-hooks.js`, `docs/KIEN-TRUC.md` mục Module và hooks).
+- Không khai báo `function` trùng tên, không gán lại hàm của file khác: đè bằng `hooks.on('ten', cu => …)` (xem `js/core/00-hooks.js`, `docs/KIEN-TRUC.md` mục Module và hooks).
 - Bàn phím số chỉ nhập số nguyên ≥ 0.
 - Đảo/màn **khoá mặc định**, mở dần theo tiến độ (`UNL` tính lại mỗi lần vẽ trong `55-khoa-dao-tai-khoan.js`). Tài khoản thử **Lê Bảo Na** (`na`, `lebaona`/jenny123, hoặc tên "Lê Bảo Na") mở tất cả + 10 000 xu. Muốn làm mới dữ liệu mọi máy: đổi khoá lưu (`KEY` ở 09, `jennyHS2_` ở `tools/vite/vai/hoc-sinh-dang-nhap-thu.js.txt`).

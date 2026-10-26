@@ -34,9 +34,9 @@ function is2Scene(st,o){o=o||{};const s=ghSt(st),P=petsOf(st),list=o.dec||s.dec;
  return`<div class="is2wrap ${o.small?'small':''}"><div class="is2" ${o.pets?'id="iscene"':''}>${is2Bg()}${dec}${home}${pets}</div></div>`}
 function is2Fit(){document.querySelectorAll('.is2wrap').forEach(w=>{const k=w.clientWidth/IS2_W;const s=w.querySelector('.is2');if(s)s.style.transform=`scale(${k})`})}
 addEventListener('resize',is2Fit);
-{const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{is2Fit()}catch(e){}return v})}
+{hooks.on('render',_r=>function(){const v=_r.apply(this,arguments);try{is2Fit()}catch(e){}return v})}
 /* Đảo nhà: thay khung cảnh cũ */
-{const _v=hooks.cu('viewIsle');hooks.de('viewIsle',function(st){const r=_v.apply(this,arguments);try{return r.replace(/<div class="iscene" id="iscene"><div class="isky"><\/div>[\s\S]*?<\/div>/,is2Scene(st,{pets:true}))}catch(e){return r}})}
+{hooks.on('viewIsle',_v=>function(st){const r=_v.apply(this,arguments);try{return r.replace(/<div class="iscene" id="iscene"><div class="isky"><\/div>[\s\S]*?<\/div>/,is2Scene(st,{pets:true}))}catch(e){return r}})}
 /* Cửa hàng › Đảo nhà: xem trước cùng bố cục */
 hooks.de('ghIsle',function(st){const s=ghSt(st),T=scr.ghTry,list=s.dec.concat(T&&T.k==='dec'&&!s.dec.includes(T.id)?[T.id]:[]);return is2Scene(st,{dec:list,tryId:T&&T.id,small:true})});
 document.head.insertAdjacentHTML('beforeend',`<style>

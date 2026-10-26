@@ -7,4 +7,4 @@ function veTrangChu(){try{const g=scr;const dangChoi=g&&(g.k==='game'||g.k==='xg
   if(role!=='hs'){try{gvLop=null}catch(e){}}go({k:'home'})}catch(e){}}
 document.addEventListener('click',e=>{const b=e.target.closest('.appbar .brand');if(!b||e.target.closest('button,a,select,input'))return;e.preventDefault();veTrangChu()});
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('.appbar .brand')){e.preventDefault();veTrangChu()}});
-{const _r=hooks.cu('render');hooks.de('render',function(){const r=_r.apply(this,arguments);try{const b=document.querySelector('.appbar .brand');if(b&&!b.dataset.home){b.dataset.home=1;b.setAttribute('role','link');b.tabIndex=0;b.title=LANG==='en'?'Home':'Về trang chủ';b.style.cursor='pointer'}}catch(e){}return r})}
+{hooks.on('render',_r=>function(){const r=_r.apply(this,arguments);try{const b=document.querySelector('.appbar .brand');if(b&&!b.dataset.home){b.dataset.home=1;b.setAttribute('role','link');b.tabIndex=0;b.title=LANG==='en'?'Home':'Về trang chủ';b.style.cursor='pointer'}}catch(e){}return r})}

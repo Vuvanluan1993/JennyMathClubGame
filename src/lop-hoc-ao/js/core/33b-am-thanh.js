@@ -114,4 +114,4 @@ function toggleMute(){if(SND.m||SND.s){SND.m=0;SND.s=0}else{SND.m=1;SND.s=1}sndS
 /* nhạc nhỏ lại khi Jenny đang nói */
 export function duck(on){const A=AUD;if(!A||!muCur)return;const t=A.ac.currentTime;A.mu.gain.cancelScheduledValues(t);A.mu.gain.setValueAtTime(A.mu.gain.value,t);A.mu.gain.linearRampToValueAtTime(on?.2:1,t+.25)}
 /* gắn vào vẽ màn hình: đổi nhạc theo màn, vẽ nút âm thanh */
-{const _r=hooks.cu('render');hooks.de('render',function(){const a=_r.apply(this,arguments);try{sndUI();musicSync()}catch(e){}return a})}
+{hooks.on('render',_r=>function(){const a=_r.apply(this,arguments);try{sndUI();musicSync()}catch(e){}return a})}

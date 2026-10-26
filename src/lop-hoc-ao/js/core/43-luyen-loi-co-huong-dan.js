@@ -18,10 +18,10 @@ export function gdShowAns(q,v){try{if(q.type==='opt'){const h=gdTxt(q.opts[v]&&q
 export function gdMistNote(q,extra){if(!q||!q.key)return;const M=mist(S.st[sid]),e=M[q.key];if(!e)return;const sn=gdSnap(q);if(sn)e.q=sn;Object.assign(e,extra);e.qt=Date.now();
  /* giữ bản lưu câu cũ cho 30 lỗi gần nhất để bộ nhớ máy không đầy */const W=Object.values(M).filter(x=>x.q).sort((a,b)=>(b.qt||0)-(a.qt||0));W.slice(30).forEach(x=>{delete x.q})}
 /* màn học: ghi câu sai + đáp án đã chọn */
-{const _ans=hooks.cu('ans1');hooks.de('ans1',function(v){const g=scr;let note=null;try{if(g&&g.k==='game'&&!g.fix&&!g.race&&g.part!==2&&!g.gdRedo){const q=q1();if(g.tries===0&&!right1(q,v))note={q,wa:gdShowAns(q,v),from:''}}}catch(e){}
+{hooks.on('ans1',_ans=>function(v){const g=scr;let note=null;try{if(g&&g.k==='game'&&!g.fix&&!g.race&&g.part!==2&&!g.gdRedo){const q=q1();if(g.tries===0&&!right1(q,v))note={q,wa:gdShowAns(q,v),from:''}}}catch(e){}
   const r=_ans.apply(this,arguments);if(note){gdMistNote(note.q,{wa:note.wa,from:note.from});try{save()}catch(e){}}return r})}
 /* trò chơi: câu sai lần đầu cũng vào sổ lỗi */
-{const _x=hooks.cu('xgRec');hooks.de('xgRec',function(ok,q){const r=_x.apply(this,arguments);try{if(!ok&&q&&q.key&&q.src&&role==='hs'&&curG()<=5){mist1Add(q);gdMistNote(q,{wa:'',from:GD_GAME[scr&&scr.mode]||'trò chơi'});save()}}catch(e){}return r})}
+{hooks.on('xgRec',_x=>function(ok,q){const r=_x.apply(this,arguments);try{if(!ok&&q&&q.key&&q.src&&role==='hs'&&curG()<=5){mist1Add(q);gdMistNote(q,{wa:'',from:GD_GAME[scr&&scr.mode]||'trò chơi'});save()}}catch(e){}return r})}
 /* Luyện lỗi: câu 1 là đúng câu đã sai (nếu còn lưu), câu 2 là câu tương tự với số mới */
 hooks.de('startFix1',function(){const M=Object.values(mist(S.st[sid])).sort((a,b)=>a.day-b.day).slice(0,3);if(!M.length){toast('Sổ lỗi sai đang trống. Giỏi lắm!');return}
  const mk=e=>{const x=isl1(e.id);const q=x.lv[e.lv][e.gi]();return{...q,src:[e.id,e.lv,e.gi],key:`${e.id}:${e.lv}:${e.gi}`,label:e.label}};
@@ -29,13 +29,13 @@ hooks.de('startFix1',function(){const M=Object.values(mist(S.st[sid])).sort((a,b
  const sim=(e,a)=>{for(let t=0;t<12;t++){const b=mk(e);if(gdTxt(b.q)+String(b.pic||'')!==gdTxt(a.q)+String(a.pic||''))return b}return mk(e)};
  v1Said='';go({k:'game',g1:1,fix:1,id:M[0].id,lv:0,qs:M.flatMap(e=>{const a=old(e);return[a,sim(e,a)]}),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,hp:0,fixed:0,t0:Date.now()})});
 /* nhắc câu cũ + nút xem cách làm */
-{const _a=hooks.cu('g1AfterRender');hooks.de('g1AfterRender',function(){const r=_a.apply(this,arguments);try{const g=scr;if(g&&g.k==='game'&&g.fix&&!g.end&&!g.sheet){const q=q1(),mid=document.querySelector('.game .gmid'),bot=document.querySelector('.game .gbot');
+{hooks.on('g1AfterRender',_a=>function(){const r=_a.apply(this,arguments);try{const g=scr;if(g&&g.k==='game'&&g.fix&&!g.end&&!g.sheet){const q=q1(),mid=document.querySelector('.game .gmid'),bot=document.querySelector('.game .gbot');
   if(mid&&!mid.querySelector('.gdprev')&&(q.gdOld||q.gdWa||q.gdFrom)&&!g.gdRedo){const t=q.gdOld?(q.gdWa?`Lần trước${q.gdFrom?` (trò ${q.gdFrom})`:''} em ${q.type==='num'?'ghi':'chọn'} <b>${esc(q.gdWa)}</b>, chưa đúng. Em làm lại nhé!`:`Lần trước${q.gdFrom?` (trò ${q.gdFrom})`:''} em làm sai câu này. Em làm lại nhé!`):`Câu giống vậy, số mới. Em làm nhé!`;
    mid.insertAdjacentHTML('afterbegin',`<div class="gdprev">${spr('book',18)}<span>${t}</span></div>`)}
   else if(mid&&!mid.querySelector('.gdprev')&&!q.gdOld&&!g.gdRedo&&g.j%2===1)mid.insertAdjacentHTML('afterbegin',`<div class="gdprev sim">${spr('book',18)}<span>Câu giống vậy, số mới. Em làm nhé!</span></div>`);
   if(bot&&!bot.querySelector('.gdsee')&&gdKind(q))bot.insertAdjacentHTML('afterbegin',`<button type="button" class="gdsee" onclick="gdOpen(q1())">${spr('bulb',16)} Xem cách làm</button>`)}}catch(e){}return r})}
 /* trong Luyện lỗi không mất tim: sửa câu chữ của thẻ "Chưa đúng" */
-{const _sh=hooks.cu('sheet1');hooks.de('sheet1',function(){let h=_sh();try{if(scr&&scr.fix)h=h.replace('Chưa đúng, mất 1 tim.','Chưa đúng.')}catch(e){}return h})}
+{hooks.on('sheet1',_sh=>function(){let h=_sh();try{if(scr&&scr.fix)h=h.replace('Chưa đúng, mất 1 tim.','Chưa đúng.')}catch(e){}return h})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .gdprev{display:flex;gap:8px;align-items:center;font-family:var(--f-body);font-size:14px;line-height:1.35;background:#FFF4D6;color:#7A4E00;padding:6px 10px;box-shadow:0 0 0 2px #FCB40C}
 .gdprev.sim{background:#DDF3FB;color:#1F2A5A;box-shadow:0 0 0 2px #3FC1EC}.gdprev b{color:#E0441A}

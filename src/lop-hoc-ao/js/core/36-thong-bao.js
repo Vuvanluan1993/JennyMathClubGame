@@ -21,7 +21,7 @@ export function navBadge(k,st,nm){if(!st||st.grade>5)return null;const v=seenOf(
   if(k==='album'){const n=Math.max(0,albCount(st)-v.alb);return n?{n,t:`${n} món mới`}:null}
   return null}
 /* đánh dấu đã xem khi em vào đảo, vào buổi Toán Jenny, mở tab Sưu tập */
-{const _go=hooks.cu('go');hooks.de('go',function(s){try{if(role==='hs'){const st=S.st[sid];if(st&&st.grade<=5){const v=seenOf(st);
+{hooks.on('go',_go=>function(s){try{if(role==='hs'){const st=S.st[sid];if(st&&st.grade<=5){const v=seenOf(st);
   if(s&&s.k==='island'&&s.id)v.isl[s.id]=1;
   if(s&&s.k==='jenny'&&s.id)v.j[s.id]=1;
   if(s&&s.k==='home'&&s.tab==='album')v.alb=albCount(st);}}}catch(e){}return _go.apply(this,arguments)})}

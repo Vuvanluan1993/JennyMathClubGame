@@ -18,20 +18,20 @@ const hsTk=()=>CLOUD&&CLOUD.me&&CLOUD.me.role==='hs'?CLOUD.me.tk:null;
 const noiDung=st=>{const o=fbTach(st).hs;delete o._t;return JSON.stringify(o)};
 let cuoi='';
 /* 2) đánh dấu thời gian khi dữ liệu thật sự đổi */
-{const _s=hooks.cu('save');hooks.de('save',function(){try{const tk=hsTk(),st=tk&&S.st[tk];if(st){let j=noiDung(st);
+{hooks.on('save',_s=>function(){try{const tk=hsTk(),st=tk&&S.st[tk];if(st){let j=noiDung(st);
    if(j.length>700000){Object.values(st.mist||{}).forEach(x=>{delete x.q});j=noiDung(st)}
    if(j!==cuoi){if(cuoi)st._t=Date.now();cuoi=j}}}catch(e){}return _s.apply(this,arguments)})}
 /* 1) ghi lỗi → thử lại */
 let henLai=null;
-{const _t=hooks.cu('fbTrangThai');hooks.de('fbTrangThai',function(t,loi){const r=_t.apply(this,arguments);try{if(loi){Object.keys(fbLast).forEach(k=>{if(/^(hs|ev|hsgv|asg|lop|hsdm|hoso|gv|ph)\/|^org\/main$/.test(k))fbLast[k]=''});
+{hooks.on('fbTrangThai',_t=>function(t,loi){const r=_t.apply(this,arguments);try{if(loi){Object.keys(fbLast).forEach(k=>{if(/^(hs|ev|hsgv|asg|lop|hsdm|hoso|gv|ph)\/|^org\/main$/.test(k))fbLast[k]=''});
    clearTimeout(henLai);henLai=setTimeout(()=>{try{fbDay()}catch(e){}},20000)}}catch(e){}return r})}
 /* 4) đăng xuất không treo khi mất mạng */
-{const _n=hooks.cu('fbDayNgay');hooks.de('fbDayNgay',function(){const p=_n.apply(this,arguments);return hsTk()?Promise.race([p,new Promise(ok=>setTimeout(ok,4000))]):p})}
+{hooks.on('fbDayNgay',_n=>function(){const p=_n.apply(this,arguments);return hsTk()?Promise.race([p,new Promise(ok=>setTimeout(ok,4000))]):p})}
 /* 2) + 3) khi vào app */
 const GIU=['grade','name','active'];
 function ganTuXa(tk,st2,ev2,bao){const cu=S.st[tk]||{};GV_F.forEach(k=>{if(cu[k]!==undefined)st2[k]=cu[k]});GIU.forEach(k=>{if(cu[k]!==undefined)st2[k]=cu[k]});
  S.st[tk]=st2;if(ev2)S.events=ev2;cuoi=noiDung(st2);if(bao)try{toast(bao)}catch(e){}}
-{const _b=hooks.cu('fbHsBoot');hooks.de('fbHsBoot',async function(){const tk=CLOUD.me.tk;let loc=null;try{loc=JSON.parse(localStorage.getItem('jennyHSc_'+tk)||'null')}catch(e){}
+{hooks.on('fbHsBoot',_b=>async function(){const tk=CLOUD.me.tk;let loc=null;try{loc=JSON.parse(localStorage.getItem('jennyHSc_'+tk)||'null')}catch(e){}
  await _b.apply(this,arguments);
  try{const st=S.st[tk],ls=loc&&loc.st&&loc.st[tk];
   if(ls&&ls.grade===st.grade&&(ls._t||0)>(st._t||0)){ganTuXa(tk,ls,(loc.events||[]).length>=(S.events||[]).length?loc.events:null,

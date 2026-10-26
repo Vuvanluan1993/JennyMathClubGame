@@ -24,19 +24,19 @@ PXS.baitI=["..........kk....",".........kNk....","........kNk.....",".......kNk.
 Object.assign(XGN,{bait:['baitI','Thả mồi câu cá','Thả mồi, cá cắn câu thì trả lời đúng để kéo lên, 8 con cá']});
 if(!XG_ALL.includes('bait'))XG_ALL.push('bait');
 /* chọn trò: cho phép giống Ếch nhảy (nội dung lấy từ frogQ đã lọc kiến thức) */
-{const _a=hooks.cu('ktAllowed');hooks.de('ktAllowed',function(x,mode){return _a.call(this,x,mode==='bait'?'frog':mode)})}
-{const _o=hooks.cu('ktOwn');hooks.de('ktOwn',function(x,mode){return _o.call(this,x,mode==='bait'?'frog':mode)})}
-{const _e=hooks.cu('xgElig');hooks.de('xgElig',function(x){const r=_e.apply(this,arguments);if(r&&r.E&&r.E.includes('frog')&&!r.E.includes('bait'))r.E.push('bait');return r})}
-{const _s=hooks.cu('ktSample');hooks.de('ktSample',function(x,mode,n){if(mode!=='bait')return _s.apply(this,arguments);return _s.call(this,x,'frog',n)})}
+{hooks.on('ktAllowed',_a=>function(x,mode){return _a.call(this,x,mode==='bait'?'frog':mode)})}
+{hooks.on('ktOwn',_o=>function(x,mode){return _o.call(this,x,mode==='bait'?'frog':mode)})}
+{hooks.on('xgElig',_e=>function(x){const r=_e.apply(this,arguments);if(r&&r.E&&r.E.includes('frog')&&!r.E.includes('bait'))r.E.push('bait');return r})}
+{hooks.on('ktSample',_s=>function(x,mode,n){if(mode!=='bait')return _s.apply(this,arguments);return _s.call(this,x,'frog',n)})}
 
 const BAIT_N=8,BAIT_T=120;
 const BAIT_SKY=['#BFE9F8','#B2E5FA','#A3DFF8','#93D7F3','#A6D3EC','#F6D98B','#F6BE8E','#F1A08C','#C98AB0'];
 const BAIT_SPEC=[['Cá chép','o'],['Cá rô','G'],['Cá trê','N'],['Cá vàng','a'],['Cá mè','b'],['Cá hồng','c'],['Cá lóc','k'],['Cá trắm','l']];
-{const _s=hooks.cu('startXG');hooks.de('startXG',function(mode,id){if(mode!=='bait')return _s.apply(this,arguments);try{speechSynthesis.cancel()}catch(e){}const x=isl1(id);XG_KT=x?ktOf(x):null;
+{hooks.on('startXG',_s=>function(mode,id){if(mode!=='bait')return _s.apply(this,arguments);try{speechSynthesis.cancel()}catch(e){}const x=isl1(id);XG_KT=x?ktOf(x):null;
   go({k:'xg',mode:'bait',id,score:0,caught:0,miss:0,lives:3,end:false,started:false,t0:Date.now(),t:BAIT_T,ph:'idle',pt:0,bx:80,q:null,tries:0,bad:[],
     say:'Thả mồi câu cá! Em chạm Thả mồi, chờ cá cắn câu rồi trả lời đúng để kéo cá lên nhé.'})})}
 /* ---- màn hình ---- */
-{const _v=hooks.cu('viewXG');hooks.de('viewXG',function(){const g=scr;if(g.mode!=='bait')return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:bait`]||0,g.score);
+{hooks.on('viewXG',_v=>function(){const g=scr;if(g.mode!=='bait')return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:bait`]||0,g.score);
   if(g.end){const rec=g.score>(g.prev||0)&&g.score>0;
     return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr('baitI',72)}</span>${jenny(72,g.score?'cheer':'sad')}</div><h1>${rec?'Kỷ lục mới!':g.caught>=BAIT_N?'Đầy thùng cá!':'Hết giờ!'}</h1>
      <p class="muted">Câu được <b>${g.caught}</b>/${BAIT_N} con cá · cá chạy mất ${g.miss} lần · kỷ lục ${best}</p><div class="xbbucket">${baitBucketHTML(g.caught)}</div>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}
@@ -109,8 +109,8 @@ function baitAns(i){const g=scr;if(g.k!=='xg'||g.mode!=='bait'||g.end||g.ph!=='b
 function baitEnd(){const g=scr;if(g.k!=='xg'||g.mode!=='bait'||g.end)return;stopXG();const st=S.st[sid];st.mg=st.mg||{};const key=`${g.id}:bait`;g.prev=st.mg[key]||0;st.mg[key]=Math.max(g.prev,g.score);
   g.coins=addCoins(sid,Math.min(20,g.score*2),'self');g.end=true;g.win=g.caught>=BAIT_N;log(sid,'passed',`Thả mồi câu cá · ${isl1(g.id).title}`,0,{success:true,score:{raw:g.score}});
   sfx(g.win?'win':'timeup');sayJ(g.win?'Đầy thùng cá rồi! Giỏi quá!':`Em câu được ${g.caught} con cá!`);save();render()}
-{const _ar=hooks.cu('xgAfterRender');hooks.de('xgAfterRender',function(){const g=scr;if(g.k==='xg'&&g.mode==='bait'){if(g.end)return;baitUI();baitDraw();if(!g.started){g.started=true;sayJ(g.say);baitLoop()}else if(!xgLoop)baitLoop();return}return _ar.apply(this,arguments)})}
-{const _mt=hooks.cu('musicTheme');hooks.de('musicTheme',function(){try{if(role==='hs'&&scr.k==='xg'&&scr.mode==='bait')return scr.end?null:'fish'}catch(e){}return _mt.apply(this,arguments)})}
+{hooks.on('xgAfterRender',_ar=>function(){const g=scr;if(g.k==='xg'&&g.mode==='bait'){if(g.end)return;baitUI();baitDraw();if(!g.started){g.started=true;sayJ(g.say);baitLoop()}else if(!xgLoop)baitLoop();return}return _ar.apply(this,arguments)})}
+{hooks.on('musicTheme',_mt=>function(){try{if(role==='hs'&&scr.k==='xg'&&scr.mode==='bait')return scr.end?null:'fish'}catch(e){}return _mt.apply(this,arguments)})}
 (function(){const st=document.createElement('style');st.textContent=`
 .xbait .xbt{position:relative;width:342px;height:300px;margin:4px auto;border:3px solid #1F2A5A;overflow:hidden}
 .xbait .xbt canvas{position:absolute;inset:0;width:342px;height:300px;image-rendering:pixelated;image-rendering:crisp-edges}

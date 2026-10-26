@@ -22,16 +22,16 @@ function climbEasy(x,seen){const K=ktOf(x),G=xgGr(x),F=K.f||new Set(),ops=['+','
     const d=ans>=50?10:1,cand=[...new Set([ans+d,ans-d,ans+2*d,ans+1,ans-1].filter(v=>v>=0&&v!==ans))];const opts=shuf([ans,...shuf(cand).slice(0,2)]).map(v=>`${fN(v)} ${cl}`);
     return{t,pic:'',opts,a:opts.indexOf(`${fN(ans)} ${cl}`),q:{kind:'Giải toán lời văn (khởi động)',say:t},sol:sol,easy:1}}
   return null}
-{const _q=hooks.cu('climbQ');hooks.de('climbQ',function(x,seen){const g=scr,sc=(g&&g.k==='xg'&&g.mode==='climb'&&g.seen===seen)?g.score:0;if(sc<CLIMB_EASY_N){const e=climbEasy(x,seen);if(e)return e}return _q.apply(this,arguments)})}
+{hooks.on('climbQ',_q=>function(x,seen){const g=scr,sc=(g&&g.k==='xg'&&g.mode==='climb'&&g.seen===seen)?g.score:0;if(sc<CLIMB_EASY_N){const e=climbEasy(x,seen);if(e)return e}return _q.apply(this,arguments)})}
 /* lời mở đầu / huy hiệu theo số chặng mới */
-{const _r=hooks.cu('render');hooks.de('render',function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='climb'){if(scr.say)scr.say=String(scr.say).replace(/sáu chặng/g,'năm chặng');document.querySelectorAll('.xcbadge small').forEach(s=>s.textContent=s.textContent.replace(/\b6 bài/,`${CLIMB_N} bài`))}}catch(e){}return v})}
+{hooks.on('render',_r=>function(){const v=_r.apply(this,arguments);try{if(scr.k==='xg'&&scr.mode==='climb'){if(scr.say)scr.say=String(scr.say).replace(/sáu chặng/g,'năm chặng');document.querySelectorAll('.xcbadge small').forEach(s=>s.textContent=s.textContent.replace(/\b6 bài/,`${CLIMB_N} bài`))}}catch(e){}return v})}
 
 /* ===================== BẢN ĐỒ: quay lại đúng chủ đề đang xem ===================== */
 /* Vào đảo (hoặc chạm thẻ chủ đề) thì nhớ chủ đề; về bản đồ thì cuộn tới chủ đề đó thay vì chủ đề 1/chủ đề đang học. */
 globalThis.MAP_TI=null;globalThis.MAP_ID=null;
-{const _go=hooks.cu('go');hooks.de('go',function(s){try{if(s&&s.k==='island'&&s.id){const x=isl1(s.id);if(x){MAP_TI=x.ti;MAP_ID=s.id}}}catch(e){}return _go.apply(this,arguments)})}
-{const _j=hooks.cu('jumpT1');hooks.de('jumpT1',function(ti,smooth){MAP_TI=ti;return _j.apply(this,arguments)})}
-{const _a=hooks.cu('g1AfterRender');hooks.de('g1AfterRender',function(){const want=MAP_TI,onMap=role==='hs'&&scr.k==='home'&&(scr.tab||'map')==='map';
+{hooks.on('go',_go=>function(s){try{if(s&&s.k==='island'&&s.id){const x=isl1(s.id);if(x){MAP_TI=x.ti;MAP_ID=s.id}}}catch(e){}return _go.apply(this,arguments)})}
+{hooks.on('jumpT1',_j=>function(ti,smooth){MAP_TI=ti;return _j.apply(this,arguments)})}
+{hooks.on('g1AfterRender',_a=>function(){const want=MAP_TI,onMap=role==='hs'&&scr.k==='home'&&(scr.tab||'map')==='map';
   if(onMap&&want!=null&&!scr.noJump){scr.noJump=1;const v=_a.apply(this,arguments);scr.noJump=0;setTimeout(()=>{jumpT1(want);const ch=document.querySelectorAll('.tchip')[want];if(ch&&ch.parentNode)ch.parentNode.scrollLeft=ch.offsetLeft-ch.parentNode.clientWidth/2+ch.offsetWidth/2;
     /* cuộn biển của chủ đề tới đúng đảo vừa vào */ if(MAP_ID){const n=document.querySelector(`#t1_${want} .node[onclick*="'${MAP_ID}'"]`);const sea=n&&n.closest('.sea');if(sea)sea.scrollLeft=n.offsetLeft-sea.clientWidth/2+55}},30);return v}
   return _a.apply(this,arguments)})}

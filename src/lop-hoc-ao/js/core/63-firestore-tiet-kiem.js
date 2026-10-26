@@ -60,7 +60,7 @@ export function fbTietKiem(){if(!FB||!FB.db||FB.dem)return;FB.dem=fbDem;
     console.info(`[P-21] phiên này: đọc máy chủ ${fbDem.doc} · từ đệm ${fbDem.cache} · ghi ${fbDem.ghi} · ${Math.round((Date.now()-fbDem.t0)/60000)} phút`);
     fbNgheTat();try{localStorage.removeItem('jennyV3');await FB.db.terminate();await FB.db.clearPersistence()}catch(e){console.info('clearPersistence:',(e&&e.code)||e)}}}}}
 /* đổi vai / đăng nhập lại: tắt listener cũ trước khi vai mới nghe */
-{const _h=hooks.cu('fbHsBoot');hooks.de('fbHsBoot',async function(){fbNgheTat();return _h.apply(this,arguments)})}
-{const _g=hooks.cu('fbGvBoot');hooks.de('fbGvBoot',async function(){fbNgheTat();return _g.apply(this,arguments)})}
+{hooks.on('fbHsBoot',_h=>async function(){fbNgheTat();return _h.apply(this,arguments)})}
+{hooks.on('fbGvBoot',_g=>async function(){fbNgheTat();return _g.apply(this,arguments)})}
 /* Nâng cấp v3 xong: máy này lấy máy chủ trước ở lần nghe tiếp (đệm cũ là bản trước nâng cấp) */
-{const _n=hooks.cu('fbNangCapV3');hooks.de('fbNangCapV3',async function(){try{localStorage.removeItem('jennyV3')}catch(e){}return _n.apply(this,arguments)})}
+{hooks.on('fbNangCapV3',_n=>async function(){try{localStorage.removeItem('jennyV3')}catch(e){}return _n.apply(this,arguments)})}
