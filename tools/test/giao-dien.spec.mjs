@@ -88,6 +88,7 @@ const DA_BIET = [
   { trang: 'Mật Mã Bí Ẩn', loai: 'tran', mau: 'button#pauseBtn.icon-btn', viec: 'P-19' },  // CI 900px: lòi phải 25px
   { trang: 'Mật Mã Bí Ẩn', loai: 'tran', mau: 'svg', viec: 'P-19' },                       // CI 900px
   { trang: 'Mật Mã Bí Ẩn', loai: 'tran', mau: 'rect', viec: 'P-19' },                      // CI 900px   // 320,375px: button#pauseBtn.icon-btn lòi phải 31px
+  { trang: 'Mật Mã Bí Ẩn', loai: 'tran', mau: 'canvas#fx', viec: 'P-19' },                 // CI 320,375px: lòi phải 9px, 414px: 5px — canvas hiệu ứng cố định theo innerWidth khi trang cuộn ngang (cùng lỗi header); máy Mac không thấy (FB6, 26/10)
   { trang: 'Ô Số Bí Ẩn 6', loai: 'tran', mau: 'svg', viec: 'P-19' },   // 320,375px: svg lòi phải 23px
   { trang: 'Ô Số Bí Ẩn 6', loai: 'tran', mau: 'rect', viec: 'P-19' },   // 320,375px: rect lòi phải 12px
   { trang: 'Ô Số Bí Ẩn 6', loai: 'nut', mau: 'button#musBtn.icon-btn', viec: 'P-19' },   // 900px: button#musBtn.icon-btn 42×42 ×1 "Bật/tắt nhạc nền"
