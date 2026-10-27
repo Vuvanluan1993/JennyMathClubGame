@@ -15,7 +15,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { hocSinh, giaoVien, TRANG_GV } from './vai.js';
+import { hocSinh, giaoVien, TRANG_GV, thayCauHinh } from './vai.js';
 import { boModule, docFileJs, kiemTraLienKet } from './module.js';
 
 const INC = /\/\*@include ([^*]+?)\*\//g;
@@ -104,7 +104,7 @@ export function banDayDu(goc, coMoc = false, tinh = true) {
     if (n !== 1) throw new Error(`app.template.html: cần đúng 1 khối ${dau} (chỉ gồm dòng /*@include*/), thấy ${n}`);
     if (coMoc) t = t.replace(re, k => dau + k + cuoi);
   }
-  return noi(goc, t, 0, tinh).split('__APP_VER__').join(soBan(goc));
+  return thayCauHinh(noi(goc, t, 0, tinh).split('__APP_VER__').join(soBan(goc))); // P-21: __FB_CAU_HINH__ của 62 ← firebase/cau-hinh.json theo FB_ENV (vai.js)
 }
 
 /** Bỏ mốc → trang một file (y như build cũ). */

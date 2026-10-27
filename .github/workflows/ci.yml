@@ -33,6 +33,10 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Dựng bản Lớp học ảo
+        # P-21: bản dựng của nhánh tích hợp (và PR vào nó) trỏ dự án Firebase THỬ jenny-lop-hoc-ao-thu, có dải "Bản thử";
+        # main và PR vào main giữ dự án thật (như deploy.yml, FB_ENV mặc định that). Khối cấu hình: src/lop-hoc-ao/firebase/cau-hinh.json
+        env:
+          FB_ENV: ${{ (github.ref == 'refs/heads/main' || github.base_ref == 'main') && 'that' || 'thu' }}
         run: npm run build
 
       - name: Lưu bản dựng (tải về, giải nén, chạy python3 -m http.server ở thư mục đó)

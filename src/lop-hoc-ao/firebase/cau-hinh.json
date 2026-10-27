@@ -1,0 +1,21 @@
+{
+  "mo_ta": "Cấu hình web Firebase của Lớp học ảo — MỘT chỗ duy nhất (P-21, 27/10/2026). Khoá web là khoá công khai (vào trang là thấy), không phải bí mật; an toàn nằm ở firestore.rules và Authentication. Lúc dựng, tools/vite/vai.js chọn khối theo biến môi trường FB_ENV (that = dự án thật jenny-lop-hoc-ao, mặc định — deploy.yml/main; thu = dự án thử jenny-lop-hoc-ao-thu — ci.yml trên nhánh tích hợp) và thay vào __FB_CAU_HINH__ của js/core/62-may-chu.js. appCheckKey: khoá site reCAPTCHA v3 của App Check (P-05), để trống = không bật (docs/FIREBASE-CONSOLE.md mục 3).",
+  "that": {
+    "apiKey": "AIzaSyDom_aoJHqhDgs0CYpPa0kTzRv0WQ7xo3o",
+    "authDomain": "jenny-lop-hoc-ao.firebaseapp.com",
+    "projectId": "jenny-lop-hoc-ao",
+    "storageBucket": "jenny-lop-hoc-ao.firebasestorage.app",
+    "messagingSenderId": "670173928664",
+    "appId": "1:670173928664:web:cd32fb1f8846f0ec82cbad",
+    "appCheckKey": ""
+  },
+  "thu": {
+    "apiKey": "AIzaSyBT9JATkY14I5yzsd30VP1E3Ahqk-6YpPw",
+    "authDomain": "jenny-lop-hoc-ao-thu.firebaseapp.com",
+    "projectId": "jenny-lop-hoc-ao-thu",
+    "storageBucket": "jenny-lop-hoc-ao-thu.firebasestorage.app",
+    "messagingSenderId": "1032532275615",
+    "appId": "1:1032532275615:web:729f1c5043f56e1d134daa",
+    "appCheckKey": ""
+  }
+}
