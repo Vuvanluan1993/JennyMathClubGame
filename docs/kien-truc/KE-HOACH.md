@@ -40,13 +40,13 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy 
 ## Giai đoạn 3 — Firebase an toàn và tiết kiệm (thay giai đoạn Supabase, chốt 25/10)
 - ✗ **P-11, P-12, P-13 Supabase** — bỏ theo Q1 (25/10). Kế hoạch con giữ lại để tham khảo, đầu file ghi "Bỏ".
 - ☐ **P-20 Ví xu và sao kiểm soát bằng rules** — `vi/{tk}` có kiểu; mỗi lần ghi cộng tối đa 40 xu và cách lần trước ≥ 3 giây; mua đồ khớp bảng giá `cfg/shop`; sổ sự kiện `ev/{tk}/{id}` chỉ-thêm; trang cô cảnh báo bất thường. Giảm mạnh gian lận; chặn hẳn cần P-22. `plans/P-20-vi-xu-rules.md`
-- ☑ **P-21 Firestore ngoại tuyến và tiết kiệm đọc** (26/10, PR #15 base nhánh tích hợp; thử trên dự án thử: 2 ca ngoại tuyến ĐẠT, phiên HS 20 phút 31 đọc so với 35 trước, listener 4 so với 6; công tắc `FB_ENV`; trang cô lớp 12 em chưa đo). `plans/P-21-firestore-ngoai-tuyen.md`
+- ☑ **P-21 Firestore ngoại tuyến và tiết kiệm đọc** (26/10, PR #15 base nhánh tích hợp; thử trên dự án thử: 2 ca ngoại tuyến ĐẠT, phiên HS 20 phút 31 đọc so với 35 trước, listener 4 so với 6; trang cô lớp 12 em chưa đo). **Còn sót, giao FB7 (26/10):** công tắc `FB_ENV`/`cau-hinh.json` chưa làm; lỗi có sẵn `fbThietLap` đọc `org/main` trước khi có hồ sơ `users` → Thiết lập lần đầu trên dự án trống bị permission-denied. `plans/P-21-firestore-ngoai-tuyen.md`
 - ✗ **P-22 Blaze 0 đồng + Cloud Functions** (bỏ 26/10 theo Q5 = A; giữ kế hoạch con để xem lại khi có tên thật) — hàm `taoTaiKhoan`, `chamXu`, `xoaHocSinh`, chặn tự đăng ký bằng blocking function, xuất sao lưu quản lý theo lịch; HS không còn ghi `vi`. `plans/P-22-blaze-functions.md`
 
 ## Giai đoạn 4 — Tái cấu trúc front-end
 - ◐ **P-14 Vite + ES module cho Lớp học ảo** — 14a ☑ (RF1, 26/10), 14b ☑ (RF2, PR #12 base nhánh tích hợp: 118 file import/export, hàm đè qua hooks, ESLint 0 lỗi); còn **14c** bỏ `'unsafe-inline'` khỏi CSP (520 `onclick` inline cần đổi sang `addEventListener`), làm sau RF5. `plans/P-14-vite-module.md`
 - ☑ **P-15 Nội dung theo khối, tải động** (26/10; 15a PR #14, 15b PR #16 base nhánh tích hợp: trang học sinh 680 → 492–517 KB gzip, LCP 1,9 s, test 14/14; thầy chưa walk trên điện thoại). `plans/P-15-noi-dung-theo-khoi.md`
-- ☐ **P-16 PWA ngoại tuyến** — manifest, service worker, nút "có bản mới". `plans/P-16-pwa.md`
+- ☑ **P-16 PWA ngoại tuyến** (27/10, RF5, PR #17 base nhánh tích hợp: Lighthouse PWA 1,0; thử ngoại tuyến trên dự án thử ĐẠT; test 14/14; thầy chưa cài lên điện thoại). `plans/P-16-pwa.md`
 - ◐ **P-17 Kiểm tra giao diện tự động** — đang chạy (KT, PR #6); đã thấy 2 lỗi tràn ở 1920×950 (Hành trình · vườn, · cửa hàng), sửa ở task riêng. `plans/P-17-kiem-tra-giao-dien.md`
   ⟳ 25/10: chỉ thêm file test mới + `giao-dien.yml`; không sửa `ci.yml`, `chay-tat-ca.mjs`.
 
