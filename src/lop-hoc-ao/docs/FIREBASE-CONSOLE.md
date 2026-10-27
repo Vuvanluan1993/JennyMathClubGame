@@ -19,7 +19,7 @@ Trang console: https://console.firebase.google.com/project/jenny-lop-hoc-ao
 
 ## 3. App Check (chống gọi Firestore từ ngoài app) — chế độ theo dõi
 1. **App Check › Apps** › chọn web app `jenny-lop-hoc-ao` › **reCAPTCHA v3** › Register. Lấy **site key** (khoá công khai, dạng `6Lc…`).
-2. Dán site key vào `src/lop-hoc-ao/js/core/62-may-chu.js` ở `FB_CFG.appCheckKey:""` (giữa hai dấu nháy), build, đưa lên `main`.
+2. Dán site key vào `src/lop-hoc-ao/firebase/cau-hinh.json`, khối `that` › `"appCheckKey": ""` (giữa hai dấu nháy; từ 27/10/2026 cấu hình không còn nằm trong `62-may-chu.js`), build, đưa lên `main`.
    App chỉ **khởi tạo** App Check khi ô này khác rỗng; trống thì bỏ qua, không lỗi.
 3. **App Check › APIs › Cloud Firestore**: để **Unenforced** (theo dõi). Xem biểu đồ "Verified / Unverified" một tuần.
 4. Chỉ bấm **Enforce** khi biểu đồ gần 100% Verified **và** thầy xác nhận. **Bẫy:** Enforce với sai site key làm **mọi** đọc/ghi Firestore hỏng cho mọi người — nếu lỡ, bấm Unenforce ngay.
@@ -53,5 +53,6 @@ Nhánh tích hợp `tich-hop/kien-truc-2026-10` được thử trên dự án ri
 1. Tạo dự án Spark, Firestore vùng `asia-southeast1`, Authentication › Email/Password, tắt Analytics.
 2. Dán `firebase/firestore.rules` của nhánh tích hợp (mục 1), tạo chỉ mục theo `firebase/firestore.indexes.json`: `d` (`k` tăng, `t` giảm), `asg` (`lop` tăng, `t` giảm), và `t` của `d` phạm vi Collection group (hoặc `firebase deploy --only firestore:indexes --project jenny-lop-hoc-ao-thu`).
 3. Làm mục 2 (Authentication) như dự án thật; App Check (mục 3) không cần ở dự án thử.
-4. Cấu hình web (Project settings › Your apps › Web) đưa vào khối `thu` của `firebase/cau-hinh.json` khi công tắc `FB_ENV` có (goal riêng của P-21); bản dựng `FB_ENV=thu` hiện dải "Bản thử".
+4. Cấu hình web (Project settings › Your apps › Web) đã nằm ở khối `thu` của `firebase/cau-hinh.json` (27/10/2026, FB7). Dựng bản trỏ dự án thử: `FB_ENV=thu python3 tools/build.py` (hoặc `FB_ENV=thu npm run build` ở gốc kho); mặc định (`that`) trỏ dự án thật. Bản `thu` có dải đỏ nhỏ "Bản thử · máy chủ jenny-lop-hoc-ao-thu" giữa mép trên. CI của nhánh tích hợp (`ci.yml`) dựng với `thu` nên artifact `ban-dung` tải về là bản dự án thử; `deploy.yml` (main) luôn `that`.
+   Thiết lập lần đầu trên dự án trống: mở trang Quản lý bản `thu` › "Thiết lập lần đầu" › tạo tài khoản → vào thẳng trang Quản lý (đã sửa 27/10: không còn permission-denied). Muốn làm lại từ đầu: Firestore › Data › xoá các collection (`org`, `users`, `gv`, …) và Authentication › Users › xoá tài khoản.
 5. Thử ngoại tuyến: mở trang học sinh lần hai, DevTools › Network › Offline, làm 1 bài, bật mạng → `vi/{tk}` và `ev/{tk}/d` lên đúng.

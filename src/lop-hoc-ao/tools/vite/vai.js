@@ -10,6 +10,33 @@ import { fileURLToPath } from 'node:url';
 
 const VAI = path.join(path.dirname(fileURLToPath(import.meta.url)), 'vai');
 const doc = f => fs.readFileSync(path.join(VAI, f), 'utf8');
+
+/* ===== Công tắc dự án Firebase (P-21, 27/10/2026): firebase/cau-hinh.json có khối that (dự án thật) và thu (dự án thử) =====
+   Biến môi trường FB_ENV chọn khối (mặc định that: deploy.yml/main; ci.yml trên nhánh tích hợp đặt thu). thayCauHinh() thay
+   __FB_CAU_HINH__ trong 62-may-chu.js (gọi ở noi-file.js banDayDu nên bản đầy đủ, dev và 8 trang vai đều được thay).
+   FB_ENV=thu: trang THẬT (hocSinh/giaoVien với thu = false) có thêm dải nhỏ "Bản thử" cố định giữa thanh trên, không đẩy bố cục. */
+const CAU_HINH = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'firebase', 'cau-hinh.json');
+export function fbMoiTruong() {
+  const e = process.env.FB_ENV || 'that';
+  if (e !== 'that' && e !== 'thu') throw new Error(`vai.js: FB_ENV=${e} không hợp lệ (that | thu)`);
+  return e;
+}
+export function fbCauHinh(env = fbMoiTruong()) {
+  const c = JSON.parse(fs.readFileSync(CAU_HINH, 'utf8'))[env];
+  for (const k of ['apiKey', 'authDomain', 'projectId', 'appId']) if (!c || typeof c[k] !== 'string' || !c[k]) throw new Error(`vai.js: firebase/cau-hinh.json khối ${env} thiếu ${k}`);
+  return c;
+}
+/** Thay __FB_CAU_HINH__ (trong JSON.parse('…') của 62) bằng JSON của khối đang chọn; chuỗi JSON nằm trong nháy đơn nên thoát \ và '. */
+export function thayCauHinh(t) {
+  canCo(t, "JSON.parse('__FB_CAU_HINH__')");
+  return thayHet(t, '__FB_CAU_HINH__', JSON.stringify(fbCauHinh()).replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
+}
+const FBTHU_CSS = '.fbthu{position:fixed;top:env(safe-area-inset-top,0px);left:50%;transform:translateX(-50%);z-index:10001;font:700 11px/16px system-ui,sans-serif;padding:0 8px;background:#D7263D;color:#fff;border-radius:0 0 8px 8px;pointer-events:none;white-space:nowrap}\n';
+/** Dải "Bản thử" cho trang thật dựng với FB_ENV=thu (bản thử P-07 đã có dải riêng, không chèn thêm). */
+function daiBanThu(t, thu) {
+  if (thu || fbMoiTruong() !== 'thu') return { t, dai: '' };
+  return { t: thay1(t, '</style>', FBTHU_CSS + '</style>'), dai: `<div class="fbthu" role="note">Bản thử · máy chủ ${fbCauHinh().projectId}</div>` };
+}
 const sha256 = s => crypto.createHash('sha256').update(s, 'utf8').digest('hex');
 
 function canCo(t, a) { if (!t.includes(a)) throw new Error('vai.js: không thấy chuỗi cần thay: ' + a.slice(0, 80)); }
@@ -50,7 +77,8 @@ export function hocSinh(t, thu = false) {
   t = thay1(t, '</style>', doc(`hoc-sinh-${hau}.css`) + '</style>');
   t = doc('hoc-sinh-dau-trang.html') + t;
   if (thu) t = thay1(t, '<title>Lớp học ảo Jenny', '<title>Bản thử · Lớp học ảo Jenny');
-  return moBody(t, '<body class="locked px">');
+  const b = daiBanThu(t, thu); t = b.t;
+  return moBody(t, '<body class="locked px">' + b.dai);
 }
 
 /** Ba trang Giáo viên · Phụ huynh · Quản lý (như tools/_teacher.py): bản đầy đủ + màn đăng nhập máy chủ (thật) hoặc mở sẵn vai (thử). */
@@ -66,6 +94,7 @@ export function giaoVien(base, { trang, ten, dir, vai }, thu = false) {
   let t = thay1(thayHet(base, BOOT, g), '<title>', '<meta name="robots" content="noindex"><title>');
   // khung trang đầy đủ (doctype + viewport) để điện thoại hiển thị đúng khổ màn hình
   t = '<!doctype html>\n<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n' + t;
-  t = moBody(t, '<body class="px">');
+  const b = daiBanThu(t, thu); t = b.t;
+  t = moBody(t, '<body class="px">' + b.dai);
   return thay1(t, '<title>Lớp học ảo Jenny', (thu ? '<title>Bản thử · ' : '<title>') + ten + ' · Lớp học ảo Jenny');
 }

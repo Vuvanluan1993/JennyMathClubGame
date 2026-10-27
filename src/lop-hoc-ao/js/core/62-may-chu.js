@@ -9,14 +9,16 @@
    Tên đăng nhập (tk) → email ẩn tk@jenny-lop-hoc-ao.firebaseapp.com (trẻ không cần email thật).
    P-04 (25/10/2026): rules siết — org/main cần hồ sơ users; users chỉ chính chủ/QL; hs/{tk} em chỉ ghi j, ev, lop, t;
      asg đọc/ghi theo lớp (truy vấn phải lọc where lop); login/{tk} chỉ get đúng 1 bản ghi khi email ẩn chuẩn sai. */
+/* P-21 (27/10/2026): cấu hình web Firebase nằm MỘT chỗ ở firebase/cau-hinh.json (khối that = dự án thật, thu = dự án thử). Lúc dựng, tools/vite/vai.js
+   thay __FB_CAU_HINH__ bằng khối theo biến môi trường FB_ENV (mặc định that); FB_ENV=thu còn chèn dải "Bản thử" ở thanh trên. Chưa thay thì JSON.parse ném lỗi ngay khi nạp (cố ý: không âm thầm trỏ sai dự án).
+   appCheckKey (P-05): khoá site reCAPTCHA v3 của App Check, ghi trong cau-hinh.json; để trống = không bật. Chỉ theo dõi, chưa Enforce (xem docs/FIREBASE-CONSOLE.md). */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
 import { newStudent, save } from './09-du-lieu-demo.js';
 import { render, toast } from './13-giao-dien-chung.js';
 import { fbNghe, fbTietKiem } from './63-firestore-tiet-kiem.js';
 import { XU_THUONG, xuBangGia, xuBoot, xuOn, xuViTu } from './64-xu.js';
-export const FB_CFG={apiKey:"AIzaSyDom_aoJHqhDgs0CYpPa0kTzRv0WQ7xo3o",authDomain:"jenny-lop-hoc-ao.firebaseapp.com",projectId:"jenny-lop-hoc-ao",storageBucket:"jenny-lop-hoc-ao.firebasestorage.app",messagingSenderId:"670173928664",appId:"1:670173928664:web:cd32fb1f8846f0ec82cbad",
-  appCheckKey:""};/* P-05: khoá site reCAPTCHA v3 của App Check (Firebase › App Check › Web app). Để trống = không bật. Chỉ theo dõi, chưa Enforce (xem docs/FIREBASE-CONSOLE.md). */
+export const FB_CFG=JSON.parse('__FB_CAU_HINH__');
 export const FB_VER='10.12.2',GV_F=['comments','badges','gvNote','gvSkip'];
 export let FB=null;globalThis.CLOUD=null;export let fbSub=[], fbLast={}, fbHen=null, fbDangGhi=false, fbBan=0;/* fbBan: số lượt ghi đang chờ máy chủ */
 const fbEmail=tk=>`${String(tk).trim().toLowerCase()}@jenny-lop-hoc-ao.firebaseapp.com`;
@@ -86,11 +88,14 @@ async function fbDoiMK(){const p=await fbHoiMK({tieuDe:'Đổi mật khẩu',nha
 export async function fbTaoTK(tk,pw){await fbInit();const app2=firebase.apps.find(a=>a.name==='tao')||firebase.initializeApp(FB.app.options,'tao');
   const c=await app2.auth().createUserWithEmailAndPassword(fbEmail(tk),pw);const uid=c.user.uid;await app2.auth().signOut();return uid}
 /* thiết lập lần đầu: tài khoản quản lý đầu tiên + dữ liệu trung tâm trống */
+/* Thứ tự (sửa 27/10/2026, P-21): KHÔNG đọc org/main trước khi có hồ sơ users (rules chỉ cho đọc khi hasMe() → trên dự án trống báo permission-denied).
+   1) tạo tài khoản Auth; 2) ghi thẳng org/main — rules chỉ cho create khi chưa có (admins == [uid]); đã có thì set thành update, bị từ chối vì chưa isQL
+   → đó chính là "trung tâm đã có quản lý" (xoá lại tài khoản Auth vừa tạo); 3) tạo users/{uid} role ql SAU org/main vì rules cần uid ∈ org().admins. Rules không đổi. */
 async function fbThietLap(ten,tk,pw){const{auth,db}=await fbInit();const ref=db.doc('org/main');
   const c=await auth.createUserWithEmailAndPassword(fbEmail(tk),pw);const uid=c.user.uid;
-  const o=await ref.get();if(o.exists)throw{code:'x',message:'Trung tâm đã có quản lý. Hãy đăng nhập.'};
   const org={ten:'Clb Học Toán cùng Jenny',nam:'2026–2027',gv:[{id:tk,ten,tk}],lop:[],gd:{},nl:{},nk:[],mo:{},hs:[],ph:{},v:2,cloud:1,mauHS4:1,mauHS5:1,mauHS6:1,mauHS7:1,mauHS3:1,mauHS2:1,mauHS:1};
-  await ref.set({j:JSON.stringify(org),gd:{},pc:{},admins:[uid],t:fbTS()});
+  try{await ref.set({j:JSON.stringify(org),gd:{},pc:{},admins:[uid],t:fbTS()})}
+  catch(e){if(e&&e.code==='permission-denied'){try{await c.user.delete()}catch(_){}throw{code:'x',message:'Trung tâm đã có quản lý. Hãy đăng nhập.'}}throw e}
   await db.doc('users/'+uid).set({role:'ql',tk,ten,gvId:tk});return fbNapMe(c.user)}
 
 /* ---------- ghi lên máy chủ (gom lại 1,5 giây) ---------- */
