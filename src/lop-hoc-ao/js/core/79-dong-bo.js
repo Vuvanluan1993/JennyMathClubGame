@@ -25,6 +25,10 @@ let cuoi='';
 let henLai=null;
 {hooks.on('fbTrangThai',_t=>function(t,loi){const r=_t.apply(this,arguments);try{if(loi){Object.keys(fbLast).forEach(k=>{if(/^(hs|ev|hsgv|asg|lop|hsdm|hoso|gv|ph)\/|^org\/main$/.test(k))fbLast[k]=''});
    clearTimeout(henLai);henLai=setTimeout(()=>{try{fbDay()}catch(e){}},20000)}}catch(e){}return r})}
+/* P-16 (27/10/2026): mất mạng / có mạng lại. Bản máy chủ: Firestore đã bật bộ nhớ đệm bền (63, P-21) nên ghi lúc mất mạng tự xếp hàng,
+   nối lại tự gửi; ở đây chỉ báo cho em biết và đẩy ngay (không chờ 20 giây) khi có mạng. */
+window.addEventListener('offline',()=>{try{toast(arcT('Mất mạng. Em cứ học tiếp, bài sẽ gửi khi có mạng.','Offline. Keep learning, your work will be sent when back online.'))}catch(e){}});
+window.addEventListener('online',()=>{clearTimeout(henLai);try{if(hsTk())toast(arcT('Có mạng rồi, đang gửi bài em làm.','Back online, sending your work.'))}catch(e){}try{fbDay()}catch(e){}});
 /* 4) đăng xuất không treo khi mất mạng */
 {hooks.on('fbDayNgay',_n=>function(){const p=_n.apply(this,arguments);return hsTk()?Promise.race([p,new Promise(ok=>setTimeout(ok,4000))]):p})}
 /* 2) + 3) khi vào app */
