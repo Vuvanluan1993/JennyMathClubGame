@@ -3,6 +3,7 @@
 /* Mỗi tiết trong Vở BT-TH Toán 1 là một đảo. Đề viết lại (đồ vật, bối cảnh, số liệu khác), giữ đúng kiến thức của tiết. */
 import { hooks } from './00-hooks.js';
 import { esc, fmt, pick, range } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { P1BY, P2 } from './30a-dang-ky-khoi.js';
 import { blankP1, blankP2, save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
@@ -97,28 +98,28 @@ hooks.ham('healAll',function(){try{Object.values(S.st||{}).forEach(st=>{if(!st.p
 export const s1=(st,id)=>{const x=isl1(id),s=st.p1[id]||(st.p1[id]={intro:false,m:[],fails:[]});while(s.m.length<x.nm){s.m.push(false);s.fails.push(0)}return s};
 export const ISL=st=>PRIM[st.grade<=5?st.grade:1].isl;
 globalThis.UNL=(()=>{try{return localStorage.getItem('jennyLockOn')!=='1'}catch(e){return true}})();
-function toggleUnl(...a){return hooks.goi('toggleUnl',this,a)}
+export function toggleUnl(...a){return hooks.goi('toggleUnl',this,a)}
 hooks.ham('toggleUnl',function(){UNL=!UNL;try{localStorage.setItem('jennyLockOn',UNL?'0':'1')}catch(e){}render();toast(UNL?'Đã mở khóa tất cả đảo để kiểm tra':'Đã khóa lại theo tiến độ')});
 export const open1=(st,k)=>{const L=ISL(st);if(k<=0||UNL)return true;const x=L[k],p=L[k-1];return x.ti!==p.ti?s1(st,p.id).m.every(Boolean):!!s1(st,p.id).m[0]};
 const cur1=st=>{for(let k=0;k<ISL(st).length;k++){if(open1(st,k)&&s1(st,ISL(st)[k].id).m.some(v=>!v))return k}return ISL(st).length-1};
 export function viewHome1(...a){return hooks.goi('viewHome1',this,a)}
 hooks.ham('viewHome1',function(){
   const st=S.st[sid],tot=p1Stars(st),W=140,Hh=280,cur=curT1(st);
-  const strip=PT().map(([name],ti)=>{const ts=topicSt1(st,ti);return`<button type="button" class="tchip ${ts.cls}${ti===cur?' on':''}" onclick="jumpT1(${ti},1)" aria-label="Chủ đề ${ti+1}: ${esc(name)}"><b>${ti+1}</b><span>${ts.cls==='lock'?'🔒':ts.cls==='soon'?'…':ts.done?'✓':'★'+ts.got}</span></button>`}).join('');
+  const strip=PT().map(([name],ti)=>{const ts=topicSt1(st,ti);return`<button type="button" class="tchip ${ts.cls}${ti===cur?' on':''}" data-act="jumpT1-1" ${hd.arg(ti)} aria-label="Chủ đề ${ti+1}: ${esc(name)}"><b>${ti+1}</b><span>${ts.cls==='lock'?'🔒':ts.cls==='soon'?'…':ts.done?'✓':'★'+ts.got}</span></button>`}).join('');
   const G=curG(),secs=PT().map(([name,isl],ti)=>{const ts=topicSt1(st,ti),live=ti===cur,boss=PB()[ti],bk=biomeOf(G,ti,name),bm=BIOME[bk];
     const pts=isl.map((_,k)=>[80+k*W,k%2?165:85]);
     const path=pts.map((p,k)=>k?`Q ${p[0]-W/2} ${pts[k-1][1]===85?55:200} ${p[0]} ${p[1]}`:`M ${p[0]} ${p[1]}`).join(' ');
     let nodes;
     if(PLAY(ti)){const ck=cur1(st);const IL=PI();nodes=IL.filter(y=>y.ti===ti).map((x,j)=>{const k=IL.indexOf(x),s=s1(st,x.id),n=s.m.filter(Boolean).length,op=open1(st,k),[cx,cy]=pts[j],state=!op?'lock':n===x.nm?'done':'cur';
-      return`<button class="node ${state}${k===ck&&live?' here':''}" style="left:${cx-55}px;top:${cy-50}px" ${op?`onclick="go({k:'island',id:'${x.id}'})"`:`onclick="toast('Qua Màn 1 của đảo trước để mở đảo này nhé!')"`} aria-label="${esc(x.lesson)}, tiết ${x.tiet}${op?'':' (đang khóa)'}"><span class="ball">${spr(state==='lock'?'islandG':bm.isl,60)}${state==='lock'?spr('lock',26,'bdg'):k===ck&&live?spr(typeof ofVariant==='function'?ofVariant('jenny',jOutfit()):'jenny',34,'bdg jen'):x.boss?spr(boss[0],26,'bdg bossbdg'):state==='done'?spr('medG',24,'bdg'):''}</span><span class="lbl"><b>${j+1}. ${esc(x.short)}</b><span class="stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(x.nm-n)}</span></span></span>${k===ck&&live?'<span class="flag">Đang học</span>':x.boss&&op?'<span class="flag warn">Trùm</span>':''}</button>`}).join('')}
-    else nodes=isl.map(([b,t,tt],k)=>{const [cx,cy]=pts[k],last=k===isl.length-1;return`<button class="node lock" style="left:${cx-55}px;top:${cy-50}px" onclick="toast('${ts.cls==='soon'?'Chủ đề này đang được soạn.':`Hạ trùm ${PB()[ti-1][1]} ở Chủ đề ${ti} để mở.`}')" aria-label="Bài ${b}, tiết ${t} (đang khóa)"><span class="ball">${spr('islandG',60)}${last?spr(boss[0],26,'bdg'):''}</span><span class="lbl"><b>B${b} · T${t}</b><small>${esc(tt)}</small></span></button>`}).join('');
+      return`<button class="node ${state}${k===ck&&live?' here':''}" style="left:${cx-55}px;top:${cy-50}px" ${op?`data-act="go-island-3" ${hd.arg(String(x.id))}`:`data-act="toast-2"`} aria-label="${esc(x.lesson)}, tiết ${x.tiet}${op?'':' (đang khóa)'}"><span class="ball">${spr(state==='lock'?'islandG':bm.isl,60)}${state==='lock'?spr('lock',26,'bdg'):k===ck&&live?spr(typeof ofVariant==='function'?ofVariant('jenny',jOutfit()):'jenny',34,'bdg jen'):x.boss?spr(boss[0],26,'bdg bossbdg'):state==='done'?spr('medG',24,'bdg'):''}</span><span class="lbl"><b>${j+1}. ${esc(x.short)}</b><span class="stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(x.nm-n)}</span></span></span>${k===ck&&live?'<span class="flag">Đang học</span>':x.boss&&op?'<span class="flag warn">Trùm</span>':''}</button>`}).join('')}
+    else nodes=isl.map(([b,t,tt],k)=>{const [cx,cy]=pts[k],last=k===isl.length-1;return`<button class="node lock" style="left:${cx-55}px;top:${cy-50}px" data-act="toast" ${hd.arg(ts.cls==='soon'?'Chủ đề này đang được soạn.':`Hạ trùm ${PB()[ti-1][1]} ở Chủ đề ${ti} để mở.`)} aria-label="Bài ${b}, tiết ${t} (đang khóa)"><span class="ball">${spr('islandG',60)}${last?spr(boss[0],26,'bdg'):''}</span><span class="lbl"><b>B${b} · T${t}</b><small>${esc(tt)}</small></span></button>`}).join('');
     const bs=isl[0][0],be=isl[isl.length-1][0];
     return`<section class="card t1sec bm-${bk} ${ts.cls}${live?' cur':''}" id="t1_${ti}" style="padding:16px 0 8px;--bmc:${bm.band[2]};--bmd:${bm.band[3]}"><div class="secthead" style="padding:0 16px;flex-wrap:wrap;gap:6px 10px"><span class="tno">CHỦ ĐỀ ${ti+1}</span><h2>${esc(name)}</h2><span class="grow"></span>${PLAY(ti)?`<span class="muted">${PI().filter(x=>x.ti===ti).reduce((a,x)=>a+s1(st,x.id).m.filter(Boolean).length,0)}/${PI().filter(x=>x.ti===ti).reduce((a,x)=>a+x.nm,0)} ★</span>`:`<span class="pill">${ts.cls==='soon'?'Đang soạn':'Chưa mở'}</span>`}</div>
      <p class="muted" style="margin:2px 16px 6px"><span class="bmtag">${bm.ic} ${bm.n}</span> Bài ${bs}–${be} · ${isl.length} đảo · trùm ${spr(boss[0],18)} ${esc(boss[1])}</p>
      <div class="t1wrap"><div class="sea" ${live?'id="sea"':''}><div class="seain" style="width:${100+isl.length*W}px;height:${Hh}px"><canvas class="seacv" data-biome="${bk}" ${live?'data-live="1"':''} width="${100+isl.length*W}" height="${Hh}" data-isl="${JSON.stringify(pts.map(([x,y])=>[x,y-14]))}" aria-hidden="true"></canvas><svg class="route" width="${100+isl.length*W}" height="${Hh}" aria-hidden="true"><path d="${path}" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-dasharray="6 9" stroke-linecap="butt" opacity=".9"/></svg>${nodes}${live&&PLAY(ti)?treOverlay(st,pts):''}</div></div>
      ${ts.cls==='lock'||ts.cls==='soon'?`<div class="t1lock">${spr('lock',22)} <span>${ts.cls==='soon'?'Nội dung chủ đề này đang được soạn':`Hạ trùm <b>${esc(PB()[ti-1][1])}</b> ở Chủ đề ${ti} để mở`}</span></div>`:''}</div></section>${live?'<!--CARDS-->':''}`}).join('');
   return`<div class="grid" style="--oc:${OCEAN[G][1]}">
-   <section class="hero sm ocean${G}" style="--oc:${OCEAN[G][1]}">${jenny(56)}<div class="grow"><span class="ocname">🌊 ${OCEAN[G][0]} · Lớp ${G}</span><h1>Chào ${esc(st.name.split(' ').pop())}!</h1><div class="chips"><span class="chip">★ <b>${tot}</b></span><span class="chip">🪙 <b>${st.coins}</b></span><button class="chip g1say" type="button" onclick="sayJ('Chào em! Mình là Jenny. Em chạm vào hòn đảo có Jenny đứng để học tiếp nhé.')">🔊 Nghe Jenny</button></div></div></section>
+   <section class="hero sm ocean${G}" style="--oc:${OCEAN[G][1]}">${jenny(56)}<div class="grow"><span class="ocname">🌊 ${OCEAN[G][0]} · Lớp ${G}</span><h1>Chào ${esc(st.name.split(' ').pop())}!</h1><div class="chips"><span class="chip">★ <b>${tot}</b></span><span class="chip">🪙 <b>${st.coins}</b></span><button class="chip g1say" type="button" data-act="sayJ">🔊 Nghe Jenny</button></div></div></section>
    <nav class="tstrip" aria-label="Các chủ đề Toán 1">${strip}</nav>
    ${secs}</div>`;
 });
@@ -156,24 +157,24 @@ hooks.ham('viewGame1',function(){
   if(q.type==='build'&&!g.cnt)g.cnt=q.start;
   const cbb=g.cbo?cbI(g.id):null;
   const track=g.race?`<span class="mgsc">${spr('star',22)} <b>${g.ok}</b></span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="rtime">${g.t}</b></span>`:cbb?`<div class="bosshp" aria-label="Máu trùm lớp"><i style="width:${cbb.hp/cbb.max*100}%"></i></div>`:boss?`<div class="bosshp" aria-label="Máu trùm ${g.hp}/${n}"><i style="width:${g.hp/n*100}%"></i></div>`:`<div class="planks" aria-label="Câu ${g.j+1}/${n}">${g.qs.map((_,k)=>`<i class="${g.res[k]===true?'ok':g.res[k]===false?'bad':k===g.j?'cur':''}"></i>`).join('')}</div>`;
-  return`<div class="game g1" role="dialog" aria-label="${esc(x.title)}"><div class="gtop"><button class="gx" onclick="try{speechSynthesis.cancel()}catch(e){};${g.tre?`go({k:'home'})`:g.race||g.cbo?`go({k:'island',id:'${g.id}'})`:g.fix?`go({k:'home',tab:'fix'})`:g.part===2?`go({k:'jenny',id:'${g.id}'})`:`go({k:'island',id:'${g.id}'})`}" aria-label="Thoát">✕</button>${track}${g.race?'':g.tre?'<span class="pill acc">Kho báu</span>':g.fix?'<span class="pill acc">📒 Luyện lỗi</span>':`<span class="hearts" aria-label="Còn ${g.hearts} tim">${[0,1,2].map(i=>`<span class="${i<g.hearts?'':'lost'}">❤</span>`).join('')}</span>`}</div>
+  return`<div class="game g1" role="dialog" aria-label="${esc(x.title)}"><div class="gtop"><button class="gx" data-act="cancel-go" ${hd.arg(g.tre?{k:'home'}:g.race||g.cbo?{k:'island',id:g.id}:g.fix?{k:'home',tab:'fix'}:g.part===2?{k:'jenny',id:g.id}:{k:'island',id:g.id})} aria-label="Thoát">✕</button>${track}${g.race?'':g.tre?'<span class="pill acc">Kho báu</span>':g.fix?'<span class="pill acc">📒 Luyện lỗi</span>':`<span class="hearts" aria-label="Còn ${g.hearts} tim">${[0,1,2].map(i=>`<span class="${i<g.hearts?'':'lost'}">❤</span>`).join('')}</span>`}</div>
    <div class="gmid ${g.flash?'fl'+g.flash:''}">${cbb?`<div class="scene boss"><span class="monster">${bossHTML(cbb.spr,84,g.hit?'hit':g.mad?'mad':'idle',cbb.hp/cbb.max)}</span><span class="muted">${esc(cbb.name)} · ${cbb.hp}/${cbb.max} máu</span></div>`:''}${boss?`<div class="scene boss"><span class="monster">${bossHTML(bossOf(scr.id)[0],84,g.hit?'hit':g.mad?'mad':'idle',g.hp/n)}</span><span class="muted">${bossOf(scr.id)[1]}</span></div>`:''}
-    <div class="g1q">${jenny(54,jMood(g))}<div class="g1bub"><div>${q.q}</div><button class="g1spk" type="button" onclick="sayJ(sayFull(q1().say,q1().q))" aria-label="Nghe lại đề">🔊</button></div></div>
+    <div class="g1q">${jenny(54,jMood(g))}<div class="g1bub"><div>${q.q}</div><button class="g1spk" type="button" data-act="sayJ-sayFull-q1" aria-label="Nghe lại đề">🔊</button></div></div>
     ${q.pic?`<div class="g1pic">${q.pic}</div>`:''}${q.type==='num'?`<div class="slotbox ${g.inp?'':'empty'}" aria-live="polite">${g.inp?esc(g.inp):'?'}</div>`:''}${q.type==='slots'?slotsView(q):q.type==='build'?buildView(q):q.type==='order'?`<div class="g1seq">${q.a.map((_,k)=>`<span>${g.seq[k]!==undefined?q.opts[g.seq[k]]:''}</span>`).join('')}</div>`:''}</div>
    <div class="gbot">${g.sheet?sheet1():input1(q)}</div></div>`;
 });
-function slotsView(q){const g=scr;let b=0;return`<div class="g1cells">${q.cells.map(v=>{if(v!==null)return`<span class="c">${v}</span>`;const i=b++;return`<button type="button" class="c slot ${g.fill[i]!==null?'full':''}" data-slot="${i}" onclick="slotTap(${i})" aria-label="Ô trống ${i+1}">${g.fill[i]!==null?q.tiles[g.fill[i]]:''}</button>`}).join('')}</div>`}
+function slotsView(q){const g=scr;let b=0;return`<div class="g1cells">${q.cells.map(v=>{if(v!==null)return`<span class="c">${v}</span>`;const i=b++;return`<button type="button" class="c slot ${g.fill[i]!==null?'full':''}" data-slot="${i}" data-act="slotTap" ${hd.arg(i)} aria-label="Ô trống ${i+1}">${g.fill[i]!==null?q.tiles[g.fill[i]]:''}</button>`}).join('')}</div>`}
 function buildView(q){const g=scr;return`<div class="g1build"><div class="g1grp">${Array.from({length:g.cnt},(_,i)=>spr(q.obj,40,i>=q.start?'g1add':'')).join('')}</div></div>`}
 function input1(...a){return hooks.goi('input1',this,a)}
 hooks.ham('input1',function(q){const g=scr;
-  if(q.type==='num')return`<div class="pad">${['1','2','3','4','5','6','7','8','9','⌫','0','✓'].map(k=>`<button type="button" class="${k==='✓'?'go':k==='⌫'?'del':''}" onclick="key1('${k}')" aria-label="${k==='⌫'?'Xóa':k==='✓'?'Nộp':k}">${k==='✓'?'Nộp':k}</button>`).join('')}</div>`;
-  if(q.type==='opt'){const [cc,sz]=optLay(q.opts.map(o=>o.h),q.big,q.cols||(q.opts.length===4?2:3));return`<div class="g1opts c${cc} ${q.big?'big':''}">${q.opts.map((o,i)=>`<button type="button" class="${sz}" onclick="ans1(${i})">${o.h}</button>`).join('')}</div>`}
-  if(q.type==='tf')return`<div class="g1opts c2 big"><button type="button" class="t" onclick="ans1(true)">Đúng</button><button type="button" class="f" onclick="ans1(false)">Sai</button></div>`;
+  if(q.type==='num')return`<div class="pad">${['1','2','3','4','5','6','7','8','9','⌫','0','✓'].map(k=>`<button type="button" class="${k==='✓'?'go':k==='⌫'?'del':''}" data-act="key1" ${hd.arg(String(k))} aria-label="${k==='⌫'?'Xóa':k==='✓'?'Nộp':k}">${k==='✓'?'Nộp':k}</button>`).join('')}</div>`;
+  if(q.type==='opt'){const [cc,sz]=optLay(q.opts.map(o=>o.h),q.big,q.cols||(q.opts.length===4?2:3));return`<div class="g1opts c${cc} ${q.big?'big':''}">${q.opts.map((o,i)=>`<button type="button" class="${sz}" data-act="ans1" ${hd.arg(i)}>${o.h}</button>`).join('')}</div>`}
+  if(q.type==='tf')return`<div class="g1opts c2 big"><button type="button" class="t" data-act="ans1-2">Đúng</button><button type="button" class="f" data-act="ans1-3">Sai</button></div>`;
   const LY=q.opts?optLay(q.opts,1,q.type==='order'?4:3):[3,''],SZ=()=>LY[1];
-  if(q.type==='pick')return`<div class="g1opts c${LY[0]} big">${q.opts.map((o,i)=>`<button type="button" class="${g.picks.includes(i)?'on':''} ${SZ(o)}" aria-pressed="${g.picks.includes(i)}" onclick="pick1(${i})">${o}</button>`).join('')}</div><button class="gobtn" type="button" ${g.picks.length?'':'disabled'} onclick="ans1(scr.picks)">Kiểm tra</button>`;
-  if(q.type==='order')return`<div class="g1opts c${LY[0]} big">${q.opts.map((o,i)=>`<button type="button" ${g.seq.includes(i)?`disabled class="used ${SZ(o)}"`:`class="${SZ(o)}"`} onclick="ord1(${i})">${o}</button>`).join('')}</div><button class="gobtn ghost" type="button" ${g.seq.length?'':'disabled'} onclick="scr.seq=[];render()">Xếp lại</button>`;
-  if(q.type==='slots')return`<div class="g1tiles">${q.tiles.map((v,i)=>`<button type="button" class="g1tile" data-t="${i}" ${g.used.includes(i)?'disabled':''}>${v}</button>`).join('')}</div><p class="g1hint">Kéo số vào ô trống, hoặc chạm vào số.</p><button class="gobtn" type="button" ${g.fill.every(v=>v!==null)?'':'disabled'} onclick="ans1(scr.fill.map(i=>q1().tiles[i]))">Kiểm tra</button>`;
-  if(q.type==='build')return`<div class="g1opts c2 big"><button type="button" onclick="cnt1(-1)" aria-label="Bớt 1">− Bớt</button><button type="button" onclick="cnt1(1)" aria-label="Thêm 1">+ Thêm</button></div><button class="gobtn" type="button" onclick="ans1(scr.cnt)">Kiểm tra</button>`;
+  if(q.type==='pick')return`<div class="g1opts c${LY[0]} big">${q.opts.map((o,i)=>`<button type="button" class="${g.picks.includes(i)?'on':''} ${SZ(o)}" aria-pressed="${g.picks.includes(i)}" data-act="pick1" ${hd.arg(i)}>${o}</button>`).join('')}</div><button class="gobtn" type="button" ${g.picks.length?'':'disabled'} data-act="ans1-4">Kiểm tra</button>`;
+  if(q.type==='order')return`<div class="g1opts c${LY[0]} big">${q.opts.map((o,i)=>`<button type="button" ${g.seq.includes(i)?`disabled class="used ${SZ(o)}"`:`class="${SZ(o)}"`} data-act="ord1" ${hd.arg(i)}>${o}</button>`).join('')}</div><button class="gobtn ghost" type="button" ${g.seq.length?'':'disabled'} data-act="seq-render">Xếp lại</button>`;
+  if(q.type==='slots')return`<div class="g1tiles">${q.tiles.map((v,i)=>`<button type="button" class="g1tile" data-t="${i}" ${g.used.includes(i)?'disabled':''}>${v}</button>`).join('')}</div><p class="g1hint">Kéo số vào ô trống, hoặc chạm vào số.</p><button class="gobtn" type="button" ${g.fill.every(v=>v!==null)?'':'disabled'} data-act="ans1-map-q1">Kiểm tra</button>`;
+  if(q.type==='build')return`<div class="g1opts c2 big"><button type="button" data-act="cnt1-1" aria-label="Bớt 1">− Bớt</button><button type="button" data-act="cnt1" aria-label="Thêm 1">+ Thêm</button></div><button class="gobtn" type="button" data-act="ans1-5">Kiểm tra</button>`;
   return'';
 });
 function pick1(i){const g=scr;g.picks=g.picks.includes(i)?g.picks.filter(x=>x!==i):[...g.picks,i];sfx('tap');render()}
@@ -206,10 +207,10 @@ hooks.ham('ans1',function(v){if(scr.race){const q=q1(),ok=right1(q,v);log(sid,'a
   save();render()});
 function sheet1(...a){return hooks.goi('sheet1',this,a)}
 hooks.ham('sheet1',function(){const g=scr,q=q1(),s=g.sheet;
-  if(s.kind==='ok')return`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${pick(['Giỏi quá!','Đúng rồi!','Tuyệt vời!'])}</b><div>${s.msg}</div></div></div><button class="gobtn" type="button" onclick="next1()">Tiếp tục</button></div>`;
-  if(s.kind==='retry')return`<div class="sheet warn"><div class="sh"><span class="ic">?</span><div><b>Chưa đúng, mất 1 tim.</b><div>Em nhìn kỹ hình và thử lại nhé.</div></div></div><button class="gobtn" type="button" onclick="retry1()">Thử lại</button></div>`;
-  if(s.kind==='bad')return`<div class="sheet bad"><div class="sh"><span class="ic">✕</span><div><b>Đáp án đúng${show1(q)!==''?': '+show1(q):''}</b><div>${q.sol}</div></div></div><button class="gobtn" type="button" onclick="next1()">Tiếp tục</button></div>`;
-  return`<div class="sheet bad"><div class="sh"><span class="ic">💔</span><div><b>Hết tim rồi!</b><div>${q.sol}</div></div></div><button class="gobtn" type="button" onclick="end1(false)">Xem kết quả</button></div>`});
+  if(s.kind==='ok')return`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${pick(['Giỏi quá!','Đúng rồi!','Tuyệt vời!'])}</b><div>${s.msg}</div></div></div><button class="gobtn" type="button" data-act="next1">Tiếp tục</button></div>`;
+  if(s.kind==='retry')return`<div class="sheet warn"><div class="sh"><span class="ic">?</span><div><b>Chưa đúng, mất 1 tim.</b><div>Em nhìn kỹ hình và thử lại nhé.</div></div></div><button class="gobtn" type="button" data-act="retry1">Thử lại</button></div>`;
+  if(s.kind==='bad')return`<div class="sheet bad"><div class="sh"><span class="ic">✕</span><div><b>Đáp án đúng${show1(q)!==''?': '+show1(q):''}</b><div>${q.sol}</div></div></div><button class="gobtn" type="button" data-act="next1">Tiếp tục</button></div>`;
+  return`<div class="sheet bad"><div class="sh"><span class="ic">💔</span><div><b>Hết tim rồi!</b><div>${q.sol}</div></div></div><button class="gobtn" type="button" data-act="end1">Xem kết quả</button></div>`});
 function retry1(...a){return hooks.goi('retry1',this,a)}
 hooks.ham('retry1',function(){const g=scr;g.sheet=null;g.mad=0;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;render()});
 export function next1(...a){return hooks.goi('next1',this,a)}
@@ -229,7 +230,33 @@ hooks.ham('viewEnd1',function(){if(scr.fix||scr.part===2)return viewEnd1b();cons
    <h1>${g.pass?(boss?`Hạ gục ${bossOf(scr.id)[1]}!`:'Qua màn!'):'Mình chơi lại nhé!'}</h1>
    <p class="muted">${g.ok}/${g.qs.length} câu đúng · còn ${Math.max(0,g.hearts)} tim${g.pass?` · +${boss?30:10} xu`:''}</p>
    ${g.newStar?'<p class="earn">+1 sao</p>':''}${g.card?`<p class="earn">Thẻ mới: ${spr(g.card[0],28)} ${esc(g.card[1])}</p>`:''}${g.unlock?`<p class="muted">Đã mở đảo mới: <b>${esc(g.unlock.short)}</b></p>`:''}
-   <div class="gendbtn">${g.pass&&nextL>0?`<button class="gobtn" type="button" onclick="startG1('${x.id}',${nextL})">${nextL===2?'Đánh trùm':'Màn '+(nextL+1)}</button>`:''}${!g.pass?`<button class="gobtn" type="button" onclick="startG1('${x.id}',${g.lv})">Chơi lại</button>`:''}${g.pass&&nextL<0&&PI()[k+1]?`<button class="gobtn" type="button" onclick="go({k:'island',id:'${PI()[k+1].id}'})">Đảo tiếp theo →</button>`:''}<button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${x.id}'})">Về đảo</button><button class="gobtn ghost" type="button" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`});
+   <div class="gendbtn">${g.pass&&nextL>0?`<button class="gobtn" type="button" data-act="startG1" ${hd.arg(String(x.id),nextL)}>${nextL===2?'Đánh trùm':'Màn '+(nextL+1)}</button>`:''}${!g.pass?`<button class="gobtn" type="button" data-act="startG1" ${hd.arg(String(x.id),g.lv)}>Chơi lại</button>`:''}${g.pass&&nextL<0&&PI()[k+1]?`<button class="gobtn" type="button" data-act="go-island-3" ${hd.arg(String(PI()[k+1].id))}>Đảo tiếp theo →</button>`:''}<button class="gobtn ghost" type="button" data-act="go-island-3" ${hd.arg(String(x.id))}>Về đảo</button><button class="gobtn ghost" type="button" data-act="go-home">Bản đồ</button></div></div></div>`});
 /* đọc đề khi câu mới hiện ra */
 export function g1AfterRender(...a){return hooks.goi('g1AfterRender',this,a)}
 hooks.ham('g1AfterRender',function(){if(role==='hs'&&S.st[sid]&&S.st[sid].grade<=5&&scr.k==='home'&&(scr.tab||'map')==='map'&&!scr.noJump){const c=curT1(S.st[sid]);setTimeout(()=>{if(c>0)jumpT1(c);const ch=document.querySelector('.tchip.on');if(ch&&ch.parentNode)ch.parentNode.scrollLeft=ch.offsetLeft-ch.parentNode.clientWidth/2+ch.offsetWidth/2},0)}if(role!=='hs'||!S.st[sid]||S.st[sid].grade>2||scr.k!=='game'||scr.end||scr.sheet)return;const key=scr.id+scr.lv+':'+scr.j+':'+scr.t0;if(v1Said===key)return;v1Said=key;setTimeout(()=>{if(scr.k==='game'&&scr.g1&&scr.qs&&!scr.end&&!scr.sheet)sayJ(sayFull(q1().say,q1().q))},250)});
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'cancel-go':function(event,a){try{speechSynthesis.cancel()}catch(e){};go(a[0])},
+  'jumpT1-1':function(event,a){jumpT1(a[0],1)},
+  'go-island-3':function(event,a){go({k:'island',id:a[0]})},
+  'toast-2':function(){toast('Qua Màn 1 của đảo trước để mở đảo này nhé!')},
+  'sayJ':function(){sayJ('Chào em! Mình là Jenny. Em chạm vào hòn đảo có Jenny đứng để học tiếp nhé.')},
+  'sayJ-sayFull-q1':function(){sayJ(sayFull(q1().say,q1().q))},
+  'slotTap':function(event,a){slotTap(a[0])},
+  'key1':function(event,a){key1(a[0])},
+  'ans1':function(event,a){ans1(a[0])},
+  'ans1-2':function(){ans1(true)},
+  'ans1-3':function(){ans1(false)},
+  'pick1':function(event,a){pick1(a[0])},
+  'ans1-4':function(){ans1(scr.picks)},
+  'ord1':function(event,a){ord1(a[0])},
+  'ans1-map-q1':function(){ans1(scr.fill.map(i=>q1().tiles[i]))},
+  'cnt1-1':function(){cnt1(-1)},
+  'cnt1':function(){cnt1(1)},
+  'ans1-5':function(){ans1(scr.cnt)},
+  'next1':function(){next1()},
+  'retry1':function(){retry1()},
+  'end1':function(){end1(false)},
+  'startG1':function(event,a){startG1(a[0],a[1])},
+});

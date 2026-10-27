@@ -183,7 +183,8 @@ function khopDaBiet(trangTen, loai, mau) {
 }
 
 async function doMot(browser, base, t, [w, h]) {
-  const ctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: 'reduce', hasTouch: w < 600, isMobile: w < 600 });
+  // bypassCSP (P-14c, 27/10/2026): Lớp học ảo không còn 'unsafe-inline' nên addScriptTag (tiêm axe-core) bị CSP chặn; CSP được khong-goi-ngoai.mjs kiểm riêng
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: 'reduce', hasTouch: w < 600, isMobile: w < 600, bypassCSP: true });
   const page = await ctx.newPage();
   const loiJS = []; page.on('pageerror', e => loiJS.push(e.message));
   await page.route(/^(?!http:\/\/127\.0\.0\.1)/, r => r.abort());   // không gọi ra ngoài

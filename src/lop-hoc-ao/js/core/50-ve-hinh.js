@@ -5,6 +5,7 @@
    - Nhận dạng: bao lồi các nét → thử khớp tam giác / tứ giác (sai số trung bình), kiểm tra khép kín từng cạnh, rồi xét góc vuông và tỉ lệ cạnh. */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { addCoins } from './11-sao-va-mo-khoa.js';
@@ -71,14 +72,14 @@ function startDraw(id){try{speechSynthesis.cancel()}catch(e){}const ks=DRAW_ISL[
  go({k:'drawg',id,qs:pool.slice(0,DRAW_N),j:0,hearts:3,ok:0,tries:0,res:[],strokes:[],result:null,tip:false,sheet:null,end:false,pass:false,t0:Date.now()});setTimeout(drawSay,250)}
 function drawSay(){const g=scr;if(!g||g.k!=='drawg'||g.end)return;const n=DRAW_NAME[dL()][g.qs[g.j]];try{sayJ(dEN()?`Draw a ${n}!`:`Em vẽ một ${n} nhé!`)}catch(e){}}
 function viewDraw(){const g=scr,x=isl1(g.id),en=dEN(),n=g.qs.length;
- if(g.end){const best=(S.st[sid].p1[g.id]||{}).draw;return`<div class="game g1"><div class="gend"><div class="bigicon bossend">${jenny(76,g.pass?'cheer':'sad')}${g.pass?spr('star',70):''}</div><h1>${g.pass?(en?'Level passed!':'Qua màn!'):(en?"Let's try again!":'Mình chơi lại nhé!')}</h1><p class="muted">${en?`${g.ok}/${n} shapes correct`:`Vẽ đúng ${g.ok}/${n} hình`}${g.coins?` · +${g.coins} ${en?'coins':'xu'}`:''}</p><div class="gendbtn"><button class="gobtn" type="button" onclick="startDraw('${g.id}')">${en?'Play again':'Chơi lại'}</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">${en?'Back to island':'Về đảo'}</button></div></div></div>`}
+ if(g.end){const best=(S.st[sid].p1[g.id]||{}).draw;return`<div class="game g1"><div class="gend"><div class="bigicon bossend">${jenny(76,g.pass?'cheer':'sad')}${g.pass?spr('star',70):''}</div><h1>${g.pass?(en?'Level passed!':'Qua màn!'):(en?"Let's try again!":'Mình chơi lại nhé!')}</h1><p class="muted">${en?`${g.ok}/${n} shapes correct`:`Vẽ đúng ${g.ok}/${n} hình`}${g.coins?` · +${g.coins} ${en?'coins':'xu'}`:''}</p><div class="gendbtn"><button class="gobtn" type="button" data-act="startDraw" ${hd.arg(String(g.id))}>${en?'Play again':'Chơi lại'}</button><button class="gobtn ghost" type="button" data-act="go-island-3" ${hd.arg(String(g.id))}>${en?'Back to island':'Về đảo'}</button></div></div></div>`}
  const want=g.qs[g.j],nm=DRAW_NAME[dL()][want];
  const track=`<div class="planks" aria-label="${g.j+1}/${n}">${g.qs.map((_,k)=>`<i class="${g.res[k]===true?'ok':g.res[k]===false?'bad':k===g.j?'cur':''}"></i>`).join('')}</div>`;
- const sh=g.sheet?(g.sheet.ok?`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${en?'Correct!':'Đúng rồi!'}</b><div>${esc(g.sheet.msg)}</div></div></div><button class="gobtn" type="button" onclick="drawNext()">${en?'Continue':'Tiếp tục'}</button></div>`
-  :`<div class="sheet warn"><div class="sh"><span class="ic">!</span><div><b>${en?'Not quite':'Chưa đúng'}</b><div>${esc(g.sheet.msg)}</div></div></div><button class="gobtn" type="button" onclick="drawRetry()">${en?'Draw again':'Vẽ lại'}</button></div>`)
-  :`<div class="dwbtns"><button class="gobtn ghost" type="button" onclick="drawClear()">${en?'Clear':'Xoá'}</button><button class="gobtn ghost" type="button" onclick="scr.tip=!scr.tip;drawPaint()">${en?'Hint':'Gợi ý'}</button><button class="gobtn" type="button" onclick="drawCheck()">${en?'Done ✓':'Xong ✓'}</button></div>`;
- return`<div class="game g1 dwgame" role="dialog" aria-label="${esc(x.title)}"><div class="gtop"><button class="gx" onclick="try{speechSynthesis.cancel()}catch(e){};go({k:'island',id:'${g.id}'})" aria-label="${en?'Exit':'Thoát'}">✕</button>${track}<span class="hearts" aria-label="${g.hearts}">${[0,1,2].map(i=>`<span class="${i<g.hearts?'':'lost'}">${spr(i<g.hearts?'heart':'heartE',24)}</span>`).join('')}</span></div>
-  <div class="gmid"><div class="g1q">${jenny(54,g.sheet?(g.sheet.ok?'cheer':'sad'):'idle')}<div class="g1bub"><div>${en?`Draw a <b>${nm}</b>!`:`Em vẽ một <b>${nm}</b> nhé!`}</div><button class="g1spk" type="button" onclick="drawSay()" aria-label="${en?'Listen':'Nghe lại'}">🔊</button></div></div>
+ const sh=g.sheet?(g.sheet.ok?`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${en?'Correct!':'Đúng rồi!'}</b><div>${esc(g.sheet.msg)}</div></div></div><button class="gobtn" type="button" data-act="drawNext">${en?'Continue':'Tiếp tục'}</button></div>`
+  :`<div class="sheet warn"><div class="sh"><span class="ic">!</span><div><b>${en?'Not quite':'Chưa đúng'}</b><div>${esc(g.sheet.msg)}</div></div></div><button class="gobtn" type="button" data-act="drawRetry">${en?'Draw again':'Vẽ lại'}</button></div>`)
+  :`<div class="dwbtns"><button class="gobtn ghost" type="button" data-act="drawClear">${en?'Clear':'Xoá'}</button><button class="gobtn ghost" type="button" data-act="tip-drawPaint">${en?'Hint':'Gợi ý'}</button><button class="gobtn" type="button" data-act="drawCheck">${en?'Done ✓':'Xong ✓'}</button></div>`;
+ return`<div class="game g1 dwgame" role="dialog" aria-label="${esc(x.title)}"><div class="gtop"><button class="gx" data-act="cancel-go-island" ${hd.arg(String(g.id))} aria-label="${en?'Exit':'Thoát'}">✕</button>${track}<span class="hearts" aria-label="${g.hearts}">${[0,1,2].map(i=>`<span class="${i<g.hearts?'':'lost'}">${spr(i<g.hearts?'heart':'heartE',24)}</span>`).join('')}</span></div>
+  <div class="gmid"><div class="g1q">${jenny(54,g.sheet?(g.sheet.ok?'cheer':'sad'):'idle')}<div class="g1bub"><div>${en?`Draw a <b>${nm}</b>!`:`Em vẽ một <b>${nm}</b> nhé!`}</div><button class="g1spk" type="button" data-act="drawSay" aria-label="${en?'Listen':'Nghe lại'}">🔊</button></div></div>
    <div class="dwboard" id="dwboard"><canvas id="dwcv" aria-label="${en?'Drawing paper':'Tờ giấy để vẽ'}"></canvas>${g.strokes.length?'':`<span class="dwhint">${en?'Draw with your finger':'Dùng ngón tay để vẽ'}</span>`}</div></div>
   <div class="gbot">${sh}</div></div>`}
 /* vẽ lên canvas */
@@ -115,7 +116,7 @@ function drawEnd(alive){const g=scr,st=S.st[sid],s=s1(st,g.id);g.end=true;g.pass
 try{addEventListener('resize',()=>{if(scr&&scr.k==='drawg'&&!scr.end)drawSetup()})}catch(e){}
 /* trang đảo: thêm dòng "Màn vẽ hình" sau các màn hiện có */
 {hooks.on('viewIsland1',_vi=>function(){const r=_vi.apply(this,arguments);try{const id=scr.id;if(!DRAW_ISL[id]||curG()>5)return r;const x=isl1(id),st=S.st[sid],s=s1(st,id),en=dEN(),can=UNL||s.m[0],done=!!s.draw,ks=DRAW_ISL[id].map(k=>DRAW_NAME[dL()][k]).join(', ');
-  const li=`<li class="${done?'done':''} ${!can&&!done?'off':''} dwli"><span class="n">${done?'✓':spr('pencil',22)}</span><div class="grow"><b>${en?`Level ${x.nm+1} · Draw shapes`:`Màn ${x.nm+1} · Vẽ hình`}</b><span class="muted">${en?`Draw by hand: ${ks} · ${DRAW_N} shapes · 3 hearts`:`Vẽ tay: ${ks} · ${DRAW_N} hình · 3 tim`}</span></div><button class="btn sm" ${can?'':'disabled'} onclick="startDraw('${id}')">${can?(done?(en?'Play again':'Chơi lại'):(en?'Play':'Chơi')):'🔒'}</button></li>`;
+  const li=`<li class="${done?'done':''} ${!can&&!done?'off':''} dwli"><span class="n">${done?'✓':spr('pencil',22)}</span><div class="grow"><b>${en?`Level ${x.nm+1} · Draw shapes`:`Màn ${x.nm+1} · Vẽ hình`}</b><span class="muted">${en?`Draw by hand: ${ks} · ${DRAW_N} shapes · 3 hearts`:`Vẽ tay: ${ks} · ${DRAW_N} hình · 3 tim`}</span></div><button class="btn sm" ${can?'':'disabled'} data-act="startDraw" ${hd.arg(String(id))}>${can?(done?(en?'Play again':'Chơi lại'):(en?'Play':'Chơi')):'🔒'}</button></li>`;
   const i=r.indexOf('<ul class="tl">');if(i<0)return r;const j=r.indexOf('</ul>',i);return r.slice(0,j)+li+r.slice(j)}catch(e){return r}})}
 Object.assign(PXS,{pencil:["......kk",".....kak","....kaak","...kaak.","..kaak..",".kwak...","kkwk....","kk......"].map(r=>r.replace(/w/g,'t'))});
 document.head.insertAdjacentHTML('beforeend',`<style>
@@ -127,3 +128,14 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .dwbtns .gobtn{margin:0}
 </style>`);
 try{startDraw=gateWrap(startDraw)}catch(e){}
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'startDraw':function(event,a){startDraw(a[0])},
+  'drawNext':function(){drawNext()},
+  'drawRetry':function(){drawRetry()},
+  'drawClear':function(){drawClear()},
+  'tip-drawPaint':function(){scr.tip=!scr.tip;drawPaint()},
+  'drawCheck':function(){drawCheck()},
+  'drawSay':function(){drawSay()},
+});

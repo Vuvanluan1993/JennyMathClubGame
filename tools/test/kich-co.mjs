@@ -100,7 +100,7 @@ const ds = a => [...new Set(a)].sort().join(', ') || 'không';
   const nav = o.dieuHuong;
   await p.evaluate(() => { S.st[sid].grade = 4; save(); go({ k: 'home' }); }); // lên lớp ngay trên trang
   await daCo(p, 4);
-  const ve = await p.evaluate(() => document.querySelectorAll('#app .isl, #app [onclick*="island"]').length);
+  const ve = await p.evaluate(() => document.querySelectorAll('#app .isl, #app [data-act^="go-island"]').length);
   dat(ds(o.khoi) === 'lop-3, lop-4' && o.dieuHuong === nav && ve > 0, `học sinh lên lớp 4 · tải thêm lop-4, không tải lại trang, bản đồ có ${ve} đảo (đã tải: ${ds(o.khoi)})`);
   dat(!o.loi.length, 'học sinh · không lỗi JS' + (o.loi.length ? ': ' + o.loi.slice(0, 3).join(' | ') : ''));
   await p.close();

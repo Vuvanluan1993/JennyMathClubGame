@@ -7,6 +7,7 @@
    Nội dung: bài toán lời văn của chính đảo, thiếu thì lấy của 1–4 đảo trước (cùng lớp), luôn lọc theo kiến thức đã học (39e). */
 import { hooks } from './00-hooks.js';
 import { pick } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { addCoins } from './11-sao-va-mo-khoa.js';
@@ -22,7 +23,7 @@ import { islPool } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
 import { sfx } from './33b-am-thanh.js';
 import { jenny } from './33d-jenny-bieu-cam.js';
 import { jOutfit, ofVariant } from './33e-ho-chieu.js';
-import { stopXG, XGN, xgRec, xgTxt } from './37-tro-choi-dot-1.js';
+import { startXG, stopXG, XGN, xgRec, xgTxt } from './37-tro-choi-dot-1.js';
 import { xgTxt2 } from './38-tro-choi-dot-2.js';
 import { frogQ, xcv, xgGr, xpx } from './39-tro-choi-dot-3.js';
 import { XG_ALL } from './39c-can-bang-tro-choi.js';
@@ -78,9 +79,9 @@ XG_BIAS.climb={1:-4,2:-8,3:-6,4:-6,5:-8};
   if(g.end){const rec=g.score>(g.prev||0)&&g.score>0;
     return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr(g.win?'climbChest':'climbI',72)}</span>${jenny(72,g.score?'cheer':'sad')}</div><h1>${g.win?'Tới đỉnh núi rồi!':rec?'Kỷ lục mới!':'Hết giờ!'}</h1>
      <p class="muted">Leo được <b>${g.score}</b>/${CLIMB_N} chặng · kỷ lục ${best}</p>${g.win?`<div class="xcbadge">${spr('climbBadge',48)}<span><b>Huy hiệu Nhà leo núi</b><small>Em đã giải 6 bài toán lời văn!</small></span></div>`:''}${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}
-     <div class="gendbtn"><button class="gobtn" type="button" onclick="startXG('climb','${g.id}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}
-  return`<div class="game g1 mini xg xclimb"><div class="gtop"><button class="gx" onclick="stopXG();go({k:'island',id:'${g.id}'})" aria-label="Thoát">✕</button><span class="mgsc xcflags" id="xcbar" aria-label="Đã leo ${g.score}/${CLIMB_N} chặng">${climbBar(g)}</span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="xctm">${g.t}</b></span></div>
-   <div class="mgrule"><span id="xcst">${climbStatus(g)}</span><button class="g1spk" type="button" onclick="climbSpeak()" aria-label="Nghe đọc đề">🔊</button></div>
+     <div class="gendbtn"><button class="gobtn" type="button" data-act="startXG-climb" ${hd.arg(String(g.id))}>Chơi lại</button><button class="gobtn ghost" type="button" data-act="go-island-3" ${hd.arg(String(g.id))}>Về đảo</button></div></div></div>`}
+  return`<div class="game g1 mini xg xclimb"><div class="gtop"><button class="gx" data-act="stopXG-go-island" ${hd.arg(String(g.id))} aria-label="Thoát">✕</button><span class="mgsc xcflags" id="xcbar" aria-label="Đã leo ${g.score}/${CLIMB_N} chặng">${climbBar(g)}</span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="xctm">${g.t}</b></span></div>
+   <div class="mgrule"><span id="xcst">${climbStatus(g)}</span><button class="g1spk" type="button" data-act="climbSpeak" aria-label="Nghe đọc đề">🔊</button></div>
    <div class="xct" id="xct"><canvas class="xpcv" id="xccv" width="114" height="84" aria-hidden="true"></canvas><span class="xcban" id="xcban"></span></div>
    <div class="xcq" id="xcq"></div><div id="xgfb" class="xgfb"></div></div>`})}
 function climbBar(g){return Array.from({length:CLIMB_N},(_,i)=>`<i class="${i<g.score?'on':''}"></i>`).join('')}
@@ -92,7 +93,7 @@ function climbUI(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end)return;con
   const qb=$('xcq');if(!qb)return;
   if((g.ph==='ask'||g.ph==='slip'||g.ph==='rest')&&g.q){const q=g.q,four=q.opts.length>3;
     qb.innerHTML=`<div class="xcqt"><span class="xcqn">Bài ${g.score+1}</span>${q.t}${q.pic?`<div class="xcpic">${q.pic}</div>`:''}</div>
-     <div class="xcopts ${four?'c2':''}">${q.opts.map((o,i)=>`<button type="button" class="xco ${g.ph==='rest'&&i===q.a?'right':''}" ${g.bad.includes(i)||g.ph==='rest'?'disabled':''} onclick="climbAns(${i})"><b>${o}</b></button>`).join('')}</div>`;try{pixelize(qb)}catch(e){}}
+     <div class="xcopts ${four?'c2':''}">${q.opts.map((o,i)=>`<button type="button" class="xco ${g.ph==='rest'&&i===q.a?'right':''}" ${g.bad.includes(i)||g.ph==='rest'?'disabled':''} data-act="climbAns" ${hd.arg(i)}><b>${o}</b></button>`).join('')}</div>`;try{pixelize(qb)}catch(e){}}
   else qb.innerHTML=''}
 
 /* ---------- cảnh: núi dựng sẵn một lần, mỗi khung chỉ vẽ trời, mây, chim, Jenny, rương ---------- */
@@ -164,7 +165,7 @@ function climbAns(i){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end||g.ph!==
   sfx('bad');if(g.tries<2){g.bad.push(i);g.ph='slip';g.pt=performance.now();if(fb)fb.innerHTML='<span class="bad">Cẩn thận! Đá lăn rồi. Đọc lại đề và thử lại nhé.</span>';climbUI();try{navigator.vibrate&&navigator.vibrate(80)}catch(e){}
     setTimeout(()=>{if(scr===g&&!g.end&&g.ph==='slip'){g.ph='ask';climbUI()}},700);return}
   g.lockA=1;g.ph='rest';g.pt=performance.now();g.miss++;const L=climbSol(q);
-  if(fb)fb.innerHTML=`<div class="xcsolbox"><div class="xcsolh">Jenny nghỉ ở trại. Cùng xem bài giải nhé!</div><div class="xcsolc">${L.lead?`<div>${L.lead}</div>`:''}${L.lines.map(l=>`<div class="xcln">${l}</div>`).join('')}</div><button type="button" class="gobtn xcgo" onclick="climbGoOn()">Em hiểu rồi, leo tiếp ▶</button></div>`;climbUI();
+  if(fb)fb.innerHTML=`<div class="xcsolbox"><div class="xcsolh">Jenny nghỉ ở trại. Cùng xem bài giải nhé!</div><div class="xcsolc">${L.lead?`<div>${L.lead}</div>`:''}${L.lines.map(l=>`<div class="xcln">${l}</div>`).join('')}</div><button type="button" class="gobtn xcgo" data-act="climbGoOn">Em hiểu rồi, leo tiếp ▶</button></div>`;climbUI();
   try{sayJ(`Cùng xem bài giải nhé. ${L.say}`)}catch(e){}}
 /* bài giải có câu dẫn: lấy từ câu hỏi "Hỏi … bao nhiêu …?" → "Số … … là:" */
 const CL_UNIT=/^(ki-lô-gam|gam|tấn|tạ|yến|mét|xăng-ti-mét|đề-xi-mét|mi-li-mét|ki-lô-mét|lít|mi-li-lít|(xăng-ti-mét|đề-xi-mét|mét|ki-lô-mét|mi-li-mét)\s+(vuông|khối)|giờ|phút|giây|độ|tuổi|đồng)$/i;
@@ -229,3 +230,11 @@ function climbEnd(){const g=scr;if(g.k!=='xg'||g.mode!=='climb'||g.end)return;st
 .xcbadge{display:inline-flex;align-items:center;gap:10px;margin:8px auto;padding:6px 12px;background:#FFF6D6;border:3px solid #1F2A5A;text-align:left}
 .xcbadge small{display:block;color:#5E6B8C}
 `;document.head.appendChild(st)})();
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'startXG-climb':function(event,a){startXG('climb',a[0])},
+  'climbSpeak':function(){climbSpeak()},
+  'climbAns':function(event,a){climbAns(a[0])},
+  'climbGoOn':function(){climbGoOn()},
+});

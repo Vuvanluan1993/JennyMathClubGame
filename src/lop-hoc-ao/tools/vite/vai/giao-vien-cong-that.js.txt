@@ -4,10 +4,10 @@ const TRANG_TEN={gv:'giáo viên',ph:'phụ huynh',ql:'quản lý',hs:'học sin
 /* ===== Màn đăng nhập máy chủ ===== */
 function gvOpen(){const g=document.getElementById('gvGate');if(g)g.remove();document.body.classList.remove('locked')}
 document.body.insertAdjacentHTML('afterbegin',`<div id="gvGate" class="gvgate"><div class="gvcard"><div class="gvhd">${jenny(56)}<div><h1>__TIEUDE__</h1><p>Lớp học ảo Jenny · Clb Học Toán cùng Jenny</p></div></div>
- <form onsubmit="gvCloudLogin(event)" class="gvf"><label for="gvU">Tên đăng nhập</label><input id="gvU" autocapitalize="off" spellcheck="false" autocomplete="username" required>
+ <form data-act-submit="gvCloudLogin" class="gvf"><label for="gvU">Tên đăng nhập</label><input id="gvU" autocapitalize="off" spellcheck="false" autocomplete="username" required>
  <label for="gvPw">Mật khẩu</label><input id="gvPw" type="password" autocomplete="current-password" required>
  <button class="gobtn" type="submit">Đăng nhập</button><p id="gvMsg2" class="gvmsg" role="alert"></p></form>
- ${TRANG==='ql'?`<details class="gvd"><summary>Thiết lập lần đầu (tạo tài khoản quản lý)</summary><form onsubmit="gvSetup(event)" class="gvf"><p class="gvnote">Chỉ làm một lần khi trung tâm chưa có quản lý.</p>
+ ${TRANG==='ql'?`<details class="gvd"><summary>Thiết lập lần đầu (tạo tài khoản quản lý)</summary><form data-act-submit="gvSetup" class="gvf"><p class="gvnote">Chỉ làm một lần khi trung tâm chưa có quản lý.</p>
   <label for="suN">Họ tên</label><input id="suN" required maxlength="40"><label for="suU">Tên đăng nhập</label><input id="suU" autocapitalize="off" spellcheck="false" required maxlength="24">
   <label for="suP">Mật khẩu (ít nhất 6 kí tự)</label><input id="suP" type="password" required minlength="6"><button class="gobtn" type="submit">Tạo tài khoản quản lý</button><p id="suMsg" class="gvmsg" role="alert"></p></form></details>`:''}
  <p class="gvnote">Trang khác: ${[['gv','Giáo viên','giao-vien'],['ph','Phụ huynh','phu-huynh'],['ql','Quản lý','quan-ly']].filter(x=>x[0]!==TRANG).map(x=>`<a href="../${x[2]}/">${x[1]}</a>`).join(' · ')} · <a href="../">Học sinh</a></p></div></div>`);
@@ -40,5 +40,12 @@ document.head.insertAdjacentHTML('beforeend',`<style>.gvgate{position:fixed;inse
 body.locked{overflow:hidden}</style>`);
 document.body.classList.add('locked');
 render();setTimeout(()=>{const i=document.getElementById('gvU');if(i)i.focus()},50);
-fbInit().then(()=>{const off=FB.auth.onAuthStateChanged(async u=>{off();if(!u||CLOUD)return;try{await fbNapMe(u);if(!TRANG_VAI.includes(CLOUD.me.role)){const m=document.getElementById('gvMsg2');if(m){gvSaiTrang(m);m.insertAdjacentHTML('beforeend',' <button type="button" class="btn sm" onclick="FB.auth.signOut().then(()=>location.reload())">Đăng xuất tài khoản này</button>')}CLOUD=null;return}await gvCloudOpen()}catch(e){CLOUD=null}})}).catch(()=>{})
+fbInit().then(()=>{const off=FB.auth.onAuthStateChanged(async u=>{off();if(!u||CLOUD)return;try{await fbNapMe(u);if(!TRANG_VAI.includes(CLOUD.me.role)){const m=document.getElementById('gvMsg2');if(m){gvSaiTrang(m);m.insertAdjacentHTML('beforeend',' <button type="button" class="btn sm" data-act="signOut-then-reload">Đăng xuất tài khoản này</button>')}CLOUD=null;return}await gvCloudOpen()}catch(e){CLOUD=null}})}).catch(()=>{})
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'gvCloudLogin':function(event){gvCloudLogin(event)},
+  'gvSetup':function(event){gvSetup(event)},
+  'signOut-then-reload':function(){FB.auth.signOut().then(()=>location.reload())},
+});
 </script>

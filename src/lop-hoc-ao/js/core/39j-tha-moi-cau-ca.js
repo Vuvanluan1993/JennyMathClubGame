@@ -6,6 +6,7 @@
    thả lại mồi. Câu đủ 8 con hoặc hết 120 giây thì kết thúc. Không mất tim. Trời đổi dần từ sáng tới hoàng hôn theo số cá. */
 import { hooks } from './00-hooks.js';
 import { R } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { addCoins } from './11-sao-va-mo-khoa.js';
@@ -16,7 +17,7 @@ import { isl1, sayJ } from './30b-may-tieu-hoc.js';
 import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { sfx } from './33b-am-thanh.js';
 import { jenny } from './33d-jenny-bieu-cam.js';
-import { stopXG, XGN, xgRec } from './37-tro-choi-dot-1.js';
+import { startXG, stopXG, XGN, xgRec } from './37-tro-choi-dot-1.js';
 import { frogQ, frogSay, xcv, xpx } from './39-tro-choi-dot-3.js';
 import { XG_ALL } from './39c-can-bang-tro-choi.js';
 import { ktOf } from './39e-kien-thuc-tro-choi.js';
@@ -40,19 +41,19 @@ const BAIT_SPEC=[['Cá chép','o'],['Cá rô','G'],['Cá trê','N'],['Cá vàng'
   if(g.end){const rec=g.score>(g.prev||0)&&g.score>0;
     return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr('baitI',72)}</span>${jenny(72,g.score?'cheer':'sad')}</div><h1>${rec?'Kỷ lục mới!':g.caught>=BAIT_N?'Đầy thùng cá!':'Hết giờ!'}</h1>
      <p class="muted">Câu được <b>${g.caught}</b>/${BAIT_N} con cá · cá chạy mất ${g.miss} lần · kỷ lục ${best}</p><div class="xbbucket">${baitBucketHTML(g.caught)}</div>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}
-     <div class="gendbtn"><button class="gobtn" type="button" onclick="startXG('bait','${g.id}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}
-  return`<div class="game g1 mini xg xbait"><div class="gtop"><button class="gx" onclick="stopXG();go({k:'island',id:'${g.id}'})" aria-label="Thoát">✕</button><span class="mgsc">${spr('fish',22)} <b id="xbn">${g.caught}/${BAIT_N}</b></span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="xbtm">${g.t}</b></span></div>
-   <div class="mgrule"><span id="xbst">${baitStatus(g)}</span><button class="g1spk" type="button" onclick="sayJ(scr.ph==='bite'&&scr.q?frogSay(scr.q):scr.say)" aria-label="Nghe lại">🔊</button></div>
+     <div class="gendbtn"><button class="gobtn" type="button" data-act="startXG-bait" ${hd.arg(String(g.id))}>Chơi lại</button><button class="gobtn ghost" type="button" data-act="go-island-3" ${hd.arg(String(g.id))}>Về đảo</button></div></div></div>`}
+  return`<div class="game g1 mini xg xbait"><div class="gtop"><button class="gx" data-act="stopXG-go-island" ${hd.arg(String(g.id))} aria-label="Thoát">✕</button><span class="mgsc">${spr('fish',22)} <b id="xbn">${g.caught}/${BAIT_N}</b></span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="xbtm">${g.t}</b></span></div>
+   <div class="mgrule"><span id="xbst">${baitStatus(g)}</span><button class="g1spk" type="button" data-act="sayJ-bite-frogSay" aria-label="Nghe lại">🔊</button></div>
    <div class="xbt" id="xbt"><canvas class="xpcv" id="xbcv" width="114" height="100" aria-hidden="true"></canvas><span class="xbban" id="xbban"></span></div>
    <div class="xbq" id="xbq"></div>
-   <div class="xbact"><button type="button" class="gobtn xbcast" id="xbcast" onclick="baitCast()">${spr('baitI',26)} Thả mồi</button></div>
+   <div class="xbact"><button type="button" class="gobtn xbcast" id="xbcast" data-act="baitCast">${spr('baitI',26)} Thả mồi</button></div>
    <div id="xgfb" class="xgfb"></div></div>`})}
 function baitBucketHTML(n){return`<span class="xbbk">${Array.from({length:Math.max(0,n)},(_,i)=>`<i>${spr('fshA'+(i%6),14)}</i>`).join('')||'<em>thùng trống</em>'}</span>`}
 function baitStatus(g){return g.ph==='idle'?(g.caught?'Chạm <b>Thả mồi</b> để câu con tiếp theo':'Chạm <b>Thả mồi</b> để bắt đầu câu cá'):g.ph==='cast'?'Quăng cần…':g.ph==='wait'?'Đang chờ cá cắn câu…':g.ph==='bite'?(g.tries?'<b>Cá đang giãy!</b> Thử lại nhé':'<b>Cá cắn câu!</b> Trả lời đúng để kéo cá lên'):g.ph==='reel'?'<b>Kéo cá lên!</b>':g.ph==='escape'?'<b>Cá chạy mất rồi!</b> Thả lại mồi nhé':''}
 function baitUI(){const g=scr;if(g.k!=='xg'||g.mode!=='bait'||g.end)return;const $=id=>document.getElementById(id);
   const st=$('xbst');if(st)st.innerHTML=baitStatus(g);const n=$('xbn');if(n)n.textContent=`${g.caught}/${BAIT_N}`;
   const c=$('xbcast');if(c)c.style.visibility=g.ph==='idle'?'visible':'hidden';
-  const qb=$('xbq');if(qb){if(g.ph==='bite'&&g.q){const q=g.q;qb.innerHTML=`<div class="xbqt">${q.t}</div><div class="xbopts">${q.opts.map((o,i)=>`<button type="button" class="xbo" ${g.bad.includes(i)?'disabled':''} onclick="baitAns(${i})"><b>${o}</b></button>`).join('')}</div>`;try{pixelize(qb)}catch(e){}}else qb.innerHTML=''}}
+  const qb=$('xbq');if(qb){if(g.ph==='bite'&&g.q){const q=g.q;qb.innerHTML=`<div class="xbqt">${q.t}</div><div class="xbopts">${q.opts.map((o,i)=>`<button type="button" class="xbo" ${g.bad.includes(i)?'disabled':''} data-act="baitAns" ${hd.arg(i)}><b>${o}</b></button>`).join('')}</div>`;try{pixelize(qb)}catch(e){}}else qb.innerHTML=''}}
 /* ---- vẽ cảnh ---- */
 function baitDraw(){const x=xcv('xbcv');if(!x)return;const g=scr,p=xpx(x),now=performance.now(),f=Math.floor(now/120),C=Math.min(BAIT_N,g.caught),el=now-g.pt;
   x.clearRect(0,0,114,100);
@@ -132,3 +133,11 @@ function baitEnd(){const g=scr;if(g.k!=='xg'||g.mode!=='bait'||g.end)return;stop
 .xbbk{display:inline-flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:220px;padding:6px 8px;background:#E3E7F0;border:3px solid #1F2A5A}
 .xbbk em{font-style:normal;color:#5E6B8C}
 `;document.head.appendChild(st)})();
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'startXG-bait':function(event,a){startXG('bait',a[0])},
+  'sayJ-bite-frogSay':function(){sayJ(scr.ph==='bite'&&scr.q?frogSay(scr.q):scr.say)},
+  'baitCast':function(){baitCast()},
+  'baitAns':function(event,a){baitAns(a[0])},
+});

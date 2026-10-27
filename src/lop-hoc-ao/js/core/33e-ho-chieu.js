@@ -4,8 +4,9 @@
    Lưu: st.pass = {'lớp:chủ đề': {bk, d}}, st.outfit = mã trang phục ('' = áo gốc). */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
-import { render, toast } from './13-giao-dien-chung.js';
+import { go, render, toast } from './13-giao-dien-chung.js';
 import { pixelize, PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { BIOME, OCEAN } from './23b-vung-bien.js';
 import { sayJ } from './30b-may-tieu-hoc.js';
@@ -59,7 +60,7 @@ function stampHTML(bk,ti,d,size='md'){const bm=BIOME[bk]||BIOME.trop;
 SFX.stamp=()=>{noise(0,.09,.32,300);tone(mHz(40),0,.14,'square',.2,.5);tone(mHz(84),.18,.25,'sine',.14);tone(mHz(91),.3,.4,'sine',.12)};
 function passPop(g,t,newOf){document.querySelectorAll('.stamppop').forEach(e=>e.remove());const d=(S.st[sid].pass||{})[`${g}:${t.ti}`]||{};
   const el=document.createElement('div');el.className='stamppop';el.setAttribute('role','status');
-  el.innerHTML=`<div class="spbox"><span class="sptitle">🛂 Hộ chiếu đại dương</span>${stampHTML(t.bk,t.ti,d.d,'lg')}${newOf.length?`<span class="spof">${jennyOf(46,newOf[newOf.length-1])}<span>Mở trang phục mới: <b>${esc(OUTFIT[newOf[newOf.length-1]].n)}</b></span></span>`:''}<button type="button" class="btn sm pri" onclick="this.closest('.stamppop').remove();go({k:'home',tab:'album'})">Xem hộ chiếu</button><button type="button" class="btn sm" onclick="this.closest('.stamppop').remove()">Đóng</button></div>`;
+  el.innerHTML=`<div class="spbox"><span class="sptitle">🛂 Hộ chiếu đại dương</span>${stampHTML(t.bk,t.ti,d.d,'lg')}${newOf.length?`<span class="spof">${jennyOf(46,newOf[newOf.length-1])}<span>Mở trang phục mới: <b>${esc(OUTFIT[newOf[newOf.length-1]].n)}</b></span></span>`:''}<button type="button" class="btn sm pri" data-act="closest-remove-go-home">Xem hộ chiếu</button><button type="button" class="btn sm" data-act="closest-remove">Đóng</button></div>`;
   document.body.appendChild(el);pixelize(el);sfx('stamp');try{sayJ(`Em được đóng dấu ${BIOME[t.bk].n} vào hộ chiếu đại dương!`)}catch(e){}
   setTimeout(()=>el.classList.add('on'),20)}
 /* Jenny mặc một trang phục bất kì (xem thử) */
@@ -68,7 +69,7 @@ function setOutfit(of){const st=S.st[sid];if(of&&!ofOwn(st).has(of))return;st.ou
 function viewPass(st){const g=st.grade<=5?st.grade:1,P=st.pass||{},T=passTopics(g),got=T.filter(t=>P[`${g}:${t.ti}`]).length,own=ofOwn(st),cur=st.outfit&&own.has(st.outfit)?st.outfit:'';
   const need=passGradeBiomes(g),keys=OF_KEYS.filter(k=>need.includes(k)||own.has(k)).concat('leg');
   const slots=T.map(t=>{const v=P[`${g}:${t.ti}`];return`<div class="pslot ${v?'own':''}" title="Chủ đề ${t.ti+1}: ${esc(t.name)}">${v?stampHTML(v.bk,t.ti,v.d):`<span class="pempty"><b>${t.ti+1}</b><small>${BIOME[t.bk]?esc(BIOME[t.bk].n):''}</small></span>`}</div>`}).join('');
-  const ofs=[['', 'Áo xanh gốc',true]].concat(keys.map(k=>[k,OUTFIT[k].n,own.has(k)])).map(([k,n,ok])=>`<button type="button" class="ofbtn ${ok?'':'off'} ${k===cur?'on':''}" ${ok?`onclick="setOutfit('${k}')"`:`onclick="toast('${k==='leg'?'Đủ dấu mọi vùng biển trong hộ chiếu để mở':`Hạ trùm ở ${esc((BIOME[k]||{}).n||'')} để mở`}')"`} aria-pressed="${k===cur}">${ok?jennyOf(44,k):`<span class="oflock">${spr('lock',22)}</span>`}<b>${esc(n)}</b>${k===cur?'<i>Đang mặc</i>':''}</button>`).join('');
+  const ofs=[['', 'Áo xanh gốc',true]].concat(keys.map(k=>[k,OUTFIT[k].n,own.has(k)])).map(([k,n,ok])=>`<button type="button" class="ofbtn ${ok?'':'off'} ${k===cur?'on':''}" ${ok?`data-act="setOutfit" ${hd.arg(String(k))}`:`data-act="toast" ${hd.arg(k==='leg'?'Đủ dấu mọi vùng biển trong hộ chiếu để mở':`Hạ trùm ở ${(BIOME[k]||{}).n||''} để mở`)}`} aria-pressed="${k===cur}">${ok?jennyOf(44,k):`<span class="oflock">${spr('lock',22)}</span>`}<b>${esc(n)}</b>${k===cur?'<i>Đang mặc</i>':''}</button>`).join('');
   return`<section class="card passcard" style="--oc:${OCEAN[g][1]}"><div class="secthead"><h2>🛂 Hộ chiếu đại dương</h2><span class="grow"></span><span class="pill ${got===T.length?'ok':'acc'}">${got}/${T.length} dấu</span></div>
    <p class="muted" style="margin:4px 0 10px">${esc(OCEAN[g][0])} · Lớp ${g}. Hạ trùm ở đảo cuối mỗi chủ đề để được đóng dấu vùng biển đó. Mỗi vùng biển mới mở một trang phục cho Jenny.</p>
    <div class="pbook">${slots}</div>
@@ -77,3 +78,10 @@ function viewPass(st){const g=st.grade<=5?st.grade:1,P=st.pass||{},T=passTopics(
 {hooks.on('viewAlbum',_va=>function(st){const a=_va(st);return a.replace('<div class="grid">',`<div class="grid">${viewPass(st)}`)})}
 /* sau mỗi lần vẽ màn hình: kiểm tra dấu mới */
 {hooks.on('render',_r=>function(){const a=_r.apply(this,arguments);try{passSync()}catch(e){}return a})}
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'closest-remove-go-home':function(){this.closest('.stamppop').remove();go({k:'home',tab:'album'})},
+  'closest-remove':function(){this.closest('.stamppop').remove()},
+  'setOutfit':function(event,a){setOutfit(a[0])},
+});

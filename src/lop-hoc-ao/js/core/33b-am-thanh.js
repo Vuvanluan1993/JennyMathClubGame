@@ -110,7 +110,7 @@ export function hurtFx(quiet){if(!quiet)sfx('hurt');const h=document.querySelect
   const g=document.querySelector('.game');if(g){g.classList.remove('shake');void g.offsetWidth;g.classList.add('shake');setTimeout(()=>g.classList.remove('shake'),450)}
   try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}}
 
-function toggleMute(){if(SND.m||SND.s){SND.m=0;SND.s=0}else{SND.m=1;SND.s=1}sndSave();musicSync();render()}
+export function toggleMute(){if(SND.m||SND.s){SND.m=0;SND.s=0}else{SND.m=1;SND.s=1}sndSave();musicSync();render()}
 /* nhạc nhỏ lại khi Jenny đang nói */
 export function duck(on){const A=AUD;if(!A||!muCur)return;const t=A.ac.currentTime;A.mu.gain.cancelScheduledValues(t);A.mu.gain.setValueAtTime(A.mu.gain.value,t);A.mu.gain.linearRampToValueAtTime(on?.2:1,t+.25)}
 /* gắn vào vẽ màn hình: đổi nhạc theo màn, vẽ nút âm thanh */

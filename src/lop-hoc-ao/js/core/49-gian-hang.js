@@ -5,8 +5,9 @@
    Lưu: st.shop = {own:[mã], acc:'', pet:'', frame:'', dec:[mã]} ; trang phục mua dùng chung st.outfit. */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
-import { render, toast } from './13-giao-dien-chung.js';
+import { go, render, toast } from './13-giao-dien-chung.js';
 import { PXS, pxURI, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { sfx } from './33b-am-thanh.js';
 import { ofVariant, OUTFIT } from './33e-ho-chieu.js';
@@ -59,8 +60,8 @@ hooks.ham('ghLook',function(st){const s=ghSt(st),T=scr.ghTry||{};return{of:'of' 
 function ghCard(...a){return hooks.goi('ghCard',this,a)}
 hooks.ham('ghCard',function(c,x,st){if((c.k==='pet'||c.k==='care')&&typeof petCard==='function')return petCard(c,x,st);const s=ghSt(st),[id,n,pr]=x,own=s.own.includes(id),T=scr.ghTry||{},use=c.k==='of'?st.outfit===id:c.k==='dec'?s.dec.includes(id):s[c.k]===id,sel=T.id===id;
  const pic=c.k==='of'?spr(ofVariant('jenny',id),54):c.k==='acc'?spr(GH_ACC[id][0],30):c.k==='frame'?`<span class="ghfr fr-${id}">${spr('jenny',38)}</span>`:spr(id,c.k==='pet'?44:46);
- return`<button type="button" class="ghit ${own?'own':''} ${use?'use':''} ${sel?'sel':''}" onclick="ghTry('${c.k}','${id}')" aria-label="${esc(n)}, ${own?'đã có':pr+' xu'}"><span class="ghpic">${pic}</span><b>${esc(n)}</b>${use?'<i class="ghtag on">Đang dùng</i>':own?'<i class="ghtag">Đã có</i>':`<i class="ghpr">${spr('coin',14)} ${pr}</i>`}</button>`});
-function ghTry(k,id){const T={k,id};if(k==='of')T.of=id;else if(k==='acc')T.acc=id;else if(k==='pet')T.pet=id;else if(k==='frame')T.frame=id;scr.ghTry=T;try{sfx('tap')}catch(e){}render()}
+ return`<button type="button" class="ghit ${own?'own':''} ${use?'use':''} ${sel?'sel':''}" data-act="ghTry" ${hd.arg(String(c.k),String(id))} aria-label="${esc(n)}, ${own?'đã có':pr+' xu'}"><span class="ghpic">${pic}</span><b>${esc(n)}</b>${use?'<i class="ghtag on">Đang dùng</i>':own?'<i class="ghtag">Đã có</i>':`<i class="ghpr">${spr('coin',14)} ${pr}</i>`}</button>`});
+export function ghTry(k,id){const T={k,id};if(k==='of')T.of=id;else if(k==='acc')T.acc=id;else if(k==='pet')T.pet=id;else if(k==='frame')T.frame=id;scr.ghTry=T;try{sfx('tap')}catch(e){}render()}
 function ghBuy(){const st=S.st[sid],s=ghSt(st),T=scr.ghTry;if(!T)return;const f=ghFind(T.id);if(!f)return;if(T.k==='pet')return petBuy(T.id);if(T.k==='care')return careBuy(T.id);const pr=f.x[2];
  if(st.coins<pr){toast(`Em cần thêm ${pr-st.coins} xu. Làm bài để kiếm xu nhé!`);return}
  /* P-20: trừ xu qua ví (vi/{tk}); áo váy, mũ kính, khung = tudo; đảo nhà = items */
@@ -75,10 +76,10 @@ hooks.ham('ghIsle',function(st){const s=ghSt(st),T=scr.ghTry,list=s.dec.concat(T
  return`<div class="ghisle">${spr('island',120)}${list.map(id=>{const p=GH_SLOT[id]||[50,50];return`<span class="ghdec ${T&&T.id===id&&!s.dec.includes(id)?'try':''}" style="left:${p[0]}%;top:${p[1]}%">${spr(id,id==='boat'?30:36)}</span>`}).join('')}</div>`});
 function viewShop(...a){return hooks.goi('viewShop',this,a)}
 hooks.ham('viewShop',function(st){const s=ghSt(st),cat=scr.ghCat||'of',C=GH.find(c=>c.k===cat),T=scr.ghTry,f=T&&ghFind(T.id),L=ghLook(st);
- const tabs=GH.map(c=>`<button type="button" class="ghtab ${c.k===cat?'on':''}" onclick="scr.ghCat='${c.k}';scr.ghTry=null;render()" aria-pressed="${c.k===cat}"><span class="ghti">${spr(c.ic,c.k==='of'?22:c.k==='acc'?11:c.k==='tk'?14:20)}</span><span>${c.n}</span></button>`).join('');
+ const tabs=GH.map(c=>`<button type="button" class="ghtab ${c.k===cat?'on':''}" data-act="ghCat-ghTry-render" ${hd.arg(String(c.k))} aria-pressed="${c.k===cat}"><span class="ghti">${spr(c.ic,c.k==='of'?22:c.k==='acc'?11:c.k==='tk'?14:20)}</span><span>${c.n}</span></button>`).join('');
  const catB=cat==='care'?careGrid(st):'';
  let act='';if(f&&(T.k==='pet'||T.k==='care')&&typeof petAct==='function')act=petAct(T,f,st);else if(f){const own=s.own.includes(T.id),use=T.k==='of'?st.outfit===T.id:T.k==='dec'?s.dec.includes(T.id):s[T.k]===T.id,pr=f.x[2],short=Math.max(0,pr-st.coins);
-  act=own?`<button type="button" class="gobtn ghgo" onclick="ghUse()">${use?'Bỏ ra':'Dùng'} ${esc(f.x[1])}</button>`:short?`<button type="button" class="gobtn ghgo off" onclick="ghBuy()">Cần thêm ${spr('coin',16)} ${short}</button>`:`<button type="button" class="gobtn ghgo" onclick="ghBuy()">Mua ${esc(f.x[1])} · ${spr('coin',16)} ${pr}</button>`}
+  act=own?`<button type="button" class="gobtn ghgo" data-act="ghUse">${use?'Bỏ ra':'Dùng'} ${esc(f.x[1])}</button>`:short?`<button type="button" class="gobtn ghgo off" data-act="ghBuy">Cần thêm ${spr('coin',16)} ${short}</button>`:`<button type="button" class="gobtn ghgo" data-act="ghBuy">Mua ${esc(f.x[1])} · ${spr('coin',16)} ${pr}</button>`}
  const stage=cat==='dec'?ghIsle(st):cat==='care'?careStage(st,T,f):ghJenny(112,L);
  const body=cat==='tk'?`<div class="ghtk">${spr('tkS',44)}<div><b>Vé chơi game tư duy</b><p>Mỗi vé <b>${TK_PRICE} xu</b> = <b>${TK_MIN} phút</b> chơi game tư duy (cờ, xếp hình, mê cung…). Mỗi ngày mua tối đa <b>${TK_DAY} vé</b>.</p><span class="pill">Sắp có — mở khi có game tư duy</span></div></div>`
   :cat==='care'?catB:`<div class="ghgrid">${C.it.map(x=>ghCard(C,x,st)).join('')}</div>`;
@@ -88,7 +89,7 @@ hooks.ham('viewShop',function(st){const s=ghSt(st),cat=scr.ghCat||'of',C=GH.find
   <p class="muted ghnote">${LANG==='en'?'Earn coins: each correct answer +5 · pass a level +10, island boss +30 · fix a mistake +5 · practice page task +5, ★ challenge +15 · games up to +20 each · class boss +20–30 · homework +20. No daily limit.':'Kiếm xu: mỗi câu đúng +5 · qua màn +10, trùm đảo +30 · sửa xong 1 lỗi +5 · Tự luyện mỗi bài +5, ★ +15 · trò chơi tới +20 mỗi lượt · trùm lớp +20–30 · bài về nhà +20. Không giới hạn xu trong ngày.'}</p></div>`});
 /* gắn vào trang chính tiểu học: tab 'shop' + nút xu ở thẻ chào */
 {hooks.on('viewHome1t',_v=>function(){const r=_v.apply(this,arguments);if(scr.tab!=='shop')return r;const st=S.st[sid],i=r.indexOf('<nav class="bnav"');return viewShop(st)+(i>=0?r.slice(i):'')})}
-{hooks.on('viewHome1',_h=>function(){return _h.apply(this,arguments).replace(/<span class="chip">🪙 <b>(\d+)<\/b><\/span>/,`<button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})" aria-label="$1 xu, mở Cửa hàng">🪙 <b>$1</b> <span>Cửa hàng ▸</span></button>`)})}
+{hooks.on('viewHome1',_h=>function(){return _h.apply(this,arguments).replace(/<span class="chip">🪙 <b>(\d+)<\/b><\/span>/,`<button type="button" class="chip ghchip" data-act="go-home-shop" aria-label="$1 xu, mở Cửa hàng">🪙 <b>$1</b> <span>Cửa hàng ▸</span></button>`)})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .ghchip{cursor:pointer;background:#FFF4D6!important;color:#7A4E00}.ghchip span{font-family:var(--f-display);font-size:16px;margin-left:2px}
 .ghtop{padding:12px!important}.ghhead{display:flex;align-items:center;gap:8px}.ghhead h2{display:flex;align-items:center;gap:6px;margin:0;font-size:24px}.ghcoin{margin-left:auto;display:flex;align-items:center;gap:4px;font-family:var(--f-display);font-size:22px;background:#FFF4D6;color:#7A4E00;padding:2px 8px;box-shadow:var(--f2)}
@@ -115,7 +116,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 {hooks.on('viewShop',_v=>function(st){let r=_v.apply(this,arguments);try{const T=scr.ghTry,f=T&&ghFind(T.id);if(!f)return r;
   const m=r.match(/<div class="ghinfo">[\s\S]*?(<button[^>]*class="gobtn ghgo[^"]*"[\s\S]*?<\/button>)<\/div><\/div><\/section>/);if(!m)return r;
   const note=r.match(/<div class="ghinfo"><b>([\s\S]*?)<\/b><small>([\s\S]*?)<\/small>/);
-  const bar=`<div class="ghbar" role="region" aria-label="Mua món đã chọn"><div class="grow"><b>${note?note[1]:''}</b><small>${note?note[2]:''}</small></div>${m[1].replace('gobtn ghgo','gobtn ghgo ghbarbtn')}<button type="button" class="ghbarx" onclick="scr.ghTry=null;render()" aria-label="Bỏ chọn">✕</button></div>`;
+  const bar=`<div class="ghbar" role="region" aria-label="Mua món đã chọn"><div class="grow"><b>${note?note[1]:''}</b><small>${note?note[2]:''}</small></div>${m[1].replace('gobtn ghgo','gobtn ghgo ghbarbtn')}<button type="button" class="ghbarx" data-act="ghTry-render" aria-label="Bỏ chọn">✕</button></div>`;
   const i=r.lastIndexOf('</div>');return r.slice(0,i)+bar+r.slice(i)}catch(e){return r}})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .ghbar{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(74px + env(safe-area-inset-bottom,0px));z-index:40;max-width:560px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--sun-soft);color:var(--ink);box-shadow:var(--f2),4px 4px 0 0 var(--pxk,#1F2A5A);animation:ghup .2s steps(3)}
@@ -125,3 +126,13 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .ghbarx{flex:none;border:0;background:none;color:var(--ink);font-size:18px;cursor:pointer;padding:4px}
 .ghpage{padding-bottom:96px}
 </style>`);
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'ghTry':function(event,a){ghTry(a[0],a[1])},
+  'ghCat-ghTry-render':function(event,a){scr.ghCat=a[0];scr.ghTry=null;render()},
+  'ghUse':function(){ghUse()},
+  'ghBuy':function(){ghBuy()},
+  'go-home-shop':function(){go({k:'home',tab:'shop'})},
+  'ghTry-render':function(){scr.ghTry=null;render()},
+});

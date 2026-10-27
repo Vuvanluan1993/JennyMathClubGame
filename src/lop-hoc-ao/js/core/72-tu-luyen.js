@@ -12,6 +12,7 @@
    - Hiện có cho lớp 1, 2 (thầy chốt làm lớp 1 trước rồi lớp 2); lớp 3–5 hiện "Sắp có". */
 import { hooks } from './00-hooks.js';
 import { esc, fmt, pick } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { gvCLS, gvTen, ORG_ON, save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { addCoins } from './11-sao-va-mo-khoa.js';
@@ -256,19 +257,19 @@ window.tlDayGo=function(){const st=S.st[sid];if(tlDayOk(st)){toast(T('Hôm nay e
 
 /* ---------- vẽ ô ---------- */
 function tlFig(q){const g=scr;let b=0;
- const cell=c=>{if(c===null){const i=b++,v=(g.cv&&g.cv[i])||'';return`<button type="button" class="tc e ${i===g.cc?'cur':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" onclick="tlCell(${i})" aria-label="${T('Ô trống','Blank')} ${i+1}">${esc(v)}</button>`}
+ const cell=c=>{if(c===null){const i=b++,v=(g.cv&&g.cv[i])||'';return`<button type="button" class="tc e ${i===g.cc?'cur':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" data-act="tlCell" ${hd.arg(i)} aria-label="${T('Ô trống','Blank')} ${i+1}">${esc(v)}</button>`}
   if(c==='')return`<span class="tc gap"></span>`;if(typeof c==='string')return`<span class="tc op">${c}</span>`;return`<span class="tc">${fmt(c)}</span>`};
- if(q.lay==='color'){const c=(g.cv||[]);return`<div class="tlcol">${q.cells.map((t,i)=>{const v=c[i],col=v!==''&&v!=null?TL_MAU[+v][0]:'';return`<button type="button" class="cc ${col?'on':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" ${col?`style="background:${col}"`:''} onclick="tlCell(${i})"><span class="cct">${t}</span></button>`}).join('')}</div>`}
- if(q.lay==='ds'){const c=(g.cv||[]);return`<div class="tlds">${q.st.map((t,i)=>`<div class="dsr ${g.cbad&&g.cbad.includes(i)?'bad':''}"><span class="dst">${t}</span><button type="button" class="dsb ${c[i]==='1'?'on':''}" onclick="tlDS(${i},1)" aria-pressed="${c[i]==='1'}">${T('Đ','T')}</button><button type="button" class="dsb ${c[i]==='0'?'on':''}" onclick="tlDS(${i},0)" aria-pressed="${c[i]==='0'}">${T('S','F')}</button></div>`).join('')}</div>`}
+ if(q.lay==='color'){const c=(g.cv||[]);return`<div class="tlcol">${q.cells.map((t,i)=>{const v=c[i],col=v!==''&&v!=null?TL_MAU[+v][0]:'';return`<button type="button" class="cc ${col?'on':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" ${col?`style="background:${col}"`:''} data-act="tlCell" ${hd.arg(i)}><span class="cct">${t}</span></button>`}).join('')}</div>`}
+ if(q.lay==='ds'){const c=(g.cv||[]);return`<div class="tlds">${q.st.map((t,i)=>`<div class="dsr ${g.cbad&&g.cbad.includes(i)?'bad':''}"><span class="dst">${t}</span><button type="button" class="dsb ${c[i]==='1'?'on':''}" data-act="tlDS-1" ${hd.arg(i)} aria-pressed="${c[i]==='1'}">${T('Đ','T')}</button><button type="button" class="dsb ${c[i]==='0'?'on':''}" data-act="tlDS-0" ${hd.arg(i)} aria-pressed="${c[i]==='0'}">${T('S','F')}</button></div>`).join('')}</div>`}
  if(q.lay==='chain'){let k=0;return`<div class="tlchain"><span class="tc">${fmt(q.v0)}</span>${q.ops.map(([o,d])=>`<span class="tca"><i>${o} ${fmt(d)}</i>→</span>${cell(null)}`).join('')}</div>`}
  if(q.lay==='tbl'){return`<div class="tltbl" style="grid-template-columns:auto repeat(${q.cols.length},46px)">${q.rows.map((r,i)=>`<span class="th">${q.hd[i]}</span>${r.map(cell).join('')}`).join('')}</div>`}
  if(q.lay==='vmiss'){const n=q.n;return`<div class="tlvert" style="grid-template-columns:repeat(${n+1},44px)"><span class="tc gap"></span>${q.rows[0].map(c=>c===''?'<span class="tc gap"></span>':cell(c)).join('')}<span class="tc op vop">${q.op}</span>${q.rows[1].map(c=>c===''?'<span class="tc gap"></span>':cell(c)).join('')}<i class="vline" style="grid-column:1/-1"></i><span class="tc gap"></span>${q.rows[2].map(c=>c===''?'<span class="tc gap"></span>':cell(c)).join('')}</div>`}
  if(q.lay==='shape'){return`<div class="tlshape">${q.eqs.map(e=>`<div class="eqs">${e.h}</div>`).join('')}<div class="ans">${q.shs.map(s=>`<span>${s} = ${cell(null)}</span>`).join('')}</div></div>`}
  if(q.lay==='seq'){return`<div class="tlseq">${q.rows[0].map(cell).join('')}</div>`}
  if(q.lay==='vert'){const [A,B,R]=q.rows;let bi=0;const n=q.n,col=`grid-template-columns:repeat(${n+1},44px)`;
-  const nho=`<span class="tc gap"></span>`+A.map((_,k)=>k<n-1?`<button type="button" class="vn ${(g.nho||[]).includes(k)?'on':''}" onclick="tlNho(${k})" aria-label="${T('Ghi nhớ','Carry')}">${(g.nho||[]).includes(k)?'1':''}</button>`:`<span class="tc gap"></span>`).join('');
+  const nho=`<span class="tc gap"></span>`+A.map((_,k)=>k<n-1?`<button type="button" class="vn ${(g.nho||[]).includes(k)?'on':''}" data-act="tlNho" ${hd.arg(k)} aria-label="${T('Ghi nhớ','Carry')}">${(g.nho||[]).includes(k)?'1':''}</button>`:`<span class="tc gap"></span>`).join('');
   const dg=c=>c===''?`<span class="tc gap"></span>`:`<span class="tc vd">${c}</span>`;
-  const res=R.map(c=>c===''?`<span class="tc gap"></span>`:(()=>{const i=bi++,v=(g.cv&&g.cv[i])||'';return`<button type="button" class="tc e ${i===g.cc?'cur':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" onclick="tlCell(${i})" aria-label="${T('Chữ số kết quả','Answer digit')} ${i+1}">${esc(v)}</button>`})()).join('');
+  const res=R.map(c=>c===''?`<span class="tc gap"></span>`:(()=>{const i=bi++,v=(g.cv&&g.cv[i])||'';return`<button type="button" class="tc e ${i===g.cc?'cur':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" data-act="tlCell" ${hd.arg(i)} aria-label="${T('Chữ số kết quả','Answer digit')} ${i+1}">${esc(v)}</button>`})()).join('');
   return`<div class="tlvert" style="${col}">${nho}<span class="tc gap"></span>${A.map(dg).join('')}<span class="tc op vop">${q.op}</span>${B.map(dg).join('')}<i class="vline" style="grid-column:1/-1"></i><span class="tc gap"></span>${res}</div>`}
  if(q.lay==='house')return`<div class="tlhouse"><div class="roof"><span>${q.roof}</span></div><div class="floors">${q.rows.map(r=>`<div class="fl">${r.map(cell).join('')}</div>`).join('')}</div></div>`;
  if(q.lay==='fam')return`<div class="tlfam"><div class="tlsd"><span class="tc">${q.head[0]}</span><i class="l1"></i><i class="l2"></i><span class="tc">${q.head[1]}</span><span class="tc">${q.head[2]}</span></div>${q.rows.map(r=>`<div class="eq">${r.map(cell).join('')}</div>`).join('')}</div>`;
@@ -291,9 +292,9 @@ window.tlKey=function(k){const g=scr,q=q1();if(g.sheet||!q||q.type!=='cells'||q.
 {hooks.on('right1',_r=>function(q,v){if(q&&q.type==='cells')return Array.isArray(v)&&v.length===q.a.length&&v.every((x,i)=>Number(x)===q.a[i]);return _r.apply(this,arguments)})}
 {hooks.on('show1',_s=>function(q){if(q&&q.type==='cells')return q.lay==='color'||q.lay==='ds'?'':q.lay==='vert'?q.a.join(''):q.a.join(', ');return _s.apply(this,arguments)})}
 {hooks.on('input1',_i=>function(q){if(!(q&&q.type==='cells'))return _i.apply(this,arguments);
- if(q.lay==='color')return`<div class="tlpal">${q.vals.map((v,k)=>`<button type="button" class="pc ${(scr.pc||0)===k?'on':''}" onclick="tlPC(${k})" aria-pressed="${(scr.pc||0)===k}" aria-label="${T(TL_MAU[k][1],TL_MAU[k][2])} ${v}"><i style="background:${TL_MAU[k][0]}"></i>= ${v}</button>`).join('')}</div><button class="gobtn" type="button" onclick="tlXong()">${T('Xong','Done')}</button>`;
- if(q.lay==='ds')return`<button class="gobtn" type="button" onclick="tlXong()">${T('Xong','Done')}</button>`;
- return`<div class="pad">${['1','2','3','4','5','6','7','8','9','⌫','0','✓'].map(k=>`<button type="button" class="${k==='✓'?'go':k==='⌫'?'del':''}" onclick="tlKey('${k}')" aria-label="${k==='⌫'?T('Xóa','Delete'):k==='✓'?T('Xong','Done'):k}">${k==='✓'?T('Xong','Done'):k}</button>`).join('')}</div>`})}
+ if(q.lay==='color')return`<div class="tlpal">${q.vals.map((v,k)=>`<button type="button" class="pc ${(scr.pc||0)===k?'on':''}" data-act="tlPC" ${hd.arg(k)} aria-pressed="${(scr.pc||0)===k}" aria-label="${T(TL_MAU[k][1],TL_MAU[k][2])} ${v}"><i style="background:${TL_MAU[k][0]}"></i>= ${v}</button>`).join('')}</div><button class="gobtn" type="button" data-act="tlXong">${T('Xong','Done')}</button>`;
+ if(q.lay==='ds')return`<button class="gobtn" type="button" data-act="tlXong">${T('Xong','Done')}</button>`;
+ return`<div class="pad">${['1','2','3','4','5','6','7','8','9','⌫','0','✓'].map(k=>`<button type="button" class="${k==='✓'?'go':k==='⌫'?'del':''}" data-act="tlKey" ${hd.arg(String(k))} aria-label="${k==='⌫'?T('Xóa','Delete'):k==='✓'?T('Xong','Done'):k}">${k==='✓'?T('Xong','Done'):k}</button>`).join('')}</div>`})}
 function tlSave(){const g=scr,st=S.st[sid];if(g.tlDay)return;const r=tlR(st)[g.id];if(r&&r.cur){r.cur.j=g.j;r.cur.res=g.res.slice()}}
 {hooks.on('ans1',_a=>function(v){const g=scr;if(!(g&&g.tl))return _a.apply(this,arguments);if(g.sheet||g.end)return;
  const q=q1(),ok=right1(q,v),st=S.st[sid],x=isl1(g.id),first=!g.tries,fromIsl=!!(q.key&&q.src);
@@ -308,7 +309,7 @@ function tlSave(){const g=scr,st=S.st[sid];if(g.tlDay)return;const r=tlR(st)[g.i
   else{g.res[g.j]=false;g.sheet={kind:'bad'};sayJ(String(q.sol||'').replace(/<[^>]+>/g,' ').replace(/−/g,' trừ ').replace(/=/g,' bằng '))}}
  tlSave();save();render()})}
 {hooks.on('sheet1',_s=>function(){const g=scr;if(g&&g.tl&&g.sheet&&g.sheet.kind==='tlretry')
-  return`<div class="sheet warn"><div class="sh"><span class="ic">?</span><div><b>${T('Chưa đúng.','Not quite.')}</b><div>${q1().type==='cells'?T('Ô sai đã được xoá. Em điền lại nhé.','Wrong boxes were cleared. Try again.'):T('Em nhìn kỹ và thử lại nhé.','Look carefully and try again.')}</div></div></div><button class="gobtn" type="button" onclick="retry1()">${T('Thử lại','Try again')}</button></div>`;
+  return`<div class="sheet warn"><div class="sh"><span class="ic">?</span><div><b>${T('Chưa đúng.','Not quite.')}</b><div>${q1().type==='cells'?T('Ô sai đã được xoá. Em điền lại nhé.','Wrong boxes were cleared. Try again.'):T('Em nhìn kỹ và thử lại nhé.','Look carefully and try again.')}</div></div></div><button class="gobtn" type="button" data-act="retry1">${T('Thử lại','Try again')}</button></div>`;
  return _s.apply(this,arguments)})}
 {hooks.on('retry1',_r=>function(){const g=scr;if(!(g&&g.tl))return _r.apply(this,arguments);const cv=g.cv,cc=g.cc,cb=g.cbad,r=_r.apply(this,arguments);g.cv=cv;g.cc=cc;g.cbad=cb;render();return r})}
 {hooks.on('next1',_n=>function(){const g=scr;if(!(g&&g.tl))return _n.apply(this,arguments);
@@ -324,19 +325,19 @@ function tlEnd(){const g=scr,st=S.st[sid],x=isl1(g.id),tt=g.qs.findIndex(q=>q.tt
 function tlNextPage(id){const st=S.st[sid],P=tlPages(st),i=P.findIndex(x=>x.id===id);const nx=P.slice(i+1).find(x=>!(tlR(st)[x.id]||{}).best)||P.find(x=>!(tlR(st)[x.id]||{}).best);return nx}
 function tlEndView(){const g=scr,x=isl1(g.id),R=g.tlRes||{},st=S.st[sid];
  if(R.day)return`<div class="game g1 tlgame"><div class="gmid"><section class="card tlend">${jenny(72,R.ok?'happy':'')}<div class="big">${R.ok?'★':'☆'}</div><b>${R.ok?T('Em đã vượt Thử thách hôm nay!','You beat today’s challenge!'):T('Chưa được rồi. Mai thử lại nhé!','Not this time. Try again tomorrow!')}</b>
-  <div class="row" style="justify-content:center;gap:8px;margin-top:12px"><button class="btn sm pri" type="button" onclick="go({k:'home',tab:'tl'})">${T('Về Tự luyện','Back to practice')}</button></div></section></div></div>`;
+  <div class="row" style="justify-content:center;gap:8px;margin-top:12px"><button class="btn sm pri" type="button" data-act="go-home-tl">${T('Về Tự luyện','Back to practice')}</button></div></section></div></div>`;
  const nx=tlNextPage(g.id),msg=R.ok>=R.n?T('Giỏi lắm!','Excellent!'):R.ok>=R.n-1?T('Làm tốt lắm!','Well done!'):T('Cố thêm chút nữa nhé!','Keep going!');
  return`<div class="game g1 tlgame"><div class="gmid"><section class="card tlend">${jenny(72,R.ok>=R.n-1?'happy':'')}<div class="big">${R.ok}/${R.n}</div><b>${T(`Xong trang ${tlIdx(x)}! ${msg}`,`Page ${tlIdx(x)} done! ${msg}`)}</b>
   <div style="margin:8px 0">${R.hasTT?`<span class="pill ${R.tt?'warn':''}">${R.tt?T('★ Thử thách đúng','★ Challenge solved'):T('☆ Thử thách chưa đúng','☆ Challenge not solved')}</span>`:''}</div>
   ${R.wrong?`<p class="muted" style="font-size:13px;margin:6px 0 0">${T('Câu làm sai đã ghi vào Sổ lỗi sai.','Mistakes were saved to your mistake book.')}</p>`:''}
-  <div class="row" style="justify-content:center;gap:8px;margin-top:12px"><button class="btn sm ghost" type="button" onclick="go({k:'home',tab:'tl'})">${T('Về Tự luyện','Back to practice')}</button>${nx?`<button class="btn sm pri" type="button" onclick="tlGo('${nx.id}')">${T('Trang tiếp','Next page')}</button>`:`<button class="btn sm pri" type="button" onclick="tlGo('${g.id}')">${T('Làm lại (số mới)','Again (new numbers)')}</button>`}</div></section></div></div>`}
+  <div class="row" style="justify-content:center;gap:8px;margin-top:12px"><button class="btn sm ghost" type="button" data-act="go-home-tl">${T('Về Tự luyện','Back to practice')}</button>${nx?`<button class="btn sm pri" type="button" data-act="tlGo" ${hd.arg(String(nx.id))}>${T('Trang tiếp','Next page')}</button>`:`<button class="btn sm pri" type="button" data-act="tlGo" ${hd.arg(String(g.id))}>${T('Làm lại (số mới)','Again (new numbers)')}</button>`}</div></section></div></div>`}
 {hooks.on('viewGame1',_v=>function(){const g=scr;if(!(g&&g.tl))return _v.apply(this,arguments);if(g.end)return tlEndView();
  const q=q1();if(q.type==='cells'&&(!g.cv||g.cv.length!==nBl(q))){g.cv=q.a.map(()=>'');g.cc=q.lay==='vert'?q.a.length-1:0;g.nho=[]}
  let h=_v.apply(this,arguments);const n=g.qs.length,nb=g.qs.filter(x=>!x.tt).length;
  h=h.replace('<div class="game g1"','<div class="game g1 tlgame"')
   .replace(/<div class="planks"[^>]*>(?:<i[^>]*><\/i>)*<\/div>/,`<div class="planks tlpl">${g.qs.map((x,k)=>`<i class="${g.res[k]===true?'ok':g.res[k]===false?'bad':k===g.j?'cur':''} ${x.tt?'tt':''}"></i>`).join('')}</div>`)
   .replace(/<span class="hearts"[^>]*>(?:<span[^>]*>❤<\/span>)*<\/span>/,`<span class="pill ${q.tt?'warn':'acc'}">${q.tt?T(`★ +${TL_TT} xu`,`★ +${TL_TT} coins`):T(`Bài ${g.j+1}/${nb}`,`Task ${g.j+1}/${nb}`)}</span>`)
-  .replace(/<button class="gx" onclick="[^"]*"/,`<button class="gx" onclick="try{speechSynthesis.cancel()}catch(e){};go({k:'home',tab:'tl'})"`)
+  .replace(/<button class="gx" data-act="[^"]*"(?: data-arg="[^"]*")?/,`<button class="gx" data-act="cancel-go-home-tl"`)
   .replace(/<div class="g1pic">@@TLFIG@@<\/div>/,q.type==='cells'?`<div class="g1pic tlfig">${tlFig(q)}</div>`:'');
  return h})}
 
@@ -368,9 +369,9 @@ function tlGoiYIsl(st){const s=new Set();tlGoiY(st).forEach(a=>(a.isl||[]).forEa
 function tlRow(st,x,goi){const r=tlR(st)[x.id]||{},op=tlOpen(st,x),b=r.best,cur=r.cur;
  const dots=b||cur?`<div class="vdots">${Array.from({length:6},(_,k)=>{const v=cur?cur.res[k]:k<5?(k<b.ok):b.tt;return`<i class="${v===true||v===1?'d':''} ${k===5?'t':''}"></i>`}).join('')}</div>`:'';
  const sub=!op?T('🔒 Qua Màn 1 của đảo này để mở trang','🔒 Pass Level 1 of this island to open'):cur?T(`Đang làm bài ${Math.min(cur.j+1,5)}/5`,`In progress · task ${Math.min(cur.j+1,5)}/5`):b?T(`Đúng ${b.ok}/${b.n} bài${b.tt?' · có ★':''} · đã làm ${r.n} lần`,`${b.ok}/${b.n} correct${b.tt?' · ★':''} · done ${r.n}×`):goi?T('Cô gợi ý · chưa làm','Teacher suggests · not started'):T('Chưa làm','Not started');
- const btn=!op?'':`<button type="button" class="btn sm ${b&&!cur?'ghost':'pri'}" onclick="tlGo('${x.id}')">${cur?T('Làm tiếp','Continue'):b?T('Làm lại','Again'):T('Làm','Start')}</button>`;
+ const btn=!op?'':`<button type="button" class="btn sm ${b&&!cur?'ghost':'pri'}" data-act="tlGo" ${hd.arg(String(x.id))}>${cur?T('Làm tiếp','Continue'):b?T('Làm lại','Again'):T('Làm','Start')}</button>`;
  return`<div class="vrow ${goi?'gy':''} ${op?'':'lk'}"><span class="vno">${tlIdx(x)}</span><div class="grow"><b>${esc(tlLes(x))}</b><small>${esc(x.title)} · ${sub}</small>${dots}</div>${btn}</div>`}
-function viewTL(st){const g=curG(),back=`<div class="crumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← ${T('Phòng học','Study room')}</button></div>`;
+function viewTL(st){const g=curG(),back=`<div class="crumb"><button class="btn sm ghost" data-act="go-home-nha">← ${T('Phòng học','Study room')}</button></div>`;
  if(!TL_G(g))return`<div class="page pgpage vbt">${back}<section class="card"><h2 class="nhah">${spr('selfS',26)} ${T('Tự luyện','Self-practice')}</h2><p class="muted">${T('Vở bài tập Jenny cho lớp của em sắp có. Hiện có cho lớp 1 và lớp 2.','Jenny’s workbook for your grade is coming soon. It is ready for grades 1 and 2.')}</p></section></div>`;
  const P=tlPages(st),goi=tlGoiYIsl(st),self=(st.selfCoins&&st.selfCoins[S.day])||0,TT=PRIM[g].T||[];
  const goiRows=goi.map(isl1).filter(Boolean).filter(x=>!((tlR(st)[x.id]||{}).best)).map(x=>tlRow(st,x,1)).join('');
@@ -384,14 +385,14 @@ function viewTL(st){const g=curG(),back=`<div class="crumb"><button class="btn s
   <p class="vsub">${T('Vở bài tập Jenny · em tự chọn trang, làm khi em muốn. Mỗi lần làm là số mới.','Jenny’s workbook · pick a page and practise when you like. New numbers every time.')}</p>
   <div class="vstat"><span class="pill acc">${T(`Xu tự luyện hôm nay: ${self}`,`Practice coins today: ${self}`)}</span><span class="pill ok">${T(`Đã làm ${tlDone(st)} trang`,`${tlDone(st)} pages done`)}</span></div>
   ${goiRows?`<div class="vsec">⭐ ${T('Cô gợi ý','Teacher suggests')}</div>${goiRows}`:''}
-  ${dx?`<div class="vtt"><span class="vtrophy">${spr('star',30)}</span><div class="grow"><b>${T('Thử thách hôm nay','Today’s challenge')}</b><div style="font-size:13px">${tlDayOk(st)?T('Đã làm hôm nay · mai có thử thách mới','Done today · new one tomorrow'):T(`+${TL_TT} xu · còn 1 lượt`,`+${TL_TT} coins · 1 try left`)}</div></div><button class="btn sm ${tlDayOk(st)?'ghost':'pri'}" type="button" onclick="tlDayGo()">${tlDayOk(st)?'✓':T('Thử','Try')}</button></div>`:''}
+  ${dx?`<div class="vtt"><span class="vtrophy">${spr('star',30)}</span><div class="grow"><b>${T('Thử thách hôm nay','Today’s challenge')}</b><div style="font-size:13px">${tlDayOk(st)?T('Đã làm hôm nay · mai có thử thách mới','Done today · new one tomorrow'):T(`+${TL_TT} xu · còn 1 lượt`,`+${TL_TT} coins · 1 try left`)}</div></div><button class="btn sm ${tlDayOk(st)?'ghost':'pri'}" type="button" data-act="tlDayGo">${tlDayOk(st)?'✓':T('Thử','Try')}</button></div>`:''}
   ${secs||`<p class="muted">${T('Em qua Màn 1 của đảo đầu tiên là mở được trang vở đầu tiên.','Pass Level 1 of your first island to open your first page.')}</p>`}
   <p class="vnote">${T('Trang vở mở khi em qua đảo. Mỗi bài đúng +5 xu, ★ Thử thách +15 xu. Sai thì vào Sổ lỗi sai. Không bắt buộc.','A page opens when you pass its island. +5 coins per task, ★ challenge +15. Mistakes go to your mistake book. Not compulsory.')}</p></section></div>`}
 
 /* ô Tự luyện trong Phòng học */
 {hooks.on('phongBox',_p=>function(st){let r=_p.apply(this,arguments);try{const g=curG(),on=TL_G(g),n=on?tlGoiYIsl(st).filter(i=>{const x=isl1(i);return x&&tlOpen(st,x)&&!((tlR(st)[i]||{}).best)}).length:0;
  const sub=!on?T('Sắp có','Coming soon'):n?T(`${n} trang cô gợi ý`,`${n} suggested`):T(`Đã làm ${tlDone(st)} trang`,`${tlDone(st)} pages done`);
- r=r.replace(/<button type="button" class="nhat" onclick="toast\(arcT\('Phần Tự luyện sắp có nhé!'[^"]*">([\s\S]*?)<\/button>/,(m,inner)=>`<button type="button" class="nhat" onclick="go({k:'home',tab:'tl'})">${inner.replace(/<small>[^<]*<\/small>/,`<small>${sub}</small>`).replace(/(<span class="nhic">[\s\S]*?)(<\/span>)/,(m2,a,b)=>a+(n?`<i class="herbang">${n>9?'9+':n}</i>`:'')+b)}</button>`)}catch(e){}return r})}
+ r=r.replace(/<button type="button" class="nhat" data-act="toast-tl-sap-co">([\s\S]*?)<\/button>/,(m,inner)=>`<button type="button" class="nhat" data-act="go-home-tl">${inner.replace(/<small>[^<]*<\/small>/,`<small>${sub}</small>`).replace(/(<span class="nhic">[\s\S]*?)(<\/span>)/,(m2,a,b)=>a+(n?`<i class="herbang">${n>9?'9+':n}</i>`:'')+b)}</button>`)}catch(e){}return r})}
 NHA_TABS.push('tl');
 {hooks.on('viewHome1t',_v=>function(){if(scr.tab!=='tl')return _v.apply(this,arguments);const st=S.st[sid];scr.tab='nha';let r;try{r=_v.apply(this,arguments)}finally{scr.tab='tl'}
  const i=r.indexOf('<nav class="bnav"');return viewTL(st)+(i>=0?r.slice(i):'')})}
@@ -399,14 +400,14 @@ NHA_TABS.push('tl');
 /* ---------- trang giáo viên: gợi ý trang + xem em tự luyện ---------- */
 function gvTLBox(){const g=gvGrade;if(!TL_G(g)||!PRIM[g])return'';const L=PRIM[g].isl,CLS=gvCLS(),wk=Date.now()-7*DAYMS;
  const mine=(S.asg||[]).filter(a=>a.loai==='goiy'&&a.g===g&&!a.hs&&(!a.lop||!gvLop||a.lop===gvLop)).sort((p,q)=>q.t-p.t);
- const list=mine.map(a=>`<div class="task"><div class="row"><div style="flex:1;min-width:160px"><b>⭐ ${a.isl.map(i=>{const x=isl1(i);return x?`Trang ${L.indexOf(x)+1} · ${esc(tlLes(x))}`:''}).filter(Boolean).join(' · ')}</b><div class="muted">Gợi ý ${asgD(a.t)} · ${esc(a.by||'Cô')}</div></div><button class="btn sm" onclick="gvTLDel('${a.id}')">Bỏ gợi ý</button></div></div>`).join('');
+ const list=mine.map(a=>`<div class="task"><div class="row"><div style="flex:1;min-width:160px"><b>⭐ ${a.isl.map(i=>{const x=isl1(i);return x?`Trang ${L.indexOf(x)+1} · ${esc(tlLes(x))}`:''}).filter(Boolean).join(' · ')}</b><div class="muted">Gợi ý ${asgD(a.t)} · ${esc(a.by||'Cô')}</div></div><button class="btn sm" data-act="gvTLDel" ${hd.arg(String(a.id))}>Bỏ gợi ý</button></div></div>`).join('');
  const rows=CLS.map(([id,nm])=>{const st=S.st[id];if(!st)return'';const R=st.tl||{},E=Object.entries(R).filter(([,r])=>r&&r.last);const wkN=E.filter(([,r])=>r.last.t>=wk).length,tot=E.length;
   const ok=E.reduce((s,[,r])=>s+r.best.ok,0),n=E.reduce((s,[,r])=>s+r.best.n,0),tt=E.filter(([,r])=>r.best.tt).length;
   return`<tr><td>${esc(nm)}</td><td>${wkN}</td><td>${tot}</td><td>${n?Math.round(ok/n*100)+'%':'—'}</td><td>${tt}</td></tr>`}).join('');
  return`<section class="card"><div class="secthead"><h2>Tự luyện lớp ${g} · Vở bài tập Jenny</h2></div>
   <p class="muted" style="margin:0 0 6px">Em tự làm, không bắt buộc. Cô không giao, chỉ ⭐ gợi ý trang (em thấy ở đầu trang Tự luyện). Trang chỉ mở khi em đã qua đảo đó.</p>
   <div class="row" style="gap:8px;flex-wrap:wrap;margin:6px 0 10px;align-items:flex-start"><select id="tlIsl" multiple size="5" aria-label="Chọn trang" style="min-width:260px;flex:1">${L.map((x,i)=>`<option value="${x.id}">Trang ${i+1} · ${esc(tlLes(x))} (${esc(x.title)})</option>`).join('')}</select>
-  <button class="btn pri" onclick="gvTLAdd()">⭐ Gợi ý</button></div>${list||'<p class="muted">Chưa gợi ý trang nào.</p>'}
+  <button class="btn pri" data-act="gvTLAdd">⭐ Gợi ý</button></div>${list||'<p class="muted">Chưa gợi ý trang nào.</p>'}
   <div style="overflow-x:auto;margin-top:10px"><table class="tbl"><thead><tr><th>Học sinh</th><th>Trang 7 ngày</th><th>Tổng trang</th><th>Đúng</th><th>★</th></tr></thead><tbody>${rows}</tbody></table></div></section>`}
 window.gvTLAdd=function(){const isl=[...document.getElementById('tlIsl').selectedOptions].map(o=>o.value);if(!isl.length){toast('Chọn ít nhất 1 trang');return}
  try{asgSeed()}catch(e){}const now=(typeof gvNow==='function'?gvNow():Date.now());(S.asg||(S.asg=[])).push({id:'g'+now.toString(36),loai:'goiy',g:gvGrade,lop:gvLop,isl,t:now,by:gvTen()});
@@ -473,3 +474,20 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .tlend{text-align:center}.tlend .big{font-family:var(--f-display);font-size:48px;color:var(--leaf);line-height:1.1}
 </style>`);
 })();
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'tlCell':function(event,a){tlCell(a[0])},
+  'tlDS-1':function(event,a){tlDS(a[0],1)},
+  'tlDS-0':function(event,a){tlDS(a[0],0)},
+  'tlNho':function(event,a){tlNho(a[0])},
+  'tlPC':function(event,a){tlPC(a[0])},
+  'tlXong':function(){tlXong()},
+  'tlKey':function(event,a){tlKey(a[0])},
+  'go-home-tl':function(){go({k:'home',tab:'tl'})},
+  'tlGo':function(event,a){tlGo(a[0])},
+  'cancel-go-home-tl':function(){try{speechSynthesis.cancel()}catch(e){};go({k:'home',tab:'tl'})},
+  'tlDayGo':function(){tlDayGo()},
+  'gvTLDel':function(event,a){gvTLDel(a[0])},
+  'gvTLAdd':function(){gvTLAdd()},
+});

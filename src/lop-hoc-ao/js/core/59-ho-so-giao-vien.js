@@ -7,6 +7,7 @@
    4) Bản đầy đủ: tạo dữ liệu mẫu 5 tuần cho học sinh lớp 1–5 (trừ Lê Bảo Na). */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { gvCLS, gvTen, newStudent, ORG_ON, save, simDay } from './09-du-lieu-demo.js';
 import { evDay, log } from './10-su-kien-mau-xapi.js';
 import { p1Stars, p2Stars, totalStars } from './11-sao-va-mo-khoa.js';
@@ -73,7 +74,7 @@ function gvLich(id,st){
   const dd=st.dd||{},today=hsToday(),s=new Date(HS_OPEN);s.setDate(s.getDate()-((s.getDay()+6)%7));
   const cols=[];let d=new Date(s);while(d<=today){const col=[];for(let i=0;i<7;i++){const k=hsKey(d),o=dd[k],fut=d>today||d<HS_OPEN;
       const n=o?o.n:0,lv=fut?-1:n===0?0:n<10?1:n<20?2:n<30?3:4;col.push(`<i class="gl l${lv}" data-k="${k}" title="${gvNgay(k)}: ${n} câu"></i>`);d.setDate(d.getDate()+1)}cols.push(`<span class="glc">${col.join('')}</span>`)}
-  return`<div class="glich" onclick="gvLichTap(event,'${id}')">${cols.join('')}</div><div class="gleg muted">Ít <i class="gl l0"></i><i class="gl l1"></i><i class="gl l2"></i><i class="gl l3"></i><i class="gl l4"></i> Nhiều · bấm vào ô để xem ngày đó</div><div id="glDet" class="task" style="margin-top:8px">${gvLichDet(st,gvCuoi(id,st)||hsTodayKey())}</div>`}
+  return`<div class="glich" data-act="gvLichTap" ${hd.arg(String(id))}>${cols.join('')}</div><div class="gleg muted">Ít <i class="gl l0"></i><i class="gl l1"></i><i class="gl l2"></i><i class="gl l3"></i><i class="gl l4"></i> Nhiều · bấm vào ô để xem ngày đó</div><div id="glDet" class="task" style="margin-top:8px">${gvLichDet(st,gvCuoi(id,st)||hsTodayKey())}</div>`}
 function gvLichDet(st,k){const o=(st.dd||{})[k];if(!o||!o.n)return`<b>${gvNgay(k)}</b> · em không học`;
   return`<b>${gvNgay(k)}</b> · ${o.n} câu · đúng ${o.c} (${pc(o.c,o.n)}%) · ${Math.round((o.sec||0)/60)} phút${o.f?` · đúng ngay lần đầu ${pc(o.fc||0,o.f)}%`:''}${o.gd?` · mở hướng dẫn ${o.gd} lần`:''}`}
 window.gvLichTap=(ev,id)=>{const i=ev.target.closest('i[data-k]');if(!i)return;document.getElementById('glDet').innerHTML=gvLichDet(S.st[id],i.dataset.k)};
@@ -117,9 +118,9 @@ function gvTabLoi(id,st,ph){
   const kq=(a,s)=>{if(a.loai==='loi')return s.done?'<span class="pill ok">Đã sửa xong</span>':`<span class="pill ${s.doing?'acc':'warn'}">còn ${s.con}/${a.keys.length} lỗi</span>`;
     const b=s.r.best;return s.done?`<span class="pill ${b.ok/b.n>=.8?'ok':'acc'}">${b.ok}/${b.n} đúng</span>`:s.chuaDat?`<span class="pill acc">chưa đạt ${b.ok}/${b.n}, làm lại</span>`:s.doing?'<span class="pill acc">đang làm</span>':'<span class="pill warn">chưa làm</span>'};
   return`<section class="card"><h2>Sổ lỗi sai <span class="pill">${M.length} lỗi</span></h2><p class="muted" style="margin:4px 0 0">${ph?`Con tự luyện ở mục Luyện lỗi trong app (không bắt buộc). Lỗi cô chưa giao sẽ tự bỏ sau ${LOI_NGAY} ngày kể từ lần sai gần nhất, bố mẹ nhắc con luyện trong tuần nhé.`:`Em tự luyện nếu muốn (không bắt buộc). Cô bấm giao thì thành bài về nhà bắt buộc. Lỗi cô không giao sẽ tự bỏ sau ${LOI_NGAY} ngày kể từ lần sai gần nhất.`}</p>
-   ${M.length?`<div class="tablewrap"><table><tr>${ph?'':'<th></th>'}<th>Lỗi</th><th>Ở đảo</th><th>Sai</th><th>Đúng liền</th><th>Tự bỏ sau</th></tr>${M.map(([k,m])=>{const x=isl1(m.id);return`<tr>${ph?'':`<td><input type="checkbox" aria-label="Chọn lỗi" ${chon.includes(k)?'checked':''} ${dang?'disabled':''} onchange="gvChonLoi('${k}',this.checked)"></td>`}<td>${esc(m.label||'')}</td><td>${x?esc(x.title):''}</td><td><b>${m.n}</b> lần</td><td>${m.streak||0}/2</td><td>${loiGiu(id).has(k)?'<span class="pill acc">cô đã giao</span>':loiConNgay(m)+' ngày'}</td></tr>`}).join('')}</table></div>
+   ${M.length?`<div class="tablewrap"><table><tr>${ph?'':'<th></th>'}<th>Lỗi</th><th>Ở đảo</th><th>Sai</th><th>Đúng liền</th><th>Tự bỏ sau</th></tr>${M.map(([k,m])=>{const x=isl1(m.id);return`<tr>${ph?'':`<td><input type="checkbox" aria-label="Chọn lỗi" ${chon.includes(k)?'checked':''} ${dang?'disabled':''} data-act-change="gvChonLoi" ${hd.argEv('change',String(k))}></td>`}<td>${esc(m.label||'')}</td><td>${x?esc(x.title):''}</td><td><b>${m.n}</b> lần</td><td>${m.streak||0}/2</td><td>${loiGiu(id).has(k)?'<span class="pill acc">cô đã giao</span>':loiConNgay(m)+' ngày'}</td></tr>`}).join('')}</table></div>
    ${ph?'':dang?`<p class="hint" style="margin:10px 0 0">Đã giao Luyện lỗi ngày ${asgD(dang.t)}, em đang còn ${asgState(st,dang).con} lỗi. Giao tiếp khi em làm xong.</p>`
-     :`<div class="row" style="gap:8px;margin-top:10px"><button class="btn pri" onclick="gvGiaoLoi('${id}',0)">Giao luyện tất cả (${M.length} lỗi)</button><button class="btn" ${chon.length?'':'disabled'} onclick="gvGiaoLoi('${id}',1)">Giao các lỗi đã chọn (${chon.length})</button></div>
+     :`<div class="row" style="gap:8px;margin-top:10px"><button class="btn pri" data-act="gvGiaoLoi-0" ${hd.arg(String(id))}>Giao luyện tất cả (${M.length} lỗi)</button><button class="btn" ${chon.length?'':'disabled'} data-act="gvGiaoLoi-1" ${hd.arg(String(id))}>Giao các lỗi đã chọn (${chon.length})</button></div>
       <p class="muted" style="margin:6px 0 0">Bài về nhà: mỗi lỗi 2 câu số mới (có hướng dẫn khi sai). Em luyện xong một lượt là xong bài và các lỗi đó ra khỏi Sổ lỗi sai. Em phải làm xong trước mọi việc khác. Thưởng ${BVN_XU} xu.</p>`}`:'<p class="muted">Sổ đang trống.</p>'}</section>
   <section class="card"><h2>Bài về nhà ${ph?'cô giao cho con':'cô đã giao'}</h2>${A.length?`<div class="tablewrap"><table><tr><th>Bài</th><th>Giao · hạn</th><th>Kết quả</th></tr>${A.sort((p,q)=>q.t-p.t).map(a=>{const s=asgState(st,a);return`<tr><td><b>${esc(asgName(a))}</b><div class="muted">${a.loai==='loi'?'Luyện lỗi có mục tiêu':a.n+' câu'} · ${a.hs?'riêng cho em':'cả lớp'}${a.bat?' · bắt buộc':''} · ${esc(a.by||'')}</div></td><td>${asgD(a.t)}${a.due?' · '+asgD(a.due):''}</td><td>${kq(a,s)}${s.late?' <span class="pill bad">quá hạn</span>':''}</td></tr>`}).join('')}</table></div>`:'<p class="muted">Chưa có bài nào.</p>'}</section>`}
 window.gvChonLoi=(k,on)=>{const c=scr.loiChon=scr.loiChon||[];const i=c.indexOf(k);if(on&&i<0)c.push(k);if(!on&&i>=0)c.splice(i,1);render()};
@@ -148,21 +149,21 @@ function gvTabGC(id,st){
   const the=x=>{const a=gvPhieuDang(st,x.k),src=gvNguon(st,x.k),de=Math.min(...src.map(s=>s[1])),coVua=src.some(s=>s[1]>de);
     return`<div class="task gsug"><div class="row" style="justify-content:space-between;gap:8px"><div style="min-width:0"><b>${esc(x.k)}</b> <span class="pill bad">đúng ${x.p}%</span> <span class="muted">· ${x.n} lần gần nhất · mạch ${HS_AXN[x.ax]||''}</span>
       <div class="muted" style="margin-top:4px">Phiếu 8 câu ${coVua?'(4 câu dễ, 4 câu vừa)':'(mức dễ)'} · câu từ các đảo em đã học, số mới mỗi lần · hạn 2 ngày · đạt khi đúng từ 80%.</div></div>
-      ${a?`<span class="pill acc">Đã giao ${asgD(a.t)}, chờ em làm</span>`:`<div class="row" style="gap:6px"><button class="btn pri sm" onclick="gvGiaoDang('${id}',${gvKi(st,x.k)})">Giao</button><button class="btn sm" onclick="gvXemTruoc('${id}',${gvKi(st,x.k)})">${pv===x.k?'Ẩn câu hỏi':'Xem trước câu hỏi'}</button><button class="btn sm" onclick="gvBoQua('${id}',${gvKi(st,x.k)},1)">Bỏ qua</button></div>`}</div>
+      ${a?`<span class="pill acc">Đã giao ${asgD(a.t)}, chờ em làm</span>`:`<div class="row" style="gap:6px"><button class="btn pri sm" data-act="gvGiaoDang" ${hd.arg(String(id),gvKi(st,x.k))}>Giao</button><button class="btn sm" data-act="gvXemTruoc" ${hd.arg(String(id),gvKi(st,x.k))}>${pv===x.k?'Ẩn câu hỏi':'Xem trước câu hỏi'}</button><button class="btn sm" data-act="gvBoQua-1" ${hd.arg(String(id),gvKi(st,x.k))}>Bỏ qua</button></div>`}</div>
       ${pv===x.k&&!a?gvXem(st,x.k):''}</div>`};
   return`<section class="card"><h2>Giao phiếu theo dạng bài em còn yếu</h2>
    <p class="muted" style="margin:4px 0 8px">App tự soạn phiếu cho từng dạng em đúng dưới ${GV_YEU}% (làm ít nhất ${GV_MIN} lần). Cô chỉ cần bấm Giao hoặc Bỏ qua. Kết quả phiếu tính vào tỉ lệ đúng của dạng đó.</p>
    ${g>5?'<p class="muted">Đang làm cho lớp 6–9.</p>':hien.length?hien.slice(0,4).map(the).join(''):`<p class="hint">Em không có dạng nào dưới ${GV_YEU}%. Chưa cần giao thêm.</p>`}
    ${nen.length?`<p style="margin:12px 0 4px"><b>Nên luyện thêm</b> <span class="muted">(${GV_YEU}–${GV_NEN}%, chưa cần giao):</span> ${nen.slice(0,6).map(x=>`<span class="pill warn">${esc(x.k)} ${x.p}%</span>`).join(' ')}${nen.length>6?` <span class="muted">và ${nen.length-6} dạng khác (xem bảng bên dưới)</span>`:''}</p>`:''}
-   ${bo.length?`<p class="muted" style="margin:8px 0 0">Đã bỏ qua: ${bo.map(x=>`${esc(x.k)} <button class="lnk" style="font-weight:600" onclick="gvBoQua('${id}',${gvKi(st,x.k)},0)">hiện lại</button>`).join(' · ')}</p>`:''}
+   ${bo.length?`<p class="muted" style="margin:8px 0 0">Đã bỏ qua: ${bo.map(x=>`${esc(x.k)} <button class="lnk" style="font-weight:600" data-act="gvBoQua-0" ${hd.arg(String(id),gvKi(st,x.k))}>hiện lại</button>`).join(' · ')}</p>`:''}
    <details style="margin-top:12px"><summary><b>Tỉ lệ đúng từng dạng bài</b> <span class="muted">(dòng tô đỏ là dạng yếu)</span></summary>${gvBangDang(st)}</details></section>
   <div class="grid gpair">
    <section class="card"><h2>Ghi chú riêng của cô</h2><p class="muted" style="margin:4px 0 8px">Em và phụ huynh không thấy phần này.</p>
-    <form onsubmit="gvGhiChu(event,'${id}')" class="grid" style="gap:8px"><textarea id="gcT" class="gfit" rows="3" maxlength="300" placeholder="Ví dụ: Em hay quên đơn vị, nhắc kiểm tra lại." aria-label="Ghi chú"></textarea><div><button class="btn pri">Lưu ghi chú</button></div></form>
-    ${N.slice().reverse().map((n,i)=>`<div class="task"><div class="row" style="justify-content:space-between"><span class="muted">Ngày ${n.d} · ${esc(n.by||'')}</span><button class="btn sm" onclick="gvXoaGC('${id}',${N.length-1-i})">Xóa</button></div><div>${esc(n.t)}</div></div>`).join('')}</section>
+    <form data-act-submit="gvGhiChu" ${hd.argEv('submit',String(id))} class="grid" style="gap:8px"><textarea id="gcT" class="gfit" rows="3" maxlength="300" placeholder="Ví dụ: Em hay quên đơn vị, nhắc kiểm tra lại." aria-label="Ghi chú"></textarea><div><button class="btn pri">Lưu ghi chú</button></div></form>
+    ${N.slice().reverse().map((n,i)=>`<div class="task"><div class="row" style="justify-content:space-between"><span class="muted">Ngày ${n.d} · ${esc(n.by||'')}</span><button class="btn sm" data-act="gvXoaGC" ${hd.arg(String(id),N.length-1-i)}>Xóa</button></div><div>${esc(n.t)}</div></div>`).join('')}</section>
    <section class="card"><h2>Nhận xét gửi phụ huynh</h2><p class="muted" style="margin:4px 0 8px">Cô tự viết. Phụ huynh thấy ở mục "Lời nhắn của giáo viên", mới nhất ở trên.</p>
-    <form onsubmit="gvNhanXet(event,'${id}')" class="grid" style="gap:8px"><textarea id="gcNx" class="gfit" rows="4" maxlength="600" placeholder="Ví dụ: Tuần này con chăm hơn, nhưng còn nhầm khi so sánh số. Bố mẹ cho con đọc to đề trước khi làm nhé." aria-label="Nhận xét gửi phụ huynh"></textarea><div><button class="btn pri">Gửi phụ huynh</button></div></form>
-    <p class="muted" style="margin:12px 0 4px">Tặng thẻ</p><div class="row" style="gap:6px;flex-wrap:wrap">${['Cố gắng','Cách giải hay','Giúp bạn','Chăm chỉ'].map(b=>`<button class="btn sm" onclick="gvTang('${id}','${b}')">♥ ${b}</button>`).join('')}</div>
+    <form data-act-submit="gvNhanXet" ${hd.argEv('submit',String(id))} class="grid" style="gap:8px"><textarea id="gcNx" class="gfit" rows="4" maxlength="600" placeholder="Ví dụ: Tuần này con chăm hơn, nhưng còn nhầm khi so sánh số. Bố mẹ cho con đọc to đề trước khi làm nhé." aria-label="Nhận xét gửi phụ huynh"></textarea><div><button class="btn pri">Gửi phụ huynh</button></div></form>
+    <p class="muted" style="margin:12px 0 4px">Tặng thẻ</p><div class="row" style="gap:6px;flex-wrap:wrap">${['Cố gắng','Cách giải hay','Giúp bạn','Chăm chỉ'].map(b=>`<button class="btn sm" data-act="gvTang" ${hd.arg(String(id),String(b))}>♥ ${b}</button>`).join('')}</div>
     ${(st.comments||[]).length?`<h3 style="margin-top:14px">Đã gửi</h3>${st.comments.slice().reverse().slice(0,5).map(c=>`<div class="task"><span class="muted">${gvNgayD(c.day)}${c.by?' · '+esc(c.by):''}</span><div>${esc(c.t)}</div></div>`).join('')}`:''}</section></div>`}
 function gvPhieuMoi(id,kd){const st=S.st[id],src=gvNguon(st,kd),now=gvNow();
   return{id:'k'+now.toString(36),g:st.grade,lop:(S.org&&S.org.gd[id])||gvLop,hs:[id],bat:1,kinds:[kd],ten:`Luyện dạng: ${kd}`,tiets:[...new Set(src.map(s=>s[0]))],n:8,dat:80,t:now,due:now+2*DAYMS,by:gvTen()}}
@@ -200,12 +201,12 @@ function viewGVHS(id){
   const body=st.grade>5?`<section class="card"><p class="muted">Hồ sơ chi tiết đang có cho lớp 1–5. Lớp 6–9 làm ở bước sau.</p></section>${gvTabGC(id,st)}`
     :tab==='hdht'||tab==='ht'||tab==='hd'?gvTabHDHT(id,st):tab==='loi'?gvTabLoi(id,st):tab==='gc'?gvTabGC(id,st):gvTabTQ(id,st);
   return`<div class="grid">
-   <div class="row" style="justify-content:space-between"><button class="btn sm" onclick="go({k:'home'})">← Lớp ${l?esc(l.ten):st.grade}</button>
-    <div class="row" style="gap:6px">${pv?`<button class="btn sm" onclick="go({k:'gvhs',id:'${pv[0]}',tab:'${tab}'})" aria-label="Em trước">‹ ${esc(pv[1].split(' ').pop())}</button>`:''}${nx?`<button class="btn sm" onclick="go({k:'gvhs',id:'${nx[0]}',tab:'${tab}'})" aria-label="Em sau">${esc(nx[1].split(' ').pop())} ›</button>`:''}</div></div>
+   <div class="row" style="justify-content:space-between"><button class="btn sm" data-act="go-home">← Lớp ${l?esc(l.ten):st.grade}</button>
+    <div class="row" style="gap:6px">${pv?`<button class="btn sm" data-act="go-gvhs-2" ${hd.arg(String(pv[0]),String(tab))} aria-label="Em trước">‹ ${esc(pv[1].split(' ').pop())}</button>`:''}${nx?`<button class="btn sm" data-act="go-gvhs-2" ${hd.arg(String(nx[0]),String(tab))} aria-label="Em sau">${esc(nx[1].split(' ').pop())} ›</button>`:''}</div></div>
    <section class="card ghead"><span class="av gav">${initials(st.name)}</span><div style="min-width:0"><h1 style="font-size:28px;margin:0">${esc(st.name)}</h1>
     <div class="muted">Tài khoản ${esc(id)} · Lớp ${l?esc(l.ten):st.grade}${gvs?' · '+esc(gvs):''} · học gần nhất: ${gvNgay(st.grade<=5?gvCuoi(id,st):null)}</div>
     <div class="row" style="gap:6px;margin-top:6px"><span class="pill">${totalStars(st)} ★</span><span class="pill">${st.coins} xu</span>${st.active?`<span class="pill acc">Toán Jenny${S.org&&S.org.nl[id]&&!(l&&l.tj.on)?' · ngoại lệ':' · theo lớp'}</span>`:''}</div></div></section>
-   ${st.grade>5?'':`<div class="seg gtabs" role="tablist" aria-label="Hồ sơ">${GV_TABS.map(([k,t])=>`<button role="tab" class="${k===tab?'on':''}" aria-selected="${k===tab}" onclick="go({k:'gvhs',id:'${id}',tab:'${k}'})">${t}</button>`).join('')}</div>`}
+   ${st.grade>5?'':`<div class="seg gtabs" role="tablist" aria-label="Hồ sơ">${GV_TABS.map(([k,t])=>`<button role="tab" class="${k===tab?'on':''}" aria-selected="${k===tab}" data-act="go-gvhs-2" ${hd.arg(String(id),String(k))}>${t}</button>`).join('')}</div>`}
    ${body}</div>`}
 {hooks.on('viewGV',_vg=>function(){if(scr&&scr.k==='gvhs')return viewGVHS(scr.id);return _vg.apply(this,arguments)})}
 
@@ -226,7 +227,7 @@ function viewPHHS(id){const st=S.st[id];hsHeal(st,id);const l=typeof lopCua==='f
      return M.length?`<section class="card phnhac"><h2>Nhắc bố mẹ</h2><p style="margin:6px 0 0">${esc(first)} đang có <b>${M.length} lỗi</b> trong Sổ lỗi sai${M.length>tu.length?`, trong đó ${M.length-tu.length} lỗi cô đã giao làm bài về nhà`:''}.</p>
       ${tu.length?`<p style="margin:6px 0 0">${tu.length} lỗi cô chưa giao sẽ <b>tự bỏ sau ${LOI_NGAY} ngày</b>${sap?` (${sap} lỗi chỉ còn 1–2 ngày)`:''}. Bố mẹ nhắc con vào mục <b>Luyện lỗi</b> trong app, mỗi ngày 5 phút, để sửa hết trước khi lỗi bị bỏ.</p>`:''}
       <p class="muted" style="margin:6px 0 0">Lỗi ra khỏi sổ khi con đúng 2 lần liền, hoặc khi con làm xong bài luyện lỗi cô giao. Xem chi tiết ở thẻ "Lỗi &amp; bài về nhà".</p></section>`:''})()}
-   <div class="seg gtabs" role="tablist" aria-label="Kết quả học tập">${PH_TABS.map(([k,t])=>`<button role="tab" class="${k===tab?'on':''}" aria-selected="${k===tab}" onclick="scr.phTab='${k}';render()">${t}</button>`).join('')}</div>
+   <div class="seg gtabs" role="tablist" aria-label="Kết quả học tập">${PH_TABS.map(([k,t])=>`<button role="tab" class="${k===tab?'on':''}" aria-selected="${k===tab}" data-act="phTab-render" ${hd.arg(String(k))}>${t}</button>`).join('')}</div>
    ${body}</div>`}
 {hooks.on('viewPH',_p=>function(){try{if(role==='ph'&&typeof ORG_ON!=='undefined'&&ORG_ON&&S.st[sid]&&S.st[sid].grade<=5)return viewPHHS(sid)}catch(e){console.error(e)}return _p.apply(this,arguments)})}
 
@@ -318,3 +319,21 @@ table.gvbang td:nth-child(2),table.gvbang td:nth-child(3),table.gvbang td:nth-ch
 @media(min-width:900px){.alertlist{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .lnk{all:unset;cursor:pointer;font-weight:700;text-decoration:underline;text-underline-offset:3px}.lnk:focus-visible{outline:2px solid var(--sea)}
 </style>`);
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'gvLichTap':function(event,a){gvLichTap(event,a[0])},
+  'gvChonLoi':function(event,a){gvChonLoi(a[0],this.checked)},
+  'gvGiaoLoi-0':function(event,a){gvGiaoLoi(a[0],0)},
+  'gvGiaoLoi-1':function(event,a){gvGiaoLoi(a[0],1)},
+  'gvGiaoDang':function(event,a){gvGiaoDang(a[0],a[1])},
+  'gvXemTruoc':function(event,a){gvXemTruoc(a[0],a[1])},
+  'gvBoQua-1':function(event,a){gvBoQua(a[0],a[1],1)},
+  'gvBoQua-0':function(event,a){gvBoQua(a[0],a[1],0)},
+  'gvGhiChu':function(event,a){gvGhiChu(event,a[0])},
+  'gvXoaGC':function(event,a){gvXoaGC(a[0],a[1])},
+  'gvNhanXet':function(event,a){gvNhanXet(event,a[0])},
+  'gvTang':function(event,a){gvTang(a[0],a[1])},
+  'go-gvhs-2':function(event,a){go({k:'gvhs',id:a[0],tab:a[1]})},
+  'phTab-render':function(event,a){scr.phTab=a[0];render()},
+});

@@ -2,13 +2,14 @@
 /* ---- Sổ lỗi sai lớp 1 ---- */
 import { hooks } from './00-hooks.js';
 import { esc, pick, R, range } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { STAR2 } from './30a-dang-ky-khoi.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { go, render, toast } from './13-giao-dien-chung.js';
 import { mist, quest, shuf } from './21-lop-6-che-do-tro-choi.js';
 import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
-import { grp, isl1, NUMW, optN, pickObj, sayJ, viewHome1 } from './30b-may-tieu-hoc.js';
+import { grp, isl1, NUMW, optN, pickObj, sayFull, sayJ, viewHome1 } from './30b-may-tieu-hoc.js';
 import { viewAlbum } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
 import { cbCard } from './32-tinh-nang-choi-them-dat-trong-tung-dao.js';
 import { sfx } from './33b-am-thanh.js';
@@ -23,7 +24,7 @@ hooks.ham('startFix1',function(){const M=Object.values(mist(S.st[sid])).sort((a,
   v1Said='';go({k:'game',g1:1,fix:1,id:M[0].id,lv:0,qs:M.flatMap(e=>[mk(e),mk(e)]),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,hp:0,fixed:0,t0:Date.now()})});
 function viewFix1(st){const M=Object.values(mist(st)).sort((a,b)=>b.n-a.n);
   return`<div class="grid"><section class="card"><div class="secthead"><h2>📒 Sổ lỗi sai</h2><span class="grow"></span><span class="pill ${M.length?'warn':'ok'}">${M.length} dạng</span></div>
-   ${M.length?`<p class="muted" style="margin:0 0 10px">Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu liền là dạng đó ra khỏi sổ, được +5 xu. Luyện lỗi không mất tim. Lỗi cô chưa giao sẽ tự bỏ sau 7 ngày.</p><ul class="mlist">${M.slice(0,6).map(e=>`<li><span>${esc(e.label)}</span><span class="muted">sai ${e.n} lần${e.streak?` · đã đúng ${e.streak}/2`:''}</span></li>`).join('')}</ul><button class="gobtn" type="button" style="margin-top:12px" onclick="startFix1()">Luyện ngay</button>`:`<div class="row" style="flex-wrap:nowrap;gap:12px">${jenny(56)}<p class="muted" style="margin:0">Sổ đang trống. Câu nào em làm sai lần đầu sẽ được ghi vào đây để luyện lại.</p></div>`}</section></div>`}
+   ${M.length?`<p class="muted" style="margin:0 0 10px">Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu liền là dạng đó ra khỏi sổ, được +5 xu. Luyện lỗi không mất tim. Lỗi cô chưa giao sẽ tự bỏ sau 7 ngày.</p><ul class="mlist">${M.slice(0,6).map(e=>`<li><span>${esc(e.label)}</span><span class="muted">sai ${e.n} lần${e.streak?` · đã đúng ${e.streak}/2`:''}</span></li>`).join('')}</ul><button class="gobtn" type="button" style="margin-top:12px" data-act="startFix1">Luyện ngay</button>`:`<div class="row" style="flex-wrap:nowrap;gap:12px">${jenny(56)}<p class="muted" style="margin:0">Sổ đang trống. Câu nào em làm sai lần đầu sẽ được ghi vào đây để luyện lại.</p></div>`}</section></div>`}
 /* ---- Toán Jenny lớp 1 (nội dung mẫu, sẽ thay bằng sách của Clb) ---- */
 const ANI=[['chick','gà con'],['fish','cá'],['cat','mèo'],['crab','cua'],['bug','bọ rùa']];
 const JQ1={
@@ -57,24 +58,24 @@ function viewJTab1(st){
   if(!st.active)return`<div class="grid"><section class="card paidbox"><div class="secthead"><h2>Toán Jenny</h2><span class="tag paid">Nâng cao</span></div><div class="row" style="flex-wrap:nowrap;gap:12px;margin-top:8px">${jenny(56)}<p class="muted" style="margin:0">Phần nâng cao của Clb Học Toán cùng Jenny: tìm quy luật, đếm khéo, suy luận. Trung tâm nhập mã kích hoạt, cô giáo mở 2 buổi mỗi tuần.</p></div></section></div>`;
   return`<div class="grid"><section class="card paidbox"><div class="secthead"><h2>Toán Jenny · Lớp ${st.grade}</h2><span class="tag paid">2 buổi/tuần</span></div><p class="muted" style="margin:4px 0 12px">Cô giáo mở buổi nào thì em học buổi đó. Mỗi buổi có video, ví dụ và 3 màn, được tới 9 sao.</p>
    <div class="grid" style="gap:12px">${(P2_1.filter(x=>x.grade===st.grade).length?P2_1.filter(x=>x.grade===st.grade):[{id:"jdraft"+st.grade,week:1,title:"Buổi 1 · đang soạn",draft:true}]).map(x=>{const s=j1s(st,x.id),open=(UNL||!!S.open[x.id])&&!x.draft,got=s.m.reduce((a,v,i)=>a+(v?STAR2[i]:0),0);
-    return`<button class="pxq ${open?'mist':''}" style="${open?'':'opacity:.7'}" ${open?`onclick="go({k:'jenny',id:'${x.id}'})"`:`onclick="toast('${x.draft?'Buổi này đang được soạn.':'Cô giáo chưa mở buổi này.'}')"`}><span class="pxq-ic">${open?spr('star',38):spr('lock',30)}</span><span class="pxq-tx"><b>${esc(x.title)}</b><span>Tuần ${x.week} · ${x.draft?'đang soạn':open?`${got}/9 sao`:'cô chưa mở'}</span></span><span class="pxq-go">${open?(got?'Học tiếp ▶':'Vào học ▶'):'Khóa'}</span></button>`}).join('')}</div></section></div>`;
+    return`<button class="pxq ${open?'mist':''}" style="${open?'':'opacity:.7'}" ${open?`data-act="go-jenny" ${hd.arg(String(x.id))}`:`data-act="toast" ${hd.arg(String(x.draft?'Buổi này đang được soạn.':'Cô giáo chưa mở buổi này.'))}`}><span class="pxq-ic">${open?spr('star',38):spr('lock',30)}</span><span class="pxq-tx"><b>${esc(x.title)}</b><span>Tuần ${x.week} · ${x.draft?'đang soạn':open?`${got}/9 sao`:'cô chưa mở'}</span></span><span class="pxq-go">${open?(got?'Học tiếp ▶':'Vào học ▶'):'Khóa'}</span></button>`}).join('')}</div></section></div>`;
 }
 export function viewJenny1(){const st=S.st[sid],x=ju1(scr.id),s=j1s(st,x.id);
-  const items=[{done:s.intro,can:true,t:'Video · Jenny giảng',d:`${x.slides.length} trang · Jenny đọc`,act:`go({k:'jslide',id:'${x.id}',i:0})`,lbl:s.intro?'Xem lại':'Xem'},{done:s.ex,can:UNL||s.intro,t:'Ví dụ dẫn dắt',d:'Jenny giải mẫu một bài',act:`go({k:'jex',id:'${x.id}'})`,lbl:s.ex?'Xem lại':'Xem'}]
-   .concat([0,1,2].map(L=>({done:s.m[L],can:UNL||s.ex&&(L===0||s.m[L-1]),t:`Màn ${'★'.repeat(L+1)}`,d:`${QN()} câu · 3 tim · +${STAR2[L]} sao`,act:`startJ1('${x.id}',${L})`,lbl:s.m[L]?'Chơi lại':'Chơi'})));
+  const items=[{done:s.intro,can:true,t:'Video · Jenny giảng',d:`${x.slides.length} trang · Jenny đọc`,act:hd.attr('go-jslide',x.id,0),lbl:s.intro?'Xem lại':'Xem'},{done:s.ex,can:UNL||s.intro,t:'Ví dụ dẫn dắt',d:'Jenny giải mẫu một bài',act:hd.attr('go',{k:'jex',id:x.id}),lbl:s.ex?'Xem lại':'Xem'}]
+   .concat([0,1,2].map(L=>({done:s.m[L],can:UNL||s.ex&&(L===0||s.m[L-1]),t:`Màn ${'★'.repeat(L+1)}`,d:`${QN()} câu · 3 tim · +${STAR2[L]} sao`,act:hd.attr('startJ1',x.id,L),lbl:s.m[L]?'Chơi lại':'Chơi'})));
   const nx=items.findIndex(i=>!i.done&&i.can);
-  return`<div class="page"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'jenny'})">← Toán Jenny</button></div>
+  return`<div class="page"><div class="crumb"><button class="btn sm ghost" data-act="go-home-jenny">← Toán Jenny</button></div>
    <div class="card"><div class="lesson">${jenny(64)}<div class="grow"><h1>${esc(x.title)}</h1><div class="muted">Toán Jenny · Lớp 1 · nội dung mẫu</div></div></div>
-   <ul class="tl">${items.map((i,k)=>`<li class="${i.done?'done':''} ${k===nx?'next':''} ${!i.can&&!i.done?'off':''}"><span class="n">${i.done?'✓':k+1}</span><div class="grow"><b>${i.t}</b><span class="muted">${i.d}</span></div><button class="btn sm ${k===nx?'pri':''}" ${i.can?'':'disabled'} onclick="${i.act}">${i.can?i.lbl:'🔒'}</button></li>`).join('')}</ul></div></div>`}
+   <ul class="tl">${items.map((i,k)=>`<li class="${i.done?'done':''} ${k===nx?'next':''} ${!i.can&&!i.done?'off':''}"><span class="n">${i.done?'✓':k+1}</span><div class="grow"><b>${i.t}</b><span class="muted">${i.d}</span></div><button class="btn sm ${k===nx?'pri':''}" ${i.can?'':'disabled'} ${i.act}>${i.can?i.lbl:'🔒'}</button></li>`).join('')}</ul></div></div>`}
 export function viewJSlide1(){const x=ju1(scr.id),i=scr.i,sl=x.slides[i],last=i===x.slides.length-1;
-  return`<div class="page"><div class="crumb"><button class="btn sm ghost" onclick="try{speechSynthesis.cancel()}catch(e){};go({k:'jenny',id:'${x.id}'})">← ${esc(x.title)}</button></div>
-   <div class="card g1slide"><div class="row" style="justify-content:space-between"><span class="pill">Trang ${i+1}/${x.slides.length}</span><button class="btn sm" type="button" onclick="sayJ(sayFull(ju1(scr.id).slides[scr.i].say,ju1(scr.id).slides[scr.i].h))">🔊 Nghe lại</button></div>
+  return`<div class="page"><div class="crumb"><button class="btn sm ghost" data-act="cancel-go-jenny" ${hd.arg(String(x.id))}>← ${esc(x.title)}</button></div>
+   <div class="card g1slide"><div class="row" style="justify-content:space-between"><span class="pill">Trang ${i+1}/${x.slides.length}</span><button class="btn sm" type="button" data-act="sayJ-sayFull-ju1">🔊 Nghe lại</button></div>
    <h2 style="margin:12px 0">${esc(sl.t)}</h2><div class="g1slb">${sl.h}</div>
-   <div class="row" style="margin-top:16px;justify-content:space-between"><button class="btn" type="button" ${i?'':'disabled'} onclick="go({k:'jslide',id:'${x.id}',i:${i-1}})">← Trước</button>${last?`<button class="btn pri" type="button" onclick="j1s(S.st[sid],'${x.id}').intro=true;log(sid,'watched','${esc(x.title)}',0,{});save();go({k:'jenny',id:'${x.id}'})">Xong video ✓</button>`:`<button class="btn pri" type="button" onclick="go({k:'jslide',id:'${x.id}',i:${i+1}})">Tiếp →</button>`}</div></div></div>`}
+   <div class="row" style="margin-top:16px;justify-content:space-between"><button class="btn" type="button" ${i?'':'disabled'} data-act="go-jslide" ${hd.arg(String(x.id),i-1)}>← Trước</button>${last?`<button class="btn pri" type="button" data-act="j1s-intro-log-watched" ${hd.arg(String(x.id),String(x.title),String(x.id))}>Xong video ✓</button>`:`<button class="btn pri" type="button" data-act="go-jslide" ${hd.arg(String(x.id),i+1)}>Tiếp →</button>`}</div></div></div>`}
 export function viewJEx1(){const x=ju1(scr.id),e=x.ex;
-  return`<div class="page"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'jenny',id:'${x.id}'})">← ${esc(x.title)}</button></div>
-   <div class="card g1slide"><span class="pill">Ví dụ dẫn dắt</span><div class="g1q" style="margin-top:12px">${jenny(54)}<div class="g1bub"><div>${e.q}</div><button class="g1spk" type="button" onclick="sayJ(ju1(scr.id).ex.q)" aria-label="Nghe lại">🔊</button></div></div><div class="g1pic" style="margin:12px 0">${e.pic}</div>
-   ${scr.show?`<div class="sheet ok" style="animation:none"><div class="sh"><span class="ic">✓</span><div><b>Đáp án: ${e.a}</b><div>${e.sol}</div></div></div><button class="gobtn" type="button" style="margin-top:12px" onclick="j1s(S.st[sid],'${x.id}').ex=true;log(sid,'studied','${esc(x.title)}',0,{});save();go({k:'jenny',id:'${x.id}'})">Em hiểu rồi!</button>`:`<button class="gobtn" type="button" onclick="scr.show=1;render();sayJ(ju1(scr.id).ex.sol)">Xem Jenny giải</button>`}</div></div>`}
+  return`<div class="page"><div class="crumb"><button class="btn sm ghost" data-act="go-jenny" ${hd.arg(String(x.id))}>← ${esc(x.title)}</button></div>
+   <div class="card g1slide"><span class="pill">Ví dụ dẫn dắt</span><div class="g1q" style="margin-top:12px">${jenny(54)}<div class="g1bub"><div>${e.q}</div><button class="g1spk" type="button" data-act="sayJ-ju1" aria-label="Nghe lại">🔊</button></div></div><div class="g1pic" style="margin:12px 0">${e.pic}</div>
+   ${scr.show?`<div class="sheet ok" style="animation:none"><div class="sh"><span class="ic">✓</span><div><b>Đáp án: ${e.a}</b><div>${e.sol}</div></div></div><button class="gobtn" type="button" style="margin-top:12px" data-act="j1s-ex-log-studied" ${hd.arg(String(x.id),String(x.title),String(x.id))}>Em hiểu rồi!</button>`:`<button class="gobtn" type="button" data-act="show-render-sayJ-ju1">Xem Jenny giải</button>`}</div></div>`}
 export function startJ1(...a){return hooks.goi('startJ1',this,a)}
 hooks.ham('startJ1',function(id,L){const x=ju1(id),gens=x.lv[L],ord=shuf(gens.map((_,i)=>i));v1Said='';go({k:'game',g1:1,part:2,id,lv:L,qs:Array.from({length:QN()},(_,k)=>gens[ord[k%gens.length]]()),j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,hp:0,t0:Date.now()})});
 
@@ -84,17 +85,17 @@ hooks.ham('viewHome1t',function(){const st=S.st[sid],tab=scr.tab||'map',nm=Objec
   const nav=[['map','🗺️','Bản đồ'],['jenny','★','Toán Jenny'],['fix','📒','Luyện lỗi'],['album',spr('fish',24),'Sưu tập'],['hoso',spr('hoso',24),'Hồ sơ']];
   let body=tab==='jenny'?viewJTab1(st):tab==='fix'?viewFix1(st):tab==='album'?viewAlbum(st):tab==='hoso'?viewHoSo(st):viewHome1();
   if(tab==='map'){const c=cbCard(st);if(c)body=body.replace('<!--CARDS-->','<!--CARDS-->'+c)}
-  return body+`<nav class="bnav" aria-label="Điều hướng">${nav.map(([k,i,n])=>`${(()=>{const B=typeof navBadge==='function'?navBadge(k,st,nm):(k==='fix'&&nm?{n:nm,t:`${nm} lỗi cần sửa`}:null);return`<button class="${k===tab?'on':''}${B&&B.n?' bnfix':''}${B&&B.lock?' bnlock':''}" aria-current="${k===tab?'page':'false'}" onclick="go({k:'home',tab:'${k}'})" ${B?`aria-label="${n}, ${B.t}"`:''}><span aria-hidden="true" class="bnic">${i}${B&&B.n?`<i class="pxq-n bnn">${B.n>9?'9+':B.n}</i>`:''}${B&&B.lock?`<i class="bnlk">${spr('lock',16)}</i>`:''}</span>${n}</button>`})()}`).join('')}</nav>`});
+  return body+`<nav class="bnav" aria-label="Điều hướng">${nav.map(([k,i,n])=>`${(()=>{const B=typeof navBadge==='function'?navBadge(k,st,nm):(k==='fix'&&nm?{n:nm,t:`${nm} lỗi cần sửa`}:null);return`<button class="${k===tab?'on':''}${B&&B.n?' bnfix':''}${B&&B.lock?' bnlock':''}" aria-current="${k===tab?'page':'false'}" data-act="go-home-2" ${hd.arg(String(k))} ${B?`aria-label="${n}, ${B.t}"`:''}><span aria-hidden="true" class="bnic">${i}${B&&B.n?`<i class="pxq-n bnn">${B.n>9?'9+':B.n}</i>`:''}${B&&B.lock?`<i class="bnlk">${spr('lock',16)}</i>`:''}</span>${n}</button>`})()}`).join('')}</nav>`});
 export function endFix1(...a){return hooks.goi('endFix1',this,a)}
 hooks.ham('endFix1',function(){const g=scr,st=S.st[sid];g.end=true;g.pass=true;st.coins+=g.fixed*5;log(sid,'passed',`Toán ${curG()} · Sổ lỗi sai`,0,{success:true,score:{raw:g.fixed}});sfx(g.fixed?'win':'ok');sayJ(g.fixed?`Em đã sửa xong ${NUMW[g.fixed]||g.fixed} lỗi. Giỏi quá!`:'Luyện tốt lắm!');save();render()});
 export function endJ1(alive){const g=scr,st=S.st[sid],x=ju1(g.id),s=j1s(st,x.id),qd=quest(st);g.end=true;g.pass=alive&&g.hearts>0&&g.ok>=needOf(g.qs.length);g.newStar=0;
   if(g.pass){qd.pass++;if(!s.m[g.lv]){s.m[g.lv]=true;g.newStar=STAR2[g.lv]}st.coins+=15;log(sid,'passed',`${x.title} · màn ${g.lv+1}`,0,{success:true,score:{raw:g.ok,max:g.qs.length}});sfx('win');sayJ('Em qua màn rồi! Giỏi quá!')}
   else{s.fails[g.lv]=(s.fails[g.lv]||0)+1;log(sid,'failed',`${x.title} · màn ${g.lv+1}`,0,{success:false});sfx('bad');sfx('lose');sayJ('Không sao cả. Mình chơi lại nhé!')}save();render()}
 export function viewEnd1b(){const g=scr,st=S.st[sid];
-  if(g.fix){const left=Object.keys(mist(st)).length;return`<div class="game g1"><div class="gend"><div class="bigicon">${spr('book',84)}</div><h1>${g.fixed?`Sửa xong ${g.fixed} lỗi!`:'Luyện tốt lắm!'}</h1><p class="muted">${g.ok}/${g.qs.length} câu đúng${g.fixed?` · +${g.fixed*5} xu`:''}</p><p class="muted">Mỗi dạng cần đúng 2 lần liền mới ra khỏi sổ. Sổ còn ${left} dạng.</p><div class="gendbtn">${left?`<button class="gobtn" type="button" onclick="startFix1()">Luyện tiếp</button>`:''}<button class="gobtn ghost" type="button" onclick="go({k:'home',tab:'fix'})">Về sổ lỗi sai</button><button class="gobtn ghost" type="button" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`}
+  if(g.fix){const left=Object.keys(mist(st)).length;return`<div class="game g1"><div class="gend"><div class="bigicon">${spr('book',84)}</div><h1>${g.fixed?`Sửa xong ${g.fixed} lỗi!`:'Luyện tốt lắm!'}</h1><p class="muted">${g.ok}/${g.qs.length} câu đúng${g.fixed?` · +${g.fixed*5} xu`:''}</p><p class="muted">Mỗi dạng cần đúng 2 lần liền mới ra khỏi sổ. Sổ còn ${left} dạng.</p><div class="gendbtn">${left?`<button class="gobtn" type="button" data-act="startFix1">Luyện tiếp</button>`:''}<button class="gobtn ghost" type="button" data-act="go-home-fix">Về sổ lỗi sai</button><button class="gobtn ghost" type="button" data-act="go-home">Bản đồ</button></div></div></div>`}
   const x=ju1(g.id),nx=g.lv<2?g.lv+1:-1;
   return`<div class="game g1"><div class="gend">${g.pass?`<div class="bigicon">${spr('star',84)}</div>`:jenny(84)}<h1>${g.pass?'Qua màn!':'Mình chơi lại nhé!'}</h1><p class="muted">${g.ok}/${g.qs.length} câu đúng${g.pass?' · +15 xu':''}</p>${g.newStar?`<p class="earn">+${g.newStar} sao Toán Jenny</p>`:''}
-   <div class="gendbtn">${g.pass&&nx>0?`<button class="gobtn" type="button" onclick="startJ1('${x.id}',${nx})">Màn ${'★'.repeat(nx+1)}</button>`:''}${!g.pass?`<button class="gobtn" type="button" onclick="startJ1('${x.id}',${g.lv})">Chơi lại</button>`:''}<button class="gobtn ghost" type="button" onclick="go({k:'jenny',id:'${x.id}'})">Về buổi học</button><button class="gobtn ghost" type="button" onclick="go({k:'home',tab:'jenny'})">Toán Jenny</button></div></div></div>`}
+   <div class="gendbtn">${g.pass&&nx>0?`<button class="gobtn" type="button" data-act="startJ1" ${hd.arg(String(x.id),nx)}>Màn ${'★'.repeat(nx+1)}</button>`:''}${!g.pass?`<button class="gobtn" type="button" data-act="startJ1" ${hd.arg(String(x.id),g.lv)}>Chơi lại</button>`:''}<button class="gobtn ghost" type="button" data-act="go-jenny" ${hd.arg(String(x.id))}>Về buổi học</button><button class="gobtn ghost" type="button" data-act="go-home-jenny">Toán Jenny</button></div></div></div>`}
 
 
 /* ---- dữ liệu chung Tiểu học ---- */
@@ -104,3 +105,19 @@ export const PD=()=>PRIM[curG()],PI=()=>PD().isl,PT=()=>PD().T,PB=()=>PD().boss,
 const WORDRX=/lời văn|ba bước|Hơn, kém|nhóm|gấp khúc|Chu vi|Tìm số hạng/;
 export const qW=q=>curG()>=3&&WORDRX.test(q.kind||'')?1.6:1;
 export const needOf=n=>Math.ceil(n*0.75);
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'startFix1':function(){startFix1()},
+  'go-jenny':function(event,a){go({k:'jenny',id:a[0]})},
+  'go-home-jenny':function(){go({k:'home',tab:'jenny'})},
+  'cancel-go-jenny':function(event,a){try{speechSynthesis.cancel()}catch(e){};go({k:'jenny',id:a[0]})},
+  'sayJ-sayFull-ju1':function(){sayJ(sayFull(ju1(scr.id).slides[scr.i].say,ju1(scr.id).slides[scr.i].h))},
+  'go-jslide':function(event,a){go({k:'jslide',id:a[0],i:a[1]})},
+  'j1s-intro-log-watched':function(event,a){j1s(S.st[sid],a[0]).intro=true;log(sid,'watched',a[1],0,{});save();go({k:'jenny',id:a[2]})},
+  'sayJ-ju1':function(){sayJ(ju1(scr.id).ex.q)},
+  'j1s-ex-log-studied':function(event,a){j1s(S.st[sid],a[0]).ex=true;log(sid,'studied',a[1],0,{});save();go({k:'jenny',id:a[2]})},
+  'show-render-sayJ-ju1':function(){scr.show=1;render();sayJ(ju1(scr.id).ex.sol)},
+  'go-home-fix':function(){go({k:'home',tab:'fix'})},
+  'startJ1':function(event,a){startJ1(a[0],a[1])},
+});

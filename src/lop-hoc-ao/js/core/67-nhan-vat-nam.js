@@ -4,6 +4,7 @@
    - Giữ phong cách pixel cũ (16 ô ngang). Bạn nam dùng chung thân, biểu cảm, áo, mũ kính với Jenny (chỉ khác tóc).
    - Cửa hàng thêm đồ cho bạn nam; đồ riêng của bạn nữ/bạn nam chỉ hiện với bạn đó (đồ đã mua vẫn giữ). */
 import { hooks } from './00-hooks.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { render } from './13-giao-dien-chung.js';
 import { PXS, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
@@ -39,7 +40,7 @@ const genOf=st=>st&&st.gender==='nam'?'nam':'nu';
 {hooks.on('viewShop',_v=>function(st){const s=ghSt(st),g=genOf(st),sv=[];GH.forEach(c=>{if(c.k==='of'||c.k==='acc'){sv.push([c,c.it]);c.it=c.it.filter(x=>!GH_GEN[x[0]]||GH_GEN[x[0]]===g||s.own.includes(x[0]))}});try{return _v.apply(this,arguments)}finally{sv.forEach(([c,it])=>c.it=it)}})}
 /* ---- chọn nhân vật ---- */
 function setGender(g){const st=S.st[sid];if(!st)return;st.gender=g==='nam'?'nam':'nu';save();const o=document.getElementById('genov');if(o)o.remove();try{sfx('card')}catch(e){}render()}
-function genPick(cls){const st=S.st[sid],cur=st&&st.gender;const b=(g,sp,t)=>`<button type="button" class="genb ${cur===g?'on':''}" onclick="setGender('${g}')" aria-pressed="${cur===g}"><span class="genpic">${spr(sp,72)}</span><b>${t}</b></button>`;
+function genPick(cls){const st=S.st[sid],cur=st&&st.gender;const b=(g,sp,t)=>`<button type="button" class="genb ${cur===g?'on':''}" data-act="setGender" ${hd.arg(String(g))} aria-pressed="${cur===g}"><span class="genpic">${spr(sp,72)}</span><b>${t}</b></button>`;
  return`<div class="genrow ${cls||''}">${b('nu','jenny__raw',arcT('Bạn nữ','Girl'))}${b('nam','boy',arcT('Bạn nam','Boy'))}</div>`}
 PXS.jenny__raw=PXS.jenny;
 function genAsk(){if(document.getElementById('genov'))return;const el=document.createElement('div');el.className='gdov';el.id='genov';
@@ -58,3 +59,8 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .ghpic img,.tdpic img,.tdcic img{max-width:80px!important;height:auto!important}.tdaccs img{max-width:28px!important;height:auto!important}.tdsub h2 img{max-width:44px!important;height:auto!important}
 .genbox .genq{margin:6px 0 0;color:#1F2A5A}
 </style>`);
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'setGender':function(event,a){setGender(a[0])},
+});

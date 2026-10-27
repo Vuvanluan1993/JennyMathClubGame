@@ -4,6 +4,7 @@
 /* 24/10/2026: trục Lời văn thay bằng Logic (Tư duy); bài lời văn tính vào trục nội dung của nó, riêng tỉ lệ đúng bài lời văn vẫn hiện (hsLoiVan) */
 import { hooks } from './00-hooks.js';
 import { esc, pick, R } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { evDay, log } from './10-su-kien-mau-xapi.js';
 import { go, render, toast } from './13-giao-dien-chung.js';
@@ -136,7 +137,7 @@ function startLuyen(){const st=S.st[sid],g=st.grade<=5?st.grade:1,idx=hsIndex(g)
 {hooks.on('viewEnd1',_v=>function(){if(!scr.lz)return _v.apply(this,arguments);const g=scr,up=g.lzaok&&g.lza>g.lzb;
   return`<div class="game g1"><div class="gend"><div class="bigicon bossend">${jenny(84,'cheer')}</div><h1>Luyện xong!</h1><p class="muted">${g.ok}/${g.qs.length} câu đúng · +5 xu</p>
    <div class="hs-up${up?' on':''}"><span>${esc(HS_AXN[g.lz])}</span><b>${g.lzok?hsMuc(g.lzb):'–'}</b><span aria-hidden="true">▶</span><b class="hs-new">${g.lzaok?hsMuc(g.lza):'chưa đủ'}</b></div>
-   <div class="gendbtn"><button class="gobtn" type="button" onclick="startLuyen()">Luyện tiếp</button><button class="gobtn ghost" type="button" onclick="go({k:'home',tab:'hoso'})">Về Hồ sơ</button><button class="gobtn ghost" type="button" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`})}
+   <div class="gendbtn"><button class="gobtn" type="button" data-act="startLuyen">Luyện tiếp</button><button class="gobtn ghost" type="button" data-act="go-home-hoso">Về Hồ sơ</button><button class="gobtn ghost" type="button" data-act="go-home">Bản đồ</button></div></div></div>`})}
 {hooks.on('viewGame1',_g=>function(){const h=_g.apply(this,arguments);if(!scr.lz||scr.end)return h;
   return h.replace(`go({k:'home',tab:'fix'})`,`go({k:'home',tab:'hoso'})`).replace('📒 Luyện lỗi',`Luyện · ${esc(HS_AXN[scr.lz])}`).replace('aria-label="Sổ lỗi sai"',`aria-label="Luyện ${esc(HS_AXN[scr.lz])}"`)})}
 
@@ -161,18 +162,18 @@ function hsTap(ev){const i=ev.target.closest('i[data-k]');if(!i)return;const st=
   document.querySelectorAll('.hs-hm i.hs-sel').forEach(x=>x.classList.remove('hs-sel'));i.classList.add('hs-sel')}
 export function viewHoSo(st){hsHeal(st,sid);const g=st.grade,sk=hsStreaks(st),H=hsHeat(st),sc=hsScores(st),plan=hsPlan(st),tk=hsTodayKey();
   const kpi=[['Chuỗi',sk.cur+' ngày','#F37A1F'],['Dài nhất',sk.best,'#F04A1B'],['Ngày học',sk.days,'#2AB563'],['Số câu',sk.n,'#0079C1']];
-  let tip,btn;if(plan.none){tip='Em chơi thêm các đảo nhé! Khi đủ bài, Jenny sẽ vẽ Sức mạnh Toán cho em.';btn=`<button class="hs-go" type="button" onclick="go({k:'home'})">Bản đồ ▶</button>`}
+  let tip,btn;if(plan.none){tip='Em chơi thêm các đảo nhé! Khi đủ bài, Jenny sẽ vẽ Sức mạnh Toán cho em.';btn=`<button class="hs-go" type="button" data-act="go-home">Bản đồ ▶</button>`}
   else{if(plan.review)tip=`Em làm tốt hết rồi! Mình ôn lại ${plan.kind?`dạng <b>${esc(plan.kind)}</b>`:'bài cũ'} nhé.`;
     else if(plan.E.length===1||plan.best.k===plan.weak.k)tip=`Mình luyện thêm <b>${esc(plan.weak.f)}</b> cho thật vững nhé.`;
     else tip=`Em giỏi <b>${esc(plan.best.f)}</b> lắm! Mình luyện thêm <b>${esc(plan.weak.f)}</b> nhé.`;
-    btn=`<button class="hs-go" type="button" onclick="startLuyen()">Luyện ▶</button>`}
+    btn=`<button class="hs-go" type="button" data-act="startLuyen">Luyện ▶</button>`}
   const months=Object.keys(st.skm||{}).sort(),cm=hsMonth(hsToday()),prev=months.filter(m=>m<cm).pop();
-  return`<div class="hs" onclick="">
+  return`<div class="hs" data-act="khong">
    <div class="hs-head">${jenny(52,'happy')}<div><h1 class="hs-h1">Hồ sơ của em</h1><div class="hs-sub">${esc(st.name)} · Lớp ${g}${typeof OCEAN!=='undefined'&&OCEAN[g]?' · '+esc(OCEAN[g][0]):''}</div></div></div>
    <div class="hs-kpi">${kpi.map(([a,b,c])=>`<div class="hs-pf" style="--hc:${c}"><span>${a}</span><b>${b}</b></div>`).join('')}</div>
    <section class="hs-pf hs-box"><h2 class="hs-h2">Chuỗi ngày chăm chỉ</h2><div class="hs-note">Năm học 2026–2027 · mỗi ô là 1 ngày em vào làm bài</div>
     <div class="hs-scroll" id="hsScroll" data-col="${H.todayCol}"><div class="hs-mo" style="width:${H.cols*16}px">${H.mo}</div>
-     <div class="hs-row"><div class="hs-wd"><span>T2</span><span></span><span>T4</span><span></span><span>T6</span><span></span><span>CN</span></div><div class="hs-hm" onclick="hsTap(event)">${H.cells}</div></div></div>
+     <div class="hs-row"><div class="hs-wd"><span>T2</span><span></span><span>T4</span><span></span><span>T6</span><span></span><span>CN</span></div><div class="hs-hm" data-act="hsTap">${H.cells}</div></div></div>
     <div class="hs-lg">Ít ${HS_LV.map(c=>`<i style="background:${c[0]};border-color:${c[1]}"></i>`).join('')} Nhiều <span class="hs-lt"><i class="hs-t"></i> Hôm nay</span></div>
     <div class="hs-pf hs-det" id="hsDet" aria-live="polite">${hsDetail(tk,(st.dd||{})[tk])}</div></section>
    <section class="hs-pf hs-box"><h2 class="hs-h2">Sức mạnh Toán</h2>
@@ -196,3 +197,11 @@ function hsDrawRadar(){const cv=document.getElementById('hsRadar');if(!cv)return
 function hsAfter(){if(!document.querySelector('.hs'))return;hsDrawRadar();const s=document.getElementById('hsScroll');if(s&&!s.dataset.done){s.dataset.done=1;s.scrollLeft=Math.max(0,(+s.dataset.col)*16-s.clientWidth+80)}}
 {hooks.on('render',_r=>function(){const a=_r.apply(this,arguments);try{hsAfter()}catch(e){}return a})}
 try{addEventListener('resize',()=>{try{hsDrawRadar()}catch(e){}})}catch(e){}
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'khong':function(){},
+  'startLuyen':function(){startLuyen()},
+  'go-home-hoso':function(){go({k:'home',tab:'hoso'})},
+  'hsTap':function(event){hsTap(event)},
+});

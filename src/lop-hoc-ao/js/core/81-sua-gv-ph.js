@@ -2,6 +2,7 @@
    Giáo viên: Họ tên, Giới tính, SĐT, Gmail, Mật khẩu mới (máy chủ). Phụ huynh: SĐT, Gmail, Mật khẩu mới (máy chủ); con thì sửa ở nút 👪 Con.
    Tên đăng nhập không đổi ở đây. Đổi mật khẩu trên máy chủ = cấp đăng nhập mới cho cùng tên (dùng mayChu của 70). */
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { render, toast } from './13-giao-dien-chung.js';
 import { viewPH } from './20-phu-huynh.js';
@@ -16,7 +17,7 @@ const okDt=d=>!d||/^0\d{9,10}$/.test(d),okMail=m=>!m||/^[^\s@]+@[^\s@]+\.[^\s@]+
 const nk=t=>{(O().nk=O().nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t})};
 const dong=()=>{const m=document.getElementById('qlsua2');if(m)m.remove()};window.qlDong2=dong;
 function hop(tieuDe,than,luu){dong();const el=document.createElement('div');el.className='gdov';el.id='qlsua2';
- el.innerHTML=`<div class="gdbox qsbox qlmbox"><div class="gdhd"><b>${tieuDe}</b><button type="button" class="gdx" onclick="qlDong2()">Đóng ✕</button></div><form class="qsform" onsubmit="event.preventDefault();${luu}">${than}<div class="qsbtn"><span style="flex:1"></span><button class="btn pri" type="submit">Lưu</button></div></form></div>`;
+ el.innerHTML=`<div class="gdbox qsbox qlmbox"><div class="gdhd"><b>${tieuDe}</b><button type="button" class="gdx" data-act="qlDong2">Đóng ✕</button></div><form class="qsform" data-act-submit="preventDefault" ${hd.argEv('submit',luu)}>${than}<div class="qsbtn"><span style="flex:1"></span><button class="btn pri" type="submit">Lưu</button></div></form></div>`;
  document.body.appendChild(el);setTimeout(()=>{const i=el.querySelector('input:not([readonly]),select');if(i)i.focus()},30)}
 const mkRow=cl=>cl?`<label>Mật khẩu mới<input id="sPw" type="text" maxlength="30" placeholder="Để trống nếu không đổi" autocomplete="off"></label>`:'<p class="muted" style="margin:0;font-size:12.5px">Đổi mật khẩu chỉ làm được khi dùng máy chủ.</p>';
 let busy=false;
@@ -68,3 +69,8 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 @media(max-width:640px){.qgv .a-act,.qph .a-act{grid-column:2;grid-row:1}}
 </style>`);
 })();
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'qlDong2':function(){qlDong2()},
+});

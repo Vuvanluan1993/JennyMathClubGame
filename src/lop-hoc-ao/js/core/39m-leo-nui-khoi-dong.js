@@ -33,5 +33,5 @@ globalThis.MAP_TI=null;globalThis.MAP_ID=null;
 {hooks.on('jumpT1',_j=>function(ti,smooth){MAP_TI=ti;return _j.apply(this,arguments)})}
 {hooks.on('g1AfterRender',_a=>function(){const want=MAP_TI,onMap=role==='hs'&&scr.k==='home'&&(scr.tab||'map')==='map';
   if(onMap&&want!=null&&!scr.noJump){scr.noJump=1;const v=_a.apply(this,arguments);scr.noJump=0;setTimeout(()=>{jumpT1(want);const ch=document.querySelectorAll('.tchip')[want];if(ch&&ch.parentNode)ch.parentNode.scrollLeft=ch.offsetLeft-ch.parentNode.clientWidth/2+ch.offsetWidth/2;
-    /* cuộn biển của chủ đề tới đúng đảo vừa vào */ if(MAP_ID){const n=document.querySelector(`#t1_${want} .node[onclick*="'${MAP_ID}'"]`);const sea=n&&n.closest('.sea');if(sea)sea.scrollLeft=n.offsetLeft-sea.clientWidth/2+55}},30);return v}
+    /* cuộn biển của chủ đề tới đúng đảo vừa vào */ if(MAP_ID){const n=document.querySelector(`#t1_${want} .node[data-arg*='"${MAP_ID}"']`);const sea=n&&n.closest('.sea');if(sea)sea.scrollLeft=n.offsetLeft-sea.clientWidth/2+55}},30);return v}
   return _a.apply(this,arguments)})}

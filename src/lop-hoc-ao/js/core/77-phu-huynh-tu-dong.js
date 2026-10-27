@@ -3,6 +3,7 @@
    chưa có → tạo tài khoản phụ huynh mới tên "ph.<tên đăng nhập học sinh>", mật khẩu ngẫu nhiên (P-05, phải đổi lần đầu).
    Sửa học sinh: bổ sung SĐT/Gmail trùng phụ huynh khác → hỏi gộp; tài khoản ph.… tạm không còn con thì bỏ. */
 import { hooks } from './00-hooks.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { render, toast } from './13-giao-dien-chung.js';
 import { viewPH } from './20-phu-huynh.js';
@@ -68,5 +69,10 @@ window.phTaoThieu=async function(){const ds=STUDENTS.filter(s=>!(O().ph||{})[s[0
  let n=0,g=0,l=0;for(const [id] of ds){const h=(O().hoso||{})[id]||{};try{const f=phTim(h.dt,h.mail);await phGan(id,f.xung?f.xung[0]:f.tk,{dt:h.dt,mail:h.mail});(f.tk||f.xung)?g++:n++}catch(x){l++}}
  save();if(cloud()){try{await fbDayNgay()}catch(x){}}render();toast(`Đã tạo ${n} tài khoản, gắn chung ${g} em${l?`, ${l} lỗi`:''}`)};
 {hooks.on('viewPH',_p=>function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='ph'){const n=STUDENTS.filter(s=>!(O().ph||{})[s[0]]).length;
- if(n)r=r.replace(/(<h2>Em chưa có phụ huynh \(\d+\)<\/h2>)/,`$1<div class="qlin" style="margin-bottom:10px"><button type="button" class="btn pri" onclick="phTaoThieu()">+ Tạo tài khoản phụ huynh cho ${n} em</button></div>`)}return r})}
+ if(n)r=r.replace(/(<h2>Em chưa có phụ huynh \(\d+\)<\/h2>)/,`$1<div class="qlin" style="margin-bottom:10px"><button type="button" class="btn pri" data-act="phTaoThieu">+ Tạo tài khoản phụ huynh cho ${n} em</button></div>`)}return r})}
 })();
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'phTaoThieu':function(){phTaoThieu()},
+});

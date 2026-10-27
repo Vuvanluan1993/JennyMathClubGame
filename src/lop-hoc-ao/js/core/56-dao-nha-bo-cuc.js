@@ -6,6 +6,7 @@
    - Ổ rơm, máy ấp: bãi cỏ giữa · Máng ăn: bãi cát trái · Thú cưng: đi lại trên bãi cát giữa. */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { ghSt } from './49-gian-hang.js';
 import { careOf, gearHas, petsOf, petSpr } from './49b-dao-nha-thu-cung.js';
@@ -30,7 +31,7 @@ function is2Scene(st,o){o=o||{};const s=ghSt(st),P=petsOf(st),list=o.dec||s.dec;
  const dec=list.map(id=>is2Put(id,spr(id,IS2_POS[id]?IS2_POS[id][2]:60),o.tryId===id&&!s.dec.includes(id)?'try':'')).join('');
  let home='',pets='';
  if(o.pets){home=['nest','feeder','inc'].filter(id=>gearHas(st,id)).map(id=>is2Put(id,spr(careOf(id)[5],IS2_POS[id][2]),'',id==='inc'?P.eggs.filter(e=>e.inc).map(()=>`<i class="iegg">${spr('eggCS',20)}</i>`).join(''):id==='nest'?P.eggs.filter(e=>!e.inc).map(()=>`<i class="iegg">${spr('eggCS',20)}</i>`).join(''):'')).join('');
-  pets=P.list.map((p,i)=>{const[x,y]=IS2_PET[i]||IS2_PET[0];return`<button type="button" class="ipet is2pet" style="left:${x}px;top:${y}px;z-index:${y}" onclick="petPat(${i})" aria-label="Cưng nựng ${esc(p.name||'thú cưng')}">${petSpr(p,64)}${p.sick?`<i class="ifx">${spr('fxSweat',18)}</i>`:p.no<25?`<i class="ifx">${spr('bowlS',18)}</i>`:''}</button>`}).join('')}
+  pets=P.list.map((p,i)=>{const[x,y]=IS2_PET[i]||IS2_PET[0];return`<button type="button" class="ipet is2pet" style="left:${x}px;top:${y}px;z-index:${y}" data-act="petPat" ${hd.arg(i)} aria-label="Cưng nựng ${esc(p.name||'thú cưng')}">${petSpr(p,64)}${p.sick?`<i class="ifx">${spr('fxSweat',18)}</i>`:p.no<25?`<i class="ifx">${spr('bowlS',18)}</i>`:''}</button>`}).join('')}
  return`<div class="is2wrap ${o.small?'small':''}"><div class="is2" ${o.pets?'id="iscene"':''}>${is2Bg()}${dec}${home}${pets}</div></div>`}
 function is2Fit(){document.querySelectorAll('.is2wrap').forEach(w=>{const k=w.clientWidth/IS2_W;const s=w.querySelector('.is2');if(s)s.style.transform=`scale(${k})`})}
 addEventListener('resize',is2Fit);

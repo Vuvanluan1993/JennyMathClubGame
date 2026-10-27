@@ -7,6 +7,7 @@
    - Anh chị em cùng bố mẹ: 1 tài khoản phụ huynh gắn được nhiều con (S.org.ph[con]=tk; máy chủ: users.con là danh sách). */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { ORG_ON, save } from './09-du-lieu-demo.js';
 import { render, toast } from './13-giao-dien-chung.js';
 import { FB, fbDayNgay, fbLoi, fbMKLoi, fbMKNho, fbMKTao, fbTaoTK } from './62-may-chu.js';
@@ -17,7 +18,7 @@ const nk=t=>{try{(O().nk=O().nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t}
 const v=i=>((document.getElementById(i)||{}).value||'').trim();
 const setv=(i,x)=>{const el=document.getElementById(i);if(el)el.value=x};
 function modal(t,body,ok,okText){const el=document.createElement('div');el.className='gdov';el.id='qlm';
- el.innerHTML=`<div class="gdbox qsbox qlmbox"><div class="gdhd"><b>${t}</b><button type="button" class="gdx" onclick="qlDong()">Đóng ✕</button></div><form class="qsform" onsubmit="event.preventDefault();${ok}">${body}<div class="qsbtn"><span style="flex:1"></span><button class="btn pri" type="submit">${okText||'Lưu'}</button></div></form></div>`;
+ el.innerHTML=`<div class="gdbox qsbox qlmbox"><div class="gdhd"><b>${t}</b><button type="button" class="gdx" data-act="qlDong">Đóng ✕</button></div><form class="qsform" data-act-submit="preventDefault" ${hd.argEv('submit',ok)}>${body}<div class="qsbtn"><span style="flex:1"></span><button class="btn pri" type="submit">${okText||'Lưu'}</button></div></form></div>`;
  document.body.appendChild(el);setTimeout(()=>{const i=el.querySelector('input:not([disabled]),select');if(i)i.focus()},30)}
 window.qlDong=()=>{const m=document.getElementById('qlm');if(m)m.remove()};
 const LOPS=()=>[...O().lop].sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten));
@@ -59,7 +60,7 @@ window.qlLuuLop=function(){setv('nlKhoi',v('mKhoi'));setv('nlTen',v('mLopTen'));
 /* ---------- Xếp lớp: chọn nhiều em vào 1 lớp ---------- */
 window.qlMoXep=function(lid){const L=LOPS();if(!L.length){toast('Chưa có lớp');return}lid=lid||L[0].id;
  const l=L.find(x=>x.id===lid),ds=STUDENTS.filter(s=>O().gd[s[0]]!==lid&&(!O().gd[s[0]]||s[2]===l.khoi)).sort((a,b)=>(O().gd[a[0]]?1:0)-(O().gd[b[0]]?1:0)||a[1].localeCompare(b[1]));
- qlDong();modal('Xếp học sinh vào lớp',`<label>Lớp<select id="mXLop" onchange="qlMoXep(this.value)">${L.map(x=>`<option value="${x.id}" ${x.id===lid?'selected':''}>Lớp ${esc(x.ten)} (khối ${x.khoi})</option>`).join('')}</select></label>
+ qlDong();modal('Xếp học sinh vào lớp',`<label>Lớp<select id="mXLop" data-act-change="qlMoXep">${L.map(x=>`<option value="${x.id}" ${x.id===lid?'selected':''}>Lớp ${esc(x.ten)} (khối ${x.khoi})</option>`).join('')}</select></label>
  <p class="muted" style="margin:0;font-size:12.5px">Các em chưa xếp lớp và các em khối ${l.khoi} ở lớp khác. Chọn các em cần đưa vào lớp ${esc(l.ten)}.</p>
  <div class="qlck">${ds.length?ds.map(([id,n])=>{const c=O().gd[id];return`<label class="qlckr"><input type="checkbox" value="${id}"> <b>${esc(n)}</b> <small>${c?'đang ở lớp '+esc((O().lop.find(x=>x.id===c)||{ten:c}).ten):'chưa xếp lớp'}</small></label>`}).join(''):'<p class="muted">Không còn em nào khối này ngoài lớp.</p>'}</div>`,`qlLuuXep('${lid}')`,'Đưa vào lớp')};
 window.qlLuuXep=function(lid){const ids=[...document.querySelectorAll('.qlck input:checked')].map(x=>x.value);if(!ids.length){toast('Chưa chọn em nào');return}
@@ -68,11 +69,11 @@ window.qlLuuXep=function(lid){const ids=[...document.querySelectorAll('.qlck inp
 const phDs=()=>{const m={};Object.entries(O().ph||{}).forEach(([con,tk])=>{(m[tk]=m[tk]||[]).push(con)});return m};
 window.qlMoPH=function(tk0){const ds=phDs(),tks=Object.keys(ds).sort(),info=O().phInfo||{};
  const hs=[...STUDENTS].sort((a,b)=>a[1].localeCompare(b[1]));const cua=tk0?ds[tk0]||[]:[];
- qlDong();modal('Tài khoản phụ huynh',`<label>Phụ huynh<select id="mPhTk" onchange="qlMoPH(this.value)"><option value="">+ Tạo tài khoản phụ huynh mới</option>${tks.map(t=>`<option value="${t}" ${t===tk0?'selected':''}>${esc((info[t]||{}).ten||t)} (${t}) · ${ds[t].length} con</option>`).join('')}</select></label>
+ qlDong();modal('Tài khoản phụ huynh',`<label>Phụ huynh<select id="mPhTk" data-act-change="qlMoPH"><option value="">+ Tạo tài khoản phụ huynh mới</option>${tks.map(t=>`<option value="${t}" ${t===tk0?'selected':''}>${esc((info[t]||{}).ten||t)} (${t}) · ${ds[t].length} con</option>`).join('')}</select></label>
  ${tk0?'':`<div class="qs2"><label>Họ tên phụ huynh<input id="mPhTen" maxlength="40" placeholder="Nguyễn Văn Bình"></label><label>Điện thoại<input id="mPhDt" type="tel" maxlength="15"></label></div>
  <div class="qs2"><label>Tên đăng nhập<input id="mPhTk2" maxlength="24" autocapitalize="off" spellcheck="false" placeholder="ph.binh"></label><label>Mật khẩu<input id="mPhPw" maxlength="30" ${cloud()?'':'disabled placeholder="Chỉ có khi dùng máy chủ"'}></label></div>`}
  <p class="muted" style="margin:0;font-size:12.5px">Chọn các con (anh chị em cùng bố mẹ chọn chung 1 tài khoản). Phụ huynh xem được tình hình học của từng con.</p>
- <input type="search" placeholder="Tìm tên học sinh" oninput="const q=this.value.toLowerCase();document.querySelectorAll('.qlck .qlckr').forEach(r=>r.hidden=q&&!r.textContent.toLowerCase().includes(q))" style="font:inherit;padding:8px;border:0;box-shadow:var(--f2)">
+ <input type="search" placeholder="Tìm tên học sinh" data-act-input="toLowerCase-querySelectorAll-forEach-hidden" style="font:inherit;padding:8px;border:0;box-shadow:var(--f2)">
  <div class="qlck">${hs.map(([id,n,g])=>{const p=(O().ph||{})[id],cua1=cua.includes(id);return`<label class="qlckr"><input type="checkbox" value="${id}" ${cua1?'checked':''} ${p&&p!==tk0?'disabled':''}> <b>${esc(n)}</b> <small>khối ${g}${p&&p!==tk0?' · đã có PH '+esc(p):''}</small></label>`}).join('')}</div>`,`qlLuuPH()`,'Lưu')};
 window.qlLuuPH=async function(){const o=O();o.ph=o.ph||{};o.phInfo=o.phInfo||{};let tk=v('mPhTk');const moiTK=!tk;
  const con=[...document.querySelectorAll('.qlck input:checked:not(:disabled)')].map(x=>x.value);if(!con.length){toast('Chọn ít nhất 1 con');return}
@@ -89,18 +90,18 @@ window.qlLuuPH=async function(){const o=O();o.ph=o.ph||{};o.phInfo=o.phInfo||{};
  nk(`Phụ huynh ${tk}: con ${con.map(c=>(S.st[c]||{}).name||c).join(', ')}`);save();if(cloud()){try{await fbDayNgay()}catch(e){}}qlDong();render();toast(moiTK&&cloud()?`Đã tạo tài khoản ${tk}. Mật khẩu tạm trên phiếu in.`:'Đã lưu')};
 /* ---------- gắn nút vào trang Quản lý ---------- */
 function phCard(){const ds=phDs(),info=O().phInfo||{},tks=Object.keys(ds).sort();
- return`<section class="card qlphcard"><div class="qlhead"><h2>Phụ huynh</h2><button type="button" class="btn sm pri" onclick="qlMoPH('')">👪 Tài khoản phụ huynh</button></div>
+ return`<section class="card qlphcard"><div class="qlhead"><h2>Phụ huynh</h2><button type="button" class="btn sm pri" data-act="qlMoPH-2">👪 Tài khoản phụ huynh</button></div>
  <p class="muted" style="margin:4px 0 0">Một tài khoản phụ huynh gắn được nhiều con (anh chị em cùng bố mẹ).</p>
- ${tks.length?tks.map(t=>`<div class="task"><b>${esc((info[t]||{}).ten||t)}</b> <span class="muted">· ${esc(t)}${(info[t]||{}).dt?' · '+esc(info[t].dt):''}</span> <button type="button" class="btn sm" onclick="qlMoPH('${t}')">Sửa con</button><div class="row" style="gap:6px;margin-top:6px">${ds[t].map(c=>`<span class="pill">${esc((S.st[c]||{}).name||c)}</span>`).join('')}</div></div>`).join(''):'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>`}
+ ${tks.length?tks.map(t=>`<div class="task"><b>${esc((info[t]||{}).ten||t)}</b> <span class="muted">· ${esc(t)}${(info[t]||{}).dt?' · '+esc(info[t].dt):''}</span> <button type="button" class="btn sm" data-act="qlMoPH-3" ${hd.arg(String(t))}>Sửa con</button><div class="row" style="gap:6px;margin-top:6px">${ds[t].map(c=>`<span class="pill">${esc((S.st[c]||{}).name||c)}</span>`).join('')}</div></div>`).join(''):'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>`}
 {hooks.on('viewPH',_p=>function(){let r=_p.apply(this,arguments);if(role!=='ql')return r;try{
- r=r.replace('<h2>Lớp học</h2>','<div class="qlhead"><h2>Lớp học</h2><span><button type="button" class="btn sm pri" onclick="qlMoLop()">+ Thêm lớp</button> <button type="button" class="btn sm" onclick="qlMoXep()">⇄ Xếp lớp</button></span></div>')
-  .replace(/(<div class="row" style="justify-content:space-between"><h2>Học sinh<\/h2>)/,'<div class="qlhead" style="margin-bottom:8px"><span></span><span><button type="button" class="btn sm pri" onclick="qlMoHS()">+ Thêm học sinh</button> <button type="button" class="btn sm" onclick="qlMoXep()">⇄ Xếp lớp</button></span></div>$1')
-  .replace('<h2>Giáo viên</h2>','<div class="qlhead"><h2>Giáo viên</h2><button type="button" class="btn sm pri" onclick="qlMoGV()">+ Thêm giáo viên</button></div>')
-  .replace(/(<select aria-label="Lớp của [^"]*" onchange="qlChuyen\('([a-z0-9._-]+)',this\.value\)">[\s\S]*?<\/select>)/g,(m,s,id)=>O().gd[id]?`${s} <button type="button" class="btn sm qlbo" onclick="qlChuyen('${id}','')">Bỏ khỏi lớp</button>`:m)
+ r=r.replace('<h2>Lớp học</h2>','<div class="qlhead"><h2>Lớp học</h2><span><button type="button" class="btn sm pri" data-act="qlMoLop">+ Thêm lớp</button> <button type="button" class="btn sm" data-act="qlMoXep-2">⇄ Xếp lớp</button></span></div>')
+  .replace(/(<div class="row" style="justify-content:space-between"><h2>Học sinh<\/h2>)/,'<div class="qlhead" style="margin-bottom:8px"><span></span><span><button type="button" class="btn sm pri" data-act="qlMoHS">+ Thêm học sinh</button> <button type="button" class="btn sm" data-act="qlMoXep-2">⇄ Xếp lớp</button></span></div>$1')
+  .replace('<h2>Giáo viên</h2>','<div class="qlhead"><h2>Giáo viên</h2><button type="button" class="btn sm pri" data-act="qlMoGV">+ Thêm giáo viên</button></div>')
+  .replace(/(<select aria-label="Lớp của [^"]*" data-act-change="qlChuyen" data-arg-change="\[&quot;([a-z0-9._-]+)&quot;\]">[\s\S]*?<\/select>)/g,(m,s,id)=>O().gd[id]?`${s} <button type="button" class="btn sm qlbo" data-act="qlChuyen-2" ${hd.arg(String(id))}>Bỏ khỏi lớp</button>`:m)
   .replace(/(<div class="grid gpair">\s*<section class="card"><div class="qlhead"><h2>Giáo viên)/,phCard()+'$1')
   .replace(/(<section class="card"><h2>Giáo viên<\/h2>)/,'$1')}catch(e){console.error(e)}return r})}
 document.head.insertAdjacentHTML('beforeend',`<style>
-form[onsubmit="qlTaoHS(event)"],form[onsubmit="qlTaoGV(event)"],form[onsubmit="qlTaoLop(event)"],form[onsubmit="qlTaoPH(event)"]{display:none!important}
+form[data-act-submit="qlTaoHS"],form[data-act-submit="qlTaoGV"],form[data-act-submit="qlTaoLop"],form[data-act-submit="qlTaoPH"]{display:none!important}
 .qlhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.qlhead h2{margin:0}
 .qsform label{min-width:0;justify-content:flex-end}.qsform .qs2,.qsform .qs3{align-items:end}.qsform input,.qsform select{height:42px;line-height:normal}.qsform input[type=checkbox]{height:auto}.qsform input,.qsform select{width:100%;box-sizing:border-box;min-width:0}.qs2,.qs3{grid-template-columns:repeat(var(--c,2),minmax(0,1fr))!important}.qs3{--c:3}
 .qlmbox{max-width:520px;max-height:92vh;overflow:auto}.qlck{display:flex;flex-direction:column;gap:2px;max-height:300px;overflow:auto;padding:6px;box-shadow:var(--f2);background:#fff}
@@ -108,3 +109,19 @@ form[onsubmit="qlTaoHS(event)"],form[onsubmit="qlTaoGV(event)"],form[onsubmit="q
 .qlbo{padding:2px 8px!important;font-size:12px!important;margin-top:4px}.qlphcard{margin:0 0 16px}
 </style>`);
 })();
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'qlDong':function(){qlDong()},
+  'preventDefault':function(event,a){event.preventDefault();a[0]},
+  'qlMoXep':function(){qlMoXep(this.value)},
+  'qlMoPH':function(){qlMoPH(this.value)},
+  'toLowerCase-querySelectorAll-forEach-hidden':function(){const q=this.value.toLowerCase();document.querySelectorAll('.qlck .qlckr').forEach(r=>r.hidden=q&&!r.textContent.toLowerCase().includes(q))},
+  'qlMoPH-2':function(){qlMoPH('')},
+  'qlMoPH-3':function(event,a){qlMoPH(a[0])},
+  'qlMoLop':function(){qlMoLop()},
+  'qlMoXep-2':function(){qlMoXep()},
+  'qlMoHS':function(){qlMoHS()},
+  'qlMoGV':function(){qlMoGV()},
+  'qlChuyen-2':function(event,a){qlChuyen(a[0],'')},
+});

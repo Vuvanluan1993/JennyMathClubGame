@@ -15,7 +15,7 @@ const FROG_BANK=[147,254],FROG_PAD=[[33,96],[147,96],[261,96]];
 function frogAnim(el,frames,ms,steps){return new Promise(res=>{try{const a=el.animate(frames,{duration:ms,easing:`steps(${steps||Math.max(4,Math.round(ms/60))})`,fill:'forwards'});a.onfinish=()=>res();a.oncancel=()=>res()}catch(e){setTimeout(res,ms)}})}
 const fpos=([x,y],dy=0,o={})=>Object.assign({left:x+'px',top:(y+dy)+'px'},o);
 function frogSprite(el,name){el.innerHTML=spr(name,48);try{pixelize(el)}catch(e){}}
-function frogTap(i){const g=scr;if(g.k!=='xg'||g.mode!=='frog'||g.end||g.lock||g.bad.includes(i))return;const q=g.q,ok=i===q.a;
+export function frogTap(i){const g=scr;if(g.k!=='xg'||g.mode!=='frog'||g.end||g.lock||g.bad.includes(i))return;const q=g.q,ok=i===q.a;
   xgRec(ok,g.tries===0&&q.q?q.q:g.tries===0?{kind:'Tính nhẩm'}:null);g.tries++;g.lock=1;
   const el=document.getElementById('xfj'),pad=document.querySelectorAll('.xfpad')[i],fb=document.getElementById('xgfb'),B=FROG_BANK,P=FROG_PAD[i];
   if(!el){/* không có màn hình (kiểm thử): xử lý ngay */return frogDone(g,i,ok)}

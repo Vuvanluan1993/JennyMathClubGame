@@ -6,6 +6,7 @@
    đúng, sang câu khác. Không bao giờ mất bậc đã lớn. Đủ 8 lần tưới hoặc hết 150 giây thì kết thúc. Không có tim.
    Loài cây theo đảo: táo, cam, xoài, dâu tây, hướng dương. Câu hỏi lấy từ frogQ (đã lọc kiến thức như Ếch nhảy). */
 import { hooks } from './00-hooks.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { addCoins } from './11-sao-va-mo-khoa.js';
@@ -17,7 +18,7 @@ import { curG } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { sfx } from './33b-am-thanh.js';
 import { jenny } from './33d-jenny-bieu-cam.js';
 import { jOutfit, ofVariant } from './33e-ho-chieu.js';
-import { stopXG, xgHash, XGN, xgRec } from './37-tro-choi-dot-1.js';
+import { startXG, stopXG, xgHash, XGN, xgRec } from './37-tro-choi-dot-1.js';
 import { frogQ, frogSay, xcv, xpx } from './39-tro-choi-dot-3.js';
 import { XG_ALL } from './39c-can-bang-tro-choi.js';
 import { ktOf, XG_BIAS } from './39e-kien-thuc-tro-choi.js';
@@ -52,9 +53,9 @@ const plantSp=id=>PLANT_SP[xgHash(String(id)+'plant')%PLANT_SP.length];
   if(g.end){const rec=g.score>(g.prev||0)&&g.score>0;
     return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr('plantI',72)}</span>${jenny(72,g.score?'cheer':'sad')}</div><h1>${rec?'Kỷ lục mới!':g.score>=PLANT_N?'Thu hoạch rồi!':'Hết giờ!'}</h1>
      <p class="muted">Tưới đúng <b>${g.score}</b>/${PLANT_N} lần · cây ${sp.n} ${PLANT_STAGE[g.stage]} · kỷ lục ${best}</p><div class="xpbasket">${plantBasketHTML(g)}</div>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}
-     <div class="gendbtn"><button class="gobtn" type="button" onclick="startXG('plant','${g.id}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}
-  return`<div class="game g1 mini xg xplant"><div class="gtop"><button class="gx" onclick="stopXG();go({k:'island',id:'${g.id}'})" aria-label="Thoát">✕</button><span class="mgsc xpleaves" id="xpbar" aria-label="Đã tưới ${g.score}/${PLANT_N} lần">${plantBar(g)}</span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="xptm">${g.t}</b></span></div>
-   <div class="mgrule"><span id="xpst">${plantStatus(g)}</span><button class="g1spk" type="button" onclick="sayJ(scr.ph==='ask'&&scr.q?frogSay(scr.q):scr.say)" aria-label="Nghe lại">🔊</button></div>
+     <div class="gendbtn"><button class="gobtn" type="button" data-act="startXG-plant" ${hd.arg(String(g.id))}>Chơi lại</button><button class="gobtn ghost" type="button" data-act="go-island-3" ${hd.arg(String(g.id))}>Về đảo</button></div></div></div>`}
+  return`<div class="game g1 mini xg xplant"><div class="gtop"><button class="gx" data-act="stopXG-go-island" ${hd.arg(String(g.id))} aria-label="Thoát">✕</button><span class="mgsc xpleaves" id="xpbar" aria-label="Đã tưới ${g.score}/${PLANT_N} lần">${plantBar(g)}</span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="xptm">${g.t}</b></span></div>
+   <div class="mgrule"><span id="xpst">${plantStatus(g)}</span><button class="g1spk" type="button" data-act="sayJ-ask-frogSay" aria-label="Nghe lại">🔊</button></div>
    <div class="xpt" id="xpt"><canvas class="xpcv" id="xpcv" width="114" height="100" aria-hidden="true"></canvas><span class="xpban" id="xpban"></span></div>
    <div class="xpq" id="xpq"></div>
    <div id="xgfb" class="xgfb"></div></div>`})}
@@ -64,7 +65,7 @@ function plantBasketHTML(g){const n=g.score;return`<span class="xpbk">${Array.fr
 function plantStatus(g){const sp=g.sp;return g.ph==='ask'?(g.tries?'<b>Cây cần nước đúng cách!</b> Thử lại nhé':`Trả lời đúng để tưới cây ${sp.n} <b>(lần ${g.score+1}/${PLANT_N})</b>`):g.ph==='water'?'<b>Jenny tưới cây…</b>':g.ph==='rain'?'<b>Mưa rào!</b> Cây uống no nước':g.ph==='nibble'?'<b>Ốc sên gặm lá!</b> Câu sau cố lên nhé':g.ph==='harvest'?'<b>Thu hoạch!</b> Quả rơi vào giỏ':''}
 function plantUI(){const g=scr;if(g.k!=='xg'||g.mode!=='plant'||g.end)return;const $=id=>document.getElementById(id);
   const st=$('xpst');if(st)st.innerHTML=plantStatus(g);const b=$('xpbar');if(b){b.innerHTML=plantBar(g);b.setAttribute('aria-label',`Đã tưới ${g.score}/${PLANT_N} lần`)}
-  const qb=$('xpq');if(qb){if(g.ph==='ask'&&g.q){const q=g.q;qb.innerHTML=`<div class="xpqt">${q.t}</div><div class="xpopts">${q.opts.map((o,i)=>`<button type="button" class="xpo" ${g.bad.includes(i)?'disabled':''} onclick="plantAns(${i})"><b>${o}</b></button>`).join('')}</div>`;try{pixelize(qb)}catch(e){}}else qb.innerHTML=''}}
+  const qb=$('xpq');if(qb){if(g.ph==='ask'&&g.q){const q=g.q;qb.innerHTML=`<div class="xpqt">${q.t}</div><div class="xpopts">${q.opts.map((o,i)=>`<button type="button" class="xpo" ${g.bad.includes(i)?'disabled':''} data-act="plantAns" ${hd.arg(i)}><b>${o}</b></button>`).join('')}</div>`;try{pixelize(qb)}catch(e){}}else qb.innerHTML=''}}
 /* ---- vẽ cảnh ---- */
 function plantDraw(...a){return hooks.goi('plantDraw',this,a)}
 hooks.ham('plantDraw',function(){const x=xcv('xpcv');if(!x)return;const g=scr,p=xpx(x),now=performance.now(),f=Math.floor(now/120),S=g.stage,el=now-g.pt,sp=g.sp;
@@ -171,3 +172,10 @@ function plantEnd(){const g=scr;if(g.k!=='xg'||g.mode!=='plant'||g.end)return;st
 .xpbk{display:inline-flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:220px;padding:6px 8px;background:#F6D98B;border:3px solid #1F2A5A}
 .xpbk em{font-style:normal;color:#5E6B8C}
 `;document.head.appendChild(st)})();
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'startXG-plant':function(event,a){startXG('plant',a[0])},
+  'sayJ-ask-frogSay':function(){sayJ(scr.ph==='ask'&&scr.q?frogSay(scr.q):scr.say)},
+  'plantAns':function(event,a){plantAns(a[0])},
+});

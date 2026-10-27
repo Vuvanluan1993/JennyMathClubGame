@@ -100,7 +100,7 @@ export default defineConfig({
       workbox: {
         cacheId: CACHE_ID,
         // precache = "vỏ" trang học sinh: HTML, CSS chung, JS chung, manifest, icon. Trang cô/phụ huynh/quản lý/bản thử không precache (luôn lấy mạng).
-        globPatterns: ['index.html', 'assets/lop-hoc-ao-*.css', 'assets/hoc-sinh-*.js', 'manifest.webmanifest', 'icons/*.png'],
+        globPatterns: ['index.html', 'assets/dau-trang-*.js', 'assets/lop-hoc-ao-*.css', 'assets/hoc-sinh-*.js', 'manifest.webmanifest', 'icons/*.png'],
         navigateFallback: 'index.html',
         navigateFallbackDenylist: [/\/giao-vien\//, /\/phu-huynh\//, /\/quan-ly\//, /\/demo\//, /\/giong-mau\//, /\.[a-z0-9]+$/i],
         // clientsClaim: lần cài ĐẦU, SW nhận điều khiển trang ngay (không chờ lần mở sau) để chunk khối import() sau đăng nhập đi qua SW và vào cache;

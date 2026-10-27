@@ -2,8 +2,9 @@
    Áo váy (cả áo mở từ Hộ chiếu và áo mua ở Cửa hàng), Mũ & kính, Khung ảnh. Chạm là mặc ngay, lưu luôn. */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
-import { render } from './13-giao-dien-chung.js';
+import { go, render } from './13-giao-dien-chung.js';
 import { pxURI, spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { sfx } from './33b-am-thanh.js';
 import { ofOwn, ofVariant, OUTFIT } from './33e-ho-chieu.js';
@@ -12,29 +13,29 @@ import { GH, GH_ACC, ghJenny, ghSt } from './49-gian-hang.js';
 import { NHA_TABS } from './49b-dao-nha-thu-cung.js';
 import { arcEN, arcT } from './51-kho-game.js';
 function tdLook(st){const s=ghSt(st);return{of:st.outfit||'',accs:accsOf(s),pet:'',frame:s.frame||''}}
-function tdCard(on,pic,name,click,tag){return`<button type="button" class="tdit ${on?'on':''}" onclick="${click}" aria-pressed="${on}"><span class="tdpic">${pic}</span><b>${esc(name)}</b>${on?`<i class="ghtag on">${arcT('Đang dùng','In use')}</i>`:tag?`<i class="ghtag">${tag}</i>`:''}</button>`}
+function tdCard(on,pic,name,click,tag){return`<button type="button" class="tdit ${on?'on':''}" ${click} aria-pressed="${on}"><span class="tdpic">${pic}</span><b>${esc(name)}</b>${on?`<i class="ghtag on">${arcT('Đang dùng','In use')}</i>`:tag?`<i class="ghtag">${tag}</i>`:''}</button>`}
 function viewTudo(...a){return hooks.goi('viewTudo',this,a)}
 hooks.ham('viewTudo',function(st){const s=ghSt(st),own=ofOwn(st),L=tdLook(st),en=arcEN();
  const ofs=[['',arcT('Áo xanh gốc','Original top')]].concat(Object.keys(OUTFIT).filter(k=>own.has(k)).map(k=>[k,OUTFIT[k].n]));
  const accs=[['',arcT('Bỏ hết','Remove all')]].concat(Object.keys(GH_ACC).filter(k=>s.own.includes(k)).map(k=>{const it=(GH.find(c=>c.k==='acc')||{it:[]}).it.find(x=>x[0]===k);return[k,it?it[1]:k]}));
  const frs=[['',arcT('Không khung','None')]].concat(GH.find(c=>c.k==='frame').it.map(x=>x[0]).filter(k=>s.own.includes(k)).map(k=>[k,(GH.find(c=>c.k==='frame').it.find(x=>x[0]===k)||[k,k])[1]]));
  const sec=(title,list,make,emptyCat)=>`<div class="tdsec"><h3 class="ghgh">${title}</h3><div class="tdgrid">${list.map(make).join('')}</div>${list.length<=1?`<p class="tdempty">${arcT('Em chưa có món nào ở mục này.','Nothing here yet.')}</p>`:''}</div>`;
- const C={of:[arcT('Áo váy','Outfits'),ofs,L.of?spr(ofVariant('jenny',L.of),40):spr('jenny',40),([k,n])=>tdCard(L.of===k,spr(k?ofVariant('jenny',k):'jenny',54),n,`tdSet('of','${k}')`),L.of?OUTFIT[L.of].n:arcT('Áo xanh gốc','Original top')],
-  acc:[arcT('Mũ & kính','Hats & glasses'),accs,L.accs.length?`<span class="tdaccs">${L.accs.map(k=>spr(GH_ACC[k][0],L.accs.length>1?18:26)).join('')}</span>`:`<span class="tdnone">∅</span>`,([k,n])=>tdCard(k?L.accs.includes(k):!L.accs.length,k?spr(GH_ACC[k][0],28):`<span class="tdnone">∅</span>`,n,`tdSet('acc','${k}')`,k?ACC_SN[ACC_SLOT[k]||'head']():''),L.accs.length?L.accs.map(k=>(accs.find(a=>a[0]===k)||['',k])[1]).join(' + '):arcT('Không đội mũ','No hat')],
-  frame:[arcT('Khung ảnh','Frames'),frs,L.frame?`<span class="ghfr fr-${L.frame}">${spr('jenny',26)}</span>`:`<span class="tdnone">∅</span>`,([k,n])=>tdCard(L.frame===k,k?`<span class="ghfr fr-${k}">${spr('jenny',34)}</span>`:`<span class="tdnone">∅</span>`,n,`tdSet('frame','${k}')`),L.frame?(frs.find(a=>a[0]===L.frame)||['',''])[1]:arcT('Không khung','No frame')]};
- const coin=`<span class="grow"></span><button type="button" class="chip ghchip" onclick="go({k:'home',tab:'shop'})">🪙 <b>${st.coins}</b> <span>${arcT('Cửa hàng ▸','Shop ▸')}</span></button>`;
+ const C={of:[arcT('Áo váy','Outfits'),ofs,L.of?spr(ofVariant('jenny',L.of),40):spr('jenny',40),([k,n])=>tdCard(L.of===k,spr(k?ofVariant('jenny',k):'jenny',54),n,hd.attr('tdSet','of',k)),L.of?OUTFIT[L.of].n:arcT('Áo xanh gốc','Original top')],
+  acc:[arcT('Mũ & kính','Hats & glasses'),accs,L.accs.length?`<span class="tdaccs">${L.accs.map(k=>spr(GH_ACC[k][0],L.accs.length>1?18:26)).join('')}</span>`:`<span class="tdnone">∅</span>`,([k,n])=>tdCard(k?L.accs.includes(k):!L.accs.length,k?spr(GH_ACC[k][0],28):`<span class="tdnone">∅</span>`,n,hd.attr('tdSet','acc',k),k?ACC_SN[ACC_SLOT[k]||'head']():''),L.accs.length?L.accs.map(k=>(accs.find(a=>a[0]===k)||['',k])[1]).join(' + '):arcT('Không đội mũ','No hat')],
+  frame:[arcT('Khung ảnh','Frames'),frs,L.frame?`<span class="ghfr fr-${L.frame}">${spr('jenny',26)}</span>`:`<span class="tdnone">∅</span>`,([k,n])=>tdCard(L.frame===k,k?`<span class="ghfr fr-${k}">${spr('jenny',34)}</span>`:`<span class="tdnone">∅</span>`,n,hd.attr('tdSet','frame',k)),L.frame?(frs.find(a=>a[0]===L.frame)||['',''])[1]:arcT('Không khung','No frame')]};
+ const coin=`<span class="grow"></span><button type="button" class="chip ghchip" data-act="go-home-shop">🪙 <b>${st.coins}</b> <span>${arcT('Cửa hàng ▸','Shop ▸')}</span></button>`;
  const cat=C[scr.tdCat]?scr.tdCat:'';
  if(cat){const [t,list,,make,curN]=C[cat];
-  return`<div class="page tdpage"><div class="crumb"><button class="btn sm ghost" onclick="scr.tdCat='';render();scrollTo(0,0)">← ${arcT('Tủ đồ','Wardrobe')}</button>${coin}</div>
+  return`<div class="page tdpage"><div class="crumb"><button class="btn sm ghost" data-act="tdCat-render-scrollTo-0">← ${arcT('Tủ đồ','Wardrobe')}</button>${coin}</div>
   <section class="card tdsub"><h2>${C[cat][2]} ${t}</h2><div class="tdstage tdmini ${L.frame?'fr-'+L.frame:''}">${ghJenny(96,{...L,frame:''})}<div class="tdinfo"><small>${arcT('Đang dùng','Wearing')}</small><b>${esc(curN)}</b><small>${arcT('Chạm một món để mặc thử, lưu ngay.','Tap an item to wear it.')}</small></div></div>
    <div class="tdgrid" style="margin-top:12px">${list.map(make).join('')}</div>${list.length<=1?`<p class="tdempty">${arcT('Em chưa có món nào ở mục này.','Nothing here yet.')}</p>`:''}
    
    ${cat==='of'?`<p class="muted" style="font-size:13px;margin:12px 0 0">${arcT('Áo mới mở thêm khi em hạ trùm ở mỗi vùng biển (Hộ chiếu) hoặc mua ở Cửa hàng.','Unlock outfits by beating sea bosses (Passport) or buy them in the shop.')}</p>`:''}
-   <div class="archbtn"><button type="button" class="btn sm" onclick="go({k:'home',tab:'shop'});scr.ghCat='${cat}';render()">${arcT('Mua thêm','Buy more')} ${t.toLowerCase()} ▸</button></div></section></div>`}
- return`<div class="page tdpage"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← ${arcT('Nhà em','My home')}</button>${coin}</div>
+   <div class="archbtn"><button type="button" class="btn sm" data-act="go-home-shop-ghCat-2" ${hd.arg(String(cat))}>${arcT('Mua thêm','Buy more')} ${t.toLowerCase()} ▸</button></div></section></div>`}
+ return`<div class="page tdpage"><div class="crumb"><button class="btn sm ghost" data-act="go-home-nha">← ${arcT('Nhà em','My home')}</button>${coin}</div>
   <section class="card tdtop"><h2>${spr('jenny',24)} ${arcT('Tủ đồ của Jenny','Jenny’s wardrobe')}</h2><div class="tdstage ${L.frame?'fr-'+L.frame:''}">${ghJenny(150,{...L,frame:''})}<div class="tdinfo"><b>${esc(C.of[4])}</b><small>${esc(C.acc[4])} · ${esc(C.frame[4])}</small></div></div></section>
   <section class="card tdbody"><h3 class="ghgh" style="margin-top:0">${arcT('Chọn loại đồ để thay','Choose what to change')}</h3>
-   <div class="tdcats" role="group">${Object.keys(C).map(k=>`<button type="button" class="tdcat" onclick="scr.tdCat='${k}';render();scrollTo(0,0)"><span class="tdcic">${C[k][2]}</span><b>${C[k][0]}</b><small>${C[k][1].length-1} ${arcT('món','items')} ▸</small></button>`).join('')}</div>
+   <div class="tdcats" role="group">${Object.keys(C).map(k=>`<button type="button" class="tdcat" data-act="tdCat-render-scrollTo-0-2" ${hd.arg(String(k))}><span class="tdcic">${C[k][2]}</span><b>${C[k][0]}</b><small>${C[k][1].length-1} ${arcT('món','items')} ▸</small></button>`).join('')}</div>
    <p class="muted" style="font-size:13px;margin:12px 0 0">${arcT('Đồ cho thú cưng mặc ở Đảo nhà.','Pet clothes are on your Home isle.')}</p></section></div>`});
 function tdSet(k,v){const st=S.st[sid],s=ghSt(st);if(k==='of'){if(v&&!ofOwn(st).has(v))return;st.outfit=v}else if(k==='acc'){if(v&&!s.own.includes(v))return;accToggle(s,v)}else if(k==='frame'){if(v&&!s.own.includes(v))return;s.frame=v}save();try{sfx('card')}catch(e){}render()}
 NHA_TABS.push('tudo');
@@ -60,7 +61,7 @@ hooks.de('ghLook',function(st){const s=ghSt(st),T=scr.ghTry||{},cur=accsOf(s);re
 {hooks.on('viewHome1t',_v=>function(){if(scr.tab!=='tudo')return _v.apply(this,arguments);scr.tab='nha';let r;try{r=_v.apply(this,arguments)}finally{scr.tab='tudo'}const i=r.indexOf('<nav class="bnav"');return viewTudo(S.st[sid])+(i>=0?r.slice(i):'')})}
 /* Nhà em: khung "Tủ đồ" ngay dưới 3 ô */
 {hooks.on('viewNha',_n=>function(st){const r=_n.apply(this,arguments);try{const L=tdLook(st),s=ghSt(st),n=ofOwn(st).size+Object.keys(GH_ACC).filter(k=>s.own.includes(k)).length+GH.find(c=>c.k==='frame').it.map(x=>x[0]).filter(k=>s.own.includes(k)).length;
-  const box=`<section class="card tdhome"><div class="tdhrow">${ghJenny(84,L)}<div class="grow"><h2>${spr('jenny',22)} ${arcT('Tủ đồ','Wardrobe')}</h2><small>${arcT(`Em có ${n} món đồ. Phối đồ cho Jenny nhé!`,`You own ${n} items. Dress up Jenny!`)}</small></div></div><div class="archbtn"><button type="button" class="btn sm" onclick="go({k:'home',tab:'tudo'})">${arcT('Phối đồ','Dress up')} ▸</button></div></section>`;
+  const box=`<section class="card tdhome"><div class="tdhrow">${ghJenny(84,L)}<div class="grow"><h2>${spr('jenny',22)} ${arcT('Tủ đồ','Wardrobe')}</h2><small>${arcT(`Em có ${n} món đồ. Phối đồ cho Jenny nhé!`,`You own ${n} items. Dress up Jenny!`)}</small></div></div><div class="archbtn"><button type="button" class="btn sm" data-act="go-home-tudo">${arcT('Phối đồ','Dress up')} ▸</button></div></section>`;
   const i=r.indexOf('<section class="card archome">');return i<0?r:r.slice(0,i)+box+r.slice(i)}catch(e){return r}})}
 Object.assign(I18N,{'Tủ đồ':'Wardrobe','Phối đồ':'Dress up'});
 document.head.insertAdjacentHTML('beforeend',`<style>
@@ -88,3 +89,12 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .tdnone{font-family:var(--f-display);font-size:34px;color:var(--muted)}.tdmore{background:var(--sun-soft)}
 </style>`);
 Object.assign(I18N,{'Đóng ✕':'Close ✕','Đóng':'Close'});
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'tdSet':function(event,a){tdSet(a[0],a[1])},
+  'tdCat-render-scrollTo-0':function(){scr.tdCat='';render();scrollTo(0,0)},
+  'go-home-shop-ghCat-2':function(event,a){go({k:'home',tab:'shop'});scr.ghCat=a[0];render()},
+  'tdCat-render-scrollTo-0-2':function(event,a){scr.tdCat=a[0];render();scrollTo(0,0)},
+  'go-home-tudo':function(){go({k:'home',tab:'tudo'})},
+});

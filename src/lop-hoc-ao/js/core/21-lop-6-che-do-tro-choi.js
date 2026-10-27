@@ -5,6 +5,7 @@
    - 3 trái tim, combo, xây cầu, trùm đảo, rương, đảo nhà, bão đảo cũ, nhiệm vụ ngày
    ===================================================================== */
 import { esc, fmt, pick, R, range, roman, sup } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { L1, NEED, P1_Q, P1BY, P2 } from './30a-dang-ky-khoi.js';
 import { save } from './09-du-lieu-demo.js';
 import { evDay, log } from './10-su-kien-mau-xapi.js';
@@ -13,7 +14,7 @@ import { bigStars, go, render, shortTitle, toast, unit } from './13-giao-dien-ch
 import { nextAction, petFace } from './14-hoc-sinh-trang-chinh.js';
 import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { key1, q1 } from './30b-may-tieu-hoc.js';
-import { hurtFx, sfx } from './33b-am-thanh.js';
+import { hurtFx, sfx, toggleMute } from './33b-am-thanh.js';
 import { jenny } from './33d-jenny-bieu-cam.js';
 export const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=R(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
 function mkChoice(q,ans,cands,sol,show){const s=[ans];for(const c of cands){if(s.length>=4)break;if(c!==ans&&!s.includes(c)&&(typeof c!=='number'||c>=0))s.push(c)}let d=1;while(s.length<4&&typeof ans==='number'){if(!s.includes(ans+d))s.push(ans+d);d++}const o=shuf(s);return{type:'choice',q,opts:o.map(x=>show?show(x):typeof x==='number'?fmt(x):x),a:o.indexOf(ans),sol}}
@@ -122,7 +123,7 @@ export function viewHome6(){
   const st=S.st[sid],tab=scr.tab||'map';
   const nav=[['map','🗺️','Bản đồ'],['home','🏝️','Đảo nhà'],['quest','🎯','Nhiệm vụ'],['bag','🎒','Túi đồ']];
   const body=tab==='home'?tabHome(st):tab==='quest'?tabQuest(st):tab==='bag'?tabBag(st):tabMap(st);
-  return body+`<nav class="bnav" aria-label="Điều hướng">${nav.map(([k,i,n])=>`<button class="${k===tab?'on':''}" aria-current="${k===tab?'page':'false'}" onclick="go({k:'home',tab:'${k}'})"><span aria-hidden="true">${i}</span>${n}</button>`).join('')}</nav>`;
+  return body+`<nav class="bnav" aria-label="Điều hướng">${nav.map(([k,i,n])=>`<button class="${k===tab?'on':''}" aria-current="${k===tab?'page':'false'}" data-act="go-home-2" ${hd.arg(String(k))}><span aria-hidden="true">${i}</span>${n}</button>`).join('')}</nav>`;
 }
 function tabMap(st){
   const P=L1(st),tot=totalStars(st),ck=curIsland(st),qd=quest(st),done=QUESTS.filter(([k,n])=>qd[k]>=n).length,stk=streak(st);
@@ -130,7 +131,7 @@ function tabMap(st){
   const path=pts.map((p,k)=>k?`Q ${p[0]-W/2} ${pts[k-1][1]===85?55:200} ${p[0]} ${p[1]}`:`M ${p[0]} ${p[1]}`).join(' ');
   const nodes=P.map((x,k)=>{const s=g6s(st,x.id),n=s.m.filter(Boolean).length,open=UNL||islandOpen(st,k),storm=stormDue(st,x.id),[cx,cy]=pts[k];
     const state=!open?'lock':storm?'storm':n===3?'done':'cur';
-    return`<button class="node ${state}${k===ck?' here':''}" style="left:${cx-55}px;top:${cy-50}px" ${open?`onclick="go({k:'island',part:1,id:'${x.id}'})"`:`onclick="toast('Cần ${NEED(k)} sao để mở đảo này. Em còn thiếu ${NEED(k)-tot} sao.')"`} aria-label="${esc(x.title)}${open?'':' (đang khóa)'}">
+    return`<button class="node ${state}${k===ck?' here':''}" style="left:${cx-55}px;top:${cy-50}px" ${open?`data-act="go-island-1" ${hd.arg(String(x.id))}`:`data-act="toast" ${hd.arg(`Cần ${NEED(k)} sao để mở đảo này. Em còn thiếu ${NEED(k)-tot} sao.`)}`} aria-label="${esc(x.title)}${open?'':' (đang khóa)'}">
       <span class="ball">${spr(state==='lock'?'islandG':'island',60)}${state==='lock'?spr('lock',26,'bdg'):state==='storm'?spr('storm',26,'bdg'):k===ck?spr('jenny',34,'bdg jen'):state==='done'?spr('medG',24,'bdg'):''}</span>
       <span class="lbl"><b>${k+1}. ${esc(shortTitle(x.title))}</b><span class="stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(3-n)}</span></span>${open&&weakIsland(st,x.id)?'<span class="wk">🥉 cần luyện</span>':''}</span>
       ${k===ck?'<span class="flag">Đang học</span>':storm?'<span class="flag warn">Bão! Sửa đảo</span>':''}</button>`}).join('');
@@ -140,9 +141,9 @@ function tabMap(st){
    <section class="card" style="padding:16px 0 8px"><div class="secthead" style="padding:0 16px"><h2>Toán SGK lớp 6</h2><span class="tag free">Miễn phí</span><span class="grow"></span><span class="muted">${p1Stars(st)}/${P.length*3} ★</span></div>
     <div class="sea" id="sea"><div class="seain" style="width:${100+P.length*W}px;height:${Hh}px"><canvas id="seacv" class="seacv" data-live="1" width="${100+P.length*W}" height="${Hh}" data-isl="${JSON.stringify(pts.map(([x,y])=>[x,y-14]))}" aria-hidden="true"></canvas><svg class="route" width="${100+P.length*W}" height="${Hh}" aria-hidden="true"><path d="${path}" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-dasharray="6 9" stroke-linecap="butt" opacity=".9"/></svg>${nodes}</div></div>
     </section>
-   ${Object.keys(mist(st)).length?`<button class="pxq mist" onclick="go({k:'home',tab:'quest'})"><span class="pxq-ic">${spr('book',46)}<i class="pxq-n">${Object.keys(mist(st)).length}</i></span><span class="pxq-tx"><b>Sổ lỗi sai</b><span>${Object.keys(mist(st)).length} dạng bài cần sửa · mỗi lỗi sửa xong +5 ${spr('coin',14)}</span><span class="pxq-dots" aria-hidden="true">${Object.keys(mist(st)).slice(0,6).map(()=>'<i></i>').join('')}</span></span><span class="pxq-go">Luyện ▶</span></button>`:''}
-   ${stormIds.length?`<button class="pxq storm" onclick="go({k:'island',part:1,id:'${stormIds[0].id}'})"><span class="pxq-ic">${spr('storm',40)}</span><span class="pxq-tx"><b>Bão ập tới!</b><span>${esc(shortTitle(stormIds[0].title))} bị hỏng · làm 3 câu ôn để sửa, nhận 15 ${spr('coin',14)}</span></span><span class="pxq-go">Sửa đảo ▶</span></button>`:''}
-   <section class="card paidbox"><div class="secthead"><h2>Toán Jenny</h2><span class="tag paid">Trả phí</span></div><p class="muted" style="margin:0">Phần này sẽ có cách chơi riêng, đang thiết kế. Bản cũ vẫn dùng được:</p><div class="row" style="margin-top:10px">${st.active?P2.filter(x=>!x.draft&&S.open[x.id]).map(x=>`<button class="btn sm" onclick="go({k:'island',part:2,id:'${x.id}'})">${esc(x.title)}</button>`).join('')||'<span class="muted">Chưa có buổi nào được mở.</span>':'<span class="muted">Chưa kích hoạt cho em.</span>'}</div></section>
+   ${Object.keys(mist(st)).length?`<button class="pxq mist" data-act="go-home-quest"><span class="pxq-ic">${spr('book',46)}<i class="pxq-n">${Object.keys(mist(st)).length}</i></span><span class="pxq-tx"><b>Sổ lỗi sai</b><span>${Object.keys(mist(st)).length} dạng bài cần sửa · mỗi lỗi sửa xong +5 ${spr('coin',14)}</span><span class="pxq-dots" aria-hidden="true">${Object.keys(mist(st)).slice(0,6).map(()=>'<i></i>').join('')}</span></span><span class="pxq-go">Luyện ▶</span></button>`:''}
+   ${stormIds.length?`<button class="pxq storm" data-act="go-island-1" ${hd.arg(String(stormIds[0].id))}><span class="pxq-ic">${spr('storm',40)}</span><span class="pxq-tx"><b>Bão ập tới!</b><span>${esc(shortTitle(stormIds[0].title))} bị hỏng · làm 3 câu ôn để sửa, nhận 15 ${spr('coin',14)}</span></span><span class="pxq-go">Sửa đảo ▶</span></button>`:''}
+   <section class="card paidbox"><div class="secthead"><h2>Toán Jenny</h2><span class="tag paid">Trả phí</span></div><p class="muted" style="margin:0">Phần này sẽ có cách chơi riêng, đang thiết kế. Bản cũ vẫn dùng được:</p><div class="row" style="margin-top:10px">${st.active?P2.filter(x=>!x.draft&&S.open[x.id]).map(x=>`<button class="btn sm" data-act="go-island-2" ${hd.arg(String(x.id))}>${esc(x.title)}</button>`).join('')||'<span class="muted">Chưa có buổi nào được mở.</span>':'<span class="muted">Chưa kích hoạt cho em.</span>'}</div></section>
   </div>`;
 }
 function tabHome(st){
@@ -151,24 +152,24 @@ function tabHome(st){
   return`<div class="grid"><section class="card"><div class="secthead"><h2>Đảo nhà của ${esc(st.name.split(' ').pop())}</h2><span class="grow"></span><span class="chip2">🪙 <b>${st.coins}</b></span></div>
    <div class="homeisle" role="img" aria-label="Đảo nhà có ${items.length} món trang trí"><div class="isle"></div>${items.map(d=>`<span class="deco" style="left:${SLOT[d[0]][0]}%;top:${SLOT[d[0]][1]}%">${d[1]}</span>`).join('')}<span class="deco pet" style="left:48%;top:56%">${petFace(st.energy)}</span></div>
    <p class="muted" style="margin:10px 0 0">Mua đồ bằng xu kiếm được khi làm bài, hoặc mở rương sau mỗi đảo.</p></section>
-   <section class="card"><h3>Cửa hàng</h3><div class="shop">${DECOR.map(([id,ic,n,c])=>{const own=st.home.includes(id);return`<button class="item ${own?'own':''}" ${own?'disabled':''} onclick="buyDecor('${id}')"><span class="ic">${ic}</span><b>${n}</b><span class="muted">${own?'Đã có':`🪙 ${c}`}</span></button>`}).join('')}</div></section>
-   <section class="card"><h3>Mèo Mướp</h3><div class="row" style="margin-top:8px;flex-wrap:nowrap"><span class="pet">${petFace(st.energy)}</span><div style="flex:1"><div class="muted">Năng lượng ${st.energy}/100</div><div class="bar leaf"><i style="width:${st.energy}%"></i></div></div></div><div class="row" style="margin-top:10px"><button class="btn sm" onclick="buy(20,25,'Cá khô')">🐟 Cá khô · 20</button><button class="btn sm" onclick="buy(40,50,'Bát sữa')">🥛 Bát sữa · 40</button></div></section></div>`;
+   <section class="card"><h3>Cửa hàng</h3><div class="shop">${DECOR.map(([id,ic,n,c])=>{const own=st.home.includes(id);return`<button class="item ${own?'own':''}" ${own?'disabled':''} data-act="buyDecor" ${hd.arg(String(id))}><span class="ic">${ic}</span><b>${n}</b><span class="muted">${own?'Đã có':`🪙 ${c}`}</span></button>`}).join('')}</div></section>
+   <section class="card"><h3>Mèo Mướp</h3><div class="row" style="margin-top:8px;flex-wrap:nowrap"><span class="pet">${petFace(st.energy)}</span><div style="flex:1"><div class="muted">Năng lượng ${st.energy}/100</div><div class="bar leaf"><i style="width:${st.energy}%"></i></div></div></div><div class="row" style="margin-top:10px"><button class="btn sm" data-act="buy-25">🐟 Cá khô · 20</button><button class="btn sm" data-act="buy-50">🥛 Bát sữa · 40</button></div></section></div>`;
 }
 function buyDecor(id){const st=S.st[sid],d=DECOR.find(x=>x[0]===id);st.home=st.home||[];if(st.coins<d[3]){toast(`Cần ${d[3]} xu. Làm thêm bài để kiếm xu nhé!`);return}st.coins-=d[3];st.home.push(id);log(sid,'purchased',d[2],0,{score:{raw:-d[3]}});sfx('win');save();render();toast(`Đã đặt ${d[2]} lên đảo nhà!`)}
 function tabQuest(st){
   const qd=quest(st),stk=streak(st),M=Object.values(mist(st)).sort((a,b)=>b.n-a.n);
   return`<div class="grid">
    <section class="card"><div class="secthead"><h2>📒 Sổ lỗi sai</h2><span class="grow"></span><span class="pill ${M.length?'warn':'ok'}">${M.length} dạng</span></div>
-    ${M.length?`<p class="muted" style="margin:0 0 10px">Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu là dạng đó ra khỏi sổ.</p><ul class="mlist">${M.slice(0,5).map(e=>`<li><span>${esc(e.label)}</span><span class="muted">sai ${e.n} lần${e.streak?` · đã đúng ${e.streak}/2`:''}</span></li>`).join('')}</ul>${M.length>5?`<p class="muted" style="margin:6px 0 0">và ${M.length-5} dạng khác</p>`:''}<button class="gobtn" style="margin-top:12px" onclick="startGame('${M[0].id}','fix')">Luyện ngay</button>`:'<p class="muted" style="margin:0">Sổ đang trống. Câu nào em làm sai sẽ được ghi vào đây để luyện lại.</p>'}</section>
+    ${M.length?`<p class="muted" style="margin:0 0 10px">Mỗi lượt luyện 3 dạng, mỗi dạng 2 câu với số mới. Đúng cả 2 câu là dạng đó ra khỏi sổ.</p><ul class="mlist">${M.slice(0,5).map(e=>`<li><span>${esc(e.label)}</span><span class="muted">sai ${e.n} lần${e.streak?` · đã đúng ${e.streak}/2`:''}</span></li>`).join('')}</ul>${M.length>5?`<p class="muted" style="margin:6px 0 0">và ${M.length-5} dạng khác</p>`:''}<button class="gobtn" style="margin-top:12px" data-act="startGame-fix" ${hd.arg(String(M[0].id))}>Luyện ngay</button>`:'<p class="muted" style="margin:0">Sổ đang trống. Câu nào em làm sai sẽ được ghi vào đây để luyện lại.</p>'}</section>
    <section class="card"><div class="secthead"><h2>Nhiệm vụ hôm nay</h2><span class="grow"></span><span class="muted">Ngày ${S.day}</span></div>
-   <div class="quests">${QUESTS.map(([k,n,t])=>{const v=Math.min(qd[k]||0,n),ok=v>=n,paid=qd.paid.includes(k);return`<div class="qrow ${ok?'ok':''}"><span class="qic">${ok?'✓':'🎯'}</span><div class="grow"><b>${t}</b><div class="bar ${ok?'leaf':'sun'}"><i style="width:${v/n*100}%"></i></div><span class="muted">${v}/${n}</span></div>${ok&&!paid?`<button class="btn sm sun" onclick="claimQuest('${k}')">Nhận 10 xu</button>`:paid?'<span class="pill ok">Đã nhận</span>':''}</div>`}).join('')}</div></section>
+   <div class="quests">${QUESTS.map(([k,n,t])=>{const v=Math.min(qd[k]||0,n),ok=v>=n,paid=qd.paid.includes(k);return`<div class="qrow ${ok?'ok':''}"><span class="qic">${ok?'✓':'🎯'}</span><div class="grow"><b>${t}</b><div class="bar ${ok?'leaf':'sun'}"><i style="width:${v/n*100}%"></i></div><span class="muted">${v}/${n}</span></div>${ok&&!paid?`<button class="btn sm sun" data-act="claimQuest" ${hd.arg(String(k))}>Nhận 10 xu</button>`:paid?'<span class="pill ok">Đã nhận</span>':''}</div>`}).join('')}</div></section>
    <section class="card"><h3>Chuỗi ngày học</h3><p style="margin:8px 0 0"><span class="big">🔥 ${stk}</span> <span class="muted">ngày liên tiếp có làm đúng bài</span></p><p class="muted" style="margin:6px 0 0">Mỗi ngày làm đúng ít nhất 1 câu để giữ chuỗi.</p></section></div>`;
 }
 function claimQuest(k){const st=S.st[sid],qd=quest(st);if(qd.paid.includes(k))return;qd.paid.push(k);st.coins+=10;sfx('win');if(qd.paid.length===QUESTS.length){st.coins+=20;toast('Xong tất cả nhiệm vụ! Thưởng thêm 20 xu')}else toast('+10 xu');save();render()}
 function tabBag(st){
   return`<div class="grid"><section class="card"><h3>Huy hiệu</h3><div class="badges" style="margin-top:10px">${st.badges.length?st.badges.map(b=>`<span class="badge ${b.from==='cô'?'t':''}"><i>${b.from==='cô'?'♥':'✓'}</i>${esc(b.t)}</span>`).join(''):'<p class="muted" style="margin:0">Qua đủ 3 màn của một đảo để nhận huy hiệu.</p>'}</div></section>
    <section class="card"><h3>Đồ sưu tầm</h3><p class="muted" style="margin:8px 0 0">${st.items.length?st.items.map(esc).join(' · '):'Mở rương sau mỗi đảo để nhận đồ hiếm.'}</p></section>
-   <section class="card"><h3>Cài đặt</h3><div class="row" style="margin-top:8px"><button class="btn sm" onclick="toggleMute()">${muted?'🔇 Bật âm thanh':'🔊 Tắt âm thanh'}</button></div></section></div>`;
+   <section class="card"><h3>Cài đặt</h3><div class="row" style="margin-top:8px"><button class="btn sm" data-act="toggleMute">${muted?'🔇 Bật âm thanh':'🔊 Tắt âm thanh'}</button></div></section></div>`;
 }
 
 /* ---------- Trang đảo lớp 6 ---------- */
@@ -176,15 +177,15 @@ export function viewIsland6(){
   const st=S.st[sid],id=scr.id,u=unit(1,id),s=g6s(st,id),G=G6[id],storm=stormDue(st,id);
   const got=s.m.filter(Boolean).length;
   const mk=(lv,t,d)=>{const can=UNL||s.intro&&(lv===0||s.m[lv-1]),done=s.m[lv],med=s.med[lv]||0,stuck=!done&&s.fails[lv]>=2;
-    return{done,can,ic:lv===2?G.boss[0]:String(lv+1),t,d:d+(done?` · ${MEDAL[med]} ${MEDN[med]}`:s.fails[lv]?` · đã thử ${s.fails[lv]} lần`:''),act:`startGame('${id}',${lv})`,lbl:done?(med<3?'Lên Vàng':'Chơi lại'):lv===2?'Đánh trùm':'Chơi',stuck,lv,med}};
-  const items=[{done:s.intro,can:true,ic:'▶',t:'Video tổng hợp kiến thức',d:`${u.slides.length} trang · Jenny thuyết minh`,act:`go({k:'video',part:1,id:'${id}'})`,lbl:s.intro?'Xem lại':'Xem'},
+    return{done,can,ic:lv===2?G.boss[0]:String(lv+1),t,d:d+(done?` · ${MEDAL[med]} ${MEDN[med]}`:s.fails[lv]?` · đã thử ${s.fails[lv]} lần`:''),act:hd.attr('startGame',id,lv),lbl:done?(med<3?'Lên Vàng':'Chơi lại'):lv===2?'Đánh trùm':'Chơi',stuck,lv,med}};
+  const items=[{done:s.intro,can:true,ic:'▶',t:'Video tổng hợp kiến thức',d:`${u.slides.length} trang · Jenny thuyết minh`,act:hd.attr('go-video-1',id),lbl:s.intro?'Xem lại':'Xem'},
     mk(0,'Màn 1 · Xây cầu',`${P1_Q} câu · 3 tim`),mk(1,'Màn 2 · Vượt sóng',`${P1_Q} câu · 3 tim`),mk(2,`Màn 3 · Trùm: ${G.boss[1]}`,`${P1_Q} đòn · 3 tim · rương`)];
   const nx=items.findIndex(x=>!x.done&&x.can);
-  const li=(x,i)=>`${x.stuck&&x.can?`<li class="help"><span class="n">🛟</span><div class="grow"><b>Màn tập · Jenny giúp em</b><span class="muted">Em đã thử ${s.fails[x.lv]} lần. Câu dễ hơn, có giải mẫu, không mất tim.</span></div><button class="btn sm sun" onclick="startGame('${id}','easy',${x.lv})">Vào tập</button></li>`:''}<li class="${x.done?'done':''} ${i===nx?'next':''} ${!x.can&&!x.done?'off':''} ${x.med===1?'weak':''}"><span class="n">${x.done?MEDAL[x.med]||'✓':x.ic}</span><div class="grow"><b>${x.t}</b><span class="muted">${x.d}</span></div><button class="btn sm ${i===nx||(x.done&&x.med===1)?'pri':''}" ${x.can?'':'disabled'} onclick="${x.act}">${x.can?x.lbl:'🔒'}</button></li>`;
+  const li=(x,i)=>`${x.stuck&&x.can?`<li class="help"><span class="n">🛟</span><div class="grow"><b>Màn tập · Jenny giúp em</b><span class="muted">Em đã thử ${s.fails[x.lv]} lần. Câu dễ hơn, có giải mẫu, không mất tim.</span></div><button class="btn sm sun" data-act="startGame-easy" ${hd.arg(String(id),x.lv)}>Vào tập</button></li>`:''}<li class="${x.done?'done':''} ${i===nx?'next':''} ${!x.can&&!x.done?'off':''} ${x.med===1?'weak':''}"><span class="n">${x.done?MEDAL[x.med]||'✓':x.ic}</span><div class="grow"><b>${x.t}</b><span class="muted">${x.d}</span></div><button class="btn sm ${i===nx||(x.done&&x.med===1)?'pri':''}" ${x.can?'':'disabled'} ${x.act}>${x.can?x.lbl:'🔒'}</button></li>`;
   return`<div class="page">
-   <div class="crumb"><button class="btn sm ghost" onclick="go({k:'home'})">← Bản đồ</button></div>
+   <div class="crumb"><button class="btn sm ghost" data-act="go-home">← Bản đồ</button></div>
    <div class="card"><div class="lesson">${jenny(56)}<div class="grow"><h1>${esc(u.title)}</h1><div class="muted">Kết nối tri thức 6 · Chương I</div></div>${bigStars(got,3)}</div>
-   ${storm?`<div class="alertbar" style="margin-top:12px" role="note">⛈️ <span><b>Bão đã quét qua đảo này!</b> Làm 3 câu ôn để sửa lại, nhận 15 xu.</span><button class="btn sm sun" onclick="startGame('${id}','storm')">Sửa đảo</button></div>`:''}
+   ${storm?`<div class="alertbar" style="margin-top:12px" role="note">⛈️ <span><b>Bão đã quét qua đảo này!</b> Làm 3 câu ôn để sửa lại, nhận 15 xu.</span><button class="btn sm sun" data-act="startGame-storm" ${hd.arg(String(id))}>Sửa đảo</button></div>`:''}
    ${weakIsland(st,id)?`<div class="alertbar" style="margin-top:12px" role="note">🥉 <span><b>Có màn mới đạt Đồng.</b> Chơi lại giữ nhiều tim hơn để lên Bạc, Vàng và nhận thêm xu.</span></div>`:''}
    <ol class="tl">${items.map(li).join('')}</ol>
    <p class="muted" style="margin:12px 0 0">Huy chương theo số tim còn lại khi qua màn: 3 tim 🥇 Vàng · 2 tim 🥈 Bạc · 1 tim 🥉 Đồng.</p></div></div>`;
@@ -205,15 +206,15 @@ export function viewGame(){
   const g=scr,u=unit(1,g.id),G=G6[g.id],n=g.qs.length;
   if(g.end)return viewGameEnd();
   const q=gameQ(),boss=g.lv===2,soft=g.mode==='fix'||g.mode==='easy';
-  if(g.demo)return`<div class="game" role="dialog" aria-label="Jenny giải mẫu"><div class="gtop"><button class="gx" onclick="go({k:'island',part:1,id:'${g.id}'})" aria-label="Thoát">✕</button><b style="flex:1">Màn tập · Jenny giải mẫu</b></div>
+  if(g.demo)return`<div class="game" role="dialog" aria-label="Jenny giải mẫu"><div class="gtop"><button class="gx" data-act="go-island-1" ${hd.arg(String(g.id))} aria-label="Thoát">✕</button><b style="flex:1">Màn tập · Jenny giải mẫu</b></div>
    <div class="gmid"><div class="scene">${jenny(72)}</div><div class="qtxt">${g.demo.q}</div><div class="sheet ok" style="animation:none"><div class="sh"><span class="ic">✓</span><div><b>Đáp án: ${ansShow(g.demo)}</b><div>${g.demo.sol}</div></div></div></div><p class="muted" style="text-align:center;margin:0">Màn tập không mất tim. Bấm 💡 nếu cần gợi ý.</p></div>
-   <div class="gbot"><button class="gobtn" onclick="scr.demo=null;render()">Em hiểu rồi, làm thử nào!</button></div></div>`;
+   <div class="gbot"><button class="gobtn" data-act="demo-render">Em hiểu rồi, làm thử nào!</button></div></div>`;
   const hearts=soft?`<span class="pill acc">${g.mode==='fix'?'📒 Sổ lỗi sai':'Màn tập'}</span>`:`<span class="hearts" aria-label="Còn ${g.hearts} tim">${[0,1,2].map(i=>`<span class="${i<g.hearts?'':'lost'}">❤</span>`).join('')}</span>`;
   const track=boss?`<div class="bosshp" aria-label="Máu trùm ${g.hp}/${n}"><i style="width:${g.hp/n*100}%"></i></div>`:`<div class="planks" aria-label="Tiến độ ${g.ok}/${n}">${g.qs.map((_,k)=>`<i class="${g.res[k]===true?'ok':g.res[k]===false?'bad':k===g.j?'cur':''}"></i>`).join('')}</div>`;
   const scene=boss?`<div class="scene boss"><span class="monster ${g.hit?'hit':''}" aria-hidden="true">${G.boss[0]}</span><span class="muted">${G.boss[1]}</span></div>`:g.mode==='storm'?`<div class="scene"><span class="monster" aria-hidden="true">⛈️</span><span class="muted">Sửa đảo sau bão</span></div>`:g.mode==='fix'?`<div class="muted" style="text-align:center">Dạng bài em từng làm sai · ${esc(shortTitle(unit(1,q.src[0]).title))}</div>`:'';
-  const hintBtn=soft&&!g.sheet?`<button class="btn sm ghost" style="align-self:center" onclick="scr.showHint=!scr.showHint;render()">💡 ${g.showHint?'Ẩn gợi ý':'Gợi ý'}</button>${g.showHint?`<div class="sheet warn" style="animation:none;padding:10px 12px"><div class="sh"><span class="ic">?</span><div>${q.hint}</div></div></div>`:''}`:'';
+  const hintBtn=soft&&!g.sheet?`<button class="btn sm ghost" style="align-self:center" data-act="showHint-render">💡 ${g.showHint?'Ẩn gợi ý':'Gợi ý'}</button>${g.showHint?`<div class="sheet warn" style="animation:none;padding:10px 12px"><div class="sh"><span class="ic">?</span><div>${q.hint}</div></div></div>`:''}`:'';
   return`<div class="game" role="dialog" aria-label="${esc(u.title)}">
-   <div class="gtop"><button class="gx" onclick="go({k:'island',part:1,id:'${g.id}'})" aria-label="Thoát màn">✕</button>${track}${hearts}</div>
+   <div class="gtop"><button class="gx" data-act="go-island-1" ${hd.arg(String(g.id))} aria-label="Thoát màn">✕</button>${track}${hearts}</div>
    ${g.combo>=3?`<div class="combo">Combo ×${g.combo} · xu ×2</div>`:''}
    <div class="gmid">${scene}<div class="qtxt">${q.q}</div>${answerView(q)}${hintBtn}</div>
    <div class="gbot">${g.sheet?sheetView():inputView(q)}</div></div>`;
@@ -224,12 +225,12 @@ function answerView(q){const g=scr;
   return'';
 }
 function inputView(q){const g=scr,dis=g.sheet?'disabled':'';
-  if(q.type==='num')return`<div class="pad">${['1','2','3','4','5','6','7','8','9','⌫','0','✓'].map(k=>`<button class="${k==='✓'?'go':k==='⌫'?'del':''}" onclick="padKey('${k}')" aria-label="${k==='⌫'?'Xóa':k==='✓'?'Nộp':k}">${k==='✓'?'Nộp':k}</button>`).join('')}</div>`;
-  if(q.type==='choice')return`<div class="opts">${q.opts.map((o,i)=>`<button onclick="answer(${i})">${o}</button>`).join('')}</div>`;
-  if(q.type==='tf')return`<div class="opts two"><button class="t" onclick="answer(true)">✓ Đúng</button><button class="f" onclick="answer(false)">✕ Sai</button></div>`;
-  if(q.type==='pick')return`<div class="chips2">${q.opts.map((o,i)=>`<button class="${g.picks.includes(i)?'on':''}" aria-pressed="${g.picks.includes(i)}" onclick="togglePick(${i})">${o}</button>`).join('')}</div><button class="gobtn" ${g.picks.length?'':'disabled'} onclick="answer(scr.picks)">Kiểm tra</button>`;
-  if(q.type==='order')return`<div class="chips2">${q.opts.map((o,i)=>`<button ${g.seq.includes(i)?'disabled class="used"':''} onclick="seqTap(${i})">${o}</button>`).join('')}</div><button class="gobtn ghost" ${g.seq.length?'':'disabled'} onclick="scr.seq=[];render()">Xếp lại</button>`;
-  if(q.type==='line'){const n=q.hi-q.lo;return`<div class="nline"><div class="axis"></div>${range(q.lo,q.hi).map(v=>`<button style="left:${(v-q.lo)/n*100}%" onclick="answer(${v})" aria-label="Điểm ${v}"><i></i><span>${v===q.lo||v===q.hi||v===(q.lo+q.hi)/2?v:''}</span></button>`).join('')}</div><p class="muted" style="text-align:center;margin:6px 0 0">Mỗi vạch cách nhau 1 đơn vị</p>`}
+  if(q.type==='num')return`<div class="pad">${['1','2','3','4','5','6','7','8','9','⌫','0','✓'].map(k=>`<button class="${k==='✓'?'go':k==='⌫'?'del':''}" data-act="padKey" ${hd.arg(String(k))} aria-label="${k==='⌫'?'Xóa':k==='✓'?'Nộp':k}">${k==='✓'?'Nộp':k}</button>`).join('')}</div>`;
+  if(q.type==='choice')return`<div class="opts">${q.opts.map((o,i)=>`<button data-act="answer" ${hd.arg(i)}>${o}</button>`).join('')}</div>`;
+  if(q.type==='tf')return`<div class="opts two"><button class="t" data-act="answer-2">✓ Đúng</button><button class="f" data-act="answer-3">✕ Sai</button></div>`;
+  if(q.type==='pick')return`<div class="chips2">${q.opts.map((o,i)=>`<button class="${g.picks.includes(i)?'on':''}" aria-pressed="${g.picks.includes(i)}" data-act="togglePick" ${hd.arg(i)}>${o}</button>`).join('')}</div><button class="gobtn" ${g.picks.length?'':'disabled'} data-act="answer-4">Kiểm tra</button>`;
+  if(q.type==='order')return`<div class="chips2">${q.opts.map((o,i)=>`<button ${g.seq.includes(i)?'disabled class="used"':''} data-act="seqTap" ${hd.arg(i)}>${o}</button>`).join('')}</div><button class="gobtn ghost" ${g.seq.length?'':'disabled'} data-act="seq-render">Xếp lại</button>`;
+  if(q.type==='line'){const n=q.hi-q.lo;return`<div class="nline"><div class="axis"></div>${range(q.lo,q.hi).map(v=>`<button style="left:${(v-q.lo)/n*100}%" data-act="answer" ${hd.arg(v)} aria-label="Điểm ${v}"><i></i><span>${v===q.lo||v===q.hi||v===(q.lo+q.hi)/2?v:''}</span></button>`).join('')}</div><p class="muted" style="text-align:center;margin:6px 0 0">Mỗi vạch cách nhau 1 đơn vị</p>`}
 }
 function padKey(k){if(scr.sheet)return;sfx('tap');if(k==='⌫')scr.inp=scr.inp.slice(0,-1);else if(k==='✓'){if(scr.inp!=='')answer(Number(scr.inp));return}else if(scr.inp.length<9)scr.inp=(scr.inp==='0'?'':scr.inp)+k;render()}
 function togglePick(i){const p=scr.picks;scr.picks=p.includes(i)?p.filter(x=>x!==i):[...p,i];sfx('tap');render()}
@@ -255,10 +256,10 @@ function answer(v){
   g.hit=g.hit&&ok;save();render();
 }
 function sheetView(){const g=scr,q=gameQ(),s=g.sheet;
-  if(s.kind==='ok')return`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${pick(['Tuyệt vời!','Chính xác!','Giỏi quá!','Đúng rồi!'])}</b><div>${s.msg}</div></div></div><button class="gobtn" onclick="nextG()">Tiếp tục</button></div>`;
-  if(s.kind==='retry'||s.kind==='retrysoft')return`<div class="sheet warn"><div class="sh"><span class="ic">?</span><div><b>${s.kind==='retry'?'Chưa đúng, mất 1 tim.':'Chưa đúng, thử lại nhé.'}</b><div>Gợi ý: ${q.hint}</div></div></div><button class="gobtn" onclick="retryG()">Thử lại</button></div>`;
-  if(s.kind==='bad')return`<div class="sheet bad"><div class="sh"><span class="ic">✕</span><div><b>Đáp án: ${ansShow(q)}</b><div>${q.sol}</div><div class="muted" style="margin-top:4px">${g.mode==='fix'?'Dạng này vẫn nằm trong sổ lỗi sai.':'Dạng bài này đã được ghi vào Sổ lỗi sai để em luyện lại.'}</div></div></div><button class="gobtn" onclick="nextG()">Tiếp tục</button></div>`;
-  return`<div class="sheet bad"><div class="sh"><span class="ic">💔</span><div><b>Hết tim rồi!</b><div>Đáp án: ${ansShow(q)}. ${q.sol}</div></div></div><button class="gobtn" onclick="endG(false)">Xem kết quả</button></div>`;
+  if(s.kind==='ok')return`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${pick(['Tuyệt vời!','Chính xác!','Giỏi quá!','Đúng rồi!'])}</b><div>${s.msg}</div></div></div><button class="gobtn" data-act="nextG">Tiếp tục</button></div>`;
+  if(s.kind==='retry'||s.kind==='retrysoft')return`<div class="sheet warn"><div class="sh"><span class="ic">?</span><div><b>${s.kind==='retry'?'Chưa đúng, mất 1 tim.':'Chưa đúng, thử lại nhé.'}</b><div>Gợi ý: ${q.hint}</div></div></div><button class="gobtn" data-act="retryG">Thử lại</button></div>`;
+  if(s.kind==='bad')return`<div class="sheet bad"><div class="sh"><span class="ic">✕</span><div><b>Đáp án: ${ansShow(q)}</b><div>${q.sol}</div><div class="muted" style="margin-top:4px">${g.mode==='fix'?'Dạng này vẫn nằm trong sổ lỗi sai.':'Dạng bài này đã được ghi vào Sổ lỗi sai để em luyện lại.'}</div></div></div><button class="gobtn" data-act="nextG">Tiếp tục</button></div>`;
+  return`<div class="sheet bad"><div class="sh"><span class="ic">💔</span><div><b>Hết tim rồi!</b><div>Đáp án: ${ansShow(q)}. ${q.sol}</div></div></div><button class="gobtn" data-act="endG">Xem kết quả</button></div>`;
 }
 function retryG(){scr.sheet=null;scr.inp='';scr.picks=[];scr.seq=[];render()}
 function nextG(){const g=scr;g.hit=false;g.showHint=false;if(g.j<g.qs.length-1){g.j++;g.sheet=null;g.inp='';g.picks=[];g.seq=[];g.tries=0;g.t0=Date.now();render()}else endG(true)}
@@ -278,9 +279,9 @@ function endG(alive){
   save();render();
 }
 function viewGameEnd(){const g=scr,u=unit(1,g.id),G=G6[g.id],st=S.st[sid];
-  if(g.opened)return`<div class="game"><div class="gend">${g.opened}<div class="gendbtn"><button class="gobtn" onclick="go({k:'home',tab:'home'})">Xem đảo nhà</button><button class="gobtn ghost" onclick="go({k:'home'})">Về bản đồ</button></div></div></div>`;
-  if(g.mode==='fix'){const left=Object.keys(mist(st)).length;return`<div class="game"><div class="gend"><div class="bigicon">📒</div><h1>${g.fixed?`Đã sửa ${g.fixed} lỗi!`:'Luyện tốt lắm!'}</h1><p class="muted">${g.ok}/${g.qs.length} câu đúng${g.fixed?` · +${g.fixed*5} xu`:''}</p><p class="muted">Mỗi dạng bài cần đúng 2 lần liền mới ra khỏi sổ. Sổ còn ${left} dạng.</p><div class="gendbtn">${left?`<button class="gobtn" onclick="startGame('${g.id}','fix')">Luyện tiếp</button>`:''}<button class="gobtn ghost" onclick="go({k:'home',tab:'quest'})">Về nhiệm vụ</button><button class="gobtn ghost" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`}
-  if(g.mode==='easy')return`<div class="game"><div class="gend">${jenny(84)}<h1>${g.pass?'Em làm được rồi!':'Mình luyện thêm chút nhé'}</h1><p class="muted">${g.ok}/${g.qs.length} câu đúng ở màn tập</p>${g.pass?'<p class="earn">+10 xu</p><p class="muted">Giờ em thử lại màn chính, Jenny tin em!</p>':'<p class="muted">Xem lại video rồi tập lại. Không sao cả, ai cũng cần thời gian.</p>'}<div class="gendbtn">${g.pass?`<button class="gobtn" onclick="startGame('${g.id}',${g.base})">Thử lại Màn ${g.base+1}</button>`:`<button class="gobtn" onclick="startGame('${g.id}','easy',${g.base})">Tập lại</button>`}<button class="gobtn ghost" onclick="go({k:'video',part:1,id:'${g.id}'})">Xem lại video</button><button class="gobtn ghost" onclick="go({k:'island',part:1,id:'${g.id}'})">Về đảo</button></div></div></div>`;
+  if(g.opened)return`<div class="game"><div class="gend">${g.opened}<div class="gendbtn"><button class="gobtn" data-act="go-home-3">Xem đảo nhà</button><button class="gobtn ghost" data-act="go-home">Về bản đồ</button></div></div></div>`;
+  if(g.mode==='fix'){const left=Object.keys(mist(st)).length;return`<div class="game"><div class="gend"><div class="bigicon">📒</div><h1>${g.fixed?`Đã sửa ${g.fixed} lỗi!`:'Luyện tốt lắm!'}</h1><p class="muted">${g.ok}/${g.qs.length} câu đúng${g.fixed?` · +${g.fixed*5} xu`:''}</p><p class="muted">Mỗi dạng bài cần đúng 2 lần liền mới ra khỏi sổ. Sổ còn ${left} dạng.</p><div class="gendbtn">${left?`<button class="gobtn" data-act="startGame-fix" ${hd.arg(String(g.id))}>Luyện tiếp</button>`:''}<button class="gobtn ghost" data-act="go-home-quest">Về nhiệm vụ</button><button class="gobtn ghost" data-act="go-home">Bản đồ</button></div></div></div>`}
+  if(g.mode==='easy')return`<div class="game"><div class="gend">${jenny(84)}<h1>${g.pass?'Em làm được rồi!':'Mình luyện thêm chút nhé'}</h1><p class="muted">${g.ok}/${g.qs.length} câu đúng ở màn tập</p>${g.pass?'<p class="earn">+10 xu</p><p class="muted">Giờ em thử lại màn chính, Jenny tin em!</p>':'<p class="muted">Xem lại video rồi tập lại. Không sao cả, ai cũng cần thời gian.</p>'}<div class="gendbtn">${g.pass?`<button class="gobtn" data-act="startGame" ${hd.arg(String(g.id),g.base)}>Thử lại Màn ${g.base+1}</button>`:`<button class="gobtn" data-act="startGame-easy" ${hd.arg(String(g.id),g.base)}>Tập lại</button>`}<button class="gobtn ghost" data-act="go-video-1" ${hd.arg(String(g.id))}>Xem lại video</button><button class="gobtn ghost" data-act="go-island-1" ${hd.arg(String(g.id))}>Về đảo</button></div></div></div>`;
   const storm=g.mode==='storm';
   const title=storm?(g.pass?'Đảo đã được sửa!':'Bão vẫn còn…'):g.pass?(g.lv===2?`Hạ gục ${G.boss[1]}!`:'Qua màn!'):'Hết tim rồi!';
   const med=!storm&&g.pass?g6s(st,g.id).med[g.lv]:0;
@@ -294,7 +295,7 @@ function viewGameEnd(){const g=scr,u=unit(1,g.id),G=G6[g.id],st=S.st[sid];
    ${storm&&g.pass?'<p class="earn">+15 xu</p>':''}
    ${g.unlocked?`<p class="unlock">🔓 Mở khóa đảo mới: <b>${esc(g.unlocked)}</b></p>`:''}
    ${!g.pass&&!storm?(g6s(st,g.id).fails[g.lv]>=2?'<p class="unlock">Jenny mở <b>Màn tập</b> cho em: câu dễ hơn, có giải mẫu, không mất tim.</p>':'<p class="muted">Thử lại nhé, mỗi lần em có 3 tim mới. Câu sai đã vào Sổ lỗi sai.</p>'):''}
-   <div class="gendbtn">${g.chest?`<button class="gobtn sun" onclick="openChest()">🎁 Mở rương</button>`:g.pass&&!storm&&g.lv<2?`<button class="gobtn" onclick="startGame('${g.id}',${g.lv+1})">Màn tiếp →</button>`:!g.pass&&!storm&&g6s(st,g.id).fails[g.lv]>=2?`<button class="gobtn sun" onclick="startGame('${g.id}','easy',${g.lv})">Vào Màn tập</button>`:!g.pass?`<button class="gobtn" onclick="startGame('${g.id}',${storm?"'storm'":g.lv})">Thử lại</button>`:''}<button class="gobtn ghost" onclick="go({k:'island',part:1,id:'${g.id}'})">Về đảo</button><button class="gobtn ghost" onclick="go({k:'home'})">Bản đồ</button></div>
+   <div class="gendbtn">${g.chest?`<button class="gobtn sun" data-act="openChest">🎁 Mở rương</button>`:g.pass&&!storm&&g.lv<2?`<button class="gobtn" data-act="startGame" ${hd.arg(String(g.id),g.lv+1)}>Màn tiếp →</button>`:!g.pass&&!storm&&g6s(st,g.id).fails[g.lv]>=2?`<button class="gobtn sun" data-act="startGame-easy" ${hd.arg(String(g.id),g.lv)}>Vào Màn tập</button>`:!g.pass?`<button class="gobtn" data-act="startGame" ${hd.arg(String(g.id),storm?"'storm'":g.lv)}>Thử lại</button>`:''}<button class="gobtn ghost" data-act="go-island-1" ${hd.arg(String(g.id))}>Về đảo</button><button class="gobtn ghost" data-act="go-home">Bản đồ</button></div>
   </div></div>`;
 }
 function openChest(){const st=S.st[sid];st.home=st.home||[];const left=DECOR.filter(d=>!st.home.includes(d[0]));let html;
@@ -304,3 +305,32 @@ function openChest(){const st=S.st[sid];st.home=st.home||[];const left=DECOR.fil
 
 document.addEventListener('keydown',e=>{if(role!=='hs'||scr.k!=='game'||scr.end)return;if(scr.g1){if(scr.sheet){if(e.key==='Enter'){e.preventDefault();const b=document.querySelector('.sheet .gobtn');b&&b.click()}return}const q=q1();if(q&&q.type==='num'){if(/^[0-9]$/.test(e.key))key1(e.key);else if(e.key==='Backspace')key1('⌫');else if(e.key==='Enter')key1('✓')}return}if(scr.sheet){if(e.key==='Enter'){e.preventDefault();const b=document.querySelector('.sheet .gobtn');b&&b.click()}return}const q=gameQ();if(q.type!=='num')return;if(/^[0-9]$/.test(e.key))padKey(e.key);else if(e.key==='Backspace')padKey('⌫');else if(e.key==='Enter')padKey('✓')});
 
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'go-home-2':function(event,a){go({k:'home',tab:a[0]})},
+  'toast':function(event,a){toast(a[0])},
+  'go-home-quest':function(){go({k:'home',tab:'quest'})},
+  'buyDecor':function(event,a){buyDecor(a[0])},
+  'startGame-fix':function(event,a){startGame(a[0],'fix')},
+  'claimQuest':function(event,a){claimQuest(a[0])},
+  'toggleMute':function(){toggleMute()},
+  'startGame-easy':function(event,a){startGame(a[0],'easy',a[1])},
+  'startGame-storm':function(event,a){startGame(a[0],'storm')},
+  'demo-render':function(){scr.demo=null;render()},
+  'showHint-render':function(){scr.showHint=!scr.showHint;render()},
+  'padKey':function(event,a){padKey(a[0])},
+  'answer':function(event,a){answer(a[0])},
+  'answer-2':function(){answer(true)},
+  'answer-3':function(){answer(false)},
+  'togglePick':function(event,a){togglePick(a[0])},
+  'answer-4':function(){answer(scr.picks)},
+  'seqTap':function(event,a){seqTap(a[0])},
+  'seq-render':function(){scr.seq=[];render()},
+  'nextG':function(){nextG()},
+  'retryG':function(){retryG()},
+  'endG':function(){endG(false)},
+  'go-home-3':function(){go({k:'home',tab:'home'})},
+  'startGame':function(event,a){startGame(a[0],a[1])},
+  'go-video-1':function(event,a){go({k:'video',part:1,id:a[0]})},
+  'openChest':function(){openChest()},
+});
