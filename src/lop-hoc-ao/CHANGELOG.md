@@ -1,5 +1,30 @@
 # Lịch sử thay đổi
 
+## 27/10/2026 — PWA ngoại tuyến (P-16, RF5, PR vào `tich-hop/kien-truc-2026-10`)
+- **Cài lên màn hình điện thoại.** Mới `public/manifest.webmanifest` (tên "Lớp học ảo Jenny", `start_url`/`scope` `./`, `display` standalone, `theme_color` `#1F2A5A`, nền `#3FC1EC`)
+  và icon pixel `public/icons/jenny-192.png`, `jenny-512.png`, `jenny-512-maskable.png` **sinh từ sprite `PXJ`** (`js/core/22`) lúc dựng (`iconPXJ` trong `vite.config.js`, pngjs; hình trong 80 % giữa, nền trời `#7FD3F0`) — đổi PXJ là icon đổi theo.
+  Trang học sinh có `<link rel="manifest">`, `<meta name="theme-color">`, `apple-touch-icon` (plugin `jennyPwa` chèn sau `noi-file`). `vite.config.js` đặt `publicDir: 'public'`.
+- **Service worker** `sw.js` + `workbox-*.js` do `vite-plugin-pwa` 2.0.0 (Workbox 7, `generateSW`, `registerType: 'prompt'`) sinh vào `dist/` rồi chép sang `games/lop-hoc-ao/` (`.gitignore`, không vào git).
+  Đường dẫn trong `sw.js` tương đối (không gắn `base`) nên cùng bản chạy trên Pages, máy chủ thử ở gốc kho (`npm test`) và `dist/`.
+  - **Precache** (vỏ trang học sinh): `index.html`, `assets/lop-hoc-ao-*.css`, `assets/hoc-sinh-*.js`, manifest, icon (7 mục, 1,44 MB thô). `navigateFallback: index.html`;
+    **denylist** `/giao-vien/`, `/phu-huynh/`, `/quan-ly/`, `/demo/`, `/giong-mau/` và mọi URL có đuôi file → trang cô/phụ huynh/quản lý/bản thử **luôn lấy mạng**, không bao giờ bị cache.
+  - **Runtime cache** (CacheFirst): chunk khối `assets/lop-N-[hash].js` (tối đa 12, 90 ngày) — tải khi em đăng nhập, mất mạng vẫn mở đảo lớp mình; chữ tự host `/assets/fonts/` (60 file, 180 ngày);
+    SDK Firebase compat `www.gstatic.com/firebasejs/` (có SRI, 180 ngày) — cần để mở app khi không có mạng.
+  - **Không cache Firebase**: `firestore.googleapis.com`, `identitytoolkit`, `securetoken`, `firebaseinstallations`, `*.firebaseio.com`, `*.firebaseapp.com` ghi tường minh `NetworkOnly` (dữ liệu do bộ nhớ đệm bền Firestore của P-21 lo).
+  - `cacheId` = `jenny-lha-1` (`CACHE_ID` trong `vite.config.js`): **đổi số khi đổi cấu trúc dữ liệu lưu trên máy hay đổi máy chủ** → cache cũ bỏ hết.
+  - `clientsClaim: true` (lần cài đầu SW nhận điều khiển trang ngay, để chunk khối tải sau đăng nhập đi qua SW), `skipWaiting: false` (bản mới chờ em bấm).
+- **`core/34`**: đăng ký `sw.js` chỉ ở trang có manifest (bản học sinh; không ở `file://`, bản một file, trang cô). Worker mới đã cài và đang chờ → **thanh pixel "Có bản mới · Tải lại"** (`#swmoi`, navy viền vàng, góc dưới);
+  bấm → gửi `SKIP_WAITING` → `controllerchange` → tải lại. `reg.update()` **mỗi 60 giây** và khi quay lại tab → thiết bị đang mở biết bản mới trong 1 phút. `swNong()`: khối đã tải lúc SW chưa điều khiển (lần mở đầu / vừa đổi SW) được nạp lại qua SW để vào cache (gọi khi SW sẵn sàng, khi nhận điều khiển, sau `khoi:sau`).
+- **`core/79`** (P-16 sở hữu): sự kiện `offline` → toast "Mất mạng. Em cứ học tiếp, bài sẽ gửi khi có mạng."; `online` → toast "Có mạng rồi, đang gửi bài em làm." và `fbDay()` ngay (không chờ 20 giây). Ghi lúc mất mạng vẫn do Firestore (P-21) tự xếp hàng.
+- CSP của P-08 **không phải đổi**: `worker-src` không khai thì theo `script-src 'self'`, `manifest-src` theo `default-src 'self'`; `khong-goi-ngoai.mjs` 0 vi phạm.
+- `package.json`: thêm `vite-plugin-pwa` (devDependency). `.gitignore`: `games/lop-hoc-ao/sw.js`, `workbox-*.js`, `manifest.webmanifest`, `icons/`.
+- **Kiểm tra** (máy thầy, Chromium Playwright, `python3 -m http.server`): **Lighthouse 11.7.1 PWA = 1,0, installable** (trước: 0,38, "no manifest"; Lighthouse 12 đã bỏ mục PWA nên dùng bản 11).
+  SW cục bộ: precache 7 mục; tắt mạng tải lại trang học sinh → mở được (màn đăng nhập), trang cô ngoại tuyến → lỗi mạng (đúng, không cache); đổi `sw.js` trên đĩa mà không điều hướng → thanh "Có bản mới" hiện **đúng 60 giây** sau khi tải trang, bấm Tải lại → SW mới, precache có revision mới.
+  **Trên dự án thử `jenny-lop-hoc-ao-thu`** (bản nháp thay cấu hình, kho không đổi — công tắc `FB_ENV` chưa có): em thử đăng nhập → SW điều khiển ngay, cache có chunk `lop-1`; chơi 1 màn trực tuyến (+35 xu, ví máy chủ 90 → 125);
+  **tắt mạng, tải lại trang → vào app** (controller SW, SDK từ cache, Auth/Firestore từ IndexedDB), chơi 1 màn "Bài 1 · Tiết 1" (+35 xu), mở "Bài 1 · Tiết 2"; **bật mạng → ví máy chủ 125 → 160**, sổ `ev` có dòng `man 25`, hàng đợi 0, toast "Có mạng rồi…". `FB.dem` phiên: đọc máy chủ 11, đệm 17, ghi 6.
+  `npm test` **14/14 ĐẠT, rc 0** (7 kiểm tra §7 ĐẠT; `rules.test.js` BỎ QUA tại máy, không Java). `tim-import` 0 việc, `npm run lint` 0 lỗi.
+- **Chưa làm / lưu ý**: trang chủ `index.html` và game lẻ chưa có manifest (P-19). Lần mở đầu sau khi đẩy bản mới, HTML cũ trong precache trỏ chunk cũ; chunk đã vào cache thì vẫn chạy, chưa có thì màn "Mạng chậm quá" cho tới khi em bấm Tải lại ở thanh "Có bản mới" (≤ 1 phút). iOS: cài từ Safari › Chia sẻ › Thêm vào màn hình chính (không có hộp thoại tự cài).
+
 ## 26/10/2026 — Nội dung tải theo khối (P-15b, RF4, PR vào `tich-hop/kien-truc-2026-10`)
 - **Các trang không còn nối nội dung.** Mỗi khối `content/lop-1` … `lop-5`, `lop-6-9` là một file riêng `assets/lop-N-[hash].js` (chunk ES do Rollup dựng; `tools/vite/noi-file.js` bỏ dòng import từ `js/core` vì tên core là toàn cục của script chung).
   Trang ghi `<script type="application/json" id="khoi-url">` (khối → đường dẫn) ngay trước `<script src>`. Bản học sinh (thật và thử) chỉ có 5 khối tiểu học, **không có lop-6-9**.

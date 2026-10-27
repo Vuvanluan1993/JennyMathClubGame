@@ -24,7 +24,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 - ◐ **T-17b Tiếng Anh đầy đủ** — lớp 1 xong (48b, kiểm tra `tools/test/tieng-anh.js`), chờ thầy duyệt; tiếp lớp 2→5. Còn: buổi Toán Jenny hằng tuần (27-chu-de-2-lop-1-5.js).
 - ◐ **T-18 Dùng xu** — Gian hàng Jenny (49) + Đảo nhà & nuôi thú cưng (49b) đã làm; kho trò chơi 3 trò + vé lượt chơi đã làm (51-kho-game.js).
 - ☐ **T-14 Đánh giá cho giáo viên, phụ huynh** — dùng `st.dd`, `st.sk`, `st.skm`; thiết kế riêng sau.
-- ☐ **T-11 Chế độ ngoại tuyến (PWA)** — cài lên màn hình điện thoại, chơi khi không có mạng.
+- ☑ **T-11 Chế độ ngoại tuyến (PWA)** — cài lên màn hình điện thoại, chơi khi không có mạng. 27/10: P-16 (`manifest.webmanifest` + icon từ PXJ, `sw.js` Workbox precache vỏ + cache khối, không cache Firebase, thanh "Có bản mới · Tải lại", Lighthouse installable; thử trên dự án thử: tắt mạng vẫn học, nối lại lên máy chủ). Trang chủ + game lẻ: P-19.
 - ☑ **T-12 Tối ưu dung lượng** — tách nội dung theo lớp, chỉ tải lớp của học sinh. 26/10: P-15a (nội dung ở `content/lop-1` … `lop-5`, `lop-6-9`, mỗi khối `dangKy(reg)`) và P-15b (tải `import()` theo khối sau đăng nhập, màn chờ pixel, cô/phụ huynh/quản lý tải theo lớp đang xem, đổi lớp không tải lại trang): trang học sinh 680 → 492–517 KB gzip, `tools/test/kich-co.mjs` giữ dưới 700 KB.
 
 ## Đã xong (tóm tắt)

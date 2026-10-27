@@ -66,6 +66,19 @@ trong `app.template.html` (một phạm vi chung, hoisting như cũ) — xem m�
   `npm test` báo khi lệch — sinh lại sau khi đổi nội dung lớp dưới hoặc `39e`).
 - Kích cỡ (26/10, gzip -9): trang học sinh 3,8 + CSS 24,9 + JS 440,6 + một khối 22–47 KB = 492–517 KB (trước 680 KB). `tools/test/kich-co.mjs` fail nếu > 700 KB hoặc bản học sinh có `lop-6-9`.
 
+## PWA ngoại tuyến (P-16 — 27/10/2026)
+
+- `public/manifest.webmanifest` + `public/icons/jenny-{192,512,512-maskable}.png` (sinh từ sprite `PXJ` của `core/22` mỗi lần dựng, `iconPXJ` trong `vite.config.js`; `publicDir: 'public'` → chép nguyên sang `dist/`).
+  Chỉ **trang học sinh** có `<link rel="manifest">`, `theme-color`, `apple-touch-icon` (plugin `jennyPwa` chèn sau `noi-file`).
+- `sw.js` + `workbox-*.js`: `vite-plugin-pwa` (Workbox `generateSW`, `registerType: 'prompt'`, `injectRegister: false`, `manifest: false`) sinh ở `closeBundle`; `jennyPwa` chép sang `games/lop-hoc-ao/` sau đó (`.gitignore`).
+  Đường dẫn tương đối với `sw.js` (không gắn `base`). Phạm vi SW = `games/lop-hoc-ao/`.
+  - Precache: `index.html`, CSS chung, `hoc-sinh-*.js`, manifest, icon. `navigateFallback` `index.html`; denylist `/giao-vien/`, `/phu-huynh/`, `/quan-ly/`, `/demo/`, `/giong-mau/`, URL có đuôi file.
+  - Runtime CacheFirst: `assets/lop-N-[hash].js` (khối), `/assets/fonts/` (gốc kho), `www.gstatic.com/firebasejs/` (SDK). **NetworkOnly**: `firestore|identitytoolkit|securetoken|firebaseinstallations.googleapis.com`, `*.firebaseio.com`, `*.firebaseapp.com`.
+  - `CACHE_ID` (`jenny-lha-1`): **đổi khi đổi cấu trúc dữ liệu lưu trên máy hoặc đổi máy chủ**. `clientsClaim: true`, `skipWaiting: false`.
+- `core/34`: `swDangKy()` đăng ký ở trang có manifest (http/https); worker mới đang chờ → thanh `#swmoi` "Có bản mới · Tải lại" → `SKIP_WAITING` → `controllerchange` → tải lại; `reg.update()` mỗi 60 giây và khi quay lại tab; `swNong()` nạp lại khối đã tải qua SW để vào cache.
+- `core/79`: `offline`/`online` → toast; `online` → `fbDay()` ngay. Dữ liệu lúc mất mạng: bộ nhớ đệm bền Firestore (`core/63`, P-21).
+- Kiểm tra: Lighthouse 11 (`--only-categories=pwa`; bản 12 bỏ mục PWA) trên `python3 -m http.server`; kịch bản Playwright tắt mạng (`context.setOffline(true)`) + tải lại trang; thử dữ liệu trên dự án thử `jenny-lop-hoc-ao-thu`.
+
 ## Thứ tự nạp (rút gọn)
 
 1. `core/00` hooks; `core/01` tiện ích (`R`, `pick`, `shuf`, `range`, `esc`…), `core/03`, `core/30a` đăng ký khối, rồi khối `content/lop-6-9` (lớp 6–9, Toán Jenny lớp 6).
