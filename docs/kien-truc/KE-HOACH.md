@@ -5,6 +5,8 @@ Mỗi hàng có một kế hoạch con trong `plans/P-xx-*.md` (file sửa, vi�
 
 Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy · ✗ bỏ.
 
+⟳ 27/10/2026 **LỘ TRÌNH ĐÃ XÂY XONG.** PR cuối #19 (P-14c) gộp vào `tich-hop/kien-truc-2026-10`, tip `805351e`, CI 11/11, `npm test` 14/14 (bảng gộp: `TICH-HOP-2026-10-25.md`, 28 hàng). Mọi hàng còn làm đều ☑ hoặc ✗. Còn lại là việc của thầy: thử bản dựng `FB_ENV=thu` trên dự án Firebase thử, rồi quyết định gộp nhánh tích hợp vào `main` (một PR, thầy gộp); sau khi gộp: dựng lại, dán rules + chỉ mục vào dự án thật, 4 mục console.
+
 ⟳ 25/10/2026 **THỨ TỰ CHẠY** (bản cắt lại, theo `KE-HOACH-PARALLEL-2026-10-25.md`): đã xong P-01, P-02, P-03, P-04, P-05, P-07, P-09a, P-10 (PR #3, #4, #5); đang chạy P-08 · P-17 · P-06a; mở ngay P-18; khi P-08 push: P-19 · P-14a; lane Firebase tiếp P-20 → P-09b → P-21 (→ P-22 nếu Q5 = Blaze). Độ rộng 4; đường tới hạn P-08 → P-14 → P-15 → P-16 = 6 phiên.
 
 ## Quyết định của thầy
@@ -44,7 +46,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy 
 - ✗ **P-22 Blaze 0 đồng + Cloud Functions** (bỏ 26/10 theo Q5 = A; giữ kế hoạch con để xem lại khi có tên thật) — hàm `taoTaiKhoan`, `chamXu`, `xoaHocSinh`, chặn tự đăng ký bằng blocking function, xuất sao lưu quản lý theo lịch; HS không còn ghi `vi`. `plans/P-22-blaze-functions.md`
 
 ## Giai đoạn 4 — Tái cấu trúc front-end
-- ◐ **P-14 Vite + ES module cho Lớp học ảo** — 14a ☑ (RF1, 26/10), 14b ☑ (RF2, PR #12 base nhánh tích hợp: 118 file import/export, hàm đè qua hooks, ESLint 0 lỗi); còn **14c** bỏ `'unsafe-inline'` khỏi CSP (520 `onclick` inline cần đổi sang `addEventListener`), làm sau RF5. `plans/P-14-vite-module.md`
+- ☑ **P-14 Vite + ES module cho Lớp học ảo** — 14a ☑ (RF1, 26/10), 14b ☑ (RF2, PR #12 base nhánh tích hợp: 118 file import/export, hàm đè qua hooks, ESLint 0 lỗi), 14c ☑ (RF6, PR #19, 27/10: CSP bỏ `'unsafe-inline'`; 522 thuộc tính inline đổi sang `data-act` + một listener uỷ quyền `js/core/02-hanh-dong.js`, công cụ `tools/vite/bo-inline.mjs` 480 tự động + 42 tay; 3 script đầu trang ra `js/dau-trang.js`; không làm phần gộp iife vì không cần cho CSP). `plans/P-14-vite-module.md`
 - ☑ **P-15 Nội dung theo khối, tải động** (26/10; 15a PR #14, 15b PR #16 base nhánh tích hợp: trang học sinh 680 → 492–517 KB gzip, LCP 1,9 s, test 14/14; thầy chưa walk trên điện thoại). `plans/P-15-noi-dung-theo-khoi.md`
 - ☑ **P-16 PWA ngoại tuyến** (27/10, RF5, PR #17 base nhánh tích hợp: Lighthouse PWA 1,0; thử ngoại tuyến trên dự án thử ĐẠT; test 14/14; thầy chưa cài lên điện thoại). `plans/P-16-pwa.md`
 - ◐ **P-17 Kiểm tra giao diện tự động** — đang chạy (KT, PR #6); đã thấy 2 lỗi tràn ở 1920×950 (Hành trình · vườn, · cửa hàng), sửa ở task riêng. `plans/P-17-kiem-tra-giao-dien.md`
@@ -56,6 +58,7 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong · ⏸ chờ thầy 
   ⟳ 25/10: không sửa `deploy.yml`; `tham-tu` sinh bởi `tools/build_tham_tu.py` do `build_all.py` gọi. Mở từ tip P-08.
 
 ## Nhật ký quyết định (STAR)
+- **27/10/2026 — Lộ trình xây xong, chờ thầy gộp `main`.** Tình huống: 19 PR (#3–#19) đã gộp vào `tich-hop/kien-truc-2026-10` (tip `805351e`), bản dựng `FB_ENV=thu` chạy trên dự án Firebase thử; `main` chưa đổi. Nhiệm vụ: khép lộ trình theo Q6. Hành động: RF6 làm P-14c (PR #19), TH gộp, kế hoạch đánh dấu xong. Kết quả: thầy thử trên điện thoại rồi quyết định mở PR nhánh tích hợp → `main`; đó là lời đồng ý cuối của lộ trình.
 - **25/10/2026 — Lập kế hoạch.** Tình huống: app chạy thật trên `main`, máy chủ Firebase mới nối 24/10, chưa có CI, chưa nhập tên thật. Nhiệm vụ: audit và vạch đường tới kiến trúc an toàn. Hành động: audit 3 khu, viết đích và 19 việc. Kết quả: PR #2 mở; chờ Q1–Q4.
 - **25/10/2026 — Cắt lộ trình song song.** Tình huống: 19 hàng theo giai đoạn ≈ 19 phiên lần lượt. Nhiệm vụ: thứ tự chạy nhanh nhất không đụng file. Hành động: 4 luật F-c, 9 gói, 22 phiên trong 9 lane. Kết quả: độ rộng 4, đường tới hạn 7 phiên.
 - **25/10/2026 — Thầy chốt Q1 = A, bắt đầu lộ trình.** Hành động: mở CI1 · FE1 · FB1 · T1, rồi ngày 2 CI2 · FE2 · FB2 · T2 · KT. Kết quả: PR #3, #4, #5, #6; P-03 xong; Node đã cài.

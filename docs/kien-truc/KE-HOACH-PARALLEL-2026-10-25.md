@@ -104,12 +104,11 @@ Thứ tự bỏ nếu thiếu thời gian: P-22 → DS → GL → RF5 → RF4 �
 | Chặn gian lận xu | chặn hẳn (B) · giảm (A, P-06b) | giảm mạnh (P-20) · chặn hẳn nếu Q5 = Blaze | hàm máy chủ vẫn cần Blaze |
 
 ## Việc tiếp theo, theo mốc
-1. **Ngay:** gộp PR của nhánh `chore/audit-kien-truc` (kế hoạch mới lên `main`); trả lời FE2 về tải font; mở DS bằng khối lệnh dưới.
-2. **Khi FE2 push:** mở GL và RF1.
-3. **Khi FB3 push:** mở FB4 (P-20) cùng lane.
-4. **Walk đợt 1 (ngày 3):** gộp PR #3, #4, #5, #6, FE; CI deploy Pages; thầy làm 4 việc console.
-5. **Ngày 4** (FB4 đã push, PR FB2 đã gộp): mở RF2; trả Q5; nếu Blaze, FB7 mở sau FB6.
-6. **Walk đợt 2, 3** (ngày 5, 7): như bảng ngày. Sau đợt 3: xoá worktree, ghi CHANGELOG.
+Luật 27/10: mọi phiên của lộ trình đã đóng (PR #3–#19 gộp vào `tich-hop/kien-truc-2026-10`, tip `805351e`; thêm RF6 · P-14c và FB7 · công tắc `FB_ENV` ngoài bảng trên). Các bước 1–6 cũ đã qua; còn:
+1. **Thầy:** thử bản dựng `FB_ENV=thu` trên điện thoại (PWA, 4G) theo mục "Cách thầy thử" trong `TICH-HOP-2026-10-25.md`; gõ mã CLB trong phiên TH để chạy check_fit Hành trình.
+2. **Thầy quyết:** mở PR `tich-hop/kien-truc-2026-10` → `main` và gộp. Sau gộp: `python3 tools/build.py`, commit "Dựng lại bản", dán rules + chỉ mục vào dự án Firebase thật, 4 mục trong `FIREBASE-CONSOLE.md`.
+3. **Sau gộp:** xoá các worktree đã gộp trong app (mục Worktrees), đổi mã CLB và dựng lại `bank.enc`, sao lưu kho + 3 secret, đặt nguồn Pages và bảo vệ nhánh.
+4. **Sửa thêm trước khi gộp** (nếu thầy thấy lỗi khi thử): cắt nhánh mới từ tip nhánh tích hợp, PR về nhánh tích hợp, TH gộp.
 
 ---
 
