@@ -1,5 +1,6 @@
 /* ===================== Video (slide + thuyết minh) ===================== */
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { go, shortTitle, toast, unit, ustate } from './13-giao-dien-chung.js';
@@ -7,11 +8,11 @@ import { jenny } from './33d-jenny-bieu-cam.js';
 export function viewVideo(){
   const u=unit(scr.part,scr.id);
   return`<div class="page">
-   <div class="crumb"><button class="btn sm ghost" onclick="go({k:'island',part:${scr.part},id:'${scr.id}'})">← ${esc(shortTitle(u.title))}</button><span class="pill acc">Video thử · slide + lời Jenny</span></div>
+   <div class="crumb"><button class="btn sm ghost" data-act="go-island" ${hd.arg(scr.part,String(scr.id))}>← ${esc(shortTitle(u.title))}</button><span class="pill acc">Video thử · slide + lời Jenny</span></div>
    <div class="player"><div id="slide" class="slide" aria-live="polite"></div>
-    <div class="pctl"><button class="btn sm ghost" id="pPrev" onclick="player.prev()" aria-label="Trang trước">◀</button><button class="play" id="pPlay" onclick="player.toggle()" aria-label="Phát">▶</button><button class="btn sm ghost" id="pNext" onclick="player.next()" aria-label="Trang sau">▶▶</button><div class="prog" id="prog"></div><span class="muted" id="pCount"></span></div></div>
+    <div class="pctl"><button class="btn sm ghost" id="pPrev" data-act="prev" aria-label="Trang trước">◀</button><button class="play" id="pPlay" data-act="toggle" aria-label="Phát">▶</button><button class="btn sm ghost" id="pNext" data-act="next" aria-label="Trang sau">▶▶</button><div class="prog" id="prog"></div><span class="muted" id="pCount"></span></div></div>
    <div class="cap">${jenny(32)}<span id="cap"></span></div>
-   <div class="row" style="margin-top:14px;justify-content:space-between"><span class="muted" id="pNote"></span><button class="btn" id="pDone" onclick="finishVideo()" disabled>Đã xem xong ✓</button></div></div>`;
+   <div class="row" style="margin-top:14px;justify-content:space-between"><span class="muted" id="pNote"></span><button class="btn" id="pDone" data-act="finishVideo" disabled>Đã xem xong ✓</button></div></div>`;
 }
 export function startPlayer(){
   const u=unit(scr.part,scr.id),slides=u.slides;let i=0,playing=false,timer=null,seen=new Set([0]);
@@ -33,3 +34,11 @@ export function startPlayer(){
 }
 function finishVideo(){const s=ustate(scr.part,scr.id);if(!s.intro){s.intro=true;log(sid,'watched',unit(scr.part,scr.id).title,0,{completion:true})}save();go({k:'island',part:scr.part,id:scr.id});toast('Đã xem xong. Vào bước tiếp theo nhé!')}
 
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'go-island':function(event,a){go({k:'island',part:a[0],id:a[1]})},
+  'prev':function(){player.prev()},
+  'toggle':function(){player.toggle()},
+  'next':function(){player.next()},
+  'finishVideo':function(){finishVideo()},
+});

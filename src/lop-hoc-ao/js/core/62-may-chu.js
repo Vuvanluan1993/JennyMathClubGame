@@ -14,6 +14,7 @@
    appCheckKey (P-05): khoá site reCAPTCHA v3 của App Check, ghi trong cau-hinh.json; để trống = không bật. Chỉ theo dõi, chưa Enforce (xem docs/FIREBASE-CONSOLE.md). */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { newStudent, save } from './09-du-lieu-demo.js';
 import { render, toast } from './13-giao-dien-chung.js';
 import { fbNghe, fbTietKiem } from './63-firestore-tiet-kiem.js';
@@ -233,19 +234,19 @@ export function fbTaiKhoanBox(){const o=S.org;if(!o||!o.cloud)return'';const lop
     ...Object.entries(o.ph||{}).map(([con,tk])=>{const h=(o.hs||[]).find(x=>x[0]===con);return{ten:'Phụ huynh '+(h?h[1]:con),vai:'Phụ huynh',tk,them:'con: '+(h?h[1]:con)}})];
   return`<section class="card"><h2>Tài khoản</h2><p class="muted" style="margin:4px 0 0">Tên đăng nhập của mọi người. Ai quên mật khẩu thì bấm "Đặt lại mật khẩu": người đó nhận mật khẩu tạm và phải tự đổi khi đăng nhập. Dữ liệu học không mất.</p>
    ${fbMKPhien.length?`<div class="task" style="margin-top:10px;border-left:4px solid var(--leaf)"><b>Mật khẩu tạm trong phiên này</b> <span class="muted">(mất khi đăng xuất; học sinh/phụ huynh in phiếu)</span><div>${fbMKPhien.slice(0,30).map(x=>`${esc(x.tk)} / <code>${esc(x.pw)}</code>`).join(' · ')}</div></div>`:''}
-   <div class="tablewrap"><table><tr><th>Họ tên</th><th>Vai trò</th><th>Tên đăng nhập</th><th>Lớp / con</th><th></th></tr>${R.map(r=>`<tr><td><b>${esc(r.ten)}</b></td><td>${r.vai}</td><td><code>${esc(r.tk)}</code></td><td>${esc(r.them)}</td><td>${r.tk===CLOUD.me.tk?'<span class="muted">dùng "Đổi mật khẩu"</span>':`<button class="btn sm" onclick="fbDatLaiMK('${esc(r.tk)}')">Đặt lại mật khẩu</button>`}</td></tr>`).join('')}</table></div></section>`}
+   <div class="tablewrap"><table><tr><th>Họ tên</th><th>Vai trò</th><th>Tên đăng nhập</th><th>Lớp / con</th><th></th></tr>${R.map(r=>`<tr><td><b>${esc(r.ten)}</b></td><td>${r.vai}</td><td><code>${esc(r.tk)}</code></td><td>${esc(r.them)}</td><td>${r.tk===CLOUD.me.tk?'<span class="muted">dùng "Đổi mật khẩu"</span>':`<button class="btn sm" data-act="fbDatLaiMK" ${hd.arg(String(r.tk))}>Đặt lại mật khẩu</button>`}</td></tr>`).join('')}</table></div></section>`}
 {hooks.on('viewPH',_p=>function(){let r=_p.apply(this,arguments);try{if(role==='ql'&&CLOUD&&S.org&&S.org.cloud){
   /* P-05: trang một lớp → nút đặt lại mật khẩu cả lớp (75 chèn nút In phiếu vào cùng chỗ) */
-  if(typeof qlTrang!=='undefined'&&qlTrang==='lopct')r=r.replace(/(<span class="pill">Khối \d+ · \d+ em<\/span><\/div>)/,`$1<div class="qlin"><button type="button" class="btn" onclick="fbDatLaiMKLop('${esc(qlLopId)}')">🔑 Đặt lại mật khẩu cả lớp</button></div>`);
+  if(typeof qlTrang!=='undefined'&&qlTrang==='lopct')r=r.replace(/(<span class="pill">Khối \d+ · \d+ em<\/span><\/div>)/,`$1<div class="qlin"><button type="button" class="btn" data-act="fbDatLaiMKLop" ${hd.arg(String(qlLopId))}>🔑 Đặt lại mật khẩu cả lớp</button></div>`);
   const m='<p class="muted" style="margin:0">Sắp có:';const i=r.lastIndexOf(m);const box=fbTaiKhoanBox();return i<0?r.replace(/<\/div>\s*$/,box+'</div>'):r.slice(0,i)+box+r.slice(i)}}catch(e){console.error(e)}return r})}
 
 /* ---------- giao diện khi dùng máy chủ ---------- */
 {hooks.on('header',_h=>function(){try{if(CLOUD&&S&&S.st&&!S.st[sid]){const f=STUDENTS.find(r=>S.st[r[0]]);if(f)sid=f[0];else S.st[sid]=newStudent('Chưa có học sinh',1)}}catch(e){}_h();try{if(!CLOUD||CLOUD.me.role==='hs')return;const me=CLOUD.me,t=document.getElementById('tabs');
-  t.querySelectorAll('button').forEach(b=>{const r=b.dataset.ql!==undefined?'ql':(b.getAttribute('onclick')||'').match(/setRole\('(\w+)'\)/);const k=r==='ql'?'ql':r&&r[1];
+  t.querySelectorAll('button').forEach(b=>{const k=b.dataset.ql!==undefined?'ql':b.dataset.act==='setRole'?hd.thamSo(b,'','setRole')[0]:null;
     const cho=me.role==='ql'?['gv','ql','ph']:me.role==='gv'?['gv']:['ph'];b.hidden=!cho.includes(k)||cho.length<2});
   const wb=document.getElementById('whoBox');wb.style.display=(role==='ph'&&STUDENTS.length>1)?'':'none';
   t.style.display=window.TRANG||![...t.querySelectorAll('button')].some(b=>!b.hidden)?'none':'';
-  if(!document.getElementById('fbMe'))t.insertAdjacentHTML('afterend',`<div id="fbMe" class="fbme"><span class="pill">${esc(me.ten||me.tk)} · ${({ql:'Quản lý',gv:'Giáo viên',ph:'Phụ huynh'})[me.role]||''}</span><span id="fbSt" class="muted fbst"></span><button class="btn sm" onclick="fbDoiMK()">Đổi mật khẩu</button><button class="btn sm" onclick="fbDangXuat()">Đăng xuất</button></div>`)}catch(e){}})}
+  if(!document.getElementById('fbMe'))t.insertAdjacentHTML('afterend',`<div id="fbMe" class="fbme"><span class="pill">${esc(me.ten||me.tk)} · ${({ql:'Quản lý',gv:'Giáo viên',ph:'Phụ huynh'})[me.role]||''}</span><span id="fbSt" class="muted fbst"></span><button class="btn sm" data-act="fbDoiMK">Đổi mật khẩu</button><button class="btn sm" data-act="fbDangXuat">Đăng xuất</button></div>`)}catch(e){}})}
 {hooks.on('gvMau',_g=>function(){if(S&&S.org&&S.org.cloud)return;return _g.apply(this,arguments)})}
 {hooks.on('asgSeed',_a=>function(){if(CLOUD){S.asgSeed=2;return}return _a.apply(this,arguments)})}
 {hooks.on('gvNow',_n=>function(){return CLOUD?Date.now():_n()})}
@@ -404,7 +405,7 @@ hooks.ham('fbNangCapV3',async function(){if(!CLOUD||CLOUD.me.role!=='ql'||!S.org
     await fbTaoVi(true);/* P-20: ví xu từng em + bảng giá cfg/shop */
     toast('Đã nâng cấp dữ liệu v3. Đang tải lại…');setTimeout(()=>fbTaiLai(),1200)}catch(e){console.error(e);toast('Chưa nâng cấp được: '+fbLoi(e))}});
 {const _t=fbTaiKhoanBox;fbTaiKhoanBox=function(){const r=_t.apply(this,arguments);if(!r||fbV3()||!CLOUD||CLOUD.me.role!=='ql')return r;
-  return r.replace('</section>',`<div class="task" style="margin-top:10px;border-left:4px solid var(--coral)"><b>Dữ liệu còn ở dạng cũ (một khối JSON)</b><div class="muted" style="margin:4px 0 8px">Nâng cấp lên v3 để tách lớp, học sinh, hồ sơ, nhật ký thành từng bản ghi riêng (bảo mật theo từng trường, cô không ghi đè được dữ liệu trung tâm). Làm một lần, sau đó dán quy tắc Firestore mới.</div><button type="button" class="btn pri" onclick="fbNangCapV3()">⬆ Nâng cấp dữ liệu v3</button></div></section>`)}}
+  return r.replace('</section>',`<div class="task" style="margin-top:10px;border-left:4px solid var(--coral)"><b>Dữ liệu còn ở dạng cũ (một khối JSON)</b><div class="muted" style="margin:4px 0 8px">Nâng cấp lên v3 để tách lớp, học sinh, hồ sơ, nhật ký thành từng bản ghi riêng (bảo mật theo từng trường, cô không ghi đè được dữ liệu trung tâm). Làm một lần, sau đó dán quy tắc Firestore mới.</div><button type="button" class="btn pri" data-act="fbNangCapV3">⬆ Nâng cấp dữ liệu v3</button></div></section>`)}}
 /* thiết lập lần đầu tạo thẳng v3 */
 {const _s=fbThietLap;fbThietLap=async function(ten,tk,pw){const r=await _s.apply(this,arguments);try{const db=FB.db,o=fbJ((await db.doc('org/main').get()).data().j)||{},D=orgV3Tach(o);
   await db.doc('gv/'+tk).set(Object.assign({},D.gv[tk]||{ten,tk},{t:fbTS()}));await db.doc('org/main').set(Object.assign({},D.main,{jCu:fbTS(),t:fbTS()}),{merge:true})}catch(e){console.error(e)}return r}}
@@ -419,14 +420,24 @@ async function fbTaoVi(im){if(!CLOUD||CLOUD.me.role!=='ql'||!FB){if(!im)toast('C
   try{await Promise.all(ghi);if(!im){toast(`Đã tạo ví cho ${n} em và ghi bảng giá cfg/shop`+(cho?` · ${cho} em chưa tải xong, bấm lại sau`:''));render()}}catch(e){console.error(e);toast('Chưa tạo được ví: '+fbLoi(e))}return n}
 {const _t=fbTaiKhoanBox;fbTaiKhoanBox=function(){const r=_t.apply(this,arguments);if(!r||!fbV3()||!CLOUD||CLOUD.me.role!=='ql')return r;
   const thieu=((S.org&&S.org.hs)||[]).filter(([tk])=>fbVi[tk]===null).length;
-  return r.replace('</section>',`<div class="task" style="margin-top:10px;border-left:4px solid ${thieu?'var(--coral)':'var(--leaf)'}"><b>Ví xu (P-20)</b> <span class="muted">${thieu?`${thieu} em chưa có ví vi/{tk} — em đó vẫn giữ xu trong hs.j kiểu cũ.`:'Mọi em đã có ví; xu, đồ mua ghi theo luật máy chủ.'} Nút này cũng ghi lại bảng giá cfg/shop từ danh mục trong app.</span> <button type="button" class="btn sm" onclick="fbTaoVi()">Tạo ví + bảng giá</button></div></section>`)}}
+  return r.replace('</section>',`<div class="task" style="margin-top:10px;border-left:4px solid ${thieu?'var(--coral)':'var(--leaf)'}"><b>Ví xu (P-20)</b> <span class="muted">${thieu?`${thieu} em chưa có ví vi/{tk} — em đó vẫn giữ xu trong hs.j kiểu cũ.`:'Mọi em đã có ví; xu, đồ mua ghi theo luật máy chủ.'} Nút này cũng ghi lại bảng giá cfg/shop từ danh mục trong app.</span> <button type="button" class="btn sm" data-act="fbTaoVi">Tạo ví + bảng giá</button></div></section>`)}}
 export const fbXuCache={t:0,d:{},dang:false};
 export async function fbXuNgay(tks){if(!FB||!FB.db||fbXuCache.dang||!window.firebase||!firebase.firestore.Timestamp)return;fbXuCache.dang=true;const db=FB.db,dau=new Date();dau.setHours(0,0,0,0);const T0=firebase.firestore.Timestamp.fromDate(dau);
   try{await Promise.all(tks.map(async tk=>{const c=db.collection('ev/'+tk+'/d');if(!c.where)return;try{const q=await c.where('t','>=',T0).get();let xu=0,n=0;const gio={};
     q.forEach(d=>{const x=d.data()||{};n++;if(x.d>0)xu+=x.d;if(x.k==='man'){const h=x.t&&x.t.toDate?x.t.toDate().getHours():0;gio[h]=(gio[h]||0)+1}});
     const man1h=Math.max(0,...Object.values(gio));fbXuCache.d[tk]={xu,n,man1h,la:xu>300||man1h>15}}catch(e){console.warn('ev',tk,e&&e.code)}}));fbXuCache.t=Date.now()}
   finally{fbXuCache.dang=false;fbVe()}}
-async function fbXuSo(tk){try{const q=await FB.db.collection('ev/'+tk+'/d').orderBy('t','desc').limit(30).get();const TEN={man:'Qua màn',tl:'Tự luyện',bvn:'Bài về nhà',game:'Trò chơi',mua:'Mua',ban:'Bán',ql:'Quản lý',khac:'Khác'};
+export async function fbXuSo(tk){try{const q=await FB.db.collection('ev/'+tk+'/d').orderBy('t','desc').limit(30).get();const TEN={man:'Qua màn',tl:'Tự luyện',bvn:'Bài về nhà',game:'Trò chơi',mua:'Mua',ban:'Bán',ql:'Quản lý',khac:'Khác'};
   const rows=q.docs.map(d=>{const x=d.data()||{},t=x.t&&x.t.toDate?x.t.toDate():null;return`<tr><td>${t?t.toLocaleString('vi-VN'):''}</td><td>${esc(TEN[x.k]||x.k||'')}</td><td style="text-align:right"><b>${x.d>0?'+':''}${x.d|0}</b></td><td>${esc(x.ref||'')}</td></tr>`}).join('');
   const el=document.createElement('div');el.className='gdov fbmk';el.innerHTML=`<div class="gdbox fbmkbox" role="dialog" aria-modal="true" style="max-height:85vh;overflow:auto"><div class="gdhd"><b>Sổ xu · ${esc(tk)}</b><button type="button" class="gdx" data-x aria-label="Đóng">✕</button></div><div class="fbmkf"><p class="muted">30 dòng gần nhất. Sổ chỉ thêm, không sửa xoá.</p><table><tr><th>Lúc</th><th>Loại</th><th>Xu</th><th>Ở đâu</th></tr>${rows||'<tr><td colspan="4" class="muted">Chưa có dòng nào</td></tr>'}</table></div></div>`;
   document.body.appendChild(el);el.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>el.remove())}catch(e){toast('Chưa đọc được sổ xu: '+fbLoi(e))}}
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'fbDatLaiMK':function(event,a){fbDatLaiMK(a[0])},
+  'fbDatLaiMKLop':function(event,a){fbDatLaiMKLop(a[0])},
+  'fbDoiMK':function(){fbDoiMK()},
+  'fbDangXuat':function(){fbDangXuat()},
+  'fbNangCapV3':function(){fbNangCapV3()},
+  'fbTaoVi':function(){fbTaoVi()},
+});

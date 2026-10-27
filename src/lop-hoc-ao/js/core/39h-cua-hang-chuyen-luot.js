@@ -22,7 +22,7 @@ function shopQuay(ri){return SHOP_QUAY[ri%SHOP_QUAY.length]}
   const top=`<div class="xsquay" style="--qc:${c};--qb:${bg}"><span class="xsawn"></span><span class="xsname">${n} · Khách ${(g.ri||0)+1}/${g.N}</span></div>`;
   s=s.replace('<div class="xshelf">',`${top}<div class="xshelf" style="--qb:${bg}"><span class="xsreg" id="xsreg">${spr('xsReg',40)}</span><span class="xsbag" id="xsbag">${spr('xsBag',34)}</span>`);
   return s})}
-function shopCheck(v){const g=scr;if(g.k!=='xg'||g.end||g.lockC)return;const r=g.r;let ok;
+export function shopCheck(v){const g=scr;if(g.k!=='xg'||g.end||g.lockC)return;const r=g.r;let ok;
   if(r.t==='chg'){ok=v===r.total}else{if(!g.pay.length)return;ok=shopPaid(g)===r.total}
   xgRec(ok,{kind:r.kind});const fb=document.getElementById('xgfb');g.lockC=1;
   if(!ok){g.lives--;sfx('bad');hurtFx(1);xgHearts();if(fb)fb.innerHTML=`<span class="bad">${r.t==='chg'?`Chưa đúng. ${fN(r.give)} − ${fN(r.items[0][1])} = ${fN(r.total)} đồng.`:`Chưa đúng. Em đưa ${xgVnd(shopPaid(g))}, cần ${xgVnd(r.total)}.`}</span>`;
@@ -32,7 +32,7 @@ function shopCheck(v){const g=scr;if(g.k!=='xg'||g.end||g.lockC)return;const r=g
   const ctr=e=>{const b=e.getBoundingClientRect();return[b.left+b.width/2,b.top+b.height/2]};
   const anim=(el,fr,ms)=>{try{return el.animate(fr,{duration:ms,easing:'steps(6)',fill:'forwards'})}catch(e){return null}};
   /* 1. tiền bay vào máy tính tiền */
-  const notes=[...document.querySelectorAll(r.t==='chg'?'.xsopt':'#xshp .xsn')];if(reg){const [rx,ry]=ctr(reg);notes.forEach((n,i)=>{if(r.t==='chg'&&+String(n.getAttribute('onclick')).replace(/\D/g,'')!==v)return;const [nx,ny]=ctr(n);setTimeout(()=>anim(n,[{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${rx-nx}px,${ry-ny}px) scale(.3)`,opacity:.2}],420),i*70)})}
+  const notes=[...document.querySelectorAll(r.t==='chg'?'.xsopt':'#xshp .xsn')];if(reg){const [rx,ry]=ctr(reg);notes.forEach((n,i)=>{if(r.t==='chg'&&+String(n.dataset.arg||'').replace(/\D/g,'')!==v)return;const [nx,ny]=ctr(n);setTimeout(()=>anim(n,[{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${rx-nx}px,${ry-ny}px) scale(.3)`,opacity:.2}],420),i*70)})}
   setTimeout(()=>{sfx('coin');if(reg){reg.classList.add('ting');setTimeout(()=>sfx('ok'),140)}},380);
   /* 2. món hàng nhảy vào túi */
   setTimeout(()=>{if(!bag)return;const [bx,by]=ctr(bag);document.querySelectorAll('.xsitem').forEach((it,i)=>{const [ix,iy]=ctr(it);setTimeout(()=>{anim(it,[{transform:'translate(0,0)'},{transform:`translate(${(bx-ix)/2}px,${by-iy-60}px)`,offset:.5},{transform:`translate(${bx-ix}px,${by-iy}px) scale(.35)`,opacity:.3}],460);sfx('pop')},i*120)});setTimeout(()=>bag.classList.add('full'),480)},620);

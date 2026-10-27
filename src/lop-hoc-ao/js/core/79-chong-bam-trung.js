@@ -16,7 +16,7 @@ const val=i=>((document.getElementById(i)||{}).value||'').trim();
  if(n&&trung.length&&!confirm(`Đã có ${trung.length} em trùng họ tên${nam?' và năm sinh':''}: ${trung.map(s=>s[1]+' ('+s[0]+')').join(', ')}.\n\nVẫn tạo thêm tài khoản mới?`))return;
  return _l.apply(this,arguments)}}
 ['qlLuuHS','qlLuuGV','qlLuuLop','qlLuuPH','qlLuuXep','qlChayNhap','qlXoaHS','phTaoThieu','llChay','qlThemVao'].forEach(khoa);
-/* bảng Sửa dùng onsubmit="qlLuu(event,id)" */
+/* bảng Sửa dùng data-act-submit="qlLuu" (70) */
 {const f=window.qlLuu;if(f){let busy=false;window.qlLuu=async function(e){if(e&&e.preventDefault)e.preventDefault();if(busy)return;busy=true;const b=document.querySelector('#qlsua button[type=submit]');if(b){b.disabled=true}
  try{return await f.apply(this,arguments)}finally{busy=false;if(b&&document.body.contains(b))b.disabled=false}}}}
 })();

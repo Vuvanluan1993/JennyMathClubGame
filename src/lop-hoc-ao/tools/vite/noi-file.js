@@ -5,7 +5,9 @@
 //   → assets/<trang>-[hash].js. JS vẫn là MỘT <script> thường (không type=module), cùng chỗ cũ cuối <body>:
 //   giữ phạm vi toàn cục, hoisting "function trùng tên bản sau thắng", onclick="…" gọi được hàm.
 //   Rollup không đọc mã này (asset), nên không đổi tên biến, không tree-shake, không minify.
-// - Các script nhỏ trong <head> (data-theme light, chữ tự host, CSP) giữ nguyên chỗ, chạy TRƯỚC CSS.
+// - P-14c (27/10/2026): CSP không còn 'unsafe-inline'. Ba script nhỏ trong <head> (data-theme light, chữ tự host, zoom) gom ở js/dau-trang.js,
+//   template ghi <script>/*@include js/dau-trang.js*/</script> (một dòng, trước CSS): trang vai tách thành assets/dau-trang-[hash].js tải đồng bộ
+//   cùng chỗ; bản một file và dev nối thẳng vào <script> rồi motFile() thêm lại 'unsafe-inline' (chỉ bản đó chạy JS inline).
 // - Đường dẫn asset ghi tương đối (../assets/…) nên một bản chạy được cả trên Pages (base), máy chủ thử ở "/" và dist/.
 // - Xong build: chép 4 trang thật + 4 trang thử sang games/lop-hoc-ao/ (assets/.gitignore tự sinh = "*", không vào git).
 // - P-15b (26/10/2026): nội dung theo khối (content/lop-*) KHÔNG nối vào trang; mỗi khối là một chunk ES (assets/lop-N-[hash].js, Rollup dựng,
@@ -19,7 +21,9 @@ import { hocSinh, giaoVien, TRANG_GV, thayCauHinh } from './vai.js';
 import { boModule, docFileJs, kiemTraLienKet } from './module.js';
 
 const INC = /\/\*@include ([^*]+?)\*\//g;
-const MOC = { cssDau: '<!--@vite:css-->', cssCuoi: '<!--/@vite:css-->', jsDau: '<!--@vite:js-->', jsCuoi: '<!--/@vite:js-->' };
+const MOC = { dauDau: '<!--@vite:dau-->', dauCuoi: '<!--/@vite:dau-->', cssDau: '<!--@vite:css-->', cssCuoi: '<!--/@vite:css-->', jsDau: '<!--@vite:js-->', jsCuoi: '<!--/@vite:js-->' };
+const KHOI_DAU = /<script>\/\*@include js\/dau-trang\.js\*\/<\/script>/g; // P-14c: script đầu trang, một dòng, trước CSS
+const CSP_CHAT = "script-src 'self' https://www.gstatic.com;", CSP_INLINE = "script-src 'self' 'unsafe-inline' https://www.gstatic.com;";
 const KHOI_CSS = /<style>\n(?:\/\*@include [^*]+\*\/\n)+<\/style>/g;
 const KHOI_JS = /<script>\n(?:\/\*@include [^*]+\*\/\n)+<\/script>/g;
 
@@ -99,7 +103,8 @@ export function banDayDu(goc, coMoc = false, tinh = true) {
   const lk = kiemTraLienKet(docFileJs(goc, thuTu(goc))); // import phải khớp export của file đích (như bộ liên kết module)
   if (lk.length) throw new Error('import/export không khớp (chạy node tools/vite/tim-import.mjs):\n' + lk.join('\n'));
   let t = fs.readFileSync(path.join(goc, 'app.template.html'), 'utf8');
-  for (const [re, dau, cuoi] of [[KHOI_CSS, MOC.cssDau, MOC.cssCuoi], [KHOI_JS, MOC.jsDau, MOC.jsCuoi]]) {
+  if (!t.includes(CSP_CHAT)) throw new Error('app.template.html: CSP phải là ' + CSP_CHAT + " (P-14c: không 'unsafe-inline')");
+  for (const [re, dau, cuoi] of [[KHOI_DAU, MOC.dauDau, MOC.dauCuoi], [KHOI_CSS, MOC.cssDau, MOC.cssCuoi], [KHOI_JS, MOC.jsDau, MOC.jsCuoi]]) {
     const n = (t.match(re) || []).length;
     if (n !== 1) throw new Error(`app.template.html: cần đúng 1 khối ${dau} (chỉ gồm dòng /*@include*/), thấy ${n}`);
     if (coMoc) t = t.replace(re, k => dau + k + cuoi);
@@ -107,10 +112,11 @@ export function banDayDu(goc, coMoc = false, tinh = true) {
   return thayCauHinh(noi(goc, t, 0, tinh).split('__APP_VER__').join(soBan(goc))); // P-21: __FB_CAU_HINH__ của 62 ← firebase/cau-hinh.json theo FB_ENV (vai.js)
 }
 
-/** Bỏ mốc → trang một file (y như build cũ). */
-export const motFile = t => Object.values(MOC).reduce((s, m) => s.split(m).join(''), t);
+/** Bỏ mốc → trang một file (y như build cũ). Bản này chạy toàn bộ JS inline nên CSP thêm lại 'unsafe-inline'
+ *  (chỉ dist/lop-hoc-ao-jenny.html cho bộ kiểm tra §7 / Artifact và npm run dev; 8 trang vai + day-du.html giữ CSP chặt). */
+export const motFile = t => Object.values(MOC).reduce((s, m) => s.split(m).join(''), t).split(CSP_CHAT).join(CSP_INLINE);
 
-/** Tách trang có mốc → { truoc, css, giua, js, sau }. */
+/** Tách trang có mốc → { truoc, dau, giua0, css, giua, js, sau } (dau = script đầu trang, P-14c). */
 export function tach(t) {
   const lay = (dau, cuoi, the) => {
     const i = t.indexOf(dau), j = t.indexOf(cuoi);
@@ -119,9 +125,9 @@ export function tach(t) {
     if (!m) throw new Error('tach: khối ' + dau + ' không phải <' + the + '>…</' + the + '>');
     return { i, j: j + cuoi.length, noi: m[1] };
   };
-  const c = lay(MOC.cssDau, MOC.cssCuoi, 'style'), s = lay(MOC.jsDau, MOC.jsCuoi, 'script');
-  if (!(c.j <= s.i)) throw new Error('tach: khối CSS phải đứng trước khối JS');
-  return { truoc: t.slice(0, c.i), css: c.noi, giua: t.slice(c.j, s.i), js: s.noi, sau: t.slice(s.j) };
+  const d = lay(MOC.dauDau, MOC.dauCuoi, 'script'), c = lay(MOC.cssDau, MOC.cssCuoi, 'style'), s = lay(MOC.jsDau, MOC.jsCuoi, 'script');
+  if (!(d.j <= c.i && c.j <= s.i)) throw new Error('tach: thứ tự phải là script đầu trang → CSS → JS');
+  return { truoc: t.slice(0, d.i), dau: d.noi, giua0: t.slice(d.j, c.i), css: c.noi, giua: t.slice(c.j, s.i), js: s.noi, sau: t.slice(s.j) };
 }
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json',
@@ -133,7 +139,7 @@ const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; cha
  */
 export default function noiFile({ goc, repo, trang, base }) {
   const ao = Object.fromEntries(Object.entries(trang).map(([ten, f]) => [path.join(goc, f), ten])); // id ảo → tên entry
-  const ra = {}; // tên entry → { phan, cssRef, jsRef }
+  const ra = {}; // tên entry → { phan, dauRef, cssRef, jsRef }
   const BAN_RA = path.join(repo, 'games', 'lop-hoc-ao');
   const khoi = {}; // P-15b: tên khối → referenceId chunk
   const thuMucNoiDung = path.join(goc, 'content') + path.sep;
@@ -152,11 +158,12 @@ export default function noiFile({ goc, repo, trang, base }) {
 
     buildStart() {
       for (const k of dsKhoi(goc)) khoi[k] = this.emitFile({ type: 'chunk', id: path.join(goc, 'content', k, 'index.js'), name: k, preserveSignature: 'strict' });
-      const ban = banDayDu(goc, true, false), css = new Map();
+      const ban = banDayDu(goc, true, false), css = new Map(), dau = new Map();
       for (const ten of Object.values(ao)) {
         const phan = tach(LAM[ten](ban));
         if (!css.has(phan.css)) css.set(phan.css, this.emitFile({ type: 'asset', name: 'lop-hoc-ao.css', source: phan.css }));
-        ra[ten] = { phan, cssRef: css.get(phan.css), jsRef: this.emitFile({ type: 'asset', name: ten + '.js', source: phan.js }) };
+        if (!dau.has(phan.dau)) dau.set(phan.dau, this.emitFile({ type: 'asset', name: 'dau-trang.js', source: phan.dau })); // P-14c: chung cho mọi trang
+        ra[ten] = { phan, dauRef: dau.get(phan.dau), cssRef: css.get(phan.css), jsRef: this.emitFile({ type: 'asset', name: ten + '.js', source: phan.js }) };
       }
       this.emitFile({ type: 'asset', fileName: 'lop-hoc-ao-jenny.html', source: motFile(banDayDu(goc, true, true)) }); // một file: nội dung tĩnh
     },
@@ -170,10 +177,10 @@ export default function noiFile({ goc, repo, trang, base }) {
           const f = path.relative(goc, id).split(path.sep).join('/'), a = bundle[f];
           if (!a || a.type !== 'asset') this.error('không thấy trang ' + f + ' trong bundle');
           const toi = ref => path.posix.relative(path.posix.dirname(f), this.getFileName(ref)) || '.';
-          const { phan, cssRef, jsRef } = ra[ten];
+          const { phan, dauRef, cssRef, jsRef } = ra[ten];
           const ks = khoiCuaTrang(ten, Object.keys(khoi)), url = JSON.stringify(Object.fromEntries(ks.map(k => [k, toi(khoi[k])])));
-          ra[ten].tep = [f, this.getFileName(cssRef), this.getFileName(jsRef), ...ks.map(k => this.getFileName(khoi[k]))];
-          a.source = phan.truoc + `<link rel="stylesheet" href="${toi(cssRef)}">` + phan.giua
+          ra[ten].tep = [f, this.getFileName(dauRef), this.getFileName(cssRef), this.getFileName(jsRef), ...ks.map(k => this.getFileName(khoi[k]))];
+          a.source = phan.truoc + `<script src="${toi(dauRef)}"></script>` + phan.giua0 + `<link rel="stylesheet" href="${toi(cssRef)}">` + phan.giua
             + `<script type="application/json" id="khoi-url">${url}</script><script src="${toi(jsRef)}"></script>` + phan.sau;
         }
       },

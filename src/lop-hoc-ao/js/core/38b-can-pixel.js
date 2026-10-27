@@ -3,6 +3,7 @@
    xích, đĩa cân. Quả cân và vật bên trái là nút HTML có nền sprite pixel. Lệch ít vẫn nghiêng rõ (tối thiểu 2 bậc). */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { PXC, PXS } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { pxCanvas } from './23-bien-pixel-dong-phia-sau-ban-do.js';
 import { scaleRight, scaleTray } from './38-tro-choi-dot-2.js';
@@ -15,7 +16,7 @@ const XSZ=3,XSW=114,XSH=70,XSCX=57,XSPY=13,XSARM=38;
 function xsTilt(g){const L=g.r.T,R_=scaleRight(g);if(R_===L)return 0;if(!g.on.length)return -6;const k=Math.max(2,Math.min(6,Math.round(Math.abs(R_-L)/Math.max(1,L)*14)));return R_>L?k:-k}
 export function scaleHTML(g){const r=g.r,R_=scaleRight(g),eq=R_===r.T&&g.on.length,t=xsTilt(g);
   const ly=XSPY-t,ry=XSPY+t,panY=y=>(y+21)*XSZ;  /* đỉnh đĩa (px) */
-  const wt=i=>`<button type="button" class="xsw on" onclick="scaleTap(${i})" aria-label="Bỏ quả cân ${esc(r.fmt(r.tray[i].v))}"><span>${r.fmt(r.tray[i].v)}</span></button>`;
+  const wt=i=>`<button type="button" class="xsw on" data-act="scaleTap" ${hd.arg(i)} aria-label="Bỏ quả cân ${esc(r.fmt(r.tray[i].v))}"><span>${r.fmt(r.tray[i].v)}</span></button>`;
   return`<div class="xsbal ${eq?'eq':''}" aria-label="Cân: bên trái ${esc(r.left)}, bên phải ${r.fmt(R_)}" data-t="${t}">
    <canvas class="xscv" id="xscv" width="${XSW}" height="${XSH}" aria-hidden="true"></canvas>
    <div class="xspan l" style="left:${(XSCX-XSARM)*XSZ}px;top:${panY(ly)}px"><span class="xstarget">${r.left}</span></div>

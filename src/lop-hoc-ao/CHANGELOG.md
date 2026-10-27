@@ -1,5 +1,33 @@
 # Lịch sử thay đổi
 
+## 27/10/2026 — Bỏ `'unsafe-inline'` khỏi CSP (P-14c, PR vào `tich-hop/kien-truc-2026-10`)
+- **CSP** của `app.template.html`: `script-src 'self' https://www.gstatic.com;` (không còn `'unsafe-inline'`; `style-src` giữ nguyên). 8 trang vai và `dist/day-du.html`
+  không chạy một dòng JS inline nào. Riêng **bản một file** `dist/lop-hoc-ao-jenny.html` (bộ kiểm tra §7, Artifact) và `npm run dev` nối cả JS vào `<script>` nên
+  `motFile()` trong `noi-file.js` thêm lại `'unsafe-inline'` cho đúng bản đó.
+- **Hết thuộc tính sự kiện inline**: 522 chỗ `onclick=` / `onchange=` / `oninput=` / `onkeydown=` / `onsubmit=` / `onpointerdown=` (517 trong `js/core` + template, 5 trong
+  `tools/vite/vai/*.js.txt`) → `data-act="<id>"` (click) hoặc `data-act-<sự kiện>="<id>"`, tham số ở `data-arg` / `data-arg-<sự kiện>` (JSON, sinh bằng `${hd.arg(x)}`
+  / `${hd.argEv('change', x)}`; hành động chọn bằng mã: `hd.attr('<id>', …)`). Mới **`js/core/02-hanh-dong.js`**: đối tượng `hd` + **một listener uỷ quyền trên `document`**
+  cho 6 sự kiện, đi từ phần tử bấm lên trên, gọi hàm đã đăng ký (`this` = phần tử, `event`, `a` = tham số — y hệt inline cũ; dừng khi `stopPropagation`). Hàm xử lý đăng ký
+  **ở cuối chính file có HTML đó**: `hd.dangKy({ 'go-island-3': function(event,a){go({k:'island',id:a[0]})} })` (cùng thân → dùng chung một id; trùng id khác hàm → lỗi lúc nạp).
+  Listener đăng ký lúc nạp `02` (đầu script) nên chạy trước listener `document` của `65` và `vai.js` — cùng thứ tự với inline cũ.
+- **Công cụ `tools/vite/bo-inline.mjs`** (`--xem` để xem trước; chạy lại được sau rebase, chỉ thêm mục mới, id cũ giữ nguyên): 480 chỗ đổi tự động; **42 chỗ sửa tay**:
+  10 chỗ truyền *chuỗi mã* làm handler (`act:\`go(...)\``, `tile(\`…\`)`, `shopNote(…)`, `tdCard(…)`, `ntfGo`) → `hd.attr(id, …)`; 13 chỗ **regex đọc/sửa HTML đã sinh**
+  (`40`, `49b`, `53`, `54` ×3, `66` ×2, `71`, `72` ×2, `78`) đổi sang khớp `data-act="…" data-arg="\[&quot;id&quot;\]"`; 6 chỗ `${…}` sinh mã (`30b` ×2, `33e`, `49b:104`,
+  `51`, `73:56`); 3 chỗ đọc thuộc tính (`62` tab vai, `39h` tờ tiền, `39m` cuộn tới đảo); `onclick=""` ở `35` → `data-act="khong"`; 2 chú thích. Công cụ in rõ từng chỗ phải sửa tay
+  và kiểm **id dùng trong HTML mà chưa đăng ký**. Sau đó `tim-import.mjs` sinh import (`hd` + tên dùng trong hàm; thêm `_qlT` vào `toan-cuc-sinh.json`), `npm run lint` 0 lỗi.
+- **Ba script nhỏ trong `<head>`** (đặt `data-theme=light` trước CSS, chèn `<link>` chữ tự host, zoom "trang web cho máy tính") gom thành **`js/dau-trang.js`**, template ghi
+  `<script>/*@include js/dau-trang.js*/</script>` một dòng trước CSS; `noi-file.js` tách thành `assets/dau-trang-[hash].js` tải **đồng bộ** đúng chỗ (không `type=module`, không `defer`),
+  bản một file nối thẳng. PWA precache thêm `assets/dau-trang-*.js`. Không cần hash CSP.
+- Bộ kiểm tra: `tools/test/kich-co.mjs` đếm đảo bằng `[data-act^="go-island"]`, `tools/test/tu-luyen.js` xem `tile.dataset.act==='go-home-tl'`;
+  `tools/test/giao-dien.spec.mjs` mở context `bypassCSP: true` (tiêm axe-core bằng `addScriptTag` là script inline, bị CSP mới chặn; CSP đã có `khong-goi-ngoai.mjs` kiểm).
+  `.github/workflows/giao-dien.yml`: job check_fit `timeout-minutes` 10 → 25 (hay bị huỷ vì tải Chromium).
+- **Kiểm tra** (máy thầy, `FB_ENV=thu`): `grep -rnE 'on[a-z]+="' app.template.html js content tools/vite/vai` → 0; `khong-goi-ngoai.mjs` 20 trang 0 vi phạm (không lỗi CSP);
+  kịch bản Playwright bấm thử **12 luồng** (bản thử HS: đăng nhập, bản đồ 104 đảo, vào đảo, chơi màn, cửa hàng mua đồ 10 000 → 9 880 xu, các tab; bản thử GV/PH/QL; 4 trang thật
+  màn đăng nhập + hiện mật khẩu + gửi form; `day-du.html` đổi vai; bản một file) → 0 lỗi CSP, 0 lỗi JS, 0 "hd: chưa đăng ký"; **`npm test` 14/14 ĐẠT** (7 kiểm tra §7 ĐẠT; `giao-dien.spec` ĐẠT sau khi thêm `bypassCSP`), `npm run lint` 0 lỗi, `tim-import` 0 lỗi.
+- **Chưa chắc / lưu ý**: hàm xử lý chạy ở `document` (giai đoạn nổi bọt) thay vì tại phần tử: nếu sau này có listener trên phần tử *giữa* (vd `#app`) thì nó chạy **trước** hành động;
+  hiện không có. Thêm nút mới: viết `data-act` + `hd.dangKy` ở cuối file (xem đầu `02-hanh-dong.js`), không viết `onclick`.
+  Phần "cho Rollup gộp thật (`format: 'iife'`)" của kế hoạch 14c **không làm** trong PR này: không cần cho CSP, và đổi tên biến sẽ phá `page.evaluate` của bộ kiểm tra.
+
 ## 27/10/2026 — PWA ngoại tuyến (P-16, RF5, PR vào `tich-hop/kien-truc-2026-10`)
 - **Cài lên màn hình điện thoại.** Mới `public/manifest.webmanifest` (tên "Lớp học ảo Jenny", `start_url`/`scope` `./`, `display` standalone, `theme_color` `#1F2A5A`, nền `#3FC1EC`)
   và icon pixel `public/icons/jenny-192.png`, `jenny-512.png`, `jenny-512-maskable.png` **sinh từ sprite `PXJ`** (`js/core/22`) lúc dựng (`iconPXJ` trong `vite.config.js`, pngjs; hình trong 80 % giữa, nền trời `#7FD3F0`) — đổi PXJ là icon đổi theo.

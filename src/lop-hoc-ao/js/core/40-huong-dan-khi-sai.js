@@ -10,6 +10,7 @@
 /* ---------- bàn tay ngửa pixel ---------- */
 import { hooks } from './00-hooks.js';
 import { fmt } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { addCoins } from './11-sao-va-mo-khoa.js';
 import { render } from './13-giao-dien-chung.js';
@@ -243,11 +244,11 @@ function gdOpenF(...a){return hooks.goi('gdOpenF',this,a)}
 hooks.ham('gdOpenF',function(F,auto,kind){
  gdClose(true);GD={F,i:0,slow:false,tm:null,auto,done:false,kind};
  const el=document.createElement('div');el.id='gdov';el.className='gdov';el.setAttribute('role','dialog');el.setAttribute('aria-label','Hướng dẫn');
- el.innerHTML=`<div class="gdbox"><div class="gdhd"><b>${spr('bulb',20)} Hướng dẫn</b><span class="gdstep"></span><button type="button" class="gdx" onclick="gdClose()" aria-label="Đóng hướng dẫn">Đóng ✕</button></div><div class="gdstage"></div><div class="gdsay">${spr('jennyHappy',40)}<div class="gdbub"></div></div><div class="gdmcq"></div><div class="gdctl"><button type="button" onclick="gdReplay()">↺ Xem lại</button><button type="button" class="gdslow" onclick="gdSlow()">🐢 Chậm hơn</button><button type="button" class="gdgo" onclick="gdFinish()" disabled>Em làm lại ▶</button></div></div>`;
+ el.innerHTML=`<div class="gdbox"><div class="gdhd"><b>${spr('bulb',20)} Hướng dẫn</b><span class="gdstep"></span><button type="button" class="gdx" data-act="gdClose" aria-label="Đóng hướng dẫn">Đóng ✕</button></div><div class="gdstage"></div><div class="gdsay">${spr('jennyHappy',40)}<div class="gdbub"></div></div><div class="gdmcq"></div><div class="gdctl"><button type="button" data-act="gdReplay">↺ Xem lại</button><button type="button" class="gdslow" data-act="gdSlow">🐢 Chậm hơn</button><button type="button" class="gdgo" data-act="gdFinish" disabled>Em làm lại ▶</button></div></div>`;
  document.body.appendChild(el);try{pixelize(el)}catch(e){}gdShow();return true});
 function gdShow(){if(!GD)return;const el=document.getElementById('gdov');if(!el)return;const f=GD.F[GD.i];
  el.querySelector('.gdstage').innerHTML=f.h;el.querySelector('.gdbub').textContent=f.say||'';el.querySelector('.gdstep').textContent=`${GD.i+1}/${GD.F.length}`;
- const mq=el.querySelector('.gdmcq');if(f.mcq){const m=f.mcq;mq.innerHTML=`<div class="gdmq">${m.q}</div><div class="gdopts ${m.grid===2?'c2':m.opts.every(o=>String(o).length<=4)?'c3':''}">${m.opts.map(o=>`<button type="button" data-v="${String(o).replace(/"/g,'&quot;')}" onclick="gdPick(this)">${o}</button>`).join('')}</div>`}else mq.innerHTML='';
+ const mq=el.querySelector('.gdmcq');if(f.mcq){const m=f.mcq;mq.innerHTML=`<div class="gdmq">${m.q}</div><div class="gdopts ${m.grid===2?'c2':m.opts.every(o=>String(o).length<=4)?'c3':''}">${m.opts.map(o=>`<button type="button" data-v="${String(o).replace(/"/g,'&quot;')}" data-act="gdPick">${o}</button>`).join('')}</div>`}else mq.innerHTML='';
  if(f.say)try{sayJ(f.say)}catch(e){}
  clearTimeout(GD.tm);if(f.mcq)return;
  if(GD.i>=GD.F.length-1){GD.done=true;el.querySelector('.gdgo').disabled=false;return}
@@ -280,9 +281,9 @@ const gdOn=()=>{const g=scr;return g&&g.k==='game'&&g.g1&&g.fix&&!g.race&&!g.tre
    else{sfx('bad');g.sheet={kind:'gdbad'};sayJ('Chưa đúng. Mình xem đáp án nhé.')}}
   try{if(typeof xgRec==='function'&&g.gdRedo.stage==='sim')xgRec(ok,q)}catch(e){}save();render()})}
 {hooks.on('sheet1',_sh=>function(){const g=scr,s=g.sheet,q=q1();
-  if(s&&s.kind==='gdok')return`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${g.gdRedo&&g.gdRedo.stage==='sim'?'Tuyệt vời!':'Đúng rồi!'}</b><div>${s.msg}</div></div></div><button class="gobtn" type="button" onclick="gdAfter()">${s.sim?'Làm câu tương tự ▶':'Tiếp tục'}</button></div>`;
-  if(s&&s.kind==='gdbad')return`<div class="sheet bad"><div class="sh"><span class="ic">✕</span><div><b>Đáp án đúng${show1(q)!==''?': '+show1(q):''}</b><div>${q.sol}</div></div></div><button class="gobtn" type="button" onclick="gdAfter(1)">Tiếp tục</button></div>`;
-  let h=_sh();if(gdOn()&&!g.gdRedo&&s&&(s.kind==='retry'||s.kind==='bad')&&gdKind(q))h=h.replace(/(<button class="gobtn" type="button" onclick="(?:retry1|next1)\(\)">)/,`<button class="gobtn ghost gdbtn" type="button" onclick="gdOpen(q1())">${spr('bulb',18)} Xem hướng dẫn</button>$1`);
+  if(s&&s.kind==='gdok')return`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${g.gdRedo&&g.gdRedo.stage==='sim'?'Tuyệt vời!':'Đúng rồi!'}</b><div>${s.msg}</div></div></div><button class="gobtn" type="button" data-act="gdAfter">${s.sim?'Làm câu tương tự ▶':'Tiếp tục'}</button></div>`;
+  if(s&&s.kind==='gdbad')return`<div class="sheet bad"><div class="sh"><span class="ic">✕</span><div><b>Đáp án đúng${show1(q)!==''?': '+show1(q):''}</b><div>${q.sol}</div></div></div><button class="gobtn" type="button" data-act="gdAfter-2">Tiếp tục</button></div>`;
+  let h=_sh();if(gdOn()&&!g.gdRedo&&s&&(s.kind==='retry'||s.kind==='bad')&&gdKind(q))h=h.replace(/(<button class="gobtn" type="button" data-act="(?:retry1|next1)">)/,`<button class="gobtn ghost gdbtn" type="button" data-act="gdOpen-q1">${spr('bulb',18)} Xem hướng dẫn</button>$1`);
   return h})}
 function gdAfter(skip){const g=scr,s=g.sheet;if(!skip&&s&&s.sim&&g.gdRedo&&g.gdRedo.stage==='same'){g.gdRedo={stage:'sim'};g.gdPq=s.sim;g.sheet=null;g.inp='';g.picks=[];g.seq=[];g.fill=[];g.used=[];g.cnt=0;g.t0=Date.now();render();return}
  g.gdRedo=null;g.gdPq=null;next1()}
@@ -331,3 +332,15 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox button{color:#1F2A5A}.gdbox .gdgo{color:#1F2A5A}
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'gdClose':function(){gdClose()},
+  'gdReplay':function(){gdReplay()},
+  'gdSlow':function(){gdSlow()},
+  'gdFinish':function(){gdFinish()},
+  'gdPick':function(){gdPick(this)},
+  'gdAfter':function(){gdAfter()},
+  'gdAfter-2':function(){gdAfter(1)},
+  'gdOpen-q1':function(){gdOpen(q1())},
+});

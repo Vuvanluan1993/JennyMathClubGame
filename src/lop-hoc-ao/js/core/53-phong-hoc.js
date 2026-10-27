@@ -13,6 +13,7 @@
    - Cô xem: điểm từng em (kèm lần đầu) và các dạng câu cả lớp sai nhiều. */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { gvCLS, gvTen, save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { go, render, shortTitle, toast } from './13-giao-dien-chung.js';
@@ -82,15 +83,15 @@ hooks.ham('phSubmit',function(){const g=scr,st=S.st[sid],a=asgAll().find(x=>x.id
  log(sid,'answered',`Phiếu bài · ${q.label}`,0,{success:ok});const r=asgR(st)[g.ph];if(r&&r.cur)r.cur.ans=g.ans.slice();save();sfx('tap');
  if(!phNext())g.sheet={kind:'phall',left:0};render()})}
 {hooks.on('sheet1',_s=>function(){const g=scr,s=g.sheet;if(!(g&&g.ph&&s&&/^ph/.test(s.kind)))return _s.apply(this,arguments);
- if(s.kind==='phall')return`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${arcT(`Em đã làm hết ${g.qs.length} câu`,`You answered all ${g.qs.length}`)}</b><div>${arcT('Bấm Nộp bài để xem kết quả.','Hand in to see your score.')}</div></div></div><button class="gobtn" type="button" onclick="phSubmit()">${arcT('Nộp bài','Hand in')}</button></div>`;
- return`<div class="sheet warn"><div class="sh"><span class="ic">?</span><div><b>${arcT(`Còn ${s.left} câu chưa làm`,`${s.left} not answered`)}</b><div>${arcT('Câu chưa làm tính là sai. Em vẫn nộp chứ?','Unanswered count as wrong. Hand in anyway?')}</div></div></div><div class="phask"><button class="gobtn ghost" type="button" onclick="scr.sheet=null;render()">${arcT('Làm tiếp','Keep going')}</button><button class="gobtn" type="button" onclick="phSubmit()">${arcT('Vẫn nộp','Hand in')}</button></div></div>`})}
+ if(s.kind==='phall')return`<div class="sheet ok"><div class="sh"><span class="ic">✓</span><div><b>${arcT(`Em đã làm hết ${g.qs.length} câu`,`You answered all ${g.qs.length}`)}</b><div>${arcT('Bấm Nộp bài để xem kết quả.','Hand in to see your score.')}</div></div></div><button class="gobtn" type="button" data-act="phSubmit">${arcT('Nộp bài','Hand in')}</button></div>`;
+ return`<div class="sheet warn"><div class="sh"><span class="ic">?</span><div><b>${arcT(`Còn ${s.left} câu chưa làm`,`${s.left} not answered`)}</b><div>${arcT('Câu chưa làm tính là sai. Em vẫn nộp chứ?','Unanswered count as wrong. Hand in anyway?')}</div></div></div><div class="phask"><button class="gobtn ghost" type="button" data-act="sheet-render">${arcT('Làm tiếp','Keep going')}</button><button class="gobtn" type="button" data-act="phSubmit">${arcT('Vẫn nộp','Hand in')}</button></div></div>`})}
 {hooks.on('viewGame1',_v=>function(){const g=scr;if(!(g&&g.ph))return _v.apply(this,arguments);let h=_v.apply(this,arguments);
  const done=g.ans.filter(Boolean).length,n=g.qs.length;
  const planks=`<div class="planks phpl" aria-label="${arcT(`Đã làm ${done}/${n} câu`,`${done}/${n} answered`)}">${g.qs.map((_,k)=>`<i class="${k===g.j?'cur':g.ans[k]?'phd':''}"></i>`).join('')}</div>`;
  h=h.replace(/<div class="planks"[^>]*>(?:<i[^>]*><\/i>)*<\/div>/,planks)
   .replace(/<span class="hearts"[^>]*>(?:<span[^>]*>❤<\/span>)*<\/span>/,`<span class="pill acc phpill">${spr('asgS',16)} ${arcT('Câu','Q')} ${g.j+1}/${n}</span>`)
-  .replace(/<button class="gx" onclick="[^"]*"/,`<button class="gx" onclick="try{speechSynthesis.cancel()}catch(e){};go({k:'home',tab:'bai'})"`);
- if(!g.sheet){const i=h.lastIndexOf('</div></div>');if(i>0)h=h.slice(0,i)+`<div class="phbar"><button type="button" class="btn sm ghost" onclick="phLater()">${arcT('Để sau','Skip for now')}</button><span class="grow">${arcT(`Đã làm ${done}/${n}`,`${done}/${n} done`)}</span><button type="button" class="btn sm pri" onclick="phSubmitAsk()">${arcT('Nộp bài','Hand in')}</button></div>`+h.slice(i)}
+  .replace(/<button class="gx" data-act="[^"]*"(?: data-arg="[^"]*")?/,`<button class="gx" data-act="cancel-go-home-bai"`);
+ if(!g.sheet){const i=h.lastIndexOf('</div></div>');if(i>0)h=h.slice(0,i)+`<div class="phbar"><button type="button" class="btn sm ghost" data-act="phLater">${arcT('Để sau','Skip for now')}</button><span class="grow">${arcT(`Đã làm ${done}/${n}`,`${done}/${n} done`)}</span><button type="button" class="btn sm pri" data-act="phSubmitAsk">${arcT('Nộp bài','Hand in')}</button></div>`+h.slice(i)}
  return h})}
 /* trang Bài cô giao */
 function asgRow(st,a){const S0=asgState(st,a),r=S0.r,b=r.best,pct=b?b.ok/b.n:0;
@@ -99,9 +100,9 @@ function asgRow(st,a){const S0=asgState(st,a),r=S0.r,b=r.best,pct=b?b.ok/b.n:0;
  return`<div class="pgrow ${S0.done?'done':''}"><div class="grow"><div class="pgtags">${S0.neu?`<i class="pgtag new">${arcT('Mới','New')}</i>`:''}${tag}${S0.late?`<i class="pgtag late">${arcT('Quá hạn','Late')}</i>`:''}</div>
   <b class="pgt">${esc(asgName(a))} · ${a.n} ${arcT('câu','questions')}</b><span class="pggoal">${esc(asgGoal(a))}</span>
   <small>${esc(a.by||'Cô')} ${arcT('giao','set')} ${asgD(a.t)}${a.due?` · ${arcT('hạn','due')} ${asgD(a.due)}`:''}${b?` · ${arcT('nộp','handed in')} ${asgD(r.last.t)}`:''}</small>${res}</div>
-  <div class="pgbtns">${S0.done?`<button type="button" class="btn sm pgbtn" onclick="go({k:'home',tab:'baikq',aid:'${a.id}'})">${arcT('Xem bài','Review')}</button>`:''}<button type="button" class="btn sm ${S0.done?'ghost':'pri'} pgbtn" onclick="asgGo('${a.id}')">${S0.done?arcT('Làm lại','Redo'):S0.doing?arcT('Làm tiếp','Continue'):arcT('Làm bài','Start')}</button></div></div>`}
+  <div class="pgbtns">${S0.done?`<button type="button" class="btn sm pgbtn" data-act="go-home-baikq" ${hd.arg(String(a.id))}>${arcT('Xem bài','Review')}</button>`:''}<button type="button" class="btn sm ${S0.done?'ghost':'pri'} pgbtn" data-act="asgGo" ${hd.arg(String(a.id))}>${S0.done?arcT('Làm lại','Redo'):S0.doing?arcT('Làm tiếp','Continue'):arcT('Làm bài','Start')}</button></div></div>`}
 function viewAsg(st){const L=asgMine(st),todo=L.filter(a=>!asgState(st,a).done).sort((p,q)=>q.t-p.t),done=L.filter(a=>asgState(st,a).done).sort((p,q)=>asgR(st)[q.id].last.t-asgR(st)[p.id].last.t);
- const page=`<div class="page pgpage"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← ${arcT('Phòng học','Study room')}</button></div>
+ const page=`<div class="page pgpage"><div class="crumb"><button class="btn sm ghost" data-act="go-home-nha">← ${arcT('Phòng học','Study room')}</button></div>
  <section class="card"><h2 class="nhah">${spr('asgS',24)} ${arcT('Bài cô giao','Homework')}</h2>
   <h3 class="ghgh">${arcT('Cần làm','To do')} (${todo.length})</h3>${todo.length?todo.map(a=>asgRow(st,a)).join(''):`<p class="muted">${arcT('Em đã làm hết bài cô giao. Giỏi lắm!','All homework done. Well done!')}</p>`}
   <h3 class="ghgh">${arcT('Đã nộp','Handed in')} (${done.length})</h3>${done.length?done.map(a=>asgRow(st,a)).join(''):`<p class="muted">${arcT('Chưa có bài nào nộp.','Nothing handed in yet.')}</p>`}
@@ -111,44 +112,44 @@ function viewAsg(st){const L=asgMine(st),todo=L.filter(a=>!asgState(st,a).done).
 function viewAsgKQ(st){const a=asgAll().find(x=>x.id===scr.aid),r=a&&asgR(st)[a.id];if(!a||!r||!r.last)return viewAsg(st);const L=r.last,qs=phQs(a,L.seed),pct=L.ok/L.n;
  const msg=pct>=.9?arcT('Xuất sắc!','Excellent!'):pct>=.7?arcT('Làm tốt lắm!','Well done!'):pct>=.5?arcT('Khá rồi, cố thêm chút nhé!','Good, keep going!'):arcT('Mình xem lại các câu sai nhé!','Let’s look at the mistakes.');
  const rows=qs.map((q,k)=>{const x=L.ans[k]||{};return`<div class="kqrow ${x.ok?'ok':'bad'}"><span class="kqn">${k+1}</span><div class="grow"><div class="kqq">${q.q}</div>${q.pic?`<div class="kqpic">${q.pic}</div>`:''}${x.ok?`<small class="kqok">✓ ${arcT('Đúng','Correct')}</small>`:`<small class="kqbad">${x.skip?arcT('✕ Chưa làm','✕ Not answered'):arcT('✕ Chưa đúng','✕ Not correct')}${q.type==='opt'&&/</.test(q.opts[q.a].h)?` · ${arcT('Đáp án','Answer')}:</small><div class="kqpic kqans">${q.opts[q.a].h}</div><small>`:show1(q)!==''?` · ${arcT('Đáp án','Answer')}: <b>${show1(q)}</b>`:''}</small><div class="kqsol">${q.sol||''}</div>`}</div></div>`}).join('');
- return`<div class="page pgpage"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'bai'})">← ${arcT('Bài cô giao','Homework')}</button></div>
+ return`<div class="page pgpage"><div class="crumb"><button class="btn sm ghost" data-act="go-home-bai">← ${arcT('Bài cô giao','Homework')}</button></div>
  <section class="card kqtop"><div class="kqhd">${jenny(64,pct>=.7?'happy':'')}<div class="grow"><small>${esc(asgName(a))}</small><div class="kqsc ${pct>=.8?'pgg':pct>=.5?'pgm':'pgb'}">${L.ok}/${L.n}</div><b>${msg}</b>${L.xu?`<span class="earn">+${L.xu} ${arcT('xu','coins')}</span>`:''}</div></div>
   <p class="muted" style="margin:8px 0 0;font-size:13px">${arcT(`Lần nộp thứ ${r.tries} · ${asgD(L.t)}${r.tries>1?` · lần đầu ${r.first.ok}/${r.first.n}`:''}. Câu sai đã vào Sổ lỗi để em luyện lại.`,`Hand-in #${r.tries} · ${asgD(L.t)}${r.tries>1?` · first ${r.first.ok}/${r.first.n}`:''}. Mistakes went to your mistake book.`)}</p>
-  <div class="archbtn"><button type="button" class="btn sm" onclick="asgGo('${a.id}')">${arcT('Làm lại (số mới)','Redo (new numbers)')}</button></div></section>
+  <div class="archbtn"><button type="button" class="btn sm" data-act="asgGo" ${hd.arg(String(a.id))}>${arcT('Làm lại (số mới)','Redo (new numbers)')}</button></div></section>
  <section class="card"><h3 class="ghgh" style="margin-top:0">${arcT('Từng câu','Each question')}</h3>${rows}</section></div>`}
 /* khung Phòng học trong Nhà em */
 function phongBox(...a){return hooks.goi('phongBox',this,a)}
 hooks.ham('phongBox',function(st){const nt=asgTodo(st),nm=Object.keys(mist(st)).length;
- const tile=(click,ic,n,sub,badge)=>`<button type="button" class="nhat" onclick="${click}"><span class="nhic">${ic}${badge?`<i class="herbang">${badge}</i>`:''}</span><b>${n}</b><small>${sub}</small></button>`;
+ const tile=(click,ic,n,sub,badge)=>`<button type="button" class="nhat" ${click}><span class="nhic">${ic}${badge?`<i class="herbang">${badge}</i>`:''}</span><b>${n}</b><small>${sub}</small></button>`;
  return`<section class="card pghome"><h2 class="nhah">${spr('classS',26)} ${arcT('Phòng học của em','My study room')}</h2><div class="nhagrid">
-  ${tile(`go({k:'home',tab:'bai'})`,spr('asgS',44),arcT('Bài cô giao','Homework'),nt?arcT(`${nt} bài chưa làm xong`,`${nt} not done`):arcT('Đã làm hết','All done'),nt>9?'9+':nt||'')}
-  ${tile(`go({k:'home',tab:'fix'})`,spr('book',44),arcT('Luyện lỗi','Fix mistakes'),nm?arcT(`${nm} lỗi cần sửa`,`${nm} to fix`):arcT('Không có lỗi','No mistakes'),nm>9?'9+':nm||'')}
-  ${tile(`toast(arcT('Phần Tự luyện sắp có nhé!','Self-practice is coming soon!'))`,spr('selfS',44),arcT('Tự luyện','Self-practice'),arcT('Sắp có','Coming soon'),'')}</div></section>`});
+  ${tile(hd.attr('go-home-2','bai'),spr('asgS',44),arcT('Bài cô giao','Homework'),nt?arcT(`${nt} bài chưa làm xong`,`${nt} not done`):arcT('Đã làm hết','All done'),nt>9?'9+':nt||'')}
+  ${tile(hd.attr('go-home-2','fix'),spr('book',44),arcT('Luyện lỗi','Fix mistakes'),nm?arcT(`${nm} lỗi cần sửa`,`${nm} to fix`):arcT('Không có lỗi','No mistakes'),nm>9?'9+':nm||'')}
+  ${tile(hd.attr('toast-tl-sap-co'),spr('selfS',44),arcT('Tự luyện','Self-practice'),arcT('Sắp có','Coming soon'),'')}</div></section>`});
 {hooks.on('viewNha',_n=>function(st){const r=_n.apply(this,arguments);try{asgSeed();const i=r.indexOf('<section class="card tdhome">');const box=phongBox(st);return i<0?r.replace(/<\/div>\s*$/,box+'</div>'):r.slice(0,i)+box+r.slice(i)}catch(e){return r}})}
 NHA_TABS.push('bai','baikq','fix');
 {hooks.on('viewHome1t',_v=>function(){const st=S.st[sid];let r;
  if(scr.tab==='bai'||scr.tab==='baikq'){const t=scr.tab;scr.tab='nha';try{r=_v.apply(this,arguments)}finally{scr.tab=t}const i=r.indexOf('<nav class="bnav"');asgSeed();r=(t==='bai'?viewAsg(st):viewAsgKQ(st))+(i>=0?r.slice(i):'')}
- else{r=_v.apply(this,arguments);if(scr.tab==='fix')r=`<div class="crumb nhacrumb"><button class="btn sm ghost" onclick="go({k:'home',tab:'nha'})">← ${arcT('Phòng học','Study room')}</button></div>`+r}
+ else{r=_v.apply(this,arguments);if(scr.tab==='fix')r=`<div class="crumb nhacrumb"><button class="btn sm ghost" data-act="go-home-nha">← ${arcT('Phòng học','Study room')}</button></div>`+r}
  try{if(!st||st.grade>5)return r;
   /* bỏ Luyện lỗi khỏi thanh dưới */
-  r=r.replace(/<button class="[^"]*" aria-current="\w+" onclick="go\(\{k:'home',tab:'fix'\}\)"[^>]*>[\s\S]*?<\/button>/,'');
+  r=r.replace(/<button class="[^"]*" aria-current="\w+" data-act="go-home-2" data-arg="\[&quot;fix&quot;\]"[^>]*>[\s\S]*?<\/button>/,'');
   /* Nhà em: số bài chưa làm; có lỗi cần sửa thì ít nhất báo "!" */
   asgSeed();const nt=asgTodo(st),nm=Object.keys(mist(st)).length;
-  if(nt||nm)r=r.replace(/(<button class="[^"]*)(" aria-current="\w+" onclick="go\(\{k:'home',tab:'nha'\}\)"><span aria-hidden="true" class="bnic">)([\s\S]*?)(<\/span>)/,(m,a,b,c,d)=>{c=c.replace(/<i class="pxq-n bnn">[^<]*<\/i>/,'');return a+(a.includes('bnfix')?'':' bnfix')+b+c+`<i class="pxq-n bnn">${nt?(nt>9?'9+':nt):'!'}</i>`+d})}catch(e){}
+  if(nt||nm)r=r.replace(/(<button class="[^"]*)(" aria-current="\w+" data-act="go-home-2" data-arg="\[&quot;nha&quot;\]"><span aria-hidden="true" class="bnic">)([\s\S]*?)(<\/span>)/,(m,a,b,c,d)=>{c=c.replace(/<i class="pxq-n bnn">[^<]*<\/i>/,'');return a+(a.includes('bnfix')?'':' bnfix')+b+c+`<i class="pxq-n bnn">${nt?(nt>9?'9+':nt):'!'}</i>`+d})}catch(e){}
  return r})}
 /* trang giáo viên (bản đầy đủ): giao phiếu bài + xem kết quả */
 function gvAsgStats(a,CLS){const W={};let m=0;CLS.forEach(([id])=>{const r=asgR(S.st[id])[a.id];if(!r||!r.first)return;m++;r.first.ans.forEach(x=>{const k=x.label||'?';W[k]=W[k]||[0,0];W[k][1]++;if(!x.ok)W[k][0]++})});
  const top=Object.entries(W).filter(([,v])=>v[0]).sort((p,q)=>q[1][0]/q[1][1]-p[1][0]/p[1][1]).slice(0,3);
  return m?`<div class="muted" style="margin-top:6px">${top.length?`Dạng sai nhiều (lần đầu): ${top.map(([k,v])=>`<b>${esc(k)}</b> ${v[0]}/${v[1]} câu`).join(' · ')}`:'Lần đầu cả lớp chưa sai câu nào.'}</div>`:''}
 function gvAsgBox(){const g=gvGrade;if(g>5||!PRIM[g])return'';asgSeed();const L=PRIM[g].isl,CLS=gvCLS();
- const list=asgAll().filter(a=>a.g===g&&asgOk(a)&&!a.hs&&a.loai!=='loi'&&(!a.lop||!gvLop||a.lop===gvLop)).sort((p,q)=>q.t-p.t).map(a=>`<div class="task"><div class="row"><div style="flex:1;min-width:160px"><b>${esc(asgName(a))} · ${a.n} câu</b><div class="muted">Giao ${asgD(a.t)}${a.due?` · hạn ${asgD(a.due)}`:''}</div></div><button class="btn sm" onclick="gvAsgDel('${a.id}')">Xoá</button></div>
+ const list=asgAll().filter(a=>a.g===g&&asgOk(a)&&!a.hs&&a.loai!=='loi'&&(!a.lop||!gvLop||a.lop===gvLop)).sort((p,q)=>q.t-p.t).map(a=>`<div class="task"><div class="row"><div style="flex:1;min-width:160px"><b>${esc(asgName(a))} · ${a.n} câu</b><div class="muted">Giao ${asgD(a.t)}${a.due?` · hạn ${asgD(a.due)}`:''}</div></div><button class="btn sm" data-act="gvAsgDel" ${hd.arg(String(a.id))}>Xoá</button></div>
   <div class="row" style="margin-top:8px;gap:6px">${CLS.map(([id,n])=>{const s=asgState(S.st[id],a),r=s.r;return`<span class="pill ${s.done?(r.best.ok/r.best.n>=.8?'ok':'acc'):'warn'}">${esc(n.split(' ').pop())}: ${s.done?`${r.first.ok}/${r.first.n}${r.tries>1?` → tốt nhất ${r.best?r.best.ok+'/'+r.best.n:'xong'}`:''}`:s.doing?'đang làm':'chưa làm'}${s.late?' · quá hạn':''}</span>`}).join('')}</div>${gvAsgStats(a,CLS)}</div>`).join('');
  return`<section class="card"><div class="secthead"><h2>Giao phiếu bài cho lớp ${g}</h2></div>
   <p class="muted" style="margin:0 0 6px">Phiếu bài tách riêng khỏi đảo: không tính sao, không mở đảo. Mỗi em cùng dạng câu nhưng số khác nhau. Chọn 1 hay nhiều tiết (giữ Ctrl/⌘ để chọn nhiều).</p>
   <div class="row" style="gap:8px;flex-wrap:wrap;margin:6px 0 10px;align-items:flex-start"><select id="asgIsl" multiple size="6" aria-label="Chọn tiết" style="min-width:280px;flex:1">${L.map((x,i)=>`<option value="${x.id}" ${i===0?'selected':''}>${esc(shortTitle(x.title))} — ${esc((x.goal||'').slice(0,50))}</option>`).join('')}</select>
   <div class="grid" style="gap:8px"><select id="asgN" aria-label="Số câu">${[5,6,8,10,12,15,20].map(n=>`<option value="${n}" ${n===(g<=2?6:10)?'selected':''}>${n} câu</option>`).join('')}</select>
   <select id="asgDue" aria-label="Hạn nộp"><option value="0">Không hạn</option><option value="1">Hạn 1 ngày</option><option value="2" selected>Hạn 2 ngày</option><option value="3">Hạn 3 ngày</option><option value="7">Hạn 1 tuần</option></select>
-  <button class="btn pri" onclick="gvAsgAdd()">Giao phiếu</button></div></div>
+  <button class="btn pri" data-act="gvAsgAdd">Giao phiếu</button></div></div>
   <p class="muted" style="margin:0 0 8px">Pill: điểm lần đầu (→ điểm tốt nhất nếu em làm lại).</p>${list||'<p class="muted">Chưa giao phiếu nào.</p>'}</section>`}
 function gvAsgAdd(){const tiets=[...document.getElementById('asgIsl').selectedOptions].map(o=>o.value);if(!tiets.length){toast('Chọn ít nhất 1 tiết');return}
  const n=+document.getElementById('asgN').value,d=+document.getElementById('asgDue').value,now=(typeof gvNow==='function'?gvNow():Date.now());
@@ -173,3 +174,18 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .pgtags{display:flex;gap:4px;flex-wrap:wrap}.pgtag{font-style:normal;font-family:var(--f-display);font-size:15px;line-height:1;padding:3px 6px 2px;color:#fff;background:#1F2A5A}
 .pgtag.no{background:#F04A1B}.pgtag.mid{background:#FCB40C;color:#1F2A5A}.pgtag.ok{background:#2AB563}.pgtag.new{background:#12B5E8}.pgtag.late{background:#8656A8}
 </style>`);
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'toast-tl-sap-co':function(){toast(arcT('Phần Tự luyện sắp có nhé!','Self-practice is coming soon!'))},
+  'phSubmit':function(){phSubmit()},
+  'sheet-render':function(){scr.sheet=null;render()},
+  'cancel-go-home-bai':function(){try{speechSynthesis.cancel()}catch(e){};go({k:'home',tab:'bai'})},
+  'phLater':function(){phLater()},
+  'phSubmitAsk':function(){phSubmitAsk()},
+  'go-home-baikq':function(event,a){go({k:'home',tab:'baikq',aid:a[0]})},
+  'asgGo':function(event,a){asgGo(a[0])},
+  'go-home-bai':function(){go({k:'home',tab:'bai'})},
+  'gvAsgDel':function(event,a){gvAsgDel(a[0])},
+  'gvAsgAdd':function(){gvAsgAdd()},
+});

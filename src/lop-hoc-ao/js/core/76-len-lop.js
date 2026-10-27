@@ -4,6 +4,7 @@
    Bước 3: xem lại rồi xác nhận. Xu, đồ, thú cưng, tủ đồ, Sổ lỗi sai giữ nguyên; sao và tiến độ năm cũ cất vào Hồ sơ năm học. */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { totalStars } from './11-sao-va-mo-khoa.js';
 import { render, toast } from './13-giao-dien-chung.js';
@@ -32,24 +33,24 @@ window.lenLopHS=function(st,khoiMoi,nam,lopTen){if(!st||!(khoiMoi>st.grade))retu
  (st.namHoc=st.namHoc||[]).push({nam:nam||'',khoi:st.grade,lop:lopTen||'',sao,p1:st.p1});
  st.grade=khoiMoi;st.p1={};return st};
 
-function trang(){const o=O();if(!LL)return trang0();return`<div class="grid"><div class="qlhd"><button type="button" class="btn sm ghost" onclick="LL=null;render()">← Năm học</button><h1>🎓 Kết thúc năm học ${e(o.nam)}</h1></div>
+function trang(){const o=O();if(!LL)return trang0();return`<div class="grid"><div class="qlhd"><button type="button" class="btn sm ghost" data-act="LL-render">← Năm học</button><h1>🎓 Kết thúc năm học ${e(o.nam)}</h1></div>
  <div class="llstep">${['Lớp mới','Từng học sinh','Xác nhận'].map((t,i)=>`<span class="${LL.buoc===i+1?'on':LL.buoc>i+1?'xong':''}">${i+1}. ${t}</span>`).join('')}</div>
  ${LL.buoc===1?b1():LL.buoc===2?b2():b3()}</div>`}
 function trang0(){const o=O(),L=LOPS(),n=STUDENTS.filter(s=>(o.gd||{})[s[0]]).length,ng=Object.entries(o.nghi||{}),cu=o.namCu||[];
- return`<div class="grid"><div class="qlhd"><button type="button" class="btn sm ghost" onclick="qlDi('')">← Quản lý</button><h1>🎓 Năm học · Lên lớp</h1></div>
+ return`<div class="grid"><div class="qlhd"><button type="button" class="btn sm ghost" data-act="qlDi-3">← Quản lý</button><h1>🎓 Năm học · Lên lớp</h1></div>
  <section class="card"><h2>Năm học ${e(o.nam)}</h2><p>${L.length} lớp · ${n} em đang học.</p>
   <p class="muted">Cuối năm bấm "Kết thúc năm học": lớp 1A thành 2A, 2A thành 3A…; lớp 5 thành "Đã học xong". Thầy chọn em ở lại lớp hoặc nghỉ học. Xu, đồ, thú cưng, tủ đồ, Sổ lỗi sai của em giữ nguyên; sao và tiến độ năm cũ cất vào Hồ sơ năm học; bản đồ mở chương trình lớp mới.</p>
-  <button type="button" class="btn pri" ${L.length?'':'disabled'} onclick="LL=llMoi();render()">Kết thúc năm học ${e(o.nam)} ▸</button></section>
+  <button type="button" class="btn pri" ${L.length?'':'disabled'} data-act="LL-llMoi-render">Kết thúc năm học ${e(o.nam)} ▸</button></section>
  ${cu.length?`<section class="card"><h2>Các năm học trước</h2>${cu.slice().reverse().map(y=>`<div class="qlr qgv"><div class="a-ten"><b>${e(y.nam)}</b><div class="muted">${(y.lop||[]).length} lớp · ${Object.keys(y.gd||{}).length} em</div></div><div class="a-con">${(y.lop||[]).map(l=>`<span class="pill">${e(l.ten)}</span>`).join('')}</div></div>`).join('')}</section>`:''}
- ${ng.length?(()=>{const qh=ng.filter(([id,x])=>quaHan(x)).length;return`<section class="card"><h2>Nghỉ học · Đã học xong (${ng.length})</h2>${qh?`<p class="qlnerr llqh0">⚠ ${qh} em đã nghỉ quá 24 tháng (thời hạn lưu). Nên bấm ⬇ Xuất để lưu file rồi 🗑 Xoá; app không tự xoá.</p>`:''}<p class="muted" style="margin:0 0 8px">Các em này không đăng nhập được; hồ sơ vẫn giữ. Bấm "Mở lại" rồi xếp lớp nếu em học tiếp.</p>${ng.map(([id,x])=>{const n=(STUDENTS.find(s=>s[0]===id)||[id,id])[1],q=quaHan(x),l=nghiLuc(x);return`<div class="qlr qds${q?' llqh':''}"><span class="a-ck">${x.ly==='xong'?'🎓':'⏸'}</span><div class="a-ten"><b>${e(n)}</b><div class="muted">${e(id)} · ${x.ly==='xong'?'Đã học xong':'Nghỉ học'} · ${e(x.nam||'')}${l?` · từ ${ngayVN(l)}${x.luc?'':' (ước)'}`:''}</div>${q?'<span class="pill llqhn">Quá 24 tháng · xoá theo thời hạn</span>':''}</div><div class="a-act">${q?`<button type="button" class="btn sm" onclick="qlXuatHS('${id}')">⬇ Xuất</button><button type="button" class="btn sm qlxbtn" onclick="qlXoaHS(['${id}'])">🗑 Xoá</button>`:''}<button type="button" class="btn sm" onclick="qlMoLai('${id}')">Mở lại</button></div></div>`}).join('')}</section>`})():''}</div>`}
+ ${ng.length?(()=>{const qh=ng.filter(([id,x])=>quaHan(x)).length;return`<section class="card"><h2>Nghỉ học · Đã học xong (${ng.length})</h2>${qh?`<p class="qlnerr llqh0">⚠ ${qh} em đã nghỉ quá 24 tháng (thời hạn lưu). Nên bấm ⬇ Xuất để lưu file rồi 🗑 Xoá; app không tự xoá.</p>`:''}<p class="muted" style="margin:0 0 8px">Các em này không đăng nhập được; hồ sơ vẫn giữ. Bấm "Mở lại" rồi xếp lớp nếu em học tiếp.</p>${ng.map(([id,x])=>{const n=(STUDENTS.find(s=>s[0]===id)||[id,id])[1],q=quaHan(x),l=nghiLuc(x);return`<div class="qlr qds${q?' llqh':''}"><span class="a-ck">${x.ly==='xong'?'🎓':'⏸'}</span><div class="a-ten"><b>${e(n)}</b><div class="muted">${e(id)} · ${x.ly==='xong'?'Đã học xong':'Nghỉ học'} · ${e(x.nam||'')}${l?` · từ ${ngayVN(l)}${x.luc?'':' (ước)'}`:''}</div>${q?'<span class="pill llqhn">Quá 24 tháng · xoá theo thời hạn</span>':''}</div><div class="a-act">${q?`<button type="button" class="btn sm" data-act="qlXuatHS" ${hd.arg(String(id))}>⬇ Xuất</button><button type="button" class="btn sm qlxbtn" data-act="qlXoaHS" ${hd.arg(String(id))}>🗑 Xoá</button>`:''}<button type="button" class="btn sm" data-act="qlMoLai" ${hd.arg(String(id))}>Mở lại</button></div></div>`}).join('')}</section>`})():''}</div>`}
 window.llMoi=moi;
 
 function b1(){const L=LOPS();
  const rows=L.map(l=>{const n=hsCua(l.id).length,v=LL.lop[l.id];return`<div class="qlr llr"><div class="a-ten"><b>Lớp ${e(l.ten)}</b><div class="muted">Khối ${l.khoi} · ${n} em · ${(l.gv||[]).map(g=>e(((O().gv||[]).find(x=>x.id===g)||{ten:g}).ten)).join(', ')||'chưa có GV'}</div></div>
-  <div class="a-con">${l.khoi>=5?'<span class="pill">🎓 Đã học xong</span>':`<span class="llto">→ Lớp</span><input value="${e(v)}" maxlength="8" aria-label="Tên lớp mới của ${e(l.ten)}" oninput="LL.lop['${l.id}']=this.value.trim()"><span class="muted">khối ${l.khoi+1}</span>`}</div>
-  <div class="a-act">${l.khoi>=5?'':`<label class="qlnl"><input type="checkbox" ${LL.gv[l.id]?'checked':''} onchange="LL.gv['${l.id}']=this.checked"> Giữ giáo viên</label>`}</div></div>`}).join('');
+  <div class="a-con">${l.khoi>=5?'<span class="pill">🎓 Đã học xong</span>':`<span class="llto">→ Lớp</span><input value="${e(v)}" maxlength="8" aria-label="Tên lớp mới của ${e(l.ten)}" data-act-input="trim" ${hd.argEv('input',String(l.id))}><span class="muted">khối ${l.khoi+1}</span>`}</div>
+  <div class="a-act">${l.khoi>=5?'':`<label class="qlnl"><input type="checkbox" ${LL.gv[l.id]?'checked':''} data-act-change="hd" ${hd.argEv('change',String(l.id))}> Giữ giáo viên</label>`}</div></div>`}).join('');
  return`<section class="card"><h2>Bước 1 · Lớp năm học mới</h2><p class="muted" style="margin:0 0 8px">Mỗi lớp lên 1 khối. Sửa tên lớp mới nếu cần. Lớp 1 mới cho học sinh mới: tạo sau ở trang Lớp.</p><div class="qlli">${rows}</div>
- <div class="qlin" style="margin-top:12px"><label>Năm học mới <input value="${e(LL.nam)}" maxlength="12" aria-label="Năm học mới" oninput="LL.nam=this.value.trim()"></label><span class="grow"></span><button type="button" class="btn pri" onclick="llSang(2)">Tiếp: từng học sinh ▸</button></div></section>`}
+ <div class="qlin" style="margin-top:12px"><label>Năm học mới <input value="${e(LL.nam)}" maxlength="12" aria-label="Năm học mới" data-act-input="nam-trim"></label><span class="grow"></span><button type="button" class="btn pri" data-act="llSang">Tiếp: từng học sinh ▸</button></div></section>`}
 window.llSang=function(b){if(b===2||b===3){const L=LOPS().filter(l=>l.khoi<5),ten=L.map(l=>(LL.lop[l.id]||'').toUpperCase());
   const sai=L.find(l=>!/^[0-9A-Za-zÀ-ỹ.\-]{1,8}$/.test(LL.lop[l.id]||''));if(sai){toast(`Nhập tên lớp mới cho lớp ${sai.ten}`);LL.buoc=1;render();return}
   const tr=ten.find((t,i)=>ten.indexOf(t)!==i);if(tr){toast(`Tên lớp mới "${tr}" bị trùng`);LL.buoc=1;render();return}
@@ -59,10 +60,10 @@ function b2(){const L=LOPS(),l=L.find(x=>x.id===LL.xem)||L[0];if(!l)return'';con
  const opt=(id,v,t)=>`<option value="${v}" ${quyet(id,l)===v?'selected':''}>${t}</option>`;
  const dem=x=>{let a=0;hsCua(x.id).forEach(([id])=>{if(!['len','xong'].includes(quyet(id,x)))a++});return a};
  return`<section class="card"><h2>Bước 2 · Từng học sinh</h2><p class="muted" style="margin:0 0 8px">Mặc định cả lớp lên lớp. Chỉ cần đổi các em ở lại lớp hoặc nghỉ học.</p>
- <div class="qlchips" style="margin-bottom:10px">${L.map(x=>`<button type="button" class="btn sm ${x.id===l.id?'pri':''}" onclick="LL.xem='${x.id}';render()">${e(x.ten)}${dem(x)?` · ${dem(x)}`:''}</button>`).join('')}</div>
+ <div class="qlchips" style="margin-bottom:10px">${L.map(x=>`<button type="button" class="btn sm ${x.id===l.id?'pri':''}" data-act="xem-render" ${hd.arg(String(x.id))}>${e(x.ten)}${dem(x)?` · ${dem(x)}`:''}</button>`).join('')}</div>
  <h3 style="margin:0 0 6px">Lớp ${e(l.ten)} → ${l.khoi>=5?'Đã học xong':'Lớp '+e(LL.lop[l.id])} (${ds.length} em)</h3>
- <div class="qlli">${ds.map(([id,n])=>`<div class="qlr qds"><span class="a-ck"></span><div class="a-ten"><b>${e(n)}</b><div class="muted">${e(id)}</div></div><div class="a-act"><select aria-label="Năm sau của ${e(n)}" onchange="LL.hs['${id}']=this.value;render()" class="${['len','xong'].includes(quyet(id,l))?'':'qlchua qllop'}">${l.khoi>=5?opt(id,'xong','🎓 Học xong'):opt(id,'len','⬆ Lên lớp')}${opt(id,'o','↺ Ở lại lớp')}${opt(id,'nghi','⏸ Nghỉ học')}</select></div></div>`).join('')||'<p class="muted">Lớp chưa có em nào.</p>'}</div>
- <div class="qlin" style="margin-top:12px"><button type="button" class="btn" onclick="llSang(1)">◂ Lớp mới</button><span class="grow"></span><button type="button" class="btn pri" onclick="llSang(3)">Tiếp: xem lại ▸</button></div></section>`}
+ <div class="qlli">${ds.map(([id,n])=>`<div class="qlr qds"><span class="a-ck"></span><div class="a-ten"><b>${e(n)}</b><div class="muted">${e(id)}</div></div><div class="a-act"><select aria-label="Năm sau của ${e(n)}" data-act-change="render-3" ${hd.argEv('change',String(id))} class="${['len','xong'].includes(quyet(id,l))?'':'qlchua qllop'}">${l.khoi>=5?opt(id,'xong','🎓 Học xong'):opt(id,'len','⬆ Lên lớp')}${opt(id,'o','↺ Ở lại lớp')}${opt(id,'nghi','⏸ Nghỉ học')}</select></div></div>`).join('')||'<p class="muted">Lớp chưa có em nào.</p>'}</div>
+ <div class="qlin" style="margin-top:12px"><button type="button" class="btn" data-act="llSang-2">◂ Lớp mới</button><span class="grow"></span><button type="button" class="btn pri" data-act="llSang-3">Tiếp: xem lại ▸</button></div></section>`}
 function tinh(){const o=O(),L=LOPS(),r={len:0,o:0,nghi:0,xong:0,lop:0,ve:[]};
  L.forEach(l=>{if(l.khoi<5)r.lop++;hsCua(l.id).forEach(([id])=>{r[quyet(id,l)]++})});return r}
 function b3(){const o=O(),r=tinh(),L=LOPS();
@@ -71,7 +72,7 @@ function b3(){const o=O(),r=tinh(),L=LOPS();
  <li>⬆ <b>${r.len}</b> em lên lớp</li><li>↺ <b>${r.o}</b> em ở lại lớp (chưa xếp lớp — thầy xếp lại vào lớp cùng khối)</li><li>⏸ <b>${r.nghi}</b> em nghỉ học (khoá đăng nhập, giữ hồ sơ)</li><li>🎓 <b>${r.xong}</b> em học xong lớp 5 (khoá đăng nhập, giữ hồ sơ)</li>
  <li>Giữ nguyên: xu, đồ, thú cưng, tủ đồ, Sổ lỗi sai. Sao và tiến độ năm ${e(o.nam)} cất vào Hồ sơ năm học. Bài cô giao năm cũ chuyển vào lưu trữ. Gói Toán Jenny theo lớp giữ nguyên hạn cũ.</li></ul>
  <p class="qlnerr">Việc này áp dụng cho cả trung tâm. Hãy tải danh sách Excel để lưu trước khi xác nhận.</p>
- <div class="qlin"><button type="button" class="btn" onclick="llSang(2)">◂ Từng học sinh</button><button type="button" class="btn" onclick="qlTaiDS&&qlTaiDS()">⬇ Tải danh sách</button><span class="grow"></span><button type="button" class="btn pri" onclick="llChay()">Xác nhận kết thúc năm học</button></div></section>`}
+ <div class="qlin"><button type="button" class="btn" data-act="llSang">◂ Từng học sinh</button><button type="button" class="btn" data-act="qlTaiDS-2">⬇ Tải danh sách</button><span class="grow"></span><button type="button" class="btn pri" data-act="llChay">Xác nhận kết thúc năm học</button></div></section>`}
 
 window.llChay=async function(){const o=O(),r=tinh();if(!confirm(`Kết thúc năm học ${o.nam} và chuyển sang ${LL.nam}?\n${r.len} em lên lớp, ${r.o} ở lại, ${r.nghi} nghỉ, ${r.xong} học xong.\nKhông hoàn tác được.`))return;
  const namCu=o.nam,L=LOPS(),gdMoi={},lopMoi=[],moMoi={};o.nghi=o.nghi||{};o.hosoNam=o.hosoNam||{};
@@ -113,3 +114,22 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 @media(max-width:640px){.llr{grid-template-columns:minmax(0,1fr)}.llr .a-act{justify-content:flex-start}}
 </style>`);
 })();
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'LL-render':function(){LL=null;render()},
+  'qlDi-3':function(){qlDi('')},
+  'LL-llMoi-render':function(){LL=llMoi();render()},
+  'qlXuatHS':function(event,a){qlXuatHS(a[0])},
+  'qlXoaHS':function(event,a){qlXoaHS([a[0]])},
+  'trim':function(event,a){LL.lop[a[0]]=this.value.trim()},
+  'hd':function(event,a){LL.gv[a[0]]=this.checked},
+  'nam-trim':function(){LL.nam=this.value.trim()},
+  'llSang':function(){llSang(2)},
+  'xem-render':function(event,a){LL.xem=a[0];render()},
+  'render-3':function(event,a){LL.hs[a[0]]=this.value;render()},
+  'llSang-2':function(){llSang(1)},
+  'llSang-3':function(){llSang(3)},
+  'qlTaiDS-2':function(){qlTaiDS&&qlTaiDS()},
+  'llChay':function(){llChay()},
+});

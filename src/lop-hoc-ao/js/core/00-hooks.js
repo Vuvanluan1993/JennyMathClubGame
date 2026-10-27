@@ -1,7 +1,7 @@
 /* ===================== Hooks (P-14b, 26/10/2026) ===================== */
 /* Thay cho kiểu "đè" hàm bằng gán lại (render=function…) hoặc khai báo function trùng tên ở file sau.
    - File định nghĩa hàm:  function render(...a){return hooks.goi('render',this,a)}  hooks.ham('render',function(){…});
-     (khai báo function giữ nguyên tên để hoisting và onclick="render()" như cũ; thân hàm là "bản gốc").
+     (khai báo function giữ nguyên tên để hoisting và data-act="render" (02) như cũ; thân hàm là "bản gốc").
    - File sau đè (cách chính): hooks.on('render',cu=>function(){ …cu.apply(this,arguments)… });  — cu = bản ngay trước, bản mới nhất được gọi
      thay hẳn, không cần bản trước: hooks.de('render',function(){…}); lấy bản trước ở chỗ khác: const cu=hooks.cu('render')
    - Mã vai.js chèn cuối trang thay bản gốc (như khai báo function trùng tên thắng từ đầu): hooks.goc('header',function(){…})

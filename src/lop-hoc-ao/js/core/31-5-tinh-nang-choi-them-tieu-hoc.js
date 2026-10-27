@@ -1,6 +1,7 @@
 /* ===================== 5 TÍNH NĂNG CHƠI THÊM (Tiểu học) ===================== */
 import { hooks } from './00-hooks.js';
 import { esc, pick } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { go, render, toast } from './13-giao-dien-chung.js';
@@ -31,7 +32,7 @@ hooks.ham('raceAns',function(ok){const g=scr;if(ok){g.ok++;sfx('ok')}else{g.bad+
 export const TRE={bottle:['bottle','Chai thư','+5 xu, có thể có thẻ sưu tập'],whale:['whale2','Cá voi vàng','+10 xu'],chest:['chest','Rương nổi','chắc chắn có thẻ sưu tập']};
 export function treLeft(st){st.tre=st.tre||{};return Math.max(0,3-(st.tre[S.day]||0))}
 function treKinds(){const r=[];let s=S.day*7+curG();for(let i=0;i<3;i++){s=(s*9301+49297)%233280;r.push(['bottle','whale','bottle','chest'][s%4])}return r}
-export function treOverlay(st,pts){const left=treLeft(st),ks=treKinds().slice(3-left);return ks.map((k,i)=>{const p=pts[Math.min(pts.length-1,i*3+1)]||pts[0];return`<button class="tre" type="button" style="left:${p[0]+40}px;top:${i%2?210:8}px;animation-delay:${i*.7}s" onclick="startTre('${k}')" aria-label="${TRE[k][1]}: chạm để mở">${spr(TRE[k][0],k==='whale'?30:28)}<i>!</i></button>`}).join('')}
+export function treOverlay(st,pts){const left=treLeft(st),ks=treKinds().slice(3-left);return ks.map((k,i)=>{const p=pts[Math.min(pts.length-1,i*3+1)]||pts[0];return`<button class="tre" type="button" style="left:${p[0]+40}px;top:${i%2?210:8}px;animation-delay:${i*.7}s" data-act="startTre" ${hd.arg(String(k))} aria-label="${TRE[k][1]}: chạm để mở">${spr(TRE[k][0],k==='whale'?30:28)}<i>!</i></button>`}).join('')}
 function startTre(kind){const st=S.st[sid];if(!treLeft(st)){toast('Hôm nay em đã nhặt hết kho báu. Mai quay lại nhé!');return}st.tre[S.day]=(st.tre[S.day]||0)+1;save();v1Said='';go({k:'game',g1:1,tre:kind,qs:[mkQ(pick(openGens(st)))],j:0,hearts:3,ok:0,tries:0,res:[],sheet:null,picks:[],seq:[],fill:[],used:[],cnt:0,inp:'',t0:Date.now()});sayJ(`${TRE[kind][1]}! Trả lời đúng để nhận quà nhé.`)}
 /* ---- Bộ sưu tập ---- */
 export const CREAT=[['fish','Cá Xanh'],['crab','Cua Đỏ'],['jelly','Sứa Hồng'],['octo','Bạch Tuộc Tím'],['turtle','Rùa Biển'],['shark','Cá Mập Con'],['squid','Mực Lửa'],['snake','Rắn Biển'],['chick','Gà Lạc Đảo'],['bug','Bọ Rùa Bay'],['cat','Mèo Thủy Thủ'],['whale2','Cá Voi Vàng'],['dragon','Rồng Biển'],['star','Sao Biển Vàng']];
@@ -48,3 +49,7 @@ function cb(g){S.cb=S.cb||{};return S.cb[g]}
 function openCB(g){const n=STUDENTS.filter(s=>s[2]===g).length;const b=PRIM[g].boss[0];S.cb=S.cb||{};S.cb[g]={on:true,spr:'octo',name:'Bạch tuộc khổng lồ',max:n*20,hp:n*20,hits:{},won:false,claimed:{},day:S.day};log('gv','assigned',`Trùm lớp tuần · lớp ${g}`,0,{});save();render();toast('Đã mở trùm lớp tuần này')}
 /* ---- kết thúc các chế độ phụ ---- */
 
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'startTre':function(event,a){startTre(a[0])},
+});

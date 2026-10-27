@@ -33,7 +33,7 @@ hooks.de('startFix1',function(){const M=Object.values(mist(S.st[sid])).sort((a,b
   if(mid&&!mid.querySelector('.gdprev')&&(q.gdOld||q.gdWa||q.gdFrom)&&!g.gdRedo){const t=q.gdOld?(q.gdWa?`Lần trước${q.gdFrom?` (trò ${q.gdFrom})`:''} em ${q.type==='num'?'ghi':'chọn'} <b>${esc(q.gdWa)}</b>, chưa đúng. Em làm lại nhé!`:`Lần trước${q.gdFrom?` (trò ${q.gdFrom})`:''} em làm sai câu này. Em làm lại nhé!`):`Câu giống vậy, số mới. Em làm nhé!`;
    mid.insertAdjacentHTML('afterbegin',`<div class="gdprev">${spr('book',18)}<span>${t}</span></div>`)}
   else if(mid&&!mid.querySelector('.gdprev')&&!q.gdOld&&!g.gdRedo&&g.j%2===1)mid.insertAdjacentHTML('afterbegin',`<div class="gdprev sim">${spr('book',18)}<span>Câu giống vậy, số mới. Em làm nhé!</span></div>`);
-  if(bot&&!bot.querySelector('.gdsee')&&gdKind(q))bot.insertAdjacentHTML('afterbegin',`<button type="button" class="gdsee" onclick="gdOpen(q1())">${spr('bulb',16)} Xem cách làm</button>`)}}catch(e){}return r})}
+  if(bot&&!bot.querySelector('.gdsee')&&gdKind(q))bot.insertAdjacentHTML('afterbegin',`<button type="button" class="gdsee" data-act="gdOpen-q1">${spr('bulb',16)} Xem cách làm</button>`)}}catch(e){}return r})}
 /* trong Luyện lỗi không mất tim: sửa câu chữ của thẻ "Chưa đúng" */
 {hooks.on('sheet1',_sh=>function(){let h=_sh();try{if(scr&&scr.fix)h=h.replace('Chưa đúng, mất 1 tim.','Chưa đúng.')}catch(e){}return h})}
 document.head.insertAdjacentHTML('beforeend',`<style>

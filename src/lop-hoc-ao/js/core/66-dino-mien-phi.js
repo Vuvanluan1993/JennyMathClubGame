@@ -12,8 +12,9 @@ function dinoLeft(a){const d=new Date().toISOString().slice(0,10);if(a.dDay!==d)
   if(dinoLeft(a)<=0){toast(arcT('Hôm nay em đã chơi nhiều lần, hẹn em ngày mai nhé!',"You've played a lot today. See you tomorrow!"));if(again)go({k:'home',tab:'shop'});return}
   a.plays++;a.used--;const r=_p.apply(this,arguments);if(scr&&scr.k==='arc'&&scr.g==='dino'){a.dUsed=(a.dUsed||0)+1;save()}else{a.plays--;a.used++}return r})}
 {hooks.on('arcShop',_a=>function(st){let h=_a.apply(this,arguments);try{const a=arcSt(st),en=arcEN(),left=dinoLeft(a);
-  h=h.replace(/class="gobtn[^"]*" onclick="arcPlay\('dino'\)"/,`class="gobtn ${left>0?'':'off'}" onclick="arcPlay('dino')"`);
+  h=h.replace(/class="gobtn[^"]*" data-act="arcPlay" data-arg="\[&quot;dino&quot;\]"/,`class="gobtn ${left>0?'':'off'}" data-act="arcPlay" data-arg="[&quot;dino&quot;]"`);
   h=h.replace(/(<b>(Khủng long chạy|Dino Run)<\/b>)/,`$1 <i class="arcfree">${en?'Free':'Miễn phí'}</i><small class="arcbest">${en?'Free, no plays used':'Miễn phí, không tốn lượt'}</small>`);h=h.replace(/(<p class="arcnote">[^<]*)<\/p>/,`$1 ${en?'Dino Run is free.':'Riêng Khủng long chạy miễn phí.'}</p>`)}catch(e){}return h})}
 document.head.insertAdjacentHTML('beforeend',`<style>.arcfree{display:inline-block;font-style:normal;font-size:12px;font-weight:700;background:var(--leaf,#2E9E5B);color:#fff;padding:1px 6px;margin-left:4px;vertical-align:middle}</style>`);
 /* Nhà em › Trò chơi: nút Khủng long không phụ thuộc lượt chơi */
-{hooks.on('arcHome',_h=>function(st){let h=_h.apply(this,arguments);try{const left=dinoLeft(arcSt(st));h=h.replace(/class="gobtn[^"]*"( onclick="arcPlay\('dino'\)")/,`class="gobtn ${left>0?'':'off'}"$1`)}catch(e){}return h})}
+{hooks.on('arcHome',_h=>function(st){let h=_h.apply(this,arguments);try{const left=dinoLeft(arcSt(st));h=h.replace(/class="gobtn[^"]*"( data-act="arcPlay" data-arg="\[&quot;dino&quot;\]")/,`class="gobtn ${left>0?'':'off'}"$1`)}catch(e){}return h})}
+

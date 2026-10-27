@@ -14,6 +14,7 @@
     "UNL": "trạng thái dùng chung (globalThis.*), đặt ở js/core/30b-may-tieu-hoc.js",
     "XG_KT": "trạng thái dùng chung (globalThis.*), đặt ở js/core/39e-kien-thuc-tro-choi.js",
     "__ready": "gán tường minh window.*, ở js/core/30a-dang-ky-khoi.js",
+    "_qlT": "gán tường minh window.*, ở js/core/73-quan-ly-4-nut.js",
     "dayNow": "gán tường minh window.*, ở js/core/62-may-chu.js",
     "gvBoQua": "gán tường minh window.*, ở js/core/59-ho-so-giao-vien.js",
     "gvChonLoi": "gán tường minh window.*, ở js/core/59-ho-so-giao-vien.js",

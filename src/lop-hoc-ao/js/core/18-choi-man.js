@@ -1,5 +1,6 @@
 /* ===================== Chơi màn ===================== */
 import { esc, pick } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { ansHint, ansText, isCorrect } from './03-phan-so-va-kiem-tra-dap-an.js';
 import { L1, M1, P1_PASS, P1_Q, STAR2 } from './30a-dang-ky-khoi.js';
 import { save } from './09-du-lieu-demo.js';
@@ -24,14 +25,14 @@ export function viewPlay(){
      <h1 style="font-size:28px;margin-top:10px">${pass?'Qua màn rồi!':'Gần được rồi!'}</h1>
      <p class="big" style="margin:10px 0 4px">${scr.ok}/${n}</p><p class="muted" style="margin:0">câu đúng · ${esc(shortTitle(u.title))} · ${name}</p>
      <div class="fb ${pass?'ok':'info'}" style="text-align:left;margin:18px auto 0;max-width:520px"><span class="ic">${pass?'★':'i'}</span><span>${pass?(scr.newStars?`Em nhận <b>${scr.newStars} sao</b>. Tổng sao: <b>${totalStars(S.st[sid])}</b>.${scr.unlocked?`<br>Mở khóa đảo mới: <b>${esc(scr.unlocked)}</b>.`:''}`:'Màn này em đã có sao từ trước. Luyện thêm giúp em nhớ lâu hơn.'):`Cần đúng ${need}/${n} câu để qua màn. Xem lại lời giải rồi thử lần nữa nhé.`}</span></div>
-     <div class="row" style="justify-content:center;margin-top:20px">${pass&&i<2?`<button class="btn pri lg" onclick="startLevel(${part},'${id}',${i+1})">Màn tiếp →</button>`:`<button class="btn ${pass?'':'pri'} lg" onclick="startLevel(${part},'${id}',${i})">Chơi lại màn</button>`}<button class="btn lg" onclick="go({k:'island',part:${part},id:'${id}'})">Về ${part===1?'đảo':'buổi'}</button><button class="btn lg ghost" onclick="go({k:'home'})">Bản đồ</button></div></div></div>`}
+     <div class="row" style="justify-content:center;margin-top:20px">${pass&&i<2?`<button class="btn pri lg" data-act="startLevel" ${hd.arg(part,String(id),i+1)}>Màn tiếp →</button>`:`<button class="btn ${pass?'':'pri'} lg" data-act="startLevel" ${hd.arg(part,String(id),i)}>Chơi lại màn</button>`}<button class="btn lg" data-act="go-island" ${hd.arg(part,String(id))}>Về ${part===1?'đảo':'buổi'}</button><button class="btn lg ghost" data-act="go-home">Bản đồ</button></div></div></div>`}
   return`<div class="page">
-   <div class="crumb"><button class="btn sm ghost" onclick="go({k:'island',part:${part},id:'${id}'})">✕ Thoát</button><span class="pill ${part===1?'ok':'warn'}">${name}</span><span class="muted" style="margin-left:auto">Câu ${j+1}/${n} · đúng ${scr.ok}</span></div>
+   <div class="crumb"><button class="btn sm ghost" data-act="go-island" ${hd.arg(part,String(id))}>✕ Thoát</button><span class="pill ${part===1?'ok':'warn'}">${name}</span><span class="muted" style="margin-left:auto">Câu ${j+1}/${n} · đúng ${scr.ok}</span></div>
    <div class="qcard"><div class="qtop"><div class="prog">${qs.map((_,k)=>`<i class="${scr.res[k]===true?'okq':scr.res[k]===false?'badq':k===j?'on':''}"></i>`).join('')}</div></div>
    <div class="muted">${esc(u.title)}${q.ref?` · bài ${esc(q.ref)}`:''}</div>
    <div class="qbox">${q.q}</div>
-   ${scr.fb?`<div class="fb ${scr.fb.ok?'ok':'bad'}"><span class="ic">${scr.fb.ok?'✓':'✕'}</span><div><b>${scr.fb.ok?'Đúng rồi!':'Chưa đúng.'}</b> ${scr.fb.ok?'':'Đáp số: <b>'+ansText(q)+'</b>.'} <span class="muted">${scr.fb.msg||''}</span><div class="sol">Lời giải: ${q.sol}</div></div></div><div class="row" style="margin-top:16px"><button class="btn pri lg" id="nextBtn" onclick="nextQ()">${j<n-1?'Câu tiếp →':'Xem kết quả'}</button></div>`
-   :`<div class="ansrow"><input id="ans" ${q.pair||q.frac?'':'inputmode="numeric"'} placeholder="${ansHint(q)}" aria-label="Đáp số" autocomplete="off" onkeydown="if(event.key==='Enter')submitQ()"><button class="btn pri lg" onclick="submitQ()">Nộp</button></div>`}
+   ${scr.fb?`<div class="fb ${scr.fb.ok?'ok':'bad'}"><span class="ic">${scr.fb.ok?'✓':'✕'}</span><div><b>${scr.fb.ok?'Đúng rồi!':'Chưa đúng.'}</b> ${scr.fb.ok?'':'Đáp số: <b>'+ansText(q)+'</b>.'} <span class="muted">${scr.fb.msg||''}</span><div class="sol">Lời giải: ${q.sol}</div></div></div><div class="row" style="margin-top:16px"><button class="btn pri lg" id="nextBtn" data-act="nextQ">${j<n-1?'Câu tiếp →':'Xem kết quả'}</button></div>`
+   :`<div class="ansrow"><input id="ans" ${q.pair||q.frac?'':'inputmode="numeric"'} placeholder="${ansHint(q)}" aria-label="Đáp số" autocomplete="off" data-act-keydown="Enter-submitQ"><button class="btn pri lg" data-act="submitQ">Nộp</button></div>`}
   </div></div>`;
 }
 function submitQ(){
@@ -55,3 +56,10 @@ function nextQ(){
   scr.end=true;save();render();
 }
 
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'startLevel':function(event,a){startLevel(a[0],a[1],a[2])},
+  'nextQ':function(){nextQ()},
+  'Enter-submitQ':function(event){if(event.key==='Enter')submitQ()},
+  'submitQ':function(){submitQ()},
+});

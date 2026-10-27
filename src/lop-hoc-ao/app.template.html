@@ -1,12 +1,10 @@
 <title>Lớp học ảo Jenny</title>
 <meta name="color-scheme" content="light">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob: data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://jenny-lop-hoc-ao.firebaseapp.com; base-uri 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob: data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://jenny-lop-hoc-ao.firebaseapp.com; base-uri 'none'; form-action 'self'">
 <meta name="referrer" content="no-referrer">
-<script>/* thầy chốt 24/10/2026: luôn nền sáng, không theo chế độ tối của máy */document.documentElement.setAttribute('data-theme','light')</script>
+<script>/*@include js/dau-trang.js*/</script>
 <style>:root{color-scheme:light}</style>
 <meta name="claude:viewport-fit-sides" content="cover">
-<script>/* Chữ tự host (P-08): assets/fonts/fonts.css ở gốc kho. File này được dựng ra nhiều độ sâu (games/lop-hoc-ao/, …/quan-ly/, …/demo/…, src/lop-hoc-ao/dist/) nên tính đường dẫn gốc từ URL. */
-(function(){var p=location.pathname,i=p.search(/\/(games|src)\/lop-hoc-ao\//),l=document.createElement('link');l.rel='stylesheet';l.href=(i<0?'..':p.slice(0,i))+'/assets/fonts/fonts.css';document.head.appendChild(l)})();</script>
 <style>
 /*@include ../../design/tokens.css*/
 /*@include css/app.css*/
@@ -20,17 +18,14 @@
   <div class="seg" id="tabs" role="group" aria-label="Chọn vai trò"></div>
   <div class="who" id="whoBox"><span class="av" id="whoAv"></span><select id="who" aria-label="Chọn học sinh"></select></div>
 </div></header>
-<div class="demo"><div class="wrap"><b>Chế độ demo</b><span class="pill warn" id="dayPill"></span><span>Dữ liệu chỉ lưu trên trình duyệt này.</span><span style="flex:1"></span><button class="btn sm" id="unlBtn" onclick="toggleUnl()">🔓 Mở khóa tất cả</button><button class="btn sm" onclick="nextDay()">Sang ngày mới →</button><button class="btn sm" id="resetBtn" onclick="resetDemo()">Làm lại demo</button></div></div>
+<div class="demo"><div class="wrap"><b>Chế độ demo</b><span class="pill warn" id="dayPill"></span><span>Dữ liệu chỉ lưu trên trình duyệt này.</span><span style="flex:1"></span><button class="btn sm" id="unlBtn" data-act="toggleUnl">🔓 Mở khóa tất cả</button><button class="btn sm" data-act="nextDay">Sang ngày mới →</button><button class="btn sm" id="resetBtn" data-act="resetDemo">Làm lại demo</button></div></div>
 <main class="wrap" id="app"></main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* Điện thoại đang bật "Trang web cho máy tính": trang bị dàn rộng ~980px nên chữ rất bé. Phóng lại cho vừa bề ngang thật của máy. */
-(function(){function fit(){try{var d=document.documentElement,L=matchMedia('(orientation:landscape)').matches,sw=L?Math.max(screen.width,screen.height):Math.min(screen.width,screen.height),coarse=matchMedia('(pointer:coarse)').matches;d.style.zoom='';var iw=window.innerWidth;if(coarse&&sw&&Math.min(screen.width,screen.height)<700&&iw>sw*1.25){d.style.zoom=(iw/sw).toFixed(3)}}catch(e){}}fit();addEventListener('orientationchange',function(){setTimeout(fit,300)})})();
-</script>
-<script>
 /*@include js/core/00-hooks.js*/
 /*@include js/core/01-tien-ich.js*/
+/*@include js/core/02-hanh-dong.js*/
 /*@include js/core/03-phan-so-va-kiem-tra-dap-an.js*/
 /*@include js/core/30a-dang-ky-khoi.js*/
 /*@include content/lop-6-9/index.js*/

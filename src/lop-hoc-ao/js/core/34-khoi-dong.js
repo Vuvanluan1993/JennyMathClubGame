@@ -2,6 +2,7 @@
 /* P-15b: nội dung theo khối tải bằng import() khi biết khối (sau đăng nhập). render() chờ đủ khối của màn đang vẽ;
    trong lúc chờ hiện màn chờ pixel "Jenny đang chuẩn bị bài…". Đổi lớp (lên lớp, chọn em khác, cô vào lớp khác) → tải khối mới, không tải lại trang. */
 import { hooks } from './00-hooks.js';
+import { hd } from './02-hanh-dong.js';
 import { khoiCo, khoiCua, khoiXong, napKhoi } from './30a-dang-ky-khoi.js';
 import { fresh, load, ORG_ON } from './09-du-lieu-demo.js';
 import { render } from './13-giao-dien-chung.js';
@@ -19,7 +20,7 @@ const khoiCan=()=>{const st=S&&S.st&&S.st[sid],K=new Set(),moi=()=>(STUDENTS||[]
 function manCho(loi){const a=document.getElementById('app');if(!a)return;const en=LANG==='en',mau=['#F04E23','#F58220','#28B568','#00B8EC','#8C5DA7'];
   a.innerHTML=`<div class="page"><div class="card" role="status" aria-live="polite" style="max-width:420px;margin:24px auto;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px">${jenny(64)}
    <h2 style="margin:0">${loi?(en?'The network is slow':'Mạng chậm quá'):(en?'Jenny is getting your lessons ready…':'Jenny đang chuẩn bị bài…')}</h2>
-   ${loi?`<p class="muted" style="margin:0">${en?'Check the connection, then try again.':'Em kiểm tra mạng rồi bấm thử lại nhé.'}</p><button class="btn pri" type="button" onclick="render()">${en?'Try again':'Thử lại'}</button>`
+   ${loi?`<p class="muted" style="margin:0">${en?'Check the connection, then try again.':'Em kiểm tra mạng rồi bấm thử lại nhé.'}</p><button class="btn pri" type="button" data-act="render">${en?'Try again':'Thử lại'}</button>`
     :`<div aria-hidden="true" style="display:flex;gap:4px">${mau.map(c=>`<i style="display:block;width:16px;height:16px;background:${c};box-shadow:inset -3px -3px 0 rgba(0,0,0,.25)"></i>`).join('')}</div>`}</div></div>`}
 let choVe=null;
 function choKhoi(ds){manCho();if(choVe)return;choVe=Promise.all(ds.map(napKhoi)).then(()=>{choVe=null;render()},e=>{choVe=null;console.error(e);manCho(1)})}
@@ -48,5 +49,10 @@ function swDangKy(){if(!('serviceWorker' in navigator)||!/^https?:$/.test(locati
     navigator.serviceWorker.ready.then(swNong);const kiem=()=>{if(navigator.onLine)reg.update().catch(()=>{})};setInterval(kiem,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)kiem()})}).catch(e=>console.info('Service worker chưa đăng ký được:',e))}
 swDangKy();
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'render':function(){render()},
+});
 if(!load())fresh();
 render();

@@ -6,6 +6,7 @@
    Trục Hồ sơ: scale → Phép tính (đảo khối lượng → Đo lường), shop → Đo lường (mua nhiều món → Lời văn), train → Số. */
 import { hooks } from './00-hooks.js';
 import { esc, pick, R } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { addCoins } from './11-sao-va-mo-khoa.js';
@@ -20,6 +21,7 @@ import { hurtFx, mHz, noise, sfx, SFX, tone } from './33b-am-thanh.js';
 import { jenny } from './33d-jenny-bieu-cam.js';
 import { stopXG, xgHash, xgHearts, XGN, xgRec, xgTxt } from './37-tro-choi-dot-1.js';
 import { scaleHTML, scalePaint } from './38b-can-pixel.js';
+import { shopCheck } from './39h-cua-hang-chuyen-luot.js';
 Object.assign(PXS,{
  scaleI:["......kk......","......ky......","kkkkkkkkkkkkkk","..k........k..",".k.k......k.k.","k...k....k...k","kkkkk.kk.kkkkk",".kkk..kk..kkk.","......kk......","....kkkkkk....","...kkkkkkkk..."],
  shopI:["kkkkkkkkkkkk","kcwcwcwcwcwk","kcwcwcwcwcwk","kkkkkkkkkkkk",".kwwwwwwwwk.",".kwbbwwyywk.",".kwbbwwyywk.",".kwwwwwwwwk.",".kwwnnnnwwk.",".kwwnnnnwwk.",".kkkkkkkkkk."],
@@ -89,7 +91,7 @@ hooks.ham('scaleRound',function(x){const G=curG(),mass=xgMass(x),big=xgMassBig(x
   const tray=[...sol];const n=G<=2?5:6;while(tray.length<n){const d=pick(den);tray.push(d)}
   return{T,left,tray:shuf(tray.map((v,i)=>({v,i}))),fmt,kind,sol:[...sol]}});
 export function scaleRight(g){return g.on.reduce((a,i)=>a+g.r.tray[i].v,0)}
-export const scaleTray=g=>g.r.tray.map((o,i)=>g.on.includes(i)?`<span class="xsw ghost"></span>`:`<button type="button" class="xsw" onclick="scaleTap(${i})" aria-label="Đặt quả cân ${esc(g.r.fmt(o.v))}">${g.r.fmt(o.v)}</button>`).join('');
+export const scaleTray=g=>g.r.tray.map((o,i)=>g.on.includes(i)?`<span class="xsw ghost"></span>`:`<button type="button" class="xsw" data-act="scaleTap" ${hd.arg(i)} aria-label="Đặt quả cân ${esc(g.r.fmt(o.v))}">${g.r.fmt(o.v)}</button>`).join('');
 function scaleTap(i){const g=scr;if(g.k!=='xg'||g.end||g.lockC)return;const k=g.on.indexOf(i);if(k>=0)g.on.splice(k,1);else g.on.push(i);sfx('tick');scalePaint()}
 function scaleCheck(){const g=scr;if(g.k!=='xg'||g.end||g.lockC||!g.on.length)return;const ok=scaleRight(g)===g.r.T,fb=document.getElementById('xgfb');xgRec(ok,{kind:g.r.kind});
   if(ok){g.score++;sfx('ok');if(fb)fb.innerHTML=`<span class="ok">Thăng bằng rồi! ${esc(g.r.left)} = ${g.r.fmt(g.r.T)}</span>`}
@@ -115,11 +117,11 @@ hooks.ham('shopRound',function(G,k,N){const it=shuf(SHOPIT);
   const p=G===3?R(3,45)*1000:R(10,180)*1000,give=shopNotes(G).find(v=>v>p&&v>=p+1000)||Math.ceil((p+1)/100000)*100000,c=give-p;
   const opts=shuf([...new Set([c,c+1000,Math.max(1000,c-1000),c+(G===3?5000:10000),p].filter(v=>v>0))].slice(0,4));
   return{t:'chg',items:[[it[0],p]],give,total:c,opts,kind:'Tính tiền trả lại'}});
-const shopNote=(v,cls,on)=>{const c=v>=100000?'big':v>=10000?'mid':v>=1000?'k':'s';return`<button type="button" class="xsn ${c} ${cls||''}" onclick="${on}" aria-label="Tờ ${fN(v)} đồng"><b>${fN(v)}</b><i>đồng</i></button>`};
+const shopNote=(v,cls,on)=>{const c=v>=100000?'big':v>=10000?'mid':v>=1000?'k':'s';return`<button type="button" class="xsn ${c} ${cls||''}" ${on} aria-label="Tờ ${fN(v)} đồng"><b>${fN(v)}</b><i>đồng</i></button>`};
 export function shopPaid(g){return g.pay.reduce((a,b)=>a+b,0)}
 function shopTap(v){const g=scr;if(g.k!=='xg'||g.end||g.lockC)return;g.pay.push(v);sfx('coin');shopPaint()}
 function shopUntap(i){const g=scr;if(g.end||g.lockC)return;g.pay.splice(i,1);sfx('tick');shopPaint()}
-function shopPaint(){const g=scr,s=document.getElementById('xshp');if(s)s.innerHTML=g.pay.length?g.pay.map((v,i)=>shopNote(v,'paid',`shopUntap(${i})`)).join(''):'<span class="muted">Chạm tờ tiền ở ví để trả</span>';const t=document.getElementById('xshs');if(t)t.textContent=xgVnd(shopPaid(g))}
+function shopPaint(){const g=scr,s=document.getElementById('xshp');if(s)s.innerHTML=g.pay.length?g.pay.map((v,i)=>shopNote(v,'paid',hd.attr('shopUntap',i))).join(''):'<span class="muted">Chạm tờ tiền ở ví để trả</span>';const t=document.getElementById('xshs');if(t)t.textContent=xgVnd(shopPaid(g))}
 export function shopSay(r){const nm=r.items.map(([o,p])=>`${o[1]} ${fN(p)} đồng`).join(', ');
   if(r.t==='chg')return`Em mua ${nm}, em đưa cô ${fN(r.give)} đồng. Cô trả lại em bao nhiêu tiền?`;
   if(r.t==='multi')return`Em mua ${nm}. Em trả tất cả bao nhiêu tiền?`;
@@ -129,9 +131,9 @@ function shopHTML(...a){return hooks.goi('shopHTML',this,a)}
 hooks.ham('shopHTML',function(g){const r=g.r,G=curG();
   const shelf=`<div class="xshelf">${r.items.map(([o,p])=>`<div class="xsitem">${spr(o[0],56)}<span class="xstag">${fN(p)} đ</span><small>${o[1]}</small></div>`).join('')}${r.t==='disc'?`<div class="xsdisc">GIẢM<br>${fN(r.disc)} đ</div>`:''}</div>`;
   const q=r.t==='chg'?`Em đưa <b>${xgVnd(r.give)}</b>. Cô trả lại bao nhiêu?`:r.t==='multi'?`Mua ${r.items.length} món. Trả <b>tất cả</b> bao nhiêu?`:r.t==='disc'?'Được giảm giá. Trả đúng số tiền.':'Trả đúng giá món hàng.';
-  if(r.t==='chg')return`${shelf}<p class="xsq">${q}</p><div class="xschg">${r.opts.map(v=>`<button type="button" class="xgb xsopt" onclick="shopCheck(${v})">${xgVnd(v)}</button>`).join('')}</div>`;
+  if(r.t==='chg')return`${shelf}<p class="xsq">${q}</p><div class="xschg">${r.opts.map(v=>`<button type="button" class="xgb xsopt" data-act="shopCheck" ${hd.arg(v)}>${xgVnd(v)}</button>`).join('')}</div>`;
   return`${shelf}<p class="xsq">${q}</p><div class="xspaid"><div class="xspl">Em đưa: <b id="xshs">${xgVnd(shopPaid(g))}</b></div><div class="xshp" id="xshp"></div></div>
-   <div class="xswal" aria-label="Ví tiền">${shopNotes(G).map(v=>shopNote(v,'',`shopTap(${v})`)).join('')}</div><div class="xsact"><button type="button" class="gobtn ghost xsclr" onclick="scr.pay=[];shopPaint()">Đưa lại</button><button type="button" class="gobtn xgchk" onclick="shopCheck()">Trả tiền</button></div>`});
+   <div class="xswal" aria-label="Ví tiền">${shopNotes(G).map(v=>shopNote(v,'',hd.attr('shopTap',v))).join('')}</div><div class="xsact"><button type="button" class="gobtn ghost xsclr" data-act="pay-shopPaint">Đưa lại</button><button type="button" class="gobtn xgchk" data-act="shopCheck-2">Trả tiền</button></div>`});
 
 /* ---------- 3. TÀU HOẢ XẾP SỐ ---------- */
 export function trainRound(...a){return hooks.goi('trainRound',this,a)}
@@ -149,8 +151,8 @@ hooks.ham('trainRound',function(x){const G=curG(),t=xgTxt2(x)+' '+xgTopic(x),n=G
   const val=kind==='Xếp thứ tự phân số'?(v=>Math.floor(v/1000)/(v%1000)):(v=>v);
   vals=vals.slice(0,n);const order=[...vals].sort((a,b)=>up?val(a)-val(b):val(b)-val(a));
   return{vals:shuf(vals),order,up,show,kind}});
-function trainHTML(g){const r=g.r;return`<div class="xtrack"><div class="xtrain ${g.go?'go':''}" id="xtr"><span class="xteng">${spr('trainI',64)}</span>${g.att.map((v,i)=>`<button type="button" class="xtw on" ${i===g.att.length-1?`onclick="trainUndo()" aria-label="Tháo toa ${xgTxt(r.show(v))}"`:'tabindex="-1" aria-hidden="true"'}><b>${r.show(v)}</b><i></i><i></i></button>`).join('')}</div><span class="xtrail"></span></div>
-  <div class="xtyard">${r.vals.map(v=>g.att.includes(v)?'<span class="xtw ghost"></span>':`<button type="button" class="xtw" onclick="trainTap(${v})" aria-label="Toa ${xgTxt(r.show(v))}"><b>${r.show(v)}</b><i></i><i></i></button>`).join('')}</div>`}
+function trainHTML(g){const r=g.r;return`<div class="xtrack"><div class="xtrain ${g.go?'go':''}" id="xtr"><span class="xteng">${spr('trainI',64)}</span>${g.att.map((v,i)=>`<button type="button" class="xtw on" ${i===g.att.length-1?`data-act="trainUndo" aria-label="Tháo toa ${xgTxt(r.show(v))}"`:'tabindex="-1" aria-hidden="true"'}><b>${r.show(v)}</b><i></i><i></i></button>`).join('')}</div><span class="xtrail"></span></div>
+  <div class="xtyard">${r.vals.map(v=>g.att.includes(v)?'<span class="xtw ghost"></span>':`<button type="button" class="xtw" data-act="trainTap" ${hd.arg(v)} aria-label="Toa ${xgTxt(r.show(v))}"><b>${r.show(v)}</b><i></i><i></i></button>`).join('')}</div>`}
 function trainPaint(){const b=document.getElementById('xtb');if(b)b.innerHTML=trainHTML(scr)}
 function trainUndo(){const g=scr;if(g.end||g.lockC)return;g.att.pop();sfx('tick');trainPaint()}
 function trainTap(v){const g=scr;if(g.k!=='xg'||g.end||g.lockC||g.att.includes(v))return;g.att.push(v);sfx('card');trainPaint();if(g.att.length===g.r.vals.length)trainCheck()}
@@ -173,12 +175,25 @@ export function xg2End(){const g=scr;if(g.k!=='xg'||g.end)return;stopXG();const 
   sayJ(g.mode==='scale'?`Em cân đúng ${g.score} lần!`:g.mode==='shop'?`Em trả đúng ${g.score} lần. Cảm ơn em đã ghé cửa hàng!`:`Em xếp đúng ${g.score} đoàn tàu!`);save();render()}
 {hooks.on('viewXG',_v=>function(){const g=scr;if(!W2.includes(g.mode))return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:${g.mode}`]||0,g.score),[sp]=XGN[g.mode];
   if(g.end){const rec=g.score>(g.prev||0)&&g.score>0,unit=g.mode==='scale'?'lần cân':g.mode==='shop'?'lần trả tiền':'đoàn tàu';
-    return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr(sp,72)}</span>${jenny(72,g.win||g.score?'cheer':'sad')}</div><h1>${rec?'Kỷ lục mới!':g.win?'Giỏi quá!':'Hết lượt!'}</h1><p class="muted">Đúng <b>${g.score}</b>/${g.N} ${unit} · kỷ lục ${best}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="startXG('${g.mode}','${g.id}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}
-  const top=`<div class="gtop"><button class="gx" onclick="stopXG();go({k:'island',id:'${g.id}'})" aria-label="Thoát">✕</button><span class="mgsc">${spr('star',22)} <b id="xgs">${g.score}</b></span><span class="grow"></span><span class="mgsc">${spr(sp,22)} <b id="xgr">${g.ri+1}/${g.N}</b></span><span class="hearts" id="xgl">${[0,1,2].map(i=>spr(i<g.lives?'heart':'heartE',18)).join(' ')}</span></div>`;
-  const rule=t=>`<div class="mgrule"><span>${t}</span><button class="g1spk" type="button" onclick="sayJ(${g.mode==='shop'?'shopSay(scr.r)':g.mode==='train'?'trainSay(scr.r)':'scr.say'})" aria-label="Nghe lại">🔊</button></div>`;
-  if(g.mode==='scale')return`<div class="game g1 mini xg xg2">${top}${rule('Đặt quả cân lên đĩa phải cho <b>hai bên bằng nhau</b>')}<div class="xsbox"><div id="xsb">${scaleHTML(g)}</div><p class="xsr">Đĩa phải: <b id="xssum">${g.r.fmt(scaleRight(g))}</b></p><div class="xstray" id="xstray">${scaleTray(g)}</div><button type="button" class="gobtn xgchk" onclick="scaleCheck()">Cân!</button></div><div id="xgfb" class="xgfb"></div></div>`;
+    return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr(sp,72)}</span>${jenny(72,g.win||g.score?'cheer':'sad')}</div><h1>${rec?'Kỷ lục mới!':g.win?'Giỏi quá!':'Hết lượt!'}</h1><p class="muted">Đúng <b>${g.score}</b>/${g.N} ${unit} · kỷ lục ${best}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" data-act="startXG" ${hd.arg(String(g.mode),String(g.id))}>Chơi lại</button><button class="gobtn ghost" type="button" data-act="go-island-3" ${hd.arg(String(g.id))}>Về đảo</button></div></div></div>`}
+  const top=`<div class="gtop"><button class="gx" data-act="stopXG-go-island" ${hd.arg(String(g.id))} aria-label="Thoát">✕</button><span class="mgsc">${spr('star',22)} <b id="xgs">${g.score}</b></span><span class="grow"></span><span class="mgsc">${spr(sp,22)} <b id="xgr">${g.ri+1}/${g.N}</b></span><span class="hearts" id="xgl">${[0,1,2].map(i=>spr(i<g.lives?'heart':'heartE',18)).join(' ')}</span></div>`;
+  const rule=t=>`<div class="mgrule"><span>${t}</span><button class="g1spk" type="button" data-act="sayJ-2" ${hd.arg(g.mode==='shop'?'shopSay(scr.r)':g.mode==='train'?'trainSay(scr.r)':'scr.say')} aria-label="Nghe lại">🔊</button></div>`;
+  if(g.mode==='scale')return`<div class="game g1 mini xg xg2">${top}${rule('Đặt quả cân lên đĩa phải cho <b>hai bên bằng nhau</b>')}<div class="xsbox"><div id="xsb">${scaleHTML(g)}</div><p class="xsr">Đĩa phải: <b id="xssum">${g.r.fmt(scaleRight(g))}</b></p><div class="xstray" id="xstray">${scaleTray(g)}</div><button type="button" class="gobtn xgchk" data-act="scaleCheck">Cân!</button></div><div id="xgfb" class="xgfb"></div></div>`;
   if(g.mode==='shop')return`<div class="game g1 mini xg xg2">${top}${rule('Cửa hàng Jenny: trả đúng tiền')}<div class="xshop">${shopHTML(g)}</div><div id="xgfb" class="xgfb"></div></div>`;
   if(g.mode==='train')return`<div class="game g1 mini xg xg2">${top}${rule(`Xếp toa <b>${g.r.up?'từ bé đến lớn':'từ lớn đến bé'}</b>`)}<div class="xtbox" id="xtb">${trainHTML(g)}</div><div id="xgfb" class="xgfb"></div></div>`;
   return''})}
 {hooks.on('xgAfterRender',_ar=>function(){const g=scr;if(g.k==='xg'&&W2.includes(g.mode)){if(g.end)return;if(g.mode==='shop')shopPaint();if(g.started)return;g.started=true;sayJ(g.say);return}return _ar.apply(this,arguments)})}
 {hooks.on('musicTheme',_mt=>function(){try{if(role==='hs'&&scr.k==='xg'&&W2.includes(scr.mode))return scr.end?null:({scale:'game',shop:'fish',train:'race'})[scr.mode]}catch(e){}return _mt.apply(this,arguments)})}
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'shopTap':function(event,a){shopTap(a[0])},
+  'shopUntap':function(event,a){shopUntap(a[0])},
+  'scaleTap':function(event,a){scaleTap(a[0])},
+  'shopCheck':function(event,a){shopCheck(a[0])},
+  'pay-shopPaint':function(){scr.pay=[];shopPaint()},
+  'shopCheck-2':function(){shopCheck()},
+  'trainUndo':function(){trainUndo()},
+  'trainTap':function(event,a){trainTap(a[0])},
+  'scaleCheck':function(){scaleCheck()},
+});

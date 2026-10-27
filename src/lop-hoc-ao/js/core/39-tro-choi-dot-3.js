@@ -7,6 +7,7 @@
    Cửa hàng Jenny: thêm cho lớp 1–3 ở đảo Luyện tập/Ôn tập và bài lời văn; lớp 1 dùng tiền chẵn nghìn (1 000–10 000 đồng). */
 import { hooks } from './00-hooks.js';
 import { esc, pick, R } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { MG, MGT } from './30a-dang-ky-khoi.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
@@ -24,7 +25,7 @@ import { hurtFx, sfx } from './33b-am-thanh.js';
 import { jenny } from './33d-jenny-bieu-cam.js';
 import { pairFacts, stopXG, xgHash, xgHearts, XGN, xgRec, xgRule, xgTxt } from './37-tro-choi-dot-1.js';
 import { xgCalc, xgNum, xgTopic, xgTxt2, xgWord } from './38-tro-choi-dot-2.js';
-import { frogBg } from './39d-ech-nhay.js';
+import { frogBg, frogTap } from './39d-ech-nhay.js';
 (()=>{const rows=a=>{const w=Math.max(...a.map(r=>r.length));return a.map(r=>r.padEnd(w,'.'))};
 Object.assign(PXS,{
  mole:rows(["....kkkkkk....","...knnnnnnk...","..knnnnnnnnk..",".knkwnnnnkwnk.",".knkknnnnkknk.",".knnnnccnnnnk.",".knnnsccsnnnk.","knnnnsssssnnnk","knnnnswwsnnnnk","knnnnnnnnnnnnk","knNnnnnnnnnNnk","kkkkkkkkkkkkkk"]),
@@ -81,17 +82,17 @@ export function xg3End(){const g=scr;if(g.k!=='xg'||g.end)return;stopXG();const 
   sayJ(g.mode==='mole'?`Em đập trúng ${g.score} chú chuột!`:g.mode==='frog'?(g.win?'Ếch đã qua sông rồi! Giỏi quá!':`Ếch nhảy được ${g.ri} hàng lá súng.`):(g.win?'Em ghép xong cả hai bức tranh rồi!':`Em đặt đúng ${g.score} hình.`));save();render()}
 {hooks.on('viewXG',_v=>function(){const g=scr;if(!W3.includes(g.mode))return _v.apply(this,arguments);const st=S.st[sid],best=Math.max((st.mg||{})[`${g.id}:${g.mode}`]||0,g.score),[sp]=XGN[g.mode];
   if(g.end){const rec=g.score>(g.prev||0)&&g.score>0,line=g.mode==='mole'?`Đập trúng <b>${g.score}</b> chú chuột`:g.mode==='frog'?`Nhảy qua <b>${g.ri}</b>/${g.N} hàng lá súng`:`Đặt đúng <b>${g.score}</b>/${g.N} hình`;
-    return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr(sp,72)}</span>${jenny(72,g.win||g.score?'cheer':'sad')}</div><h1>${rec?'Kỷ lục mới!':g.win?'Giỏi quá!':'Hết lượt!'}</h1><p class="muted">${line} · kỷ lục ${best}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="startXG('${g.mode}','${g.id}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}
+    return`<div class="game g1"><div class="gend xgend"><div class="xgendrow"><span class="bigicon">${spr(sp,72)}</span>${jenny(72,g.win||g.score?'cheer':'sad')}</div><h1>${rec?'Kỷ lục mới!':g.win?'Giỏi quá!':'Hết lượt!'}</h1><p class="muted">${line} · kỷ lục ${best}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" data-act="startXG" ${hd.arg(String(g.mode),String(g.id))}>Chơi lại</button><button class="gobtn ghost" type="button" data-act="go-island-3" ${hd.arg(String(g.id))}>Về đảo</button></div></div></div>`}
   const hearts=`<span class="hearts" id="xgl">${[0,1,2].map(i=>spr(i<g.lives?'heart':'heartE',18)).join(' ')}</span>`;
-  const top=`<div class="gtop"><button class="gx" onclick="stopXG();go({k:'island',id:'${g.id}'})" aria-label="Thoát">✕</button><span class="mgsc">${spr('star',22)} <b id="xgs">${g.score}</b></span><span class="grow"></span>${g.mode==='mole'?`<span class="mgsc">${spr('clock',22)} <b id="xgt">${g.t}</b></span>`:g.mode==='frog'?`<span class="mgsc">${spr('pad',22)} <b id="xgr">${Math.min(g.ri+1,g.N)}/${g.N}</b></span>`:`<span class="mgsc">${spr('shapeI',22)} <b id="xgr">${g.pi+1}/${g.pics.length}</b></span>`}${hearts}</div>`;
-  const rule=(t,say)=>`<div class="mgrule"><span>${t}</span><button class="g1spk" type="button" onclick="sayJ(${say})" aria-label="Nghe lại">🔊</button></div>`;
-  if(g.mode==='mole')return`<div class="game g1 mini xg xg3">${top}${rule(g.rule,'scr.say')}<div class="xmole" id="xmf"><canvas class="xpcv" id="xmcv" width="114" height="108" aria-hidden="true"></canvas>${[0,1,2,3,4,5,6,7,8].map(i=>{const [cx,cy]=MOLEH[i];return`<div class="xmh" style="left:${(cx-16)*XZ}px;top:${(cy-30)*XZ}px"><button type="button" class="xmm" id="xmm${i}" onpointerdown="moleTap(${i},event)" aria-label="Chuột chũi" tabindex="-1"><span class="xmsign"></span><span class="xmbody">${spr('mole',56)}</span></button></div>`}).join('')}</div></div>`;
+  const top=`<div class="gtop"><button class="gx" data-act="stopXG-go-island" ${hd.arg(String(g.id))} aria-label="Thoát">✕</button><span class="mgsc">${spr('star',22)} <b id="xgs">${g.score}</b></span><span class="grow"></span>${g.mode==='mole'?`<span class="mgsc">${spr('clock',22)} <b id="xgt">${g.t}</b></span>`:g.mode==='frog'?`<span class="mgsc">${spr('pad',22)} <b id="xgr">${Math.min(g.ri+1,g.N)}/${g.N}</b></span>`:`<span class="mgsc">${spr('shapeI',22)} <b id="xgr">${g.pi+1}/${g.pics.length}</b></span>`}${hearts}</div>`;
+  const rule=(t,say)=>`<div class="mgrule"><span>${t}</span><button class="g1spk" type="button" data-act="sayJ-2" ${hd.arg(say)} aria-label="Nghe lại">🔊</button></div>`;
+  if(g.mode==='mole')return`<div class="game g1 mini xg xg3">${top}${rule(g.rule,'scr.say')}<div class="xmole" id="xmf"><canvas class="xpcv" id="xmcv" width="114" height="108" aria-hidden="true"></canvas>${[0,1,2,3,4,5,6,7,8].map(i=>{const [cx,cy]=MOLEH[i];return`<div class="xmh" style="left:${(cx-16)*XZ}px;top:${(cy-30)*XZ}px"><button type="button" class="xmm" id="xmm${i}" data-act-pointerdown="moleTap" ${hd.argEv('pointerdown',i)} aria-label="Chuột chũi" tabindex="-1"><span class="xmsign"></span><span class="xmbody">${spr('mole',56)}</span></button></div>`}).join('')}</div></div>`;
   if(g.mode==='frog'){const q=g.q;return`<div class="game g1 mini xg xg3">${top}${rule(`<span class="xfq">${q.t}</span>`,'frogSay(scr.q)')}<div class="xfrog" id="xff"><canvas class="xpcv" id="xfcv" width="114" height="100" aria-hidden="true"></canvas>
-    ${q.opts.map((o,i)=>`<button type="button" class="xfpad ${g.bad.includes(i)?'sink':''}" style="left:${FROGP[i]*XZ-32}px" onclick="frogTap(${i})" ${g.bad.includes(i)?'disabled':''} aria-label="Lá súng ${esc(o)}">${spr('pad',64)}<b>${o}</b></button>`).join('')}
+    ${q.opts.map((o,i)=>`<button type="button" class="xfpad ${g.bad.includes(i)?'sink':''}" style="left:${FROGP[i]*XZ-32}px" data-act="frogTap" ${hd.arg(i)} ${g.bad.includes(i)?'disabled':''} aria-label="Lá súng ${esc(o)}">${spr('pad',64)}<b>${o}</b></button>`).join('')}
     <span class="xfrogj ${g.hop!=null?'hop p'+g.hop:''}" id="xfj">${spr(g.hop!=null?'frogJ':'frog',48)}</span>${g.splash!=null?`<span class="xfspl" style="left:${FROGP[g.splash]*XZ-36}px">${spr('splashW',72)}</span>`:''}
     <div class="xfprog" aria-label="Đã qua ${g.ri} hàng">${Array.from({length:g.N},(_,i)=>`<i class="${i<g.ri?'on':i===g.ri?'cur':''}"></i>`).join('')}</div></div><div id="xgfb" class="xgfb">${g.fb||''}</div></div>`}
   if(g.mode==='shape'){const p=g.pics[g.pi],sl=p&&p.slots[g.si];return`<div class="game g1 mini xg xg3">${top}${rule(g.reveal?'<b>Hoàn thành bức tranh!</b>':`Đặt <b>${XSHN[sl.s]}</b> vào chỗ trống`,'shapeSay(scr)')}<div class="xshp3"><div class="xspic ${g.reveal?'rev':''}"><canvas class="xpcv" id="xscv3" width="114" height="72" aria-hidden="true"></canvas>${!g.reveal&&sl?`<span class="xsslot" style="left:${sl.x*XZ}px;top:${sl.y*XZ}px;width:${sl.w*XZ}px;height:${sl.h*XZ}px"></span>`:''}${g.reveal?'<span class="xsdone">Tuyệt vời!</span>':''}</div>
-    <div class="xstray3">${g.tray.map((k,i)=>`<button type="button" class="xstile ${g.badT&&g.badT.includes(i)?'bad':''}" onclick="shapeTap(${i})" ${g.reveal?'disabled':''} aria-label="Hình thứ ${i+1}"><canvas class="xpcv" data-shape="${k}" width="22" height="22"></canvas></button>`).join('')}</div></div><div id="xgfb" class="xgfb">${g.fb||''}</div></div>`}
+    <div class="xstray3">${g.tray.map((k,i)=>`<button type="button" class="xstile ${g.badT&&g.badT.includes(i)?'bad':''}" data-act="shapeTap" ${hd.arg(i)} ${g.reveal?'disabled':''} aria-label="Hình thứ ${i+1}"><canvas class="xpcv" data-shape="${k}" width="22" height="22"></canvas></button>`).join('')}</div></div><div id="xgfb" class="xgfb">${g.fb||''}</div></div>`}
   return''})}
 {hooks.on('xgAfterRender',_ar=>function(){const g=scr;if(g.k==='xg'&&W3.includes(g.mode)){if(g.end)return;
   if(g.mode==='mole'){moleBg();if(!g.started){g.started=true;sayJ(g.say);moleRun()}return}
@@ -210,3 +211,10 @@ function shapeTap(i){const g=scr;if(g.k!=='xg'||g.mode!=='shape'||g.end||g.lock|
     if(next<0){g.reveal=1;g.lock=1;sfx('combo');setTimeout(()=>sfx('win'),200);render();setTimeout(()=>{if(scr!==g)return;g.reveal=0;g.lock=0;g.pi++;g.si=0;g.fb='';if(g.pi>=g.pics.length)return xg3End();g.tray=shapeTray(g);render();sayJ(shapeSay(g))},1500);return}
     g.si=next;g.tray=shapeTray(g);render();if(curG()<=2)sayJ(`Tiếp theo: ${XSHN[P.slots[g.si].s]}.`)}
   else{g.lives--;g.badT=[...(g.badT||[]),i];sfx('bad');hurtFx(1);g.fb=`<span class="bad">Chưa đúng. Hình này là ${XSHN[k]}.</span>`;render();if(g.lives<=0)setTimeout(xg3End,500)}}
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'moleTap':function(event,a){moleTap(a[0],event)},
+  'frogTap':function(event,a){frogTap(a[0])},
+  'shapeTap':function(event,a){shapeTap(a[0])},
+});

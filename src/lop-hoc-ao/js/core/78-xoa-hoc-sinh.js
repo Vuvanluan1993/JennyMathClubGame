@@ -3,6 +3,7 @@
    P-09b (25/10/2026): ⬇ Xuất dữ liệu của em (qlXuatHS) ra file JSON trước khi xoá (LUAT §6h: xuất rồi mới xoá, có nhật ký).
    Q2 = B: không đổi trường hồ sơ. Không xoá tự động. */
 import { hooks } from './00-hooks.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { render, toast } from './13-giao-dien-chung.js';
 import { viewPH } from './20-phu-huynh.js';
@@ -71,12 +72,12 @@ if(typeof orgHeal==='function'){const _h=orgHeal;orgHeal=function(){const r=_h.a
 {const _t=window.qlTaoHS;window.qlTaoHS=async function(){const truoc=new Set(Object.keys(S.st));const r=await _t.apply(this,arguments);try{const x=(S.org&&S.org.xoa)||[];Object.keys(S.st).filter(k=>!truoc.has(k)).forEach(k=>{const i=x.indexOf(k);if(i>=0)x.splice(i,1)})}catch(e){}return r}}
 /* nút Xoá + ⬇ Xuất dữ liệu trong bảng Sửa học sinh */
 {const _s=window.qlSua;window.qlSua=function(id){const r=_s.apply(this,arguments);try{const f=document.querySelector('#qlsua form');if(f&&!f.querySelector('.qlxoa')){
-  const xuat=`<button type="button" class="btn qlxuat" title="Tải file JSON dữ liệu của em (hồ sơ, tiến độ, ví xu, nhận xét). Nên xuất trước khi xoá." onclick="qlXuatHS('${id}')">⬇ Xuất dữ liệu</button>`;
-  const bt=f.querySelector('.qsbtn');if(bt)bt.insertAdjacentHTML('afterbegin',`<button type="button" class="btn qlxbtn qlxoa" title="Xoá hẳn tài khoản. Em chỉ tạm nghỉ thì dùng Nghỉ học (Năm học · Lên lớp) để giữ dữ liệu." onclick="qlXoaHS(['${id}'])">🗑 Xoá học sinh</button>${xuat}`);else f.insertAdjacentHTML('beforeend',`<div class="qsbtn"><button type="button" class="btn qlxbtn qlxoa" onclick="qlXoaHS(['${id}'])">🗑 Xoá học sinh</button>${xuat}</div>`)}}catch(x){}return r}}
+  const xuat=`<button type="button" class="btn qlxuat" title="Tải file JSON dữ liệu của em (hồ sơ, tiến độ, ví xu, nhận xét). Nên xuất trước khi xoá." data-act="qlXuatHS" ${hd.arg(String(id))}>⬇ Xuất dữ liệu</button>`;
+  const bt=f.querySelector('.qsbtn');if(bt)bt.insertAdjacentHTML('afterbegin',`<button type="button" class="btn qlxbtn qlxoa" title="Xoá hẳn tài khoản. Em chỉ tạm nghỉ thì dùng Nghỉ học (Năm học · Lên lớp) để giữ dữ liệu." data-act="qlXoaHS" ${hd.arg(String(id))}>🗑 Xoá học sinh</button>${xuat}`);else f.insertAdjacentHTML('beforeend',`<div class="qsbtn"><button type="button" class="btn qlxbtn qlxoa" data-act="qlXoaHS" ${hd.arg(String(id))}>🗑 Xoá học sinh</button>${xuat}</div>`)}}catch(x){}return r}}
 /* nút Xoá ở thanh chọn nhiều em */
-{hooks.on('viewPH',_p=>function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&(qlTrang==='hs'||qlTrang==='lopct'))r=r.replace(/(<button type="button" class="btn sm" onclick="qlSua\('([a-z0-9._-]+)'\)">✎ Sửa<\/button>)/g,(m,b,id)=>`${b}<button type="button" class="btn sm qlxbtn qlx1" title="Xoá học sinh" aria-label="Xoá học sinh" onclick="qlXoaHS(['${id}'])">🗑 Xoá</button>`);
+{hooks.on('viewPH',_p=>function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&(qlTrang==='hs'||qlTrang==='lopct'))r=r.replace(/(<button type="button" class="btn sm" data-act="qlSua" data-arg="\[&quot;([a-z0-9._-]+)&quot;\]">✎ Sửa<\/button>)/g,(m,b,id)=>`${b}<button type="button" class="btn sm qlxbtn qlx1" title="Xoá học sinh" aria-label="Xoá học sinh" data-act="qlXoaHS" ${hd.arg(String(id))}>🗑 Xoá</button>`);
  if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='hs')
-  r=r.replace(`<button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`,`<button type="button" class="btn sm qlxbtn" onclick="qlXoaHS(Object.keys(qlChon).filter(k=>qlChon[k]))">🗑 Xoá</button><button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`);return r})}
+  r=r.replace(`<button type="button" class="btn sm ghost" data-act="qlChon-render">Bỏ chọn</button>`,`<button type="button" class="btn sm qlxbtn" data-act="qlXoaHS-keys-filter">🗑 Xoá</button><button type="button" class="btn sm ghost" data-act="qlChon-render">Bỏ chọn</button>`);return r})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .qlx1{margin-left:6px}
 .gdbox{max-height:calc(100vh - 20px)!important;overflow:auto}.gdbox .gdhd{position:sticky;top:0;z-index:3}.gdbox .qsbtn{position:sticky;bottom:0;z-index:2;background:#fff;margin:8px -14px -14px;padding:10px 14px;border-top:1px solid #E8EAED}
@@ -85,3 +86,8 @@ body.px .btn.qlxbtn,.btn.qlxbtn{color:#B3261E!important;background:#fff!importan
 @media(max-width:440px){#qlsua .qsbtn .qlxoa,#qlsua .qsbtn .qlxuat{padding-left:10px!important;padding-right:10px!important;font-size:14px!important}}
 </style>`);
 })();
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'qlXoaHS-keys-filter':function(){qlXoaHS(Object.keys(qlChon).filter(k=>qlChon[k]))},
+});

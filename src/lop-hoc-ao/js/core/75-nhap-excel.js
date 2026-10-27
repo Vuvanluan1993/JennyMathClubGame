@@ -2,6 +2,7 @@
    Không cần thư viện ngoài: tự đọc/ghi file .xlsx (zip) bằng DecompressionStream. */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { render, toast } from './13-giao-dien-chung.js';
 import { viewPH } from './20-phu-huynh.js';
@@ -117,11 +118,11 @@ function phanTich(rows){let hi=rows.findIndex(r=>(r||[]).filter(c=>cotOf(c)).len
 /* ---------- bảng xem trước ---------- */
 window.qlNhap={ds:[],ten:''};
 window.qlMoNhap=function(){const el=document.createElement('div');el.className='gdov';el.id='qlnhap';
- el.innerHTML=`<div class="gdbox qsbox qlnbox"><div class="gdhd"><b>Nhập danh sách từ Excel</b><button type="button" class="gdx" onclick="document.getElementById('qlnhap').remove()">Đóng ✕</button></div><div class="qlnbd" id="qlnbd">${buoc1()}</div></div>`;
+ el.innerHTML=`<div class="gdbox qsbox qlnbox"><div class="gdhd"><b>Nhập danh sách từ Excel</b><button type="button" class="gdx" data-act="getElementById-qlnhap-remove">Đóng ✕</button></div><div class="qlnbd" id="qlnbd">${buoc1()}</div></div>`;
  document.body.appendChild(el)};
-const buoc1=()=>`<ol class="qlnstep"><li><button type="button" class="btn sm" onclick="qlTaiMau()">⬇ Tải file mẫu (.xlsx)</button><div class="muted">Cột: Họ và đệm · Tên · Giới tính · Ngày sinh · Lớp · ĐT phụ huynh · Gmail phụ huynh · Tên đăng nhập (tuỳ chọn).</div></li>
+const buoc1=()=>`<ol class="qlnstep"><li><button type="button" class="btn sm" data-act="qlTaiMau">⬇ Tải file mẫu (.xlsx)</button><div class="muted">Cột: Họ và đệm · Tên · Giới tính · Ngày sinh · Lớp · ĐT phụ huynh · Gmail phụ huynh · Tên đăng nhập (tuỳ chọn).</div></li>
  <li>Điền danh sách. Cột <b>Lớp</b> ghi tên lớp đã tạo (ví dụ 1A); để trống nếu chưa xếp. Anh chị em <b>cùng SĐT hoặc Gmail phụ huynh</b> sẽ chung 1 tài khoản phụ huynh.</li>
- <li><label class="btn pri qlfile">⬆ Chọn file Excel hoặc CSV<input type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onchange="qlDocFile(this.files[0])"></label><div class="muted">Nhập lại file đã sửa: em đã có (cùng họ tên + ngày sinh, hoặc cùng tên đăng nhập) sẽ được <b>cập nhật</b>, không tạo trùng.</div></li></ol>`;
+ <li><label class="btn pri qlfile">⬆ Chọn file Excel hoặc CSV<input type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" data-act-change="qlDocFile-0"></label><div class="muted">Nhập lại file đã sửa: em đã có (cùng họ tên + ngày sinh, hoặc cùng tên đăng nhập) sẽ được <b>cập nhật</b>, không tạo trùng.</div></li></ol>`;
 window.qlDocFile=async function(f){if(!f)return;const bd=document.getElementById('qlnbd');bd.innerHTML='<p>Đang đọc file…</p>';
  try{const rows=/\.csv$/i.test(f.name)?docCsv(await f.text()):await docXlsx(await f.arrayBuffer());qlNhap.ds=phanTich(rows);qlNhap.ten=f.name;bd.innerHTML=xemTruoc()}
  catch(x){console.error(x);bd.innerHTML=`<p class="qlnerr">⚠ ${e(x.message||x)}</p>`+buoc1()}};
@@ -138,7 +139,7 @@ function xemTruoc(){const ds=qlNhap.ds,ok=ds.filter(x=>!x.loi.length),loi=ds.len
  <div class="qlnsum"><span class="qlnl3">+ ${moi} em mới</span><span class="qlnl2">↻ ${cap} em cập nhật</span><span class="${loi?'qlnl1':'muted'}">✕ ${loi} dòng lỗi</span><span>👪 ${nPH} phụ huynh (${phMoi} tài khoản mới${anhEm?`, ${anhEm} nhà có anh chị em`:''})</span></div>
  ${loi?'<p class="qlnerr">Dòng lỗi (đỏ) sẽ bị bỏ qua. Sửa trong Excel rồi chọn lại file, hoặc nhập các dòng đúng trước.</p>':''}
  <div class="qlntb"><table><tr><th>Dòng</th><th>Học sinh</th><th>Lớp</th><th>Phụ huynh</th><th>Kết quả</th></tr>${rows}</table></div>
- <div class="qlin" style="margin-top:12px"><button type="button" class="btn pri" ${ok.length?'':'disabled'} onclick="qlChayNhap()">Nhập ${ok.length} em</button><label class="btn qlfile">Chọn file khác<input type="file" accept=".xlsx,.csv" onchange="qlDocFile(this.files[0])"></label></div>
+ <div class="qlin" style="margin-top:12px"><button type="button" class="btn pri" ${ok.length?'':'disabled'} data-act="qlChayNhap">Nhập ${ok.length} em</button><label class="btn qlfile">Chọn file khác<input type="file" accept=".xlsx,.csv" data-act-change="qlDocFile-0"></label></div>
  ${cloud()?'<p class="muted" style="font-size:12.5px">Mật khẩu ban đầu: <b>ngẫu nhiên</b>, chỉ có trên phiếu in trong phiên này; lần đầu đăng nhập phải tự đổi (học sinh và phụ huynh). Tạo tài khoản trên máy chủ mất vài giây mỗi em.</p>':''}`}
 
 /* ---------- chạy nhập ---------- */
@@ -173,7 +174,7 @@ window.qlChayNhap=async function(){const ds=qlNhap.ds.filter(x=>!x.loi.length);i
  window.qlNhapKQ=kq;render();
  bd.innerHTML=`<p class="qlnok">✓ Xong: <b>${kq.moi.length}</b> em mới · <b>${kq.cap.length}</b> em cập nhật · <b>${kq.ph.length}</b> tài khoản phụ huynh.</p>
  ${kq.loi.length?`<div class="qlnerr">Chưa nhập được ${kq.loi.length}:<ul>${kq.loi.map(([x,m])=>`<li>Dòng ${x.dong} · ${e(x.hoten)}: ${e(m)}</li>`).join('')}</ul></div>`:''}
- <div class="qlin"><button type="button" class="btn pri" onclick="qlInPhieu([...qlNhapKQ.moi,...qlNhapKQ.cap],'hs')">🖨 In phiếu học sinh</button><button type="button" class="btn" ${kq.ph.length?'':'disabled'} onclick="qlInPhieu(qlNhapKQ.ph,'ph')">🖨 In phiếu phụ huynh</button><button type="button" class="btn ghost" onclick="document.getElementById('qlnhap').remove()">Đóng</button></div>
+ <div class="qlin"><button type="button" class="btn pri" data-act="qlInPhieu-hs">🖨 In phiếu học sinh</button><button type="button" class="btn" ${kq.ph.length?'':'disabled'} data-act="qlInPhieu-ph">🖨 In phiếu phụ huynh</button><button type="button" class="btn ghost" data-act="getElementById-qlnhap-remove">Đóng</button></div>
  <p class="muted" style="font-size:12.5px">Mật khẩu ban đầu ngẫu nhiên, chỉ có trên phiếu in trong phiên này; lần đầu đăng nhập phải tự đổi. Phiếu in đen trắng, 8 phiếu một trang A4, xếp theo lớp.</p>`};
 
 /* ---------- in phiếu đăng nhập ---------- */
@@ -186,16 +187,16 @@ window.qlInPhieu=function(ids,loai){const o=O(),lopTen=id=>((o.lop||[]).find(l=>
  if(!the.length){toast('Chưa có ai để in');return}
  the.sort((a,b)=>a.k.localeCompare(b.k,'vi'));
  let el=document.getElementById('qlin');if(el)el.remove();el=document.createElement('div');el.id='qlin';
- el.innerHTML=`<div class="qlin-bar"><b>${the.length} phiếu</b><button type="button" class="btn pri" onclick="window.print()">🖨 In</button><button type="button" class="btn" onclick="document.getElementById('qlin').remove()">Đóng</button></div><div class="qlin-grid">${the.map(t=>`<div class="pt"><div class="ph">Clb Học Toán cùng Jenny</div>${t.h}<div class="pf">Giữ phiếu cẩn thận. Đổi mật khẩu sau lần đăng nhập đầu.</div></div>`).join('')}</div>`;
+ el.innerHTML=`<div class="qlin-bar"><b>${the.length} phiếu</b><button type="button" class="btn pri" data-act="print">🖨 In</button><button type="button" class="btn" data-act="getElementById-qlin-remove">Đóng</button></div><div class="qlin-grid">${the.map(t=>`<div class="pt"><div class="ph">Clb Học Toán cùng Jenny</div>${t.h}<div class="pf">Giữ phiếu cẩn thận. Đổi mật khẩu sau lần đăng nhập đầu.</div></div>`).join('')}</div>`;
  document.body.appendChild(el);window.scrollTo(0,0)};
 window.qlInLop=function(lid){const ids=STUDENTS.filter(s=>(O().gd||{})[s[0]]===lid).map(s=>s[0]);qlInPhieu(ids,'hs')};
 
 /* ---------- gắn nút ---------- */
 {hooks.on('viewPH',_p=>function(){let r=_p.apply(this,arguments);if(role!=='ql')return r;try{
- if(qlTrang==='hs')r=r.replace(`onclick="qlMoHS()">+ Thêm học sinh</button>`,`onclick="qlMoHS()">+ Thêm học sinh</button><button type="button" class="btn pri" onclick="qlMoNhap()">⬆ Nhập từ Excel</button><button type="button" class="btn" onclick="qlTaiDS()">⬇ Tải danh sách</button>`)
-  .replace(`<button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`,`<button type="button" class="btn sm" onclick="qlInPhieu(Object.keys(qlChon).filter(k=>qlChon[k]),'hs')">🖨 In phiếu</button><button type="button" class="btn sm ghost" onclick="qlChon={};render()">Bỏ chọn</button>`);
- if(qlTrang==='lopct')r=r.replace(/(<span class="pill">Khối \d+ · \d+ em<\/span><\/div>)/,`$1<div class="qlin"><button type="button" class="btn" onclick="qlInLop('${qlLopId}')">🖨 In phiếu cả lớp</button></div>`);
- if(qlTrang==='ph')r=r.replace(`<div class="row" style="gap:8px" id="phNut"></div>`,`<div class="row" style="gap:8px" id="phNut"><button type="button" class="btn" onclick="qlInPhieu([...new Set(Object.values(S.org.ph||{}))],'ph')">🖨 In phiếu phụ huynh</button></div>`);
+ if(qlTrang==='hs')r=r.replace(`data-act="qlMoHS">+ Thêm học sinh</button>`,`data-act="qlMoHS">+ Thêm học sinh</button><button type="button" class="btn pri" data-act="qlMoNhap">⬆ Nhập từ Excel</button><button type="button" class="btn" data-act="qlTaiDS">⬇ Tải danh sách</button>`)
+  .replace(`<button type="button" class="btn sm ghost" data-act="qlChon-render">Bỏ chọn</button>`,`<button type="button" class="btn sm" data-act="qlInPhieu-keys-filter-hs">🖨 In phiếu</button><button type="button" class="btn sm ghost" data-act="qlChon-render">Bỏ chọn</button>`);
+ if(qlTrang==='lopct')r=r.replace(/(<span class="pill">Khối \d+ · \d+ em<\/span><\/div>)/,`$1<div class="qlin"><button type="button" class="btn" data-act="qlInLop" ${hd.arg(String(qlLopId))}>🖨 In phiếu cả lớp</button></div>`);
+ if(qlTrang==='ph')r=r.replace(`<div class="row" style="gap:8px" id="phNut"></div>`,`<div class="row" style="gap:8px" id="phNut"><button type="button" class="btn" data-act="qlInPhieu-Set-values-ph">🖨 In phiếu phụ huynh</button></div>`);
  }catch(x){console.error(x)}return r})}
 
 document.head.insertAdjacentHTML('beforeend',`<style>
@@ -221,3 +222,20 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 @media print{body>*:not(#qlin){display:none!important}#qlin{position:static;padding:0}.qlin-bar{display:none}.qlin-grid{grid-template-columns:repeat(2,1fr)}@page{size:A4;margin:8mm}}
 </style>`);
 })();
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'getElementById-qlnhap-remove':function(){document.getElementById('qlnhap').remove()},
+  'qlTaiMau':function(){qlTaiMau()},
+  'qlDocFile-0':function(){qlDocFile(this.files[0])},
+  'qlChayNhap':function(){qlChayNhap()},
+  'qlInPhieu-hs':function(){qlInPhieu([...qlNhapKQ.moi,...qlNhapKQ.cap],'hs')},
+  'qlInPhieu-ph':function(){qlInPhieu(qlNhapKQ.ph,'ph')},
+  'print':function(){window.print()},
+  'getElementById-qlin-remove':function(){document.getElementById('qlin').remove()},
+  'qlMoNhap':function(){qlMoNhap()},
+  'qlTaiDS':function(){qlTaiDS()},
+  'qlInPhieu-keys-filter-hs':function(){qlInPhieu(Object.keys(qlChon).filter(k=>qlChon[k]),'hs')},
+  'qlInLop':function(event,a){qlInLop(a[0])},
+  'qlInPhieu-Set-values-ph':function(){qlInPhieu([...new Set(Object.values(S.org.ph||{}))],'ph')},
+});

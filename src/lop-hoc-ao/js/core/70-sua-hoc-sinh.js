@@ -5,6 +5,7 @@
    đổi mật khẩu = tạo đăng nhập mới cho cùng tên (như "Đặt lại mật khẩu"). Bản demo (không máy chủ): chỉ đổi tên và tên đăng nhập trên máy này. */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { ORG_ON, save } from './09-du-lieu-demo.js';
 import { render, toast } from './13-giao-dien-chung.js';
 import { FB, FB_CFG, fbDayNgay, fbInit, fbLoi, fbTach, fbTS } from './62-may-chu.js';
@@ -15,8 +16,8 @@ const tkOk=tk=>/^[a-z0-9][a-z0-9._-]{2,23}$/.test(tk);
 const hoSo=id=>{const o=S.org;o.hoso=o.hoso||{};return o.hoso[id]||{}};
 const nk=t=>{try{(S.org.nk=S.org.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t});if(S.org.nk.length>200)S.org.nk.shift()}catch(e){}};
 window.qlSua=function(id){const st=S.st[id];if(!st)return;const H=hoSo(id);const el=document.createElement('div');el.className='gdov';el.id='qlsua';
- el.innerHTML=`<div class="gdbox qsbox"><div class="gdhd"><b>Sửa tài khoản học sinh</b><button type="button" class="gdx" onclick="document.getElementById('qlsua').remove()">Đóng ✕</button></div>
- <form class="qsform" onsubmit="qlLuu(event,'${id}')">
+ el.innerHTML=`<div class="gdbox qsbox"><div class="gdhd"><b>Sửa tài khoản học sinh</b><button type="button" class="gdx" data-act="getElementById-qlsua-remove">Đóng ✕</button></div>
+ <form class="qsform" data-act-submit="qlLuu" ${hd.argEv('submit',String(id))}>
   <label>Họ và tên<input id="qsTen" value="${esc(st.name)}" maxlength="40" required></label>
   <label>Tên đăng nhập<input id="qsTk" value="${esc(id)}" maxlength="24" autocapitalize="off" spellcheck="false" required></label>
   <div class="qs2"><label>Giới tính<select id="qsGt"><option value="">—</option><option value="nu" ${H.gt==='nu'?'selected':''}>Nữ</option><option value="nam" ${H.gt==='nam'?'selected':''}>Nam</option></select></label><label>Năm sinh<input id="qsNam" type="number" min="2010" max="2025" value="${H.nam||''}" placeholder="2019"></label></div>
@@ -74,7 +75,7 @@ window.qlLuu=async function(e,a){e.preventDefault();const st=S.st[a];if(!st)retu
   if(moi.length){save();if(cloud()){try{await fbDayNgay()}catch(err){}}render()}}}catch(err){}return r}}
 /* nút Sửa ở bảng Học sinh của Quản lý */
 {hooks.on('viewPH',_p=>function(){let r=_p.apply(this,arguments);try{if(role==='ql')r=r.replace(/(<input id="nhTen"[^>]*>)/,`$1<select id="nhGt" aria-label="Giới tính" style="width:100px"><option value="">Giới tính</option><option value="nu">Nữ</option><option value="nam">Nam</option></select>`).replace(/<tr><td><b>([^<]*)<\/b><div class="muted">([a-z0-9._-]+) · /g,(m,n,id)=>{if(!S.st[id])return m;const H=hoSo(id),x=[H.gt?(H.gt==='nu'?'Nữ':'Nam'):'',H.nam?((H.ng&&H.th?H.ng+'/'+H.th+'/':'')+H.nam):'',H.dt?'PH '+H.dt:'',H.mail||''].filter(Boolean).join(' · ');
-  return`<tr><td><b>${n}</b> <button type="button" class="btn sm qlsuab" onclick="qlSua('${id}')" aria-label="Sửa ${n}">✎ Sửa</button>${x?`<div class="muted qlhs">${esc(x)}</div>`:'<div class="muted qlhs qlthieu">Chưa có hồ sơ (giới tính, ngày sinh, liên hệ phụ huynh)</div>'}<div class="muted">${id} · `})}catch(e){}return r})}
+  return`<tr><td><b>${n}</b> <button type="button" class="btn sm qlsuab" data-act="qlSua" ${hd.arg(String(id))} aria-label="Sửa ${n}">✎ Sửa</button>${x?`<div class="muted qlhs">${esc(x)}</div>`:'<div class="muted qlhs qlthieu">Chưa có hồ sơ (giới tính, ngày sinh, liên hệ phụ huynh)</div>'}<div class="muted">${id} · `})}catch(e){}return r})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .qsbox{max-width:420px}.qsform{display:flex;flex-direction:column;gap:10px;margin-top:10px;padding:0 14px 14px;color:#1F2A5A}
 .qsform label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700}.qsform label small{font-weight:400;color:#3D4A70}
@@ -85,3 +86,10 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .qsbtn{display:flex;gap:8px;align-items:center}.qlsuab{padding:2px 8px!important;font-size:12px!important;margin-left:6px}
 </style>`);
 })();
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'getElementById-qlsua-remove':function(){document.getElementById('qlsua').remove()},
+  'qlLuu':function(event,a){qlLuu(event,a[0])},
+  'qlSua':function(event,a){qlSua(a[0])},
+});

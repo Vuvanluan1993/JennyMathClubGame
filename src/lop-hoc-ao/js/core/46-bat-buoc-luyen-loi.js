@@ -5,6 +5,7 @@
    2) Bản đồ: đi từ tab khác (Toán Jenny, Luyện lỗi, Sưu tập, Hồ sơ) về thì về đúng chỗ "Đang học";
       từ trong đảo về thì về đúng đảo vừa vào (đã có ở 39m). */
 import { hooks } from './00-hooks.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { go, render, toast } from './13-giao-dien-chung.js';
 import { mist } from './21-lop-6-che-do-tro-choi.js';
@@ -19,9 +20,9 @@ function gateAdd(q){try{if(role!=='hs'||!q||!q.key||curG()>5)return;const G=gate
 {hooks.on('mist1Add',_m=>function(q){const r=_m.apply(this,arguments);try{const g=scr;if(g&&!g.fix&&!g.race&&!g.tre&&!g.cbo)gateAdd(q)}catch(e){}return r})}
 function gateOpen(){const st=S.st[sid];if(!st||role!=='hs')return false;const M=mist(st);st.gate=gateOf().filter(k=>M[k]);return st.gate.length>0}
 function gateAsk(){const n=gateOf().length,el=document.createElement('div');el.className='gdov';el.id='gateov';
- el.innerHTML=`<div class="gdbox gatebox"><div class="gdhd"><b>${spr('book',20)} Luyện lỗi trước nhé</b><button type="button" class="gdx" onclick="this.closest('.gdov').remove()" aria-label="Đóng">✕</button></div>
+ el.innerHTML=`<div class="gdbox gatebox"><div class="gdhd"><b>${spr('book',20)} Luyện lỗi trước nhé</b><button type="button" class="gdx" data-act="closest-remove-2" aria-label="Đóng">✕</button></div>
   <div class="gatebd">${jenny(64)}<p>Em vừa làm sai <b>${n} câu</b>. Mình luyện lại một lượt các câu đó rồi chơi tiếp nhé!</p></div>
-  <div class="gdctl"><button type="button" class="gdgo" onclick="this.closest('.gdov').remove();startGateFix()">Luyện ngay ▶</button></div></div>`;
+  <div class="gdctl"><button type="button" class="gdgo" data-act="closest-remove-startGateFix">Luyện ngay ▶</button></div></div>`;
  document.body.appendChild(el);try{pixelize(el)}catch(e){}try{sayJ(`Em vừa làm sai ${n} câu. Mình luyện lại một lượt rồi chơi tiếp nhé!`)}catch(e){}}
 function startGateFix(){const st=S.st[sid],M=mist(st),keys=gateOf().filter(k=>M[k]);if(!keys.length){st.gate=[];save();toast('Không còn lỗi nào cần luyện. Giỏi lắm!');render();return}
  const E=keys.map(k=>M[k]),mk=e=>{const x=isl1(e.id);const q=x.lv[e.lv][e.gi]();return{...q,src:[e.id,e.lv,e.gi],key:`${e.id}:${e.lv}:${e.gi}`,label:e.label}};
@@ -37,13 +38,20 @@ hooks.de('startG1',gateWrap(hooks.cu('startG1')));hooks.de('startXG',gateWrap(ho
 try{if(typeof startJ1==='function')hooks.de('startJ1',gateWrap(hooks.cu('startJ1')))}catch(e){}
 /* màn hình kết thúc có lỗi: nút Luyện lỗi đứng đầu */
 {hooks.on('g1AfterRender',_a=>function(){const r=_a.apply(this,arguments);try{const g=scr;if(g&&(g.end)&&!g.fix&&gateOpen()){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');if(box&&!document.querySelector('.gatebtn')){const n=gateOf().length;
-  box.insertAdjacentHTML('afterbegin',`<div class="gatenote">${spr('book',18)} Em vừa sai ${n} câu. Em có thể luyện lại ngay (không bắt buộc).</div><button type="button" class="gobtn gatebtn" onclick="startGateFix()">Luyện lại câu sai (${n}) ▶</button>`)}}}catch(e){}return r})}
+  box.insertAdjacentHTML('afterbegin',`<div class="gatenote">${spr('book',18)} Em vừa sai ${n} câu. Em có thể luyện lại ngay (không bắt buộc).</div><button type="button" class="gobtn gatebtn" data-act="startGateFix">Luyện lại câu sai (${n}) ▶</button>`)}}}catch(e){}return r})}
 /* trò chơi kết thúc (màn hình điểm của trò chơi): cũng hiện nút luyện lỗi */
 {hooks.on('render',_r=>function(){const r=_r.apply(this,arguments);try{const g=scr;if(g&&(g.k==='xg'||g.k==='mini')&&g.end&&gateOpen()){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');if(box&&!document.querySelector('.gatebtn')){const n=gateOf().length;
-  box.insertAdjacentHTML('afterbegin',`<div class="gatenote">${spr('book',18)} Em vừa sai ${n} câu. Em có thể luyện lại ngay (không bắt buộc).</div><button type="button" class="gobtn gatebtn" onclick="startGateFix()">Luyện lại câu sai (${n}) ▶</button>`)}}}catch(e){}return r})}
+  box.insertAdjacentHTML('afterbegin',`<div class="gatenote">${spr('book',18)} Em vừa sai ${n} câu. Em có thể luyện lại ngay (không bắt buộc).</div><button type="button" class="gobtn gatebtn" data-act="startGateFix">Luyện lại câu sai (${n}) ▶</button>`)}}}catch(e){}return r})}
 /* bản đồ: từ tab khác về thì về "Đang học" */
 {hooks.on('go',_go=>function(s){try{if(s&&s.k==='home'&&s.tab&&s.tab!=='map'){MAP_TI=null;MAP_ID=null}}catch(e){}return _go.apply(this,arguments)})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .gatebd{display:flex;gap:12px;align-items:center;padding:14px;background:linear-gradient(#FFF4D6,#FFE9B8);border-bottom:3px solid #1F2A5A}.gatebd p{margin:0;font-family:var(--f-body);font-size:16px;line-height:1.4}
 .gatenote{display:flex;gap:8px;align-items:center;font-family:var(--f-body);font-size:14px;background:#FFF4D6;color:#7A4E00;padding:8px 10px;box-shadow:0 0 0 2px #FCB40C;margin-bottom:6px;text-align:left}
 </style>`);
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'closest-remove-2':function(){this.closest('.gdov').remove()},
+  'closest-remove-startGateFix':function(){this.closest('.gdov').remove();startGateFix()},
+  'startGateFix':function(){startGateFix()},
+});

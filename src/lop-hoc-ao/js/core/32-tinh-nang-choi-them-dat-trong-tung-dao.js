@@ -3,6 +3,7 @@
    Tùy chọn theo nội dung đảo: Câu cá, Bóng bay, Đua giờ 60 giây. Kho báu vẫn trôi trên biển. */
 import { hooks } from './00-hooks.js';
 import { esc, pick, starsHtml } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { MG, MGT } from './30a-dang-ky-khoi.js';
 import { gvCLS, save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
@@ -12,7 +13,7 @@ import { spr } from './22-do-hoa-pixel-mau-logo-clb.js';
 import { isl1, q1, s1, sayJ } from './30b-may-tieu-hoc.js';
 import { curG, PI, PRIM, QN } from './25-lop-1-so-loi-sai-toan-jenny.js';
 import { bossOf } from './30d-hinh-phang-va-cau-hoi.js';
-import { lesOf } from './30-bai-giang-jenny.js';
+import { lesOf, startLes } from './30-bai-giang-jenny.js';
 import { CREAT, giveCard, mkQ, randCommon, stopMini, TRE, treLeft } from './31-5-tinh-nang-choi-them-tieu-hoc.js';
 import { sfx } from './33b-am-thanh.js';
 import { bossHTML } from './33c-trum-hoat-hinh.js';
@@ -36,27 +37,27 @@ hooks.ham('viewIsland1',function(){
   if(b.won&&!b.claimed[sid]){b.claimed[sid]=1;st.coins+=20;giveCard(st,cr[0]);save();setTimeout(()=>toast(`Cả lớp đã hạ ${b.name}! Em nhận 20 xu và thẻ ${cr[1]}.`),50)}
   const items=x.lv.map((_,L)=>{const boss=L===2,done=s.m[L],can=UNL||L===0||s.m[L-1];return{L,done,can,t:boss?`Trùm đảo · ${bossOf(scr.id)[1]}`:`Màn ${L+1}`,d:(boss?`Khoảng ${QN()} đòn · 3 tim · rương`:`Khoảng ${QN()} câu · 3 tim`)+(curG()>=3?' · bài lời văn ít câu hơn':'')}});
   const nx=items.findIndex(i=>!i.done&&i.can),cbOpen=UNL||s.m[0],mine=b.hits[sid]||0;
-  const OPT={fish:['fish','Câu cá',`Câu cá theo luật của đảo trong 45 giây`,`startMini('fish','${x.id}')`,(st.mg||{})[`${x.id}:fish`]],balloon:['balloon','Bóng bay',`Bắn bóng theo luật của đảo trong 45 giây`,`startMini('balloon','${x.id}')`,(st.mg||{})[`${x.id}:balloon`]],race:['clock','Đua giờ 60 giây','Làm liên tục câu của đảo này, có bảng xếp hạng lớp',`startRace('${x.id}')`,(st.race||{})[x.id]]};
-  return`<div class="page"><div class="crumb"><button class="btn sm ghost" onclick="go({k:'home'})">← Bản đồ</button></div>
+  const OPT={fish:['fish','Câu cá',`Câu cá theo luật của đảo trong 45 giây`,hd.attr('startMini','fish',x.id),(st.mg||{})[`${x.id}:fish`]],balloon:['balloon','Bóng bay',`Bắn bóng theo luật của đảo trong 45 giây`,hd.attr('startMini','balloon',x.id),(st.mg||{})[`${x.id}:balloon`]],race:['clock','Đua giờ 60 giây','Làm liên tục câu của đảo này, có bảng xếp hạng lớp',hd.attr('startRace',x.id),(st.race||{})[x.id]]};
+  return`<div class="page"><div class="crumb"><button class="btn sm ghost" data-act="go-home">← Bản đồ</button></div>
    <div class="card"><div class="lesson">${jenny(64)}<div class="grow"><h1>${esc(x.title)}</h1><div class="muted">${esc(x.lesson)} · Toán ${curG()} · Chủ đề ${(x.ti||0)+1}</div></div>${starsHtml(s.m.filter(Boolean).length,x.nm)}</div>
-    <div class="g1goal"><b>Hôm nay em học:</b> ${esc(x.goal)}. <button class="btn sm" type="button" onclick="sayJ('${esc(x.title)}. Hôm nay em học: ${esc(x.goal)}.')">🔊 Nghe Jenny</button></div>
-    ${(()=>{const L=lesOf(x);if(!L)return'';const q=x.tiet>1;return`<button class="lesbox ${s.les?'done':''}" type="button" onclick="startLes('${x.id}')"><span class="lesic">${spr('book',34)}</span><span class="grow"><b>Bài giảng Jenny</b><small>${q?'Nhắc lại nhanh kiến thức của bài':`${L.length} trang · Jenny đọc to`} · không bắt buộc</small></span><em>${s.les?'Xem lại':q?'Xem':'Nên xem'}</em></button>`})()}
+    <div class="g1goal"><b>Hôm nay em học:</b> ${esc(x.goal)}. <button class="btn sm" type="button" data-act="sayJ-2" ${hd.arg(`${esc(x.title)}. Hôm nay em học: ${esc(x.goal)}.`)}>🔊 Nghe Jenny</button></div>
+    ${(()=>{const L=lesOf(x);if(!L)return'';const q=x.tiet>1;return`<button class="lesbox ${s.les?'done':''}" type="button" data-act="startLes" ${hd.arg(String(x.id))}><span class="lesic">${spr('book',34)}</span><span class="grow"><b>Bài giảng Jenny</b><small>${q?'Nhắc lại nhanh kiến thức của bài':`${L.length} trang · Jenny đọc to`} · không bắt buộc</small></span><em>${s.les?'Xem lại':q?'Xem':'Nên xem'}</em></button>`})()}
     <h3 class="isec">Học trên đảo</h3>
-    <ul class="tl">${items.map((i,k)=>`<li class="${i.done?'done':''} ${k===nx?'next':''} ${!i.can&&!i.done?'off':''}"><span class="n">${i.done?'✓':i.L===2?spr(bossOf(scr.id)[0],22):i.L+1}</span><div class="grow"><b>${i.t}</b><span class="muted">${i.d}</span></div><button class="btn sm ${k===nx?'pri':''}" ${i.can?'':'disabled'} onclick="startG1('${x.id}',${i.L})">${i.can?(i.done?'Chơi lại':i.L===2?'Đánh trùm':'Chơi'):'🔒'}</button></li>`).join('')}</ul>
+    <ul class="tl">${items.map((i,k)=>`<li class="${i.done?'done':''} ${k===nx?'next':''} ${!i.can&&!i.done?'off':''}"><span class="n">${i.done?'✓':i.L===2?spr(bossOf(scr.id)[0],22):i.L+1}</span><div class="grow"><b>${i.t}</b><span class="muted">${i.d}</span></div><button class="btn sm ${k===nx?'pri':''}" ${i.can?'':'disabled'} data-act="startG1" ${hd.arg(String(x.id),i.L)}>${i.can?(i.done?'Chơi lại':i.L===2?'Đánh trùm':'Chơi'):'🔒'}</button></li>`).join('')}</ul>
     <p class="muted" style="margin:8px 0 0">Mỗi màn đúng khoảng 3/4 số câu và còn tim là được 1 sao. Qua Màn 1 là mở đảo tiếp theo và mở Trùm lớp.</p>
     <h3 class="isec">Trùm lớp <span class="pill warn">bắt buộc</span></h3>
     <div class="cbox ${cbOpen?'':'off'}"><div class="cbimg">${spr(b.spr,56)}</div><div class="grow"><b>${esc(b.name)}</b><span class="cbbar"><i style="width:${b.hp/b.max*100}%"></i></span><span class="muted">${b.won?'Cả lớp đã hạ trùm này!':`Còn ${b.hp}/${b.max} máu · em đã đánh ${mine} đòn`}</span><span class="cbreward">Thưởng khi cả lớp hạ trùm: 20 xu và thẻ ${spr(cr[0],18)} <b>${esc(cr[1])}</b></span></div>
-     <button class="btn sm ${cbOpen&&!b.won?'pri':''}" type="button" ${cbOpen&&!b.won?`onclick="startCB('${x.id}')"`:'disabled'}>${b.won?'Đã hạ':cbOpen?'Góp sức':'🔒 Qua Màn 1'}</button></div>
-    ${opts.length?`<h3 class="isec">Chơi thêm <span class="pill">tùy chọn</span></h3><div class="oplist">${opts.map(o=>{const [sp,n,d,act,best]=OPT[o];return`<button class="opt" type="button" onclick="${act}">${spr(sp,34)}<span><b>${n}</b><small>${d}</small></span><em>${best?'Kỷ lục '+best:'Chơi'}</em></button>`}).join('')}</div>`:''}
+     <button class="btn sm ${cbOpen&&!b.won?'pri':''}" type="button" ${cbOpen&&!b.won?`data-act="startCB" ${hd.arg(String(x.id))}`:'disabled'}>${b.won?'Đã hạ':cbOpen?'Góp sức':'🔒 Qua Màn 1'}</button></div>
+    ${opts.length?`<h3 class="isec">Chơi thêm <span class="pill">tùy chọn</span></h3><div class="oplist">${opts.map(o=>{const [sp,n,d,act,best]=OPT[o];return`<button class="opt" type="button" ${act}>${spr(sp,34)}<span><b>${n}</b><small>${d}</small></span><em>${best?'Kỷ lục '+best:'Chơi'}</em></button>`}).join('')}</div>`:''}
    </div></div>`;
 });
 /* ---- trò chơi nhỏ theo đảo ---- */
 function startMini(...a){return hooks.goi('startMini',this,a)}
 hooks.ham('startMini',function(mode,id){const g=curG(),x=isl1(id),r=((x&&x.ti&&MGT[x.ti]&&MGT[x.ti][g])?MGT[x.ti][g]:MG[g])[mode]();try{speechSynthesis.cancel()}catch(e){}go({k:'mini',id,mode,rule:r.rule,say:r.say,score:0,lives:3,t:45,end:false,started:false});scr._r=r});
 export function viewMini(){const g=scr,st=S.st[sid],key=`${g.id}:${g.mode}`,best=(st.mg||{})[key]||0;
-  if(g.end)return`<div class="game g1"><div class="gend"><div class="bigicon">${spr(g.mode==='fish'?'fish':'balloon',80)}</div><h1>${g.score>=best&&g.score?'Kỷ lục mới!':'Hết giờ!'}</h1><p class="muted">Em ${g.mode==='fish'?'câu':'bắn'} đúng <b>${g.score}</b> lần · kỷ lục ${Math.max(best,g.score)}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="startMini('${g.mode}','${g.id}')">Chơi lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`;
-  return`<div class="game g1 mini"><div class="gtop"><button class="gx" onclick="stopMini();go({k:'island',id:'${g.id}'})" aria-label="Thoát">✕</button><span class="mgsc">${spr('star',22)} <b id="mgs">${g.score}</b></span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="mgt">${g.t}</b></span><span class="hearts" id="mgl">${[0,1,2].map(i=>spr(i<g.lives?'heart':'heartE',18)).join(' ')}</span></div>
-   <div class="mgrule"><span>${g.rule}</span><button class="g1spk" type="button" onclick="sayJ(scr.say)" aria-label="Nghe lại">🔊</button></div>
+  if(g.end)return`<div class="game g1"><div class="gend"><div class="bigicon">${spr(g.mode==='fish'?'fish':'balloon',80)}</div><h1>${g.score>=best&&g.score?'Kỷ lục mới!':'Hết giờ!'}</h1><p class="muted">Em ${g.mode==='fish'?'câu':'bắn'} đúng <b>${g.score}</b> lần · kỷ lục ${Math.max(best,g.score)}</p>${g.coins?`<p class="earn">+${g.coins} xu</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" data-act="startMini" ${hd.arg(String(g.mode),String(g.id))}>Chơi lại</button><button class="gobtn ghost" type="button" data-act="go-island-3" ${hd.arg(String(g.id))}>Về đảo</button></div></div></div>`;
+  return`<div class="game g1 mini"><div class="gtop"><button class="gx" data-act="stopMini-go-island" ${hd.arg(String(g.id))} aria-label="Thoát">✕</button><span class="mgsc">${spr('star',22)} <b id="mgs">${g.score}</b></span><span class="grow"></span><span class="mgsc">${spr('clock',22)} <b id="mgt">${g.t}</b></span><span class="hearts" id="mgl">${[0,1,2].map(i=>spr(i<g.lives?'heart':'heartE',18)).join(' ')}</span></div>
+   <div class="mgrule"><span>${g.rule}</span><button class="g1spk" type="button" data-act="sayJ-3" aria-label="Nghe lại">🔊</button></div>
    <div class="mgf ${g.mode}" id="mgf"></div></div>`}
 export function endMini(){if(scr.k!=='mini'||scr.end)return;stopMini();const st=S.st[sid];st.mg=st.mg||{};const key=`${scr.id}:${scr.mode}`;scr.coins=addCoins(sid,Math.min(20,scr.score),'self');st.mg[key]=Math.max(st.mg[key]||0,scr.score);scr.end=true;log(sid,'passed',`${scr.mode==='fish'?'Câu cá':'Bóng bay'} · ${isl1(scr.id).title}`,0,{success:true,score:{raw:scr.score}});sfx(scr.lives<=0?'lose':scr.t<=0?'timeup':'win');sayJ(`Em được ${scr.score} điểm!`);save();render()}
 /* ---- đua giờ theo đảo ---- */
@@ -80,7 +81,18 @@ export function viewEndExtra(...a){return hooks.goi('viewEndExtra',this,a)}
 hooks.ham('viewEndExtra',function(){const g=scr,st=S.st[sid];
   if(g.race){const bd=raceBoard(g.id);return`<div class="game g1"><div class="gend"><div class="bigicon">${spr('clock',80)}</div><h1>${g.ok>g.prev?'Kỷ lục mới!':'Hết giờ!'}</h1><p class="muted">Đúng <b>${g.ok}</b> câu, sai ${g.bad} câu trong 60 giây${g.coins?` · +${g.coins} xu`:''}</p><p class="muted">Bảng xếp hạng đảo ${esc(isl1(g.id).short)}</p>
     <div class="board">${bd.map(([n,v,id],i)=>`<div class="${id===sid?'me':''}"><span>${i+1}</span><b>${esc(n)}</b><em>${v}</em></div>`).join('')}</div>
-    <div class="gendbtn"><button class="gobtn" type="button" onclick="startRace('${g.id}')">Đua lại</button><button class="gobtn ghost" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`}
-  if(g.tre)return`<div class="game g1"><div class="gend"><div class="bigicon">${g.card?spr(g.card[0],84):spr(TRE[g.tre][0],84)}</div><h1>${g.ok?'Mở được kho báu!':'Kho báu trôi mất rồi'}</h1>${g.ok?`<p class="earn">${esc(g.reward)}</p>`:`<p class="muted">Đáp án đúng: ${q1().sol}</p>`}<p class="muted">Hôm nay còn ${treLeft(st)} kho báu trên biển.</p><div class="gendbtn"><button class="gobtn" type="button" onclick="go({k:'home'})">Về biển</button>${g.card?`<button class="gobtn ghost" type="button" onclick="go({k:'home',tab:'album'})">Xem bộ sưu tập</button>`:''}</div></div></div>`;
-  const b=cbI(g.id);return`<div class="game g1"><div class="gend"><div class="bigicon bossend">${jenny(70,b.won?'cheer':'happy')}${bossHTML(b.spr,84,b.won?'dead':'idle',b.hp/b.max)}</div><h1>${b.won?'Cả lớp hạ được trùm!':'Em đã góp sức!'}</h1><p class="muted">Em đánh trúng <b>${g.ok}</b> đòn. Trùm còn ${b.hp}/${b.max} máu.</p>${g.card?`<p class="earn">+20 xu · thẻ ${spr(g.card[0],28)} ${esc(g.card[1])}</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" onclick="go({k:'island',id:'${g.id}'})">Về đảo</button></div></div></div>`});
+    <div class="gendbtn"><button class="gobtn" type="button" data-act="startRace" ${hd.arg(String(g.id))}>Đua lại</button><button class="gobtn ghost" type="button" data-act="go-island-3" ${hd.arg(String(g.id))}>Về đảo</button></div></div></div>`}
+  if(g.tre)return`<div class="game g1"><div class="gend"><div class="bigicon">${g.card?spr(g.card[0],84):spr(TRE[g.tre][0],84)}</div><h1>${g.ok?'Mở được kho báu!':'Kho báu trôi mất rồi'}</h1>${g.ok?`<p class="earn">${esc(g.reward)}</p>`:`<p class="muted">Đáp án đúng: ${q1().sol}</p>`}<p class="muted">Hôm nay còn ${treLeft(st)} kho báu trên biển.</p><div class="gendbtn"><button class="gobtn" type="button" data-act="go-home">Về biển</button>${g.card?`<button class="gobtn ghost" type="button" data-act="go-home-album">Xem bộ sưu tập</button>`:''}</div></div></div>`;
+  const b=cbI(g.id);return`<div class="game g1"><div class="gend"><div class="bigicon bossend">${jenny(70,b.won?'cheer':'happy')}${bossHTML(b.spr,84,b.won?'dead':'idle',b.hp/b.max)}</div><h1>${b.won?'Cả lớp hạ được trùm!':'Em đã góp sức!'}</h1><p class="muted">Em đánh trúng <b>${g.ok}</b> đòn. Trùm còn ${b.hp}/${b.max} máu.</p>${g.card?`<p class="earn">+20 xu · thẻ ${spr(g.card[0],28)} ${esc(g.card[1])}</p>`:''}<div class="gendbtn"><button class="gobtn" type="button" data-act="go-island-3" ${hd.arg(String(g.id))}>Về đảo</button></div></div></div>`});
 
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'sayJ-2':function(event,a){sayJ(a[0])},
+  'startLes':function(event,a){startLes(a[0])},
+  'startCB':function(event,a){startCB(a[0])},
+  'startMini':function(event,a){startMini(a[0],a[1])},
+  'stopMini-go-island':function(event,a){stopMini();go({k:'island',id:a[0]})},
+  'sayJ-3':function(){sayJ(scr.say)},
+  'startRace':function(event,a){startRace(a[0])},
+  'go-home-album':function(){go({k:'home',tab:'album'})},
+});

@@ -6,6 +6,7 @@
    Lưu: st.arc = {own:{bowl,box,dino}, plays, day, used, best:{}, cups:{g:{b,s,g}}, gold:{}, lv (màn đẩy thùng), rare:[]} */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { go, render, toast } from './13-giao-dien-chung.js';
@@ -52,7 +53,7 @@ Object.assign(GH_ACC,{bcap:['bcapS',1,-1],mhat:['mhatS',1,-3]});
 CARE.push(['dscarf','Khăn khủng long',0,'wear',{},'dscarfS',0,'rare']);P_WEAR.dscarf=['dscarfS',.25,.52,.5];
 {hooks.on('careGrid',_c=>function(st){const sv=CARE.splice(CARE.findIndex(c=>c[7]==='rare'),1);const r=_c.apply(this,arguments);CARE.push(...sv);return r})}
 {hooks.on('petSim',_p=>function(st){const r=_p.apply(this,arguments);try{ghSt(st).gear.forEach(g=>{const c=careOf(g.id);if(c&&c[7]==='rare')g.dur=100})}catch(e){}return r})}
-{hooks.on('ghCard',_g=>function(c,x,st){if(x[3]==='rare'&&!ghSt(st).own.includes(x[0])){const g=Object.keys(ARC).find(k=>ARC[k].rare[0]===x[0]);return`<button type="button" class="ghit rare" onclick="toast('${arcT(`Thắng 3 cúp Vàng ở trò ${ARC[g].n} để nhận`,`Win 3 gold cups in ${ARC[g].en} to unlock`)}')"><span class="ghpic">${spr(GH_ACC[x[0]][0],30)}</span><b>${esc(x[1])}</b><i class="ghtag rare">${arcT('Đồ hiếm','Rare')}</i></button>`}return _g.apply(this,arguments)})}
+{hooks.on('ghCard',_g=>function(c,x,st){if(x[3]==='rare'&&!ghSt(st).own.includes(x[0])){const g=Object.keys(ARC).find(k=>ARC[k].rare[0]===x[0]);return`<button type="button" class="ghit rare" data-act="toast" ${hd.arg(arcT(`Thắng 3 cúp Vàng ở trò ${ARC[g].n} để nhận`,`Win 3 gold cups in ${ARC[g].en} to unlock`))}><span class="ghpic">${spr(GH_ACC[x[0]][0],30)}</span><b>${esc(x[1])}</b><i class="ghtag rare">${arcT('Đồ hiếm','Rare')}</i></button>`}return _g.apply(this,arguments)})}
 /* ---- Cửa hàng: mục Trò chơi ---- */
 {const T=GH.find(c=>c.k==='tk');if(T){T.n='Trò chơi';T.ic='joyS'}}
 function arcShop(...a){return hooks.goi('arcShop',this,a)}
@@ -61,8 +62,8 @@ hooks.ham('arcShop',function(st){const a=arcSt(st),en=arcEN();
   return`<div class="arcg px2"><span class="arcic">${spr(g.ic,40)}</span><div class="grow"><b>${en?g.en:g.n}</b><small>${en?g.de:g.d}</small>
    <span class="arccups">${spr('cupG',16)}${cups.g||0} ${spr('cupS',16)}${cups.s||0} ${spr('cupB',16)}${cups.b||0}</span>${best!=null?`<small class="arcbest">${en?'Best':'Kỷ lục'}: ${best}${k==='box'?(en?' levels':' màn'):''}</small>`:''}
    <span class="arcrare">${got?`✓ ${en?'Unlocked':'Đã nhận'}: ${esc(g.rare[1])}`:`${en?'Gold':'Vàng'} ${Math.min(gold,3)}/3 → ${esc(g.rare[1])}`}</span></div>
-   ${own?`<button type="button" class="gobtn ${can?'':'off'}" onclick="arcPlay('${k}')">${en?'Play':'Chơi'} ▶</button>`:`<button type="button" class="gobtn sun" onclick="arcBuy('${k}')">${spr('coin',16)} ${ARC_PRICE}</button>`}</div>`}).join('');
- return`<div class="arcbox"><div class="arctop"><div><b>${spr('tkS',20)} ${en?'Plays left':'Lượt chơi'}: <em>${a.plays}</em></b><small>${en?`Today ${a.used}/${ARC_DAY}`:`Hôm nay đã chơi ${a.used}/${ARC_DAY} lượt`}</small></div><button type="button" class="gobtn" onclick="arcTicket()">${en?'Buy 10 plays':'Mua 10 lượt'} · ${spr('coin',16)} ${ARC_TK}</button></div>
+   ${own?`<button type="button" class="gobtn ${can?'':'off'}" data-act="arcPlay" ${hd.arg(String(k))}>${en?'Play':'Chơi'} ▶</button>`:`<button type="button" class="gobtn sun" data-act="arcBuy" ${hd.arg(String(k))}>${spr('coin',16)} ${ARC_PRICE}</button>`}</div>`}).join('');
+ return`<div class="arcbox"><div class="arctop"><div><b>${spr('tkS',20)} ${en?'Plays left':'Lượt chơi'}: <em>${a.plays}</em></b><small>${en?`Today ${a.used}/${ARC_DAY}`:`Hôm nay đã chơi ${a.used}/${ARC_DAY} lượt`}</small></div><button type="button" class="gobtn" data-act="arcTicket">${en?'Buy 10 plays':'Mua 10 lượt'} · ${spr('coin',16)} ${ARC_TK}</button></div>
   <p class="arcnote">${en?`Buy a game: ${ARC_PRICE} coins, includes ${ARC_PER} plays. Each game you start uses 1 play. Up to ${ARC_DAY} plays a day.`:`Mua trò: ${ARC_PRICE} xu, kèm ${ARC_PER} lượt. Mỗi lần vào chơi một trò dùng 1 lượt. Tối đa ${ARC_DAY} lượt mỗi ngày.`}</p>${games}</div>`});
 {hooks.on('viewShop',_v=>function(st){const r=_v.apply(this,arguments);if((scr.ghCat||'of')!=='tk')return r;return r.replace(/<div class="ghtk">[\s\S]*?<\/span><\/div><\/div>/,arcShop(st))})}
 function arcBuy(k){const st=S.st[sid],a=arcSt(st);if(a.own[k])return;if(st.coins<ARC_PRICE){toast(arcT(`Em cần thêm ${ARC_PRICE-st.coins} xu nhé!`,`You need ${ARC_PRICE-st.coins} more coins.`));return}if(!xuMua('items','game:'+k)){toast(arcT('Chưa mua được. Em thử lại sau nhé!','Could not buy. Try again later.'));return}a.own[k]=1;a.plays+=ARC_PER;save();try{sfx('win')}catch(e){}toast(arcT(`Đã mua ${ARC[k].n}! +${ARC_PER} lượt chơi`,`Bought ${ARC[k].en}! +${ARC_PER} plays`));render()}
@@ -79,13 +80,13 @@ function viewArc(){const g=scr,a=arcSt(S.st[sid]),G=ARC[g.g],en=arcEN();
    ${g.rareNew?`<p class="earn">${spr(GH_ACC[g.rareNew]?GH_ACC[g.rareNew][0]:'dscarfS',28)} ${arcT('Em nhận được đồ hiếm','You unlocked a rare item')}: <b>${esc(ARC[g.g].rare[1])}</b></p>`:''}
    ${!cup&&g.g!=='box'?`<p class="muted">${arcT(`Cần ${G.cup[0]} điểm để có cúp Đồng.`,`Score ${G.cup[0]} for a bronze cup.`)}</p>`:''}
    <p class="muted">${arcT(`Còn ${a.plays} lượt · hôm nay ${a.used}/${ARC_DAY}`,`${a.plays} plays left · today ${a.used}/${ARC_DAY}`)}</p>
-   <div class="gendbtn"><button class="gobtn" type="button" onclick="arcPlay('${g.g}',1)">${arcT('Chơi lượt nữa','Play again')}</button><button class="gobtn ghost" type="button" onclick="scr.ghCat='tk';go({k:'home',tab:'shop'})">${arcT('Về kho trò chơi','Back to games')}</button></div></div></div>`}
+   <div class="gendbtn"><button class="gobtn" type="button" data-act="arcPlay-1" ${hd.arg(String(g.g))}>${arcT('Chơi lượt nữa','Play again')}</button><button class="gobtn ghost" type="button" data-act="ghCat-tk-go-home">${arcT('Về kho trò chơi','Back to games')}</button></div></div></div>`}
  const hud=g.g==='bowl'?`<div class="bwsb" id="bwSB">${bowlBoard(g)}</div>`
   :g.g==='box'?`<span class="mgsc">${arcT('Màn','Level')} <b>${g.lv+1}</b> <small>(${g.si+1}/3)</small></span><span class="grow"></span><span class="mgsc">${arcT('Bước','Moves')} <b id="arcS">${g.moves||0}</b></span>`
   :`<span class="grow"></span><span class="mgsc">${spr('star',20)} <b id="arcS">${g.score}</b></span>`;
- const ctl=g.g==='box'?`<div class="arcpad"><button type="button" onclick="boxUndo()">↶ ${arcT('Lùi','Undo')}</button><button type="button" class="u" onclick="boxMove(0,-1)" aria-label="Lên">↑</button><button type="button" onclick="boxReset()">⟲ ${arcT('Làm lại','Restart')}</button><button type="button" onclick="boxMove(-1,0)" aria-label="Trái">←</button><button type="button" onclick="boxMove(0,1)" aria-label="Xuống">↓</button><button type="button" onclick="boxMove(1,0)" aria-label="Phải">→</button></div>`
+ const ctl=g.g==='box'?`<div class="arcpad"><button type="button" data-act="boxUndo">↶ ${arcT('Lùi','Undo')}</button><button type="button" class="u" data-act="boxMove-1" aria-label="Lên">↑</button><button type="button" data-act="boxReset">⟲ ${arcT('Làm lại','Restart')}</button><button type="button" data-act="boxMove-1-0" aria-label="Trái">←</button><button type="button" data-act="boxMove-1-2" aria-label="Xuống">↓</button><button type="button" data-act="boxMove-0" aria-label="Phải">→</button></div>`
   :`<p class="arctip" id="arcTip">${g.g==='bowl'?arcT('Kéo bóng sang trái/phải để đứng, rồi vuốt lên để lăn','Drag the ball left/right, then swipe up to roll'):arcT('Chạm màn hình để nhảy','Tap to jump')}</p>`;
- return`<div class="game g1 arcgame"><div class="gtop"><button class="gx" onclick="arcQuit()" aria-label="${arcT('Thoát','Exit')}">✕</button>${hud}</div><div class="gmid">${g.banner?`<div class="arcban">${esc(g.banner)}</div>`:''}<div class="arcwrap" id="arcWrap"><canvas id="arcCv"></canvas></div></div><div class="gbot">${ctl}</div></div>`}
+ return`<div class="game g1 arcgame"><div class="gtop"><button class="gx" data-act="arcQuit" aria-label="${arcT('Thoát','Exit')}">✕</button>${hud}</div><div class="gmid">${g.banner?`<div class="arcban">${esc(g.banner)}</div>`:''}<div class="arcwrap" id="arcWrap"><canvas id="arcCv"></canvas></div></div><div class="gbot">${ctl}</div></div>`}
 function arcQuit(){const g=scr;if(g.k!=='arc')return;if(!g.end){arcEnd()}else{scr.ghCat='tk';go({k:'home',tab:'shop'})}}
 let ARCI={};function arcImg(n){if(ARCI[n])return ARCI[n];const im=new Image();im.src=pxURI(n).u;return ARCI[n]=im}
 let ARCL=null;function arcStop(){if(ARCL){cancelAnimationFrame(ARCL);ARCL=null}}
@@ -205,10 +206,10 @@ try{addEventListener('resize',()=>{if(scr&&scr.k==='arc'&&!scr.end)({bowl:bowlIn
 /* Nhà em: giữ 3 ô như cũ; thêm khung "Trò chơi" bên dưới — các trò em đã mua */
 function arcHome(...a){return hooks.goi('arcHome',this,a)}
 hooks.ham('arcHome',function(st){const a=arcSt(st),own=Object.keys(ARC).filter(k=>a.own[k]),left=arcLeftToday(a);
- const rows=own.map(k=>{const g=ARC[k],c=a.cups[k]||{},can=a.plays>0&&left>0;return`<div class="arch"><span class="arcic">${spr(g.ic,34)}</span><div class="grow"><b>${arcT(g.n,g.en)}</b><span class="arccups">${spr('cupG',14)}${c.g||0} ${spr('cupS',14)}${c.s||0} ${spr('cupB',14)}${c.b||0}</span>${a.best[k]!=null?`<small class="arcbest">${arcT('Kỷ lục','Best')}: ${a.best[k]}${k==='box'?arcT(' màn',' levels'):''}</small>`:''}</div><button type="button" class="gobtn ${can?'':'off'}" onclick="arcPlay('${k}')">${arcT('Chơi','Play')} ▸</button></div>`}).join('');
+ const rows=own.map(k=>{const g=ARC[k],c=a.cups[k]||{},can=a.plays>0&&left>0;return`<div class="arch"><span class="arcic">${spr(g.ic,34)}</span><div class="grow"><b>${arcT(g.n,g.en)}</b><span class="arccups">${spr('cupG',14)}${c.g||0} ${spr('cupS',14)}${c.s||0} ${spr('cupB',14)}${c.b||0}</span>${a.best[k]!=null?`<small class="arcbest">${arcT('Kỷ lục','Best')}: ${a.best[k]}${k==='box'?arcT(' màn',' levels'):''}</small>`:''}</div><button type="button" class="gobtn ${can?'':'off'}" data-act="arcPlay" ${hd.arg(String(k))}>${arcT('Chơi','Play')} ▸</button></div>`}).join('');
  return`<section class="card archome"><div class="archd"><h2>${spr('joyS',24)} ${arcT('Trò chơi','Games')}</h2><span class="grow"></span><span class="pill">${spr('tkS',16)} ${arcT(`${a.plays} lượt · hôm nay ${a.used}/${ARC_DAY}`,`${a.plays} plays · today ${a.used}/${ARC_DAY}`)}</span></div>
   ${own.length?rows:`<p class="muted">${arcT('Em chưa có trò chơi nào. Mua trò ở Cửa hàng › Trò chơi nhé!','No games yet. Buy one in Shop › Games!')}</p>`}
-  <div class="archbtn"><button type="button" class="btn sm" onclick="go({k:'home',tab:'shop'});scr.ghCat='tk';render()">${own.length<3?arcT('Mua thêm trò chơi','Buy more games'):arcT('Mua thêm lượt','Buy more plays')} ▸</button></div></section>`});
+  <div class="archbtn"><button type="button" class="btn sm" data-act="go-home-shop-ghCat">${own.length<3?arcT('Mua thêm trò chơi','Buy more games'):arcT('Mua thêm lượt','Buy more plays')} ▸</button></div></section>`});
 {hooks.on('viewNha',_n=>function(st){const r=_n.apply(this,arguments);const i=r.lastIndexOf('</div>');return i<0?r:r.slice(0,i)+arcHome(st)+r.slice(i)})}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .archome{margin-top:14px;padding:14px!important}.archd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}.archd h2{display:flex;align-items:center;gap:8px;margin:0;font-size:26px}
@@ -236,3 +237,20 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 </style>`);
 /* thầy yêu cầu 23/10: học sinh thử Lê Bảo Na (bản đầy đủ) có 10 000 xu để kiểm tra — nạp một lần cho dữ liệu đã lưu */
 {hooks.on('render',_r=>function(){try{if(typeof S!=='undefined'&&S.st&&S.st.na&&!S.na10k){S.st.na.coins=Math.max(S.st.na.coins||0,10000);S.na10k=1;save()}}catch(e){}return _r.apply(this,arguments)})}
+
+/* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
+hd.dangKy({
+  'arcPlay':function(event,a){arcPlay(a[0])},
+  'arcBuy':function(event,a){arcBuy(a[0])},
+  'arcTicket':function(){arcTicket()},
+  'arcPlay-1':function(event,a){arcPlay(a[0],1)},
+  'ghCat-tk-go-home':function(){scr.ghCat='tk';go({k:'home',tab:'shop'})},
+  'boxUndo':function(){boxUndo()},
+  'boxMove-1':function(){boxMove(0,-1)},
+  'boxReset':function(){boxReset()},
+  'boxMove-1-0':function(){boxMove(-1,0)},
+  'boxMove-1-2':function(){boxMove(0,1)},
+  'boxMove-0':function(){boxMove(1,0)},
+  'arcQuit':function(){arcQuit()},
+  'go-home-shop-ghCat':function(){go({k:'home',tab:'shop'});scr.ghCat='tk';render()},
+});

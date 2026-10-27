@@ -7,6 +7,7 @@
    - Phiếu mẫu cũ (không có a.bat) vẫn như trước, không bắt buộc. */
 import { hooks } from './00-hooks.js';
 import { esc } from './01-tien-ich.js';
+import { hd } from './02-hanh-dong.js';
 import { save } from './09-du-lieu-demo.js';
 import { log } from './10-su-kien-mau-xapi.js';
 import { go, render, toast } from './13-giao-dien-chung.js';
@@ -41,7 +42,7 @@ function bvnThuong(st,a){const r=asgR(st)[a.id]||(asgR(st)[a.id]={});if(r.thuong
 {hooks.on('phSubmit',_p=>function(){const g=scr,aid=g&&g.ph,r=_p.apply(this,arguments);try{const st=S.st[sid],a=asgAll().find(x=>x.id===aid);if(a&&a.bat)bvnThuong(st,a)}catch(e){}return r})}
 /* màn kết thúc luyện lỗi (bài về nhà): thêm dòng kết quả + nút quay về */
 {hooks.on('g1AfterRender',_a=>function(){const r=_a.apply(this,arguments);try{const g=scr;if(g&&g.end&&g.bvn&&!document.querySelector('.bvnend')){const box=document.querySelector('.gend .gendbtn')||document.querySelector('.gend');
-  if(box)box.insertAdjacentHTML('afterbegin',`<div class="gatenote bvnend">${g.bvnKq==='xong'?'Em đã luyện xong các lỗi cô giao. Các lỗi này đã ra khỏi Sổ lỗi sai. Giỏi quá!':`Còn ${g.bvnKq} lỗi chưa đúng 2 lần liền. Mình luyện lại nhé!`}</div><button type="button" class="gobtn" onclick="go({k:'home'})">${g.bvnKq==='xong'?'Xong ▶':'Về bài về nhà ▶'}</button>`)}}catch(e){}return r})}
+  if(box)box.insertAdjacentHTML('afterbegin',`<div class="gatenote bvnend">${g.bvnKq==='xong'?'Em đã luyện xong các lỗi cô giao. Các lỗi này đã ra khỏi Sổ lỗi sai. Giỏi quá!':`Còn ${g.bvnKq} lỗi chưa đúng 2 lần liền. Mình luyện lại nhé!`}</div><button type="button" class="gobtn" data-act="go-home">${g.bvnKq==='xong'?'Xong ▶':'Về bài về nhà ▶'}</button>`)}}catch(e){}return r})}
 
 /* ---------- chặn: chưa xong bài về nhà thì không làm gì khác ---------- */
 function bvnTrongBai(){const g=scr;return!!(g&&((g.k==='game'&&(g.ph||g.bvn))||(g.k==='home'&&g.tab==='baikq')))}
@@ -53,7 +54,7 @@ function viewBVN(st,L){const a=L[0],s=asgState(st,a),nx=L.slice(1);
    <div class="bvn-the"><div class="bvn-so">1</div><div style="min-width:0;flex:1"><b>${esc(asgName(a))}</b><div class="bvn-mo">${mo}</div>
      <div class="bvn-mo">Cô ${esc((a.by||'').replace(/^Cô |^Thầy /,''))} giao ${asgD(a.t)}${a.due?` · hạn ${asgD(a.due)}`:''}${s.late?' · <b class="bvn-tre">quá hạn</b>':''} · thưởng ${a.xu||BVN_XU} xu</div>
      ${a.nhan?`<div class="bvn-nhan">Cô nhắn: “${esc(a.nhan)}”</div>`:''}</div></div>
-   <button class="gobtn bvn-go" type="button" onclick="asgGo('${a.id}')">${s.chuaDat||(a.loai==='loi'&&s.r.lam)?'Làm lại ▶':s.doing?'Làm tiếp ▶':'Làm ngay ▶'}</button>
+   <button class="gobtn bvn-go" type="button" data-act="asgGo" ${hd.arg(String(a.id))}>${s.chuaDat||(a.loai==='loi'&&s.r.lam)?'Làm lại ▶':s.doing?'Làm tiếp ▶':'Làm ngay ▶'}</button>
    ${nx.length?`<div class="bvn-sau"><b>Bài tiếp theo</b>${nx.map((b,i)=>`<div class="bvn-li"><span class="bvn-so sm">${i+2}</span>${esc(asgName(b))}</div>`).join('')}</div>`:''}
    <p class="bvn-note">Nút Đăng xuất ở trên cùng vẫn dùng được.</p></div>`}
 {hooks.on('render',_r=>function(){const r=_r.apply(this,arguments);try{

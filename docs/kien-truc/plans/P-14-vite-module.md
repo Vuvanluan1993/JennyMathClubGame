@@ -18,7 +18,9 @@
 - Bỏ `document.write`, bỏ `'unsafe-inline'` khỏi CSP của trang Lớp học ảo.
 - DONE 14b: `grep -c "^function render\b"` còn 1; không `window.*` ngầm (ESLint `no-undef` xanh); 7 kiểm tra §7 ĐẠT; ảnh chụp giống. (26/10: đạt, trừ `'unsafe-inline'` → 14c.)
 
-## 14c — gộp thật bằng Rollup, bỏ `'unsafe-inline'` (chưa làm)
+⟳ 27/10 (P-14c, nhánh `claude/p14c-bo-unsafe-inline-d573c3`, PR vào `tich-hop/kien-truc-2026-10`): **14c xong phần CSP**: `script-src 'self' https://www.gstatic.com;` (bản một file `lop-hoc-ao-jenny.html` và dev được `motFile()` thêm lại `'unsafe-inline'`). 522 thuộc tính inline → `data-act` + `js/core/02-hanh-dong.js` (một listener uỷ quyền trên `document`, hàm đăng ký `hd.dangKy` ở cuối từng file); công cụ `tools/vite/bo-inline.mjs` đổi 480 chỗ, 42 chỗ sửa tay (chuỗi mã truyền handler, regex sửa HTML đã sinh, `${…}` sinh mã, chỗ đọc thuộc tính). 3 script `<head>` → `js/dau-trang.js` tải đồng bộ (`assets/dau-trang-[hash].js`), **không cần hash CSP**. **Chạy lại sau rebase**: `cd src/lop-hoc-ao && node tools/vite/bo-inline.mjs` (in chỗ phải sửa tay + id chưa đăng ký) → `node tools/vite/tim-import.mjs` → `npm run lint`. **Không làm**: Rollup gộp `iife` (không cần cho CSP, đổi tên biến phá `page.evaluate`). Chi tiết: `src/lop-hoc-ao/CHANGELOG.md` 27/10.
+
+## 14c — gộp thật bằng Rollup, bỏ `'unsafe-inline'` (27/10: bỏ `'unsafe-inline'` ĐÃ LÀM, Rollup iife không làm)
 - Viết lại 520 `onclick="…"` (244 có `${…}`) thành `data-act` + một trình uỷ quyền sự kiện (không eval); lớp phơi tên ra `window` cho mã `vai.js` chèn và `page.evaluate`; đổi `hooks.goc` của mã chèn thành module riêng theo vai; sau đó cho Rollup gộp (`format: 'iife'`), bỏ `'unsafe-inline'` khỏi `script-src`, 3 script nhỏ trong `<head>` ra file.
 
 ## Bẫy
