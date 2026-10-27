@@ -23,6 +23,7 @@
   **Trên dự án thử `jenny-lop-hoc-ao-thu`** (bản nháp thay cấu hình, kho không đổi — công tắc `FB_ENV` chưa có): em thử đăng nhập → SW điều khiển ngay, cache có chunk `lop-1`; chơi 1 màn trực tuyến (+35 xu, ví máy chủ 90 → 125);
   **tắt mạng, tải lại trang → vào app** (controller SW, SDK từ cache, Auth/Firestore từ IndexedDB), chơi 1 màn "Bài 1 · Tiết 1" (+35 xu), mở "Bài 1 · Tiết 2"; **bật mạng → ví máy chủ 125 → 160**, sổ `ev` có dòng `man 25`, hàng đợi 0, toast "Có mạng rồi…". `FB.dem` phiên: đọc máy chủ 11, đệm 17, ghi 6.
   `npm test` **14/14 ĐẠT, rc 0** (7 kiểm tra §7 ĐẠT; `rules.test.js` BỎ QUA tại máy, không Java). `tim-import` 0 việc, `npm run lint` 0 lỗi.
+- `docs/KIEN-TRUC.md` chưa thêm mục PWA (theo /goal chỉ sửa 7 file); phiên gốc thêm khi gộp, lấy nội dung từ mục này.
 - **Chưa làm / lưu ý**: trang chủ `index.html` và game lẻ chưa có manifest (P-19). Lần mở đầu sau khi đẩy bản mới, HTML cũ trong precache trỏ chunk cũ; chunk đã vào cache thì vẫn chạy, chưa có thì màn "Mạng chậm quá" cho tới khi em bấm Tải lại ở thanh "Có bản mới" (≤ 1 phút). iOS: cài từ Safari › Chia sẻ › Thêm vào màn hình chính (không có hộp thoại tự cài).
 
 ## 26/10/2026 — Nội dung tải theo khối (P-15b, RF4, PR vào `tich-hop/kien-truc-2026-10`)
