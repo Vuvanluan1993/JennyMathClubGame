@@ -3,11 +3,6 @@ src/lop-hoc-ao/dist/
 games/lop-hoc-ao/**/index.html
 !games/lop-hoc-ao/giong-mau/index.html
 games/hanh-trinh-jenny/tham-tu/index.html
-# P-16 PWA: sinh ra khi build (vite-plugin-pwa + jennyPwa trong src/lop-hoc-ao/vite.config.js)
-games/lop-hoc-ao/sw.js
-games/lop-hoc-ao/workbox-*.js
-games/lop-hoc-ao/manifest.webmanifest
-games/lop-hoc-ao/icons/
 tools/__pycache__/
 # Bản thử Lớp học ảo (tài khoản mẫu, băm mật khẩu) — sinh ra khi build, không đưa vào kho
 games/lop-hoc-ao/demo/

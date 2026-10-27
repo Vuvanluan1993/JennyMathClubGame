@@ -78,6 +78,8 @@ function jennyPwa() {
         for (const f of fs.readdirSync(BAN_RA)) if (/^(sw\.js|workbox-.*\.js|manifest\.webmanifest)$/.test(f)) fs.rmSync(path.join(BAN_RA, f));
         const ds = fs.readdirSync(dist).filter(f => /^(sw\.js|workbox-.*\.js|manifest\.webmanifest)$/.test(f)).concat(fs.readdirSync(path.join(dist, 'icons')).map(f => 'icons/' + f));
         for (const f of ds) { fs.mkdirSync(path.dirname(path.join(BAN_RA, f)), { recursive: true }); fs.copyFileSync(path.join(dist, f), path.join(BAN_RA, f)); }
+        // file sinh ra không vào git: games/lop-hoc-ao/.gitignore tự sinh và tự ignore chính nó (như assets/.gitignore của noi-file.js)
+        fs.writeFileSync(path.join(BAN_RA, '.gitignore'), '# P-16: file sinh ra khi build (vite-plugin-pwa + jennyPwa trong src/lop-hoc-ao/vite.config.js), không vào git\n.gitignore\nsw.js\nworkbox-*.js\nmanifest.webmanifest\nicons/\n');
         console.log(`[jenny-pwa] đã chép ${ds.join(', ')} sang games/lop-hoc-ao/`);
       },
     },

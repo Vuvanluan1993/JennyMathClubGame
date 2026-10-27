@@ -70,7 +70,7 @@ trong `app.template.html` (một phạm vi chung, hoisting như cũ) — xem m�
 
 - `public/manifest.webmanifest` + `public/icons/jenny-{192,512,512-maskable}.png` (sinh từ sprite `PXJ` của `core/22` mỗi lần dựng, `iconPXJ` trong `vite.config.js`; `publicDir: 'public'` → chép nguyên sang `dist/`).
   Chỉ **trang học sinh** có `<link rel="manifest">`, `theme-color`, `apple-touch-icon` (plugin `jennyPwa` chèn sau `noi-file`).
-- `sw.js` + `workbox-*.js`: `vite-plugin-pwa` (Workbox `generateSW`, `registerType: 'prompt'`, `injectRegister: false`, `manifest: false`) sinh ở `closeBundle`; `jennyPwa` chép sang `games/lop-hoc-ao/` sau đó (`.gitignore`).
+- `sw.js` + `workbox-*.js`: `vite-plugin-pwa` (Workbox `generateSW`, `registerType: 'prompt'`, `injectRegister: false`, `manifest: false`) sinh ở `closeBundle`; `jennyPwa` chép sang `games/lop-hoc-ao/` sau đó, kèm `games/lop-hoc-ao/.gitignore` tự sinh (ignore chính nó và các file này).
   Đường dẫn tương đối với `sw.js` (không gắn `base`). Phạm vi SW = `games/lop-hoc-ao/`.
   - Precache: `index.html`, CSS chung, `hoc-sinh-*.js`, manifest, icon. `navigateFallback` `index.html`; denylist `/giao-vien/`, `/phu-huynh/`, `/quan-ly/`, `/demo/`, `/giong-mau/`, URL có đuôi file.
   - Runtime CacheFirst: `assets/lop-N-[hash].js` (khối), `/assets/fonts/` (gốc kho), `www.gstatic.com/firebasejs/` (SDK). **NetworkOnly**: `firestore|identitytoolkit|securetoken|firebaseinstallations.googleapis.com`, `*.firebaseio.com`, `*.firebaseapp.com`.
