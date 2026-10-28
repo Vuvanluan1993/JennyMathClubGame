@@ -32,19 +32,16 @@ hooks.on('render',_r=>function(){const thieu=khoiCan().filter(k=>!khoiXong(k));
 /* ===================== P-16 (27/10/2026): PWA =====================
    sw.js do vite-plugin-pwa sinh lúc dựng (Workbox, registerType prompt: bản mới chờ, không tự thay). Chỉ trang có manifest (bản học sinh) đăng ký;
    trang cô/phụ huynh/quản lý/bản thử luôn lấy mạng (navigateFallbackDenylist trong vite.config.js). Không chạy ở file:// và bản một file.
-   Có bản mới (worker mới đã cài, đang chờ) → thanh pixel "Có bản mới · Tải lại"; bấm → SKIP_WAITING → controllerchange → tải lại trang.
+   Có bản mới (worker mới đã cài, đang chờ): KHÔNG hiện thanh "Có bản mới · Tải lại" nữa (bỏ 28/10/2026, thầy chốt: thanh che nội dung, kể cả lúc em đang làm bài).
+   Worker mới chỉ vào khi trang đóng (pagehide → SKIP_WAITING; hoặc mọi tab đã đóng, như Workbox mặc định) → lần mở sau là bản mới, không tải lại giữa chừng.
    Thiết bị đang mở biết bản mới trong 1 phút: reg.update() mỗi 60 giây và khi quay lại tab. */
-function swThanh(reg){if(document.getElementById('swmoi'))return;const en=LANG==='en';
-  document.body.insertAdjacentHTML('beforeend',`<div id="swmoi" role="status" style="position:fixed;left:8px;right:8px;bottom:8px;z-index:10060;display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 10px;background:#1F2A5A;color:#fff;font-family:var(--f-display);font-size:18px;line-height:1;box-shadow:0 -3px 0 0 #FCD655,0 3px 0 0 #FCD655,-3px 0 0 0 #FCD655,3px 0 0 0 #FCD655,4px 4px 0 3px #0E1636">
-    <span>${en?'New version available':'Có bản mới'}</span><button type="button" id="swmoiBtn" style="font:inherit;padding:6px 12px;border:0;background:#FCD655;color:#1F2A5A;cursor:pointer;box-shadow:-2px 0 0 0 #1F2A5A,2px 0 0 0 #1F2A5A,0 -2px 0 0 #1F2A5A,0 2px 0 0 #1F2A5A">${en?'Reload':'Tải lại'}</button></div>`);
-  document.getElementById('swmoiBtn').onclick=()=>{swTaiLai=true;const w=reg.waiting;if(w)w.postMessage({type:'SKIP_WAITING'});else location.reload()}}
-let swTaiLai=false;
+let swMoi=null;/* worker mới đã cài, đang chờ */
 /* Khối đã tải lúc SW chưa điều khiển trang (lần mở đầu, hoặc vừa đổi SW) → nạp lại qua SW để vào cache CacheFirst (assets/lop-*). Gọi khi SW sẵn sàng, khi SW nhận điều khiển, sau mỗi khối tải xong. */
 function swNong(){try{if(!navigator.serviceWorker.controller)return;const e=document.getElementById('khoi-url'),U=e?JSON.parse(e.textContent):{};
   Object.keys(U).filter(khoiXong).forEach(k=>fetch(new URL(U[k],document.baseURI)).catch(()=>{}))}catch(e){}}
 function swDangKy(){if(!('serviceWorker' in navigator)||!/^https?:$/.test(location.protocol)||!document.querySelector('link[rel="manifest"]'))return;
-  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(swTaiLai){swTaiLai=false;location.reload()}else swNong()});hooks.khi('khoi:sau',swNong);
-  navigator.serviceWorker.register('sw.js').then(reg=>{const moi=()=>{if(reg.waiting&&navigator.serviceWorker.controller)swThanh(reg)};moi();
+  navigator.serviceWorker.addEventListener('controllerchange',swNong);window.addEventListener('pagehide',()=>{if(swMoi)swMoi.postMessage({type:'SKIP_WAITING'})});hooks.khi('khoi:sau',swNong);
+  navigator.serviceWorker.register('sw.js').then(reg=>{const moi=()=>{if(reg.waiting&&navigator.serviceWorker.controller)swMoi=reg.waiting};moi();
     reg.addEventListener('updatefound',()=>{const w=reg.installing;if(w)w.addEventListener('statechange',()=>{if(w.state==='installed')moi()})});
     navigator.serviceWorker.ready.then(swNong);const kiem=()=>{if(navigator.onLine)reg.update().catch(()=>{})};setInterval(kiem,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)kiem()})}).catch(e=>console.info('Service worker chưa đăng ký được:',e))}
 swDangKy();
