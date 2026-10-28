@@ -1,5 +1,15 @@
 # Lịch sử thay đổi
 
+## 28/10/2026 — Đăng nhập: tra `login/{tk}` trước; đăng xuất xong mở lại Firestore (sửa tận gốc, PR vào `tich-hop/kien-truc-2026-10`)
+- Sau PR #24 thầy vẫn không vào được giáo viên `dungdang`: "The client has already been terminated". Hai nguyên nhân gốc:
+  1. **Đặt lại mật khẩu trên gói miễn phí** = tạo tài khoản Auth mới, tài khoản cũ vẫn nhận mật khẩu cũ; `fbDangNhap` thử email chuẩn trước nên
+     mật khẩu cũ trùng mật khẩu mới là vào nhầm tài khoản cũ. Sửa: **tra `login/{tk}` trước** (1 lần đọc), có thì chỉ dùng email mới; mật khẩu
+     không khớp mới thử email chuẩn (phòng `login/` cũ còn sót), vào được tài khoản cũ mà không có hồ sơ → báo sai mật khẩu. Không còn bước đăng xuất giữa chừng.
+  2. **Đăng xuất tắt hẳn Firestore** (P-21: `terminate` + `clearPersistence` để máy dùng chung không giữ dữ liệu) mà không mở lại; mọi chỗ gọi
+     `signOut` rồi không tải lại trang (đăng nhập sai vai trò ở trang cô/học sinh, PR #24) đều chết ở lần đọc sau. Sửa `core/63`: xoá xong
+     mở lại `FB.db = FB.app.firestore()` và bật lại bộ nhớ đệm.
+- Ghi chú rules `login/{tk}` và `LUAT-DA-CHOT.md` (P-04) đổi theo.
+
 ## 28/10/2026 — Đăng nhập sau khi quản lý đặt lại mật khẩu: không còn "chưa được gán vai trò" (PR vào `tich-hop/kien-truc-2026-10`)
 - Lỗi thầy gặp trên bản thử: giáo viên vừa được tạo (mật khẩu `jenny@123`), rồi quản lý bấm 🔑 đặt lại (cũng `jenny@123`) → đăng nhập báo
   "Tài khoản chưa được gán vai trò". Nguyên nhân: gói miễn phí không đổi được mật khẩu người khác, nên đặt lại = tạo tài khoản Auth mới và chuyển hồ sơ

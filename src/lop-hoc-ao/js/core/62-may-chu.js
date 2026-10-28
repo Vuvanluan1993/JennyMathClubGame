@@ -42,19 +42,17 @@ const fbAsgLop=(db,l)=>{const c=db.collection('asg');return c.where?c.where('lop
 const fbNgay=()=>Math.max(1,Math.floor((Date.now()-Date.UTC(2026,8,5))/864e5)+1);
 
 async function fbDangNhap(tk,pw,nho){const{auth}=await fbInit();try{await auth.setPersistence(nho===false?firebase.auth.Auth.Persistence.SESSION:firebase.auth.Auth.Persistence.LOCAL)}catch(e){}
-  tk=String(tk).trim().toLowerCase();const em=fbEmail(tk);let c;
-  /* email ẩn của tài khoản Auth mới sau khi QL đặt lại mật khẩu (login/{tk}; rules chỉ cho get đúng 1 bản ghi, không liệt kê) */
-  const emDatLai=async()=>{try{const L=await FB.db.doc('login/'+tk).get();const x=L.exists&&L.data().email?String(L.data().email):'';return x&&x!==em?x:''}catch(x){return ''}};
-  try{c=await auth.signInWithEmailAndPassword(em,pw)}
-  catch(e){/* P-04 (25/10/2026): email ẩn chuẩn là chính, KHÔNG tra login/ trước. Chỉ khi sai mới xem QL có đặt lại mật khẩu. */
-    if(!/^auth\/(invalid-credential|invalid-login-credentials|user-not-found|wrong-password)$/.test((e&&e.code)||''))throw e;
-    const em2=await emDatLai();if(!em2)throw e;c=await auth.signInWithEmailAndPassword(em2,pw)}
-  try{return await fbNapMe(c.user)}
-  catch(e){/* 28/10/2026: gói miễn phí không đổi được mật khẩu người khác, nên tài khoản Auth cũ (email chuẩn) vẫn nhận mật khẩu cũ sau khi QL đặt lại;
-             hồ sơ users đã chuyển sang tài khoản mới. Mật khẩu cũ trùng mật khẩu mới (vd cùng jenny@123) → vào nhầm tài khoản cũ, không có hồ sơ
-             ("chưa được gán vai trò"). Khi đó thử tài khoản mới với cùng mật khẩu; sai thì báo sai mật khẩu như thường. */
-    if(!(e&&e.code==='no-profile'&&c.user.email===em))throw e;const em2=await emDatLai();if(!em2)throw e;
-    try{await auth.signOut()}catch(x){}c=await auth.signInWithEmailAndPassword(em2,pw);return fbNapMe(c.user)}}
+  tk=String(tk).trim().toLowerCase();const em=fbEmail(tk);
+  /* 28/10/2026 (sửa lại P-04): tra login/{tk} TRƯỚC khi đăng nhập (1 lần đọc; rules chỉ cho get đúng 1 bản ghi, không liệt kê).
+     Gói miễn phí không đổi được mật khẩu người khác nên QL đặt lại = tạo tài khoản Auth mới (email ẩn khác, ghi ở login/{tk}) và chuyển hồ sơ sang;
+     tài khoản Auth cũ (email chuẩn) vẫn nhận mật khẩu cũ. Thử email chuẩn trước thì mật khẩu cũ trùng mật khẩu mới (vd cùng jenny@123) vào nhầm
+     tài khoản cũ, không còn hồ sơ → "chưa được gán vai trò". Có login/{tk} → chỉ dùng email mới; mật khẩu không khớp mới thử email chuẩn
+     (phòng login/ cũ còn sót sau khi tạo lại tên đăng nhập), và vào được tài khoản cũ mà không có hồ sơ thì báo sai mật khẩu. */
+  let em2='';try{const L=await FB.db.doc('login/'+tk).get();const x=L.exists&&L.data().email?String(L.data().email):'';if(x&&x!==em)em2=x}catch(x){}
+  let c;try{c=await auth.signInWithEmailAndPassword(em2||em,pw)}
+  catch(e){if(!em2||!/^auth\/(invalid-credential|invalid-login-credentials|user-not-found|wrong-password)$/.test((e&&e.code)||''))throw e;
+    c=await auth.signInWithEmailAndPassword(em,pw)}
+  try{return await fbNapMe(c.user)}catch(e){if(e&&e.code==='no-profile'&&em2&&c.user.email===em)throw{code:'auth/invalid-credential'};throw e}}
 async function fbNapMe(user){const d=await FB.db.doc('users/'+user.uid).get();if(!d.exists)throw{code:'no-profile'};CLOUD={uid:user.uid,me:d.data()};
   if(CLOUD.me.mustChange)await fbBatDoiMK(user);return CLOUD}
 /* P-05: đăng xuất xoá dấu vết trên máy dùng chung — bản lưu học sinh jennyHSc_* (chỉ khi đã đẩy xong lên máy chủ),

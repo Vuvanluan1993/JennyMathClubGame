@@ -168,8 +168,8 @@ service cloud.firestore {
       allow write: if isQL() || gvLop(tk);
     }
     match /login/{tk} {
-      // LH-H2: không liệt kê được nữa. Chỉ đọc đúng 1 bản ghi theo tên đăng nhập, và app chỉ đọc khi
-      // email ẩn chuẩn đăng nhập không được (sau khi QL đặt lại mật khẩu). Bản ghi chỉ có email, t.
+      // LH-H2: không liệt kê được nữa. Chỉ đọc đúng 1 bản ghi theo tên đăng nhập; app đọc 1 lần trước mỗi lần
+      // đăng nhập (28/10/2026: tra trước, để sau khi QL đặt lại mật khẩu không vào nhầm tài khoản Auth cũ). Bản ghi chỉ có email, t.
       allow get: if true;
       allow list: if false;
       allow write: if isQL();
