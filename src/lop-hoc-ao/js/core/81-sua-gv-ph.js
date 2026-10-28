@@ -17,7 +17,7 @@ const okDt=d=>!d||/^0\d{9,10}$/.test(d),okMail=m=>!m||/^[^\s@]+@[^\s@]+\.[^\s@]+
 const nk=t=>{(O().nk=O().nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t})};
 const dong=()=>{const m=document.getElementById('qlsua2');if(m)m.remove()};window.qlDong2=dong;
 function hop(tieuDe,than,luu){dong();const el=document.createElement('div');el.className='gdov';el.id='qlsua2';
- el.innerHTML=`<div class="gdbox qsbox qlmbox"><div class="gdhd"><b>${tieuDe}</b><button type="button" class="gdx" data-act="qlDong2">Đóng ✕</button></div><form class="qsform" data-act-submit="preventDefault" ${hd.argEv('submit',luu)}>${than}<div class="qsbtn"><span style="flex:1"></span><button class="btn pri" type="submit">Lưu</button></div></form></div>`;
+ el.innerHTML=`<div class="gdbox qsbox qlmbox"><div class="gdhd"><b>${tieuDe}</b><button type="button" class="gdx" data-act="qlDong2">Đóng ✕</button></div><form class="qsform" data-act-submit="qlModalLuu" ${hd.argEv('submit',luu)}>${than}<div class="qsbtn"><span style="flex:1"></span><button class="btn pri" type="submit">Lưu</button></div></form></div>`;
  document.body.appendChild(el);setTimeout(()=>{const i=el.querySelector('input:not([readonly]),select');if(i)i.focus()},30)}
 const mkRow=cl=>cl?`<label>Mật khẩu mới<input id="sPw" type="text" maxlength="30" placeholder="Để trống nếu không đổi" autocomplete="off"></label>`:'<p class="muted" style="margin:0;font-size:12.5px">Đổi mật khẩu chỉ làm được khi dùng máy chủ.</p>';
 let busy=false;
@@ -30,7 +30,7 @@ window.qlSuaGV=function(id){const g=(O().gv||[]).find(x=>x.id===id);if(!g)return
  hop('Sửa giáo viên',`<label>Họ tên<input id="sTen" maxlength="40" value="${e(g.ten)}" required></label>
  <div class="qs2"><label>Tên đăng nhập<input value="${e(g.tk||g.id)}" readonly></label><label>Giới tính<select id="sGt"><option value="">—</option><option value="nu" ${g.gt==='nu'?'selected':''}>Nữ</option><option value="nam" ${g.gt==='nam'?'selected':''}>Nam</option></select></label></div>
  <div class="qs2"><label>Điện thoại<input id="sDt" type="tel" maxlength="15" value="${e(g.dt||'')}" placeholder="0912345678"></label><label>Gmail<input id="sMail" type="email" maxlength="60" value="${e(g.mail||'')}" placeholder="ten@gmail.com"></label></div>
- ${mkRow(cl)}`,`qlLuuSuaGV('${id}')`)};
+ ${mkRow(cl)}`,['qlLuuSuaGV',id])};
 window.qlLuuSuaGV=async function(id){if(busy)return;const g=(O().gv||[]).find(x=>x.id===id);if(!g)return;
  const ten=v('sTen').replace(/\s+/g,' '),dt=dtC(v('sDt')),mail=v('sMail').toLowerCase(),pw=v('sPw'),gt=v('sGt');
  if(ten.length<3){toast('Nhập họ tên giáo viên');return}if(!okDt(dt)){toast('Số điện thoại chưa đúng');return}if(!okMail(mail)){toast('Gmail chưa đúng');return}
@@ -49,7 +49,7 @@ window.qlSuaPH=function(tk){const o=O(),pi=(o.phInfo||{})[tk]||{},cl=cloud();
  const con=Object.entries(o.ph||{}).filter(([c,t])=>t===tk).map(([c])=>(STUDENTS.find(s=>s[0]===c)||[c,c])[1]);
  hop('Sửa tài khoản phụ huynh',`<div class="qs2"><label>Tên đăng nhập<input value="${e(tk)}" readonly></label><label>Con<input value="${e(con.join(', ')||'chưa có')}" readonly></label></div>
  <div class="qs2"><label>Điện thoại<input id="sDt" type="tel" maxlength="15" value="${e(pi.dt||'')}" placeholder="0912345678"></label><label>Gmail<input id="sMail" type="email" maxlength="60" value="${e(pi.mail||'')}" placeholder="ten@gmail.com"></label></div>
- ${mkRow(cl)}<p class="muted" style="margin:0;font-size:12.5px">Gắn thêm hoặc tách con: dùng nút 👪 Con.</p>`,`qlLuuSuaPH('${tk}')`)};
+ ${mkRow(cl)}<p class="muted" style="margin:0;font-size:12.5px">Gắn thêm hoặc tách con: dùng nút 👪 Con.</p>`,['qlLuuSuaPH',tk])};
 window.qlLuuSuaPH=async function(tk){if(busy)return;const o=O();o.phInfo=o.phInfo||{};const pi=o.phInfo[tk]=o.phInfo[tk]||{};
  const dt=dtC(v('sDt')),mail=v('sMail').toLowerCase(),pw=v('sPw');
  if(!okDt(dt)){toast('Số điện thoại chưa đúng');return}if(!okMail(mail)){toast('Gmail chưa đúng');return}if(pw&&pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}

@@ -17,8 +17,9 @@ const O=()=>S.org,cloud=()=>!!(S.org&&S.org.cloud&&typeof FB!=='undefined'&&FB&&
 const nk=t=>{try{(O().nk=O().nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t});if(O().nk.length>200)O().nk.shift()}catch(e){}};
 const v=i=>((document.getElementById(i)||{}).value||'').trim();
 const setv=(i,x)=>{const el=document.getElementById(i);if(el)el.value=x};
+/* ok = tên hàm toàn cục (window.qlLuu…) hoặc [tên, ...tham số]. Trước 28/10 ok là chuỗi mã cho onsubmit; P-14c đổi máy thành biểu thức rỗng nên nút Lưu/Tạo không chạy. */
 function modal(t,body,ok,okText){const el=document.createElement('div');el.className='gdov';el.id='qlm';
- el.innerHTML=`<div class="gdbox qsbox qlmbox"><div class="gdhd"><b>${t}</b><button type="button" class="gdx" data-act="qlDong">Đóng ✕</button></div><form class="qsform" data-act-submit="preventDefault" ${hd.argEv('submit',ok)}>${body}<div class="qsbtn"><span style="flex:1"></span><button class="btn pri" type="submit">${okText||'Lưu'}</button></div></form></div>`;
+ el.innerHTML=`<div class="gdbox qsbox qlmbox"><div class="gdhd"><b>${t}</b><button type="button" class="gdx" data-act="qlDong">Đóng ✕</button></div><form class="qsform" data-act-submit="qlModalLuu" ${hd.argEv('submit',ok)}>${body}<div class="qsbtn"><span style="flex:1"></span><button class="btn pri" type="submit">${okText||'Lưu'}</button></div></form></div>`;
  document.body.appendChild(el);setTimeout(()=>{const i=el.querySelector('input:not([disabled]),select');if(i)i.focus()},30)}
 window.qlDong=()=>{const m=document.getElementById('qlm');if(m)m.remove()};
 const LOPS=()=>[...O().lop].sort((a,b)=>a.khoi-b.khoi||a.ten.localeCompare(b.ten));
@@ -31,7 +32,7 @@ window.qlMoHS=function(){
  <div class="qs2"><label>Giới tính${gtSel('mGt','')}</label><label>Năm sinh<input id="mNam" type="number" min="2010" max="2025" placeholder="2019"></label></div>
  <label>Ngày sinh (ngày, tháng)${nsSel()}</label>
  <div class="qs2"><label>Điện thoại phụ huynh<input id="mDt" type="tel" maxlength="15" placeholder="0912345678"></label><label>Gmail phụ huynh<input id="mMail" type="email" maxlength="60" placeholder="ten@gmail.com"></label></div>
- ${cloud()?`<div class="qs2"><label>Tên đăng nhập<input id="mTk" maxlength="24" autocapitalize="off" spellcheck="false" placeholder="Bỏ trống = tự tạo"></label><label>Mật khẩu<input id="mPw" maxlength="30" placeholder="Bỏ trống = ngẫu nhiên"></label></div>`:''}`,'qlLuuHS()','Tạo tài khoản')};
+ ${cloud()?`<div class="qs2"><label>Tên đăng nhập<input id="mTk" maxlength="24" autocapitalize="off" spellcheck="false" placeholder="Bỏ trống = tự tạo"></label><label>Mật khẩu<input id="mPw" maxlength="30" placeholder="Bỏ trống = ngẫu nhiên"></label></div>`:''}`,'qlLuuHS','Tạo tài khoản')};
 window.qlLuuHS=async function(){const ho=v('mHo').replace(/\s+/g,' '),ten=v('mTen').replace(/\s+/g,' '),n=(ho+' '+ten).trim();
  if(!ho||!ten){toast('Nhập họ và tên');return}const H={gt:v('mGt'),ng:v('mNg'),th:v('mTh'),nam:v('mNam'),dt:v('mDt').replace(/[^\d+]/g,''),mail:v('mMail').toLowerCase()};
  if(!H.gt){toast('Chọn giới tính (để chọn nhân vật cho em)');return}
@@ -47,7 +48,7 @@ window.qlLuuHS=async function(){const ho=v('mHo').replace(/\s+/g,' '),ten=v('mTe
 window.qlMoGV=function(){modal('Thêm giáo viên',`<label>Họ và tên<input id="mGvTen" maxlength="30" placeholder="Cô Nguyễn Thu Lan" required></label>
  <div class="qs2"><label>Giới tính${gtSel('mGvGt','')}</label><label>Điện thoại<input id="mGvDt" type="tel" maxlength="15" placeholder="0912345678"></label></div>
  <label>Gmail<input id="mGvMail" type="email" maxlength="60" placeholder="ten@gmail.com"></label>
- ${cloud()?`<div class="qs2"><label>Tên đăng nhập<input id="mGvTk" maxlength="24" autocapitalize="off" spellcheck="false" required></label><label>Mật khẩu<input id="mGvPw" maxlength="30" required></label></div>`:''}`,'qlLuuGV()','Thêm giáo viên')};
+ ${cloud()?`<div class="qs2"><label>Tên đăng nhập<input id="mGvTk" maxlength="24" autocapitalize="off" spellcheck="false" required></label><label>Mật khẩu<input id="mGvPw" maxlength="30" required></label></div>`:''}`,'qlLuuGV','Thêm giáo viên')};
 window.qlLuuGV=async function(){const n=v('mGvTen').replace(/\s+/g,' '),dt=v('mGvDt').replace(/[^\d+]/g,''),mail=v('mGvMail').toLowerCase();
  if(n.length<3){toast('Nhập tên giáo viên');return}if(!okDt(dt)){toast('Số điện thoại chưa đúng');return}if(!okMail(mail)){toast('Gmail chưa đúng');return}
  setv('ngTen',n);if(cloud()){setv('ngTk',v('mGvTk').toLowerCase());setv('ngPw',v('mGvPw'))}
@@ -55,14 +56,14 @@ window.qlLuuGV=async function(){const n=v('mGvTen').replace(/\s+/g,' '),dt=v('mG
  Object.assign(O().gv[O().gv.length-1],{gt:v('mGvGt')||undefined,dt:dt||undefined,mail:mail||undefined});save();if(cloud()){try{await fbDayNgay()}catch(e){}}qlDong();render()};
 /* ---------- Thêm lớp ---------- */
 window.qlMoLop=function(){modal('Thêm lớp',`<div class="qs2"><label>Khối<select id="mKhoi">${[1,2,3,4,5].map(k=>`<option value="${k}">Khối ${k}</option>`).join('')}</select></label><label>Tên lớp<input id="mLopTen" maxlength="8" placeholder="1D" required></label></div>
- <label>Giáo viên<select id="mLopGV"><option value="">Chưa phân công</option>${O().gv.map(g=>`<option value="${g.id}">${esc(g.ten)}</option>`).join('')}</select></label>`,'qlLuuLop()','Thêm lớp')};
+ <label>Giáo viên<select id="mLopGV"><option value="">Chưa phân công</option>${O().gv.map(g=>`<option value="${g.id}">${esc(g.ten)}</option>`).join('')}</select></label>`,'qlLuuLop','Thêm lớp')};
 window.qlLuuLop=function(){setv('nlKhoi',v('mKhoi'));setv('nlTen',v('mLopTen'));setv('nlGV',v('mLopGV'));const truoc=O().lop.length;window.qlTaoLop({preventDefault(){}});if(O().lop.length>truoc){qlDong();render()}};
 /* ---------- Xếp lớp: chọn nhiều em vào 1 lớp ---------- */
 window.qlMoXep=function(lid){const L=LOPS();if(!L.length){toast('Chưa có lớp');return}lid=lid||L[0].id;
  const l=L.find(x=>x.id===lid),ds=STUDENTS.filter(s=>O().gd[s[0]]!==lid&&(!O().gd[s[0]]||s[2]===l.khoi)).sort((a,b)=>(O().gd[a[0]]?1:0)-(O().gd[b[0]]?1:0)||a[1].localeCompare(b[1]));
  qlDong();modal('Xếp học sinh vào lớp',`<label>Lớp<select id="mXLop" data-act-change="qlMoXep">${L.map(x=>`<option value="${x.id}" ${x.id===lid?'selected':''}>Lớp ${esc(x.ten)} (khối ${x.khoi})</option>`).join('')}</select></label>
  <p class="muted" style="margin:0;font-size:12.5px">Các em chưa xếp lớp và các em khối ${l.khoi} ở lớp khác. Chọn các em cần đưa vào lớp ${esc(l.ten)}.</p>
- <div class="qlck">${ds.length?ds.map(([id,n])=>{const c=O().gd[id];return`<label class="qlckr"><input type="checkbox" value="${id}"> <b>${esc(n)}</b> <small>${c?'đang ở lớp '+esc((O().lop.find(x=>x.id===c)||{ten:c}).ten):'chưa xếp lớp'}</small></label>`}).join(''):'<p class="muted">Không còn em nào khối này ngoài lớp.</p>'}</div>`,`qlLuuXep('${lid}')`,'Đưa vào lớp')};
+ <div class="qlck">${ds.length?ds.map(([id,n])=>{const c=O().gd[id];return`<label class="qlckr"><input type="checkbox" value="${id}"> <b>${esc(n)}</b> <small>${c?'đang ở lớp '+esc((O().lop.find(x=>x.id===c)||{ten:c}).ten):'chưa xếp lớp'}</small></label>`}).join(''):'<p class="muted">Không còn em nào khối này ngoài lớp.</p>'}</div>`,['qlLuuXep',lid],'Đưa vào lớp')};
 window.qlLuuXep=function(lid){const ids=[...document.querySelectorAll('.qlck input:checked')].map(x=>x.value);if(!ids.length){toast('Chưa chọn em nào');return}
  ids.forEach(id=>{try{window.qlChuyen(id,lid)}catch(e){}});qlDong();render();toast(`Đã xếp ${ids.length} em vào lớp ${lid}`)};
 /* ---------- Tài khoản phụ huynh: 1 tài khoản – nhiều con ---------- */
@@ -74,7 +75,7 @@ window.qlMoPH=function(tk0){const ds=phDs(),tks=Object.keys(ds).sort(),info=O().
  <div class="qs2"><label>Tên đăng nhập<input id="mPhTk2" maxlength="24" autocapitalize="off" spellcheck="false" placeholder="ph.binh"></label><label>Mật khẩu<input id="mPhPw" maxlength="30" ${cloud()?'':'disabled placeholder="Chỉ có khi dùng máy chủ"'}></label></div>`}
  <p class="muted" style="margin:0;font-size:12.5px">Chọn các con (anh chị em cùng bố mẹ chọn chung 1 tài khoản). Phụ huynh xem được tình hình học của từng con.</p>
  <input type="search" placeholder="Tìm tên học sinh" data-act-input="toLowerCase-querySelectorAll-forEach-hidden" style="font:inherit;padding:8px;border:0;box-shadow:var(--f2)">
- <div class="qlck">${hs.map(([id,n,g])=>{const p=(O().ph||{})[id],cua1=cua.includes(id);return`<label class="qlckr"><input type="checkbox" value="${id}" ${cua1?'checked':''} ${p&&p!==tk0?'disabled':''}> <b>${esc(n)}</b> <small>khối ${g}${p&&p!==tk0?' · đã có PH '+esc(p):''}</small></label>`}).join('')}</div>`,`qlLuuPH()`,'Lưu')};
+ <div class="qlck">${hs.map(([id,n,g])=>{const p=(O().ph||{})[id],cua1=cua.includes(id);return`<label class="qlckr"><input type="checkbox" value="${id}" ${cua1?'checked':''} ${p&&p!==tk0?'disabled':''}> <b>${esc(n)}</b> <small>khối ${g}${p&&p!==tk0?' · đã có PH '+esc(p):''}</small></label>`}).join('')}</div>`,'qlLuuPH','Lưu')};
 window.qlLuuPH=async function(){const o=O();o.ph=o.ph||{};o.phInfo=o.phInfo||{};let tk=v('mPhTk');const moiTK=!tk;
  const con=[...document.querySelectorAll('.qlck input:checked:not(:disabled)')].map(x=>x.value);if(!con.length){toast('Chọn ít nhất 1 con');return}
  if(moiTK){tk=v('mPhTk2').toLowerCase();const ten=v('mPhTen').replace(/\s+/g,' '),dt=v('mPhDt').replace(/[^\d+]/g,''),pw=v('mPhPw');
@@ -113,7 +114,7 @@ form[data-act-submit="qlTaoHS"],form[data-act-submit="qlTaoGV"],form[data-act-su
 /* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
 hd.dangKy({
   'qlDong':function(){qlDong()},
-  'preventDefault':function(event,a){event.preventDefault();a[0]},
+  'qlModalLuu':function(event,a){event.preventDefault();const [ten,...ds]=Array.isArray(a[0])?a[0]:[a[0]];const f=window[ten];if(typeof f==='function')f.apply(this,ds);else console.error('qlModalLuu: chưa có hàm',ten)},
   'qlMoXep':function(){qlMoXep(this.value)},
   'qlMoPH':function(){qlMoPH(this.value)},
   'toLowerCase-querySelectorAll-forEach-hidden':function(){const q=this.value.toLowerCase();document.querySelectorAll('.qlck .qlckr').forEach(r=>r.hidden=q&&!r.textContent.toLowerCase().includes(q))},
