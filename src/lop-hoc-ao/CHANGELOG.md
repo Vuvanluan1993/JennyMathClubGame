@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 28/10/2026 — Đăng nhập sau khi quản lý đặt lại mật khẩu: không còn "chưa được gán vai trò" (PR vào `tich-hop/kien-truc-2026-10`)
+- Lỗi thầy gặp trên bản thử: giáo viên vừa được tạo (mật khẩu `jenny@123`), rồi quản lý bấm 🔑 đặt lại (cũng `jenny@123`) → đăng nhập báo
+  "Tài khoản chưa được gán vai trò". Nguyên nhân: gói miễn phí không đổi được mật khẩu người khác, nên đặt lại = tạo tài khoản Auth mới và chuyển hồ sơ
+  sang (P-05); tài khoản Auth cũ vẫn nhận mật khẩu cũ. Mật khẩu cũ trùng mật khẩu mới → đăng nhập vào tài khoản cũ, không còn hồ sơ `users`.
+- `core/62` `fbDangNhap`: đăng nhập được bằng email chuẩn nhưng không có hồ sơ → tra `login/{tk}`, có email mới thì đăng xuất và đăng nhập lại
+  tài khoản mới với cùng mật khẩu. Sai mật khẩu vẫn báo "Tên đăng nhập hoặc mật khẩu chưa đúng" như cũ.
+
 ## 28/10/2026 — Đặt lại mật khẩu: mặc định luôn là `jenny@123` (PR vào `tich-hop/kien-truc-2026-10`)
 - `MK_DAT_LAI='jenny@123'` ở `62-may-chu.js`: nút 🔑 từng dòng điền sẵn `jenny@123` (quản lý sửa được trước khi bấm Đặt lại); "Đặt lại mật khẩu cả lớp"
   đặt tất cả về `jenny@123` thay vì ngẫu nhiên. Thông báo sau khi đặt ghi rõ mật khẩu. Thầy chốt 28/10 (xem `LUAT-DA-CHOT.md` 6j).
