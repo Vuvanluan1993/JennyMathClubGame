@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 28/10/2026 — Đăng nhập sau khi quản lý đặt lại mật khẩu: không còn "chưa được gán vai trò" (PR vào `tich-hop/kien-truc-2026-10`)
+- Lỗi thầy gặp trên bản thử: giáo viên vừa được tạo (mật khẩu `jenny@123`), rồi quản lý bấm 🔑 đặt lại (cũng `jenny@123`) → đăng nhập báo
+  "Tài khoản chưa được gán vai trò". Nguyên nhân: gói miễn phí không đổi được mật khẩu người khác, nên đặt lại = tạo tài khoản Auth mới và chuyển hồ sơ
+  sang (P-05); tài khoản Auth cũ vẫn nhận mật khẩu cũ. Mật khẩu cũ trùng mật khẩu mới → đăng nhập vào tài khoản cũ, không còn hồ sơ `users`.
+- `core/62` `fbDangNhap`: đăng nhập được bằng email chuẩn nhưng không có hồ sơ → tra `login/{tk}`, có email mới thì đăng xuất và đăng nhập lại
+  tài khoản mới với cùng mật khẩu. Sai mật khẩu vẫn báo "Tên đăng nhập hoặc mật khẩu chưa đúng" như cũ.
+
 ## 28/10/2026 — Bỏ thanh "Có bản mới · Tải lại" (PR vào `tich-hop/kien-truc-2026-10`)
 - Thanh cố định dưới màn hình (`#swmoi`, P-16) che mất nội dung, kể cả khi học sinh đang làm bài. Thầy chốt bỏ (xem `LUAT-DA-CHOT.md`).
 - `core/34`: không còn `swThanh`; worker mới đã cài thì giữ ở `swMoi`, gửi `SKIP_WAITING` lúc `pagehide` (trang đóng / rời đi) → lần mở sau là bản mới.
