@@ -34,7 +34,7 @@ const trang = {
 
 /* ===================== P-16 PWA ===================== */
 // Đổi số này khi đổi cấu trúc dữ liệu lưu trên máy (khoá localStorage, hình dữ liệu Firestore) hoặc đổi máy chủ:
-// cache cũ của Workbox bị bỏ hết, thiết bị đang mở nhận bản mới (thanh "Có bản mới · Tải lại").
+// cache cũ của Workbox bị bỏ hết, thiết bị đang mở nhận bản mới ở lần mở sau (worker mới vào khi trang đóng, 34-khoi-dong.js).
 const CACHE_ID = 'jenny-lha-1';
 const MAU_NEN = '#1F2A5A'; // theme_color (thanh trên của điện thoại khi cài), trùng manifest.webmanifest
 
@@ -93,7 +93,7 @@ export default defineConfig({
   plugins: [
     noiFile({ goc, repo, trang, base }),
     // P-16: service worker Workbox (generateSW). Đường dẫn trong sw.js tương đối với sw.js (không gắn base) nên cùng một bản chạy trên Pages,
-    // máy chủ thử ở gốc kho (npm test) và dist/. Đăng ký SW + thanh "Có bản mới" tự viết ở js/core/34-khoi-dong.js (injectRegister false,
+    // máy chủ thử ở gốc kho (npm test) và dist/. Đăng ký SW + đổi bản mới tự viết ở js/core/34-khoi-dong.js (injectRegister false,
     // mã app không qua Rollup nên không import được virtual:pwa-register). Manifest giữ ở public/, không để plugin sinh (manifest false).
     VitePWA({
       registerType: 'prompt', injectRegister: false, manifest: false, filename: 'sw.js',
@@ -104,7 +104,7 @@ export default defineConfig({
         navigateFallback: 'index.html',
         navigateFallbackDenylist: [/\/giao-vien\//, /\/phu-huynh\//, /\/quan-ly\//, /\/demo\//, /\/giong-mau\//, /\.[a-z0-9]+$/i],
         // clientsClaim: lần cài ĐẦU, SW nhận điều khiển trang ngay (không chờ lần mở sau) để chunk khối import() sau đăng nhập đi qua SW và vào cache;
-        // skipWaiting false: bản MỚI vẫn chờ tới khi em bấm "Tải lại" (34-khoi-dong.js gửi SKIP_WAITING).
+        // skipWaiting false: bản MỚI chờ tới khi trang đóng (34-khoi-dong.js gửi SKIP_WAITING lúc pagehide); không có thanh "Có bản mới" (bỏ 28/10/2026).
         cleanupOutdatedCaches: true, skipWaiting: false, clientsClaim: true,
         runtimeCaching: [
           // KHÔNG cache Firebase: Firestore (dữ liệu, P-21 đã có bộ nhớ đệm bền riêng), đăng nhập, token. Ghi rõ NetworkOnly để không ai thêm nhầm.

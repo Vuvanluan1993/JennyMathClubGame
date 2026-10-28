@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 28/10/2026 — Bỏ thanh "Có bản mới · Tải lại" (PR vào `tich-hop/kien-truc-2026-10`)
+- Thanh cố định dưới màn hình (`#swmoi`, P-16) che mất nội dung, kể cả khi học sinh đang làm bài. Thầy chốt bỏ (xem `LUAT-DA-CHOT.md`).
+- `core/34`: không còn `swThanh`; worker mới đã cài thì giữ ở `swMoi`, gửi `SKIP_WAITING` lúc `pagehide` (trang đóng / rời đi) → lần mở sau là bản mới.
+  Không tải lại trang giữa chừng. Vẫn `reg.update()` mỗi 60 giây và khi quay lại tab.
+
 ## 28/10/2026 — Đặt lại mật khẩu: mặc định luôn là `jenny@123` (PR vào `tich-hop/kien-truc-2026-10`)
 - `MK_DAT_LAI='jenny@123'` ở `62-may-chu.js`: nút 🔑 từng dòng điền sẵn `jenny@123` (quản lý sửa được trước khi bấm Đặt lại); "Đặt lại mật khẩu cả lớp"
   đặt tất cả về `jenny@123` thay vì ngẫu nhiên. Thông báo sau khi đặt ghi rõ mật khẩu. Thầy chốt 28/10 (xem `LUAT-DA-CHOT.md` 6j).
