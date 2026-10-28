@@ -8,6 +8,7 @@
        FB.dem = bộ đếm {doc (đọc máy chủ), cache (đọc từ đệm), ghi, nghe (listener fbNghe đang mở), ngoai (listener mở thẳng: 79, 64)}, lưu localStorage jennyDem
        để thầy mở DevTools › Application xem; in ra console khi đăng xuất;
        khi đăng xuất (signOut của app chính): tắt mọi listener, terminate + clearPersistence để máy dùng chung không giữ dữ liệu em.
+       Xoá xong mở lại Firestore mới (FB.db) để trang chưa tải lại vẫn dùng được (28/10/2026).
    - fbNghe(ref, cb, err) thay mọi ref.onSnapshot(cb, err) trong 62 (đổi tên hàm, không đổi logic):
        ref là chuỗi đường dẫn document, DocumentReference hay Query; MỘT listener thật cho mỗi document/truy vấn,
        chỗ gọi thứ hai cùng ref chỉ nhận thêm bản chụp (có ngay bản mới nhất); trả về hàm tắt như onSnapshot.
@@ -85,7 +86,10 @@ export function fbTietKiem(){if(!FB||!FB.db||FB.dem)return;FB.dem=fbDem;
   fbDemBat();
   if(FB.auth&&FB.auth.signOut){const so=FB.auth.signOut.bind(FB.auth);FB.auth.signOut=async function(){try{await so()}finally{
     console.info(`[P-21] phiên này: đọc máy chủ ${fbDem.doc} · từ đệm ${fbDem.cache} · ghi ${fbDem.ghi} · ${Math.round((Date.now()-fbDem.t0)/60000)} phút`);
-    fbNgheTat();try{localStorage.removeItem('jennyV3');await FB.db.terminate();await FB.db.clearPersistence()}catch(e){console.info('clearPersistence:',(e&&e.code)||e)}}}}}
+    fbNgheTat();try{localStorage.removeItem('jennyV3');await FB.db.terminate();await FB.db.clearPersistence()}catch(e){console.info('clearPersistence:',(e&&e.code)||e)}
+    /* 28/10/2026: mở lại Firestore sau khi tắt (terminate là vĩnh viễn, "The client has already been terminated"): chỗ gọi signOut mà không tải lại trang
+       (đăng nhập sai vai trò ở trang cô/học sinh rồi đăng nhập lại) vẫn dùng được FB.db. Bật lại bộ nhớ đệm trước lần đọc đầu. */
+    try{FB.db=FB.app.firestore();if(FB.db.enablePersistence)FB.db.enablePersistence({synchronizeTabs:true}).catch(()=>{})}catch(e){console.info('Mở lại Firestore:',e)}}}}}
 /* đổi vai / đăng nhập lại: tắt listener cũ trước khi vai mới nghe */
 {hooks.on('fbHsBoot',_h=>async function(){fbNgheTat();return _h.apply(this,arguments)})}
 {hooks.on('fbGvBoot',_g=>async function(){fbNgheTat();return _g.apply(this,arguments)})}
