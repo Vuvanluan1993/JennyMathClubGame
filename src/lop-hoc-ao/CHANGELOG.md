@@ -1,5 +1,15 @@
 # Lịch sử thay đổi
 
+## 28/10/2026 — Sửa: nút Lưu/Tạo trong các bảng của trang Quản lý không chạy (sau P-14c, PR vào `tich-hop/kien-truc-2026-10`)
+- **Lỗi**: ở bản dựng nhánh tích hợp, bấm "Tạo tài khoản" trong bảng Thêm học sinh (và Thêm giáo viên, Thêm lớp, Xếp lớp, Tài khoản phụ huynh,
+  Sửa giáo viên/phụ huynh) không thấy gì: không tạo, không báo lỗi. Nguyên nhân: `bo-inline.mjs` đổi `onsubmit="event.preventDefault();${ok}"`
+  (`ok` là *chuỗi mã* như `qlLuuHS()`) thành hành động `preventDefault` có thân `event.preventDefault();a[0]` — chỉ đọc chuỗi, không gọi hàm.
+  Trang thật trên `main` không bị (vẫn dùng `onsubmit`).
+- **Sửa** (`71-quan-ly-gon.js`, `81-sua-gv-ph.js`): `modal()`/`hop()` nhận `ok` là **tên hàm toàn cục** (`'qlLuuHS'`) hoặc `[tên, ...tham số]`
+  (`['qlLuuXep', lid]`, `['qlLuuSuaGV', id]`); form ghi `data-act-submit="qlModalLuu"`, hành động `qlModalLuu` gọi `window[tên](...tham số)`
+  (qua `window` để các lớp bọc ở 77/79 — phụ huynh tự động, chống bấm trùng — vẫn chạy). Bỏ id `preventDefault`.
+- Đã thử trên bản `demo/quan-ly/` (FB_ENV=thu): 5 bảng lưu được, tự đóng, không lỗi console. Chưa thử lại với tài khoản thật trên dự án Firebase thử.
+
 ## 27/10/2026 — Bỏ `'unsafe-inline'` khỏi CSP (P-14c, PR vào `tich-hop/kien-truc-2026-10`)
 - **CSP** của `app.template.html`: `script-src 'self' https://www.gstatic.com;` (không còn `'unsafe-inline'`; `style-src` giữ nguyên). 8 trang vai và `dist/day-du.html`
   không chạy một dòng JS inline nào. Riêng **bản một file** `dist/lop-hoc-ao-jenny.html` (bộ kiểm tra §7, Artifact) và `npm run dev` nối cả JS vào `<script>` nên
