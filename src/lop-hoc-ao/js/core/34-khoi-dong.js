@@ -17,18 +17,23 @@ const khoiCan=()=>{const st=S&&S.st&&S.st[sid],K=new Set(),moi=()=>(STUDENTS||[]
         if(l)K.add(khoiCua(l.khoi));else if(ds.length)ds.forEach(x=>K.add(khoiCua(x.khoi)));else moi()}}} // trang quản lý: các khối có học sinh
   catch(e){moi()}
   return[...K].filter(khoiCo)};
-function manCho(loi){const a=document.getElementById('app');if(!a)return;const en=LANG==='en',mau=['#F04E23','#F58220','#28B568','#00B8EC','#8C5DA7'];
-  a.innerHTML=`<div class="page"><div class="card" role="status" aria-live="polite" style="max-width:420px;margin:24px auto;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px">${jenny(64)}
-   <h2 style="margin:0">${loi?(en?'The network is slow':'Mạng chậm quá'):(en?'Jenny is getting your lessons ready…':'Jenny đang chuẩn bị bài…')}</h2>
-   ${loi?`<p class="muted" style="margin:0">${en?'Check the connection, then try again.':'Em kiểm tra mạng rồi bấm thử lại nhé.'}</p><button class="btn pri" type="button" data-act="render">${en?'Try again':'Thử lại'}</button>`
+/* manCho(): đang chờ khối · manCho(1): mạng chậm · manCho(err): vẽ màn bị lỗi (28/10/2026: trước đây lỗi vẽ sau khi tải khối bị nuốt, màn chờ đứng mãi) */
+function manCho(loi){const a=document.getElementById('app');if(!a)return;const en=LANG==='en',mau=['#F04E23','#F58220','#28B568','#00B8EC','#8C5DA7'],err=loi&&loi!==1,msg=err?String((loi&&loi.message)||loi):'';
+  a.innerHTML=`<div class="page"><div class="card jcho" role="status" aria-live="polite" style="max-width:420px;margin:24px auto;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px">${jenny(64)}
+   <h2 style="margin:0">${err?(en?'Something went wrong':'Có lỗi khi mở trang'):loi?(en?'The network is slow':'Mạng chậm quá'):(en?'Jenny is getting your lessons ready…':'Jenny đang chuẩn bị bài…')}</h2>
+   ${err?`<p class="muted" style="margin:0;word-break:break-word"><code>${msg.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</code></p><p class="muted" style="margin:0">${en?'Try again or reload. If it keeps happening, send this message to the admin.':'Bấm Thử lại hoặc Tải lại trang. Nếu vẫn lỗi, gửi dòng trên cho quản lý.'}</p><div class="row" style="gap:8px"><button class="btn pri" type="button" data-act="render">${en?'Try again':'Thử lại'}</button><button class="btn" type="button" data-act="taiLaiTrang">${en?'Reload':'Tải lại trang'}</button></div>`
+    :loi?`<p class="muted" style="margin:0">${en?'Check the connection, then try again.':'Em kiểm tra mạng rồi bấm thử lại nhé.'}</p><button class="btn pri" type="button" data-act="render">${en?'Try again':'Thử lại'}</button>`
     :`<div aria-hidden="true" style="display:flex;gap:4px">${mau.map(c=>`<i style="display:block;width:16px;height:16px;background:${c};box-shadow:inset -3px -3px 0 rgba(0,0,0,.25)"></i>`).join('')}</div>`}</div></div>`}
+const dangCho=()=>!!document.querySelector('#app .jcho'); // màn chờ / màn lỗi đang hiện → lỗi vẽ tiếp theo thay bằng màn lỗi, không ném ra ngoài
 let choVe=null;
-function choKhoi(ds){manCho();if(choVe)return;choVe=Promise.all(ds.map(napKhoi)).then(()=>{choVe=null;render()},e=>{choVe=null;console.error(e);manCho(1)})}
+function choKhoi(ds){manCho();if(choVe)return;const het=new Promise((_,no)=>setTimeout(()=>no(new Error('tải khối quá 25 giây')),25000));
+  choVe=Promise.race([Promise.all(ds.map(napKhoi)),het]).then(()=>{choVe=null;try{render()}catch(e){console.error(e);manCho(e)}},e=>{choVe=null;console.error(e);manCho(1)})}
 hooks.on('render',_r=>function(){const thieu=khoiCan().filter(k=>!khoiXong(k));
   if(thieu.length){if(document.body.classList.contains('locked'))return manCho(); // còn màn đăng nhập: chưa biết khối, không tải
     return choKhoi(thieu)}
   try{return _r.apply(this,arguments)}catch(e){ // lưới an toàn: màn cần khối của học sinh khác trong danh sách
-    const them=[...new Set((STUDENTS||[]).map(s=>khoiCua(s[2])))].filter(k=>khoiCo(k)&&!khoiXong(k));if(!them.length)throw e;console.warn('khối: màn này cần thêm',them.join(', '),'·',e&&e.message);choKhoi(them)}});
+    const them=[...new Set((STUDENTS||[]).map(s=>khoiCua(s[2])))].filter(k=>khoiCo(k)&&!khoiXong(k));
+    if(!them.length){if(dangCho()){console.error(e);return manCho(e)}throw e}console.warn('khối: màn này cần thêm',them.join(', '),'·',e&&e.message);choKhoi(them)}});
 /* ===================== P-16 (27/10/2026): PWA =====================
    sw.js do vite-plugin-pwa sinh lúc dựng (Workbox, registerType prompt: bản mới chờ, không tự thay). Chỉ trang có manifest (bản học sinh) đăng ký;
    trang cô/phụ huynh/quản lý/bản thử luôn lấy mạng (navigateFallbackDenylist trong vite.config.js). Không chạy ở file:// và bản một file.
@@ -50,6 +55,7 @@ swDangKy();
 /* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
 hd.dangKy({
   'render':function(){render()},
+  'taiLaiTrang':function(){location.reload()},
 });
 if(!load())fresh();
 render();

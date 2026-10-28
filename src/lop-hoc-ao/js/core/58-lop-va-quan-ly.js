@@ -41,6 +41,10 @@ function orgHeal(){
   if(!S)return;
   if(typeof CLOUD!=='undefined'&&CLOUD&&!S.org)return;
   if(!S.org||S.org.v!==2)S.org=orgMoi(); /* v2 (23/10): chỉ tiểu học, khối 1–2 mỗi khối 2 lớp × 12 em */
+  /* 28/10/2026: dữ liệu máy chủ thiếu trường (bản cũ, nhập tay) → bù mặc định, không để vẽ màn lỗi (thiếu mo → "Jenny đang chuẩn bị bài…" đứng mãi) */
+  ['mo','nl','gd','ph','nghi'].forEach(k=>{if(!O()[k]||typeof O()[k]!=='object'||Array.isArray(O()[k]))O()[k]={}});
+  ['lop','gv','hs','nk'].forEach(k=>{if(!Array.isArray(O()[k]))O()[k]=[]});
+  O().lop.forEach(l=>{if(!l.tj||typeof l.tj!=='object')l.tj={on:false};if(!Array.isArray(l.gv))l.gv=[]});
   /* học sinh mẫu thêm chỉ nạp khi mở vai giáo viên/quản lý/phụ huynh (để bản học sinh và bài kiểm tra nhẹ) */
   if(role!=='hs'&&!O().cloud)O().hsOn=1;
   if(O().hsOn&&!O().cloud)HS_THEM.concat(O().hsMoi).forEach(s=>{if(!STUDENTS.some(x=>x[0]===s[0]))STUDENTS.push(s)});
