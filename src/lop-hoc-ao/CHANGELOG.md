@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 28/10/2026 — Trang cô kẹt "Jenny đang chuẩn bị bài…": màn chờ không đứng im nữa, bù trường thiếu trong dữ liệu (PR vào `tich-hop/kien-truc-2026-10`)
+- Thầy đăng nhập giáo viên trên bản thử thì màn chờ nạp khối đứng mãi. Tái hiện được bằng dữ liệu trung tâm thiếu trường `mo` (đảo mở): sau khi tải khối xong,
+  vẽ màn ném lỗi, lỗi bị nuốt (`choKhoi().then(render)` không bắt) nên màn chờ không đổi. Không xem được dữ liệu thật nên sửa cả hai lớp:
+- `core/58` `orgHeal`: bù mặc định các trường thiếu (`mo`, `nl`, `gd`, `ph`, `nghi` = {}; `lop`, `gv`, `hs`, `nk` = []; mỗi lớp có `tj`, `gv`).
+- `core/34`: tải khối quá 25 giây → "Mạng chậm quá" + Thử lại; vẽ màn lỗi khi đang ở màn chờ → màn "Có lỗi khi mở trang" ghi rõ lỗi + Thử lại / Tải lại trang
+  (để thầy chụp gửi), không còn đứng im. Lỗi vẽ ở màn thường vẫn ném ra như cũ.
+
 ## 28/10/2026 — Đăng nhập sau khi quản lý đặt lại mật khẩu: không còn "chưa được gán vai trò" (PR vào `tich-hop/kien-truc-2026-10`)
 - Lỗi thầy gặp trên bản thử: giáo viên vừa được tạo (mật khẩu `jenny@123`), rồi quản lý bấm 🔑 đặt lại (cũng `jenny@123`) → đăng nhập báo
   "Tài khoản chưa được gán vai trò". Nguyên nhân: gói miễn phí không đổi được mật khẩu người khác, nên đặt lại = tạo tài khoản Auth mới và chuyển hồ sơ
