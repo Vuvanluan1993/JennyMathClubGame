@@ -17,6 +17,7 @@ const MKmoi=()=>typeof fbMKGoiY==='function'?fbMKGoiY():'tam'+String(Math.floor(
 window.qlMK=window.qlMK||{};            // mật khẩu biết được trong phiên này (để in phiếu)
 const URL_HS='vuvanluan1993.github.io/JennyMathClubGame/games/lop-hoc-ao/';
 const URL_PH='vuvanluan1993.github.io/JennyMathClubGame/games/lop-hoc-ao/phu-huynh/';
+const URL_GV='vuvanluan1993.github.io/JennyMathClubGame/games/lop-hoc-ao/giao-vien/';
 
 /* ---------- đọc zip / xlsx ---------- */
 async function unzip(buf,want){const d=new DataView(buf),u8=new Uint8Array(buf);let eo=-1;
@@ -179,11 +180,17 @@ window.qlChayNhap=async function(){const ds=qlNhap.ds.filter(x=>!x.loi.length);i
 
 /* ---------- in phiếu đăng nhập ---------- */
 window.qlInPhieu=function(ids,loai){const o=O(),lopTen=id=>((o.lop||[]).find(l=>l.id===(o.gd||{})[id])||{}).ten||'';
- let the=[];
+ /* loai: 'hs' | 'ph' | 'gv' | 'auto' (28/10: tự chia theo vai trò — dùng cho dòng mật khẩu tạm trong phiên) */
+ const lam=(ids,loai)=>{
+ if(loai==='gv')return ids.map(t=>{const g=(o.gv||[]).find(x=>(x.tk||x.id)===t)||{ten:t};return{k:'2|'+g.ten,h:`<div class="pk">PHIẾU ĐĂNG NHẬP GIÁO VIÊN</div><div class="pn">${e(g.ten)}</div><div class="pc">Giáo viên</div><div class="pr"><span>Trang web</span><b>${URL_GV}</b></div><div class="pr"><span>Tên đăng nhập</span><b class="pb">${e(t)}</b></div><div class="pr"><span>Mật khẩu</span><b class="pb">${qlMK[t]?e(qlMK[t]):'....................'}</b></div>`}});
  if(loai==='ph'){const m={};Object.entries(o.ph||{}).forEach(([c,t])=>{(m[t]=m[t]||[]).push(c)});
-  the=ids.map(t=>{const pi=(o.phInfo||{})[t]||{},con=(m[t]||[]).map(c=>(STUDENTS.find(s=>s[0]===c)||[c,c])[1]+(lopTen(c)?' ('+lopTen(c)+')':''));
-   return{k:pi.ten||'',h:`<div class="pk">PHIẾU ĐĂNG NHẬP PHỤ HUYNH</div><div class="pn">${e(pi.ten||'Phụ huynh')}</div><div class="pc">Con: ${e(con.join(', '))}</div><div class="pr"><span>Trang web</span><b>${URL_PH}</b></div><div class="pr"><span>Tên đăng nhập</span><b class="pb">${e(t)}</b></div><div class="pr"><span>Mật khẩu</span><b class="pb">${qlMK[t]?e(qlMK[t]):'....................'}</b></div>`}})}
- else the=ids.map(id=>{const n=(STUDENTS.find(s=>s[0]===id)||[id,id])[1],l=lopTen(id);return{k:(l||'zzz')+'|'+n.split(' ').pop()+'|'+n,h:`<div class="pk">PHIẾU ĐĂNG NHẬP HỌC SINH</div><div class="pn">${e(n)}</div><div class="pc">${l?'Lớp '+e(l):'Chưa xếp lớp'}</div><div class="pr"><span>Trang web</span><b>${URL_HS}</b></div><div class="pr"><span>Tên đăng nhập</span><b class="pb">${e(id)}</b></div><div class="pr"><span>Mật khẩu</span><b class="pb">${qlMK[id]?e(qlMK[id]):'....................'}</b></div>`}});
+  return ids.map(t=>{const pi=(o.phInfo||{})[t]||{},con=(m[t]||[]).map(c=>(STUDENTS.find(s=>s[0]===c)||[c,c])[1]+(lopTen(c)?' ('+lopTen(c)+')':''));
+   return{k:'1|'+(pi.ten||''),h:`<div class="pk">PHIẾU ĐĂNG NHẬP PHỤ HUYNH</div><div class="pn">${e(pi.ten||'Phụ huynh')}</div><div class="pc">Con: ${e(con.join(', '))}</div><div class="pr"><span>Trang web</span><b>${URL_PH}</b></div><div class="pr"><span>Tên đăng nhập</span><b class="pb">${e(t)}</b></div><div class="pr"><span>Mật khẩu</span><b class="pb">${qlMK[t]?e(qlMK[t]):'....................'}</b></div>`}})}
+ return ids.map(id=>{const n=(STUDENTS.find(s=>s[0]===id)||[id,id])[1],l=lopTen(id);return{k:'0|'+(l||'zzz')+'|'+n.split(' ').pop()+'|'+n,h:`<div class="pk">PHIẾU ĐĂNG NHẬP HỌC SINH</div><div class="pn">${e(n)}</div><div class="pc">${l?'Lớp '+e(l):'Chưa xếp lớp'}</div><div class="pr"><span>Trang web</span><b>${URL_HS}</b></div><div class="pr"><span>Tên đăng nhập</span><b class="pb">${e(id)}</b></div><div class="pr"><span>Mật khẩu</span><b class="pb">${qlMK[id]?e(qlMK[id]):'....................'}</b></div>`}});
+ };
+ let the;if(loai==='auto'){const H=new Set([...STUDENTS.map(x=>x[0]),...(o.hs||[]).map(x=>x[0])]),P=new Set(Object.values(o.ph||{})),G=new Set((o.gv||[]).map(g=>g.tk||g.id));
+  the=[...lam(ids.filter(t=>H.has(t)),'hs'),...lam(ids.filter(t=>!H.has(t)&&P.has(t)),'ph'),...lam(ids.filter(t=>!H.has(t)&&!P.has(t)&&G.has(t)),'gv')]}
+ else the=lam(ids,loai);
  if(!the.length){toast('Chưa có ai để in');return}
  the.sort((a,b)=>a.k.localeCompare(b.k,'vi'));
  let el=document.getElementById('qlin');if(el)el.remove();el=document.createElement('div');el.id='qlin';

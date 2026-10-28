@@ -8,7 +8,7 @@ import { DEMO_CODE, newStudent, save } from './09-du-lieu-demo.js';
 import { render, toast } from './13-giao-dien-chung.js';
 import { viewPH } from './20-phu-huynh.js';
 import { I18N } from './47-ngon-ngu-vi-en.js';
-import { fbDayNgay, fbTaiKhoanBox } from './62-may-chu.js';
+import { fbDayNgay, fbMayChuBox, fbMKPhienDong } from './62-may-chu.js';
 if(typeof newStudent==='function'){hooks.on('newStudent',_ns=>function(n,g){return _ns(n,(+g>=1&&+g<=9)?+g:1)})}
 (function(){
 if(typeof viewPH==='undefined')return;
@@ -33,6 +33,9 @@ window.qlThemVao=function(lid){const ids=Object.keys(qlThemChon).filter(k=>qlThe
  ids.forEach(id=>{try{window.qlChuyen(id,lid)}catch(x){}});qlThemChon={};save();if(O().cloud&&typeof fbDayNgay==='function'){try{fbDayNgay()}catch(x){}}render();toast(`Đã đưa ${ids.length} em vào lớp ${lid}`)};
 window.qlDi=(t,l)=>{qlTrang=t||'';qlLopId=l||'';qlTrangSo=0;qlChon={};qlThemTim='';qlThemChon={};render();scrollTo(0,0)};
 const back=(t,l,lab)=>`<button type="button" class="btn sm ghost" data-act="qlDi" ${hd.arg(String(t),String(l||''))}>← ${lab}</button>`;
+/* 28/10/2026: máy chủ — nút 🔑 đặt lại mật khẩu ở từng dòng (không cho chính mình: dùng "Đổi mật khẩu"), dòng mật khẩu tạm + In phiếu ở đầu mỗi trang */
+const mkDong=()=>O().cloud&&typeof fbMKPhienDong==='function'?fbMKPhienDong():'';
+const kBtn=tk=>O().cloud&&typeof CLOUD!=='undefined'&&CLOUD&&CLOUD.me&&CLOUD.me.tk!==tk?`<button type="button" class="btn sm" data-act="fbDatLaiMK" ${hd.arg(String(tk))} title="Đặt lại mật khẩu" aria-label="Đặt lại mật khẩu ${e(tk)}">🔑</button>`:'';
 const head=(ic,t,extra)=>`<div class="qlhd">${back('','','Quản lý')}<h1>${ic} ${t}</h1>${extra||''}</div>`;
 
 /* ---------- số liệu ---------- */
@@ -45,13 +48,15 @@ function so(){const o=O(),H=STUDENTS,gv=o.gv||[],L=o.lop||[];
 function home(){const o=O(),n=so();
  const tile=(t,ic,ten,big,warn)=>`<button type="button" class="qltile" data-act="qlDi-2" ${hd.arg(String(t))}><span class="qlic">${ic}</span><b>${ten}</b><span class="qln">${big}</span>${warn?`<span class="qlw">⚠ ${warn}</span>`:'<span class="qlok">✓ Đủ</span>'}<span class="qlgo">Mở ▸</span></button>`;
  return`<div class="grid"><div><h1 style="font-size:28px">Quản lý trung tâm</h1><div class="muted">${e(o.ten)} · năm học ${e(o.nam)}</div></div>
+ ${mkDong()}
  <div class="qltiles">
   ${tile('hs','🎒','Học sinh',n.hs+' em',n.chuaXep?n.chuaXep+' em chưa xếp lớp':'')}
   ${tile('ph','👪','Phụ huynh',n.ph+' tài khoản',n.chuaPH?n.chuaPH+' em chưa có phụ huynh':'')}
   ${tile('gv','👩‍🏫','Giáo viên',n.gv+' người',n.gvTrong?n.gvTrong+' người chưa có lớp':'')}
   ${tile('lop','🏫','Lớp',n.lop+' lớp',n.lopTrong?n.lopTrong+' lớp chưa có giáo viên':'')}
  </div>
- <div class="row" style="gap:10px;flex-wrap:wrap"><button type="button" class="btn" data-act="qlDi-nk">📒 Nhật ký thao tác</button><button type="button" class="btn" data-act="qlDi-nam">🎓 Năm học · Lên lớp</button></div></div>`}
+ <div class="row" style="gap:10px;flex-wrap:wrap"><button type="button" class="btn" data-act="qlDi-nk">📒 Nhật ký thao tác</button><button type="button" class="btn" data-act="qlDi-nam">🎓 Năm học · Lên lớp</button></div>
+ ${o.cloud&&typeof fbMayChuBox==='function'?fbMayChuBox():''}</div>`}
 
 /* ---------- Học sinh ---------- */
 const ckAll=ids=>`<input type="checkbox" aria-label="Chọn cả trang" ${ids.length&&ids.every(i=>qlChon[i])?'checked':''} data-act-change="qlChon-ca-trang" ${hd.argEv('change',ids)}>`;
@@ -69,10 +74,11 @@ function trangHS(){const o=O(),L=LOP(),q=bo(qlHsTim);
   <div class="a-ten"><b>${e(n)}</b><div class="muted">${e(id)}${ns?' · '+e(ns):''}</div></div>
   <div class="a-lop">${lopSel(id,l)}</div>
   <div class="a-ph"><span class="mlab">Phụ huynh: </span>${p?e(phTen(p)):(h.dt?`<span class="muted">${e(h.dt)}</span>`:'<span class="muted">—</span>')}</div>
-  <div class="a-act"><button type="button" class="btn sm" data-act="qlSua" ${hd.arg(String(id))}>✎ Sửa</button></div></div>`}).join('');
+  <div class="a-act">${kBtn(id)}<button type="button" class="btn sm" data-act="qlSua" ${hd.arg(String(id))}>✎ Sửa</button></div></div>`}).join('');
  const lopOpt=L.map(l=>`<option value="${l.id}" ${qlHsLop===l.id?'selected':''}>Lớp ${e(l.ten)}</option>`).join('');
  return`<div class="grid">${head('🎒','Học sinh',`<span class="pill">${STUDENTS.length} em</span>`)}
  <div class="row" style="gap:8px;flex-wrap:wrap"><button type="button" class="btn pri" data-act="qlMoHS">+ Thêm học sinh</button></div>
+ ${mkDong()}
  ${nChua?`<div class="qlnote"><span>⚠ ${nChua} em chưa xếp lớp — các em <b>chưa đăng nhập được</b>.</span><button type="button" class="btn sm" data-act="qlHsLop---qlTrangSo-render">Xem các em này</button></div>`:''}
  <section class="card"><div class="qlfil">
   <select aria-label="Lọc theo khối" data-act-change="qlHsKhoi-qlTrangSo-render"><option value="0">Tất cả khối</option>${[1,2,3,4,5].map(k=>`<option value="${k}" ${qlHsKhoi===k?'selected':''}>Khối ${k}</option>`).join('')}</select>
@@ -98,16 +104,17 @@ function trangPH(){const o=O(),m={};Object.entries(o.ph||{}).forEach(([c,tk])=>{
  const chua=STUDENTS.filter(s=>!phOf(s[0]));
  return`<div class="grid">${head('👪','Phụ huynh',`<span class="pill">${tks.length} tài khoản</span>`)}
  <div class="row" style="gap:8px" id="phNut"></div>
+ ${mkDong()}
  <p class="muted" style="margin:0">Tài khoản phụ huynh tự tạo khi thêm học sinh; anh chị em cùng SĐT/Gmail dùng chung 1 tài khoản. Bấm ✎ Sửa để sửa SĐT, Gmail, mật khẩu; 👪 Con để gắn thêm hoặc tách con.</p>
- <section class="card"><h2>Tài khoản phụ huynh</h2>${tks.length?`<div class="qlli">${tks.map(t=>`<div class="qlr qph"><div class="a-ten"><b>${e(phTen(t))}</b><div class="muted">${e(t)}${(info[t]||{}).dt?' · '+e(info[t].dt):''}</div></div><div class="a-con">${m[t].map(c=>`<span class="pill">${e(ten(c))}</span>`).join(' ')}</div><div class="a-act"><button type="button" class="btn sm" data-act="qlSuaPH" ${hd.arg(String(t))}>✎ Sửa</button><button type="button" class="btn sm" data-act="qlMoPH-3" ${hd.arg(String(t))}>👪 Con</button></div></div>`).join('')}</div>`:'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>
- <section class="card"><h2>Em chưa có phụ huynh (${chua.length})</h2>${chua.length?`<div class="qlchips">${chua.slice(0,60).map(s=>`<span class="pill">${e(s[1])}</span>`).join(' ')}${chua.length>60?` <span class="muted">… và ${chua.length-60} em</span>`:''}</div>`:'<p class="muted">Em nào cũng đã có phụ huynh.</p>'}</section>
- ${o.cloud&&typeof fbTaiKhoanBox==='function'?fbTaiKhoanBox():''}</div>`}
+ <section class="card"><h2>Tài khoản phụ huynh</h2>${tks.length?`<div class="qlli">${tks.map(t=>`<div class="qlr qph"><div class="a-ten"><b>${e(phTen(t))}</b><div class="muted">${e(t)}${(info[t]||{}).dt?' · '+e(info[t].dt):''}</div></div><div class="a-con">${m[t].map(c=>`<span class="pill">${e(ten(c))}</span>`).join(' ')}</div><div class="a-act">${kBtn(t)}<button type="button" class="btn sm" data-act="qlSuaPH" ${hd.arg(String(t))}>✎ Sửa</button><button type="button" class="btn sm" data-act="qlMoPH-3" ${hd.arg(String(t))}>👪 Con</button></div></div>`).join('')}</div>`:'<p class="muted">Chưa có tài khoản phụ huynh.</p>'}</section>
+ <section class="card"><h2>Em chưa có phụ huynh (${chua.length})</h2>${chua.length?`<div class="qlchips">${chua.slice(0,60).map(s=>`<span class="pill">${e(s[1])}</span>`).join(' ')}${chua.length>60?` <span class="muted">… và ${chua.length-60} em</span>`:''}</div>`:'<p class="muted">Em nào cũng đã có phụ huynh.</p>'}</section></div>`}
 
 /* ---------- Giáo viên ---------- */
 function trangGV(){const o=O(),L=o.lop||[];
- const rows=(o.gv||[]).map(g=>{const ls=L.filter(l=>(l.gv||[]).includes(g.id));return`<div class="qlr qgv"><div class="a-ten"><b>${e(g.ten)}</b><div class="muted">${e(g.tk||g.id)}${g.dt?' · '+e(g.dt):''}</div></div><div class="a-con">${ls.length?ls.map(l=>`<button type="button" class="pill lnk" data-act="qlDi-lopct" ${hd.arg(String(l.id))}>Lớp ${e(l.ten)}</button>`).join(' '):'<span class="pill qlwarn">Chưa có lớp</span>'}</div><div class="a-act"><button type="button" class="btn sm" data-act="qlSuaGV" ${hd.arg(String(g.id))}>✎ Sửa</button></div></div>`}).join('');
+ const rows=(o.gv||[]).map(g=>{const ls=L.filter(l=>(l.gv||[]).includes(g.id));return`<div class="qlr qgv"><div class="a-ten"><b>${e(g.ten)}</b><div class="muted">${e(g.tk||g.id)}${g.dt?' · '+e(g.dt):''}</div></div><div class="a-con">${ls.length?ls.map(l=>`<button type="button" class="pill lnk" data-act="qlDi-lopct" ${hd.arg(String(l.id))}>Lớp ${e(l.ten)}</button>`).join(' '):'<span class="pill qlwarn">Chưa có lớp</span>'}</div><div class="a-act">${kBtn(g.tk||g.id)}<button type="button" class="btn sm" data-act="qlSuaGV" ${hd.arg(String(g.id))}>✎ Sửa</button></div></div>`}).join('');
  return`<div class="grid">${head('👩‍🏫','Giáo viên',`<span class="pill">${(o.gv||[]).length} người</span>`)}
  <div class="row" style="gap:8px"><button type="button" class="btn pri" data-act="qlMoGV">+ Thêm giáo viên</button></div>
+ ${mkDong()}
  <p class="muted" style="margin:0">Phân công dạy lớp: vào trang Lớp › chọn lớp › Phân công giáo viên.</p>
  <section class="card"><div class="qlli"><div class="qlr qgv qlrh"><div class="a-ten">Giáo viên</div><div class="a-con">Lớp đang dạy</div><div class="a-act"></div></div>${rows||'<p class="muted">Chưa có giáo viên.</p>'}</div></section></div>`}
 

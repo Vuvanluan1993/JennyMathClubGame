@@ -216,7 +216,7 @@ async function fbDatLaiMKLoi(tk,pw){const db=FB.db;
   await db.doc('users/'+uid).set(du);await db.doc('login/'+tk).set({email:em,t:fbTS()});/* P-04: không ghi uid (bản ghi này get được công khai) */await Promise.all(q.docs.map(d=>db.doc('users/'+d.id).delete()));
   (S.org.nk=S.org.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Đặt lại mật khẩu cho ${tk}`});fbMKNho(tk,pw)}
 async function fbDatLaiMK(tk){const pw=await fbHoiMK({tieuDe:`Đặt lại mật khẩu: ${tk}`,goiY:fbMKGoiY(),nut:'Đặt lại',loiNhan:'Mật khẩu tạm; người dùng sẽ phải tự đổi khi đăng nhập. Mật khẩu chỉ hiện trong phiên này.'});if(!pw)return;
-  toast('Đang đặt lại…');try{await fbDatLaiMKLoi(tk,pw);save();render();toast(`Đã đặt lại mật khẩu cho ${tk} (xem mục Tài khoản / In phiếu)`)}catch(e){console.error(e);toast(fbLoi(e))}}
+  toast('Đang đặt lại…');try{await fbDatLaiMKLoi(tk,pw);save();render();toast(`Đã đặt lại mật khẩu cho ${tk}. Bấm 🖨 In phiếu ở dòng 🔑 đầu trang.`)}catch(e){console.error(e);toast(fbLoi(e))}}
 /* hộp xác nhận pixel (thay confirm()) */
 function fbXacNhan(tieuDe,loiNhan,nut){return new Promise(res=>{const el=document.createElement('div');el.className='gdov fbmk';
   el.innerHTML=`<div class="gdbox fbmkbox" role="dialog" aria-modal="true"><div class="gdhd"><b>${esc(tieuDe)}</b><button type="button" class="gdx" data-x aria-label="Đóng">✕</button></div><div class="fbmkf"><p>${esc(loiNhan)}</p><div class="row" style="gap:8px;justify-content:flex-end"><button type="button" class="btn" data-x>Thôi</button><button type="button" class="btn pri" data-ok>${esc(nut||'Đồng ý')}</button></div></div></div>`;
@@ -228,17 +228,17 @@ async function fbDatLaiMKLop(lid){const o=S.org,l=(o.lop||[]).find(x=>x.id===lid
   const xong=[],loi=[];for(let i=0;i<ids.length;i++){const tk=ids[i];toast(`Đang đặt lại ${i+1}/${ids.length}: ${tk}…`);try{await fbDatLaiMKLoi(tk,fbMKGoiY());xong.push(tk)}catch(e){console.error(tk,e);loi.push(tk)}}
   save();render();toast(`Đã đặt lại ${xong.length} em`+(loi.length?`, lỗi ${loi.length}: ${loi.join(', ')}`:''));
   if(xong.length&&typeof window.qlInPhieu==='function')setTimeout(()=>{try{qlInPhieu(xong,'hs')}catch(e){}},300)}
-export function fbTaiKhoanBox(){const o=S.org;if(!o||!o.cloud)return'';const lopTen=tk=>{const l=(o.lop||[]).find(x=>x.id===(o.gd||{})[tk]);return l?'Lớp '+l.ten:'chưa xếp lớp'};
-  const R=[...(o.gv||[]).map(g=>({ten:g.ten,vai:(g.tk||g.id)===CLOUD.me.tk&&CLOUD.me.role==='ql'?'Quản lý · Giáo viên':'Giáo viên',tk:g.tk||g.id,them:(o.lop||[]).filter(l=>(l.gv||[]).includes(g.id)).map(l=>l.ten).join(', ')||'chưa có lớp'})),
-    ...(o.hs||[]).map(([tk,ten])=>({ten,vai:'Học sinh',tk,them:lopTen(tk)})),
-    ...Object.entries(o.ph||{}).map(([con,tk])=>{const h=(o.hs||[]).find(x=>x[0]===con);return{ten:'Phụ huynh '+(h?h[1]:con),vai:'Phụ huynh',tk,them:'con: '+(h?h[1]:con)}})];
-  return`<section class="card"><h2>Tài khoản</h2><p class="muted" style="margin:4px 0 0">Tên đăng nhập của mọi người. Ai quên mật khẩu thì bấm "Đặt lại mật khẩu": người đó nhận mật khẩu tạm và phải tự đổi khi đăng nhập. Dữ liệu học không mất.</p>
-   ${fbMKPhien.length?`<div class="task" style="margin-top:10px;border-left:4px solid var(--leaf)"><b>Mật khẩu tạm trong phiên này</b> <span class="muted">(mất khi đăng xuất; học sinh/phụ huynh in phiếu)</span><div>${fbMKPhien.slice(0,30).map(x=>`${esc(x.tk)} / <code>${esc(x.pw)}</code>`).join(' · ')}</div></div>`:''}
-   <div class="tablewrap"><table><tr><th>Họ tên</th><th>Vai trò</th><th>Tên đăng nhập</th><th>Lớp / con</th><th></th></tr>${R.map(r=>`<tr><td><b>${esc(r.ten)}</b></td><td>${r.vai}</td><td><code>${esc(r.tk)}</code></td><td>${esc(r.them)}</td><td>${r.tk===CLOUD.me.tk?'<span class="muted">dùng "Đổi mật khẩu"</span>':`<button class="btn sm" data-act="fbDatLaiMK" ${hd.arg(String(r.tk))}>Đặt lại mật khẩu</button>`}</td></tr>`).join('')}</table></div></section>`}
+/* 28/10/2026: bỏ bảng "Tài khoản" gom mọi vai trò (trùng 3 trang Học sinh/Giáo viên/Phụ huynh, không lọc, in mật khẩu ra trang).
+   Thay bằng: nút 🔑 ở từng dòng (73) gọi fbDatLaiMK; dòng nhỏ fbMKPhienDong() chỉ đếm số mật khẩu tạm + nút In phiếu; hộp fbMayChuBox() ở trang chính Quản lý
+   giữ các việc quản trị máy chủ (Nâng cấp v3, Ví xu — bọc ở dưới). */
+export function fbMKPhienDong(){if(!CLOUD||CLOUD.me.role!=='ql'||!fbMKPhien.length)return'';const tks=fbMKPhien.map(x=>x.tk);
+  return`<div class="qlnote fbmkp"><span>🔑 <b>${tks.length}</b> mật khẩu tạm trong phiên này (mất khi đăng xuất): ${esc(tks.slice(0,6).join(', '))}${tks.length>6?` … +${tks.length-6}`:''}</span><button type="button" class="btn sm pri" data-act="fbInMKPhien">🖨 In phiếu</button></div>`}
+export function fbMayChuBox(){const o=S.org;if(!o||!o.cloud||!CLOUD||CLOUD.me.role!=='ql')return'';
+  return`<section class="card"><h2>Máy chủ</h2><p class="muted" style="margin:4px 0 0">Dữ liệu trung tâm lưu trên Firebase <code>${esc((FB&&FB.app&&FB.app.options.projectId)||'')}</code>. Quên mật khẩu: bấm 🔑 ở dòng của người đó (trang Học sinh, Giáo viên, Phụ huynh); cả lớp: trang một lớp.</p></section>`}
 {hooks.on('viewPH',_p=>function(){let r=_p.apply(this,arguments);try{if(role==='ql'&&CLOUD&&S.org&&S.org.cloud){
   /* P-05: trang một lớp → nút đặt lại mật khẩu cả lớp (75 chèn nút In phiếu vào cùng chỗ) */
   if(typeof qlTrang!=='undefined'&&qlTrang==='lopct')r=r.replace(/(<span class="pill">Khối \d+ · \d+ em<\/span><\/div>)/,`$1<div class="qlin"><button type="button" class="btn" data-act="fbDatLaiMKLop" ${hd.arg(String(qlLopId))}>🔑 Đặt lại mật khẩu cả lớp</button></div>`);
-  const m='<p class="muted" style="margin:0">Sắp có:';const i=r.lastIndexOf(m);const box=fbTaiKhoanBox();return i<0?r.replace(/<\/div>\s*$/,box+'</div>'):r.slice(0,i)+box+r.slice(i)}}catch(e){console.error(e)}return r})}
+  return r}}catch(e){console.error(e)}return r})}
 
 /* ---------- giao diện khi dùng máy chủ ---------- */
 {hooks.on('header',_h=>function(){try{if(CLOUD&&S&&S.st&&!S.st[sid]){const f=STUDENTS.find(r=>S.st[r[0]]);if(f)sid=f[0];else S.st[sid]=newStudent('Chưa có học sinh',1)}}catch(e){}_h();try{if(!CLOUD||CLOUD.me.role==='hs')return;const me=CLOUD.me,t=document.getElementById('tabs');
@@ -269,7 +269,7 @@ body[class*="trang-"] #tabs{display:none!important}body.trang-gv #whoBox,body.tr
    nk/{id}   {d, ai, t, luc}                                       QL/cô thêm, không sửa xoá; QL đọc 200 dòng mới nhất
    Lớp tương thích: orgV3Gop(V3) dựng S.org đúng hình cũ cho mọi file; orgV3Tach(S.org) chiếu ngược ra từng doc;
    fbDay so từng doc với bản đã đồng bộ (fbLast) và chỉ ghi doc đổi; orgSet(path, value) sửa một chỗ rồi đẩy ngay.
-   Bật khi org/main.v === 3 (nút "Nâng cấp dữ liệu v3" ở trang Quản lý › Tài khoản). Trước đó vẫn chạy kiểu cũ (j). */
+   Bật khi org/main.v === 3 (nút "Nâng cấp dữ liệu v3" ở hộp Máy chủ, trang chính Quản lý). Trước đó vẫn chạy kiểu cũ (j). */
 function fbTaiLai(){location.reload()}
 const V3={on:false,main:null,lop:{},hsdm:{},hoso:{},gv:{},ph:{},nk:[],san:{}};
 const V3_COLS=['lop','hsdm','hoso','gv','ph'];
@@ -404,7 +404,7 @@ hooks.ham('fbNangCapV3',async function(){if(!CLOUD||CLOUD.me.role!=='ql'||!S.org
     b.update(db.doc('org/main'),Object.assign({},D.main,{jCu:fbTS(),t:fbTS()}));ghi.push(b.commit());await Promise.all(ghi);
     await fbTaoVi(true);/* P-20: ví xu từng em + bảng giá cfg/shop */
     toast('Đã nâng cấp dữ liệu v3. Đang tải lại…');setTimeout(()=>fbTaiLai(),1200)}catch(e){console.error(e);toast('Chưa nâng cấp được: '+fbLoi(e))}});
-{const _t=fbTaiKhoanBox;fbTaiKhoanBox=function(){const r=_t.apply(this,arguments);if(!r||fbV3()||!CLOUD||CLOUD.me.role!=='ql')return r;
+{const _t=fbMayChuBox;fbMayChuBox=function(){const r=_t.apply(this,arguments);if(!r||fbV3()||!CLOUD||CLOUD.me.role!=='ql')return r;
   return r.replace('</section>',`<div class="task" style="margin-top:10px;border-left:4px solid var(--coral)"><b>Dữ liệu còn ở dạng cũ (một khối JSON)</b><div class="muted" style="margin:4px 0 8px">Nâng cấp lên v3 để tách lớp, học sinh, hồ sơ, nhật ký thành từng bản ghi riêng (bảo mật theo từng trường, cô không ghi đè được dữ liệu trung tâm). Làm một lần, sau đó dán quy tắc Firestore mới.</div><button type="button" class="btn pri" data-act="fbNangCapV3">⬆ Nâng cấp dữ liệu v3</button></div></section>`)}}
 /* thiết lập lần đầu tạo thẳng v3 */
 {const _s=fbThietLap;fbThietLap=async function(ten,tk,pw){const r=await _s.apply(this,arguments);try{const db=FB.db,o=fbJ((await db.doc('org/main').get()).data().j)||{},D=orgV3Tach(o);
@@ -418,7 +418,7 @@ async function fbTaoVi(im){if(!CLOUD||CLOUD.me.role!=='ql'||!FB){if(!im)toast('C
   ((S.org&&S.org.hs)||[]).forEach(([tk])=>{if(co[tk])return;if(!fbHsDa[tk]||!S.st[tk]){cho++;return}them(db.doc('vi/'+tk),Object.assign(xuViTu(S.st[tk]),{t:fbTS()}));n++});
   them(db.doc('cfg/shop'),Object.assign(xuBangGia(),{t:fbTS()}));ghi.push(b.commit());
   try{await Promise.all(ghi);if(!im){toast(`Đã tạo ví cho ${n} em và ghi bảng giá cfg/shop`+(cho?` · ${cho} em chưa tải xong, bấm lại sau`:''));render()}}catch(e){console.error(e);toast('Chưa tạo được ví: '+fbLoi(e))}return n}
-{const _t=fbTaiKhoanBox;fbTaiKhoanBox=function(){const r=_t.apply(this,arguments);if(!r||!fbV3()||!CLOUD||CLOUD.me.role!=='ql')return r;
+{const _t=fbMayChuBox;fbMayChuBox=function(){const r=_t.apply(this,arguments);if(!r||!fbV3()||!CLOUD||CLOUD.me.role!=='ql')return r;
   const thieu=((S.org&&S.org.hs)||[]).filter(([tk])=>fbVi[tk]===null).length;
   return r.replace('</section>',`<div class="task" style="margin-top:10px;border-left:4px solid ${thieu?'var(--coral)':'var(--leaf)'}"><b>Ví xu (P-20)</b> <span class="muted">${thieu?`${thieu} em chưa có ví vi/{tk} — em đó vẫn giữ xu trong hs.j kiểu cũ.`:'Mọi em đã có ví; xu, đồ mua ghi theo luật máy chủ.'} Nút này cũng ghi lại bảng giá cfg/shop từ danh mục trong app.</span> <button type="button" class="btn sm" data-act="fbTaoVi">Tạo ví + bảng giá</button></div></section>`)}}
 export const fbXuCache={t:0,d:{},dang:false};
@@ -435,6 +435,7 @@ export async function fbXuSo(tk){try{const q=await FB.db.collection('ev/'+tk+'/d
 /* ===== P-14c: hành động cho data-act (sinh bởi tools/vite/bo-inline.mjs; sửa tay được, chạy lại chỉ thêm mục mới) ===== */
 hd.dangKy({
   'fbDatLaiMK':function(event,a){fbDatLaiMK(a[0])},
+  'fbInMKPhien':function(){if(typeof window.qlInPhieu==='function')qlInPhieu(fbMKPhien.map(x=>x.tk),'auto')},
   'fbDatLaiMKLop':function(event,a){fbDatLaiMKLop(a[0])},
   'fbDoiMK':function(){fbDoiMK()},
   'fbDangXuat':function(){fbDangXuat()},

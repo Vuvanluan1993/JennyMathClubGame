@@ -1,5 +1,15 @@
 # Lịch sử thay đổi
 
+## 28/10/2026 — Trang Quản lý: bỏ bảng "Tài khoản" gom, nút 🔑 đặt lại mật khẩu ở từng dòng (PR vào `tich-hop/kien-truc-2026-10`)
+- **Bỏ** bảng "Tài khoản" (P-05 chèn vào cuối trang Phụ huynh) liệt kê mọi giáo viên, học sinh, phụ huynh: trùng 3 trang đã có, không lọc, không chia trang,
+  lại in mật khẩu tạm ra giữa trang. Thầy chốt 28/10 (xem `LUAT-DA-CHOT.md` 6j).
+- **Nút 🔑** (đặt lại mật khẩu, chỉ bản máy chủ) ở từng dòng trang Học sinh, Giáo viên, Phụ huynh, cạnh ✎ Sửa; không hiện ở dòng của chính người đang đăng nhập
+  (dùng "Đổi mật khẩu"). Nút "Đặt lại mật khẩu cả lớp" ở trang một lớp giữ nguyên.
+- **Dòng mật khẩu tạm** (`fbMKPhienDong`, đầu trang chính và 3 trang danh sách): chỉ ghi số người và tên đăng nhập vừa đặt lại trong phiên + nút 🖨 In phiếu; mật khẩu
+  không in ra trang nữa, chỉ có trên phiếu. `qlInPhieu(ids,'auto')` tự chia học sinh / phụ huynh / giáo viên; thêm mẫu "PHIẾU ĐĂNG NHẬP GIÁO VIÊN" (trang `giao-vien/`).
+- Hai hộp quản trị (Nâng cấp dữ liệu v3, Ví xu P-20) chuyển sang hộp **Máy chủ** (`fbMayChuBox`) ở cuối trang chính Quản lý.
+- Mục "Tài khoản" riêng (lọc theo vai trò, trạng thái, khoá tài khoản, xuất dữ liệu) để làm cùng T-07b khi cần.
+
 ## 28/10/2026 — Sửa: nút Lưu/Tạo trong các bảng của trang Quản lý không chạy (sau P-14c, PR vào `tich-hop/kien-truc-2026-10`)
 - **Lỗi**: ở bản dựng nhánh tích hợp, bấm "Tạo tài khoản" trong bảng Thêm học sinh (và Thêm giáo viên, Thêm lớp, Xếp lớp, Tài khoản phụ huynh,
   Sửa giáo viên/phụ huynh) không thấy gì: không tạo, không báo lỗi. Nguyên nhân: `bo-inline.mjs` đổi `onsubmit="event.preventDefault();${ok}"`
