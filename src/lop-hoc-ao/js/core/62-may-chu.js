@@ -60,6 +60,8 @@ async function fbDangXuat(){fbSub.forEach(f=>{try{f()}catch(e){}});fbSub=[];let 
     window.qlMK={};fbMKPhien.length=0}catch(e){}
   try{await FB.auth.signOut()}catch(e){}CLOUD=null;location.reload()}
 /* ---------- mật khẩu (P-05): ngẫu nhiên 8 kí tự dễ đọc, hộp thoại pixel thay prompt(), bắt đổi lần đầu ---------- */
+/* 28/10/2026 (thầy chốt): đặt lại mật khẩu (một người hay cả lớp) luôn mặc định jenny@123; vẫn phải tự đổi khi đăng nhập lần sau (mustChange). Tạo tài khoản mới vẫn ngẫu nhiên. */
+const MK_DAT_LAI='jenny@123';
 export function fbMKGoiY(){const C='bdghkmnprstvx',V='aeiou',r=n=>Math.floor(Math.random()*n);let s='';for(let i=0;i<2;i++)s+=C[r(C.length)]+V[r(V.length)];return s+String(1000+r(9000))}
 export const fbMKLoi=(a,b)=>a.length<8?'Mật khẩu cần ít nhất 8 kí tự.':!(/[a-z]/i.test(a)&&/\d/.test(a))?'Mật khẩu cần có cả chữ và số.':a!==b?'Hai lần nhập chưa giống nhau.':'';
 const fbMKPhien=[];export function fbMKNho(tk,pw){window.qlMK=window.qlMK||{};qlMK[tk]=pw;const i=fbMKPhien.findIndex(x=>x.tk===tk);if(i>=0)fbMKPhien.splice(i,1);fbMKPhien.unshift({tk,pw})}
@@ -215,17 +217,17 @@ async function fbDatLaiMKLoi(tk,pw){const db=FB.db;
   await fbInit();const app2=firebase.apps.find(a=>a.name==='tao')||firebase.initializeApp(FB.app.options,'tao');const c=await app2.auth().createUserWithEmailAndPassword(em,pw);const uid=c.user.uid;await app2.auth().signOut();
   await db.doc('users/'+uid).set(du);await db.doc('login/'+tk).set({email:em,t:fbTS()});/* P-04: không ghi uid (bản ghi này get được công khai) */await Promise.all(q.docs.map(d=>db.doc('users/'+d.id).delete()));
   (S.org.nk=S.org.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Đặt lại mật khẩu cho ${tk}`});fbMKNho(tk,pw)}
-async function fbDatLaiMK(tk){const pw=await fbHoiMK({tieuDe:`Đặt lại mật khẩu: ${tk}`,goiY:fbMKGoiY(),nut:'Đặt lại',loiNhan:'Mật khẩu tạm; người dùng sẽ phải tự đổi khi đăng nhập. Mật khẩu chỉ hiện trong phiên này.'});if(!pw)return;
-  toast('Đang đặt lại…');try{await fbDatLaiMKLoi(tk,pw);save();render();toast(`Đã đặt lại mật khẩu cho ${tk}. Bấm 🖨 In phiếu ở dòng 🔑 đầu trang.`)}catch(e){console.error(e);toast(fbLoi(e))}}
+async function fbDatLaiMK(tk){const pw=await fbHoiMK({tieuDe:`Đặt lại mật khẩu: ${tk}`,goiY:MK_DAT_LAI,nut:'Đặt lại',loiNhan:`Mật khẩu tạm mặc định ${MK_DAT_LAI} (sửa được); người dùng sẽ phải tự đổi khi đăng nhập.`});if(!pw)return;
+  toast('Đang đặt lại…');try{await fbDatLaiMKLoi(tk,pw);save();render();toast(`Đã đặt lại mật khẩu cho ${tk}: ${pw}. Bấm 🖨 In phiếu ở dòng 🔑 đầu trang.`)}catch(e){console.error(e);toast(fbLoi(e))}}
 /* hộp xác nhận pixel (thay confirm()) */
 function fbXacNhan(tieuDe,loiNhan,nut){return new Promise(res=>{const el=document.createElement('div');el.className='gdov fbmk';
   el.innerHTML=`<div class="gdbox fbmkbox" role="dialog" aria-modal="true"><div class="gdhd"><b>${esc(tieuDe)}</b><button type="button" class="gdx" data-x aria-label="Đóng">✕</button></div><div class="fbmkf"><p>${esc(loiNhan)}</p><div class="row" style="gap:8px;justify-content:flex-end"><button type="button" class="btn" data-x>Thôi</button><button type="button" class="btn pri" data-ok>${esc(nut||'Đồng ý')}</button></div></div></div>`;
   document.body.appendChild(el);el.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{el.remove();res(false)});el.querySelector('[data-ok]').onclick=()=>{el.remove();res(true)}})}
-/* QL: đặt lại mật khẩu ngẫu nhiên cho cả lớp (tài khoản cũ còn mật khẩu mặc định), rồi in phiếu */
+/* QL: đặt lại mật khẩu cả lớp về jenny@123 (MK_DAT_LAI), rồi in phiếu */
 async function fbDatLaiMKLop(lid){const o=S.org,l=(o.lop||[]).find(x=>x.id===lid);if(!l)return;const ids=(o.hs||[]).filter(([tk])=>(o.gd||{})[tk]===lid).map(r=>r[0]);
   if(!ids.length){toast('Lớp chưa có học sinh');return}
-  if(!await fbXacNhan(`Đặt lại mật khẩu cả lớp ${l.ten}`,`${ids.length} em sẽ có mật khẩu tạm mới (ngẫu nhiên), lần đăng nhập sau phải tự đổi. Mật khẩu cũ không dùng được nữa. Xong sẽ mở phiếu in.`,'Đặt lại cả lớp'))return;
-  const xong=[],loi=[];for(let i=0;i<ids.length;i++){const tk=ids[i];toast(`Đang đặt lại ${i+1}/${ids.length}: ${tk}…`);try{await fbDatLaiMKLoi(tk,fbMKGoiY());xong.push(tk)}catch(e){console.error(tk,e);loi.push(tk)}}
+  if(!await fbXacNhan(`Đặt lại mật khẩu cả lớp ${l.ten}`,`${ids.length} em sẽ có mật khẩu tạm ${MK_DAT_LAI}, lần đăng nhập sau phải tự đổi. Mật khẩu cũ không dùng được nữa. Xong sẽ mở phiếu in.`,'Đặt lại cả lớp'))return;
+  const xong=[],loi=[];for(let i=0;i<ids.length;i++){const tk=ids[i];toast(`Đang đặt lại ${i+1}/${ids.length}: ${tk}…`);try{await fbDatLaiMKLoi(tk,MK_DAT_LAI);xong.push(tk)}catch(e){console.error(tk,e);loi.push(tk)}}
   save();render();toast(`Đã đặt lại ${xong.length} em`+(loi.length?`, lỗi ${loi.length}: ${loi.join(', ')}`:''));
   if(xong.length&&typeof window.qlInPhieu==='function')setTimeout(()=>{try{qlInPhieu(xong,'hs')}catch(e){}},300)}
 /* 28/10/2026: bỏ bảng "Tài khoản" gom mọi vai trò (trùng 3 trang Học sinh/Giáo viên/Phụ huynh, không lọc, in mật khẩu ra trang).

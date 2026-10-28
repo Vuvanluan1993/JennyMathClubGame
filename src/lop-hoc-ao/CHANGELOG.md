@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 28/10/2026 — Đặt lại mật khẩu: mặc định luôn là `jenny@123` (PR vào `tich-hop/kien-truc-2026-10`)
+- `MK_DAT_LAI='jenny@123'` ở `62-may-chu.js`: nút 🔑 từng dòng điền sẵn `jenny@123` (quản lý sửa được trước khi bấm Đặt lại); "Đặt lại mật khẩu cả lớp"
+  đặt tất cả về `jenny@123` thay vì ngẫu nhiên. Thông báo sau khi đặt ghi rõ mật khẩu. Thầy chốt 28/10 (xem `LUAT-DA-CHOT.md` 6j).
+- Vẫn giữ `mustChange`: người dùng đăng nhập lần sau phải tự đổi mật khẩu. Tạo tài khoản mới không đổi (ngẫu nhiên).
+
 ## 28/10/2026 — Trang Quản lý: bỏ bảng "Tài khoản" gom, nút 🔑 đặt lại mật khẩu ở từng dòng (PR vào `tich-hop/kien-truc-2026-10`)
 - **Bỏ** bảng "Tài khoản" (P-05 chèn vào cuối trang Phụ huynh) liệt kê mọi giáo viên, học sinh, phụ huynh: trùng 3 trang đã có, không lọc, không chia trang,
   lại in mật khẩu tạm ra giữa trang. Thầy chốt 28/10 (xem `LUAT-DA-CHOT.md` 6j).
