@@ -7,7 +7,7 @@ const dat=()=>{try{document.body.classList.toggle('lms',lms())}catch(e){}};
 if(typeof render==='function'){const _r=render;render=function(){dat();const r=_r.apply(this,arguments);dat();return r}}
 if(typeof setRole==='function'){const _s=setRole;setRole=function(){const r=_s.apply(this,arguments);dat();return r};window.setRole=setRole}
 document.addEventListener('DOMContentLoaded',dat);
-try{if(!document.querySelector('link[href*="family=Lexend"]'))document.head.insertAdjacentHTML('beforeend','<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">')}catch(e){}
+/* Lexend nằm trong assets/fonts/fonts.css (chữ tự host, P-08) — không chèn Google Fonts nữa. */
 const L='body.px.lms',FF='"Lexend","Be Vietnam Pro",system-ui,sans-serif';
 const C=['#0079C1','#1E9A52','#E0441A','#1F2A5A','#0E8FB8','#B07800'];
 const band=(sel,h)=>C.map((c,i)=>`${L} ${sel}:nth-child(6n+${i+1}){--band:${c}}`).join('');

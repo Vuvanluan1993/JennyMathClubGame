@@ -93,7 +93,7 @@
   function sagaParams() {
     const P = new URLSearchParams(location.search), back = P.get('saga');
     if (!back || !/^[\w\-./]+$/.test(back) || back.includes('//')) return null;
-    return { back, id: (P.get('id') || '').slice(0, 40), lv: +P.get('lv') || 0, r: +P.get('r') || 0, seed: +P.get('seed') || 1, n: (P.get('n') || '').slice(0, 20) };
+    return { back, id: (P.get('id') || '').slice(0, 40), lv: +P.get('lv') || 0, r: +P.get('r') || 0, seed: +P.get('seed') || 1, n: +P.get('n') || 0 };
   }
   function seeded(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
@@ -273,7 +273,7 @@
     const root = document.documentElement;
     function fitSide() {
       const side = q('.side'), play = q('#play'), mission = q('#kMission');
-      root.classList.remove('tight'); mission.style.fontSize = '';
+      root.classList.remove('tight', 'tighter'); mission.style.fontSize = '';
       const tall = innerWidth <= innerHeight;
       const ok = () => side.scrollHeight <= side.clientHeight + 1 && root.scrollHeight <= innerHeight + 1
         && play.clientHeight >= innerHeight * (tall ? .36 : .5);
@@ -281,6 +281,7 @@
       root.classList.add('tight');
       let fs = parseFloat(getComputedStyle(mission).fontSize);
       while (!ok() && fs > 11.5) { fs -= .5; mission.style.fontSize = fs + 'px'; }
+      if (!ok()) root.classList.add('tighter'); /* bước cuối: bớt khoảng cách (nút 48px làm thanh trên cao hơn) */
     }
     function fitPanels() {
       document.querySelectorAll('.ov:not([hidden]) .panel').forEach(p => {
