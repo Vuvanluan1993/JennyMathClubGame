@@ -5,7 +5,8 @@ if(typeof viewPH==='undefined')return;
 const O=()=>S.org,e=s=>esc(String(s==null?'':s));
 const bo=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().replace(/\s+/g,' ').trim();
 const cloud=()=>!!(O()&&O().cloud&&typeof CLOUD!=='undefined'&&CLOUD);
-const MK0='jenny123';
+/* P-05 (25/10/2026): mật khẩu ban đầu ngẫu nhiên (fbMKGoiY ở 62), phải đổi khi đăng nhập lần đầu (users.mustChange); chỉ hiện trên phiếu in trong phiên */
+const MKmoi=()=>typeof fbMKGoiY==='function'?fbMKGoiY():'tam'+String(Math.floor(10000+Math.random()*90000));
 window.qlMK=window.qlMK||{};            // mật khẩu biết được trong phiên này (để in phiếu)
 const URL_HS='vuvanluan1993.github.io/JennyMathClubGame/games/lop-hoc-ao/';
 const URL_PH='vuvanluan1993.github.io/JennyMathClubGame/games/lop-hoc-ao/phu-huynh/';
@@ -132,7 +133,7 @@ function xemTruoc(){const ds=qlNhap.ds,ok=ds.filter(x=>!x.loi.length),loi=ds.len
  ${loi?'<p class="qlnerr">Dòng lỗi (đỏ) sẽ bị bỏ qua. Sửa trong Excel rồi chọn lại file, hoặc nhập các dòng đúng trước.</p>':''}
  <div class="qlntb"><table><tr><th>Dòng</th><th>Học sinh</th><th>Lớp</th><th>Phụ huynh</th><th>Kết quả</th></tr>${rows}</table></div>
  <div class="qlin" style="margin-top:12px"><button type="button" class="btn pri" ${ok.length?'':'disabled'} onclick="qlChayNhap()">Nhập ${ok.length} em</button><label class="btn qlfile">Chọn file khác<input type="file" accept=".xlsx,.csv" onchange="qlDocFile(this.files[0])"></label></div>
- ${cloud()?'<p class="muted" style="font-size:12.5px">Mật khẩu ban đầu: <b>jenny123</b> (học sinh và phụ huynh). Tạo tài khoản trên máy chủ mất vài giây mỗi em.</p>':''}`}
+ ${cloud()?'<p class="muted" style="font-size:12.5px">Mật khẩu ban đầu: <b>ngẫu nhiên</b>, chỉ có trên phiếu in trong phiên này; lần đầu đăng nhập phải tự đổi (học sinh và phụ huynh). Tạo tài khoản trên máy chủ mất vài giây mỗi em.</p>':''}`}
 
 /* ---------- chạy nhập ---------- */
 const setv=(i,x)=>{const el=document.getElementById(i);if(el)el.value=x};
@@ -145,8 +146,8 @@ window.qlChayNhap=async function(){const ds=qlNhap.ds.filter(x=>!x.loi.length);i
  try{
  for(const x of ds){step(`Đang nhập ${kq.moi.length+kq.cap.length+kq.loi.length+1}/${ds.length}: ${e(x.hoten)}…`);
   try{let id=x.cu;
-   if(!id){setv('nhTen',x.hoten);setv('nhLop','');setv('nhGt',x.gt);setv('nhTk',x.tk||'');setv('nhPw',MK0);const truoc=new Set(Object.keys(S.st));
-    await window.qlTaoHS({preventDefault(){}});id=Object.keys(S.st).find(k=>!truoc.has(k));if(!id)throw new Error('không tạo được tài khoản');qlMK[id]=MK0;kq.moi.push(id)}else kq.cap.push(id);
+   if(!id){setv('nhTen',x.hoten);setv('nhLop','');setv('nhGt',x.gt);setv('nhTk',x.tk||'');const pwMoi=MKmoi();setv('nhPw',pwMoi);const truoc=new Set(Object.keys(S.st));
+    await window.qlTaoHS({preventDefault(){}});id=Object.keys(S.st).find(k=>!truoc.has(k));if(!id)throw new Error('không tạo được tài khoản');if(!qlMK[id])qlMK[id]=pwMoi;kq.moi.push(id)}else kq.cap.push(id);
    const H=o.hoso[id]=o.hoso[id]||{};H.gt=x.gt;if(x.d){if(x.d.ng){H.ng=x.d.ng;H.th=x.d.th}H.nam=x.d.nam}if(x.dt)H.dt=x.dt;if(x.mail)H.mail=x.mail;if(S.st[id])S.st[id].gender=x.gt;
    if(x.lop&&(o.gd||{})[id]!==x.lop.id)window.qlChuyen(id,x.lop.id);x.id=id}
   catch(err){kq.loi.push([x,err.message||String(err)])}}
@@ -154,8 +155,8 @@ window.qlChayNhap=async function(){const ds=qlNhap.ds.filter(x=>!x.loi.length);i
  const G=nhomPH(ds.filter(x=>x.id));
  for(const k in G){const g=G[k],con=g.xs.map(x=>x.id),x0={phten:(g.xs.find(x=>x.phten)||{}).phten||'',dt:(g.xs.find(x=>x.dt)||{}).dt||'',mail:(g.xs.find(x=>x.mail)||{}).mail||''};step('Đang gom phụ huynh…');
   try{let tk=g.cu;
-   if(!tk){tk=tkPH0(g.xs[0].id);if(cloud()){const uid=await fbTaoTK(tk,MK0);await FB.db.doc('users/'+uid).set({role:'ph',tk,ten:x0.phten||('Phụ huynh '+g.xs.map(x=>x.hoten.split(' ').pop()).join(', ')),con})}
-    o.phInfo[tk]={ten:x0.phten||'',dt:x0.dt||'',mail:x0.mail||''};qlMK[tk]=MK0}
+   if(!tk){tk=tkPH0(g.xs[0].id);const pwPH=MKmoi();if(cloud()){const uid=await fbTaoTK(tk,pwPH);await FB.db.doc('users/'+uid).set({role:'ph',tk,ten:x0.phten||('Phụ huynh '+g.xs.map(x=>x.hoten.split(' ').pop()).join(', ')),con,mustChange:true})}
+    o.phInfo[tk]={ten:x0.phten||'',dt:x0.dt||'',mail:x0.mail||''};qlMK[tk]=pwPH}
    else{const pi=o.phInfo[tk]=o.phInfo[tk]||{};if(!pi.ten&&x0.phten)pi.ten=x0.phten;if(!pi.dt&&x0.dt)pi.dt=x0.dt;if(!pi.mail&&x0.mail)pi.mail=x0.mail}
    con.forEach(c=>o.ph[c]=tk);
    if(cloud()&&g.cu){const all=Object.entries(o.ph).filter(([c,t])=>t===tk).map(([c])=>c);const q=await FB.db.collection('users').where('tk','==',tk).get();await Promise.all(q.docs.map(d=>FB.db.doc('users/'+d.id).set({con:all},{merge:true})))}
@@ -167,7 +168,7 @@ window.qlChayNhap=async function(){const ds=qlNhap.ds.filter(x=>!x.loi.length);i
  bd.innerHTML=`<p class="qlnok">✓ Xong: <b>${kq.moi.length}</b> em mới · <b>${kq.cap.length}</b> em cập nhật · <b>${kq.ph.length}</b> tài khoản phụ huynh.</p>
  ${kq.loi.length?`<div class="qlnerr">Chưa nhập được ${kq.loi.length}:<ul>${kq.loi.map(([x,m])=>`<li>Dòng ${x.dong} · ${e(x.hoten)}: ${e(m)}</li>`).join('')}</ul></div>`:''}
  <div class="qlin"><button type="button" class="btn pri" onclick="qlInPhieu([...qlNhapKQ.moi,...qlNhapKQ.cap],'hs')">🖨 In phiếu học sinh</button><button type="button" class="btn" ${kq.ph.length?'':'disabled'} onclick="qlInPhieu(qlNhapKQ.ph,'ph')">🖨 In phiếu phụ huynh</button><button type="button" class="btn ghost" onclick="document.getElementById('qlnhap').remove()">Đóng</button></div>
- <p class="muted" style="font-size:12.5px">Mật khẩu ban đầu jenny123. Phiếu in đen trắng, 8 phiếu một trang A4, xếp theo lớp.</p>`};
+ <p class="muted" style="font-size:12.5px">Mật khẩu ban đầu ngẫu nhiên, chỉ có trên phiếu in trong phiên này; lần đầu đăng nhập phải tự đổi. Phiếu in đen trắng, 8 phiếu một trang A4, xếp theo lớp.</p>`};
 
 /* ---------- in phiếu đăng nhập ---------- */
 window.qlInPhieu=function(ids,loai){const o=O(),lopTen=id=>((o.lop||[]).find(l=>l.id===(o.gd||{})[id])||{}).ten||'';
