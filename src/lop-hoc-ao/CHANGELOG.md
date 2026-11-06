@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 06/11/2026 — Tài khoản thử Test01…Test05 (lớp 1…5)
+- Bản học sinh thêm 5 tài khoản thử: **Test01 … Test05** (mật khẩu `jenny123`), ứng với lớp 1 … 5.
+- Như Lê Bảo Na: mở tất cả đảo, màn, chủ đề; 10 000 xu; có bài cô giao mẫu. Không cần làm lần lượt.
+- Đã thử: cả 5 tài khoản vào đúng lớp, mở hết; jenny03 vẫn khoá như cũ.
+
 ## 25/10/2026 — Mật khẩu ngẫu nhiên, bắt đổi lần đầu, App Check theo dõi (P-05, kế hoạch kiến trúc)
 - **Thầy cần làm** (`docs/FIREBASE-CONSOLE.md`): dán `firestore.rules` mới (có thêm luật `mustChange`); Authentication › bật *Email enumeration protection*, Password policy ≥ 8 kí tự có chữ và số, giữ Email/Password, không bật ẩn danh; App Check › đăng ký reCAPTCHA v3, dán site key vào `FB_CFG.appCheckKey` (62), để **Unenforced** theo dõi một tuần. Sau đó mở từng lớp bấm **🔑 Đặt lại mật khẩu cả lớp** cho các em còn mật khẩu cũ.
 - Không còn mật khẩu mặc định `jenny123` trong mã app (`grep -rn jenny123 src/lop-hoc-ao/js` = 0). Tạo học sinh (nút Thêm, Excel), giáo viên, phụ huynh (tay và tự động) → mật khẩu tạm **ngẫu nhiên 8 kí tự dễ đọc** (`fbMKGoiY`, dạng `kuta5831`), `users.mustChange:true`; quản lý gõ mật khẩu riêng thì phải ≥ 8 kí tự có chữ và số. Mật khẩu tạm **chỉ hiện trên phiếu in** (học sinh, phụ huynh) và mục Tài khoản của Quản lý trong phiên; đăng xuất là mất.
