@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 06/11/2026 — Tài khoản thử Test01…Test05 (lớp 1…5)
+- Bản học sinh thêm 5 tài khoản thử: **Test01 … Test05** (mật khẩu `jenny123`), ứng với lớp 1 … 5.
+- Như Lê Bảo Na: mở tất cả đảo, màn, chủ đề; 10 000 xu; có bài cô giao mẫu. Không cần làm lần lượt.
+- Đã thử: cả 5 tài khoản vào đúng lớp, mở hết; jenny03 vẫn khoá như cũ.
+
 ## 25/10/2026 — Game lẻ dùng kit và token chung (P-19, GL)
 - **Ô Số Bí Ẩn** lớp 6, 7: bỏ đoạn `<head>` lạ ở đầu file, có `lang="vi"`, `<title>` về đúng chỗ. Giao diện và cách chơi chung ở `games/o-so-bi-an/_chung.css` + `_chung.js`; mỗi lớp chỉ còn dữ liệu câu đố (20 dòng). Khoá lưu giữ `osba6`, `osba7`.
 - **Hành trình của Jenny** lớp 6 + tiểu học: phần chung (hình vẽ, tiến độ, âm thanh, bản đồ, vườn, cửa hàng, sao lưu, mở kho bài) ở `games/hanh-trinh-jenny/_saga/saga.js` + `saga.css`; mỗi bản giữ HTML, cấu hình đảo và Trạm toán riêng. Khoá lưu giữ `jenny-saga-6`, `jenny-saga-th`.
