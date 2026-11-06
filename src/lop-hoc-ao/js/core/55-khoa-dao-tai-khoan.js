@@ -2,10 +2,11 @@
    - Mọi tài khoản học sinh: đảo và màn KHOÁ, mở dần theo tiến độ (qua Màn 1 mở đảo sau; xong chủ đề mở chủ đề sau; màn sau mở khi qua màn trước).
    - Tài khoản thử: Lê Bảo Na — mở tất cả + 10 000 xu. Gồm: học sinh "na" (bản đầy đủ), tài khoản "lebaona" (bản học sinh),
      hoặc bất kỳ tài khoản nào em đặt tên đúng "Lê Bảo Na".
+   - Tài khoản thử theo lớp (06/11/2026): Test01…Test05 (mật khẩu jenny123) = lớp 1…5, cũng mở tất cả + 10 000 xu.
    - Bản đầy đủ (demo giáo viên): nút "Mở khóa tất cả" trên thanh demo vẫn dùng được để xem nhanh; mặc định khoá.
    - Dữ liệu cũ được làm mới: đổi khoá lưu (bản đầy đủ _v10, bản học sinh jennyHS2_…). */
 const HS_BUILD=()=>typeof ACC!=='undefined';
-function isTestSt(st){try{st=st||S.st[sid];if(!st)return false;if(sid==='na'||sid==='lebaona')return true;return String(st.name||'').normalize('NFC').trim().toLowerCase().replace(/\s+/g,' ')==='lê bảo na'}catch(e){return false}}
+function isTestSt(st){try{st=st||S.st[sid];if(!st)return false;if(sid==='na'||sid==='lebaona'||/^test0[1-5]$/.test(sid))return true;return String(st.name||'').normalize('NFC').trim().toLowerCase().replace(/\s+/g,' ')==='lê bảo na'}catch(e){return false}}
 let UNL_MAN=(()=>{try{return localStorage.getItem('jennyUnlockAll')==='1'}catch(e){return false}})();
 function unlNow(){return(role==='hs'&&isTestSt())||(!HS_BUILD()&&UNL_MAN)}
 toggleUnl=function(){UNL_MAN=!UNL_MAN;try{localStorage.setItem('jennyUnlockAll',UNL_MAN?'1':'0')}catch(e){}UNL=unlNow();render();toast(UNL_MAN?'Đã mở khóa tất cả đảo (chỉ để xem demo)':'Đã khoá lại: đảo mở dần theo tiến độ')};
