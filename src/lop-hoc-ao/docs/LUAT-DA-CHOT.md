@@ -85,6 +85,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 ## 6g. Dùng thật (23/10/2026)
 - Mọi tài khoản học sinh: đảo, màn **khoá**, mở dần theo tiến độ. Đã làm mới toàn bộ tài khoản.
 - **Lê Bảo Na = tài khoản thử**: mở tất cả, 10 000 xu (bản học sinh: `lebaona` / `jenny123`, hoặc đặt tên "Lê Bảo Na"; bản đầy đủ: học sinh Lê Bảo Na).
+- **Tài khoản thử theo lớp (06/11/2026):** `Test01` … `Test05` / `jenny123` = lớp 1 … 5; mở tất cả, 10 000 xu (giống Lê Bảo Na).
 - Học sinh thật không có bài cô giao mẫu.
 
 ## 6h. Trang giáo viên (23/10/2026)

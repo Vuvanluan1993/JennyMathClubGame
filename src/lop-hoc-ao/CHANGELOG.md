@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 06/11/2026 — Tài khoản thử Test01…Test05 (lớp 1…5)
+- Bản học sinh thêm 5 tài khoản thử: **Test01 … Test05** (mật khẩu `jenny123`), ứng với lớp 1 … 5.
+- Như Lê Bảo Na: mở tất cả đảo, màn, chủ đề; 10 000 xu; có bài cô giao mẫu. Không cần làm lần lượt.
+- Đã thử: cả 5 tài khoản vào đúng lớp, mở hết; jenny03 vẫn khoá như cũ.
+
 ## 25/10/2026 — Design system Jenny trong Claude Design (P-18, DS)
 - Mới design system "Jenny" (công cụ Artifact, kiểu Design System; link và quy tắc "màn mới dùng thành phần" ở `design/README.md`): 2 theme Pixel/Classroom cùng bảng màu, khác họ chữ và bo góc; 5 trang token; 12 thành phần có trạng thái và cỡ chạm (Nút, Ô phương án, Khung pixel, Thẻ lớp, Bảng nhập, Toast, Hộp thoại, Thanh điều hướng, Huy hiệu mức, Thẻ chào, Nhãn cảnh báo, Ô Quản lý); 6 mẫu trang ghép từ thành phần, mỗi mẫu ghi khác biệt so với ảnh app 25/10 (ảnh gốc đính kèm trong design system).
 - Mới `design/design-system/xuat-token.py`: sinh `design/design-system/project/tokens.json` từ `design/tokens.json`; `--check` so hai chiều → khác 0 giá trị (96 token + 6 họ chữ; thang chữ 29 kiểu chỉ có ở design system). Bản sao file design system ở `design/design-system/project/`.
