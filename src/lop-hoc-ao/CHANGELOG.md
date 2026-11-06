@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 06/11/2026 — Tài khoản thử Test01…Test05 (lớp 1…5)
+- Bản học sinh thêm 5 tài khoản thử: **Test01 … Test05** (mật khẩu `jenny123`), ứng với lớp 1 … 5.
+- Như Lê Bảo Na: mở tất cả đảo, màn, chủ đề; 10 000 xu; có bài cô giao mẫu. Không cần làm lần lượt.
+- Đã thử: cả 5 tài khoản vào đúng lớp, mở hết; jenny03 vẫn khoá như cũ.
+
 ## 25/10/2026 — Kiểm tra đề và giao diện tự động trên CI (P-17)
 - Ba bài kiểm mới, `npm test` tự nhặt (glob `tools/test/*.mjs`), kèm workflow `.github/workflows/giao-dien.yml` (3 việc song song, mỗi việc ≤ 10 phút, báo cáo HTML là artifact) và `check_fit.py` chạy bằng Python Playwright:
   - `tools/test/de-bebras.mjs`: 6 game Bebras + 4 bản `?kid=1` (Hành trình Tiểu học) × 3 mức × 1000 seed qua `__kit.make(lv, r, seed)`, r = seed % 10. Kiểm: không lỗi JS, không undefined/NaN, lời giải chạy lại đúng (robot tới đích đủ ngọc, ống bi xếp xong, xoay lật đúng số bước, mật thư giải ra câu, đường đi hợp lệ và rẻ nhất, chồng hình tô ra hình đích), bài chọn đúng 1 đáp án, lựa chọn không trùng. **30 000 đề: 0 lỗi** (chạy thêm 150 000 đề với `SO_SEED=5000`: 0 lỗi, 47 s).

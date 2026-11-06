@@ -6,6 +6,8 @@ t=open(os.path.join(ROOT,'dist','lop-hoc-ao-jenny.html')).read()
 acc={}
 def h(u,p):return hashlib.sha256(f'{u.lower()}:{p}'.encode()).hexdigest()
 acc['lebaona']={'g':1,'h':h('lebaona','jenny123'),'name':'Lê Bảo Na'}
+for g in range(1,6):  # 06/11/2026: tài khoản thử Test01…Test05 = lớp 1…5, mở tất cả đảo/màn
+    u=f'test0{g}';acc[u]={'g':g,'h':h(u,'jenny123'),'name':f'Test0{g}'}
 for g in range(1,6):  # 23/10/2026: chỉ tiểu học
     for suf in ['']+[f'-{i}' for i in range(1,6)]:
         u=f'jenny0{g}{suf}';acc[u]={'g':g,'h':h(u,'jenny123')}
