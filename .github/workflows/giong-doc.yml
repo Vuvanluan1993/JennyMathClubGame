@@ -12,25 +12,40 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   thu-am:
     runs-on: ubuntu-latest
+    env:
+      DANH_SACH: ${{ inputs.danh_sach }}
+      THU_MUC: ${{ inputs.thu_muc }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Tạo file tiếng
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_TTS_KEY: ${{ secrets.GOOGLE_TTS_KEY }}
         run: |
           which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
-          python3 tools/giong/tao-giong.py "${{ inputs.danh_sach }}" "${{ inputs.thu_muc }}"
-      - name: Lưu vào repo
-        if: always()
+          python3 tools/giong/tao-giong.py "$DANH_SACH" "$THU_MUC"
+
+      # Không push thẳng main: đẩy lên nhánh giong/<ngày> và mở PR để thầy duyệt (main được CI kiểm tra + deploy).
+      - name: Mở PR với file tiếng mới
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "jenny-giong-doc"
           git config user.email "actions@users.noreply.github.com"
-          git add "${{ inputs.thu_muc }}"
+          git add "$THU_MUC"
           git diff --cached --quiet && echo "Không có file mới" && exit 0
-          git commit -m "Thu giọng đọc: ${{ inputs.danh_sach }}"
-          git pull --rebase && git push
+          NHANH="giong/$(date -u +%Y-%m-%d-%H%M)"
+          git checkout -b "$NHANH"
+          git commit -m "Thu giọng đọc: $DANH_SACH → $THU_MUC"
+          git push -u origin "$NHANH"
+          gh pr create --base main --head "$NHANH" \
+            --title "Thu giọng đọc: $DANH_SACH" \
+            --body "File tiếng tạo bởi workflow Thu giọng đọc từ \`$DANH_SACH\` vào \`$THU_MUC\`. Thầy nghe thử rồi gộp."

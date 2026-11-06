@@ -5,8 +5,9 @@
 // Kiểm tra: số đảo khớp số tiết trong vở, trùm ở đảo cuối chủ đề, đáp án đúng, không trùng phương án,
 // không NaN/undefined, chữ không tràn màn hình 360px, mọi bài có Bài giảng Jenny, trò chơi nhỏ có luật hợp lí,
 // phép tính trong slide (liệt kê dòng nghi ngờ để người xem lại).
+if(process.env.PW_DIR&&!process.env.PLAYWRIGHT_BROWSERS_PATH)process.env.PLAYWRIGHT_BROWSERS_PATH=process.env.PW_DIR; // thư mục trình duyệt Playwright (mặc định: của Playwright)
 const path=require('path'),fs=require('fs');const {chromium}=require('playwright');
-const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME; // không đặt → Chromium của Playwright
 const grades=process.argv[2]?[Number(process.argv[2])]:[1,2,3,4,5];const only=process.argv[3]?process.argv[3].split(',').map(n=>Number(n)-1):null;
 const plan=JSON.parse(fs.readFileSync(path.join(ROOT,'data','plan.json'))).grades;
 (async()=>{const b=await chromium.launch({executablePath:fs.existsSync(EXE)?EXE:undefined});
