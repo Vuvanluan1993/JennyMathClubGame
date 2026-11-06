@@ -1,0 +1,104 @@
+# Kiểm tra đề và giao diện tự động (P-17). Ba việc chạy song song, mỗi việc dưới 10 phút;
+# báo cáo HTML (.ci/bao-cao/) đính kèm làm artifact "bao-cao-giao-dien".
+# Ba file tools/test/*.mjs cũng được `npm test` (ci.yml) chạy chung; workflow này thêm check_fit.py (Python) và báo cáo riêng.
+name: Giao diện
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: giao-dien-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  de:
+    name: Đề tự tạo (Bebras, Mầm non)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Đề Bebras (6 game + 4 bản Tiểu học × 3 mức × 1000 seed)
+        run: node tools/test/de-bebras.mjs
+      - name: Đề Mầm non (2000 câu qua __mn.test)
+        if: always()
+        run: node tools/test/de-mam-non.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bao-cao-de
+          path: .ci/bao-cao/
+          if-no-files-found: ignore
+
+  giao-dien:
+    name: Giao diện (axe, ô chạm, tràn ngang, giảm chuyển động)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Dựng bản Lớp học ảo
+        run: npm run build
+      - name: Kiểm tra giao diện 12 trang × 4 khổ
+        run: node tools/test/giao-dien.spec.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bao-cao-giao-dien
+          path: .ci/bao-cao/
+          if-no-files-found: ignore
+
+  check-fit:
+    # Cả bộ 73 ca × 8 khổ mất ~18 phút trên Mac → chia 8 phần theo đường dẫn game, chạy song song.
+    # 25/10/2026: 6 ca đang ✗ trên main (xem CHANGELOG P-17) → bước chạy để continue-on-error cho tới khi P-19 sửa; đọc kết quả ở artifact (check-fit.html).
+    name: Vừa 1 màn hình (check_fit.py ${{ matrix.game }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        game: [o-so-bi-an, mat-ma-bi-an, manh-ghep-bi-mat, tu-duy-bebras, hanh-trinh-jenny/lop-6, tieu-hoc, mam-non, tham-tu]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: .github/workflows/giao-dien.yml
+      - run: pip install playwright
+      - run: python -m playwright install --with-deps chromium
+      - name: Chạy check_fit.py (8 cỡ màn hình)
+        continue-on-error: true   # 6 ca ✗ đã biết (CHANGELOG P-17); bỏ dòng này khi P-19 sửa xong
+        env:
+          JENNY_CLB_CODE: ${{ secrets.JENNY_CLB_CODE }}
+        run: |
+          mkdir -p .ci/bao-cao
+          python -m http.server 8765 >/dev/null 2>&1 &
+          sleep 1
+          set +e
+          python tools/check_fit.py "${{ matrix.game }}" | tee .ci/bao-cao/check-fit.txt
+          rc=${PIPESTATUS[0]}
+          set -e
+          { echo '<!doctype html><html lang="vi"><meta charset="utf-8"><title>check_fit.py</title><body style="font-family:system-ui">';
+            echo "<h1>check_fit.py ${{ matrix.game }} — $([ "$rc" = 0 ] && echo ĐẠT || echo CHƯA ĐẠT)</h1><pre>";
+            sed 's/&/\&amp;/g; s/</\&lt;/g' .ci/bao-cao/check-fit.txt; echo '</pre></body></html>'; } > .ci/bao-cao/check-fit.html
+          exit $rc
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bao-cao-check-fit-${{ strategy.job-index }}
+          path: .ci/bao-cao/
+          if-no-files-found: ignore
