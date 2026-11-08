@@ -46,7 +46,15 @@ Cowork và Claude Code có thể chạy song song. Quy tắc để không giẫm
 
 ## Công cụ trên máy Mac này (25/10/2026)
 - `python3` 3.9 có sẵn → `build.py`, `check_fit.py` chạy được (cần `pip install playwright` cho check_fit).
-- `node` **chưa cài** → `node tools/test/kiem-tra.js` chưa chạy được. Cài: `brew install node` rồi
-  `npm i -D playwright && npx playwright install chromium`. Khi chưa có Node, ghi rõ trong báo cáo là chưa chạy bộ kiểm tra.
+- `brew` **chưa cài**, nên Node cài tay từ tarball chính thức (không cần quyền quản trị):
+  tải `node-v22.x-darwin-arm64.tar.gz` ở https://nodejs.org/dist/latest-v22.x/ (máy `arm64`, xem `uname -m`),
+  giải nén vào `~/.local/node`, thêm `export PATH="$HOME/.local/node/bin:$PATH"` vào `~/.zprofile`.
+  Có Homebrew thì `brew install node` cũng được.
+- Bộ kiểm tra (một lệnh, từ gốc kho): `npm ci` (lần đầu, cài Playwright) → `npx playwright install chromium`
+  (lần đầu, tải ~150 MB) → `npm run build && npm test`. `npm test` chạy `tools/test/chay-tat-ca.mjs`: mọi
+  `tools/test/*.mjs` và `src/lop-hoc-ao/tools/test/*.js`, ghi mã lỗi chung vào `.ci/rc.txt` (0 = ĐẠT), từng bài vào
+  `.ci/ket-qua.txt`. Chạy một bài: `npm test -- kiem-tra`. Trình duyệt ở chỗ khác: đặt `PW_DIR` (hoặc `CHROME`).
+  GitHub Actions (`.github/workflows/ci.yml`) chạy đúng chuỗi này trên mọi PR và khi đẩy vào `main`.
+  Khi máy chưa có Node, ghi rõ trong báo cáo là chưa chạy bộ kiểm tra.
 - `gh` (GitHub CLI) 2.103 đã cài ở `~/.local/bin` (PATH thêm trong `~/.zprofile`), đã đăng nhập tài khoản Vuvanluan1993
   qua SSH → mở PR bằng `gh pr create --fill`.

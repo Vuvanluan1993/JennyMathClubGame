@@ -1,0 +1,24 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "d",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "k", "order": "ASCENDING" },
+        { "fieldPath": "t", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "d",
+      "fieldPath": "t",
+      "indexes": [
+        { "order": "ASCENDING", "queryScope": "COLLECTION" },
+        { "order": "DESCENDING", "queryScope": "COLLECTION" },
+        { "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" },
+        { "order": "DESCENDING", "queryScope": "COLLECTION_GROUP" }
+      ]
+    }
+  ]
+}
