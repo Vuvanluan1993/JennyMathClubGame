@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 06/11/2026 — Tài khoản thử Test01…Test05 (lớp 1…5)
+- Bản học sinh thêm 5 tài khoản thử: **Test01 … Test05** (mật khẩu `jenny123`), ứng với lớp 1 … 5.
+- Như Lê Bảo Na: mở tất cả đảo, màn, chủ đề; 10 000 xu; có bài cô giao mẫu. Không cần làm lần lượt.
+- Đã thử: cả 5 tài khoản vào đúng lớp, mở hết; jenny03 vẫn khoá như cũ.
+
 ## 25/10/2026 — Xuất dữ liệu một học sinh, nhắc thời hạn lưu 24 tháng (P-09b, kế hoạch kiến trúc)
 - **Thầy đã chốt Q2 = B:** giữ ngày sinh đầy đủ và Gmail phụ huynh trong `hoso/{tk}` (chỉ quản lý đọc ghi). Vì vậy **không đổi trường hồ sơ**, không đổi cột Ngày sinh ở Excel. P-09b chỉ còn 2 việc dưới đây.
 - **⬇ Xuất dữ liệu** (`78-xoa-hoc-sinh.js`, hàm `qlXuatHS(tk)`): nút ở bảng ✎ Sửa học sinh, cạnh 🗑 Xoá. Tải file `jenny-<tk>-<yyyy-mm-dd>.json` gồm: `hoso` (giới tính, ngày sinh, SĐT, Gmail phụ huynh, kèm `hosoNam` các năm học cũ và `nghi`), `hsdm` (tên, khối, lớp, tk phụ huynh), `hs` (`j` = dữ liệu học của em, `ev` = sự kiện xAPI của em), `vi` (ví xu `vi/{tk}`; bản không máy chủ lấy từ `st.coins`, `st.items`), `evXu` (sổ xu `ev/{tk}/d` 90 ngày gần nhất, chỉ khi dùng máy chủ; bản demo để `null`), `hsgv` (nhận xét, huy hiệu, ghi chú của cô). Mỗi lần xuất ghi một dòng Nhật ký "Xuất dữ liệu của <tên> (<tk>) — file …".
