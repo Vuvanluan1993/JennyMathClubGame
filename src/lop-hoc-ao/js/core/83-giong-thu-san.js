@@ -34,6 +34,8 @@
       a.onended=()=>{if(au===a){au=null;try{duck(0)}catch(e){}}};a.onerror=hong;
       try{duck(1)}catch(e){}
       const p=a.play();if(p&&p.catch)p.catch(hong);
+      /* màn chơi: tải trước đề câu kế tiếp */
+      try{const nx=scr&&scr.qs&&scr.qs[scr.j+1];if(nx&&nx.q)taiTruoc(sayFull(nx.say,nx.q))}catch(e){}
     });
   };
   /* bài giảng: tải trước slide kế tiếp */

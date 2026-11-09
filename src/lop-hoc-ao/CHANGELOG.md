@@ -1,5 +1,17 @@
 # Lịch sử thay đổi
 
+## 09/11/2026 — Giọng thu sẵn cho phần đọc đề lớp 1 (6 000 câu)
+- Thầy chọn thu nguyên câu **6 000 câu đọc đề gặp nhiều nhất** (lớp 1–2 tự đọc đề). `gom-loi-doc.js` lấy mẫu mọi dạng câu (hạt ngẫu nhiên cố định nên danh sách ổn định), xếp theo số lần gặp. Đo thử 5 000 câu ngẫu nhiên: **89% lần đọc đề phát giọng thu sẵn**, còn lại giọng máy.
+- Gom thêm câu cố định còn sót: "Em làm đúng rồi!", lời mở đầu trò chơi, lời khen/động viên màn Vẽ hình (37 câu cố định).
+- Lớp 1 nay 6 259 lời, khoảng 328 000 ký tự (trong 1 triệu ký tự miễn phí/tháng). App tải trước đề câu kế tiếp.
+- Lời giải khi sai 2 lần vẫn giọng máy.
+
+## 09/11/2026 — Lớp 1 thu đủ giọng Chirp 3 HD
+- Thu xong 238/238 lời lớp 1 bằng Cloud Chirp 3 HD · Despina (24 209 ký tự, 8,2 MB), không lỗi. Ghi vào `docs/LUAT-DA-CHOT.md` mục 5.
+
+## 09/11/2026 — Giọng đọc: ưu tiên Chirp 3 HD khi có khóa Cloud
+- Thầy đã có tài khoản Google Cloud. `tao-giong.py`: có `GOOGLE_TTS_KEY` thì dùng Cloud Chirp 3 HD · `vi-VN-Chirp3-HD-Despina` (không giới hạn lượt ngày), không thì Gemini như cũ. Đổi nguồn → mã lưu đệm đổi → lớp 1 thu lại toàn bộ bằng một giọng.
+
 ## 09/11/2026 — Giọng đọc thu sẵn lớp 1 (Gemini TTS · Despina)
 - `tools/giong/gom-loi-doc.js <lớp>`: gom lời đọc **cố định** của một lớp → `tools/giong/lop<n>.json` (bài giảng mọi slide, lời giới thiệu đảo, câu khen/nhắc cố định). Lớp 1: **238 lời** (118 slide, 104 giới thiệu đảo, 16 câu cố định), khoảng 24 000 ký tự. Câu có số thay đổi không gom (dùng giọng máy).
 - `js/core/83-giong-thu-san.js`: `sayJ` phát mp3 nếu câu đã thu (`games/lop-hoc-ao/giong/lop<n>/<id>.mp3`, danh sách `_ma.json`), không thì giọng máy; lỗi mạng/không phát được → giọng máy. Tải trước slide kế tiếp. Bật EN thì vẫn giọng tiếng Anh như cũ.

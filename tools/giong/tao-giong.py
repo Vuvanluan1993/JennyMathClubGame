@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Tạo file tiếng (mp3) cho app Jenny.
 
-Hai nguồn giọng (tự chọn theo khóa có sẵn):
+Hai nguồn giọng (tự chọn theo khóa có sẵn; có cả hai thì dùng Cloud):
 - GEMINI_API_KEY  → Gemini TTS (Google AI Studio, gói miễn phí, không cần thẻ). Giọng Despina.
 - GOOGLE_TTS_KEY  → Google Cloud Text-to-Speech, Chirp 3 HD (cần bật thanh toán). vi-VN-Chirp3-HD-Despina.
 
@@ -18,7 +18,7 @@ import base64, hashlib, json, os, subprocess, sys, time, urllib.error, urllib.re
 
 KHOA_GEMINI = os.environ.get("GEMINI_API_KEY", "").strip()
 KHOA_CLOUD = os.environ.get("GOOGLE_TTS_KEY", "").strip()
-NGUON = "gemini" if KHOA_GEMINI else "cloud"
+NGUON = "cloud" if KHOA_CLOUD else "gemini"  # có khóa Cloud (Chirp 3 HD) thì ưu tiên
 GIONG = os.environ.get("GIONG") or ("Despina" if NGUON == "gemini" else "vi-VN-Chirp3-HD-Despina")
 MO_HINH = [m for m in os.environ.get("MO_HINH", "").split(",") if m] or [
     "gemini-2.5-flash-preview-tts", "gemini-2.5-flash-tts", "gemini-2.5-pro-preview-tts"]
