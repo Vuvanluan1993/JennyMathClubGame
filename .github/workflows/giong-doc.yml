@@ -1,51 +1,59 @@
 name: Thu giọng đọc (Despina)
 
+# Chạy tay: Actions › Thu giọng đọc › Run workflow (để trống = thu mọi lớp có danh sách tools/giong/lop*.json).
+# Tự chạy mỗi ngày lúc 15:23 giờ Việt Nam (sau khi Google đặt lại lượt miễn phí lúc nửa đêm giờ Mỹ),
+# thu tiếp phần còn thiếu cho tới khi đủ. Câu đã thu không thu lại (lưu đệm _ma.json).
 on:
+  schedule:
+    - cron: "23 8 * * *"
   workflow_dispatch:
     inputs:
       danh_sach:
-        description: "Danh sách lời đọc (JSON)"
-        default: "tools/giong/cau-mau.json"
+        description: "Danh sách lời đọc (JSON). Để trống = mọi lớp tools/giong/lop*.json"
+        default: ""
       thu_muc:
-        description: "Thư mục ghi file mp3"
-        default: "games/lop-hoc-ao/giong-mau"
+        description: "Thư mục ghi mp3 (chỉ dùng khi chọn 1 danh sách)"
+        default: ""
 
 permissions:
   contents: write
-  pull-requests: write
+
+concurrency:
+  group: giong-doc
+  cancel-in-progress: false
 
 jobs:
   thu-am:
     runs-on: ubuntu-latest
-    env:
-      DANH_SACH: ${{ inputs.danh_sach }}
-      THU_MUC: ${{ inputs.thu_muc }}
+    timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Tạo file tiếng
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_TTS_KEY: ${{ secrets.GOOGLE_TTS_KEY }}
+          DANH_SACH: ${{ inputs.danh_sach }}
+          THU_MUC: ${{ inputs.thu_muc }}
         run: |
           which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
-          python3 tools/giong/tao-giong.py "$DANH_SACH" "$THU_MUC"
-
-      # Không push thẳng main: đẩy lên nhánh giong/<ngày> và mở PR để thầy duyệt (main được CI kiểm tra + deploy).
-      - name: Mở PR với file tiếng mới
-        env:
-          GH_TOKEN: ${{ github.token }}
+          if [ -n "$DANH_SACH" ]; then
+            python3 tools/giong/tao-giong.py "$DANH_SACH" "${THU_MUC:-games/lop-hoc-ao/giong-mau}"
+          else
+            loi=0
+            for f in tools/giong/lop*.json; do
+              n=$(basename "$f" .json)
+              echo "== $n =="
+              python3 tools/giong/tao-giong.py "$f" "games/lop-hoc-ao/giong/$n" || loi=1
+              grep -q "HẾT LƯỢT NGÀY" "games/lop-hoc-ao/giong/$n/_nhat-ky.txt" && break
+            done
+            exit $loi
+          fi
+      - name: Lưu vào repo
+        if: always()
         run: |
           git config user.name "jenny-giong-doc"
           git config user.email "actions@users.noreply.github.com"
-          git add "$THU_MUC"
+          git add games/lop-hoc-ao/giong games/lop-hoc-ao/giong-mau
           git diff --cached --quiet && echo "Không có file mới" && exit 0
-          NHANH="giong/$(date -u +%Y-%m-%d-%H%M)"
-          git checkout -b "$NHANH"
-          git commit -m "Thu giọng đọc: $DANH_SACH → $THU_MUC"
-          git push -u origin "$NHANH"
-          gh pr create --base main --head "$NHANH" \
-            --title "Thu giọng đọc: $DANH_SACH" \
-            --body "File tiếng tạo bởi workflow Thu giọng đọc từ \`$DANH_SACH\` vào \`$THU_MUC\`. Thầy nghe thử rồi gộp."
+          git commit -m "Thu giọng đọc ($(date -u +%F))"
+          git pull --rebase && git push
