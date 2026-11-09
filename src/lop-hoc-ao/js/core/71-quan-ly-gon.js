@@ -71,8 +71,8 @@ window.qlMoPH=function(tk0){const ds=phDs(),tks=Object.keys(ds).sort(),info=O().
  <div class="qlck">${hs.map(([id,n,g])=>{const p=(O().ph||{})[id],cua1=cua.includes(id);return`<label class="qlckr"><input type="checkbox" value="${id}" ${cua1?'checked':''} ${p&&p!==tk0?'disabled':''}> <b>${esc(n)}</b> <small>khối ${g}${p&&p!==tk0?' · đã có PH '+esc(p):''}</small></label>`}).join('')}</div>`,`qlLuuPH()`,'Lưu')};
 window.qlLuuPH=async function(){const o=O();o.ph=o.ph||{};o.phInfo=o.phInfo||{};let tk=v('mPhTk');const moiTK=!tk;
  const con=[...document.querySelectorAll('.qlck input:checked:not(:disabled)')].map(x=>x.value);if(!con.length){toast('Chọn ít nhất 1 con');return}
- if(moiTK){tk=v('mPhTk2').toLowerCase();const ten=v('mPhTen').replace(/\s+/g,' '),dt=v('mPhDt').replace(/[^\d+]/g,''),pw=v('mPhPw');
-  if(!/^[a-z0-9][a-z0-9._-]{2,23}$/.test(tk)){toast('Tên đăng nhập 3–24 kí tự: chữ thường không dấu, số, dấu chấm');return}
+ if(moiTK){tk=tkTr(v('mPhTk2'));const ten=v('mPhTen').replace(/\s+/g,' '),dt=v('mPhDt').replace(/[^\d+]/g,''),pw=v('mPhPw');
+  if(!/^[a-z0-9][a-z0-9._-]{2,39}$/.test(tk)||tk===tkTr('')){toast('Tên đăng nhập: chữ thường không dấu, số, dấu chấm');return}
   if(Object.values(o.ph).includes(tk)||STUDENTS.some(s=>s[0]===tk)||(o.gv||[]).some(g=>(g.tk||g.id)===tk)){toast('Tên đăng nhập đã có');return}
   if(!okDt(dt)){toast('Số điện thoại chưa đúng');return}
   if(cloud()){if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}toast('Đang tạo tài khoản…');
