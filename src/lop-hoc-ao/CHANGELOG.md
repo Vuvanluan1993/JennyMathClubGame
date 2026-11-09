@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 09/11/2026 — Lớp 1 thu đủ giọng Chirp 3 HD
+- Thu xong 238/238 lời lớp 1 bằng Cloud Chirp 3 HD · Despina (24 209 ký tự, 8,2 MB), không lỗi. Ghi vào `docs/LUAT-DA-CHOT.md` mục 5.
+
 ## 09/11/2026 — Giọng đọc: ưu tiên Chirp 3 HD khi có khóa Cloud
 - Thầy đã có tài khoản Google Cloud. `tao-giong.py`: có `GOOGLE_TTS_KEY` thì dùng Cloud Chirp 3 HD · `vi-VN-Chirp3-HD-Despina` (không giới hạn lượt ngày), không thì Gemini như cũ. Đổi nguồn → mã lưu đệm đổi → lớp 1 thu lại toàn bộ bằng một giọng.
 
