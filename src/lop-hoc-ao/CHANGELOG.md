@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 09/11/2026 — Giọng đọc thu sẵn lớp 1 (Gemini TTS · Despina)
+- `tools/giong/gom-loi-doc.js <lớp>`: gom lời đọc **cố định** của một lớp → `tools/giong/lop<n>.json` (bài giảng mọi slide, lời giới thiệu đảo, câu khen/nhắc cố định). Lớp 1: **238 lời** (118 slide, 104 giới thiệu đảo, 16 câu cố định), khoảng 24 000 ký tự. Câu có số thay đổi không gom (dùng giọng máy).
+- `js/core/83-giong-thu-san.js`: `sayJ` phát mp3 nếu câu đã thu (`games/lop-hoc-ao/giong/lop<n>/<id>.mp3`, danh sách `_ma.json`), không thì giọng máy; lỗi mạng/không phát được → giọng máy. Tải trước slide kế tiếp. Bật EN thì vẫn giọng tiếng Anh như cũ.
+- `tools/giong/tao-giong.py`: hết lượt ngày ở một mô hình thì đổi sang mô hình TTS khác (mỗi mô hình có lượt riêng); chờ 21 giây giữa 2 câu (gói miễn phí ~3 lượt/phút).
+- `.github/workflows/giong-doc.yml`: **tự chạy mỗi ngày 15:23 giờ VN**, thu tiếp mọi `tools/giong/lop*.json` tới khi đủ; chạy tay để trống ô = thu mọi lớp.
+
 ## 09/11/2026 — Nhiều trường: tên đăng nhập có mã trường, admin Clb quản lý mọi trường
 - Mỗi trường một kho riêng trên máy chủ (`truong/{mã}`); `62-may-chu.js` tự đổi `org/main` thành kho của trường đang dùng, tự gắn `truong` vào users/hs/hsgv/asg/login và chỉ lấy danh sách của trường mình.
 - **Tên đăng nhập dạng `mã.tên`** (vd. `nguyendu.an`): tạo học sinh, giáo viên, phụ huynh, nhập Excel, phụ huynh tự động đều tự thêm tiền tố; ô tên đăng nhập hiện sẵn "mã." ở trước.
