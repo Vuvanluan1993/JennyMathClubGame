@@ -1,0 +1,42 @@
+name: Kiểm tra
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: kiem-tra-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  kiem-tra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Cài gói Node
+        run: npm ci
+
+      - name: Cài Chromium cho Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Dựng bản Lớp học ảo
+        run: npm run build
+
+      - name: Chạy bộ kiểm tra
+        run: npm test
+
+      - name: Lưu kết quả (.ci)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ket-qua-kiem-tra
+          path: .ci/
+          if-no-files-found: ignore

@@ -1,0 +1,209 @@
+/* Jenny — thành phần dùng chung cho hai theme. Giá trị lấy đúng từ app.css (body.px) và 80-phong-cach-lms.js;
+   chỗ nào khác mã hiện tại thì ghi trong README của thành phần. Mọi màu/khoảng cách là token của tokens.css. */
+.jc{box-sizing:border-box;margin:0;font-family:var(--f-body);color:var(--ink);background:var(--bg);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.jc *,.jc *::before,.jc *::after{box-sizing:border-box}
+/* Theme Pixel (học sinh, game): chữ VT323 + Be Vietnam Pro, góc vuông, khung navy, bóng cứng */
+.jc-pixel{--f-display:var(--font-pixel);--f-body:var(--font-body);--r:var(--radius-pixel);--r-btn:var(--radius-pixel);--r-pill:var(--radius-pixel);
+ --k:var(--px-frame);--bg:var(--px-bg);--surface:var(--white);--surface2:var(--app-surface-2);--ink:var(--app-ink);--mute:var(--app-muted);--line:var(--px-line);
+ --pri:var(--px-sea);--pri-deep:var(--px-sea-deep);--pri-soft:var(--px-sea-soft);--on-pri:var(--app-sea-ink);
+ --ok:var(--px-leaf);--ok-soft:var(--px-leaf-soft);--warn:var(--px-sun-ink);--warn-soft:var(--px-sun-soft);--sun:var(--px-sun);--bad:var(--px-coral);--bad-soft:var(--px-coral-soft);
+ --drop:0 4px 0 0 var(--k);--drop-sm:0 3px 0 0 var(--k);--drop-lg:0 6px 0 0 var(--k)}
+/* Theme Classroom (GV · PH · QL): Lexend, bo 8px, viền xám mảnh, không bóng */
+.jc-lms{--f-display:var(--font-lms);--f-body:var(--font-lms);--r:var(--radius-lms);--r-btn:4px;--r-pill:16px;
+ --k:var(--lms-line);--bg:var(--white);--surface:var(--white);--surface2:#F1F3F4;--ink:var(--lms-ink);--mute:var(--lms-mute);--line:var(--lms-line);--line2:var(--lms-line-2);
+ --pri:var(--lms-pri);--pri-deep:var(--lms-pri-hover);--pri-soft:var(--lms-pri-soft);--on-pri:var(--white);
+ --ok:var(--lms-ok);--ok-soft:var(--lms-ok-soft);--warn:var(--lms-warn);--warn-soft:var(--lms-warn-soft);--sun:var(--amber);--bad:var(--lms-bad);--bad-soft:var(--lms-bad-soft);
+ --drop:none;--drop-sm:none;--drop-lg:none;font-weight:400}
+.jc h1,.jc h2,.jc h3{font-family:var(--f-display);margin:0;color:var(--ink)}
+.jc-pixel h1,.jc-pixel h2,.jc-pixel h3{font-weight:400;letter-spacing:.3px;line-height:1.05}
+.jc-pixel h1{font-size:40px}.jc-pixel h2{font-size:28px}.jc-pixel h3{font-size:25px}
+.jc-lms h1,.jc-lms h2,.jc-lms h3{font-weight:500;line-height:1.25}
+.jc-lms h1{font-size:28px}.jc-lms h2{font-size:18px}.jc-lms h3{font-size:16px}
+.jc .muted{color:var(--mute);font-size:13.5px}.jc-lms .muted{font-size:15px}
+.jc p{margin:0}
+.jc-wrap{padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:var(--space-4)}
+.jc-stack{display:grid;gap:var(--space-3)}
+.jc :focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.jc-lms :focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+
+/* ===== 1. Nút ===== */
+.jc-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:var(--size-tap);padding:9px 16px;font:inherit;font-size:14.5px;font-weight:600;line-height:1.3;
+ cursor:pointer;border-radius:var(--r-btn);background:var(--surface);color:var(--ink);border:3px solid var(--k);box-shadow:var(--drop);transition:transform .08s,background .15s}
+.jc-btn:hover:not(:disabled){background:var(--surface2)}
+.jc-pixel .jc-btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 0 var(--k)}
+.jc-btn.pri{background:var(--pri);border-color:var(--pri);color:var(--on-pri)}.jc-pixel .jc-btn.pri{border-color:var(--k)}
+.jc-btn.pri:hover:not(:disabled){background:var(--pri-deep)}
+.jc-btn.danger{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}.jc-pixel .jc-btn.danger{border-color:var(--k)}
+.jc-btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:var(--mute)}
+.jc-btn.sm{min-height:44px;padding:6px 12px;font-size:13px;border-width:2px;box-shadow:var(--drop-sm)}
+.jc-btn:disabled{opacity:.45;cursor:not-allowed}
+.jc-lms .jc-btn{min-height:36px;border-width:1px;border-color:var(--line);color:var(--pri);font-weight:500;letter-spacing:.01em}
+.jc-lms .jc-btn:hover:not(:disabled){background:#F4F8FC}
+.jc-lms .jc-btn.pri{background:var(--pri);border-color:var(--pri);color:#fff;box-shadow:0 1px 2px rgba(60,64,67,.3)}
+.jc-lms .jc-btn.pri:hover:not(:disabled){background:var(--pri-deep)}
+.jc-lms .jc-btn.danger{background:var(--surface);color:var(--bad);border-color:#F4C7C3}
+.jc-lms .jc-btn.ghost{border:0;color:var(--pri)}
+.jc-lms .jc-btn.sm{min-height:32px;padding:5px 12px;font-size:13.5px;border-width:1px}
+/* nút VÀO HỌC / Đăng nhập (gobtn) */
+.jc-gobtn{display:flex;width:100%;min-height:54px;align-items:center;justify-content:center;font:inherit;cursor:pointer;background:var(--pri);color:var(--on-pri);
+ border:3px solid var(--k);border-radius:var(--r-btn);box-shadow:var(--drop);font-family:var(--f-display);font-size:28px;font-weight:400;text-transform:uppercase;letter-spacing:.5px;line-height:1}
+.jc-gobtn:disabled{opacity:.4}
+.jc-lms .jc-gobtn{border:0;font-size:17px;font-weight:600;text-transform:none;letter-spacing:0;box-shadow:0 1px 2px rgba(60,64,67,.3);border-radius:var(--r-btn)}
+
+/* ===== 2. Ô phương án ===== */
+.jc-opts{display:grid;gap:var(--space-3);grid-template-columns:1fr}
+.jc-opts.c2{grid-template-columns:1fr 1fr}.jc-opts.c3{grid-template-columns:repeat(3,1fr)}
+.jc-opts>*{min-width:0}
+.jc-opts button{min-height:64px;border:0;font:inherit;font-size:19px;font-weight:700;cursor:pointer;padding:8px;display:grid;place-items:center;border-radius:0;
+ background:var(--surface);color:var(--ink);box-shadow:var(--frame-3),var(--drop-lg)}
+.jc-opts.big button{font-family:var(--f-display);font-size:46px;font-weight:400;line-height:1}
+.jc-opts button:active{transform:translateY(5px);box-shadow:var(--frame-3),0 1px 0 0 var(--k)}
+.jc-opts button.on{background:var(--pri-soft);box-shadow:var(--frame-3),0 6px 0 0 var(--pri)}
+.jc-opts button.t{color:var(--ok);background:var(--ok-soft)}
+.jc-opts button.x{color:var(--bad);background:var(--bad-soft)}
+.jc-opts button.used{opacity:.3}
+.jc-opts button:disabled{cursor:not-allowed}
+
+/* ===== 3. Khung pixel (thẻ) ===== */
+.jc-frame{background:var(--surface);color:var(--ink);padding:20px;border:3px solid var(--k);border-radius:var(--r);box-shadow:var(--drop);min-width:0}
+.jc-frame.cut{border:0;box-shadow:var(--frame-3),var(--drop)}      /* viền khuyết 4 góc (--f3) */
+.jc-frame.cut2{border:0;box-shadow:var(--frame-2),var(--drop)}     /* viền 2px khuyết góc (--f2) */
+.jc-frame.flat{box-shadow:none}
+.jc-lms .jc-frame{border:1px solid var(--line);box-shadow:none;padding:16px}
+.jc-lms .jc-frame.cut,.jc-lms .jc-frame.cut2{border:1px solid var(--line);box-shadow:none}
+.jc-lms .jc-frame.note{background:var(--warn-soft);border-color:#F6DCA6;color:#7A4300}
+
+/* ===== 4. Thẻ lớp ===== */
+.jc-lopthe{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:120px;padding:14px;min-width:0;
+ background:var(--surface2);color:var(--ink);box-shadow:var(--frame-2),0 4px 0 0 var(--ink);font-family:var(--f-body)}
+.jc-lopthe:hover,.jc-lopthe:focus-visible{transform:translateY(-2px);outline:3px solid var(--sun)}
+.jc-lopthe .lt-ten{font-family:var(--f-display);font-size:28px;line-height:1.05}
+.jc-lopthe .lt-so{display:flex;gap:var(--space-3);flex-wrap:wrap;font-size:14px}
+.jc-lopthe .bad{color:var(--warn)}
+/* Classroom: dải màu đầu thẻ, 6 màu luân phiên (giá trị từ 80-phong-cach-lms.js; 2 màu chưa có token — xem README) */
+.jc-lms .jc-lopthe{padding:0;border:1px solid var(--line);border-radius:var(--r);box-shadow:none;overflow:hidden;background:linear-gradient(var(--band) 0 92px,#fff 92px);transform:none}
+.jc-lms .jc-lopthe:hover{box-shadow:0 1px 3px rgba(60,64,67,.3),0 4px 8px 3px rgba(60,64,67,.15);outline:0}
+.jc-lms .jc-lopthe .lt-ten{color:#fff;padding:16px 16px 0;font-size:24px;font-weight:500;line-height:1.25}
+.jc-lms .jc-lopthe .lt-ten::before{content:"Lớp "}
+.jc-lms .jc-lopthe>.muted{color:rgba(255,255,255,.9);padding:0 16px;height:34px;font-size:15px}
+.jc-lms .jc-lopthe .lt-so{padding:14px 16px 4px;color:var(--ink)}
+.jc-lms .jc-lopthe .jc-pill{margin:6px 16px 14px;align-self:flex-start}
+.jc-lms .band-1,.jc-lms .jc-lopthe:nth-child(6n+1),.jc-lms .jc-qltile:nth-child(6n+1){--band:var(--blue)}
+.jc-lms .band-2,.jc-lms .jc-lopthe:nth-child(6n+2),.jc-lms .jc-qltile:nth-child(6n+2){--band:var(--px-leaf)}
+.jc-lms .band-3,.jc-lms .jc-lopthe:nth-child(6n+3),.jc-lms .jc-qltile:nth-child(6n+3){--band:var(--px-coral)}
+.jc-lms .band-4,.jc-lms .jc-lopthe:nth-child(6n+4),.jc-lms .jc-qltile:nth-child(6n+4){--band:var(--navy)}
+.jc-lms .band-5,.jc-lms .jc-lopthe:nth-child(6n+5),.jc-lms .jc-qltile:nth-child(6n+5){--band:#0E8FB8}
+.jc-lms .band-6,.jc-lms .jc-lopthe:nth-child(6n+6),.jc-lms .jc-qltile:nth-child(6n+6){--band:#B07800}
+
+/* ===== 5. Bảng nhập (tiêu đề dính trên, nút dính đáy) và 7. Hộp thoại ===== */
+.jc-modal{width:min(440px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--surface);color:var(--ink);
+ border:3px solid var(--k);box-shadow:5px 5px 0 var(--k);border-radius:var(--r)}
+.jc-modal .hd{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 8px;background:var(--k);color:#fff;font-family:var(--f-display);font-size:22px;line-height:1.3}
+.jc-modal .hd .x{font:inherit;font-size:18px;line-height:1;cursor:pointer;border:0;padding:4px 8px;margin-left:8px;background:var(--sun);color:var(--k);box-shadow:0 0 0 2px #fff;min-width:44px;min-height:36px}
+.jc-modal .bd{padding:var(--space-4);overflow:auto;display:grid;gap:var(--space-2)}
+.jc-modal .ft{position:sticky;bottom:0;display:flex;gap:var(--space-2);justify-content:flex-end;padding:var(--space-3) var(--space-4);background:var(--surface);border-top:1px solid var(--line)}
+.jc-modal label{font-weight:700;font-size:14px}
+.jc-modal p{font-size:15px}
+.jc-input,.jc-modal input:not([type=checkbox]),.jc-modal select{font:inherit;font-size:17px;padding:10px 12px;border:0;border-radius:var(--r-btn);width:100%;min-height:var(--size-tap);
+ background:var(--surface2);color:var(--ink);box-shadow:var(--frame-2)}
+.jc-pixel .jc-input:focus,.jc-pixel .jc-modal input:focus{outline:3px solid var(--sun);outline-offset:1px}
+.jc-lms .jc-modal{border:0;border-radius:var(--r);box-shadow:0 24px 38px 3px rgba(60,64,67,.14),0 9px 46px 8px rgba(60,64,67,.12)}
+.jc-lms .jc-modal .hd{background:#fff;color:var(--ink);border-bottom:1px solid var(--line);font-size:18px;font-weight:500;padding:14px 16px}
+.jc-lms .jc-modal .hd .x{background:transparent;color:var(--mute);box-shadow:none;font-size:14px;border-radius:4px;padding:4px 8px}
+.jc-lms .jc-modal .hd .x:hover{background:#F1F3F4}
+.jc-lms .jc-modal label{font-weight:500;color:var(--mute);font-size:13px}
+.jc-lms .jc-input,.jc-lms .jc-modal input:not([type=checkbox]),.jc-lms .jc-modal select{border:1px solid var(--line);box-shadow:none;background:#fff;font-size:15px;min-height:40px;border-radius:4px}
+.jc-lms .jc-input:focus,.jc-lms .jc-modal input:focus{border-color:var(--pri);box-shadow:0 0 0 1px var(--pri);outline:0}
+.jc-backdrop{position:absolute;inset:0;background:rgba(19,38,58,.45);display:grid;place-items:center;padding:16px}
+
+/* ===== 6. Toast ===== */
+.jc-toast{display:inline-block;max-width:calc(100% - 32px);padding:12px 18px;font-size:14.5px;font-weight:600;line-height:1.4;
+ background:var(--ink);color:var(--surface);border-radius:var(--r);box-shadow:var(--drop)}
+.jc-lms .jc-toast{background:#323232;color:#fff;border-radius:4px;box-shadow:0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px rgba(0,0,0,.14);font-weight:400}
+
+/* ===== 8. Thanh điều hướng: trên (pixel · Classroom) và dưới (pixel) ===== */
+.jc-top{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.jc-top .brand{display:flex;align-items:center;gap:4px;margin-right:auto;min-width:0}
+.jc-top .word{display:flex;flex-direction:column;align-items:flex-start;font-family:var(--f-display);font-size:20px;line-height:.8;color:var(--ink)}
+.jc-top .word i{font-style:normal;text-shadow:1px 1px 0 var(--k)}
+.jc-top .word em{font-style:normal;margin:3px 0 0 2px;padding:0 3px 1px;font-size:14px;line-height:1;background:#28B568;color:#fff;box-shadow:var(--frame-2)}
+.jc-seg{display:inline-flex;background:var(--surface2);border:1px solid var(--line);padding:3px;gap:2px;border-radius:var(--r)}
+.jc-seg button{border:0;background:none;color:var(--mute);padding:5px 5px;min-width:32px;min-height:32px;cursor:pointer;font:inherit;font-weight:600;font-size:16px;font-family:var(--f-display);border-radius:var(--r)}
+.jc-seg button.on{background:var(--sun);color:var(--ink)}
+.jc-ib{display:inline-grid;place-items:center;width:40px;height:40px;border:2px solid var(--k);background:var(--surface);box-shadow:var(--drop-sm);cursor:pointer;font-size:18px;color:var(--ink)}
+.jc-top .out{display:inline-flex;align-items:center;gap:3px;font-family:var(--f-display);font-size:16px;padding:3px 6px;min-height:36px;border:2px solid var(--k);background:var(--bad-soft);color:var(--bad);box-shadow:var(--drop-sm);cursor:pointer}
+.jc-lms .jc-top{border-bottom:1px solid var(--line);padding:0 16px;min-height:56px}
+.jc-lms .jc-top .brand b{font-weight:500;font-size:19px;color:var(--ink);white-space:nowrap}
+.jc-lms .jc-tabs{display:flex;align-self:stretch;margin-left:auto;overflow-x:auto;scrollbar-width:none;min-width:0}
+.jc-lms .jc-tabs button{border:0;background:transparent;color:var(--mute);font:inherit;font-weight:500;font-size:14px;padding:16px 14px 13px;border-bottom:3px solid transparent;margin-bottom:-1px;cursor:pointer;white-space:nowrap}
+.jc-lms .jc-tabs button.on{color:var(--pri);border-bottom-color:var(--pri)}
+.jc-lms .jc-tabs button:hover:not(.on){background:#F1F3F4}
+.jc-lms .jc-seg{border:1px solid var(--line);border-radius:18px;background:#fff;padding:2px;gap:0}
+.jc-lms .jc-seg button{font-family:var(--f-body);font-size:13px;font-weight:500;padding:4px 10px;min-height:0;border-radius:16px}
+.jc-lms .jc-seg button.on{background:var(--pri-soft);color:var(--pri)}
+.jc-lms .jc-ib{border:1px solid var(--line);border-radius:4px;box-shadow:none;color:var(--pri)}
+.jc-av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:500;font-size:13px;background:var(--pri-soft);color:var(--pri);flex:none}
+.jc-bnav{display:flex;justify-content:center;gap:4px;padding:6px 8px;background:var(--surface);border-top:3px solid var(--k);box-shadow:0 -3px 0 0 var(--k)}
+.jc-bnav button{flex:1 1 0;min-width:0;max-width:140px;min-height:var(--size-tap);border:0;background:none;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:2px;
+ font-family:var(--f-display);font-size:18px;font-weight:400;line-height:1;padding:6px 4px;border-radius:0;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative}
+.jc-bnav button span{font-size:22px;line-height:1}
+.jc-bnav button.on{background:var(--warn-soft);color:var(--ink);box-shadow:inset 0 -4px 0 var(--sun)}
+.jc-bnav .bang,.jc-nhat .bang{position:absolute;top:2px;right:12px;font-style:normal;font-family:var(--f-display);font-size:18px;line-height:18px;min-width:20px;padding:0 3px;text-align:center;background:var(--bad);color:#fff;box-shadow:var(--frame-2)}
+.jc-nhat .bang{top:-6px;right:-6px}
+
+/* ===== 9. Huy hiệu mức ===== */
+.jc-muc{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;min-height:28px;font-size:12.5px;font-weight:600;line-height:1.3;border-radius:var(--r-pill);box-shadow:var(--frame-2);background:var(--surface2);color:var(--ink)}
+.jc-muc i{width:10px;height:10px;background:currentColor;flex:none}
+.jc-muc[data-muc="4"]{background:var(--ok-soft);color:var(--ok)}
+.jc-muc[data-muc="3"]{background:var(--pri-soft);color:var(--pri-deep)}
+.jc-muc[data-muc="2"]{background:var(--warn-soft);color:var(--warn)}
+.jc-muc[data-muc="1"]{background:#FDE6DE;color:var(--orange-deep)}
+.jc-muc[data-muc="0"]{background:var(--mist);color:var(--ink)}
+.jc-lms .jc-muc{box-shadow:none;font-weight:500;font-size:13px;padding:3px 12px}
+.jc-lms .jc-muc i{border-radius:50%}
+.jc-lms .jc-muc[data-muc="3"]{color:var(--pri)}
+
+/* ===== 10. Thẻ chào ===== */
+.jc-hero{position:relative;display:flex;align-items:center;gap:14px;flex-wrap:nowrap;padding:16px 18px 24px;background:var(--pri);color:var(--on-pri);border:3px solid var(--k);box-shadow:var(--drop);border-radius:var(--r);min-width:0}
+.jc-hero .grow{flex:0 1 auto;min-width:0;display:grid;gap:6px}
+.jc-hero h1{color:inherit;font-size:clamp(30px,6vw,40px)}
+.jc-hero .chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);padding:6px 12px;font-weight:600;font-size:14px;border-radius:var(--r);justify-self:start}
+.jc-hero .chip b{font-family:var(--f-display);font-size:24px;font-weight:400;line-height:1}
+.jc-hero .chips{display:flex;flex-direction:column;align-items:stretch;gap:6px;margin-left:auto;flex:none;align-self:center}
+.jc-hero .chips .chip{justify-content:center;min-width:84px;min-height:40px;cursor:pointer;border:0;color:inherit;font:inherit;font-weight:600}
+.jc-hero .ver{position:absolute;right:10px;bottom:4px;font-size:11px;opacity:.85}
+.jc-jav{flex:none;width:56px;height:56px;display:grid;place-items:end center;overflow:hidden;background:var(--warn-soft);border:2px solid var(--k);color:var(--ink);font-size:9px;text-align:center;line-height:1.1}
+.jc-lms .jc-jav{border:0;border-radius:8px}
+
+/* ===== 11. Nhãn cảnh báo (pill, dòng ⚠) ===== */
+.jc-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;font-size:12.5px;font-weight:600;line-height:1.3;border-radius:var(--r-pill);background:var(--surface2);color:var(--mute);border:1px solid var(--line)}
+.jc-pill.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.jc-pill.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.jc-pill.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.jc-lms .jc-pill{border:0;background:#F1F3F4;color:#3C4043;font-weight:500;font-size:13px;padding:3px 12px}
+.jc-lms .jc-pill.ok{background:var(--ok-soft);color:var(--ok)}.jc-lms .jc-pill.warn{background:var(--warn-soft);color:var(--warn)}.jc-lms .jc-pill.bad{background:var(--bad-soft);color:var(--bad)}
+.jc-qlw{color:var(--warn);font-size:13.5px}.jc-qlok{color:var(--ok);font-size:13.5px}
+.jc-al{border-left:3px solid var(--warn);padding:8px 10px;border-bottom:1px solid var(--line);font-size:14px}.jc-al.bad{border-left-color:var(--bad)}
+.jc-demobar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 16px;background:var(--warn-soft);border-bottom:1px solid #F6DCA6}
+
+/* ===== 12. Ô Quản lý (4 nút lớn, chỉ Classroom) ===== */
+.jc-qltiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,44%),1fr));gap:12px}
+.jc-qltile{all:unset;box-sizing:border-box;position:relative;cursor:pointer;display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:170px;
+ border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(var(--band) 0 76px,#fff 76px);color:var(--ink);font-family:var(--f-body)}
+.jc-qltile:hover{box-shadow:0 1px 3px rgba(60,64,67,.3),0 4px 8px 3px rgba(60,64,67,.15)}
+.jc-qltile:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+.jc-qltile b{height:76px;padding:14px 16px 0;color:#fff;font-weight:500;font-size:22px}
+.jc-qltile .ic{position:absolute;right:16px;top:48px;width:56px;height:56px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 1px 3px rgba(60,64,67,.3);font-size:26px}
+.jc-qltile .n{padding:20px 16px 0;font-size:28px;font-weight:600}
+.jc-qltile .jc-qlw,.jc-qltile .jc-qlok{padding:4px 16px 0}
+.jc-qltile .go{margin-top:auto;padding:8px 16px;text-align:right;border-top:1px solid var(--line2);font-size:14px;font-weight:500;color:var(--pri)}
+@media (max-width:560px){.jc-qltile{background:linear-gradient(var(--band) 0 60px,#fff 60px)}.jc-qltile b{height:60px;font-size:17px;padding:12px 12px 0}
+ .jc-qltile .ic{width:44px;height:44px;top:38px;right:10px;font-size:20px}.jc-qltile .n{font-size:21px;padding:14px 12px 0}.jc-qltile .jc-qlw,.jc-qltile .jc-qlok{padding:4px 12px 0;font-size:12.5px}.jc-qltile .go{padding:6px 12px}.jc-lms h1{font-size:24px}}
+
+/* ===== Ô Nhà em / Phòng học (3 ô một hàng) — dùng trong mẫu Phòng học ===== */
+.jc-nhagrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.jc-nhat{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;padding:12px 4px 10px;min-height:var(--size-tap);background:var(--surface);box-shadow:var(--frame-2),var(--drop);cursor:pointer;color:inherit;font:inherit;text-align:center;min-width:0}
+.jc-nhat.on{background:var(--pri-soft)}
+.jc-nhat b{font-family:var(--f-display);font-size:19px;font-weight:400;line-height:1.05}
+.jc-nhat small{font-size:11.5px;color:var(--mute)}
+.jc-spr{display:grid;place-items:center;width:44px;height:44px;background:var(--pri-soft);color:var(--pri-deep);font-size:9px;line-height:1.1;text-align:center;box-shadow:var(--frame-2)}

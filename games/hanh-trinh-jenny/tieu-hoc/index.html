@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'self'">
+<meta name="referrer" content="no-referrer">
 <title>Hành trình của Jenny Tiểu học – Học Toán cùng Jenny</title>
 <link rel="icon" href="../../../assets/jenny-logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<link rel="stylesheet" href="../../../assets/fonts/fonts.css">
 <style>
 /* Hành trình của Jenny – Tiểu học (lớp 1–2 và lớp 3–4).
    Bản đồ đi màn (4 đảo × 10 màn Bebras mức tiểu học) + Trạm toán (bài toán tư duy → xu và năng lượng) + Vườn của Jenny.
@@ -369,7 +370,7 @@ textarea.code{width:100%;height:64px;border:2.5px solid var(--ink);border-radius
 'use strict';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const KEY = 'jenny-saga-th', CODEKEY = 'jenny-club-code', BACK = '../../hanh-trinh-jenny/tieu-hoc/';
+const KEY = 'jenny-saga-th', CODEKEY = 'jenny-club-code' /* chỉ giữ trong phiên (sessionStorage), máy dùng chung không lộ mã */, BACK = '../../hanh-trinh-jenny/tieu-hoc/';
 const GRADES = { '12': 'Lớp 1–2', '34': 'Lớp 3–4' };
 const EN_MAX = 10, DAY_XU = 300, XU = [10, 20, 40], EN = [1, 1, 2], DIFF = ['Dễ', 'Vừa', 'Khó'];
 
@@ -799,17 +800,8 @@ function speak(text) {
     });
     return;
   }
-  const parts = chunks(t, 180); let k = 0;
-  const next = () => {
-    if (tok !== readTok) return;
-    if (k >= parts.length) return done();
-    const a = new Audio('https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&ttsspeed=0.8&q=' + encodeURIComponent(parts[k++]));
-    AUD = a; a.playbackRate = .9; a.preservesPitch = true;
-    a.onended = () => setTimeout(next, 250);
-    a.onerror = () => { done(); toast('Máy chưa đọc được. Em kiểm tra loa hoặc mạng nhé!'); };
-    a.play().catch(() => { done(); toast('Máy chưa đọc được. Em kiểm tra loa hoặc mạng nhé!'); });
-  };
-  next();
+  /* Không còn giọng Google (translate_tts) — nội dung câu không gửi ra ngoài (P-08). */
+  done(); toast('Máy này chưa có giọng đọc tiếng Việt. Em nhờ bố mẹ bật giọng tiếng Việt trong phần cài đặt máy nhé!');
 }
 $('#bRead').onclick = () => {
   if (!BANK || !S.g) return;
@@ -965,7 +957,7 @@ async function unlock(code) {
 }
 async function tryCode(code, quiet) {
   const err = $('#codeErr'); if (!quiet) { err.textContent = 'Đang mở…'; $('#codeGo').disabled = true; }
-  try { BANK = await unlock(code); try { localStorage.setItem(CODEKEY, code.trim().toUpperCase()); } catch (e) {} err.textContent = ''; start(); return true; }
+  try { BANK = await unlock(code); try { sessionStorage.setItem(CODEKEY, code.trim().toUpperCase()); } catch (e) {} err.textContent = ''; start(); return true; }
   catch (e) { if (!quiet) { err.textContent = navigator.onLine === false ? 'Không tải được dữ liệu. Em kiểm tra mạng nhé.' : 'Mã chưa đúng. Em hỏi lại thầy cô nhé!'; sfx.bad(); } return false; }
   finally { $('#codeGo').disabled = false; }
 }
@@ -981,7 +973,7 @@ addEventListener('resize', () => { if (view === 'map') drawMap(); if (view === '
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (view === 'map') drawMap(); if (view === 'math') fitText(); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden && BANK) { rollDay(); hud(); if (view === 'garden') drawGarden(); } });
 show('lock');
-const saved = (() => { try { return localStorage.getItem(CODEKEY); } catch (e) { return null; } })();
+const saved = (() => { try { localStorage.removeItem(CODEKEY); } catch (e) {} try { return sessionStorage.getItem(CODEKEY); } catch (e) { return null; } })();
 if (saved) tryCode(saved, true).then(ok => { if (!ok) $('#code').focus(); });
 else $('#code').focus();
 window.__saga = { askGrade, get S() { return S; }, set S(v) { S = v; }, get bank() { return BANK; }, show, save, drawGarden };

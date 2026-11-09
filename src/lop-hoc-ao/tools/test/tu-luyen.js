@@ -1,13 +1,14 @@
 // Kiểm tra Tự luyện · Vở bài tập Jenny (cần đã chạy tools/build.py).
 //   node tools/test/tu-luyen.js      → lớp 1 và 2: mọi trang sinh đủ 5 bài + ★, dạng bài mới đúng đáp án,
 //   làm thử 1 trang từ đầu đến cuối (đúng hết, sai rồi thử lại), Thử thách hôm nay, gợi ý của cô, không tràn 320px.
+if(process.env.PW_DIR&&!process.env.PLAYWRIGHT_BROWSERS_PATH)process.env.PLAYWRIGHT_BROWSERS_PATH=process.env.PW_DIR; // thư mục trình duyệt Playwright (mặc định: của Playwright)
 const path=require('path'),fs=require('fs');const {chromium}=require('playwright');
-const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME; // không đặt → Chromium của Playwright
 (async()=>{const b=await chromium.launch({executablePath:fs.existsSync(EXE)?EXE:undefined});
  const tmp=path.join(ROOT,'dist','_tl.html');fs.writeFileSync(tmp,'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'+fs.readFileSync(path.join(ROOT,'dist','lop-hoc-ao-jenny.html'),'utf8')+'</body></html>');
  let fail=0;
- for(const [g,SID] of [[1,'na'],[2,'lam']]){const p=await b.newPage({viewport:{width:320,height:780},isMobile:true,hasTouch:true});const er=[];p.on('pageerror',e=>er.push(e.message));await p.goto('file://'+tmp);await p.waitForTimeout(300);
-  const r=await p.evaluate(([g,SID])=>{try{localStorage.clear()}catch(e){};fresh();role='hs';(0,eval)("sid='"+SID+"'");const st=S.st[SID];st.grade=g;UNL=true;S.asg=[];S.asgSeed=2;PRIM[g].isl.forEach(x=>{st.p1[x.id]={intro:true,m:[1],fails:[]}});const bad=[],lay=[];let nq=0,nNew=0;
+ for(const [g,SID] of [[1,'na'],[2,'lam']]){const p=await b.newPage({viewport:{width:320,height:780},isMobile:true,hasTouch:true});const er=[];p.on('pageerror',e=>er.push(e.message));await p.goto('file://'+tmp);await p.waitForTimeout(300);await p.evaluate(()=>document.fonts.ready);/* chờ font web (Linux: font thay thế rộng hơn, đo sớm sẽ tràn) */
+  const r=await p.evaluate(async([g,SID])=>{try{localStorage.clear()}catch(e){};fresh();role='hs';(0,eval)("sid='"+SID+"'");const st=S.st[SID];st.grade=g;UNL=true;S.asg=[];S.asgSeed=2;PRIM[g].isl.forEach(x=>{st.p1[x.id]={intro:true,m:[1],fails:[]}});const bad=[],lay=[];let nq=0,nNew=0;
    const chk=(q,where)=>{nq++;if(q.type==='cells'){nNew++;
      const v=q.a;if(!v.every(x=>Number.isInteger(x)&&x>=0))bad.push(where+' đáp án ô không hợp lệ '+q.kind+' '+v);
      if(q.lay==='house'&&!q.rows.every((r,i)=>{const a=r[0]===null?null:r[0],b=r[1]===null?null:r[1];return true}))bad.push('nhà');
@@ -50,7 +51,7 @@ const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME||'/opt
    /* gợi ý của cô */
    S.asg=(S.asg||[]).concat([{id:'gtest',loai:'goiy',g,isl:[PRIM[g].isl[1].id],t:Date.now(),by:'Cô'}]);go({k:'home',tab:'tl'});render();
    if(!document.querySelector('.vrow.gy'))bad.push('không hiện trang cô gợi ý');if(asgMine(st).some(a=>a.loai==='goiy'))bad.push('gợi ý lẫn vào Bài cô giao');
-   if(document.documentElement.scrollWidth>320)lay.push('tràn trang Tự luyện');
+   await document.fonts.ready;if(document.documentElement.scrollWidth>321)lay.push(/* dung sai 1px như khung-hinh.js: Linux làm tròn chữ khác Mac */'tràn trang Tự luyện: scrollWidth '+document.documentElement.scrollWidth+' · '+[...document.querySelectorAll('body *')].filter(e=>e.offsetParent!==null&&e.getBoundingClientRect().right>320).slice(0,6).map(e=>e.tagName.toLowerCase()+(e.className?'.'+String(e.className).split(' ')[0]:'')+' '+Math.round(e.getBoundingClientRect().right)+' «'+(e.textContent||'').trim().slice(0,25)+'»').join(' | '));
    go({k:'home',tab:'nha'});render();const tile=[...document.querySelectorAll('.pghome .nhat')][2];if(!tile||!/tab:'tl'/.test(tile.getAttribute('onclick')))bad.push('ô Tự luyện chưa mở trang');
    return{nq,nNew,lays:JSON.stringify(window.__lay||{}),bad:[...new Set(bad)].slice(0,30),lay:[...new Set(lay)]}},[g,SID]);
   const ok=!r.bad.length&&!r.lay.length&&!er.length;if(!ok)fail++;

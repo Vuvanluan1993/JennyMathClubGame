@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'self'">
+<meta name="referrer" content="no-referrer">
 <title>Jenny Thám Tử Nhí – Học Toán cùng Jenny</title>
 <link rel="icon" href="../../../assets/jenny-logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap">
+<link rel="stylesheet" href="../../../assets/fonts/fonts.css">
 <style>
 /* Hành trình của Jenny – Mầm non (5–6 tuổi).
    Bản đồ 6 đảo theo chủ đề × 8 màn; mỗi màn 5 câu tương tác (kéo thả, nối, tô màu, chọn) có giọng đọc + Vườn của Jenny.
@@ -1311,14 +1312,9 @@ function speak(text, opts = {}) {
     parts.forEach((x, k) => { const u = new SpeechSynthesisUtterance(x); u.voice = VOICE; u.lang = VOICE.lang; u.rate = RATE; u.pitch = 1.1; if (k === parts.length - 1) { u.onend = done; u.onerror = done; } speechSynthesis.speak(u); });
     return;
   }
-  const parts = chunks(t, 180); let k = 0;
-  const next = () => {
-    if (tok !== readTok) return; if (k >= parts.length) return done();
-    const a = new Audio('https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&ttsspeed=0.7&q=' + encodeURIComponent(parts[k++]));
-    AUD = a; a.playbackRate = .88; a.preservesPitch = true;
-    a.onended = () => setTimeout(next, 220); a.onerror = done; a.play().catch(done);
-  };
-  next();
+  /* Không còn giọng Google (translate_tts) — nội dung câu không gửi ra ngoài (P-08). Máy không có giọng tiếng Việt thì báo một lần. */
+  done();
+  if (!opts.quiet && !speak.warned) { speak.warned = true; toast('Máy này chưa có giọng đọc tiếng Việt. Con nhờ bố mẹ bật giọng tiếng Việt trong phần cài đặt máy nhé!'); }
 }
 
 /* ================= views ================= */

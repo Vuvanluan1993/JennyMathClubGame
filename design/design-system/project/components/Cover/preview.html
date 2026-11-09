@@ -1,0 +1,61 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Jenny</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=Be+Vietnam+Pro:wght@400;600&display=swap">
+<style>
+  html, body { margin:0; height:100%; }
+  body { background:var(--px-bg); color:var(--app-ink); font-family:var(--font-body); overflow:hidden; }
+  .cover { position:relative; height:288px; overflow:hidden; }
+  .art { position:absolute; top:0; left:480px; width:480px; height:288px; overflow:hidden; }
+  .art svg { display:block; width:480px; height:288px; shape-rendering:crispEdges; }
+  .navy { fill:var(--navy); }
+  .blue { fill:var(--blue); }
+  .amber { fill:var(--amber); }
+  .green { fill:var(--green); }
+  .coral { fill:var(--coral); }
+  .soft { fill:var(--px-sea-soft); }
+  .blk { rx:var(--radius-pixel); }
+  .words { position:absolute; left:var(--space-5); right:var(--space-5); bottom:var(--space-5); max-width:440px; }
+  .name { margin:0; font-family:var(--font-pixel); font-size:120px; line-height:.9; font-weight:400; color:var(--app-ink); letter-spacing:.3px; }
+  .tag { margin:var(--space-2) 0 0 4px; font-size:14px; line-height:20px; color:var(--app-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      navy 168×288 bled off the top and right (the frame colour every pixel screen is drawn with) · blue 144×192 (px-sea, the accent of both themes) · amber 96×96 (px-sun, the tab mark) · green 48×24 once (the "Club" badge) · coral 24×24 (hearts, danger — small) — ≈38% of 960×288
+  arrangement a flush modular grid of squares, flush bottoms on one line space-5 above the edge, space-4 gutters, blocks cut at the right edge
+  pattern     a pixel checker: 8×8 squares (space-2) on a 16px pitch (space-4) cut into the blue slab in px-sea-soft — "khung khía góc, bóng cứng, sprite pixel tự vẽ": the brand is literally made of pixels
+  scales      sides are space-4 multiples (16·48·96·144·168·192); gutters space-4; checker cell space-2, pitch space-4; every corner radius-pixel = 0
+-->
+<rect class="navy blk" x="312" y="-16" width="184" height="304"/>
+<rect class="blue blk" x="152" y="72" width="144" height="192"/>
+<rect class="amber blk" x="40" y="168" width="96" height="96"/>
+<rect class="green blk" x="40" y="128" width="48" height="24"/>
+<rect class="coral blk" x="104" y="128" width="24" height="24"/>
+<g class="soft">
+<rect x="168" y="88" width="8" height="8"/><rect x="200" y="88" width="8" height="8"/><rect x="232" y="88" width="8" height="8"/><rect x="264" y="88" width="8" height="8"/>
+<rect x="184" y="104" width="8" height="8"/><rect x="216" y="104" width="8" height="8"/><rect x="248" y="104" width="8" height="8"/><rect x="280" y="104" width="8" height="8"/>
+<rect x="168" y="120" width="8" height="8"/><rect x="200" y="120" width="8" height="8"/><rect x="232" y="120" width="8" height="8"/><rect x="264" y="120" width="8" height="8"/>
+<rect x="184" y="136" width="8" height="8"/><rect x="216" y="136" width="8" height="8"/><rect x="248" y="136" width="8" height="8"/><rect x="280" y="136" width="8" height="8"/>
+<rect x="168" y="152" width="8" height="8"/><rect x="200" y="152" width="8" height="8"/><rect x="232" y="152" width="8" height="8"/><rect x="264" y="152" width="8" height="8"/>
+<rect x="184" y="168" width="8" height="8"/><rect x="216" y="168" width="8" height="8"/><rect x="248" y="168" width="8" height="8"/><rect x="280" y="168" width="8" height="8"/>
+<rect x="168" y="184" width="8" height="8"/><rect x="200" y="184" width="8" height="8"/><rect x="232" y="184" width="8" height="8"/><rect x="264" y="184" width="8" height="8"/>
+<rect x="184" y="200" width="8" height="8"/><rect x="216" y="200" width="8" height="8"/><rect x="248" y="200" width="8" height="8"/><rect x="280" y="200" width="8" height="8"/>
+<rect x="168" y="216" width="8" height="8"/><rect x="200" y="216" width="8" height="8"/><rect x="232" y="216" width="8" height="8"/><rect x="264" y="216" width="8" height="8"/>
+<rect x="184" y="232" width="8" height="8"/><rect x="216" y="232" width="8" height="8"/><rect x="248" y="232" width="8" height="8"/><rect x="280" y="232" width="8" height="8"/>
+</g>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Jenny</h1>
+<p class="tag">Một bảng màu, hai theme: Pixel cho em, Classroom cho cô.</p>
+</div>
+</div>
+</body>
+</html>
