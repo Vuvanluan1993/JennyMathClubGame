@@ -21,7 +21,7 @@ games/lop-hoc-ao/         *** FILE SINH RA từ src/lop-hoc-ao (học sinh, giao
 src/lop-hoc-ao/           Mã nguồn Lớp học ảo: python3 tools/build.py → dist/ + games/lop-hoc-ao/
 tools/                    check_fit.py (vừa 1 màn hình), build_bank*.py, giong/ (thu giọng đọc)
 lms-thu/                  LMS bản thử (Supabase)
-.github/workflows/        Thu giọng đọc (chạy tay trên GitHub Actions)
+.github/workflows/        Kiểm tra (ci.yml), deploy Pages (deploy.yml), thu giọng đọc (giong-doc.yml: tự mỗi ngày hoặc chạy tay)
 ```
 
 ## Hai nơi cùng làm việc trên kho này: Cowork và Claude Code
