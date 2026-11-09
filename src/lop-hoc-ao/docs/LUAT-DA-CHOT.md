@@ -97,7 +97,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
   - **Toán Jenny mở theo lớp** (gói gắn với lớp). Ngoại lệ từng em (học bù, chuyển lớp) chỉ quản lý làm, mặc định tắt.
   - Khóa/mở 3 tầng: Gói (quản lý) → Lớp (giáo viên) → Từng em; tầng dưới không vượt tầng trên.
   - 3 vai trò quản lý: **Quản trị hệ thống** (thầy: trung tâm, nội dung, mã gói) · **Quản lý trung tâm** (năm học, lớp, tài khoản, phân công, xếp/chuyển lớp, gắn gói, báo cáo) · **Giáo viên** (chỉ lớp được phân công).
-  - Giáo viên không tạo lớp, không thêm em vào lớp. Màn đầu của giáo viên là **"Lớp của tôi"** (thẻ lớp xếp theo khối).
+  - Giáo viên không tạo lớp. ~~Không thêm em vào lớp~~ → **đổi 09/11/2026:** giáo viên tạo được tài khoản học sinh cho lớp mình (xem 6k). Màn đầu của giáo viên là **"Lớp của tôi"** (thẻ lớp xếp theo khối).
   - Không xóa hẳn, mọi thao tác quản lý có nhật ký.
 - **Hồ sơ học sinh (chốt 23/10/2026):** kiểu trang giáo viên (không pixel), 5 thẻ: Tổng quan · Học tập · Lỗi & bài về nhà · Hoạt động · Ghi chú & giao bài; có đủ số liệu của "Hồ sơ của em". Ghi thêm: đúng ngay lần đầu, thời gian mỗi câu, số lần mở hướng dẫn, ghi chú riêng của cô. Liên hệ phụ huynh để khi có máy chủ. Không lưu địa chỉ, số định danh, ảnh khuôn mặt, sức khỏe.
 - **Hồ sơ học sinh — chỉnh (23/10/2026):** 4 thẻ (Tổng quan · Hoạt động học tập · Lỗi & bài về nhà · Ghi chú & giao bài). Sức mạnh Toán = biểu đồ mạng nhện; bỏ khung "Gợi ý cho cô", gợi ý thành nhãn trong Cảnh báo.
@@ -161,6 +161,17 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Phong cách trang Quản lý, Giáo viên, Phụ huynh = kiểu Google Classroom** (thầy chọn phương án 1, 24/10/2026; file `80-phong-cach-lms.js`, chỉ áp dụng khi vai khác Học sinh): chữ Lexend; thanh trên trắng, tab vai trò gạch chân xanh #0079C1; thẻ viền xám mảnh bo 8px không bóng; 4 ô Quản lý và thẻ lớp Giáo viên có dải màu đầu thẻ (xanh biển, xanh lá, cam, xanh đậm… từ logo) + biểu tượng tròn; nút bo 4px (nút chính nền xanh, nút phụ viền xám chữ xanh); nhãn bo tròn nền nhạt; ảnh đại diện tròn. Bố cục, khung, nút, vị trí giữ nguyên. **Trang học sinh giữ phong cách pixel.**
 - **Sửa giáo viên, phụ huynh** (24/10/2026): trang Giáo viên có ✎ Sửa ở từng người (Họ tên, Giới tính, SĐT, Gmail, Mật khẩu mới); trang Phụ huynh có ✎ Sửa (SĐT, Gmail, Mật khẩu mới) và 👪 Con (gắn thêm/tách con). Tên đăng nhập không đổi ở đây. Đổi mật khẩu chỉ khi dùng máy chủ.
 
+## 6k. Nhiều trường (chốt 09/11/2026)
+- Sản phẩm bán cho các trường. Mỗi trường là một kho dữ liệu riêng (`truong/{mã}` trên Firestore), trường này không xem được dữ liệu trường khác.
+- **Mã trường** do **admin Clb** đặt khi tạo trường: 3–10 kí tự, chữ thường không dấu và số, bắt đầu bằng chữ; không trùng, không đổi về sau.
+- **Tên đăng nhập luôn có tiền tố mã trường, dạng `mã.tên`** (ví dụ `nguyendu.an`, `nguyendu.cohoa`, `nguyendu.ph.an`). Khi tạo tài khoản (học sinh, giáo viên, phụ huynh, nhập Excel, phụ huynh tự động), app **tự thêm tiền tố**; người tạo chỉ gõ phần sau.
+- Đăng nhập: **luôn gõ đủ tên** có mã trường (không dùng link/QR điền sẵn).
+- **Giáo viên tạo được tài khoản học sinh** cho lớp mình (đổi luật cũ "giáo viên không thêm em vào lớp"); quản lý trường vẫn xem/sửa được. Giáo viên vẫn không tạo lớp.
+- Vai trò: **Quản trị hệ thống = admin Clb** (`qt`, thầy): tạo trường, sửa tên, khoá/mở trường, tạo tài khoản quản lý trường; **xem và quản lý mọi trường, mọi giáo viên, học sinh** (vào từng trường như quản lý trường; tìm tài khoản ở mọi trường). **Quản lý trường** (`ql`) = tài khoản quản lý hiện nay, chỉ trong trường mình. Giáo viên, học sinh, phụ huynh thuộc 1 trường.
+- Trường bị khoá: mọi tài khoản của trường không đăng nhập được (trừ admin Clb).
+- Giáo viên dạy 2 trường / phụ huynh có con ở 2 trường: dùng 2 tài khoản.
+- Dữ liệu cũ (`org/main`) chuyển thành trường mã **`jenny`** (Clb Học Toán cùng Jenny); tên đăng nhập cũ giữ nguyên.
+
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
 - `node tools/test/kien-thuc-tro-choi.js` — trò không vượt kiến thức.
@@ -169,6 +180,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - `node tools/test/the-ghep-doi.js` — thẻ ghép đôi đúng giá trị.
 - `node tools/test/tu-luyen.js` — Tự luyện lớp 1–2 ĐẠT.
 - `node tools/test/dong-bo.js` — đồng bộ máy chủ ĐẠT (giả lập).
+- `node tools/test/nhieu-truong.js` — nhiều trường ĐẠT (giả lập).
 
 ## 8. Video giới thiệu
 - Công cụ ở `tools/video/` (quay bằng Playwright + CDP screencast 2×, thu tiếng app qua Web Audio, bàn tay pixel chạm, ghép bằng ffmpeg). Xem `tools/video/README.md`.
