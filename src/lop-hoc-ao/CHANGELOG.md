@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 09/11/2026 — Giọng đọc: ưu tiên Chirp 3 HD khi có khóa Cloud
+- Thầy đã có tài khoản Google Cloud. `tao-giong.py`: có `GOOGLE_TTS_KEY` thì dùng Cloud Chirp 3 HD · `vi-VN-Chirp3-HD-Despina` (không giới hạn lượt ngày), không thì Gemini như cũ. Đổi nguồn → mã lưu đệm đổi → lớp 1 thu lại toàn bộ bằng một giọng.
+
 ## 09/11/2026 — Giọng đọc thu sẵn lớp 1 (Gemini TTS · Despina)
 - `tools/giong/gom-loi-doc.js <lớp>`: gom lời đọc **cố định** của một lớp → `tools/giong/lop<n>.json` (bài giảng mọi slide, lời giới thiệu đảo, câu khen/nhắc cố định). Lớp 1: **238 lời** (118 slide, 104 giới thiệu đảo, 16 câu cố định), khoảng 24 000 ký tự. Câu có số thay đổi không gom (dùng giọng máy).
 - `js/core/83-giong-thu-san.js`: `sayJ` phát mp3 nếu câu đã thu (`games/lop-hoc-ao/giong/lop<n>/<id>.mp3`, danh sách `_ma.json`), không thì giọng máy; lỗi mạng/không phát được → giọng máy. Tải trước slide kế tiếp. Bật EN thì vẫn giọng tiếng Anh như cũ.
