@@ -32,7 +32,7 @@ const val=i=>((document.getElementById(i)||{}).value||'').trim();
 
 /* 1) Thêm học sinh: tự gắn/tạo phụ huynh */
 {const _m=window.qlMoHS;window.qlMoHS=function(){const r=_m.apply(this,arguments);try{const dt=document.getElementById('mDt');const row=dt&&dt.closest('.qs2');
-  const f=document.querySelector('#qlm .qsform');if(f&&!document.getElementById('mPhNote'))f.querySelector('.qsbtn').insertAdjacentHTML('beforebegin','<p id="mPhNote" class="muted" style="margin:0;font-size:12.5px">Tài khoản phụ huynh: trùng SĐT/Gmail với phụ huynh đã có thì gắn chung (anh chị em); chưa có thì tạo mới "ph.tên đăng nhập của em", mật khẩu jenny123.</p>')}catch(x){}return r}}
+  const f=document.querySelector('#qlm .qsform');if(f&&!document.getElementById('mPhNote'))f.querySelector('.qsbtn').insertAdjacentHTML('beforebegin','<p id="mPhNote" class="muted" style="margin:0;font-size:12.5px">Tài khoản phụ huynh: trùng SĐT/Gmail với phụ huynh đã có thì gắn chung (anh chị em); chưa có thì tạo mới "mãtrường.ph.tên của em", mật khẩu jenny123.</p>')}catch(x){}return r}}
 {const _l=window.qlLuuHS;window.qlLuuHS=async function(){const dt=val('mDt'),mail=val('mMail').toLowerCase(),phTen=val('mPhTen0');
  if(!val('mHo')||!val('mTen')||!val('mGt'))return _l.apply(this,arguments);
  const truoc=new Set(Object.keys(S.st));const _q=window.qlDong;let dong=false;window.qlDong=function(){dong=true};
@@ -59,7 +59,7 @@ const val=i=>((document.getElementById(i)||{}).value||'').trim();
 
 /* 3) Trang Phụ huynh: tạo tài khoản cho các em chưa có */
 window.phTaoThieu=async function(){const ds=STUDENTS.filter(s=>!(O().ph||{})[s[0]]);if(!ds.length)return;
- if(!confirm(`Tạo tài khoản phụ huynh cho ${ds.length} em chưa có?\nEm có SĐT/Gmail trùng phụ huynh đã có sẽ được gắn chung; còn lại tạo "ph.tên đăng nhập", mật khẩu jenny123.`))return;
+ if(!confirm(`Tạo tài khoản phụ huynh cho ${ds.length} em chưa có?\nEm có SĐT/Gmail trùng phụ huynh đã có sẽ được gắn chung; còn lại tạo "mãtrường.ph.tên", mật khẩu jenny123.`))return;
  let n=0,g=0,l=0;for(const [id] of ds){const h=(O().hoso||{})[id]||{};try{const f=phTim(h.dt,h.mail);await phGan(id,f.xung?f.xung[0]:f.tk,{dt:h.dt,mail:h.mail});(f.tk||f.xung)?g++:n++}catch(x){l++}}
  save();if(cloud()){try{await fbDayNgay()}catch(x){}}render();toast(`Đã tạo ${n} tài khoản, gắn chung ${g} em${l?`, ${l} lỗi`:''}`)};
 {const _p=viewPH;viewPH=function(){let r=_p.apply(this,arguments);if(role==='ql'&&typeof qlTrang!=='undefined'&&qlTrang==='ph'){const n=STUDENTS.filter(s=>!(O().ph||{})[s[0]]).length;

@@ -99,11 +99,11 @@ function phanTich(rows){let hi=rows.findIndex(r=>(r||[]).filter(c=>cotOf(c)).len
   x.d=ngay(g.ns);if(!okNgay(x.d))x.loi.push('ngày sinh chưa đúng');
   x.lopTen=g.lop!=null?String(g.lop):'';x.lop=x.lopTen?lopTim(x.lopTen):null;if(x.lop===false)x.loi.push(`chưa có lớp "${x.lopTen}"`);
   x.phten=g.phten?String(g.phten):'';x.dt=dtChuan(g.dt);if(g.dt!=null&&String(g.dt).trim()&&!x.dt)x.loi.push('SĐT chưa đúng');x.mail=String(g.mail||'').toLowerCase();if(!okDt(x.dt))x.loi.push('SĐT chưa đúng');if(!okMail(x.mail))x.loi.push('Gmail chưa đúng');
-  x.tk=g.tk?String(g.tk).toLowerCase():'';if(x.tk&&!/^[a-z0-9][a-z0-9._-]{2,23}$/.test(x.tk))x.loi.push('tên đăng nhập chưa đúng');
+  x.tk=g.tk?String(g.tk).trim().toLowerCase():'';if(x.tk&&!S.st[x.tk])x.tk=tkTr(x.tk);if(x.tk&&!/^[a-z0-9][a-z0-9._-]{2,39}$/.test(x.tk))x.loi.push('tên đăng nhập chưa đúng');
   const k=tenKey(x.hoten)+'|'+(x.d&&x.d.nam||'')+'|'+(x.d&&x.d.ng||'');if(seen[k])x.loi.push('trùng với dòng '+seen[k]);else seen[k]=x.dong;
   if(!x.loi.length){const c=hsCu(x);if(c==='?')x.loi.push('trùng tên với nhiều em — thêm ngày sinh hoặc tên đăng nhập');else if(c){x.cu=c;const l=(O().lop||[]).find(z=>z.id===(O().gd||{})[c]);if(x.lop&&l&&l.id!==x.lop.id&&l.khoi!==x.lop.khoi)x.loi.push(`đang ở lớp ${l.ten} (khác khối) — dùng Lên lớp`)}}
   if(!x.loi.length&&!x.lop&&!x.cu)x.canh.push('chưa có lớp — em chưa đăng nhập được');
-  if(!x.loi.length&&!x.dt&&!x.mail)x.canh.push('không có SĐT/Gmail — tạo tài khoản phụ huynh riêng (ph.tên đăng nhập)');
+  if(!x.loi.length&&!x.dt&&!x.mail)x.canh.push('không có SĐT/Gmail — tạo tài khoản phụ huynh riêng (mãtrường.ph.tên)');
   ds.push(x)}
  return ds}
 
@@ -136,9 +136,9 @@ function xemTruoc(){const ds=qlNhap.ds,ok=ds.filter(x=>!x.loi.length),loi=ds.len
 
 /* ---------- chạy nhập ---------- */
 const setv=(i,x)=>{const el=document.getElementById(i);if(el)el.value=x};
-window.tkPH0=function(id){const o=O(),dung=new Set([...Object.values(o.ph||{}),...Object.keys(o.phInfo||{}),...STUDENTS.map(s=>s[0]),...(o.gv||[]).map(g=>g.tk||g.id)]);const base=('ph.'+id).slice(0,24);let t=base,i=2;while(dung.has(t))t=base.slice(0,22)+(i++);return t};
+window.tkPH0=function(id){const o=O(),dung=new Set([...Object.values(o.ph||{}),...Object.keys(o.phInfo||{}),...STUDENTS.map(s=>s[0]),...(o.gv||[]).map(g=>g.tk||g.id)]);const base=tkTr('ph.'+tkBo(id)).slice(0,40);let t=base,i=2;while(dung.has(t))t=base.slice(0,38)+(i++);return t};
 const tkPH0=window.tkPH0;
-function tkPH(x){const base=x.dt?'ph'+x.dt.slice(-6):(bo(x.mail.split('@')[0]).replace(/[^a-z0-9]/g,'').slice(0,14)||'phuhuynh');const o=O(),dung=new Set([...Object.values(o.ph||{}),...STUDENTS.map(s=>s[0]),...(o.gv||[]).map(g=>g.tk||g.id)]);let t=base,i=2;while(dung.has(t))t=base+(i++);return t}
+function tkPH(x){const base=tkTr(x.dt?'ph'+x.dt.slice(-6):(bo(x.mail.split('@')[0]).replace(/[^a-z0-9]/g,'').slice(0,14)||'phuhuynh'));const o=O(),dung=new Set([...Object.values(o.ph||{}),...STUDENTS.map(s=>s[0]),...(o.gv||[]).map(g=>g.tk||g.id)]);let t=base,i=2;while(dung.has(t))t=base+(i++);return t}
 window.qlChayNhap=async function(){const ds=qlNhap.ds.filter(x=>!x.loi.length);if(!ds.length)return;const bd=document.getElementById('qlnbd');const o=O();o.hoso=o.hoso||{};o.ph=o.ph||{};o.phInfo=o.phInfo||{};
  const _toast=window.toast,_render=window.render;let im=true;window.toast=function(){if(!im)return _toast.apply(this,arguments)};window.render=function(){};
  const kq={moi:[],cap:[],loi:[],ph:[]};const step=t=>{bd.innerHTML=`<p>${t}</p><div class="qlnbar"><i style="width:${Math.round(100*(kq.moi.length+kq.cap.length+kq.loi.length)/ds.length)}%"></i></div>`};

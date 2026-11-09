@@ -16,14 +16,14 @@ function gvOpen(){const g=document.getElementById('gvGate');if(g)g.remove();try{
 async function gvLogin(e){e.preventDefault();const p=document.getElementById('gvP').value,m=document.getElementById('gvMsg');let ok=false;try{ok=(await gvSha('jennygv:'+p))===GV_H}catch(err){m.textContent='Trình duyệt không hỗ trợ. Hãy mở bằng Chrome, Edge hoặc Safari mới.';return}
  if(!ok){m.textContent='Mật khẩu chưa đúng.';return}try{sessionStorage.setItem('jennyGV_'+TRANG,'1')}catch(err){}gvOpen()}
 document.body.insertAdjacentHTML('afterbegin',`<div id="gvGate" class="gvgate"><div class="gvcard"><div class="gvhd">${jenny(56)}<div><h1>__TIEUDE__</h1><p>Lớp học ảo Jenny · Clb Học Toán cùng Jenny</p></div></div>
- <form onsubmit="gvCloudLogin(event)" class="gvf"><label for="gvU">Tên đăng nhập</label><input id="gvU" autocapitalize="off" spellcheck="false" autocomplete="username" required>
+ <form onsubmit="gvCloudLogin(event)" class="gvf"><label for="gvU">Tên đăng nhập</label><input id="gvU" autocapitalize="off" spellcheck="false" autocomplete="username" required placeholder="mãtrường.tên, vd. nguyendu.cohoa">
  <label for="gvPw">Mật khẩu</label><input id="gvPw" type="password" autocomplete="current-password" required>
  <button class="gobtn" type="submit">Đăng nhập</button><p id="gvMsg2" class="gvmsg" role="alert"></p></form>
  <details class="gvd"><summary>Xem bản demo (dữ liệu mẫu)</summary><form onsubmit="gvLogin(event)" class="gvf"><label for="gvP">Mật khẩu bản demo</label><input id="gvP" type="password" autocomplete="off">
   <button class="gobtn" type="submit">Vào bản demo</button><p id="gvMsg" class="gvmsg" role="alert"></p><p class="gvnote">Bản demo dùng dữ liệu mẫu, chỉ lưu trên máy này.</p></form></details>
- ${TRANG==='ql'?`<details class="gvd"><summary>Thiết lập lần đầu (tạo tài khoản quản lý)</summary><form onsubmit="gvSetup(event)" class="gvf"><p class="gvnote">Chỉ làm một lần khi trung tâm chưa có quản lý.</p>
-  <label for="suN">Họ tên</label><input id="suN" required maxlength="40"><label for="suU">Tên đăng nhập</label><input id="suU" autocapitalize="off" spellcheck="false" required maxlength="24">
-  <label for="suP">Mật khẩu (ít nhất 6 kí tự)</label><input id="suP" type="password" required minlength="6"><button class="gobtn" type="submit">Tạo tài khoản quản lý</button><p id="suMsg" class="gvmsg" role="alert"></p></form></details>`:''}
+ ${TRANG==='ql'?`<details class="gvd"><summary>Thiết lập lần đầu (tạo tài khoản admin Clb)</summary><form onsubmit="gvSetup(event)" class="gvf"><p class="gvnote">Chỉ làm một lần. Admin Clb quản lý mọi trường; tài khoản thuộc trường <b>jenny</b> (Clb Học Toán cùng Jenny).</p>
+  <label for="suN">Họ tên</label><input id="suN" required maxlength="40"><label for="suU">Tên đăng nhập</label><span class="ttbox"><span class="tt">jenny.</span><input id="suU" autocapitalize="off" spellcheck="false" required maxlength="30"></span>
+  <label for="suP">Mật khẩu (ít nhất 6 kí tự)</label><input id="suP" type="password" required minlength="6"><button class="gobtn" type="submit">Tạo tài khoản admin Clb</button><p id="suMsg" class="gvmsg" role="alert"></p></form></details>`:''}
  <p class="gvnote">Trang khác: ${[['gv','Giáo viên','giao-vien'],['ph','Phụ huynh','phu-huynh'],['ql','Quản lý','quan-ly']].filter(x=>x[0]!==TRANG).map(x=>`<a href="../${x[2]}/">${x[1]}</a>`).join(' · ')} · <a href="../">Học sinh</a></p></div></div>`);
 const TRANG_TEN={gv:'giáo viên',ph:'phụ huynh',ql:'quản lý',hs:'học sinh'},TRANG_LINK={gv:'../giao-vien/',ph:'../phu-huynh/',ql:'../quan-ly/',hs:'../'};
 function gvSaiTrang(m){const r=CLOUD.me.role;m.innerHTML=`Đây là tài khoản ${TRANG_TEN[r]||r}. Hãy vào <a href="${TRANG_LINK[r]||'../'}">trang ${TRANG_TEN[r]||''}</a>.`}
@@ -37,7 +37,7 @@ async function gvCloudLogin(e){e.preventDefault();const m=document.getElementByI
  try{await fbDangNhap(document.getElementById('gvU').value.trim().toLowerCase(),document.getElementById('gvPw').value,true);
   if(!TRANG_VAI.includes(CLOUD.me.role)){gvSaiTrang(m);try{await FB.auth.signOut()}catch(x){}CLOUD=null;return}
   m.textContent='';await gvCloudOpen()}catch(err){CLOUD=null;m.textContent=fbLoi(err)}}
-async function gvSetup(e){e.preventDefault();const m=document.getElementById('suMsg'),tk=document.getElementById('suU').value.trim().toLowerCase();
+async function gvSetup(e){e.preventDefault();const m=document.getElementById('suMsg'),tk0=document.getElementById('suU').value.trim().toLowerCase(),tk=tk0.startsWith('jenny.')?tk0:'jenny.'+tk0;
  if(!fbTkOk(tk)){m.textContent='Tên đăng nhập 3–24 kí tự: chữ thường không dấu, số, dấu chấm.';return}m.textContent='Đang tạo…';
  try{await fbThietLap(document.getElementById('suN').value.trim(),tk,document.getElementById('suP').value);m.textContent='';await gvCloudOpen()}catch(err){CLOUD=null;m.textContent=fbLoi(err)}}
 document.head.insertAdjacentHTML('beforeend',`<style>.gvgate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:16px;background:#12B5E8}
