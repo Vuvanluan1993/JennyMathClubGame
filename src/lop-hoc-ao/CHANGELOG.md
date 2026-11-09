@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 09/11/2026 — Giọng thu sẵn cho phần đọc đề lớp 1 (6 000 câu)
+- Thầy chọn thu nguyên câu **6 000 câu đọc đề gặp nhiều nhất** (lớp 1–2 tự đọc đề). `gom-loi-doc.js` lấy mẫu mọi dạng câu (hạt ngẫu nhiên cố định nên danh sách ổn định), xếp theo số lần gặp. Đo thử 5 000 câu ngẫu nhiên: **89% lần đọc đề phát giọng thu sẵn**, còn lại giọng máy.
+- Gom thêm câu cố định còn sót: "Em làm đúng rồi!", lời mở đầu trò chơi, lời khen/động viên màn Vẽ hình (37 câu cố định).
+- Lớp 1 nay 6 259 lời, khoảng 328 000 ký tự (trong 1 triệu ký tự miễn phí/tháng). App tải trước đề câu kế tiếp.
+- Lời giải khi sai 2 lần vẫn giọng máy.
+
 ## 09/11/2026 — Lớp 1 thu đủ giọng Chirp 3 HD
 - Thu xong 238/238 lời lớp 1 bằng Cloud Chirp 3 HD · Despina (24 209 ký tự, 8,2 MB), không lỗi. Ghi vào `docs/LUAT-DA-CHOT.md` mục 5.
 
