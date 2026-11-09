@@ -91,9 +91,9 @@ const bo=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace
 window.qlTaoLop=e=>{e.preventDefault();const k=+document.getElementById('nlKhoi').value,t=document.getElementById('nlTen').value.trim().toUpperCase(),g=document.getElementById('nlGV').value;
   if(!/^[0-9A-Z.\- ]{1,8}$/.test(t)){toast('Tên lớp ngắn, ví dụ 1D');return}if(lopById(t)){toast('Đã có lớp '+t);return}
   O().lop.push({id:t,khoi:k,ten:t,gv:g?[g]:[],tj:{on:false}});O().mo[t]={};nk(`Tạo lớp ${t} (khối ${k})${g?' · '+gvById(g).ten:''}`);qlMsg('Đã tạo lớp '+t)};
-window.qlTaoHS=e=>{e.preventDefault();const n=document.getElementById('nhTen').value.trim().replace(/\s+/g,' '),lid=document.getElementById('nhLop').value,l=lopById(lid);
+window.qlTaoHS=e=>{e.preventDefault();const n=document.getElementById('nhTen').value.trim().replace(/\s+/g,' '),lid=document.getElementById('nhLop').value||window.HS_LOP_MOI||'',l=lopById(lid);
   if(n.split(' ').length<2){toast('Nhập đủ họ và tên');return}
-  const goc=bo(n.split(' ').pop()).toLowerCase().replace(/[^a-z]/g,'')||'hs';let u=goc,i=2;while(S.st[u])u=goc+(i++);
+  const goc=tkTr(bo(n.split(' ').pop()).toLowerCase().replace(/[^a-z]/g,'')||'hs');let u=goc,i=2;while(S.st[u])u=goc+(i++);
   const r=[u,n,l?l.khoi:0];O().hsMoi.push(r);STUDENTS.push(r);S.st[u]=newStudent(n,l?l.khoi:1);if(l)O().gd[u]=lid;nk(`Tạo tài khoản ${n} (${u})`+(l?` · lớp ${lid}`:' · chưa xếp lớp'));qlMsg(`Đã tạo tài khoản ${u} / jenny123 cho ${n}`)};
 window.qlTaoGV=e=>{e.preventDefault();const n=document.getElementById('ngTen').value.trim();if(n.length<3){toast('Nhập tên giáo viên');return}
   const goc=bo(n.split(' ').pop()).toLowerCase().replace(/[^a-z]/g,'')||'gv';let u=goc,i=2;while(gvById(u))u=goc+(i++);

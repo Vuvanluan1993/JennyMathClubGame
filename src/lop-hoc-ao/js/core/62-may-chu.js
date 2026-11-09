@@ -11,12 +11,21 @@ const FB_CFG={apiKey:"AIzaSyDom_aoJHqhDgs0CYpPa0kTzRv0WQ7xo3o",authDomain:"jenny
 const FB_VER='10.12.2',GV_F=['comments','badges','gvNote','gvSkip'];
 let FB=null,CLOUD=null,fbSub=[],fbLast={},fbHen=null,fbDangGhi=false;
 const fbEmail=tk=>`${String(tk).trim().toLowerCase()}@jenny-lop-hoc-ao.firebaseapp.com`;
-const fbTkOk=tk=>/^[a-z0-9][a-z0-9._-]{2,23}$/.test(tk);
+const fbTkOk=tk=>/^[a-z0-9][a-z0-9._-]{2,39}$/.test(tk); /* 09/11/2026: dài hơn vì có tiền tố mã trường */
 function fbNap(){if(window.firebase&&firebase.firestore&&firebase.auth)return Promise.resolve();
   const SRI={app:'sha384-AQ3POAMqIhwS81FrUH95ekxqBZHeP5tG2JfEL3+7GuTtfRLWnrRh32UxwzM+//A9',auth:'sha384-TnlRYaR4JYz/lpaGuaiU61PjNberSA4vjLjtF+oRC/IkohkJqnWxw5EmDSOt1vA1',firestore:'sha384-qn4Jh88HhJA8dplNQyGjOh9OGI4izVhrfj/qIFgaKcdgOE06pXqIKGlsCILZcLAC'};/* SRI cho FB_VER 10.12.2 — đổi FB_VER thì tính lại, xem docs/SRI.md */
   const one=n=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-${n}-compat.js`;s.integrity=SRI[n];s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>no({code:'network',message:'Không tải được Firebase. Kiểm tra mạng.'});document.head.appendChild(s)});
   return one('app').then(()=>one('auth')).then(()=>one('firestore'))}
-async function fbInit(){await fbNap();if(!FB){const app=firebase.apps.length?firebase.app():firebase.initializeApp(FB_CFG);FB={app,auth:app.auth(),db:app.firestore()}}return FB}
+async function fbInit(){await fbNap();if(!FB){const app=firebase.apps.length?firebase.app():firebase.initializeApp(FB_CFG),raw=app.firestore();FB={app,auth:app.auth(),db:fbBoc(raw),raw}}return FB}
+/* 09/11/2026 — nhiều trường: mọi chỗ đọc/ghi "org/main" thành kho của trường đang dùng (truong/{mã});
+   tài liệu users, hs, hsgv, asg, login tự gắn trường; danh sách users, asg chỉ lấy của trường mình (quy tắc bảo mật đòi vậy). */
+const fbT=()=>(CLOUD&&CLOUD.truong)||'jenny';
+function fbBoc(raw){const gan=/^(users|hs|hsgv|asg|login)\//;
+  const ref=(r,path)=>gan.test(path)?new Proxy(r,{get(t,k){if(k==='set')return(v,o)=>t.set(Object.assign({truong:fbT()},v),o);const x=t[k];return typeof x==='function'?x.bind(t):x}}):r;
+  return new Proxy(raw,{get(t,k){
+    if(k==='doc')return p=>{p=String(p);if(p==='org/main')return t.doc('truong/'+fbT());return ref(t.doc(p),p)};
+    if(k==='collection')return n=>(n==='users'||n==='asg')?t.collection(n).where('truong','==',fbT()):t.collection(n);
+    const x=t[k];return typeof x==='function'?x.bind(t):x}})}
 function fbLoi(e){const c=(e&&e.code)||'';return({'chua-lop':'Tài khoản của em chưa được xếp lớp. Em nhờ cô giáo nhé!','auth/invalid-credential':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/invalid-login-credentials':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/wrong-password':'Mật khẩu chưa đúng.','auth/user-not-found':'Không có tài khoản này.','auth/too-many-requests':'Thử sai nhiều lần. Đợi vài phút rồi thử lại.','auth/network-request-failed':'Không kết nối được mạng.','auth/email-already-in-use':'Tên đăng nhập này đã có người dùng.','auth/weak-password':'Mật khẩu cần ít nhất 6 kí tự.','auth/invalid-email':'Tên đăng nhập không hợp lệ.','permission-denied':'Tài khoản không có quyền làm việc này.','no-profile':'Tài khoản chưa được gán vai trò. Hỏi quản lý trung tâm.','network':e.message})[c]||('Có lỗi: '+((e&&e.message)||e))}
 const fbJ=s=>{try{return JSON.parse(s)}catch(e){return null}};
 const fbTach=st=>{const a={},b={};Object.keys(st||{}).forEach(k=>(GV_F.includes(k)?b:a)[k]=st[k]);GV_F.forEach(k=>{if(b[k]===undefined)b[k]=k==='gvSkip'?{}:[]});return{hs:a,gv:b}};
@@ -26,7 +35,12 @@ const fbNgay=()=>Math.max(1,Math.floor((Date.now()-Date.UTC(2026,8,5))/864e5)+1)
 async function fbDangNhap(tk,pw,nho){const{auth}=await fbInit();try{await auth.setPersistence(nho===false?firebase.auth.Auth.Persistence.SESSION:firebase.auth.Auth.Persistence.LOCAL)}catch(e){}
   tk=String(tk).trim().toLowerCase();let em=fbEmail(tk);try{const L=await FB.db.doc('login/'+tk).get();if(L.exists&&L.data().email)em=L.data().email}catch(e){}
   const c=await auth.signInWithEmailAndPassword(em,pw);return fbNapMe(c.user)}
-async function fbNapMe(user){const d=await FB.db.doc('users/'+user.uid).get();if(!d.exists)throw{code:'no-profile'};CLOUD={uid:user.uid,me:d.data()};return CLOUD}
+async function fbNapMe(user){const d=await FB.db.doc('users/'+user.uid).get();if(!d.exists)throw{code:'no-profile'};const me=d.data();
+  /* admin Clb (qt): làm việc như quản lý của trường đang chọn; quy tắc bảo mật cho qt quyền ở mọi trường */
+  if(me.role==='qt'){let t=null;try{t=localStorage.getItem('jennyQT_truong')}catch(e){}CLOUD={uid:user.uid,qt:true,goc:me,me:Object.assign({},me,{role:'ql',gvId:me.gvId||me.tk}),truong:t||me.truong||'jenny'};return CLOUD}
+  CLOUD={uid:user.uid,me,truong:me.truong||'jenny'};
+  try{const t=await FB.db.doc('truong/'+CLOUD.truong).get();if(t.exists&&t.data().khoa){try{await FB.auth.signOut()}catch(e){}CLOUD=null;throw{code:'truong-khoa'}}}catch(e){if(e&&e.code==='truong-khoa')throw e}
+  return CLOUD}
 async function fbDangXuat(){fbSub.forEach(f=>{try{f()}catch(e){}});fbSub=[];try{await fbDayNgay()}catch(e){}try{await FB.auth.signOut()}catch(e){}CLOUD=null;location.reload()}
 async function fbDoiMK(){const p=prompt('Mật khẩu mới (ít nhất 6 kí tự):');if(!p)return;if(p.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
   try{await FB.auth.currentUser.updatePassword(p);toast('Đã đổi mật khẩu')}catch(e){toast(e.code==='auth/requires-recent-login'?'Đăng xuất rồi đăng nhập lại, sau đó đổi mật khẩu':fbLoi(e))}}
@@ -34,12 +48,16 @@ async function fbDoiMK(){const p=prompt('Mật khẩu mới (ít nhất 6 kí t�
 async function fbTaoTK(tk,pw){await fbInit();const app2=firebase.apps.find(a=>a.name==='tao')||firebase.initializeApp(FB_CFG,'tao');
   const c=await app2.auth().createUserWithEmailAndPassword(fbEmail(tk),pw);const uid=c.user.uid;await app2.auth().signOut();return uid}
 /* thiết lập lần đầu: tài khoản quản lý đầu tiên + dữ liệu trung tâm trống */
-async function fbThietLap(ten,tk,pw){const{auth,db}=await fbInit();const ref=db.doc('org/main');
+async function fbThietLap(ten,tk,pw){const{auth}=await fbInit();const raw=FB.raw;tk=String(tk).trim().toLowerCase();if(!tk.startsWith('jenny.'))tk='jenny.'+tk;
+  /* 09/11/2026: tạo admin Clb (quản trị hệ thống) — chỉ một lần — và trường "jenny" (Clb Học Toán cùng Jenny) */
   const c=await auth.createUserWithEmailAndPassword(fbEmail(tk),pw);const uid=c.user.uid;
-  const o=await ref.get();if(o.exists)throw{code:'x',message:'Trung tâm đã có quản lý. Hãy đăng nhập.'};
-  const org={ten:'Clb Học Toán cùng Jenny',nam:'2026–2027',gv:[{id:tk,ten,tk}],lop:[],gd:{},nl:{},nk:[],mo:{},hs:[],ph:{},v:2,cloud:1,mauHS4:1,mauHS5:1,mauHS6:1,mauHS7:1,mauHS3:1,mauHS2:1,mauHS:1};
-  await ref.set({j:JSON.stringify(org),gd:{},pc:{},admins:[uid],t:fbTS()});
-  await db.doc('users/'+uid).set({role:'ql',tk,ten,gvId:tk});return fbNapMe(c.user)}
+  try{await raw.doc('he/main').set({admins:[uid],t:fbTS()})}catch(e){try{await c.user.delete()}catch(x){}throw{code:'x',message:'Đã có admin Clb. Hãy đăng nhập.'}}
+  await raw.doc('users/'+uid).set({role:'qt',tk,ten,gvId:tk,truong:'jenny'});
+  let cu=false;try{cu=(await raw.doc('org/main').get()).exists}catch(e){}
+  const tj=await raw.doc('truong/jenny').get();
+  if(!tj.exists){const org={ten:'Clb Học Toán cùng Jenny',nam:'2026–2027',gv:[{id:tk,ten,tk}],lop:[],gd:{},nl:{},nk:[],mo:{},hs:[],ph:{},v:2,cloud:1,ma:'jenny',mauHS4:1,mauHS5:1,mauHS6:1,mauHS7:1,mauHS3:1,mauHS2:1,mauHS:1};
+    if(!cu)await raw.doc('truong/jenny').set({ma:'jenny',ten:org.ten,j:JSON.stringify(org),gd:{},pc:{},khoa:false,t:fbTS()})}
+  return fbNapMe(c.user)}
 
 /* ---------- ghi lên máy chủ (gom lại 1,5 giây) ---------- */
 {const _s=save;save=function(){const r=_s.apply(this,arguments);try{if(CLOUD&&!fbDangGhi){clearTimeout(fbHen);fbHen=setTimeout(fbDay,1500)}}catch(e){}return r}}
@@ -52,7 +70,7 @@ async function fbDay(){if(!CLOUD||!FB)return;const db=FB.db,me=CLOUD.me,ghi=[];
     if(fbLast['hs/'+tk]!==j||fbLast['ev/'+tk]!==ev){fbLast['hs/'+tk]=j;fbLast['ev/'+tk]=ev;ghi.push(db.doc('hs/'+tk).set({j,ev,lop:(S.lopHS||''),t:fbTS()}))}}
   else if(me.role==='ql'||me.role==='gv'){
     if(S.org){const o=fbOrgSach(),j=JSON.stringify(o);if(fbLast['org/main']!==j){fbLast['org/main']=j;
-      ghi.push(me.role==='ql'?db.doc('org/main').set({j,gd:o.gd||{},pc:fbPc(o),t:fbTS()},{merge:true}):db.doc('org/main').update({j,t:fbTS()}))}}
+      ghi.push(me.role==='ql'?db.doc('org/main').set({j,gd:o.gd||{},pc:fbPc(o),t:fbTS()},{merge:true}):db.doc('org/main').update({j,gd:o.gd||{},t:fbTS()}))}}
     Object.keys(S.st).forEach(tk=>{if(!fbLast.hasOwnProperty('hsgv/'+tk))return;const j=JSON.stringify(fbTach(S.st[tk]).gv);if(fbLast['hsgv/'+tk]!==j){fbLast['hsgv/'+tk]=j;ghi.push(db.doc('hsgv/'+tk).set({j,t:fbTS()}))}});
     const co=new Set();(S.asg||[]).forEach(a=>{co.add(a.id);const j=JSON.stringify(a);if(fbLast['asg/'+a.id]!==j){fbLast['asg/'+a.id]=j;ghi.push(db.doc('asg/'+a.id).set({j,lop:a.lop||'',t:fbTS()}))}});
     Object.keys(fbLast).filter(k=>k.startsWith('asg/')&&!co.has(k.slice(4))).forEach(k=>{delete fbLast[k];ghi.push(db.doc(k).delete())});
@@ -106,11 +124,11 @@ function fbNgheHS(tk){if(fbDaNghe.has(tk))return;fbDaNghe.add(tk);const db=FB.db
 
 /* ---------- quản lý tạo tài khoản thật ---------- */
 const fbKhongDau=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase();
-async function fbQLTaoHS(e){e.preventDefault();const o=S.org,n=document.getElementById('nhTen').value.trim().replace(/\s+/g,' '),lid=document.getElementById('nhLop').value,l=lopById(lid);
+async function fbQLTaoHS(e){e.preventDefault();const o=S.org,n=document.getElementById('nhTen').value.trim().replace(/\s+/g,' '),lid=document.getElementById('nhLop').value||window.HS_LOP_MOI||'',l=lopById(lid);
   let tk=(document.getElementById('nhTk').value||'').trim().toLowerCase();const pw=document.getElementById('nhPw').value;
   if(n.split(' ').length<2){toast('Nhập đủ họ và tên');return}
-  if(!tk){const g=fbKhongDau(n).split(' ');tk=(g.pop()+g.map(x=>x[0]).join('')).replace(/[^a-z0-9]/g,'');let t=tk,i=2;while((o.hs||[]).some(r=>r[0]===t))t=tk+(i++);tk=t}
-  if(!fbTkOk(tk)){toast('Tên đăng nhập 3–24 kí tự: chữ thường không dấu, số, dấu chấm');return}if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
+  if(!tk){const g=fbKhongDau(n).split(' ');tk=(g.pop()+g.map(x=>x[0]).join('')).replace(/[^a-z0-9]/g,'');tk=tkTr(tk);let t=tk,i=2;while((o.hs||[]).some(r=>r[0]===t))t=tk+(i++);tk=t}else tk=tkTr(tk);
+  if(!fbTkOk(tk)){toast('Tên đăng nhập: chữ thường không dấu, số, dấu chấm (sau mã trường ít nhất 3 kí tự)');return}if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
   if((o.hs||[]).some(r=>r[0]===tk)){toast('Tên đăng nhập đã có');return}
   toast('Đang tạo tài khoản…');
   try{const uid=await fbTaoTK(tk,pw),db=FB.db,st=newStudent(n,l?l.khoi:1);
@@ -118,13 +136,13 @@ async function fbQLTaoHS(e){e.preventDefault();const o=S.org,n=document.getEleme
     await db.doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:l?lid:'',t:fbTS()});
     (o.hs=o.hs||[]).push([tk,n,l?l.khoi:0]);if(l)o.gd[tk]=lid;(o.nk=o.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Tạo tài khoản ${n} (${tk})`+(l?` · lớp ${lid}`:' · chưa xếp lớp')});
     S.st[tk]=st;fbDanhSach();save();await fbDayNgay();render();toast(`Đã tạo: ${tk} / ${pw}`)}catch(err){toast(fbLoi(err))}}
-async function fbQLTaoGV(e){e.preventDefault();const o=S.org,n=document.getElementById('ngTen').value.trim(),tk=(document.getElementById('ngTk').value||'').trim().toLowerCase(),pw=document.getElementById('ngPw').value||'';
-  if(n.length<3){toast('Nhập tên giáo viên');return}if(!fbTkOk(tk)){toast('Tên đăng nhập 3–24 kí tự: chữ thường không dấu, số, dấu chấm');return}if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
+async function fbQLTaoGV(e){e.preventDefault();const o=S.org,n=document.getElementById('ngTen').value.trim(),tk=tkTr(document.getElementById('ngTk').value),pw=document.getElementById('ngPw').value||'';
+  if(n.length<3){toast('Nhập tên giáo viên');return}if(!fbTkOk(tk)){toast('Tên đăng nhập: chữ thường không dấu, số, dấu chấm (sau mã trường ít nhất 3 kí tự)');return}if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
   if((o.gv||[]).some(g=>g.id===tk)){toast('Đã có giáo viên này');return}toast('Đang tạo tài khoản…');
   try{const uid=await fbTaoTK(tk,pw);await FB.db.doc('users/'+uid).set({role:'gv',tk,ten:n,gvId:tk});
     o.gv.push({id:tk,ten:n,tk});o.nk.push({d:S.day,ai:'Quản lý trung tâm',t:`Tạo tài khoản giáo viên ${n} (${tk})`});save();await fbDayNgay();render();toast(`Đã tạo: ${tk} / ${pw}`)}catch(err){toast(fbLoi(err))}}
-async function fbQLTaoPH(e){e.preventDefault();const o=S.org,con=document.getElementById('phHs').value,tk=(document.getElementById('phTk').value||'').trim().toLowerCase(),pw=document.getElementById('phPw').value||'';
-  const r=(o.hs||[]).find(x=>x[0]===con);if(!r){toast('Chọn học sinh');return}if(!fbTkOk(tk)){toast('Tên đăng nhập 3–24 kí tự: chữ thường không dấu, số, dấu chấm');return}if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
+async function fbQLTaoPH(e){e.preventDefault();const o=S.org,con=document.getElementById('phHs').value,tk=tkTr(document.getElementById('phTk').value),pw=document.getElementById('phPw').value||'';
+  const r=(o.hs||[]).find(x=>x[0]===con);if(!r){toast('Chọn học sinh');return}if(!fbTkOk(tk)){toast('Tên đăng nhập: chữ thường không dấu, số, dấu chấm (sau mã trường ít nhất 3 kí tự)');return}if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
   toast('Đang tạo tài khoản…');
   try{const uid=await fbTaoTK(tk,pw);await FB.db.doc('users/'+uid).set({role:'ph',tk,ten:'Phụ huynh '+r[1],con:[con]});
     (o.ph=o.ph||{})[con]=tk;o.nk.push({d:S.day,ai:'Quản lý trung tâm',t:`Tạo tài khoản phụ huynh ${tk} cho ${r[1]}`});save();await fbDayNgay();render();toast(`Đã tạo: ${tk} / ${pw}`)}catch(err){toast(fbLoi(err))}}

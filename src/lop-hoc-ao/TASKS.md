@@ -3,6 +3,7 @@
 Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm trong một phiên riêng, xong thì ghi CHANGELOG.
 
 ## Ưu tiên cao
+- ☑ T-30 Nhiều trường: tên đăng nhập `mã.tên`, admin Clb quản lý mọi trường, GV thêm học sinh (09/11/2026). Còn: thầy dán quy tắc mới, tạo admin Clb, chuyển dữ liệu cũ.
 - ☑ **T-01 Khoá đảo theo tiến độ trước khi dùng thật** — đã khoá mặc định (23/10); tài khoản thử Lê Bảo Na mở tất cả; nút mở khoá chỉ ở thanh demo bản đầy đủ.
 - ☐ **T-02 Rà soát nội dung học kì 2** — giáo viên chơi thử mỗi lớp 1–2 chủ đề; sửa câu, slide chưa hợp (nội dung do máy soạn hàng loạt).
 - ☐ **T-03 Dạng "Nối cặp"** — kéo dây nối nhiều cặp (đang chỉ hỏi từng cặp).
