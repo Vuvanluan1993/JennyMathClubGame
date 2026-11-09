@@ -6,14 +6,14 @@
 (function(){
 if(typeof ORG_ON==='undefined'||!ORG_ON)return;
 const cloud=()=>!!(S.org&&S.org.cloud&&typeof FB!=='undefined'&&FB&&FB.db);
-const tkOk=tk=>/^[a-z0-9][a-z0-9._-]{2,23}$/.test(tk);
+const tkOk=tk=>/^[a-z0-9][a-z0-9._-]{2,39}$/.test(tk);
 const hoSo=id=>{const o=S.org;o.hoso=o.hoso||{};return o.hoso[id]||{}};
 const nk=t=>{try{(S.org.nk=S.org.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t});if(S.org.nk.length>200)S.org.nk.shift()}catch(e){}};
 window.qlSua=function(id){const st=S.st[id];if(!st)return;const H=hoSo(id);const el=document.createElement('div');el.className='gdov';el.id='qlsua';
  el.innerHTML=`<div class="gdbox qsbox"><div class="gdhd"><b>Sửa tài khoản học sinh</b><button type="button" class="gdx" onclick="document.getElementById('qlsua').remove()">Đóng ✕</button></div>
  <form class="qsform" onsubmit="qlLuu(event,'${id}')">
   <label>Họ và tên<input id="qsTen" value="${esc(st.name)}" maxlength="40" required></label>
-  <label>Tên đăng nhập<input id="qsTk" value="${esc(id)}" maxlength="24" autocapitalize="off" spellcheck="false" required></label>
+  <label>Tên đăng nhập<input id="qsTk" value="${esc(id)}" maxlength="40" autocapitalize="off" spellcheck="false" required></label>
   <div class="qs2"><label>Giới tính<select id="qsGt"><option value="">—</option><option value="nu" ${H.gt==='nu'?'selected':''}>Nữ</option><option value="nam" ${H.gt==='nam'?'selected':''}>Nam</option></select></label><label>Năm sinh<input id="qsNam" type="number" min="2010" max="2025" value="${H.nam||''}" placeholder="2019"></label></div>
    <label>Ngày sinh (ngày, tháng)<span class="qsns"><select id="qsNg" aria-label="Ngày"><option value="">Ngày</option>${Array.from({length:31},(_,i)=>`<option ${+H.ng===i+1?'selected':''}>${i+1}</option>`).join('')}</select><select id="qsTh" aria-label="Tháng"><option value="">Tháng</option>${Array.from({length:12},(_,i)=>`<option ${+H.th===i+1?'selected':''}>${i+1}</option>`).join('')}</select></span></label>
   <div class="qs2"><label>Điện thoại phụ huynh<input id="qsDt" type="tel" value="${esc(H.dt||'')}" placeholder="0912345678" maxlength="15"></label>

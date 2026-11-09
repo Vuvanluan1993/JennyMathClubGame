@@ -1,5 +1,13 @@
 # Lịch sử thay đổi
 
+## 09/11/2026 — Nhiều trường: tên đăng nhập có mã trường, admin Clb quản lý mọi trường
+- Mỗi trường một kho riêng trên máy chủ (`truong/{mã}`); `62-may-chu.js` tự đổi `org/main` thành kho của trường đang dùng, tự gắn `truong` vào users/hs/hsgv/asg/login và chỉ lấy danh sách của trường mình.
+- **Tên đăng nhập dạng `mã.tên`** (vd. `nguyendu.an`): tạo học sinh, giáo viên, phụ huynh, nhập Excel, phụ huynh tự động đều tự thêm tiền tố; ô tên đăng nhập hiện sẵn "mã." ở trước.
+- **Admin Clb** (vai `qt`, tạo ở "Thiết lập lần đầu", tên `jenny.…`): nút **Các trường** trên thanh trên → danh sách trường (số QL/GV/HS, trạng thái), + Thêm trường (mã, tên, tài khoản quản lý trường), + Quản lý, đổi tên, khoá/mở, **Vào trường** (quản lý như quản lý trường), tìm tài khoản ở mọi trường, chuyển dữ liệu cũ thành trường `jenny`.
+- Trường bị khoá: tài khoản của trường không đăng nhập được.
+- **Giáo viên thêm được học sinh** vào lớp mình (nút "+ Thêm học sinh" ở trang lớp).
+- `firebase/firestore.rules` viết lại cho nhiều trường (**phải dán lại vào Firestore › Rules trước khi dùng**). Thêm `tools/test/nhieu-truong.js`.
+
 ## 06/11/2026 — Tài khoản thử Test01…Test05 (lớp 1…5)
 - Bản học sinh thêm 5 tài khoản thử: **Test01 … Test05** (mật khẩu `jenny123`), ứng với lớp 1 … 5.
 - Như Lê Bảo Na: mở tất cả đảo, màn, chủ đề; 10 000 xu; có bài cô giao mẫu. Không cần làm lần lượt.
