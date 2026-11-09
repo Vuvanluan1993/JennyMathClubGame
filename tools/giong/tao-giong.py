@@ -56,6 +56,7 @@ def pcm_sang_mp3(pcm, f):
 
 
 MO_HINH_DUNG = None
+HET, KHONG_CO = set(), set()
 
 
 def doc_gemini(text, f):
@@ -63,12 +64,21 @@ def doc_gemini(text, f):
     body = {"contents": [{"parts": [{"text": LOI_DAN + text}]}],
             "generationConfig": {"responseModalities": ["AUDIO"],
                                  "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": GIONG}}}}}
-    for m in ([MO_HINH_DUNG] if MO_HINH_DUNG else MO_HINH):
+    for m in ([MO_HINH_DUNG] if MO_HINH_DUNG else []) + [x for x in MO_HINH if x != MO_HINH_DUNG]:
+        if m in HET or m in KHONG_CO:
+            continue
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent"
         try:
             kq = goi(url, body, KHOA_GEMINI)
         except RuntimeError as e:
             if "404" in str(e) or "not found" in str(e).lower():
+                KHONG_CO.add(m)
+                continue
+            raise
+        except SystemExit as e:
+            if str(e) == "HET_LUOT_NGAY":  # mô hình này hết lượt ngày → thử mô hình TTS khác (lượt riêng)
+                HET.add(m)
+                print(f"  {m}: hết lượt hôm nay, đổi mô hình khác")
                 continue
             raise
         MO_HINH_DUNG = m
@@ -78,6 +88,8 @@ def doc_gemini(text, f):
             raise RuntimeError("Không có âm thanh trả về: " + json.dumps(kq, ensure_ascii=False)[:300])
         pcm_sang_mp3(pcm, f)
         return
+    if HET:
+        raise SystemExit("HET_LUOT_NGAY")
     raise RuntimeError("Không tìm thấy mô hình Gemini TTS nào trong: " + ", ".join(MO_HINH))
 
 
@@ -112,6 +124,8 @@ def main():
                 try:
                     (doc_gemini if NGUON == "gemini" else doc_cloud)(c["text"], f)
                     break
+                except SystemExit:
+                    raise
                 except Exception as e:
                     print(f"  {c['id']} lần {lan + 1}: {e}")
                     if lan == 2:
@@ -127,7 +141,7 @@ def main():
             ky_tu += len(c["text"])
             print("thu:", c["id"])
             if NGUON == "gemini":
-                time.sleep(7)  # gói miễn phí: giới hạn lượt mỗi phút
+                time.sleep(int(os.environ.get("CHO", "21")))  # gói miễn phí: khoảng 3 lượt/phút
     except SystemExit as e:
         if str(e) != "HET_LUOT_NGAY":
             raise

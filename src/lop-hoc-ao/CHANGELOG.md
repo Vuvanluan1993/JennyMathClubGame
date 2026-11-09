@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 09/11/2026 — Giọng đọc thu sẵn lớp 1 (Gemini TTS · Despina)
+- `tools/giong/gom-loi-doc.js <lớp>`: gom lời đọc **cố định** của một lớp → `tools/giong/lop<n>.json` (bài giảng mọi slide, lời giới thiệu đảo, câu khen/nhắc cố định). Lớp 1: **238 lời** (118 slide, 104 giới thiệu đảo, 16 câu cố định), khoảng 24 000 ký tự. Câu có số thay đổi không gom (dùng giọng máy).
+- `js/core/83-giong-thu-san.js`: `sayJ` phát mp3 nếu câu đã thu (`games/lop-hoc-ao/giong/lop<n>/<id>.mp3`, danh sách `_ma.json`), không thì giọng máy; lỗi mạng/không phát được → giọng máy. Tải trước slide kế tiếp. Bật EN thì vẫn giọng tiếng Anh như cũ.
+- `tools/giong/tao-giong.py`: hết lượt ngày ở một mô hình thì đổi sang mô hình TTS khác (mỗi mô hình có lượt riêng); chờ 21 giây giữa 2 câu (gói miễn phí ~3 lượt/phút).
+- `.github/workflows/giong-doc.yml`: **tự chạy mỗi ngày 15:23 giờ VN**, thu tiếp mọi `tools/giong/lop*.json` tới khi đủ; chạy tay để trống ô = thu mọi lớp.
+
 ## 09/11/2026 — Nhiều trường: tên đăng nhập có mã trường, admin Clb quản lý mọi trường
 - Mỗi trường một kho riêng trên máy chủ (`truong/{mã}`); `62-may-chu.js` tự đổi `org/main` thành kho của trường đang dùng, tự gắn `truong` vào users/hs/hsgv/asg/login và chỉ lấy danh sách của trường mình.
 - **Tên đăng nhập dạng `mã.tên`** (vd. `nguyendu.an`): tạo học sinh, giáo viên, phụ huynh, nhập Excel, phụ huynh tự động đều tự thêm tiền tố; ô tên đăng nhập hiện sẵn "mã." ở trước.
@@ -14,6 +20,7 @@
 - Đã thử: cả 5 tài khoản vào đúng lớp, mở hết; jenny03 vẫn khoá như cũ.
 
 ## 25/10/2026 — Game lẻ dùng kit và token chung (P-19, GL)
+- Gộp main (giọng thu sẵn lớp 1): `83-giong-thu-san.js` tải mp3/`_ma.json` cùng nguồn khi trang chạy trong kho (CSP `'self'`, P-08 giữ nguyên); `tao-giong.py` giữ header `x-goog-api-key` cùng vòng đổi mô hình mới; workflow giọng đọc theo bản main (tự thu mỗi ngày).
 - **Ô Số Bí Ẩn** lớp 6, 7: bỏ đoạn `<head>` lạ ở đầu file, có `lang="vi"`, `<title>` về đúng chỗ. Giao diện và cách chơi chung ở `games/o-so-bi-an/_chung.css` + `_chung.js`; mỗi lớp chỉ còn dữ liệu câu đố (20 dòng). Khoá lưu giữ `osba6`, `osba7`.
 - **Hành trình của Jenny** lớp 6 + tiểu học: phần chung (hình vẽ, tiến độ, âm thanh, bản đồ, vườn, cửa hàng, sao lưu, mở kho bài) ở `games/hanh-trinh-jenny/_saga/saga.js` + `saga.css`; mỗi bản giữ HTML, cấu hình đảo và Trạm toán riêng. Khoá lưu giữ `jenny-saga-6`, `jenny-saga-th`.
 - **Khôi phục mã sao lưu an toàn** ở lớp 6, tiểu học, mầm non, thám tử: `_saga/khoi-phuc.js` hàm `khoiPhucAnToan(o, fresh)` chỉ chép các khoá có trong tiến độ mới, đúng kiểu, bỏ `__proto__`/`constructor`/`prototype` (trước đây mã dán vào chép được mọi khoá và đổi được prototype).
