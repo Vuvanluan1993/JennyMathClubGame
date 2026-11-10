@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 10/11/2026 — Giọng thu sẵn cho phần đọc đề trong trò chơi (lớp 1–2)
+- Thầy báo: trò Thả mồi câu cá, Leo núi… vẫn đọc đề bằng giọng máy. Nguyên nhân: trò chơi đọc đề bằng câu riêng (`frogSay`, `climbSayText`, luật chơi `g.say`), khác câu đọc đề trên đảo, nên chưa được gom.
+- `gom-loi-doc.js`: chạy thật từng trò "Chơi thêm" của mỗi đảo để ghi lời luật chơi và câu đầu; lấy mẫu câu hỏi Ếch nhảy / Thả mồi câu cá / Trồng cây (lấy hết) và 2 000 câu Leo núi gặp nhiều nhất. Giữ lại câu đã có trong danh sách cũ (không mất file đã thu).
+- Lớp 1: +2 424 lời (~173 000 ký tự); lớp 2: +14 787 lời (~588 000 ký tự).
+- Đo thử: Ếch/Câu cá/Trồng cây lớp 1 100%, lớp 2 89%; Leo núi lớp 1 67%, lớp 2 33% (đề lời văn rất đa dạng).
+
 ## 10/11/2026 — Giọng thu sẵn lớp 2
 - Gom lớp 2: 6 440 lời (228 slide, 175 giới thiệu đảo, 37 câu cố định, 6 000 câu đọc đề), khoảng 349 000 ký tự → `tools/giong/lop2.json`.
 - Đọc đề lớp 2 đa dạng hơn (số đến 1000): 6 000 câu phủ khoảng 70% lần đọc đề (đo 6 000 đề ngẫu nhiên); thêm câu lợi ít (10 000 câu → 75%, 20 000 câu → 80%).
