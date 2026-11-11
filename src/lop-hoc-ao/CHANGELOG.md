@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 11/11/2026 — Giọng đọc: không ngắt câu, gom câu còn sót, thời hạn chờ
+- **Câu bị ngắt** (thầy báo ở trò chơi): trò chơi đọc luật rồi hẹn 4–5 giây đọc đề; giọng thu sẵn đọc luật dài hơn nên bị cắt. Nay lời do app tự gọi (hẹn giờ) **chờ câu đang nói xong** (tối đa 12 giây); lời do em chạm/bấm, hoặc em đã chạm từ khi câu hiện tại bắt đầu, thì ngắt ngay như cũ. Rời màn vẫn dừng hết.
+- **Câu còn giọng máy** ở lớp 1: rà mọi lời gọi `sayJ`. Thêm: câu ghép tiền tố ("Cá cắn câu! " + đề, "Em làm lại câu này nhé. " + đề, "Chưa đúng. " + …) — app tách theo câu, đoạn đã thu phát mp3, đoạn chưa thu giọng máy; câu kết màn/kết trò có số (điểm, số câu, số cá… 0–40), tên trùm, vùng biển (hộ chiếu), quà kho báu, trục Sức mạnh, hình; câu trong ?: bị sót ("Em qua màn rồi! Giỏi quá!"…); slide Toán Jenny. Lớp 1 +846 lời, lớp 2 +1 099 lời (~72 000 ký tự).
+- Chờ file quá 2,5 giây → giọng máy (không im lặng). Một thẻ âm thanh dùng chung, mở khoá ở lần chạm đầu (iPhone/iPad). Tải trước cả màn khi vào màn.
+- Danh sách câu đã thu gọn hơn: `_ds.txt` (mỗi dòng 1 id) — lớp 2: 276 KB thay vì 785 KB; `tao-giong.py` tự ghi.
+- Vẫn giọng máy: lời giải khi sai 2 lần, hướng dẫn từng bước khi sai, đọc đề hiếm, Leo núi phần chưa thu.
+
 ## 10/11/2026 — Giọng thu sẵn cho phần đọc đề trong trò chơi (lớp 1–2)
 - Thầy báo: trò Thả mồi câu cá, Leo núi… vẫn đọc đề bằng giọng máy. Nguyên nhân: trò chơi đọc đề bằng câu riêng (`frogSay`, `climbSayText`, luật chơi `g.say`), khác câu đọc đề trên đảo, nên chưa được gom.
 - `gom-loi-doc.js`: chạy thật từng trò "Chơi thêm" của mỗi đảo để ghi lời luật chơi và câu đầu; lấy mẫu câu hỏi Ếch nhảy / Thả mồi câu cá / Trồng cây (lấy hết) và 2 000 câu Leo núi gặp nhiều nhất. Giữ lại câu đã có trong danh sách cũ (không mất file đã thu).

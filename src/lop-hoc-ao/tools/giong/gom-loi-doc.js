@@ -42,8 +42,27 @@ function cauCoDinh() {
     }
   });
   walk(path.join(ROOT, 'js'));
-  return [...out].filter(t => /[a-zà-ỹ]/i.test(t) && !/^[A-Z][a-z' ]+[.!]?$/.test(t)); // bỏ câu tiếng Anh
+  // Quét mọi lời gọi sayJ(…) (đếm ngoặc): lấy mọi chuỗi '…' bên trong (cả câu trong ?: và tiền tố nối '…'+x,
+  // vd. 'Cá cắn câu! ' — app ghép từng câu khi phát) và mẫu `…${x}…` có đúng một chỗ thay (điền ở trang).
+  const walk2 = (d, loc) => fs.readdirSync(d, { withFileTypes: true }).forEach(f => {
+    const p = path.join(d, f.name);
+    if (f.isDirectory()) return walk2(p, loc);
+    if (!p.endsWith('.js') || (loc && !loc(f.name))) return;
+    const s = fs.readFileSync(p, 'utf8'); let i = 0;
+    while ((i = s.indexOf('sayJ(', i)) >= 0) {
+      if (s.slice(i - 9, i) === 'function ') { i += 5; continue }
+      let j = i + 5, dd = 1, q = null;
+      for (; j < s.length && dd; j++) { const c = s[j]; if (q) { if (c === '\\') j++; else if (c === q) q = null } else if (c === "'" || c === '"' || c === '`') q = c; else if (c === '(') dd++; else if (c === ')') dd-- }
+      const arg = s.slice(i + 5, j - 1); i = j;
+      (arg.match(/'([^'\\]{3,})'/g) || []).forEach(t => { t = t.slice(1, -1).trim(); if (!t.includes('${')) out.add(t) });
+      (arg.match(/`[^`]*`/g) || []).forEach(t => { const b = t.slice(1, -1); const n = (b.match(/\$\{/g) || []).length; if (n === 1) MAU_TPL.add(b); else if (n === 0) out.add(b.trim()) });
+    }
+  });
+  walk2(path.join(ROOT, 'js', 'core'));
+  walk2(path.join(ROOT, 'js', 'content', 'hk1'), n => /^(24|25|30)-/.test(n));  // màn chơi tiểu học, Sổ lỗi/Toán Jenny, bài giảng
+  return [...out].filter(t => /[à-ỹđ]/i.test(t) && !t.includes('|') && (/\s/.test(t) || /^[A-ZÀ-Ỹ]/.test(t))); // chỉ câu tiếng Việt, bỏ mảnh lẻ
 }
+const MAU_TPL = new Set();
 
 (async () => {
   const b = await chromium.launch({ executablePath: fs.existsSync(EXE) ? EXE : undefined });
@@ -54,7 +73,7 @@ function cauCoDinh() {
   const er = []; p.on('pageerror', e => er.push(e.message));
   await p.goto('file://' + tmp); await p.waitForTimeout(400);
   const fixed = cauCoDinh();
-  const r = await p.evaluate(([g, fixed, SO_DE, MAU, SO_LEO, MAU_ECH]) => {
+  const r = await p.evaluate(([g, fixed, SO_DE, MAU, SO_LEO, MAU_ECH, TPL]) => {
     try { localStorage.clear() } catch (e) {}
     fresh(); role = 'hs'; (0, eval)("sid='" + { 1: 'na', 2: 'lam', 3: 'quan', 4: 'thao', 5: 'duc' }[g] + "'");
     const out = [], seen = new Set();
@@ -68,6 +87,26 @@ function cauCoDinh() {
       L.forEach(sl => add('bai-giang', sayFull(sl.say, sl.h)));
     }
     fixed.forEach(t => add('cau-co-dinh', t));
+    // Mẫu có một chỗ thay: điền giá trị có thể có (điểm/số câu 0–40, tên trùm, vùng biển, quà, hình…)
+    const vals = (b) => {
+      const ex = (b.match(/\$\{([^}]*)\}/) || [])[1] || '';
+      const V = o => Object.values(o || {});
+      try {
+        if (/bossOf/.test(ex)) return [...new Set(isl.map(x => { try { return bossOf(x.id)[1] } catch (e) { return null } }).filter(Boolean))];
+        if (/BIOME/.test(ex)) return V(BIOME).map(o => o.n);
+        if (/TRE/.test(ex)) return V(TRE).map(o => o[1]);
+        if (/HS_AXN/.test(ex)) return V(HS_AXN);
+        if (/XSHN/.test(ex)) return V(XSHN);
+        if (/NUMW/.test(ex)) return NUMW.slice(1, 21);
+        if (/vẽ một/.test(b)) return V(DRAW_NAME.vi || DRAW_NAME[Object.keys(DRAW_NAME)[0]]);
+        if (!/\.sp\./.test(ex) && /score|\bok\b|caught|\bri\b|\bn\b|length|fixed|cnt/.test(ex)) return Array.from({ length: 41 }, (_, k) => k);
+      } catch (e) {}
+      return [];
+    };
+    TPL.forEach(b => { if (/[A-Z][a-z]+ [a-z]+/.test(b) && !/[à-ỹđ]/i.test(b)) return; vals(b).forEach(v => add('cau-co-dinh', b.replace(/\$\{[^}]*\}/, v))) });
+    // Toán Jenny / Sổ lỗi (ju1): slide, ví dụ, lời giải ví dụ
+    for (const x of isl) { let J; try { J = ju1(x.id) } catch (e) { J = null } if (!J) continue;
+      (J.slides || []).forEach(sl => add('bai-giang', sayFull(sl.say, sl.h))); if (J.ex) { add('bai-giang', J.ex.q); add('bai-giang', J.ex.sol) } }
     // ĐỌC ĐỀ: lấy mẫu mọi dạng câu (hạt ngẫu nhiên cố định → danh sách ổn định giữa các lần gom),
     // xếp theo số lần gặp, lấy SO_DE câu phổ biến nhất. Chỉ lớp tự đọc đề (lớp 1–2).
     if (g <= 2 && SO_DE > 0) {
@@ -120,7 +159,7 @@ function cauCoDinh() {
       })();
     }
     return { out, phu: out.phu, tc };
-  }, [g, fixed, SO_DE, MAU, SO_LEO, MAU_ECH]).then(x => {
+  }, [g, fixed, SO_DE, MAU, SO_LEO, MAU_ECH, [...MAU_TPL]]).then(x => {
     if (x.phu) console.log('Đọc đề: phủ', x.phu, 'số lần đọc đề (theo mẫu)');
     if (x.tc && (x.tc.luat + x.tc.ech + x.tc.leo)) console.log('Trò chơi: lời luật/câu đầu', x.tc.luat, '· câu Ếch/Câu cá/Trồng cây', x.tc.ech, '· câu Leo núi', x.tc.leo);
     return x.out });
