@@ -148,6 +148,8 @@ def main():
         het_luot = True
     finally:
         json.dump(cu, open(p_ma, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        # danh sách gọn cho app (chỉ id các câu đã có file), nhẹ hơn _ma.json nhiều
+        open(os.path.join(ra, "_ds.txt"), "w").write("\n".join(sorted(k for k in cu if os.path.exists(os.path.join(ra, k + ".mp3")))) + "\n")
         open(os.path.join(ra, "_nhat-ky.txt"), "w", encoding="utf-8").write(
             time.strftime("%Y-%m-%d %H:%M UTC\n", time.gmtime())
             + f"Nguồn {NGUON} · mô hình {MO_HINH_DUNG} · giọng {GIONG}\n"
