@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 12/11/2026 — Sửa: trang Quản lý hỏng khi trường chưa có dữ liệu
+- Admin Clb đăng nhập khi máy chủ còn dữ liệu cũ (chưa chuyển) hoặc trường chưa có kho: trang không còn trống/hỏng mà hiện khung "Trường … chưa có dữ liệu" với nút **Chuyển dữ liệu cũ** (hoặc **Tạo trường jenny (trống)**) và **Các trường**.
+- Bảng Các trường luôn nổi trên cùng; nếu có lỗi khi mở thì báo bằng dòng thông báo.
+
 ## 11/11/2026 — Giọng đọc: không ngắt câu, gom câu còn sót, thời hạn chờ
 - **Câu bị ngắt** (thầy báo ở trò chơi): trò chơi đọc luật rồi hẹn 4–5 giây đọc đề; giọng thu sẵn đọc luật dài hơn nên bị cắt. Nay lời do app tự gọi (hẹn giờ) **chờ câu đang nói xong** (tối đa 12 giây); lời do em chạm/bấm, hoặc em đã chạm từ khi câu hiện tại bắt đầu, thì ngắt ngay như cũ. Rời màn vẫn dừng hết.
 - **Câu còn giọng máy** ở lớp 1: rà mọi lời gọi `sayJ`. Thêm: câu ghép tiền tố ("Cá cắn câu! " + đề, "Em làm lại câu này nhé. " + đề, "Chưa đúng. " + …) — app tách theo câu, đoạn đã thu phát mp3, đoạn chưa thu giọng máy; câu kết màn/kết trò có số (điểm, số câu, số cá… 0–40), tên trùm, vùng biển (hộ chiếu), quà kho báu, trục Sức mạnh, hình; câu trong ?: bị sót ("Em qua màn rồi! Giỏi quá!"…); slide Toán Jenny. Lớp 1 +846 lời, lớp 2 +1 099 lời (~72 000 ký tự).
