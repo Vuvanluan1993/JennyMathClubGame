@@ -31,19 +31,20 @@ window.gvMoHS=function(){if(!gvLop){toast('Chọn lớp trước');return}
 
 /* ---------- thanh trên: trường đang dùng; admin Clb có nút "Các trường" ---------- */
 {const _h=header;header=function(){const r=_h.apply(this,arguments);try{if(typeof CLOUD==='undefined'||!CLOUD||CLOUD.me.role==='hs')return r;const b=document.getElementById('fbMe');if(!b)return r;
+  if(CLOUD.qt&&window.TRANG==='ql'){if(!document.getElementById('fbTr'))b.insertAdjacentHTML('afterbegin','<span id="fbTr"></span>');return r} /* admin Clb: 84-admin-clb.js vẽ phần này */
   let x=document.getElementById('fbTr');if(!x){b.insertAdjacentHTML('afterbegin','<span id="fbTr"></span>');x=document.getElementById('fbTr')}
   const ten=(S.org&&S.org.ten)||'';const h=`<span class="pill" title="Mã trường: ${e(CLOUD.truong)}">🏫 ${e(ten||CLOUD.truong)} · <b>${e(CLOUD.truong)}</b></span>${CLOUD.qt?' <button type="button" class="btn sm pri" onclick="qtMo()">Các trường</button>':''}`;
   if(x.innerHTML!==h)x.innerHTML=h}catch(x){}return r}}
 
 /* ---------- admin Clb: quản lý các trường ---------- */
-let QT={ds:[],us:[],tim:'',dang:false,cu:false,mo:''};
+let QT={ds:[],us:[],tim:'',dang:false,cu:false,mo:''};window.QT_=QT;
 const raw=()=>FB.raw;
 const vai={qt:'Admin Clb',ql:'Quản lý trường',gv:'Giáo viên',hs:'Học sinh',ph:'Phụ huynh'};
 function orgMoi(ma,ten,gvTk,gvTen){return{ten,nam:'2026–2027',gv:gvTk?[{id:gvTk,ten:gvTen,tk:gvTk}]:[],lop:[],gd:{},nl:{},nk:[],mo:{},hs:[],ph:{},v:2,cloud:1,ma,mauHS4:1,mauHS5:1,mauHS6:1,mauHS7:1,mauHS3:1,mauHS2:1,mauHS:1}}
 async function qtNap(){QT.dang=true;qtVe();try{const [t,u]=await Promise.all([raw().collection('truong').get(),raw().collection('users').get()]);
   QT.ds=t.docs.map(d=>Object.assign({ma:d.id},d.data())).sort((a,b)=>a.ma==='jenny'?-1:b.ma==='jenny'?1:a.ma.localeCompare(b.ma));
   QT.us=u.docs.map(d=>Object.assign({uid:d.id},d.data()));
-  try{const o=await raw().doc('org/main').get();QT.cu=o.exists&&!(o.data()||{}).daChuyen}catch(x){QT.cu=false}}catch(x){console.error(x);toast('Chưa tải được danh sách trường: '+fbLoi(x))}QT.dang=false;qtVe()}
+  try{const o=await raw().doc('org/main').get();QT.cu=o.exists&&!(o.data()||{}).daChuyen}catch(x){QT.cu=false}}catch(x){console.error(x);toast('Chưa tải được danh sách trường: '+fbLoi(x))}QT.dang=false;qtVe();try{if(window.qaSauNap)window.qaSauNap()}catch(x){console.error(x)}}
 function dem(ma,r){return QT.us.filter(u=>(u.truong||'jenny')===ma&&u.role===r).length}
 function qtVe(){const el=document.getElementById('qtm');if(!el)return;const q=QT.tim.trim().toLowerCase();
   const timDs=q?QT.us.filter(u=>(u.tk||'').includes(q)||String(u.ten||'').toLowerCase().includes(q)).slice(0,30):[];
@@ -88,7 +89,7 @@ window.qtTaoTruong=async function(){const ma=val('qfMa').toLowerCase(),ten=val('
     await raw().doc('truong/'+ma).set({ma,ten,j:JSON.stringify(org),gd:{},pc:{},khoa:false,t:fbTS()});
     await taoQL(ma,qn,tk,pw);dongF();QT.moi={tk,pw};toast(`Đã tạo trường ${ma}. Quản lý: ${tk} / ${pw}`);await qtNap();qtMoi()}
   catch(x){console.error(x);bao(fbLoi(x));if(nut){nut.disabled=false;nut.textContent='Tạo trường'}}};
-function qtMoi(){if(!QT.moi)return;const b=document.querySelector('#qtm .qtbody');if(b)b.insertAdjacentHTML('afterbegin',`<div class="task" style="border-left:4px solid var(--leaf,#2E9E4F)"><b>Vừa tạo:</b> <code>${e(QT.moi.tk)}</code> / <code>${e(QT.moi.pw)}</code> <span class="muted">· ghi lại rồi gửi cho quản lý trường</span></div>`);QT.moi=null}
+function qtMoi(){if(!QT.moi)return;const b=document.querySelector('#qtm .qtbody')||document.getElementById('qaBao');if(b)b.insertAdjacentHTML('afterbegin',`<div class="task" style="border-left:4px solid var(--leaf,#2E9E4F)"><b>Vừa tạo:</b> <code>${e(QT.moi.tk)}</code> / <code>${e(QT.moi.pw)}</code> <span class="muted">· ghi lại rồi gửi cho quản lý trường</span></div>`);QT.moi=null}
 window.qtFormQL=function(ma){hop('Thêm quản lý cho trường '+ma,oQL(ma),`qtTaoQL('${ma}')`,'Tạo tài khoản')};
 window.qtTaoQL=async function(ma){const qn=val('qfQlTen').replace(/\s+/g,' '),pw=val('qfQlPw'),tk=ma+'.'+val('qfQlTk').toLowerCase().replace(/^.*\./,'');
   if(qn.length<3){bao('Nhập họ tên');return}if(!fbTkOk(tk)||tk===ma+'.'){bao('Tên đăng nhập: chữ thường không dấu, số');return}if(pw.length<6){bao('Mật khẩu cần ít nhất 6 kí tự');return}
@@ -123,7 +124,7 @@ window.qtThu=async function(ma){const t=QT.ds.find(x=>x.ma===ma);if(!t)return;
     await ref.set({j:JSON.stringify(o),gd:o.gd,pc:fbPc(o),t:fbTS()},{merge:true});
     QT.thu={ma,kq};await qtNap();qtThuKq()}
   catch(x){console.error(x);toast('Chưa tạo xong: '+fbLoi(x)+(kq.length?` (đã tạo ${kq.length} tài khoản)`:''))}};
-function qtThuKq(){const r=QT.thu;if(!r)return;const b=document.querySelector('#qtm .qtbody');if(!b)return;
+function qtThuKq(){const r=QT.thu;if(!r)return;const b=document.querySelector('#qtm .qtbody')||document.getElementById('qaBao');if(!b)return;
   b.insertAdjacentHTML('afterbegin',`<div class="task" style="border-left:4px solid var(--leaf,#2E9E4F)"><b>Đã tạo dữ liệu thử cho trường ${e(r.ma)}</b> · mật khẩu chung <code>jenny123</code>${r.ma===CLOUD.truong?' · <button type="button" class="btn sm" onclick="location.reload()">Tải lại để xem</button>':''}
    <div class="tablewrap" style="margin-top:6px"><table class="qttb"><tr><th>Vai trò</th><th>Họ tên</th><th>Tên đăng nhập</th><th>Lớp</th></tr>${r.kq.map(x=>`<tr><td>${x[0]}</td><td>${e(x[1])}</td><td><code>${e(x[2])}</code></td><td>${e(x[3])}</td></tr>`).join('')}</table></div></div>`);QT.thu=null}
 /* dữ liệu cũ org/main → trường jenny (giữ tên đăng nhập cũ) */
