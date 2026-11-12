@@ -19,11 +19,11 @@ async function fbInit(){await fbNap();if(!FB){const app=firebase.apps.length?fir
 /* 09/11/2026 — nhiều trường: mọi chỗ đọc/ghi "org/main" thành kho của trường đang dùng (truong/{mã});
    tài liệu users, hs, hsgv, asg, login tự gắn trường; danh sách users, asg chỉ lấy của trường mình (quy tắc bảo mật đòi vậy). */
 const fbT=()=>(CLOUD&&CLOUD.truong)||'jenny';
-function fbBoc(raw){const gan=/^(users|hs|hsgv|asg|login)\//;
+function fbBoc(raw){const gan=/^(users|hs|hsgv|asg|login|tom)\//;
   const ref=(r,path)=>gan.test(path)?new Proxy(r,{get(t,k){if(k==='set')return(v,o)=>t.set(Object.assign({truong:fbT()},v),o);const x=t[k];return typeof x==='function'?x.bind(t):x}}):r;
   return new Proxy(raw,{get(t,k){
     if(k==='doc')return p=>{p=String(p);if(p==='org/main')return t.doc('truong/'+fbT());return ref(t.doc(p),p)};
-    if(k==='collection')return n=>(n==='users'||n==='asg')?t.collection(n).where('truong','==',fbT()):t.collection(n);
+    if(k==='collection')return n=>(n==='users'||n==='asg'||n==='tom')?t.collection(n).where('truong','==',fbT()):t.collection(n);
     const x=t[k];return typeof x==='function'?x.bind(t):x}})}
 function fbLoi(e){const c=(e&&e.code)||'';return({'chua-lop':'Tài khoản của em chưa được xếp lớp. Em nhờ cô giáo nhé!','auth/invalid-credential':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/invalid-login-credentials':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/wrong-password':'Mật khẩu chưa đúng.','auth/user-not-found':'Không có tài khoản này.','auth/too-many-requests':'Thử sai nhiều lần. Đợi vài phút rồi thử lại.','auth/network-request-failed':'Không kết nối được mạng.','auth/email-already-in-use':'Tên đăng nhập này đã có người dùng.','auth/weak-password':'Mật khẩu cần ít nhất 6 kí tự.','auth/invalid-email':'Tên đăng nhập không hợp lệ.','permission-denied':'Tài khoản không có quyền làm việc này.','no-profile':'Tài khoản chưa được gán vai trò. Hỏi quản lý trung tâm.','network':e.message})[c]||('Có lỗi: '+((e&&e.message)||e))}
 const fbJ=s=>{try{return JSON.parse(s)}catch(e){return null}};
