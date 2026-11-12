@@ -5,6 +5,7 @@ rules_version = '2';
 // users/{uid}    : role (qt | ql | gv | hs | ph), tk (tên đăng nhập, dạng mã.tên), truong (mã trường), gvId, con
 // hs/{tk}        : dữ liệu học của em (em tự ghi) · hsgv/{tk}: nhận xét, thẻ, ghi chú của cô — đều có trường "truong"
 // asg/{id}       : bài về nhà (có "truong") · login/{tk}: tên đăng nhập → email (đặt lại mật khẩu)
+// tom/{tk}       : tóm tắt học tập của em (có "truong"), em tự ghi, admin Clb/quản lý/giáo viên đọc
 // org/main       : dữ liệu cũ trước khi có nhiều trường — chỉ admin Clb đọc để chuyển sang truong/jenny
 service cloud.firestore {
   match /databases/{db}/documents {
@@ -67,6 +68,12 @@ service cloud.firestore {
     match /login/{tk} {
       allow read: if true;
       allow create, update: if isQT() || (isQL() && cuT() && vaoT());
+      allow delete: if isQT() || (isQL() && cuT());
+    }
+    match /tom/{tk} {
+      // tóm tắt học tập của em (lần học cuối, số câu, tỉ lệ đúng, sao, Sức mạnh Toán) — để admin Clb, quản lý xem nhanh
+      allow read: if isQT() || ((isQL() || isGV()) && cuT());
+      allow create, update: if isQT() || (isSelf(tk) && vaoT()) || (isQL() && cuT() && vaoT());
       allow delete: if isQT() || (isQL() && cuT());
     }
     match /asg/{id} {
