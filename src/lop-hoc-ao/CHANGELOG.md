@@ -1,6 +1,6 @@
 # Lịch sử thay đổi
 
-## 12/11/2026 — Trang Admin Clb: danh sách trường + chi tiết từng trường (chờ thầy duyệt ảnh mẫu)
+## 12/11/2026 — Trang Admin Clb: danh sách trường + chi tiết từng trường (thầy đã duyệt)
 - Học sinh tự gửi **bản tóm tắt** nhỏ lên `tom/{tk}` (lần học cuối, số câu/câu đúng từng ngày 30 ngày gần nhất, sao, Sức mạnh Toán từng mạch, bài cô giao quá hạn, số dạng Sổ lỗi sai); tối đa 5 phút/lần + khi rời trang/đăng xuất.
 - Admin Clb vào trang Quản lý → **Tất cả các trường**: tổng hệ thống (trường, lớp, GV, HS, học 7 ngày, học hôm nay) + bảng các trường (lớp, GV, HS, học 7 ngày, ≥ 3 ngày chưa học, tỉ lệ đúng 30 ngày, mức Sức mạnh Toán, học gần nhất, trạng thái) + tìm tài khoản mọi trường.
 - Bấm một trường → **chi tiết**: Tổng quan (số liệu, biểu đồ số em học 14 ngày, Sức mạnh Toán 6 mạch, theo khối) · Lớp · Giáo viên · Học sinh (lọc lớp, tìm tên, 30 em/trang) · Tài khoản. Nút Vào trường để quản lý, Đổi tên, Khoá, Dữ liệu thử. "Tính lại số liệu" cho em chưa có bản tóm tắt.

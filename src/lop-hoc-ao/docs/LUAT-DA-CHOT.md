@@ -174,6 +174,11 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Giáo viên dạy 2 trường / phụ huynh có con ở 2 trường: dùng 2 tài khoản.
 - Dữ liệu cũ (`org/main`) chuyển thành trường mã **`jenny`** (Clb Học Toán cùng Jenny); tên đăng nhập cũ giữ nguyên.
 
+## 6l. Trang Admin Clb (thầy duyệt ảnh mẫu 12/11/2026)
+- Admin Clb đăng nhập trang Quản lý → **Tất cả các trường**: tổng hệ thống + bảng trường (lớp, GV, HS, học 7 ngày, ≥ 3 ngày chưa học, đúng 30 ngày, mức Sức mạnh Toán, học gần nhất, trạng thái) + tìm tài khoản mọi trường.
+- Bấm trường → chi tiết 5 thẻ: Tổng quan · Lớp · Giáo viên · Học sinh · Tài khoản; nút Vào trường để quản lý, Đổi tên, Khoá, Dữ liệu thử. Trong trường có nút "← Các trường".
+- Số liệu lấy từ bản tóm tắt mỗi em gửi (`tom/{tk}`, tối đa 5 phút/lần); em chưa có thì "Tính lại số liệu".
+
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
 - `node tools/test/kien-thuc-tro-choi.js` — trò không vượt kiến thức.
