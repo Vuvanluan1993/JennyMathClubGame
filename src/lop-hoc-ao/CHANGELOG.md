@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 12/11/2026 — Nút "🧪 Dữ liệu thử" cho từng trường
+- Admin Clb › Các trường › 🧪 Dữ liệu thử: tạo trên máy chủ 2 lớp (1T khối 1, 2T khối 2), 2 giáo viên (`mã.gvthu1`, `mã.gvthu2`, mỗi người 1 lớp), mỗi lớp 5 học sinh (`mã.hsthu01…10`), mật khẩu `jenny123`; hiện bảng tài khoản vừa tạo.
+- Cột Trạng thái không còn xuống dòng.
+
 ## 12/11/2026 — Sửa: trang Quản lý hỏng khi trường chưa có dữ liệu
 - Admin Clb đăng nhập khi máy chủ còn dữ liệu cũ (chưa chuyển) hoặc trường chưa có kho: trang không còn trống/hỏng mà hiện khung "Trường … chưa có dữ liệu" với nút **Chuyển dữ liệu cũ** (hoặc **Tạo trường jenny (trống)**) và **Các trường**.
 - Bảng Các trường luôn nổi trên cùng; nếu có lỗi khi mở thì báo bằng dòng thông báo.
