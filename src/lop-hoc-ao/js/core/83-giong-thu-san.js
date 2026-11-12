@@ -9,12 +9,13 @@
    - Chờ file quá 2,5 giây chưa phát được → đoạn đó đọc giọng máy.
    - Một thẻ <audio> dùng chung, mở khoá ở lần chạm đầu (iPhone/iPad); tải trước bằng fetch (vào bộ nhớ đệm). */
 (function(){
-  /* trang chạy trong kho (Pages, máy chủ thử) → tải cùng nguồn, CSP 'self' cho phép (P-08); bản rời → địa chỉ Pages */
-  const GOC=(()=>{try{const p=location.pathname,i=p.indexOf('/games/lop-hoc-ao/');if(/^https?:$/.test(location.protocol)&&i>=0)return p.slice(0,i)+'/games/lop-hoc-ao/giong/'}catch(e){}return 'https://vuvanluan1993.github.io/JennyMathClubGame/games/lop-hoc-ao/giong/'})();
+  /* trang chạy trong kho (Pages, máy chủ thử, cả dist/) → tải cùng nguồn, CSP 'self' cho phép (P-08);
+     bản rời (artifact, file://) → CSP chặn nguồn khác nên không tải, đọc giọng máy */
+  const GOC=(()=>{try{if(/^https?:$/.test(location.protocol)){const p=location.pathname;for(const k of['/games/lop-hoc-ao/','/src/lop-hoc-ao/dist/']){const j=p.indexOf(k);if(j>=0)return p.slice(0,j)+'/games/lop-hoc-ao/giong/'}}}catch(e){}return null})();
   const DS={};          // lớp → Set id đã thu; null = đang tải; false = không có
   const lop=()=>{try{return Math.max(1,Math.min(5,+curG()||1))}catch(e){return 1}};
   const url=(g,id)=>GOC+'lop'+g+'/'+id+'.mp3';
-  function napDS(g){if(DS[g]!==undefined)return;DS[g]=null;
+  function napDS(g){if(DS[g]!==undefined)return;if(!GOC){DS[g]=false;return}DS[g]=null;
     const xong=s=>{DS[g]=s&&s.size?s:false};
     try{fetch(GOC+'lop'+g+'/_ds.txt',{cache:'no-cache'}).then(r=>r.ok?r.text():Promise.reject())
       .then(t=>xong(new Set(t.split(/\s+/).filter(Boolean))))
