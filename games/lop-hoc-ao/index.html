@@ -8091,7 +8091,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='12/11 · 15:27';
+const APP_VER='12/11 · 16:16';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -13314,8 +13314,8 @@ function qtVe(){const el=document.getElementById('qtm');if(!el)return;const q=QT
    ${QT.dang?'<p class="muted">Đang tải…</p>':''}
    <div class="tablewrap"><table class="qttb qtds"><tr><th>Mã</th><th>Tên trường</th><th>QL</th><th>GV</th><th>HS</th><th>Trạng thái</th><th></th></tr>
    ${QT.ds.map(t=>`<tr${t.ma===CLOUD.truong?' class="qton"':''}><td><code>${e(t.ma)}</code></td><td><b>${e(t.ten||t.ma)}</b>${t.ma===CLOUD.truong?' <span class="pill">đang xem</span>':''}</td><td>${dem(t.ma,'ql')+(t.ma==='jenny'?dem(t.ma,'qt'):0)}</td><td>${dem(t.ma,'gv')}</td><td>${dem(t.ma,'hs')}</td>
-     <td>${t.khoa?'<span class="pill qlwarn">🔒 Đang khoá</span>':'<span class="pill">Đang dùng</span>'}</td>
-     <td class="qtnut"><button type="button" class="btn sm pri" onclick="qtVao('${t.ma}')">Vào trường</button> <button type="button" class="btn sm" onclick="qtFormQL('${t.ma}')">+ Quản lý</button> <button type="button" class="btn sm" onclick="qtSua('${t.ma}')">✎ Tên</button>${t.ma==='jenny'?'':` <button type="button" class="btn sm" onclick="qtKhoa('${t.ma}')">${t.khoa?'Mở khoá':'Khoá'}</button>`}</td></tr>`).join('')}</table></div>
+     <td class="qttt">${t.khoa?'<span class="pill qlwarn">🔒 Đang khoá</span>':'<span class="pill">Đang dùng</span>'}</td>
+     <td class="qtnut"><button type="button" class="btn sm pri" onclick="qtVao('${t.ma}')">Vào trường</button> <button type="button" class="btn sm" onclick="qtFormQL('${t.ma}')">+ Quản lý</button> <button type="button" class="btn sm" onclick="qtSua('${t.ma}')">✎ Tên</button> <button type="button" class="btn sm" onclick="qtThu('${t.ma}')">🧪 Dữ liệu thử</button>${t.ma==='jenny'?'':` <button type="button" class="btn sm" onclick="qtKhoa('${t.ma}')">${t.khoa?'Mở khoá':'Khoá'}</button>`}</td></tr>`).join('')}</table></div>
    <div style="margin-top:12px"><label class="muted" for="qtTim" style="font-size:13px">Tìm tài khoản ở mọi trường (tên đăng nhập hoặc họ tên)</label>
    <input id="qtTim" type="search" value="${e(QT.tim)}" placeholder="vd. nguyendu.an" oninput="QT_tim(this.value)" style="width:100%;box-sizing:border-box;font:inherit;padding:8px;margin-top:4px"></div>
    ${q?`<div class="tablewrap" style="margin-top:6px"><table class="qttb"><tr><th>Tên đăng nhập</th><th>Họ tên</th><th>Vai trò</th><th>Trường</th><th></th></tr>${timDs.map(u=>`<tr><td><code>${e(u.tk)}</code></td><td>${e(u.ten||'')}</td><td>${vai[u.role]||u.role}</td><td>${e(u.truong||'jenny')}</td><td><button type="button" class="btn sm" onclick="qtVao('${e(u.truong||'jenny')}')">Vào trường</button></td></tr>`).join('')||'<tr><td colspan="5" class="muted">Không thấy tài khoản nào.</td></tr>'}</table></div>`:''}
@@ -13363,6 +13363,30 @@ window.qtLuuTen=async function(ma){const ten=val('qfTen2').replace(/\s+/g,' ');i
 window.qtKhoa=async function(ma){const t=QT.ds.find(x=>x.ma===ma);if(!t)return;
   if(!confirm(t.khoa?`Mở khoá trường ${t.ten||ma}? Giáo viên, học sinh, phụ huynh của trường đăng nhập lại được.`:`Khoá trường ${t.ten||ma}? Mọi tài khoản của trường sẽ không đăng nhập được (dữ liệu vẫn giữ).`))return;
   try{await raw().doc('truong/'+ma).update({khoa:!t.khoa,t:fbTS()});await qtNap();toast(t.khoa?'Đã mở khoá':'Đã khoá trường')}catch(x){toast(fbLoi(x))}};
+/* dữ liệu thử cho một trường (thầy yêu cầu 12/11/2026): 2 lớp, 2 giáo viên, mỗi lớp 5 học sinh; mật khẩu jenny123 */
+const TEN_THU=[['Nguyễn Minh','An','nam'],['Trần Thu','Hà','nu'],['Lê Gia','Bảo','nam'],['Phạm Ngọc','Chi','nu'],['Hoàng Đức','Duy','nam'],['Vũ Khánh','Linh','nu'],['Đỗ Quang','Huy','nam'],['Bùi Thảo','My','nu'],['Đặng Tuấn','Kiệt','nam'],['Ngô Bảo','Ngọc','nu']];
+window.qtThu=async function(ma){const t=QT.ds.find(x=>x.ma===ma);if(!t)return;
+  if(!confirm(`Tạo dữ liệu thử cho trường ${t.ten||ma}?\n• 2 lớp, 2 giáo viên, mỗi lớp 5 học sinh\n• Tên đăng nhập ${ma}.gvthu1, ${ma}.hsthu01…, mật khẩu jenny123`))return;
+  const MK='jenny123',kq=[];toast('Đang tạo dữ liệu thử… (khoảng 1 phút, đừng đóng trang)');
+  try{const ref=raw().doc('truong/'+ma),d=await ref.get(),o=fbJ((d.data()||{}).j)||orgMoi(ma,t.ten||ma);['lop','gv','hs'].forEach(k=>o[k]=o[k]||[]);['gd','mo','hoso'].forEach(k=>o[k]=o[k]||{});o.nk=o.nk||[];
+    const co=new Set(QT.us.map(u=>u.tk));const tkMoi=b=>{let x=ma+'.'+b,i=2;while(co.has(x))x=ma+'.'+b+(i++);co.add(x);return x};
+    const lopMoi=(khoi)=>{let n=khoi+'T',i=2;while(o.lop.some(l=>l.id===n))n=khoi+'T'+(i++);return n};
+    const LOP=[{khoi:1},{khoi:2}].map((x,i)=>{const id=lopMoi(x.khoi);return{id,khoi:x.khoi,ten:id,gv:[],tj:{on:false}}});
+    for(let i=0;i<2;i++){const tk=tkMoi('gvthu'+(i+1)),ten=i?'Thầy Thử Hai':'Cô Thử Một';const uid=await fbTaoTK(tk,MK);
+      await raw().doc('users/'+uid).set({role:'gv',tk,ten,gvId:tk,truong:ma});o.gv.push({id:tk,ten,tk,gt:i?'nam':'nu'});LOP[i].gv.push(tk);kq.push(['Giáo viên',ten,tk,'Lớp '+LOP[i].ten])}
+    LOP.forEach(l=>{o.lop.push(l);o.mo[l.id]={}});
+    let k=0;for(const l of LOP)for(let j=0;j<5;j++){const [ho,ten,gt]=TEN_THU[k++],n=ho+' '+ten,tk=tkMoi('hsthu'+String(k).padStart(2,'0'));
+      const uid=await fbTaoTK(tk,MK),st=newStudent(n,l.khoi);st.gender=gt;
+      await raw().doc('users/'+uid).set({role:'hs',tk,ten:n,khoi:l.khoi,truong:ma});
+      await raw().doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:l.id,truong:ma,t:fbTS()});
+      o.hs.push([tk,n,l.khoi]);o.gd[tk]=l.id;o.hoso[tk]={gt};kq.push(['Học sinh',n,tk,'Lớp '+l.ten])}
+    o.nk.push({d:fbNgay(),ai:'Admin Clb',t:`Tạo dữ liệu thử: lớp ${LOP.map(l=>l.ten).join(', ')}, 2 giáo viên, 10 học sinh`});
+    await ref.set({j:JSON.stringify(o),gd:o.gd,pc:fbPc(o),t:fbTS()},{merge:true});
+    QT.thu={ma,kq};await qtNap();qtThuKq()}
+  catch(x){console.error(x);toast('Chưa tạo xong: '+fbLoi(x)+(kq.length?` (đã tạo ${kq.length} tài khoản)`:''))}};
+function qtThuKq(){const r=QT.thu;if(!r)return;const b=document.querySelector('#qtm .qtbody');if(!b)return;
+  b.insertAdjacentHTML('afterbegin',`<div class="task" style="border-left:4px solid var(--leaf,#2E9E4F)"><b>Đã tạo dữ liệu thử cho trường ${e(r.ma)}</b> · mật khẩu chung <code>jenny123</code>${r.ma===CLOUD.truong?' · <button type="button" class="btn sm" onclick="location.reload()">Tải lại để xem</button>':''}
+   <div class="tablewrap" style="margin-top:6px"><table class="qttb"><tr><th>Vai trò</th><th>Họ tên</th><th>Tên đăng nhập</th><th>Lớp</th></tr>${r.kq.map(x=>`<tr><td>${x[0]}</td><td>${e(x[1])}</td><td><code>${e(x[2])}</code></td><td>${e(x[3])}</td></tr>`).join('')}</table></div></div>`);QT.thu=null}
 /* dữ liệu cũ org/main → trường jenny (giữ tên đăng nhập cũ) */
 window.qtChuyenCu=async function(){if(!confirm('Chuyển dữ liệu cũ thành trường "jenny"? Làm một lần.'))return;toast('Đang chuyển…');
   try{const o=await raw().doc('org/main').get();if(!o.exists){toast('Không có dữ liệu cũ');return}const d=o.data(),org=fbJ(d.j)||{};org.ma='jenny';
@@ -13386,7 +13410,7 @@ window.qtTaoJenny=async function(){try{const me=CLOUD.goc||CLOUD.me,o=orgMoi('je
 document.head.insertAdjacentHTML('beforeend',`<style>
 .qtov{z-index:100000!important}
 .ttbox{display:flex;align-items:stretch;min-width:0}.ttbox .tt{display:flex;align-items:center;padding:0 6px 0 8px;background:#EEF2FA;color:#3D4A70;font-weight:600;white-space:nowrap;border-radius:4px 0 0 4px;font-size:14px}.ttbox input{flex:1;min-width:0}
-.qtbox{width:min(920px,96vw)!important;max-width:none!important}.qtbody{padding:12px 16px 16px;display:flex;flex-direction:column;gap:8px;overflow:auto}.qttb td,.qttb th{padding:6px 8px;vertical-align:middle}.qttb tr.qton td{background:#EAF6FD}.qtnut{white-space:nowrap}
+.qtbox{width:min(920px,96vw)!important;max-width:none!important}.qtbody{padding:12px 16px 16px;display:flex;flex-direction:column;gap:8px;overflow:auto}.qttb td,.qttb th{padding:6px 8px;vertical-align:middle}.qttb tr.qton td{background:#EAF6FD}.qtnut{white-space:nowrap}.qttt .pill{white-space:nowrap}
 @media(max-width:620px){.qttb tr:first-child{display:none}.qttb,.qttb tbody,.qttb tr{display:block;width:auto}.qttb tr{border:1px solid #DDE3F0;border-radius:8px;padding:8px;margin-bottom:8px}
 .qttb td{display:inline-block;padding:2px 6px 2px 0;border:0!important}.qttb td.qtnut{display:flex;flex-wrap:wrap;gap:4px;white-space:normal;padding-top:6px}.qttb td.qtnut .btn{margin:0}
 .qttb.qtds td:nth-child(3)::before{content:'QL '}.qttb.qtds td:nth-child(4)::before{content:'· GV '}.qttb.qtds td:nth-child(5)::before{content:'· HS '}.qttb.qtds td:nth-child(3),.qttb.qtds td:nth-child(4),.qttb.qtds td:nth-child(5){color:#3D4A70;font-size:13px}}
