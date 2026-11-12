@@ -2,7 +2,7 @@
    Các dãy ô (số liệu, thẻ lớp) không để hàng cuối lẻ loi: số cột chọn theo số ô và độ rộng.
    6 ô → 3 cột (2 hàng) · 4 ô → 4 cột hoặc 2 cột · 3 ô → 3 cột · 5 ô → 3 + 2 · điện thoại: 2 cột (3 ô thì 1 cột nếu quá hẹp).
    Đánh dấu số ô vào data-n sau mỗi lần vẽ; CSS lo phần còn lại. */
-function bcBang(){try{if(role==='hs')return;document.querySelectorAll('#app table').forEach(t=>{const rows=[...t.rows];if(!rows.length)return;const h=rows.find(r=>r.querySelector('th'));if(!h)return;
+function bcBang(){try{if(role==='hs')return;document.querySelectorAll('#app table').forEach(t=>{if(t.classList.contains('qads'))return;/* bảng trường của admin Clb có kiểu thẻ riêng */const rows=[...t.rows];if(!rows.length)return;const h=rows.find(r=>r.querySelector('th'));if(!h)return;
   const L=[...h.cells].map(c=>c.textContent.trim());h.classList.add('mth');t.classList.add('mtable');
   rows.forEach(r=>{if(r===h)return;[...r.cells].forEach((c,i)=>{if(!c.dataset.l&&L[i])c.dataset.l=L[i];if(i>0&&c.childNodes.length&&!(c.children.length===1&&c.firstElementChild.classList.contains('mv')&&c.childNodes.length===1)){const d=document.createElement('div');d.className='mv';while(c.firstChild)d.appendChild(c.firstChild);c.appendChild(d)}})})})}catch(e){}}
 function bcCanDoi(){bcBang();try{document.querySelectorAll('.kpis,.lopgrid').forEach(k=>{const n=k.children.length;if(k.dataset.n!=String(n))k.dataset.n=n})}catch(e){}}
