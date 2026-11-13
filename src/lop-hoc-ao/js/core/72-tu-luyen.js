@@ -216,6 +216,7 @@ function tlQs(x,seed){const mr=Math.random;Math.random=seedRnd(seed);const qs=[]
   for(let i=0;i<cand.length*2&&qs.length<want;i++)add(...cand[i%cand.length]);
   for(let t=0;t<40&&qs.length<want&&cand.length;t++){const c=pick(cand);let q;try{q=x.lv[c[0]][c[1]]()}catch(e){q=null}if(q)qs.push({...q,src:[x.id,c[0],c[1]],key:`${x.id}:${c[0]}:${c[1]}`,label:q.kind||'Câu hỏi'})}
   if(nw.length)qs.splice(2,0,{...pick(nw)(),key:'',src:null});
+  if(window.voPage){const v=voPage(x);if(v&&v.length){const rest=qs.slice();qs.length=0;qs.push(...v,...rest.slice(0,Math.max(0,5-v.length)))}}/* trang vở: 86-trang-vo.js */
   const ch=tlChal(x);let c;
   if(ch.length)c={...pick(ch)(),key:'',src:null};
   else{const l=x.lv[2]?2:x.lv.length-1;for(let k=0;k<6&&!c;k++){const gi=RR(0,x.lv[l].length-1);try{const q=x.lv[l][gi]();if(q)c={...q,src:[x.id,l,gi],key:`${x.id}:${l}:${gi}`,label:q.kind||'Câu hỏi'}}catch(e){}}}
@@ -235,6 +236,7 @@ window.tlDayGo=function(){const st=S.st[sid];if(tlDayOk(st)){toast(T('Hôm nay e
 
 /* ---------- vẽ ô ---------- */
 function tlFig(q){const g=scr;let b=0;
+ if(window.VO_FIG&&VO_FIG[q.lay])return VO_FIG[q.lay](q);/* trang vở: 86-trang-vo.js */
  const cell=c=>{if(c===null){const i=b++,v=(g.cv&&g.cv[i])||'';return`<button type="button" class="tc e ${i===g.cc?'cur':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" onclick="tlCell(${i})" aria-label="${T('Ô trống','Blank')} ${i+1}">${esc(v)}</button>`}
   if(c==='')return`<span class="tc gap"></span>`;if(typeof c==='string')return`<span class="tc op">${c}</span>`;return`<span class="tc">${fmt(c)}</span>`};
  if(q.lay==='color'){const c=(g.cv||[]);return`<div class="tlcol">${q.cells.map((t,i)=>{const v=c[i],col=v!==''&&v!=null?TL_MAU[+v][0]:'';return`<button type="button" class="cc ${col?'on':''} ${g.cbad&&g.cbad.includes(i)?'bad':''}" ${col?`style="background:${col}"`:''} onclick="tlCell(${i})"><span class="cct">${t}</span></button>`}).join('')}</div>`}
@@ -257,8 +259,8 @@ window.tlCell=function(i){const g=scr,q=q1();if(g.sheet)return;if(q&&q.lay==='co
 window.tlNho=function(k){const g=scr;g.nho=g.nho||[];g.nho=g.nho.includes(k)?g.nho.filter(x=>x!==k):[...g.nho,k];sfx('tap');render()};
 window.tlPC=function(k){scr.pc=k;sfx('tap');render()};
 window.tlDS=function(i,v){const g=scr,q=q1();if(g.sheet)return;g.cv=g.cv||q.a.map(()=>'');g.cv[i]=String(v);g.cbad=null;sfx('tap');render()};
-window.tlXong=function(){const g=scr,q=q1();g.cv=g.cv||q.a.map(()=>'');if(g.cv.every(v=>v!==''&&v!=null))ans1(g.cv.map(Number));else toast(q.lay==='color'?T('Em tô hết các ô nhé.','Colour every box first.'):q.lay==='ds'?T('Em chọn Đ hoặc S cho mọi ý nhé.','Mark every line first.'):T('Em điền hết các ô trống nhé.','Fill in every box first.'))};
-window.tlKey=function(k){const g=scr,q=q1();if(g.sheet||!q||q.type!=='cells'||q.lay==='color'||q.lay==='ds')return;g.cv=g.cv||q.a.map(()=>'');const v=g.cv[g.cc]||'';
+window.tlXong=function(){const g=scr,q=q1();g.cv=g.cv||q.a.map(()=>'');if(g.cv.every(v=>v!==''&&v!=null))ans1(g.cv.map(Number));else toast(q.need?q.need:q.lay==='color'?T('Em tô hết các ô nhé.','Colour every box first.'):q.lay==='ds'?T('Em chọn Đ hoặc S cho mọi ý nhé.','Mark every line first.'):T('Em điền hết các ô trống nhé.','Fill in every box first.'))};
+window.tlKey=function(k){const g=scr,q=q1();if(g.sheet||!q||q.type!=='cells'||q.lay==='color'||q.lay==='ds'||q.nokey)return;g.cv=g.cv||q.a.map(()=>'');const v=g.cv[g.cc]||'';
  if(k==='⌫'){g.cv[g.cc]=v.slice(0,-1)}
  else if(k==='✓'){if(g.cv.every(Boolean))ans1(g.cv.map(Number));else{toast(T('Em điền hết các ô trống nhé.','Fill in every box first.'));return}}
  else{const mx=Math.max(...q.a).toString().length;if(v.length>=mx)g.cv[g.cc]=k;else g.cv[g.cc]=v+k;
