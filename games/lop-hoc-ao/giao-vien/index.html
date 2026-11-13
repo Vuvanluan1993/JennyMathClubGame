@@ -8065,7 +8065,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='13/11 · 14:35';
+const APP_VER='13/11 · 14:55';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -12259,13 +12259,13 @@ function tlQs(x,seed){const mr=Math.random;Math.random=seedRnd(seed);const qs=[]
 function tlBlank(g){Object.assign(g,{sheet:null,tries:0,inp:'',picks:[],seq:[],fill:[],used:[],cnt:0,hit:false,mad:0,cv:null,cc:0,t0:Date.now()})}
 window.tlGo=function(id){const st=S.st[sid],x=isl1(id);if(!x)return;const r=tlR(st)[id]||(tlR(st)[id]={n:0});
  if(!r.cur)r.cur={seed:(Math.random()*2**31)|0,j:0,res:[],tt:0};save();try{speechSynthesis.cancel()}catch(e){}
- const qs=tlQs(x,r.cur.seed);v1Said='';const g0={k:'game',g1:1,tl:1,id,lv:0,qs,j:Math.min(r.cur.j,qs.length-1),hearts:3,ok:r.cur.res.filter(Boolean).length,res:r.cur.res.slice(),hp:0};tlBlank(g0);go(g0);tlBlank(scr);render()};
+ const qs=tlQs(x,r.cur.seed);v1Said='';const g0={k:'game',g1:1,tl:1,id,lv:0,qs,j:Math.min(r.cur.j,qs.length-1),hearts:3,ok:r.cur.res.filter(Boolean).length,res:r.cur.res.slice(),hp:0};tlBlank(g0);go(g0)/* go() đã vẽ; không đặt lại t0 lần nữa (tránh đọc đề 2 lần) */};
 /* Thử thách hôm nay: 1 lượt/ngày, câu ★ của trang mới nhất em đã mở */
 function tlDayOk(st){return st.tlDay&&st.tlDay.d===S.day}
 function tlDayIsl(st){const P=tlPages(st);for(let i=P.length-1;i>=0;i--)if(tlChal(P[i]).length)return P[i];return P[P.length-1]}
 window.tlDayGo=function(){const st=S.st[sid];if(tlDayOk(st)){toast(T('Hôm nay em đã làm Thử thách rồi. Mai quay lại nhé!','You have done today’s challenge. Come back tomorrow!'));return}
  const x=tlDayIsl(st);if(!x)return;const qs=tlQs(x,(Math.random()*2**31)|0).filter(q=>q.tt).slice(-1);if(!qs.length)return;
- v1Said='';const g0={k:'game',g1:1,tl:1,tlDay:1,id:x.id,lv:0,qs,j:0,hearts:3,ok:0,res:[],hp:0};tlBlank(g0);go(g0);tlBlank(scr);render()};
+ v1Said='';const g0={k:'game',g1:1,tl:1,tlDay:1,id:x.id,lv:0,qs,j:0,hearts:3,ok:0,res:[],hp:0};tlBlank(g0);go(g0)/* go() đã vẽ; không đặt lại t0 lần nữa (tránh đọc đề 2 lần) */};
 
 /* ---------- vẽ ô ---------- */
 function tlFig(q){const g=scr;let b=0;
@@ -13991,10 +13991,12 @@ document.head.insertAdjacentHTML('beforeend',`<style>
   /* ---- phát ---- */
   let AU=null;const au=()=>{if(!AU){AU=new Audio();AU.preload='auto'}return AU};
   const SS=window.speechSynthesis,C0=SS&&SS.cancel?SS.cancel.bind(SS):()=>{};
-  let luot=0,dang=false,cho=null,choT=0,lastIn=0,batDau=0;
+  let luot=0,dang=false,cho=null,choT=0,lastIn=0,batDau=0,dangT='',choScr=null;
+  /* câu chờ chỉ đọc khi em vẫn ở đúng màn lúc xếp hàng; rời màn hay màn đã xong thì bỏ */
+  const choCon=()=>{try{return choScr===scr&&!(scr&&scr.end)}catch(e){return false}};
   ['pointerdown','touchstart','keydown','mousedown'].forEach(e=>{try{addEventListener(e,()=>{lastIn=Date.now();moKhoa()},{capture:true,passive:true})}catch(x){}});
   let moRoi=false;function moKhoa(){if(moRoi)return;moRoi=true;try{const a=au();a.src='data:audio/wav;base64,UklGRmQGAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';const w=a.src,p=a.play();if(p&&p.then)p.then(()=>{try{if(a.src===w)a.pause()}catch(e){}}).catch(()=>{})}catch(e){}}
-  function dungHet(){luot++;dang=false;cho=null;try{const a=AU;if(a)a.pause()}catch(e){}try{C0()}catch(e){}try{duck(0)}catch(e){}}
+  function dungHet(){luot++;dang=false;cho=null;dangT='';try{const a=AU;if(a)a.pause()}catch(e){}try{C0()}catch(e){}try{duck(0)}catch(e){}}
   window.giongDung=dungHet;
   /* speechSynthesis.cancel() ở nơi khác (rời màn, đổi trò…) → dừng hết, bỏ lời đang chờ */
   try{if(SS&&!SS._jg){SS.cancel=function(){dungHet()};SS._jg=1}}catch(e){}
@@ -14017,7 +14019,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
       if(it.id){const ok=await phatFile(g,it.id,me);if(!ok&&me===luot){const t=[...MA.entries()].find(([k,v])=>v===it.id);if(t)await noiMay(t[0],me)}}
       else await noiMay(it.may,me)}
     if(me!==luot)return;dang=false;try{duck(0)}catch(e){}
-    if(cho){const n=cho;cho=null;sayJ(n)}}
+    if(cho){const n=cho;cho=null;if(choCon())sayJ(n)}}
   const dangNoi=()=>dang||(SS&&(SS.speaking||SS.pending));
   /* tải trước vào bộ nhớ đệm */
   const tai=new Set();
@@ -14030,10 +14032,12 @@ document.head.insertAdjacentHTML('beforeend',`<style>
     /* do em bấm (đang trong sự kiện chạm/bấm, hoặc em đã chạm sau khi câu hiện tại bắt đầu) → ngắt ngay */
     let ev='';try{ev=(window.event&&window.event.type)||''}catch(e){}
     const nguoi=/pointer|touch|mouse|key|click/.test(ev)||lastIn>batDau;
-    if(!nguoi&&dangNoi()&&(!choT||Date.now()-choT<12000)){if(!cho)choT=Date.now();cho=text;return}
+    /* app tự gọi lại đúng câu đang đọc (vẽ lại màn) → bỏ, không xếp hàng đọc lại (lỗi "tự phát tiếng", 13/11/2026) */
+    if(!nguoi&&dangNoi()&&spoken(text)===dangT)return;
+    if(!nguoi&&dangNoi()&&(!choT||Date.now()-choT<12000)){if(!cho)choT=Date.now();cho=text;choScr=scr;return}
     choT=0;dungHet();const me=luot;cho=null;batDau=Date.now();
-    const t=spoken(text);
-    if(!d||typeof crypto==='undefined'||!crypto.subtle){dang=true;noiMay(t,me).then(()=>{if(me===luot){dang=false;if(cho){const n=cho;cho=null;sayJ(n)}}});return}
+    const t=spoken(text);dangT=t;
+    if(!d||typeof crypto==='undefined'||!crypto.subtle){dang=true;noiMay(t,me).then(()=>{if(me===luot){dang=false;if(cho){const n=cho;cho=null;if(choCon())sayJ(n)}}});return}
     dang=true;
     keHoach(t,d).then(pl=>{if(me!==luot)return;chay(t,pl||[{may:t}],g,me);
       try{const nx=scr&&scr.qs&&scr.qs[scr.j+1];if(nx&&nx.q)taiTruoc(sayFull(nx.say,nx.q))}catch(e){}});
@@ -14183,14 +14187,14 @@ add('([\\p{L}\\d])-(?=[\\p{L}\\d])','gu','$1'+WJ+'-'+WJ);
 add('([^\\s\\u2060])/(?=[^\\s\\u2060])','g','$1'+WJ+'/'+WJ);                               /* 5 */
 add('(\\d)([–\\-])(?=\\d)','g','$1'+WJ+'$2'+WJ);
 add('(\\p{Extended_Pictographic}\\uFE0F?) (?=\\S)','gu','$1'+NB);              /* biểu tượng dính chữ sau */
-function fix(s,isLast){if(!/\S/.test(s))return s;let t=s;
+function fix(s,isLast,noBlock){if(!/\S/.test(s))return s;let t=s;
   for(const [re,to] of R){re.lastIndex=0;t=t.replace(re,to)}
   /* 6 — phần ngắn giữa các dấu "·" giữ trọn */
-  if(t.indexOf('·')>=0){t=t.split('·').map((p,i,a)=>{const lead=p.match(/^\s*/)[0],trail=p.match(/\s*$/)[0],core=p.trim();
+  if(!noBlock&&t.indexOf('·')>=0){t=t.split('·').map((p,i,a)=>{const lead=p.match(/^\s*/)[0],trail=p.match(/\s*$/)[0],core=p.trim();
       const plain=core.replace(/[^\p{L}\d ,.\/+–-]/gu,'');if(core&&plain.length<=20&&core.split(' ').length<=4)return lead+core.replace(/ /g,NB)+trail;return p}).join('·')}
   /* 7 — chữ cuối quá ngắn */
   if(isLast){const m=t.match(/^([\s\S]*\S) ([^\s ]+)(\s*)$/);if(m){const w=m[2],letters=w.replace(/[^\p{L}\d]/gu,'');
-      if(m[1].split(/[\s ]+/).length>=2&&(letters.length&&letters.length<=3||/^\d/.test(letters)))t=m[1]+NB+w+m[3]}}
+      if(!/·$/.test(m[1])&&m[1].split(/[\s ]+/).length>=2&&(letters.length&&letters.length<=3||/^\d/.test(letters)))t=m[1]+NB+w+m[3]}}
   return t}
 const SKIP='script,style,textarea,input,select,option,svg,canvas,code,pre,td,th,[contenteditable],.noxd';
 const blockOf=n=>{let e=n.parentElement;while(e&&getComputedStyle(e).display==='inline')e=e.parentElement;return e};
@@ -14199,15 +14203,21 @@ function run(root){if(!root)return;if(root.nodeType===3){one(root);return}if(roo
   const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const L=[];let n;while(n=w.nextNode())L.push(n);L.forEach(one)}
 function one(n){const p=n.parentElement;if(!p||!n.nodeValue||!/\S/.test(n.nodeValue)||p.closest(SKIP))return;const v=n.nodeValue;
   let last=false;if(/ [^\s ]{1,4}\s*$/.test(v)||/ \d[^\s]*\s*$/.test(v)){try{last=lastInBlock(n)}catch(e){}}
-  const t=fix(v,last);if(t!==v)n.nodeValue=t}
+  /* tên đảo trên bản đồ (khung hẹp): không giữ trọn khối giữa các dấu "·" để chữ xuống dòng được */
+  const t=fix(v,last,!!p.closest('.node .lbl'));if(t!==v)n.nodeValue=t}
 /* lưới an toàn: chỗ đã dính chữ mà bị tràn khung → thu chữ nhỏ dần (tối đa còn 80%), vẫn tràn thì bỏ dính để chữ xuống dòng như cũ */
+/* tràn: chữ rộng hơn ô của nó, hoặc ô (phần tử co theo chữ, vd. trong flex) rộng hơn khung cha — lỗi tên đảo tràn khung 13/11/2026 */
+function ovf(b){if(b.scrollWidth>b.clientWidth+1)return true;const pa=b.parentElement;if(!pa||pa===document.body)return false;const ps=getComputedStyle(pa),inner=pa.clientWidth-(parseFloat(ps.paddingLeft)||0)-(parseFloat(ps.paddingRight)||0);return inner>0&&b.getBoundingClientRect().width>inner+1}
 function fitAll(){const seen=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
   while(n=w.nextNode()){if(n.nodeValue.indexOf(NB)<0&&n.nodeValue.indexOf(WJ)<0)continue;const b=blockOf(n);if(b&&!seen.has(b))seen.add(b)}
   seen.forEach(b=>{if(!b.isConnected||b.closest(SKIP))return;const ox=getComputedStyle(b).overflowX;if(ox==='auto'||ox==='scroll')return;
-    if(b.scrollWidth<=b.clientWidth+1||!b.clientWidth)return;const f0=parseFloat(getComputedStyle(b).fontSize)||16;let f=f0,k=0;
-    while(b.scrollWidth>b.clientWidth+1&&f>f0*0.8&&k++<8){f-=0.5;b.style.fontSize=f+'px'}
-    if(b.scrollWidth>b.clientWidth+1){b.style.fontSize='';b.classList.add('noxd');const t=document.createTreeWalker(b,NodeFilter.SHOW_TEXT);let x;while(x=t.nextNode()){const v=x.nodeValue.split(NB).join(' ').split(WJ).join('');if(v!==x.nodeValue)x.nodeValue=v}}})}
-let FT=0;const fitSoon=()=>{clearTimeout(FT);FT=setTimeout(()=>{try{fitAll()}catch(e){}},60)};
+    if(!ovf(b)||!b.clientWidth)return;const f0=parseFloat(getComputedStyle(b).fontSize)||16;let f=f0,k=0;
+    while(ovf(b)&&f>f0*0.8&&k++<8){f-=0.5;b.style.fontSize=f+'px'}
+    if(ovf(b)){b.style.fontSize='';b.classList.add('noxd');const t=document.createTreeWalker(b,NodeFilter.SHOW_TEXT);let x;while(x=t.nextNode()){const v=x.nodeValue.split(NB).join(' ').split(WJ).join('');if(v!==x.nodeValue)x.nodeValue=v}}})}
+/* tên đảo bị cắt "…" (khung 2 dòng) → thu chữ nhỏ dần, tối đa còn 70%, để đọc đủ tên (13/11/2026) */
+function lblFit(){document.querySelectorAll('.node .lbl b').forEach(b=>{b.style.fontSize='';if(b.scrollHeight<=b.clientHeight+1)return;const f0=parseFloat(getComputedStyle(b).fontSize)||17;let f=f0,k=0;
+  while(b.scrollHeight>b.clientHeight+1&&f>f0*0.7&&k++<12){f-=0.5;b.style.fontSize=f+'px'}})}
+let FT=0;const fitSoon=()=>{clearTimeout(FT);FT=setTimeout(()=>{try{fitAll()}catch(e){}try{lblFit()}catch(e){}},60)};
 addEventListener('resize',fitSoon);try{document.fonts&&document.fonts.ready.then(fitSoon)}catch(e){}
 /* bản dịch EN (47) so khớp chữ gốc: bỏ dấu cách không ngắt trước khi tra, dịch xong thì dính lại */
 if(typeof i18nText==='function'){const _t=i18nText;i18nText=function(t){const r=_t.apply(this,arguments);if(r!=null||typeof t!=='string'||!/[\u00A0\u2060]/.test(t))return r;
