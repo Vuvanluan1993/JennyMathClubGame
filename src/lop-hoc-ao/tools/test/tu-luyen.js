@@ -6,7 +6,7 @@ const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME||'/opt
 (async()=>{const b=await chromium.launch({executablePath:fs.existsSync(EXE)?EXE:undefined});
  const tmp=path.join(ROOT,'dist','_tl.html');fs.writeFileSync(tmp,'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'+fs.readFileSync(path.join(ROOT,'dist','lop-hoc-ao-jenny.html'),'utf8')+'</body></html>');
  let fail=0;
- for(const [g,SID] of [[1,'na'],[2,'lam'],[3,'quan']]){const p=await b.newPage({viewport:{width:320,height:780},isMobile:true,hasTouch:true});const er=[];p.on('pageerror',e=>er.push(e.message));await p.goto('file://'+tmp);await p.waitForTimeout(300);
+ for(const [g,SID] of [[1,'na'],[2,'lam'],[3,'quan'],[4,'thao']]){const p=await b.newPage({viewport:{width:320,height:780},isMobile:true,hasTouch:true});const er=[];p.on('pageerror',e=>er.push(e.message));await p.goto('file://'+tmp);await p.waitForTimeout(300);
   const r=await p.evaluate(([g,SID])=>{try{localStorage.clear()}catch(e){};fresh();role='hs';(0,eval)("sid='"+SID+"'");const st=S.st[SID];st.grade=g;UNL=true;S.asg=[];S.asgSeed=2;PRIM[g].isl.forEach(x=>{st.p1[x.id]={intro:true,m:[1],fails:[]}});const bad=[],lay=[];let nq=0,nNew=0;
    const chk=(q,where)=>{nq++;if(q.type==='cells'){nNew++;
      const v=q.a;if(!v.every(x=>Number.isInteger(x)&&x>=0))bad.push(where+' đáp án ô không hợp lệ '+q.kind+' '+v);
