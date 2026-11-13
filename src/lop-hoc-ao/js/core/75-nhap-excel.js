@@ -2,7 +2,9 @@
    Không cần thư viện ngoài: tự đọc/ghi file .xlsx (zip) bằng DecompressionStream. */
 (function(){
 if(typeof viewPH==='undefined')return;
-const O=()=>S.org,e=s=>esc(String(s==null?'':s));
+/* 13/11/2026: admin Clb dùng lại phần đọc/kiểm tra/tải file cho một trường khác: XL.dung(org) đặt trường đang xử lý (OX), XL.dung(null) trả lại */
+let OX=null;const O=()=>OX||S.org,e=s=>esc(String(s==null?'':s));
+const DSHS=()=>OX?(OX.hs||[]):STUDENTS,coTK=tk=>OX?(OX.hs||[]).some(r=>r[0]===tk):!!S.st[tk];
 const bo=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().replace(/\s+/g,' ').trim();
 const cloud=()=>!!(O()&&O().cloud&&typeof CLOUD!=='undefined'&&CLOUD);
 const MK0='jenny123';
@@ -66,7 +68,7 @@ window.qlTaiMau=function(){const L=[...(O().lop||[])].sort((a,b)=>a.khoi-b.khoi|
  taiFile(xlsxBlob([COT,['Nguyễn Minh','An','Nữ','12/03/2019',l1,'0912345678','binh.nguyen@gmail.com',''],['Nguyễn Gia','Bảo','Nam','05/09/2017','','0912345678','binh.nguyen@gmail.com','']],[18,10,18,24,8,20,26,30]),'mau-danh-sach-hoc-sinh.xlsx');
  toast('Đã tải file mẫu. Xoá 2 dòng ví dụ rồi điền danh sách.')};
 window.qlTaiDS=function(){const o=O(),H=o.hoso||{},L=id=>((o.lop||[]).find(l=>l.id===(o.gd||{})[id])||{}).ten||'';
- const rows=[COT.slice(0,7).concat(['Tên đăng nhập'])];STUDENTS.forEach(([id,n])=>{const h=H[id]||{},p=(o.ph||{})[id],pi=(o.phInfo||{})[p]||{},a=n.split(' ');const ten=a.pop();
+ const rows=[COT.slice(0,7).concat(['Tên đăng nhập'])];DSHS().forEach(([id,n])=>{const h=H[id]||{},p=(o.ph||{})[id],pi=(o.phInfo||{})[p]||{},a=n.split(' ');const ten=a.pop();
   rows.push([a.join(' '),ten,h.gt==='nam'?'Nam':h.gt==='nu'?'Nữ':'',h.ng&&h.th&&h.nam?`${String(h.ng).padStart(2,'0')}/${String(h.th).padStart(2,'0')}/${h.nam}`:(h.nam||''),L(id),h.dt||pi.dt||'',h.mail||pi.mail||'',id])});
  taiFile(xlsxBlob(rows,[18,10,18,24,8,20,26,16]),'danh-sach-hoc-sinh.xlsx')};
 
@@ -84,8 +86,8 @@ const dtChuan=s=>{let d=String(s==null?'':s).replace(/[^\d+]/g,'');if(/^\+?84/.t
 const okDt=d=>!d||/^0\d{9,10}$/.test(d),okMail=m=>!m||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m);
 const lopTim=t=>{const x=bo(t).replace(/^lop /,'').replace(/\s/g,'');if(!x)return null;return(O().lop||[]).find(l=>bo(l.ten).replace(/\s/g,'')===x||bo(l.id).replace(/\s/g,'')===x)||false};
 const tenKey=n=>bo(n);
-function hsCu(r){const o=O(),H=o.hoso||{};if(r.tk&&S.st[r.tk])return r.tk;
- const cung=STUDENTS.filter(s=>tenKey(s[1])===tenKey(r.hoten));if(!cung.length)return null;
+function hsCu(r){const o=O(),H=o.hoso||{};if(r.tk&&coTK(r.tk))return r.tk;
+ const cung=DSHS().filter(s=>tenKey(s[1])===tenKey(r.hoten));if(!cung.length)return null;
  if(r.d&&r.d.nam){const k=cung.filter(s=>{const h=H[s[0]]||{};return +h.nam===r.d.nam&&(!r.d.ng||!h.ng||(+h.ng===r.d.ng&&+h.th===r.d.th))});if(k.length===1)return k[0][0];if(k.length>1)return'?';
   return cung.every(s=>{const h=H[s[0]]||{};return !h.nam})&&cung.length===1?cung[0][0]:null}
  return cung.length===1?cung[0][0]:'?'}
@@ -99,7 +101,7 @@ function phanTich(rows){let hi=rows.findIndex(r=>(r||[]).filter(c=>cotOf(c)).len
   x.d=ngay(g.ns);if(!okNgay(x.d))x.loi.push('ngày sinh chưa đúng');
   x.lopTen=g.lop!=null?String(g.lop):'';x.lop=x.lopTen?lopTim(x.lopTen):null;if(x.lop===false)x.loi.push(`chưa có lớp "${x.lopTen}"`);
   x.phten=g.phten?String(g.phten):'';x.dt=dtChuan(g.dt);if(g.dt!=null&&String(g.dt).trim()&&!x.dt)x.loi.push('SĐT chưa đúng');x.mail=String(g.mail||'').toLowerCase();if(!okDt(x.dt))x.loi.push('SĐT chưa đúng');if(!okMail(x.mail))x.loi.push('Gmail chưa đúng');
-  x.tk=g.tk?String(g.tk).trim().toLowerCase():'';if(x.tk&&!S.st[x.tk])x.tk=tkTr(x.tk);if(x.tk&&!/^[a-z0-9][a-z0-9._-]{2,39}$/.test(x.tk))x.loi.push('tên đăng nhập chưa đúng');
+  x.tk=g.tk?String(g.tk).trim().toLowerCase():'';if(x.tk&&!coTK(x.tk))x.tk=OX&&OX.ma?(x.tk.startsWith(OX.ma+'.')?x.tk:OX.ma+'.'+x.tk.replace(/^.*\./,'')):tkTr(x.tk);if(x.tk&&!/^[a-z0-9][a-z0-9._-]{2,39}$/.test(x.tk))x.loi.push('tên đăng nhập chưa đúng');
   const k=tenKey(x.hoten)+'|'+(x.d&&x.d.nam||'')+'|'+(x.d&&x.d.ng||'');if(seen[k])x.loi.push('trùng với dòng '+seen[k]);else seen[k]=x.dong;
   if(!x.loi.length){const c=hsCu(x);if(c==='?')x.loi.push('trùng tên với nhiều em — thêm ngày sinh hoặc tên đăng nhập');else if(c){x.cu=c;const l=(O().lop||[]).find(z=>z.id===(O().gd||{})[c]);if(x.lop&&l&&l.id!==x.lop.id&&l.khoi!==x.lop.khoi)x.loi.push(`đang ở lớp ${l.ten} (khác khối) — dùng Lên lớp`)}}
   if(!x.loi.length&&!x.lop&&!x.cu)x.canh.push('chưa có lớp — em chưa đăng nhập được');
@@ -108,6 +110,7 @@ function phanTich(rows){let hi=rows.findIndex(r=>(r||[]).filter(c=>cotOf(c)).len
  return ds}
 
 /* ---------- bảng xem trước ---------- */
+window.XL={dung:o=>{OX=o||null},docXlsx,docCsv,phanTich,xlsxBlob,taiFile,COT};
 window.qlNhap={ds:[],ten:''};
 window.qlMoNhap=function(){const el=document.createElement('div');el.className='gdov';el.id='qlnhap';
  el.innerHTML=`<div class="gdbox qsbox qlnbox"><div class="gdhd"><b>Nhập danh sách từ Excel</b><button type="button" class="gdx" onclick="document.getElementById('qlnhap').remove()">Đóng ✕</button></div><div class="qlnbd" id="qlnbd">${buoc1()}</div></div>`;

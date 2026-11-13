@@ -119,7 +119,7 @@ function trangTruong(){const d=duLieuTruong(QA.ma),T=d.T,o=d.o,t=d.tong;if(!QA.t
      <section class="card"><div class="qlli"><div class="qlr qgv qlrh"><div class="a-ten">Giáo viên</div><div class="a-con">Lớp đang dạy</div><div class="a-act"></div></div>${rows||'<p class="muted">Chưa có giáo viên.</p>'}</div></section>`}
   else if(QA.tab==='hs'){const q=(QA.tim2||'').trim().toLowerCase(),bo=s=>String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').toLowerCase();
     const rows=(o.hs||[]).filter(([tk,n])=>(!QA.lop||(QA.lop==='__'?!d.gd[tk]:d.gd[tk]===QA.lop))&&(!q||tk.includes(q)||bo(n).includes(bo(q)))).sort((a,b)=>String(a[1]).split(' ').pop().localeCompare(String(b[1]).split(' ').pop(),'vi')),N=30,tr=Math.min(QA.trang,Math.max(0,Math.ceil(rows.length/N)-1)),xem=rows.slice(tr*N,tr*N+N);
-    body=`<section class="card"><div class="qahead"><h2>Học sinh</h2><span class="qaloc"><button type="button" class="btn sm pri" onclick="qaFormHS('${e(QA.ma)}')">+ Học sinh</button><select aria-label="Lớp" onchange="QA.lop=this.value;QA.trang=0;render()"><option value="">Tất cả lớp</option><option value="__" ${QA.lop==='__'?'selected':''}>Chưa xếp lớp</option>${d.lop.map(l=>`<option value="${e(l.id)}" ${QA.lop===l.id?'selected':''}>Lớp ${e(l.ten)}</option>`).join('')}</select>
+    body=`<section class="card"><div class="qahead"><h2>Học sinh</h2><span class="qaloc"><button type="button" class="btn sm pri" onclick="qaFormHS('${e(QA.ma)}')">+ Học sinh</button><button type="button" class="btn sm pri" onclick="qaMoNhap('${e(QA.ma)}')">⬆ Nhập từ Excel</button><button type="button" class="btn sm" onclick="qaTaiDS('${e(QA.ma)}')">⬇ Tải danh sách</button><select aria-label="Lớp" onchange="QA.lop=this.value;QA.trang=0;render()"><option value="">Tất cả lớp</option><option value="__" ${QA.lop==='__'?'selected':''}>Chưa xếp lớp</option>${d.lop.map(l=>`<option value="${e(l.id)}" ${QA.lop===l.id?'selected':''}>Lớp ${e(l.ten)}</option>`).join('')}</select>
       <input id="qaTim2" type="search" placeholder="Tìm tên" value="${e(QA.tim2||'')}" oninput="QA.tim2=this.value;QA.trang=0;render();const i=document.getElementById('qaTim2');i.focus();i.setSelectionRange(i.value.length,i.value.length)"></span></div>
      <div class="tablewrap"><table class="qatb"><tr><th>Họ tên</th><th>Tên đăng nhập</th><th>Lớp</th><th>Sao</th><th>Câu (30 ngày)</th><th>Đúng</th><th>Học gần nhất</th><th>Sức mạnh Toán</th><th>Bài quá hạn</th><th></th></tr>
      ${xem.map(([tk,n])=>{const t=d.tomMap[tk],x=t?soNgay(t,30):null,l=d.lop.find(l=>l.id===d.gd[tk]);return`<tr><td><b>${e(n)}</b></td><td><code>${e(tk)}</code></td><td><select class="qasel" aria-label="Lớp của ${e(n)}" onchange="qaDoiLop('${e(QA.ma)}','${e(tk)}',this.value)"><option value="">— chưa xếp</option>${d.lop.map(x=>`<option value="${e(x.id)}" ${l&&l.id===x.id?'selected':''}>${e(x.ten)}</option>`).join('')}</select></td>${t?`<td>${t.sao||0}</td><td>${x.n}</td><td>${x.n?pt(x.c,x.n)+'%':'—'}</td><td class="${nghi(t)?'qado':''}">${ngayCuoi(t.cuoi)}</td><td>${nhanMuc(mucChung(t))}</td><td>${t.qh||'—'}</td>`:'<td colspan="6" class="muted">chưa có số liệu</td>'}<td class="qatac">${nutTK(tk)}</td></tr>`}).join('')||'<tr><td colspan="10" class="muted">Không có học sinh.</td></tr>'}</table></div>
@@ -147,6 +147,42 @@ window.qaTinhLai=async function(ma){if(!confirm('Tính lại số liệu cho cá
     for(const tk of can){const x=await raw().doc('hs/'+tk).get();if(!x.exists)continue;const st=fbJ(x.data().j);if(!st)continue;try{hsHeal(st,tk)}catch(z){}
       const t=tomTat(st);t.qh=0;t.lop=d.gd[tk]||'';await raw().doc('tom/'+tk).set(Object.assign({truong:ma,t:fbTS()},t));n++}
     toast(`Đã tính lại ${n} em`);QA.luc=0;await qaTai()}catch(x){console.error(x);toast('Chưa tính lại được: '+fbLoi(x))}};
+/* ---------- Nhập từ Excel / Tải danh sách cho một trường (giống trang Quản lý trường, 13/11/2026) ---------- */
+const voiTruong=(ma,f)=>{if(!window.XL){toast('Chưa tải được phần Excel');return}const o=oCua(ma);o.ma=ma;XL.dung(o);try{return f(o)}finally{XL.dung(null)}};
+window.qaTaiDS=ma=>voiTruong(ma,()=>qlTaiDS());
+window.qaTaiMau=ma=>voiTruong(ma,()=>qlTaiMau());
+let NH={ma:'',ds:[],ten:''};
+const buoc1=ma=>`<ol class="qlnstep"><li><button type="button" class="btn sm" onclick="qaTaiMau('${ma}')">⬇ Tải file mẫu (.xlsx)</button><div class="muted">Cột: Họ và đệm · Tên · Giới tính · Ngày sinh · Lớp · ĐT phụ huynh · Gmail phụ huynh · Tên đăng nhập (tuỳ chọn).</div></li>
+ <li>Điền danh sách. Cột <b>Lớp</b> ghi tên lớp đã tạo của trường (ví dụ 1A); để trống nếu chưa xếp.</li>
+ <li><label class="btn pri qlfile">⬆ Chọn file Excel hoặc CSV<input type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onchange="qaDocFile(this.files[0])"></label><div class="muted">Nhập lại file đã sửa: em đã có (cùng họ tên + ngày sinh, hoặc cùng tên đăng nhập) sẽ được <b>cập nhật</b>, không tạo trùng.</div></li></ol>`;
+window.qaMoNhap=function(ma){NH={ma,ds:[],ten:''};const el=document.createElement('div');el.className='gdov qtov';el.id='qanhap';
+  el.innerHTML=`<div class="gdbox qsbox qlnbox"><div class="gdhd"><b>Nhập danh sách từ Excel · ${e((QA.truong[ma]||{}).ten||ma)}</b><button type="button" class="gdx" onclick="document.getElementById('qanhap').remove()">Đóng ✕</button></div><div class="qlnbd" id="qanbd">${buoc1(ma)}</div></div>`;document.body.appendChild(el)};
+window.qaDocFile=async function(f){if(!f)return;const bd=document.getElementById('qanbd'),ma=NH.ma;bd.innerHTML='<p>Đang đọc file…</p>';
+  try{const rows=/\.csv$/i.test(f.name)?XL.docCsv(await f.text()):await XL.docXlsx(await f.arrayBuffer());NH.ds=voiTruong(ma,()=>XL.phanTich(rows));NH.ten=f.name;bd.innerHTML=xemTruocNH()}
+  catch(x){console.error(x);bd.innerHTML=`<p class="qlnerr">⚠ ${e(x.message||x)}</p>`+buoc1(ma)}};
+function xemTruocNH(){const ds=NH.ds,ok=ds.filter(x=>!x.loi.length),loi=ds.length-ok.length,moi=ok.filter(x=>!x.cu).length,cap=ok.length-moi;
+  const rows=ds.map(x=>{const d=x.d&&!x.d.loi?[x.d.ng,x.d.th,x.d.nam].filter(Boolean).join('/'):'';return`<tr class="${x.loi.length?'qlnbad':''}"><td>${x.dong}</td><td><b>${e(x.hoten||'—')}</b><div class="muted">${x.gt==='nam'?'Nam':x.gt==='nu'?'Nữ':''}${d?' · '+d:''}</div></td><td>${x.lop?e(x.lop.ten):(x.lopTen?e(x.lopTen):'—')}</td><td>${e(x.dt||'')}${x.mail?'<div class="muted">'+e(x.mail)+'</div>':''}</td><td>${x.loi.length?`<span class="qlnl1">✕ ${e(x.loi.join('; '))}</span>`:(x.cu?`<span class="qlnl2">↻ Cập nhật ${e(x.cu)}</span>`:'<span class="qlnl3">+ Tạo mới</span>')}${x.canh.filter(c=>!/phụ huynh/.test(c)).map(c=>`<div class="qlnl4">⚠ ${e(c)}</div>`).join('')}</td></tr>`}).join('');
+  return`<p><b>${e(NH.ten)}</b> · ${ds.length} dòng</p><div class="qlnsum"><span class="qlnl3">+ ${moi} em mới</span><span class="qlnl2">↻ ${cap} em cập nhật</span><span class="${loi?'qlnl1':'muted'}">✕ ${loi} dòng lỗi</span></div>
+   ${loi?'<p class="qlnerr">Dòng lỗi (đỏ) sẽ bị bỏ qua. Sửa trong Excel rồi chọn lại file, hoặc nhập các dòng đúng trước.</p>':''}
+   <div class="qlntb"><table><tr><th>Dòng</th><th>Học sinh</th><th>Lớp</th><th>Điện thoại PH</th><th>Kết quả</th></tr>${rows}</table></div>
+   <div class="qlin" style="margin-top:12px"><button type="button" class="btn pri" ${ok.length?'':'disabled'} onclick="qaChayNhap()">Nhập ${ok.length} em</button><label class="btn qlfile">Chọn file khác<input type="file" accept=".xlsx,.csv" onchange="qaDocFile(this.files[0])"></label></div>
+   <p class="muted" style="font-size:12.5px">Mật khẩu ban đầu: <b>${MK0}</b>. Tạo tài khoản trên máy chủ mất vài giây mỗi em.</p>`}
+window.qaChayNhap=async function(){const ma=NH.ma,ds=NH.ds.filter(x=>!x.loi.length),bd=document.getElementById('qanbd');if(!ds.length)return;
+  const o=oCua(ma);o.hs=o.hs||[];o.hoso=o.hoso||{};o.gd=o.gd||{};const kq={moi:[],cap:[],loi:[]};
+  for(const x of ds){bd.innerHTML=`<p>Đang nhập ${kq.moi.length+kq.cap.length+kq.loi.length+1}/${ds.length}: ${e(x.hoten)}…</p>`;
+    try{let tk=x.cu;const l=x.lop?(o.lop||[]).find(z=>z.id===x.lop.id):null;
+      if(!tk){tk=x.tk||tkTu(ma,x.hoten.split(' ').pop());if(tkCo(tk)||o.hs.some(r=>r[0]===tk)){let i=2,b=tk;while(tkCo(b+i)||o.hs.some(r=>r[0]===b+i))i++;tk=b+i}
+        const khoi=l?l.khoi:1,uid=await fbTaoTK(tk,MK0);await raw().doc('users/'+uid).set({role:'hs',tk,ten:x.hoten,khoi,truong:ma});
+        const st=newStudent(x.hoten,khoi);st.gender=x.gt;await raw().doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:l?l.id:'',truong:ma,t:fbTS()});
+        o.hs.push([tk,x.hoten,khoi]);(QT().us||[]).push({uid,role:'hs',tk,ten:x.hoten,truong:ma});kq.moi.push(tk)}else kq.cap.push(tk);
+      const H=o.hoso[tk]=o.hoso[tk]||{};H.gt=x.gt;if(x.d){if(x.d.ng){H.ng=x.d.ng;H.th=x.d.th}if(x.d.nam)H.nam=x.d.nam}if(x.dt)H.dt=x.dt;if(x.mail)H.mail=x.mail;
+      if(l&&o.gd[tk]!==l.id){o.gd[tk]=l.id;const r=o.hs.find(z=>z[0]===tk);if(r)r[2]=l.khoi;try{await raw().doc('hs/'+tk).set({lop:l.id},{merge:true})}catch(z){}}}
+    catch(err){console.error(err);kq.loi.push([x,fbLoi(err)])}}
+  try{await luuO(ma,o,`Nhập Excel ${NH.ten}: ${kq.moi.length} em mới, ${kq.cap.length} cập nhật`)}catch(x){kq.loi.push([{dong:'-',hoten:'Lưu danh sách trường'},fbLoi(x)])}
+  bd.innerHTML=`<p class="qlnok">✓ Xong: <b>${kq.moi.length}</b> em mới · <b>${kq.cap.length}</b> em cập nhật.</p>
+   ${kq.loi.length?`<div class="qlnerr">Chưa nhập được ${kq.loi.length}:<ul>${kq.loi.map(([x,m])=>`<li>Dòng ${x.dong} · ${e(x.hoten)}: ${e(m)}</li>`).join('')}</ul></div>`:''}
+   ${kq.moi.length?`<div class="qlntb"><table><tr><th>Học sinh mới</th><th>Tên đăng nhập</th><th>Mật khẩu</th></tr>${kq.moi.map(tk=>`<tr><td>${e(((o.hs.find(r=>r[0]===tk))||[])[1]||'')}</td><td><code>${e(tk)}</code></td><td><code>${MK0}</code></td></tr>`).join('')}</table></div>`:''}
+   <div class="qlin"><button type="button" class="btn" onclick="qaTaiDS('${ma}')">⬇ Tải danh sách (có tên đăng nhập)</button><button type="button" class="btn pri" onclick="document.getElementById('qanhap').remove()">Đóng</button></div>`;render()};
 /* ---------- trang một lớp (giống trang Quản lý trường › Lớp › Mở) ---------- */
 window.qaMoLop=lid=>{QA.tab='lop';QA.lopId=lid;QA.themTim='';QA.themChon={};render();window.scrollTo(0,0)};
 function trangLopCT(d){const ma=QA.ma,l=d.lop.find(x=>x.id===QA.lopId),o=d.o;
