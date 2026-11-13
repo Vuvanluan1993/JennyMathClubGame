@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Admin Clb: Nhập từ Excel và Tải danh sách học sinh cho từng trường
+- Thẻ Học sinh của trang trường có **⬆ Nhập từ Excel** (tải file mẫu, chọn file .xlsx/.csv, xem trước Tạo mới / Cập nhật / lỗi, nhập — giống trang Quản lý trường) và **⬇ Tải danh sách** (.xlsx đúng mẫu, sửa xong nhập lại được).
+- Nhập xong hiện bảng tên đăng nhập + mật khẩu (jenny123) của các em mới.
+- `75-nhap-excel.js` cho dùng lại phần đọc/kiểm tra/tải file với một trường bất kỳ (`XL.dung(org)`).
+
 ## 13/11/2026 — Admin Clb: thẻ "Tài khoản" đổi thành "Tài khoản quản lý"
 - Chỉ còn tài khoản quản lý của trường: + Thêm quản lý, ✎ Sửa (họ tên, giới tính, điện thoại, Gmail, mật khẩu mới), 🗑 Xoá. Giáo viên, học sinh quản lý ở thẻ Giáo viên, Học sinh.
 - Tài khoản dở dang (nếu có) hiện ở khung riêng bên dưới để xoá.
