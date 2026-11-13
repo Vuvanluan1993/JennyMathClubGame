@@ -122,9 +122,10 @@ function voNorm(q,v){if(!q||!q.sw||!Array.isArray(v))return v;v=v.slice();q.sw.f
 function voFit(){const pg=document.querySelector('.vomid .vopg');if(!pg)return;const mid=pg.closest('.gmid'),gm=pg.closest('.game');
  const fits=z=>{pg.style.zoom=z===1?'':String(z);return Math.max(mid.scrollHeight-mid.clientHeight,gm.scrollHeight-gm.clientHeight)<2};
  if(fits(1))return;/* thu nhỏ thì trang rộng ra, chữ ít xuống dòng hơn → tìm cỡ lớn nhất vừa (chia đôi) */
- let lo=.5,hi=1;for(let t=0;t<7;t++){const m=(lo+hi)/2;if(fits(m))lo=m;else hi=m}fits(+lo.toFixed(3))}
+ let lo=.5,hi=1;for(let t=0;t<7;t++){const m=(lo+hi)/2;if(fits(m))lo=m;else hi=m}let z=Math.floor(lo*1000)/1000;while(!fits(z)&&z>.5)z=Math.round((z-.02)*1000)/1000}
 window.voFit=voFit;
-{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{voFit()}catch(e){}return r}}
+{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{voFit();clearTimeout(window.__voFT);window.__voFT=setTimeout(()=>{try{voFit()}catch(e){}},300)}catch(e){}return r}}
+try{document.fonts&&document.fonts.ready.then(()=>{try{voFit()}catch(e){}})}catch(e){}
 addEventListener('resize',()=>{try{voFit()}catch(e){}});
 Object.assign(I18N,{'Vở: tách – gộp số':'Book: part–whole','Vở: nối sơ đồ với hình':'Book: match diagrams','Vở: kéo thẻ số':'Book: number cards'});
 
