@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Trang vở ý c: giữ khung như ban đầu, hình nằm giữa khung
+- Thầy chọn: khung tranh ý c) dài như ban đầu (bằng câu bên dưới), các hình dịch ra giữa khung. `86-trang-vo.js`: bỏ khung vừa khít của bản trước, thêm căn giữa trong khung. tu-luyen lớp 1, 2 ĐẠT.
+
 ## 13/11/2026 — Trang vở: căn giữa hình ở ý c
 - `86-trang-vo.js`: khung tranh ý c) không còn kéo dài theo câu "Gộp □ và □ được □"; tranh vừa khít và nằm giữa, ngay trên câu. tu-luyen lớp 1, 2 ĐẠT; vẫn vừa một màn hình ở 6 khổ đã đo.
 
