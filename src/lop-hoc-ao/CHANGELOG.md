@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Sửa chữ xuống dòng "vô duyên" ở mọi khổ màn hình
+- Lỗi gốc: CSS `.grow` của Hồ sơ học sinh (trang giáo viên) không có phạm vi riêng, lan sang toàn app (cột 140px, rộng tối đa 560px) → nhãn "Vịnh Tí Hon · Lớp 1" ở thẻ chào và nhiều ô khác bị bóp hẹp, xuống dòng dù màn hình rộng. Đã đổi thành lớp riêng `.gvrow`.
+- `85-xuong-dong-dep.js`: sau mỗi lần vẽ, dính chữ bằng dấu cách không ngắt ở: số hàng nghìn (10 000), từ khoá + số (Lớp 1, Bài 2, Chủ đề 3…), số + đơn vị (150 xu, 45 giây, 12 cm…), không để "·", "→", "–" đứng đầu dòng, không ngắt giữa từ có gạch nối/khoảng số/dấu "/" (Xăng-ti-mét, 6–10, 13/11); chữ có "·" chỉ xuống dòng sau dấu "·"; chữ cuối đoạn ≤ 3 chữ cái không đứng một mình.
+- Lưới an toàn: chỗ đã dính mà tràn khung thì thu chữ nhỏ dần (tối đa còn 80%), vẫn tràn thì trả lại như cũ. Không đụng ô nhập và bảng trong đề.
+- "Chào …!" ở thẻ chào luôn một dòng. CSS `text-wrap: pretty/balance` cho đoạn văn, tiêu đề, nút, nhãn.
+- Bản EN vẫn dịch đúng (tra bảng dịch sau khi bỏ dấu cách không ngắt).
+- Rà bằng `tools/test/xuong-dong.js` ở 8 khổ (320–1440px), lớp 1 và 3, 20 màn: từ 732 chỗ còn 446, phần còn lại là nhãn 2 dòng tự nhiên trong ô hẹp (bản đồ, ô Nhà em).
 ## 13/11/2026 — Giáo viên không thêm học sinh; sửa lỗi không tạo được em trùng họ tên
 - Bỏ nút **+ Thêm học sinh** ở trang Giáo viên; quy tắc bảo mật chặn giáo viên tạo tài khoản học sinh và đổi `gd`. **Cần dán lại quy tắc.**
 - Tạo học sinh (trang Quản lý, admin Clb, nhập Excel của admin): tên đăng nhập tự đặt mà đã bị giữ trên máy chủ (tài khoản đã xoá vẫn giữ tên) thì tự thử `an2`, `an3`… thay vì báo lỗi.
