@@ -165,20 +165,37 @@ const oTk=ma=>`<label>Tên đăng nhập (bỏ trống thì app tự đặt)<spa
 const oMK=`<label>Mật khẩu (ít nhất 6 kí tự)<input id="qaPw" maxlength="40" value="${MK0}"></label>`;
 function baoMoi(t){QA.bao=t;render()}
 function tkTu(ma,goc){const b=ma+'.'+bo(goc).toLowerCase().replace(/[^a-z0-9.]/g,'');let t=b,i=2;while(tkCo(t))t=b+(i++);return t}
-window.qaFormGV=function(ma){const d=duLieuTruong(ma);hopQA('Thêm giáo viên · '+e((QA.truong[ma]||{}).ten||ma),`<div class="qs2"><label>Họ tên<input id="qaTen" maxlength="40" required placeholder="Cô Nguyễn Thu Hà"></label><label>Giới tính<select id="qaGt"><option value="nu">Nữ</option><option value="nam">Nam</option></select></label></div>
-  ${oTk(ma)}${oMK}<label>Phân công lớp<select id="qaLop"><option value="">— chưa phân công</option>${d.lop.map(l=>`<option value="${e(l.id)}">Lớp ${e(l.ten)}</option>`).join('')}</select></label>`,`qaTaoGV('${ma}')`,'Tạo giáo viên')};
-window.qaTaoGV=async function(ma){const ten=v('qaTen').replace(/\s+/g,' '),pw=v('qaPw'),lid=v('qaLop'),gt=v('qaGt');if(ten.length<3){bao('Nhập họ tên');return}if(pw.length<6){bao('Mật khẩu cần ít nhất 6 kí tự');return}
-  let tk=v('qaTk').toLowerCase();tk=tk?ma+'.'+tk.replace(/^.*\./,''):tkTu(ma,ten.split(' ').slice(0,1).join('')+ten.split(' ').pop());if(!fbTkOk(tk)){bao('Tên đăng nhập: chữ thường không dấu, số');return}if(tkCo(tk)){bao('Tên đăng nhập đã có');return}
-  khoa(true);try{const uid=await fbTaoTK(tk,pw);await raw().doc('users/'+uid).set({role:'gv',tk,ten,gvId:tk,truong:ma});const o=oCua(ma);(o.gv=o.gv||[]).push({id:tk,ten,tk,gt});if(lid){const l=(o.lop||[]).find(x=>x.id===lid);if(l)(l.gv=l.gv||[]).push(tk)}
-    await luuO(ma,o,`Tạo giáo viên ${ten} (${tk})`);(QT().us||[]).push({uid,role:'gv',tk,ten,truong:ma});dong();baoMoi(`Đã tạo giáo viên <code>${e(tk)}</code> / <code>${e(pw)}</code>`)}catch(x){console.error(x);bao(fbLoi(x));khoa(false)}};
-window.qaFormHS=function(ma){const d=duLieuTruong(ma);hopQA('Thêm học sinh · '+e((QA.truong[ma]||{}).ten||ma),`<div class="qs2"><label>Họ và đệm<input id="qaHo" maxlength="30" required placeholder="Nguyễn Minh"></label><label>Tên<input id="qaTen" maxlength="20" required placeholder="An"></label></div>
-  <div class="qs2"><label>Giới tính<select id="qaGt"><option value="nam">Nam</option><option value="nu">Nữ</option></select></label><label>Lớp<select id="qaLop">${d.lop.map(l=>`<option value="${e(l.id)}" ${QA.lop===l.id?'selected':''}>Lớp ${e(l.ten)}</option>`).join('')}<option value="">— chưa xếp lớp</option></select></label></div>${oTk(ma)}${oMK}`,`qaTaoHS('${ma}')`,'Tạo học sinh')};
-window.qaTaoHS=async function(ma){const ho=v('qaHo').replace(/\s+/g,' '),tn=v('qaTen').replace(/\s+/g,' '),n=(ho+' '+tn).trim(),gt=v('qaGt'),lid=v('qaLop'),pw=v('qaPw');if(!ho||!tn){bao('Nhập họ và tên');return}if(pw.length<6){bao('Mật khẩu cần ít nhất 6 kí tự');return}
+/* bảng Thêm giáo viên / Thêm học sinh giống hệt trang Quản lý trường (71-quan-ly-gon.js) */
+const gtSel=(id,cur)=>`<select id="${id}"><option value="">—</option><option value="nu" ${cur==='nu'?'selected':''}>Nữ</option><option value="nam" ${cur==='nam'?'selected':''}>Nam</option></select>`;
+const nsSel=(ng,th)=>`<span class="qsns"><select id="qaNg" aria-label="Ngày"><option value="">Ngày</option>${Array.from({length:31},(_,i)=>`<option ${+ng===i+1?'selected':''}>${i+1}</option>`).join('')}</select><select id="qaTh" aria-label="Tháng"><option value="">Tháng</option>${Array.from({length:12},(_,i)=>`<option ${+th===i+1?'selected':''}>${i+1}</option>`).join('')}</select></span>`;
+const okDt=d=>!d||/^(\+?84|0)\d{8,10}$/.test(d),okMail=m=>!m||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m);
+const tkO=(ma,id,ph,req)=>`<label>Tên đăng nhập<span class="ttbox"><span class="tt">${e(ma)}.</span><input id="${id}" maxlength="30" autocapitalize="off" spellcheck="false" ${ph?`placeholder="${ph}"`:''} ${req?'required':''}></span></label>`;
+window.qaFormGV=function(ma){hopQA('Thêm giáo viên',`<label>Họ và tên<input id="qaTen" maxlength="30" placeholder="Cô Nguyễn Thu Lan" required></label>
+ <div class="qs2"><label>Giới tính${gtSel('qaGt','')}</label><label>Điện thoại<input id="qaDt" type="tel" maxlength="15" placeholder="0912345678"></label></div>
+ <label>Gmail<input id="qaMail" type="email" maxlength="60" placeholder="ten@gmail.com"></label>
+ <div class="qs2">${tkO(ma,'qaTk','',true)}<label>Mật khẩu<input id="qaPw" maxlength="30" required></label></div>`,`qaTaoGV('${ma}')`,'Thêm giáo viên')};
+window.qaTaoGV=async function(ma){const ten=v('qaTen').replace(/\s+/g,' '),pw=v('qaPw'),gt=v('qaGt'),dt=v('qaDt').replace(/[^\d+]/g,''),mail=v('qaMail').toLowerCase();
+  if(ten.length<3){bao('Nhập tên giáo viên');return}if(!okDt(dt)){bao('Số điện thoại chưa đúng');return}if(!okMail(mail)){bao('Gmail chưa đúng');return}
+  const t0=v('qaTk').toLowerCase().replace(/^.*\./,''),tk=ma+'.'+t0;if(!t0||!fbTkOk(tk)){bao('Tên đăng nhập: chữ thường không dấu, số');return}if(tkCo(tk)){bao('Tên đăng nhập đã có');return}if(pw.length<6){bao('Mật khẩu cần ít nhất 6 kí tự');return}
+  khoa(true);try{const uid=await fbTaoTK(tk,pw);await raw().doc('users/'+uid).set({role:'gv',tk,ten,gvId:tk,truong:ma});const o=oCua(ma);
+    (o.gv=o.gv||[]).push(Object.fromEntries(Object.entries({id:tk,ten,tk,gt,dt,mail}).filter(([k,x])=>x)));
+    await luuO(ma,o,`Tạo giáo viên ${ten} (${tk})`);(QT().us||[]).push({uid,role:'gv',tk,ten,truong:ma});dong();baoMoi(`Đã tạo giáo viên <code>${e(tk)}</code> / <code>${e(pw)}</code> · phân công lớp: bấm ✎ Sửa`)}catch(x){console.error(x);bao(fbLoi(x));khoa(false)}};
+window.qaFormHS=function(ma){hopQA('Thêm học sinh',`<div class="qs2"><label>Họ và đệm<input id="qaHo" maxlength="30" placeholder="Nguyễn Minh" required></label><label>Tên<input id="qaTen" maxlength="12" placeholder="An" required></label></div>
+ <div class="qs2"><label>Giới tính${gtSel('qaGt','')}</label><label>Năm sinh<input id="qaNam" type="number" min="2010" max="2025" placeholder="2019"></label></div>
+ <label>Ngày sinh (ngày, tháng)${nsSel('','')}</label>
+ <div class="qs2"><label>Điện thoại phụ huynh<input id="qaDt" type="tel" maxlength="15" placeholder="0912345678"></label><label>Gmail phụ huynh<input id="qaMail" type="email" maxlength="60" placeholder="ten@gmail.com"></label></div>
+ <div class="qs2">${tkO(ma,'qaTk','Bỏ trống = tự tạo',false)}<label>Mật khẩu<input id="qaPw" value="${MK0}" maxlength="30"></label></div>`,`qaTaoHS('${ma}')`,'Tạo tài khoản')};
+window.qaTaoHS=async function(ma){const ho=v('qaHo').replace(/\s+/g,' '),tn=v('qaTen').replace(/\s+/g,' '),n=(ho+' '+tn).trim(),pw=v('qaPw');
+  if(!ho||!tn){bao('Nhập họ và tên');return}const H={gt:v('qaGt'),ng:v('qaNg'),th:v('qaTh'),nam:v('qaNam'),dt:v('qaDt').replace(/[^\d+]/g,''),mail:v('qaMail').toLowerCase()};
+  if(!H.gt){bao('Chọn giới tính (để chọn nhân vật cho em)');return}if(H.nam&&!(+H.nam>=2010&&+H.nam<=2025)){bao('Năm sinh chưa đúng');return}
+  if(H.ng&&H.th&&H.nam&&new Date(+H.nam,+H.th-1,+H.ng).getDate()!==+H.ng){bao('Ngày sinh chưa đúng');return}if(!okDt(H.dt)){bao('Số điện thoại chưa đúng');return}if(!okMail(H.mail)){bao('Gmail chưa đúng');return}
+  if(pw.length<6){bao('Mật khẩu cần ít nhất 6 kí tự');return}
   let tk=v('qaTk').toLowerCase();tk=tk?ma+'.'+tk.replace(/^.*\./,''):tkTu(ma,tn);if(!fbTkOk(tk)){bao('Tên đăng nhập: chữ thường không dấu, số');return}if(tkCo(tk)){bao('Tên đăng nhập đã có');return}
-  const o=oCua(ma),l=(o.lop||[]).find(x=>x.id===lid),khoi=l?l.khoi:1;
-  khoa(true);try{const uid=await fbTaoTK(tk,pw);await raw().doc('users/'+uid).set({role:'hs',tk,ten:n,khoi,truong:ma});const st=newStudent(n,khoi);st.gender=gt;
-    await raw().doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:lid||'',truong:ma,t:fbTS()});
-    (o.hs=o.hs||[]).push([tk,n,khoi]);o.gd=o.gd||{};if(lid)o.gd[tk]=lid;(o.hoso=o.hoso||{})[tk]={gt};await luuO(ma,o,`Tạo học sinh ${n} (${tk})`);(QT().us||[]).push({uid,role:'hs',tk,ten:n,truong:ma});dong();baoMoi(`Đã tạo học sinh <code>${e(tk)}</code> / <code>${e(pw)}</code>${lid?'':' · em chưa xếp lớp nên chưa đăng nhập được'}`)}catch(x){console.error(x);bao(fbLoi(x));khoa(false)}};
+  const o=oCua(ma),khoi=1;
+  khoa(true);try{const uid=await fbTaoTK(tk,pw);await raw().doc('users/'+uid).set({role:'hs',tk,ten:n,khoi,truong:ma});const st=newStudent(n,khoi);st.gender=H.gt;
+    await raw().doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:'',truong:ma,t:fbTS()});
+    (o.hs=o.hs||[]).push([tk,n,khoi]);(o.hoso=o.hoso||{})[tk]=Object.fromEntries(Object.entries(H).filter(([k,x])=>x));await luuO(ma,o,`Tạo học sinh ${n} (${tk})`);(QT().us||[]).push({uid,role:'hs',tk,ten:n,truong:ma});dong();
+    baoMoi(`Đã tạo học sinh <code>${e(tk)}</code> / <code>${e(pw)}</code> · em đang <b>chưa xếp lớp</b>, chọn lớp ở cột Lớp để em đăng nhập được`)}catch(x){console.error(x);bao(fbLoi(x));khoa(false)}};
 window.qaDoiLop=async function(ma,tk,lid){const o=oCua(ma),l=(o.lop||[]).find(x=>x.id===lid);o.gd=o.gd||{};if(lid)o.gd[tk]=lid;else delete o.gd[tk];const r=(o.hs||[]).find(x=>x[0]===tk);if(r&&l)r[2]=l.khoi;
   try{await luuO(ma,o,`Đổi lớp ${tk} → ${l?l.ten:'chưa xếp lớp'}`);try{await raw().doc('hs/'+tk).set({lop:lid||''},{merge:true})}catch(x){}toast(l?'Đã chuyển sang lớp '+l.ten:'Đã bỏ khỏi lớp');render()}catch(x){toast(fbLoi(x))}};
 window.qaMK=async function(ma,tk){const pw=prompt(`Mật khẩu mới cho "${tk}" (ít nhất 6 kí tự):`,fbMKGoiY());if(pw===null)return;if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}toast('Đang đặt mật khẩu mới…');
@@ -189,20 +206,25 @@ async function datMK(ma,tk,pw){{const q=await raw().collection('users').where('t
     await raw().doc('users/'+uid).set(du);await raw().doc('login/'+tk).set({email:em,uid,truong:du.truong,t:fbTS()});await Promise.all(q.docs.map(d=>raw().doc('users/'+d.id).delete()));
     const U=QT().us||[];U.forEach((u,i)=>{if(u.tk===tk)U[i]=Object.assign({},du,{uid})})}}
 window.qaSua=function(ma,tk){const d=duLieuTruong(ma),u=usCua(ma,tk)[0]||{},r=(d.o.hs||[]).find(x=>x[0]===tk),g=d.gv.find(x=>(x.tk||x.id)===tk),hs=u.role==='hs'||(!!r&&!u.role),gt=hs?((d.o.hoso||{})[tk]||{}).gt:(g||{}).gt,vai={ql:'quản lý trường',gv:'giáo viên',hs:'học sinh'}[u.role]||'';
-  const ten=u.ten||(r&&r[1])||(g&&g.ten)||'',lopGV=d.lop.filter(l=>(l.gv||[]).includes(tk)).map(l=>l.id);
+  const H0=((d.o.hoso||{})[tk])||{};const ten=u.ten||(r&&r[1])||(g&&g.ten)||'',lopGV=d.lop.filter(l=>(l.gv||[]).includes(tk)).map(l=>l.id);
   hopQA(`Sửa ${vai} · ${e(ten)}`,`<label>Tên đăng nhập<input value="${e(tk)}" disabled></label>
    <div class="qs2"><label>Họ tên<input id="qaTen" maxlength="40" required value="${e(ten)}"></label><label>Giới tính<select id="qaGt"><option value="">—</option><option value="nam" ${gt==='nam'?'selected':''}>Nam</option><option value="nu" ${gt==='nu'?'selected':''}>Nữ</option></select></label></div>
+   ${hs?`<div class="qs2"><label>Năm sinh<input id="qaNam" type="number" min="2010" max="2025" value="${e(H0.nam||'')}"></label><label>Ngày sinh (ngày, tháng)${nsSel(H0.ng,H0.th)}</label></div>
+   <div class="qs2"><label>Điện thoại phụ huynh<input id="qaDt" type="tel" maxlength="15" value="${e(H0.dt||'')}"></label><label>Gmail phụ huynh<input id="qaMail" type="email" maxlength="60" value="${e(H0.mail||'')}"></label></div>`:`<div class="qs2"><label>Điện thoại<input id="qaDt" type="tel" maxlength="15" value="${e((g||{}).dt||'')}"></label><label>Gmail<input id="qaMail" type="email" maxlength="60" value="${e((g||{}).mail||'')}"></label></div>`}
    ${hs?`<label>Lớp<select id="qaLop"><option value="">— Chưa xếp lớp</option>${d.lop.map(l=>`<option value="${e(l.id)}" ${d.gd[tk]===l.id?'selected':''}>Lớp ${e(l.ten)}</option>`).join('')}</select></label>`:''}
    ${!hs&&d.lop.length?`<fieldset class="qafs"><legend>Lớp phụ trách</legend>${d.lop.map(l=>`<label class="qachk"><input type="checkbox" class="qaLopGV" value="${e(l.id)}" ${lopGV.includes(l.id)?'checked':''}> Lớp ${e(l.ten)}</label>`).join('')}</fieldset>`:''}
    <label>Mật khẩu mới (để trống nếu giữ nguyên)<input id="qaPw" maxlength="40" placeholder="ít nhất 6 kí tự" autocomplete="new-password"></label>`,`qaLuuSua('${ma}','${tk}')`,'Lưu');
   const bt=document.querySelector('#qaf .qsbtn');if(bt)bt.insertAdjacentHTML('afterbegin',`<button type="button" class="btn qlxbtn" onclick="document.getElementById('qaf').remove();qaXoa('${ma}','${tk}')">🗑 Xoá tài khoản</button>`)};
 window.qaLuuSua=async function(ma,tk){const n=v('qaTen').replace(/\s+/g,' '),gt=v('qaGt'),pw=v('qaPw'),lopEl=document.getElementById('qaLop'),gvL=[...document.querySelectorAll('.qaLopGV')];
-  if(n.length<3){bao('Họ tên quá ngắn');return}if(pw&&pw.length<6){bao('Mật khẩu cần ít nhất 6 kí tự');return}khoa(true);
+  const dt=v('qaDt').replace(/[^\d+]/g,''),mail=v('qaMail').toLowerCase(),nam=v('qaNam'),ng=v('qaNg'),th=v('qaTh');
+  if(n.length<3){bao('Họ tên quá ngắn');return}if(pw&&pw.length<6){bao('Mật khẩu cần ít nhất 6 kí tự');return}if(!okDt(dt)){bao('Số điện thoại chưa đúng');return}if(!okMail(mail)){bao('Gmail chưa đúng');return}
+  if(nam&&!(+nam>=2010&&+nam<=2025)){bao('Năm sinh chưa đúng');return}if(ng&&th&&nam&&new Date(+nam,+th-1,+ng).getDate()!==+ng){bao('Ngày sinh chưa đúng');return}khoa(true);
   try{const o=oCua(ma),thay=[];const q=await raw().collection('users').where('tk','==',tk).get();const cu=q.docs[0]&&q.docs[0].data()||{};
     if(cu.ten!==n){await Promise.all(q.docs.map(x=>raw().doc('users/'+x.id).set({ten:n},{merge:true})));(QT().us||[]).forEach(x=>{if(x.tk===tk)x.ten=n});thay.push('họ tên')}
     const r=(o.hs||[]).find(x=>x[0]===tk);if(r){if(r[1]!==n)r[1]=n;o.hoso=o.hoso||{};const H=o.hoso[tk]=o.hoso[tk]||{};if((H.gt||'')!==gt){H.gt=gt;thay.push('giới tính')}
+      const hs1={nam,ng,th,dt,mail};if(Object.keys(hs1).some(k=>(H[k]||'')!==hs1[k])){Object.keys(hs1).forEach(k=>{if(hs1[k])H[k]=hs1[k];else delete H[k]});thay.push('hồ sơ')}
       if(lopEl){const lid=lopEl.value;o.gd=o.gd||{};if((o.gd[tk]||'')!==lid){if(lid)o.gd[tk]=lid;else delete o.gd[tk];const l=(o.lop||[]).find(x=>x.id===lid);if(l)r[2]=l.khoi;thay.push('lớp');try{await raw().doc('hs/'+tk).set({lop:lid},{merge:true})}catch(x){}}}}
-    const g=(o.gv||[]).find(x=>(x.tk||x.id)===tk);if(g){if(g.ten!==n)g.ten=n;if((g.gt||'')!==gt){g.gt=gt;thay.push('giới tính')}
+    const g=(o.gv||[]).find(x=>(x.tk||x.id)===tk);if(g){if(g.ten!==n)g.ten=n;if((g.gt||'')!==gt){g.gt=gt;thay.push('giới tính')}if((g.dt||'')!==dt||(g.mail||'')!==mail){if(dt)g.dt=dt;else delete g.dt;if(mail)g.mail=mail;else delete g.mail;thay.push('liên hệ')}
       if(gvL.length){const chon=gvL.filter(x=>x.checked).map(x=>x.value);let doi=false;(o.lop||[]).forEach(l=>{l.gv=l.gv||[];const co=l.gv.includes(tk),can=chon.includes(l.id);if(co&&!can){l.gv=l.gv.filter(x=>x!==tk);doi=true}if(!co&&can){l.gv.push(tk);doi=true}});if(doi)thay.push('lớp phụ trách')}}
     if(thay.some(x=>x!=='mật khẩu'))await luuO(ma,o,`Sửa ${tk}: ${thay.join(', ')}`);
     if(pw){await datMK(ma,tk,pw);thay.push('mật khẩu')}
