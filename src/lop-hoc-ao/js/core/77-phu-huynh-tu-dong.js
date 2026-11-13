@@ -3,7 +3,7 @@
    chưa có → tạo tài khoản phụ huynh mới tên "ph.<tên đăng nhập học sinh>", mật khẩu jenny123.
    Sửa học sinh: bổ sung SĐT/Gmail trùng phụ huynh khác → hỏi gộp; tài khoản ph.… tạm không còn con thì bỏ. */
 (function(){
-if(typeof viewPH==='undefined')return;
+if(typeof viewPH==='undefined'||(typeof PH_ON!=='undefined'&&!PH_ON))return;
 const O=()=>S.org,MK0='jenny123';
 const cloud=()=>!!(O()&&O().cloud&&typeof CLOUD!=='undefined'&&CLOUD);
 const dtC=s=>{let d=String(s||'').replace(/[^\d+]/g,'');if(/^\+?84/.test(d))d='0'+d.replace(/^\+?84/,'');return d};
