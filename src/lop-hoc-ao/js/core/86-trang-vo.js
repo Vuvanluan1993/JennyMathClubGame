@@ -134,8 +134,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .voin{padding:6px 6px 0 28px;position:relative;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .voit{display:flex;align-items:center;gap:8px;position:relative}.voit.top{align-items:flex-start}
 .volb{font-weight:800;font-size:15px;width:16px;background:#fff;flex:none}
-.vopic{display:flex;width:max-content;background:#fff;padding:3px;box-shadow:inset 0 0 0 2px #1F2A5A;flex:none}
-.voit.top>div{display:flex;flex-direction:column;align-items:center}
+.vopic{display:flex;justify-content:center;background:#fff;padding:3px;box-shadow:inset 0 0 0 2px #1F2A5A;flex:none}
 .vogrp{display:flex;flex-wrap:wrap;gap:3px;padding:3px;align-content:center;justify-content:center;flex:none}.vogrp+.vogrp{border-left:2px dashed #9AA4C0}
 .vosd{position:relative;flex:none}.vosd>svg{position:absolute;inset:0}.vobx{position:absolute;display:flex}
 .votc{width:100%;height:100%;display:grid;place-items:center;background:#fff;color:#1F2A5A;font-family:var(--f-display);font-size:20px;line-height:1;box-shadow:inset 0 0 0 2px #1F2A5A;border:0;padding:0}
