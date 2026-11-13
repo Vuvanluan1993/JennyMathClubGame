@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Sửa lỗi tự phát tiếng và tên đảo tràn khung
+- **Tự phát tiếng:** vào Tự luyện, đề bị đọc 2 lần (`tlGo`/`tlDayGo` đặt lại `t0` sau khi `go()` đã vẽ). Với giọng thu sẵn, lần đọc thứ hai bị xếp hàng nên phát lại một lúc sau, khi em không bấm gì. Sửa: không đặt lại `t0` (72); `83-giong-thu-san.js`: app tự gọi lại đúng câu đang đọc thì bỏ, câu đang chờ chỉ đọc khi em vẫn ở đúng màn lúc xếp hàng. Đo bằng cách để yên 2 phút ở bản đồ, trang đảo, Tự luyện, màn đảo: mỗi đề chỉ đọc 1 lần, không có tiếng nào khác.
+- **Tên đảo tràn khung:** `85-xuong-dong-dep.js` dính cả tên đảo thành một khối không ngắt ("1. Ôn số · T1"). Sửa: chữ ngắn cuối không dính qua dấu "·"; tên đảo không giữ trọn khối giữa các "·"; lưới an toàn bắt cả ô co theo chữ (flex) rộng hơn khung cha; tên bị cắt "…" thì thu chữ (tối đa còn 70%). Đo lớp 1–5 ở 320/375/630px: 0 tên tràn (trước: 692).
+- Đã chạy: tu-luyen lớp 1, 2 ĐẠT; kiem-tra 1 ĐẠT; khung-hinh lớp 1 không lỗi; tieng-anh lớp 1 còn 0 chuỗi.
 ## 13/11/2026 — Trang vở ý c: giữ khung như ban đầu, hình nằm giữa khung
 - Thầy chọn: khung tranh ý c) dài như ban đầu (bằng câu bên dưới), các hình dịch ra giữa khung. `86-trang-vo.js`: bỏ khung vừa khít của bản trước, thêm căn giữa trong khung. tu-luyen lớp 1, 2 ĐẠT.
 
