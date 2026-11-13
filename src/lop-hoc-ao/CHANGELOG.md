@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Admin Clb: thẻ Giáo viên và Lớp giống trang Quản lý trường
+- Giáo viên: danh sách như trang Quản lý trường (tên, tên đăng nhập · SĐT, các lớp đang dạy bấm được, ✎ Sửa); bảng Sửa giáo viên giống hệt (Họ tên; Tên đăng nhập, Giới tính; Điện thoại, Gmail; Mật khẩu mới) + nút Xoá tài khoản.
+- Lớp: danh sách (Lớp · Khối · số em, Giáo viên, Toán Jenny, Mở ▸), + Thêm lớp (Khối, Tên lớp, Giáo viên). Mở một lớp: Phân công/bỏ giáo viên, Gắn/tắt gói Toán Jenny, Thêm học sinh vào lớp (gợi ý 5 em chưa xếp lớp, tìm tên), + Tạo tài khoản học sinh, Danh sách lớp với ✎ Sửa · Bỏ khỏi lớp · 🗑 Xoá.
+
 ## 13/11/2026 — Admin Clb: bảng Thêm/Sửa học sinh, giáo viên giống trang Quản lý trường
 - Thêm học sinh: Họ và đệm, Tên, Giới tính, Năm sinh, Ngày sinh, ĐT phụ huynh, Gmail phụ huynh, Tên đăng nhập (bỏ trống = tự tạo), Mật khẩu — giống hệt trang Quản lý trường (em mới ở trạng thái chưa xếp lớp).
 - Thêm giáo viên: Họ và tên, Giới tính, Điện thoại, Gmail, Tên đăng nhập, Mật khẩu.
