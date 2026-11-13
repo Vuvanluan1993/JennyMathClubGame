@@ -16,6 +16,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Chế độ tối** (MacBook để tối): mọi màu chữ/nền dùng biến (`--ink`, `--surface`, `--muted`, `--sun-soft`…). Chỗ nền sáng cố định (khung trời/cát, hộp Hướng dẫn) thì ghi màu chữ đậm cố định. Luôn chụp thử cả chế độ tối.
 - Mặt trời/mặt trăng trên biển: luôn trong tầm nhìn, trôi ngang chậm; không vật thể nào được đổi chỗ ngẫu nhiên mỗi khung hình (gây chớp nháy) (23/10).
 - Kiểm tra giao diện ở khổ 320, 375, 414px (và 900px máy tính): không tràn ngang.
+- **Không xuống dòng vô duyên** (13/11/2026): không tách "Lớp 1", "150 xu", "10 000", không để "·" đầu dòng, không để 1 chữ ngắn đứng riêng dòng cuối; chữ có "·" chỉ xuống dòng sau dấu "·". Đã tự động ở `85-xuong-dong-dep.js`; CSS mới phải có phạm vi riêng (không đặt luật chung cho `.grow`, `.row`…). Rà bằng `tools/test/xuong-dong.js`.
 - Thanh trên (bản học sinh): logo đám mây pixel + chữ **JennyClub** (tên tạm) · VI|EN · nhạc · nút **Đăng xuất** pixel hiện sẵn.
 - Thẻ chào (trang Bản đồ): [hình Jenny] [Vịnh · Lớp / Chào …!] [cột sát bên phải chữ: ô sao trên, ô xu "🪙 số ▸" dưới]; không có nút "Nghe Jenny", không chữ "Đảo nhà" (23/10).
 - Thanh dưới (tiểu học): Bản đồ · Toán Jenny · **Nhà em** · **Cửa hàng** (Luyện lỗi chuyển vào Phòng học, 23/10). "Nhà em" mở 3 ô: Đảo nhà, Sưu tập, Hồ sơ.

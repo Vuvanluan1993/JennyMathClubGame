@@ -8065,7 +8065,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='13/11 · 11:17';
+const APP_VER='13/11 · 12:53';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -11104,7 +11104,7 @@ function gvSucManh(id,st){
   const sc=hsScores(st),m3=gvMach(st,3),m6=gvMach(st,6),tb=gvTBKhoi(st.grade),du=Object.keys(m3).length;
   const lab=Object.fromEntries(HS_AX.map(a=>[a.k,!sc[a.k].taught?'chưa học':m3[a.k]!=null?hsMuc(m3[a.k]):'chưa đủ']));
   const LG=hsLogic(st),lgSub=`<div class="gsub muted">Bài logic ${LG.A.s!=null?hsMuc(LG.A.s):'–'} · Suy luận ở các mạch ${LG.B.s!=null?hsMuc(LG.B.s):'–'} · Thói quen (đúng ngay, không bấm bừa) ${LG.C.s!=null?hsMuc(LG.C.s):'–'}</div>`;
-  const bars=HS_AX.map(a=>{const v=m3[a.k],v6=m6[a.k],t=tb.v[a.k];return`<div class="grow"><span>${a.f}</span>${v==null?`<span class="muted">${sc[a.k].taught?'chưa đủ bài':'chưa học'}</span>`:`<span class="gbar"><i style="width:${v}%;background:${v>=75?'var(--leaf)':v>=60?'var(--sun)':'var(--coral)'}"></i>${t!=null?`<b class="gprev" style="left:${t}%" title="TB khối: ${hsMuc(t)}"></b>`:''}</span><b>${hsMuc(v)}</b>`}</div>${a.k==='lg'&&LG.ok?lgSub:''}${v!=null?`<div class="gsub muted">6 tháng: ${v6!=null?hsMuc(v6):'–'} · so với khối: ${t!=null?(v-t>=5?'cao hơn':t-v>=5?'thấp hơn':'ngang'):'–'}</div>`:''}`}).join('');
+  const bars=HS_AX.map(a=>{const v=m3[a.k],v6=m6[a.k],t=tb.v[a.k];return`<div class="grow gvrow"><span>${a.f}</span>${v==null?`<span class="muted">${sc[a.k].taught?'chưa đủ bài':'chưa học'}</span>`:`<span class="gbar"><i style="width:${v}%;background:${v>=75?'var(--leaf)':v>=60?'var(--sun)':'var(--coral)'}"></i>${t!=null?`<b class="gprev" style="left:${t}%" title="TB khối: ${hsMuc(t)}"></b>`:''}</span><b>${hsMuc(v)}</b>`}</div>${a.k==='lg'&&LG.ok?lgSub:''}${v!=null?`<div class="gsub muted">6 tháng: ${v6!=null?hsMuc(v6):'–'} · so với khối: ${t!=null?(v-t>=5?'cao hơn':t-v>=5?'thấp hơn':'ngang'):'–'}</div>`:''}`}).join('');
   return{radar:`${gvRadar([{v:tb.v,c:'gr-tb'},{v:m6,c:'gr-6'},{v:m3,c:'gr-cur'}],lab)}<div class="gr-leg muted"><span><i class="cur"></i> Em · 3 tháng gần nhất</span><span><i class="s6"></i> Em · 6 tháng gần nhất</span><span><i class="tb"></i> TB học sinh Jenny khối ${st.grade} (${tb.n} em)</span></div>
     ${du<3?`<p class="hint" style="margin:10px 0 0">Em mới đủ bài ở ${du} mạch nên hình còn hẹp.</p>`:''}`,bars:bars+gvLoiVanDong(st)}}
 /* kĩ năng giải toán lời văn: đã tính vào các trục nội dung, hiện riêng tỉ lệ đúng để cô biết em đọc đề có tốt không */
@@ -11127,7 +11127,7 @@ function gvTabHT(id,st){
     return`<tr><td><b>Chủ đề ${ti+1}: ${esc(t[0])}</b><div class="muted">${hoc}/${L.length} đảo đã vào</div></td><td style="min-width:150px">${gvBar(pc(a,b),'var(--sun)')} <span class="muted">${a}/${b} màn</span></td><td>${ket.length?[...new Set(ket)].slice(0,3).map(k=>`<span class="pill bad">Kẹt ${esc(k)}</span>`).join(' '):'<span class="pill ok">Ổn</span>'}</td></tr>`}).join('');
   const T=gvTong(st),hs=T.h[0]+T.h[1]+T.h[2];
   return`<section class="card glichcard"><div><h2>Lịch học năm học</h2><p class="muted" style="margin:4px 0 0">Mỗi ô là một ngày, màu đậm là làm nhiều câu.</p>${gvLich(id,st)}</div>
-   <div><h3>Khung giờ học</h3>${hs?['Sáng','Chiều','Tối'].map((t,i)=>`<div class="grow"><span>${t}</span>${gvBar(pc(T.h[i],hs))}<b>${pc(T.h[i],hs)}%</b></div>`).join(''):'<p class="muted">Chưa đủ dữ liệu.</p>'}
+   <div><h3>Khung giờ học</h3>${hs?['Sáng','Chiều','Tối'].map((t,i)=>`<div class="grow gvrow"><span>${t}</span>${gvBar(pc(T.h[i],hs))}<b>${pc(T.h[i],hs)}%</b></div>`).join(''):'<p class="muted">Chưa đủ dữ liệu.</p>'}
    <p class="muted" style="margin:6px 0 0">Tổng thời gian học: ${Math.round(T.sec/60)} phút (khoảng ${Math.round(T.sec/60/Math.max(1,Object.values(st.dd||{}).filter(o=>o.n).length))} phút mỗi ngày học).</p></div></section>
   <section class="card"><h2>Tiến độ SGK</h2><div class="tablewrap"><table><tr><th>Chủ đề</th><th>Màn đã qua</th><th>Đảo bị kẹt</th></tr>${chu}</table></div></section>
   <section class="card"><h2>Tỉ lệ đúng từng dạng bài</h2><p class="muted" style="margin:4px 0 0">10 lần làm gần nhất mỗi dạng, dạng yếu xếp trước (10 dạng yếu nhất).</p>${gvBangDang(st,1)}</section>`}
@@ -11311,7 +11311,7 @@ function gvMau(){
 document.head.insertAdjacentHTML('beforeend',`<style>
 .gbar{position:relative;display:inline-block;width:100%;max-width:220px;height:10px;background:var(--surface2);border:1px solid var(--line);vertical-align:middle}
 .gbar i{position:absolute;left:0;top:0;bottom:0}.gprev{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.45}
-.grow{display:grid;grid-template-columns:minmax(90px,140px) 1fr auto;gap:10px;align-items:center;padding:6px 0}
+.gvrow{display:grid;grid-template-columns:minmax(90px,140px) 1fr auto;gap:10px;align-items:center;padding:6px 0}
 .glich{display:flex;gap:3px;overflow-x:auto;padding:10px 0 4px}.glc{display:flex;flex-direction:column;gap:3px}
 .gl{display:inline-block;width:13px;height:13px;background:var(--surface2);border:1px solid var(--line);cursor:pointer}
 .gl.l-1{visibility:hidden}.gl.l1{background:#BDE7C8}.gl.l2{background:#7FD19A}.gl.l3{background:#3DB26A}.gl.l4{background:#1E7D45}
@@ -11331,8 +11331,8 @@ tr.gyeu td{background:var(--coral-soft)}
 .phnhac{border-left:6px solid var(--sun)}
 .gpair{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}@media(max-width:900px){.gpair{grid-template-columns:minmax(0,1fr)}}
 .glichcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,320px);gap:12px 28px;align-items:start}@media(max-width:900px){.glichcard{grid-template-columns:minmax(0,1fr)}}
-.glichcard .grow{grid-template-columns:60px 1fr 44px}
-.grow .gbar{max-width:none}.grow{max-width:560px}
+.glichcard .gvrow{grid-template-columns:60px 1fr 44px}
+.gvrow .gbar{max-width:none}.gvrow{max-width:560px}
 table.gdang td:nth-child(2),table.gdang td:nth-child(4),table.gdang td:nth-child(5){white-space:nowrap}
 table.gvbang td:nth-child(2),table.gvbang td:nth-child(3),table.gvbang td:nth-child(4){white-space:nowrap}
 @media(min-width:900px){.alertlist{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -13988,6 +13988,79 @@ ${L} .ghead .gav{width:64px!important;height:64px!important;font-size:22px!impor
  ${L} #app h1{font-size:24px!important}}
 </style>`);
 })();
+/* 85 — Xuống dòng đẹp (thầy yêu cầu 13/11/2026): không để chữ xuống dòng "vô duyên" ở mọi khổ màn hình.
+   Cách làm: sau mỗi lần vẽ (và khi có chữ mới chèn vào), thay dấu cách thường bằng dấu cách không ngắt (NBSP) ở các chỗ:
+   1) số có dấu cách hàng nghìn: 10 000, 100 000;
+   2) từ khoá + số: Lớp 1, Bài 2, Tiết 3, Chủ đề 4, Câu 5, Bước 6, Grade 1…;
+   3) số + đơn vị: 150 xu, 8 câu, 45 giây, 3 tim, 12 cm…;
+   4) không để "·", "–", "→", "▸", ":", "!", "?" đứng đầu dòng; không để "←", "(" đứng cuối dòng;
+   5) không ngắt giữa từ có gạch nối (Xăng-ti-mét, 2-digit), khoảng số (6–10) và dấu "/" (13/11, +/−);
+   6) chữ có "·": mỗi phần ngắn (≤ 20 kí tự, ≤ 4 từ) giữ trọn một khối, chỉ được xuống dòng sau dấu "·"
+      (ví dụ "Vịnh Tí Hon · Lớp 1" → "Vịnh Tí Hon ·" / "Lớp 1");
+   7) chữ cuối đoạn quá ngắn (≤ 3 chữ cái, hoặc là số) không đứng một mình: dính với chữ trước.
+   Thêm CSS text-wrap: pretty (đoạn văn) và balance (tiêu đề, nút, nhãn) cho trình duyệt hỗ trợ.
+   Không đụng ô nhập, script, style, svg, canvas. Chạy sau bản dịch EN (47). */
+(function(){
+const NB=' ',WJ='⁠';
+const KW='Lớp|Bài|Tiết|Chủ đề|Buổi|Bước|Câu|Chặng|Đảo|Trang|Màn|Ngày|Tuần|Tháng|Khối|Phần|Lần|Số|Phiếu|Tập|lớp|bài|tiết|chủ đề|buổi|bước|câu|chặng|đảo|trang|màn|ngày|tuần|tháng|khối|phần|lần|số|phiếu|tập|Grade|Lesson|Topic|Step|Session|Level|Page|Day|Week|Part|Unit|Question|Sheet|Book|grade|lesson|topic|step|session|level|page|day|week|part|unit|question|sheet|book';
+const UNIT='xu|câu|bài|phút|giây|giờ|ngày|tuần|tháng|năm|lượt|vé|sao|đảo|tim|bước|chặng|đòn|em|lớp|trang|tiết|buổi|tuổi|con|quả|cái|viên|bông|cây|hộp|cặp|ván|lần|cúp|món|trứng|đồng|nghìn|triệu|phần|lỗi|chữ|kí|cm|dm|mm|km|m|kg|g|l|ml|coins?|stars?|hearts?|questions?|lessons?|islands?|minutes?|mins?|seconds?|secs?|days?|weeks?|tickets?|plays?|turns?|steps?|times?|mistakes?|students?|classes?|pts';
+const R=[];const add=(src,fl,to)=>{try{R.push([new RegExp(src,fl),to])}catch(e){}};
+add('(\\d) (?=\\d{3}(?!\\d))','g','$1'+NB);                                   /* 1 */
+add('(^|[\\s(·])(Chủ|chủ) (đề)','gu','$1$2'+NB+'$3');
+add('(^|[^\\p{L}])('+KW+') (?=[\\d#])','gu','$1$2'+NB);                        /* 2 */
+add('(\\d[\\d.,/]*\\+?) (?=(?:'+UNIT+')(?![\\p{L}\\d]))','gu','$1'+NB);          /* 3 */
+add(' (?=[·–—→›▸»:!?%)])','g',NB);                                            /* 4 */
+add('([←‹(«]) ','g','$1'+NB);
+add('([\\p{L}\\d])-(?=[\\p{L}\\d])','gu','$1'+WJ+'-'+WJ);
+add('([^\\s\\u2060])/(?=[^\\s\\u2060])','g','$1'+WJ+'/'+WJ);                               /* 5 */
+add('(\\d)([–\\-])(?=\\d)','g','$1'+WJ+'$2'+WJ);
+add('(\\p{Extended_Pictographic}\\uFE0F?) (?=\\S)','gu','$1'+NB);              /* biểu tượng dính chữ sau */
+function fix(s,isLast){if(!/\S/.test(s))return s;let t=s;
+  for(const [re,to] of R){re.lastIndex=0;t=t.replace(re,to)}
+  /* 6 — phần ngắn giữa các dấu "·" giữ trọn */
+  if(t.indexOf('·')>=0){t=t.split('·').map((p,i,a)=>{const lead=p.match(/^\s*/)[0],trail=p.match(/\s*$/)[0],core=p.trim();
+      const plain=core.replace(/[^\p{L}\d ,.\/+–-]/gu,'');if(core&&plain.length<=20&&core.split(' ').length<=4)return lead+core.replace(/ /g,NB)+trail;return p}).join('·')}
+  /* 7 — chữ cuối quá ngắn */
+  if(isLast){const m=t.match(/^([\s\S]*\S) ([^\s ]+)(\s*)$/);if(m){const w=m[2],letters=w.replace(/[^\p{L}\d]/gu,'');
+      if(m[1].split(/[\s ]+/).length>=2&&(letters.length&&letters.length<=3||/^\d/.test(letters)))t=m[1]+NB+w+m[3]}}
+  return t}
+const SKIP='script,style,textarea,input,select,option,svg,canvas,code,pre,td,th,[contenteditable],.noxd';
+const blockOf=n=>{let e=n.parentElement;while(e&&getComputedStyle(e).display==='inline')e=e.parentElement;return e};
+function lastInBlock(n){const b=blockOf(n);if(!b)return false;const w=document.createTreeWalker(b,NodeFilter.SHOW_TEXT);w.currentNode=n;let x;while(x=w.nextNode()){if(/\S/.test(x.nodeValue))return false}return true}
+function run(root){if(!root)return;if(root.nodeType===3){one(root);return}if(root.nodeType!==1||root.closest&&root.closest(SKIP))return;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const L=[];let n;while(n=w.nextNode())L.push(n);L.forEach(one)}
+function one(n){const p=n.parentElement;if(!p||!n.nodeValue||!/\S/.test(n.nodeValue)||p.closest(SKIP))return;const v=n.nodeValue;
+  let last=false;if(/ [^\s ]{1,4}\s*$/.test(v)||/ \d[^\s]*\s*$/.test(v)){try{last=lastInBlock(n)}catch(e){}}
+  const t=fix(v,last);if(t!==v)n.nodeValue=t}
+/* lưới an toàn: chỗ đã dính chữ mà bị tràn khung → thu chữ nhỏ dần (tối đa còn 80%), vẫn tràn thì bỏ dính để chữ xuống dòng như cũ */
+function fitAll(){const seen=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
+  while(n=w.nextNode()){if(n.nodeValue.indexOf(NB)<0&&n.nodeValue.indexOf(WJ)<0)continue;const b=blockOf(n);if(b&&!seen.has(b))seen.add(b)}
+  seen.forEach(b=>{if(!b.isConnected||b.closest(SKIP))return;const ox=getComputedStyle(b).overflowX;if(ox==='auto'||ox==='scroll')return;
+    if(b.scrollWidth<=b.clientWidth+1||!b.clientWidth)return;const f0=parseFloat(getComputedStyle(b).fontSize)||16;let f=f0,k=0;
+    while(b.scrollWidth>b.clientWidth+1&&f>f0*0.8&&k++<8){f-=0.5;b.style.fontSize=f+'px'}
+    if(b.scrollWidth>b.clientWidth+1){b.style.fontSize='';b.classList.add('noxd');const t=document.createTreeWalker(b,NodeFilter.SHOW_TEXT);let x;while(x=t.nextNode()){const v=x.nodeValue.split(NB).join(' ').split(WJ).join('');if(v!==x.nodeValue)x.nodeValue=v}}})}
+let FT=0;const fitSoon=()=>{clearTimeout(FT);FT=setTimeout(()=>{try{fitAll()}catch(e){}},60)};
+addEventListener('resize',fitSoon);try{document.fonts&&document.fonts.ready.then(fitSoon)}catch(e){}
+/* bản dịch EN (47) so khớp chữ gốc: bỏ dấu cách không ngắt trước khi tra, dịch xong thì dính lại */
+if(typeof i18nText==='function'){const _t=i18nText;i18nText=function(t){const r=_t.apply(this,arguments);if(r!=null||typeof t!=='string'||!/[\u00A0\u2060]/.test(t))return r;
+  const plain=t.split(NB).join(' ').split(WJ).join(''),r2=_t.call(this,plain);return r2==null?null:fix(r2,false)}}
+window.xdFix=fix;window.xdRun=run;window.xdFit=fitAll;
+/* sau mỗi lần vẽ */
+{const _r=render;render=function(){const a=_r.apply(this,arguments);try{run(document.body);fitSoon()}catch(e){}return a}}
+/* chữ chèn sau (hộp thoại, trò chơi cập nhật từng phần) */
+let Q=new Set(),T=0;const flush=()=>{T=0;const s=Q;Q=new Set();s.forEach(x=>{if(x.isConnected)try{run(x)}catch(e){}});fitSoon()};
+const mo=new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData')Q.add(m.target);else m.addedNodes.forEach(x=>Q.add(x))}if(!T)T=requestAnimationFrame(flush)});
+const go=()=>{try{mo.observe(document.body,{childList:true,subtree:true,characterData:true});run(document.body)}catch(e){}};if(document.body)go();else addEventListener('DOMContentLoaded',go);
+})();
+document.head.insertAdjacentHTML('beforeend',`<style>
+body{text-wrap:pretty}
+.t1sec .secthead,.t1sec .secthead h2{text-wrap:wrap}
+h1,h2,h3,h4,button,.btn,.chip,.tag,.pill,label,small,.muted,figcaption,th{text-wrap:balance}
+/* thẻ chào: "Chào …!" luôn một dòng; nhãn vùng biển xuống dòng ở dấu "·" */
+.hero h1{white-space:nowrap}
+.hero .ocname{flex:0 0 auto;max-width:100%}
+@media (max-width:430px){.hero:has(.herochips) h1{font-size:clamp(26px,8.2vw,36px)}}
+</style>`);
 /* ===================== Khởi động ===================== */
 {const bj=document.querySelector('.brand .jav');if(bj)bj.outerHTML=jenny(40)}
 if(!load())fresh();
