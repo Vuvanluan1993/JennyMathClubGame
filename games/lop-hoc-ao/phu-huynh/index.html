@@ -8065,7 +8065,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .gdbox .gdx{color:#1F2A5A!important;background:#FCB40C!important;font-family:var(--f-display);font-size:18px!important;line-height:1;padding:4px 8px!important;margin-left:8px;box-shadow:0 0 0 2px #fff}
 </style>`);
 /* 40b — Dòng số bản nhỏ ở góc thẻ chào (bản đồ), để biết đang mở bản mới hay cũ. Thời điểm dựng do tools/build.py điền. */
-const APP_VER='13/11 · 14:03';
+const APP_VER='13/11 · 14:14';
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{const h=document.querySelector('.hero');if(h&&!h.querySelector('.appver'))h.insertAdjacentHTML('beforeend',`<span class="appver" title="Thời điểm cập nhật bản này">Bản ${APP_VER}</span>`)}catch(e){}return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.hero{position:relative}.appver{position:absolute;right:6px;bottom:3px;font-family:var(--f-body);font-size:10px;line-height:1;color:rgba(255,255,255,.75);pointer-events:none;z-index:2}</style>');
 /* 41 — Hướng dẫn khi làm sai · Lô 2a
@@ -12512,7 +12512,7 @@ function vpic(n,a,b,s){return`<div class="vopic" role="img" aria-label="${a} ${T
 /* sơ đồ tách – gộp: ô tổng bên trái, hai ô thành phần bên phải. c = hàm vẽ một ô (giá trị hoặc null) */
 function vsd(v,c,sm){const W=sm===2?96:sm?100:112,bw=sm===2?28:sm?30:34,H=sm?60:66,bh=sm?28:30,P=[[0,(H-bh)/2],[W-bw,0],[W-bw,H-bh]];
  return`<div class="vosd" style="width:${W}px;height:${H}px"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><path d="M${bw} ${H/2} L${W-bw} ${bh/2} M${bw} ${H/2} L${W-bw} ${H-bh/2}" stroke="#1F2A5A" stroke-width="2.5" fill="none"/></svg>${v.map((x,i)=>`<div class="vobx" style="left:${P[i][0]}px;top:${P[i][1]}px;width:${bw}px;height:${bh}px">${c(x)}</div>`).join('')}</div>`}
-const head=()=>{const g=scr,x=isl1(g.id),L=PRIM[curG()].isl;return`<div class="vorib"><span>${esc(shortTitle(x.lesson||x.title||''))}</span><small>${T('TRANG','PAGE')} ${L.indexOf(x)+1}</small></div>`};
+const head=()=>{const g=scr,x=isl1(g.id),L=PRIM[curG()].isl,q=q1();return`<div class="vorib"><span>${esc(shortTitle(x.lesson||x.title||''))}</span><small>${T('TRANG','PAGE')} ${L.indexOf(x)+1}</small></div><div class="volenh"><span class="vono">${g.j+1}</span><div class="volt">${q.q}</div><button class="vospk" type="button" onclick="sayJ(sayFull(q1().say,q1().q))" aria-label="${T('Nghe lại đề','Listen again')}">🔊</button></div>`};
 const mk=(lo,hi,used)=>{for(let t=0;t<30;t++){const n=RR(lo,hi),a=RR(1,n-1);if(!used||!used.has(n)){used&&used.add(n);return[n,a,n-a]}}const n=RR(lo,hi),a=RR(1,n-1);return[n,a,n-a]};
 const base=o=>Object.assign({type:'cells',pic:'@@TLFIG@@',key:'',src:null,nokey:o.lay!=='vodien'},o,{rows:[o.a.map(()=>null)],label:o.kind});
 
@@ -12598,9 +12598,18 @@ window.voPage=function(x){const g=curG();if(g===1&&x.b===5)return[voDien(),voNoi
 /* đổi chỗ hai thành phần vẫn đúng: đưa về thứ tự đáp án trước khi chấm */
 function voNorm(q,v){if(!q||!q.sw||!Array.isArray(v))return v;v=v.slice();q.sw.forEach(([i,j])=>{if(Number(v[i])===q.a[j]&&Number(v[j])===q.a[i]){const t=v[i];v[i]=v[j];v[j]=t}});return v}
 {const _a=ans1;ans1=function(v){const g=scr,q=g&&g.qs?q1():null;if(q&&q.sw&&Array.isArray(v)){v=voNorm(q,v);if(g.cv)g.cv=v.map(String)}if(q&&q.lay==='vonoi')g.vsel=0;return _a.call(this,v)}}
-{const _i=input1;input1=function(q){if(q&&q.type==='cells'&&(q.lay==='vonoi'||q.lay==='vokeo'))return`<button class="gobtn" type="button" onclick="tlXong()">${T('Xong bài','Done')}</button>`;return _i.apply(this,arguments)}}
+{const _i=input1;input1=function(q){if(q&&q.lay==='vodien'&&!scr.sheet)return`<div class="vopad">${['1','2','3','4','5','⌫','6','7','8','9','0','✓'].map(k=>`<button type="button" class="${k==='✓'?'go':k==='⌫'?'del':''}" onclick="tlKey('${k}')" aria-label="${k==='⌫'?T('Xóa','Delete'):k==='✓'?T('Xong bài','Done'):k}">${k==='✓'?T('Xong','Done'):k}</button>`).join('')}</div>`;
+ if(q&&q.type==='cells'&&(q.lay==='vonoi'||q.lay==='vokeo'))return`<button class="gobtn" type="button" onclick="tlXong()">${T('Xong bài','Done')}</button>`;return _i.apply(this,arguments)}}
 {const _s=show1;show1=function(q){if(q&&q.lay==='vonoi')return'';return _s.apply(this,arguments)}}
-{const _v=viewGame1;viewGame1=function(){const g=scr;if(g&&g.qs&&!g.end){const q=q1();if(q&&q.lay==='vonoi'&&g.vj!==g.j){g.vj=g.j;g.vsel=1}}return _v.apply(this,arguments)}}
+{const _v=viewGame1;viewGame1=function(){const g=scr;let vo=false;if(g&&g.qs&&!g.end){const q=q1();vo=!!(q&&VO_LAYS.includes(q.lay));if(q&&q.lay==='vonoi'&&g.vj!==g.j){g.vj=g.j;g.vsel=1}}
+ let h=_v.apply(this,arguments);if(vo)h=h.replace(/<div class="g1q">[\s\S]*?<\/button><\/div><\/div>/,'').replace('<div class="gmid','<div class="vomid gmid');return h}}
+/* vừa một màn hình: không phải kéo. Thu nhỏ trang vở cho tới khi vừa chỗ trống (thầy yêu cầu 13/11/2026) */
+function voFit(){const pg=document.querySelector('.vomid .vopg');if(!pg)return;const mid=pg.closest('.gmid'),gm=pg.closest('.game');pg.style.zoom='';
+ for(let t=0;t<4;t++){const over=Math.max(mid.scrollHeight-mid.clientHeight,gm.scrollHeight-gm.clientHeight,0);if(over<2)break;const z=(parseFloat(pg.style.zoom)||1),hh=pg.getBoundingClientRect().height;
+  const nz=Math.max(.5,z*(hh-over-4)/hh);if(nz>=z-.005)break;pg.style.zoom=nz.toFixed(3)}}
+window.voFit=voFit;
+{const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{voFit()}catch(e){}return r}}
+addEventListener('resize',()=>{try{voFit()}catch(e){}});
 Object.assign(I18N,{'Vở: tách – gộp số':'Book: part–whole','Vở: nối sơ đồ với hình':'Book: match diagrams','Vở: kéo thẻ số':'Book: number cards'});
 
 document.head.insertAdjacentHTML('beforeend',`<style>
@@ -12609,7 +12618,7 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .vopg:before{content:"";position:absolute;left:22px;top:0;bottom:0;width:2px;background:#f6b1a4}
 .vorib{background:#0079C1;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:3px 8px;font-family:VT323,var(--f-display);font-size:21px;line-height:1.1;position:relative;text-transform:uppercase}
 .vorib small{font-size:14px;opacity:.9;white-space:nowrap}
-.voin{padding:10px 6px 0 28px;position:relative;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.voin{padding:6px 6px 0 28px;position:relative;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .voit{display:flex;align-items:center;gap:8px;position:relative}.voit.top{align-items:flex-start}
 .volb{font-weight:800;font-size:15px;width:16px;background:#fff;flex:none}
 .vopic{display:flex;background:#fff;padding:3px;box-shadow:inset 0 0 0 2px #1F2A5A;flex:none}
@@ -12631,6 +12640,15 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 .votray{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;background:#fff4cf;padding:8px;box-shadow:inset 0 0 0 2px #1F2A5A;align-self:stretch;margin-right:2px}
 .vocard{width:38px;height:36px;border:0;background:#fff;color:#1F2A5A;font-family:var(--f-display);font-size:20px;box-shadow:var(--f2),0 3px 0 0 #1F2A5A;cursor:grab;touch-action:none;padding:0}
 .vocard.used{opacity:.25;cursor:default}.vocard.g1ghost{background:#FCD655;transform:rotate(-6deg)}
+.vomid{justify-content:flex-start!important;padding-top:4px!important;overflow-y:hidden!important}
+.vomid .vopg{margin:0 auto}
+.volenh{display:flex;gap:8px;align-items:center;padding:6px 6px 0 28px;position:relative}
+.vono{min-width:26px;height:26px;background:#0079C1;color:#fff;display:grid;place-items:center;font-family:VT323,var(--f-display);font-size:22px;box-shadow:var(--f2);flex:none}
+.volt{flex:1;font-weight:700;font-size:15px;line-height:1.3;background:#fff;padding:1px 2px}.volt b{color:#0079C1}
+.vospk{width:34px;height:34px;border:0;background:#FCB40C;box-shadow:var(--f2);font-size:16px;cursor:pointer;flex:none;padding:0}
+.vopad{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.vopad button{height:44px;border:3px solid var(--pxk,#1F2A5A);box-shadow:0 3px 0 var(--pxk,#1F2A5A);background:var(--surface,#fff);color:var(--ink);font-family:var(--f-display);font-size:24px;cursor:pointer;padding:0}
+.vopad button.go{background:#0079C1;color:#fff;font-size:20px}.vopad button.del{font-size:20px}
 </style>`);
 })();
 /* 73 — Trang Quản lý gọn: trang chính 4 nút lớn (Học sinh · Phụ huynh · Giáo viên · Lớp) + trang con.
