@@ -226,13 +226,13 @@ function tlQs(x,seed){const mr=Math.random;Math.random=seedRnd(seed);const qs=[]
 function tlBlank(g){Object.assign(g,{sheet:null,tries:0,inp:'',picks:[],seq:[],fill:[],used:[],cnt:0,hit:false,mad:0,cv:null,cc:0,t0:Date.now()})}
 window.tlGo=function(id){const st=S.st[sid],x=isl1(id);if(!x)return;const r=tlR(st)[id]||(tlR(st)[id]={n:0});
  if(!r.cur)r.cur={seed:(Math.random()*2**31)|0,j:0,res:[],tt:0};save();try{speechSynthesis.cancel()}catch(e){}
- const qs=tlQs(x,r.cur.seed);v1Said='';const g0={k:'game',g1:1,tl:1,id,lv:0,qs,j:Math.min(r.cur.j,qs.length-1),hearts:3,ok:r.cur.res.filter(Boolean).length,res:r.cur.res.slice(),hp:0};tlBlank(g0);go(g0);tlBlank(scr);render()};
+ const qs=tlQs(x,r.cur.seed);v1Said='';const g0={k:'game',g1:1,tl:1,id,lv:0,qs,j:Math.min(r.cur.j,qs.length-1),hearts:3,ok:r.cur.res.filter(Boolean).length,res:r.cur.res.slice(),hp:0};tlBlank(g0);go(g0)/* go() đã vẽ; không đặt lại t0 lần nữa (tránh đọc đề 2 lần) */};
 /* Thử thách hôm nay: 1 lượt/ngày, câu ★ của trang mới nhất em đã mở */
 function tlDayOk(st){return st.tlDay&&st.tlDay.d===S.day}
 function tlDayIsl(st){const P=tlPages(st);for(let i=P.length-1;i>=0;i--)if(tlChal(P[i]).length)return P[i];return P[P.length-1]}
 window.tlDayGo=function(){const st=S.st[sid];if(tlDayOk(st)){toast(T('Hôm nay em đã làm Thử thách rồi. Mai quay lại nhé!','You have done today’s challenge. Come back tomorrow!'));return}
  const x=tlDayIsl(st);if(!x)return;const qs=tlQs(x,(Math.random()*2**31)|0).filter(q=>q.tt).slice(-1);if(!qs.length)return;
- v1Said='';const g0={k:'game',g1:1,tl:1,tlDay:1,id:x.id,lv:0,qs,j:0,hearts:3,ok:0,res:[],hp:0};tlBlank(g0);go(g0);tlBlank(scr);render()};
+ v1Said='';const g0={k:'game',g1:1,tl:1,tlDay:1,id:x.id,lv:0,qs,j:0,hearts:3,ok:0,res:[],hp:0};tlBlank(g0);go(g0)/* go() đã vẽ; không đặt lại t0 lần nữa (tránh đọc đề 2 lần) */};
 
 /* ---------- vẽ ô ---------- */
 function tlFig(q){const g=scr;let b=0;

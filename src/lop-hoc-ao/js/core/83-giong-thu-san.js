@@ -34,10 +34,12 @@
   /* ---- phát ---- */
   let AU=null;const au=()=>{if(!AU){AU=new Audio();AU.preload='auto'}return AU};
   const SS=window.speechSynthesis,C0=SS&&SS.cancel?SS.cancel.bind(SS):()=>{};
-  let luot=0,dang=false,cho=null,choT=0,lastIn=0,batDau=0;
+  let luot=0,dang=false,cho=null,choT=0,lastIn=0,batDau=0,dangT='',choScr=null;
+  /* câu chờ chỉ đọc khi em vẫn ở đúng màn lúc xếp hàng; rời màn hay màn đã xong thì bỏ */
+  const choCon=()=>{try{return choScr===scr&&!(scr&&scr.end)}catch(e){return false}};
   ['pointerdown','touchstart','keydown','mousedown'].forEach(e=>{try{addEventListener(e,()=>{lastIn=Date.now();moKhoa()},{capture:true,passive:true})}catch(x){}});
   let moRoi=false;function moKhoa(){if(moRoi)return;moRoi=true;try{const a=au();a.src='data:audio/wav;base64,UklGRmQGAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';const w=a.src,p=a.play();if(p&&p.then)p.then(()=>{try{if(a.src===w)a.pause()}catch(e){}}).catch(()=>{})}catch(e){}}
-  function dungHet(){luot++;dang=false;cho=null;try{const a=AU;if(a)a.pause()}catch(e){}try{C0()}catch(e){}try{duck(0)}catch(e){}}
+  function dungHet(){luot++;dang=false;cho=null;dangT='';try{const a=AU;if(a)a.pause()}catch(e){}try{C0()}catch(e){}try{duck(0)}catch(e){}}
   window.giongDung=dungHet;
   /* speechSynthesis.cancel() ở nơi khác (rời màn, đổi trò…) → dừng hết, bỏ lời đang chờ */
   try{if(SS&&!SS._jg){SS.cancel=function(){dungHet()};SS._jg=1}}catch(e){}
@@ -60,7 +62,7 @@
       if(it.id){const ok=await phatFile(g,it.id,me);if(!ok&&me===luot){const t=[...MA.entries()].find(([k,v])=>v===it.id);if(t)await noiMay(t[0],me)}}
       else await noiMay(it.may,me)}
     if(me!==luot)return;dang=false;try{duck(0)}catch(e){}
-    if(cho){const n=cho;cho=null;sayJ(n)}}
+    if(cho){const n=cho;cho=null;if(choCon())sayJ(n)}}
   const dangNoi=()=>dang||(SS&&(SS.speaking||SS.pending));
   /* tải trước vào bộ nhớ đệm */
   const tai=new Set();
@@ -73,10 +75,12 @@
     /* do em bấm (đang trong sự kiện chạm/bấm, hoặc em đã chạm sau khi câu hiện tại bắt đầu) → ngắt ngay */
     let ev='';try{ev=(window.event&&window.event.type)||''}catch(e){}
     const nguoi=/pointer|touch|mouse|key|click/.test(ev)||lastIn>batDau;
-    if(!nguoi&&dangNoi()&&(!choT||Date.now()-choT<12000)){if(!cho)choT=Date.now();cho=text;return}
+    /* app tự gọi lại đúng câu đang đọc (vẽ lại màn) → bỏ, không xếp hàng đọc lại (lỗi "tự phát tiếng", 13/11/2026) */
+    if(!nguoi&&dangNoi()&&spoken(text)===dangT)return;
+    if(!nguoi&&dangNoi()&&(!choT||Date.now()-choT<12000)){if(!cho)choT=Date.now();cho=text;choScr=scr;return}
     choT=0;dungHet();const me=luot;cho=null;batDau=Date.now();
-    const t=spoken(text);
-    if(!d||typeof crypto==='undefined'||!crypto.subtle){dang=true;noiMay(t,me).then(()=>{if(me===luot){dang=false;if(cho){const n=cho;cho=null;sayJ(n)}}});return}
+    const t=spoken(text);dangT=t;
+    if(!d||typeof crypto==='undefined'||!crypto.subtle){dang=true;noiMay(t,me).then(()=>{if(me===luot){dang=false;if(cho){const n=cho;cho=null;if(choCon())sayJ(n)}}});return}
     dang=true;
     keHoach(t,d).then(pl=>{if(me!==luot)return;chay(t,pl||[{may:t}],g,me);
       try{const nx=scr&&scr.qs&&scr.qs[scr.j+1];if(nx&&nx.q)taiTruoc(sayFull(nx.say,nx.q))}catch(e){}});
