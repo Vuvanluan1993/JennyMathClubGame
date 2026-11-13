@@ -119,9 +119,10 @@ function voNorm(q,v){if(!q||!q.sw||!Array.isArray(v))return v;v=v.slice();q.sw.f
 {const _v=viewGame1;viewGame1=function(){const g=scr;let vo=false;if(g&&g.qs&&!g.end){const q=q1();vo=!!(q&&VO_LAYS.includes(q.lay));if(q&&q.lay==='vonoi'&&g.vj!==g.j){g.vj=g.j;g.vsel=1}}
  let h=_v.apply(this,arguments);if(vo)h=h.replace(/<div class="g1q">[\s\S]*?<\/button><\/div><\/div>/,'').replace('<div class="gmid','<div class="vomid gmid');return h}}
 /* vừa một màn hình: không phải kéo. Thu nhỏ trang vở cho tới khi vừa chỗ trống (thầy yêu cầu 13/11/2026) */
-function voFit(){const pg=document.querySelector('.vomid .vopg');if(!pg)return;const mid=pg.closest('.gmid'),gm=pg.closest('.game');pg.style.zoom='';
- for(let t=0;t<4;t++){const over=Math.max(mid.scrollHeight-mid.clientHeight,gm.scrollHeight-gm.clientHeight,0);if(over<2)break;const z=(parseFloat(pg.style.zoom)||1),hh=pg.getBoundingClientRect().height;
-  const nz=Math.max(.5,z*(hh-over-4)/hh);if(nz>=z-.005)break;pg.style.zoom=nz.toFixed(3)}}
+function voFit(){const pg=document.querySelector('.vomid .vopg');if(!pg)return;const mid=pg.closest('.gmid'),gm=pg.closest('.game');
+ const fits=z=>{pg.style.zoom=z===1?'':String(z);return Math.max(mid.scrollHeight-mid.clientHeight,gm.scrollHeight-gm.clientHeight)<2};
+ if(fits(1))return;/* thu nhỏ thì trang rộng ra, chữ ít xuống dòng hơn → tìm cỡ lớn nhất vừa (chia đôi) */
+ let lo=.5,hi=1;for(let t=0;t<7;t++){const m=(lo+hi)/2;if(fits(m))lo=m;else hi=m}fits(+lo.toFixed(3))}
 window.voFit=voFit;
 {const _a=g1AfterRender;g1AfterRender=function(){const r=_a.apply(this,arguments);try{voFit()}catch(e){}return r}}
 addEventListener('resize',()=>{try{voFit()}catch(e){}});

@@ -18,7 +18,7 @@ const SIGN=['>','<','='],sgn=(x,y)=>x>y?0:x<y?1:2;
 
 /* ---------- vẽ một "mảnh" của dòng ---------- */
 function tok(t,cell,q){
- if(t==null)return'';if(typeof t==='string')return`<span class="votx">${t}</span>`;
+ if(t==null)return'';if(V.tokX){const h=V.tokX(t,cell,q);if(h!=null)return h}if(typeof t==='string')return`<span class="votx">${t}</span>`;
  if(t.g)return`<div class="vopic one">${vgrp(t.g[0],t.g[1],t.s||2,t.c||4)}</div>`;
  if(t.g2)return vpic(t.g2[0],t.g2[1],t.g2[2],t.s||2);
  if(t.n!==undefined)return`<span class="votc vb1">${t.n}</span>`;
@@ -59,10 +59,11 @@ window.voDot2=function(side,i){const g=scr,q=q1();if(g.sheet||!q||q.lay!=='von')
 window.voOpt=function(k){const g=scr,q=q1();if(g.sheet||!q||q.lay!=='voc')return;g.cv=g.cv||q.a.map(()=>'');g.cv[g.cc]=String(k);
  const nx=g.cv.findIndex((v,j)=>j>g.cc&&v===''),n0=g.cv.indexOf('');g.cc=nx>=0?nx:n0>=0?n0:g.cc;g.cbad=null;sfx('tap');render()};
 Object.assign(VO_FIG,{vof:figForm,voc:figForm,vok:figForm,von:figNoi2});
+Object.assign(V,{tok,figForm,SP,distinct,SIGN,sgn});
 
 /* ---------- câu: khung chung ---------- */
 const mkQ=o=>{const q=base(o);q.rows2=o.rows2;return q};
-const LB=['a)','b)','c)','d)','e)','g)'];
+const LB=['a)','b)','c)','d)','e)','g)'];V.mkQ=mkQ;V.LB=LB;
 /* Đếm rồi viết số */
 function demViet(lo,hi){const sp=SP(),ns=distinct(5,lo,hi);const m=ns[0],R=ns.slice(1);
  return mkQ({lay:'vof',kind:'Vở: đếm rồi viết số',mau:[{g:[sp[0],m],s:2.2},{m}],rows2:R.map((n,i)=>({lb:LB[i],t:[{g:[sp[(i+1)%sp.length],n],s:2.2},{b:1}]})),a:R,
