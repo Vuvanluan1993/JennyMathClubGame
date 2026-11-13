@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Admin Clb: bảng Thêm/Sửa học sinh, giáo viên giống trang Quản lý trường
+- Thêm học sinh: Họ và đệm, Tên, Giới tính, Năm sinh, Ngày sinh, ĐT phụ huynh, Gmail phụ huynh, Tên đăng nhập (bỏ trống = tự tạo), Mật khẩu — giống hệt trang Quản lý trường (em mới ở trạng thái chưa xếp lớp).
+- Thêm giáo viên: Họ và tên, Giới tính, Điện thoại, Gmail, Tên đăng nhập, Mật khẩu.
+- Bảng Sửa có thêm năm sinh, ngày sinh, ĐT/Gmail phụ huynh (học sinh) và điện thoại, Gmail (giáo viên).
+
 ## 13/11/2026 — Admin Clb: sửa/xoá tài khoản giống trang Quản lý trường
 - Mỗi tài khoản có nút **✎ Sửa** và **🗑 Xoá** như trang Quản lý trường. Bảng Sửa: tên đăng nhập (không đổi), họ tên, giới tính, lớp (học sinh) hoặc lớp phụ trách (giáo viên), mật khẩu mới (để trống thì giữ), nút 🗑 Xoá tài khoản.
 - Thẻ Tài khoản hiện dạng danh sách giống trang Quản lý trường (tên + tên đăng nhập · vai trò · giới tính, ô chọn lớp, học gần nhất).
