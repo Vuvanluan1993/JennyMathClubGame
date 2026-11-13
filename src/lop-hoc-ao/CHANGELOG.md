@@ -1,5 +1,9 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Admin Clb: sửa/xoá tài khoản giống trang Quản lý trường
+- Mỗi tài khoản có nút **✎ Sửa** và **🗑 Xoá** như trang Quản lý trường. Bảng Sửa: tên đăng nhập (không đổi), họ tên, giới tính, lớp (học sinh) hoặc lớp phụ trách (giáo viên), mật khẩu mới (để trống thì giữ), nút 🗑 Xoá tài khoản.
+- Thẻ Tài khoản hiện dạng danh sách giống trang Quản lý trường (tên + tên đăng nhập · vai trò · giới tính, ô chọn lớp, học gần nhất).
+
 ## 13/11/2026 — Admin Clb quản lý tài khoản mọi trường; tạm bỏ tài khoản phụ huynh
 - Trang chi tiết trường (admin Clb): thẻ **Tài khoản** liệt kê mọi tài khoản (quản lý, giáo viên, học sinh), lọc vai trò, tìm; mỗi dòng 🔑 đặt mật khẩu mới · ✎ sửa họ tên · 🗑 xoá hẳn (gõ XOA). Nút + Quản lý, + Giáo viên (phân công lớp), + Học sinh (chọn lớp). Đánh dấu và xoá được **tài khoản dở dang** (tạo dở, không thuộc danh sách trường).
 - Thẻ Giáo viên, Học sinh cũng có các nút trên; thẻ Học sinh đổi lớp ngay ở cột Lớp.
