@@ -4,7 +4,7 @@
 - Thêm tờ lớp `lop/{mã}__{lớp}` và thẻ xếp lớp `xep/{tk}` (không có họ tên, không có thông tin phụ huynh). Học sinh đăng nhập chỉ đọc 2 tờ này; chưa có tờ thì đọc sổ trường như cũ (để chuyển dần).
 - Quản lý, giáo viên, admin lưu sổ trường thì tự ghi tờ thay đổi; giáo viên chỉ ghi tờ lớp mình.
 - Admin Clb: nút **⟳ Dựng lại tờ lớp**, cột **Sổ đầy** (% của 1 MB).
-- Quy tắc bảo mật: học sinh không đọc `truong/{mã}`; giáo viên chỉ thêm em mới vào `gd`; quy tắc cho `lop/`, `xep/`. **Cần dán lại quy tắc** sau khi bấm Dựng lại tờ lớp.
+- Quy tắc bảo mật: học sinh không đọc `truong/{mã}`; giáo viên chỉ thêm em mới vào `gd`; quy tắc cho `lop/`, `xep/`. **Dán quy tắc trước**, rồi bấm Dựng lại tờ lớp.
 - Kiểm tra mới `tools/test/tach-lop.js`.
 
 ## 13/11/2026 — Sửa: admin Clb đọc lại dữ liệu trường trước khi ghi

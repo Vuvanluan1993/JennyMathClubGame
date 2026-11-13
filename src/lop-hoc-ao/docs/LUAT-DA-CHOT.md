@@ -188,7 +188,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Ai lưu sổ trường (quản lý, giáo viên, admin Clb) thì app tự ghi lại những tờ thay đổi (`fbGhiTo`); giáo viên chỉ ghi tờ lớp mình. Admin Clb có nút **⟳ Dựng lại tờ lớp** (mọi trường).
 - Quy tắc: giáo viên chỉ **thêm** em mới vào `gd`, không đổi/bỏ em đã có. Trường khoá → học sinh không đọc được thẻ → không vào được.
 - Trang admin có cột **Sổ đầy** (% của 1 MB). Trường quá 60% → làm **đợt 2**: chuyển họ tên, hồ sơ, phụ huynh sang tờ lớp (giáo viên khi đó chỉ đọc lớp mình).
-- Thứ tự triển khai: đưa bản mới lên → admin bấm Dựng lại tờ lớp → dán quy tắc mới.
+- Thứ tự triển khai: đưa bản mới lên → dán quy tắc mới (quy tắc cũ chặn ghi lop/, xep/) → admin bấm Dựng lại tờ lớp ngay sau đó.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
