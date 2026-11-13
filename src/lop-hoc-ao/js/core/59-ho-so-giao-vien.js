@@ -65,7 +65,7 @@ function gvSucManh(id,st){
   const sc=hsScores(st),m3=gvMach(st,3),m6=gvMach(st,6),tb=gvTBKhoi(st.grade),du=Object.keys(m3).length;
   const lab=Object.fromEntries(HS_AX.map(a=>[a.k,!sc[a.k].taught?'chưa học':m3[a.k]!=null?hsMuc(m3[a.k]):'chưa đủ']));
   const LG=hsLogic(st),lgSub=`<div class="gsub muted">Bài logic ${LG.A.s!=null?hsMuc(LG.A.s):'–'} · Suy luận ở các mạch ${LG.B.s!=null?hsMuc(LG.B.s):'–'} · Thói quen (đúng ngay, không bấm bừa) ${LG.C.s!=null?hsMuc(LG.C.s):'–'}</div>`;
-  const bars=HS_AX.map(a=>{const v=m3[a.k],v6=m6[a.k],t=tb.v[a.k];return`<div class="grow"><span>${a.f}</span>${v==null?`<span class="muted">${sc[a.k].taught?'chưa đủ bài':'chưa học'}</span>`:`<span class="gbar"><i style="width:${v}%;background:${v>=75?'var(--leaf)':v>=60?'var(--sun)':'var(--coral)'}"></i>${t!=null?`<b class="gprev" style="left:${t}%" title="TB khối: ${hsMuc(t)}"></b>`:''}</span><b>${hsMuc(v)}</b>`}</div>${a.k==='lg'&&LG.ok?lgSub:''}${v!=null?`<div class="gsub muted">6 tháng: ${v6!=null?hsMuc(v6):'–'} · so với khối: ${t!=null?(v-t>=5?'cao hơn':t-v>=5?'thấp hơn':'ngang'):'–'}</div>`:''}`}).join('');
+  const bars=HS_AX.map(a=>{const v=m3[a.k],v6=m6[a.k],t=tb.v[a.k];return`<div class="grow gvrow"><span>${a.f}</span>${v==null?`<span class="muted">${sc[a.k].taught?'chưa đủ bài':'chưa học'}</span>`:`<span class="gbar"><i style="width:${v}%;background:${v>=75?'var(--leaf)':v>=60?'var(--sun)':'var(--coral)'}"></i>${t!=null?`<b class="gprev" style="left:${t}%" title="TB khối: ${hsMuc(t)}"></b>`:''}</span><b>${hsMuc(v)}</b>`}</div>${a.k==='lg'&&LG.ok?lgSub:''}${v!=null?`<div class="gsub muted">6 tháng: ${v6!=null?hsMuc(v6):'–'} · so với khối: ${t!=null?(v-t>=5?'cao hơn':t-v>=5?'thấp hơn':'ngang'):'–'}</div>`:''}`}).join('');
   return{radar:`${gvRadar([{v:tb.v,c:'gr-tb'},{v:m6,c:'gr-6'},{v:m3,c:'gr-cur'}],lab)}<div class="gr-leg muted"><span><i class="cur"></i> Em · 3 tháng gần nhất</span><span><i class="s6"></i> Em · 6 tháng gần nhất</span><span><i class="tb"></i> TB học sinh Jenny khối ${st.grade} (${tb.n} em)</span></div>
     ${du<3?`<p class="hint" style="margin:10px 0 0">Em mới đủ bài ở ${du} mạch nên hình còn hẹp.</p>`:''}`,bars:bars+gvLoiVanDong(st)}}
 /* kĩ năng giải toán lời văn: đã tính vào các trục nội dung, hiện riêng tỉ lệ đúng để cô biết em đọc đề có tốt không */
@@ -88,7 +88,7 @@ function gvTabHT(id,st){
     return`<tr><td><b>Chủ đề ${ti+1}: ${esc(t[0])}</b><div class="muted">${hoc}/${L.length} đảo đã vào</div></td><td style="min-width:150px">${gvBar(pc(a,b),'var(--sun)')} <span class="muted">${a}/${b} màn</span></td><td>${ket.length?[...new Set(ket)].slice(0,3).map(k=>`<span class="pill bad">Kẹt ${esc(k)}</span>`).join(' '):'<span class="pill ok">Ổn</span>'}</td></tr>`}).join('');
   const T=gvTong(st),hs=T.h[0]+T.h[1]+T.h[2];
   return`<section class="card glichcard"><div><h2>Lịch học năm học</h2><p class="muted" style="margin:4px 0 0">Mỗi ô là một ngày, màu đậm là làm nhiều câu.</p>${gvLich(id,st)}</div>
-   <div><h3>Khung giờ học</h3>${hs?['Sáng','Chiều','Tối'].map((t,i)=>`<div class="grow"><span>${t}</span>${gvBar(pc(T.h[i],hs))}<b>${pc(T.h[i],hs)}%</b></div>`).join(''):'<p class="muted">Chưa đủ dữ liệu.</p>'}
+   <div><h3>Khung giờ học</h3>${hs?['Sáng','Chiều','Tối'].map((t,i)=>`<div class="grow gvrow"><span>${t}</span>${gvBar(pc(T.h[i],hs))}<b>${pc(T.h[i],hs)}%</b></div>`).join(''):'<p class="muted">Chưa đủ dữ liệu.</p>'}
    <p class="muted" style="margin:6px 0 0">Tổng thời gian học: ${Math.round(T.sec/60)} phút (khoảng ${Math.round(T.sec/60/Math.max(1,Object.values(st.dd||{}).filter(o=>o.n).length))} phút mỗi ngày học).</p></div></section>
   <section class="card"><h2>Tiến độ SGK</h2><div class="tablewrap"><table><tr><th>Chủ đề</th><th>Màn đã qua</th><th>Đảo bị kẹt</th></tr>${chu}</table></div></section>
   <section class="card"><h2>Tỉ lệ đúng từng dạng bài</h2><p class="muted" style="margin:4px 0 0">10 lần làm gần nhất mỗi dạng, dạng yếu xếp trước (10 dạng yếu nhất).</p>${gvBangDang(st,1)}</section>`}
@@ -272,7 +272,7 @@ function gvMau(){
 document.head.insertAdjacentHTML('beforeend',`<style>
 .gbar{position:relative;display:inline-block;width:100%;max-width:220px;height:10px;background:var(--surface2);border:1px solid var(--line);vertical-align:middle}
 .gbar i{position:absolute;left:0;top:0;bottom:0}.gprev{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.45}
-.grow{display:grid;grid-template-columns:minmax(90px,140px) 1fr auto;gap:10px;align-items:center;padding:6px 0}
+.gvrow{display:grid;grid-template-columns:minmax(90px,140px) 1fr auto;gap:10px;align-items:center;padding:6px 0}
 .glich{display:flex;gap:3px;overflow-x:auto;padding:10px 0 4px}.glc{display:flex;flex-direction:column;gap:3px}
 .gl{display:inline-block;width:13px;height:13px;background:var(--surface2);border:1px solid var(--line);cursor:pointer}
 .gl.l-1{visibility:hidden}.gl.l1{background:#BDE7C8}.gl.l2{background:#7FD19A}.gl.l3{background:#3DB26A}.gl.l4{background:#1E7D45}
@@ -292,8 +292,8 @@ tr.gyeu td{background:var(--coral-soft)}
 .phnhac{border-left:6px solid var(--sun)}
 .gpair{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}@media(max-width:900px){.gpair{grid-template-columns:minmax(0,1fr)}}
 .glichcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,320px);gap:12px 28px;align-items:start}@media(max-width:900px){.glichcard{grid-template-columns:minmax(0,1fr)}}
-.glichcard .grow{grid-template-columns:60px 1fr 44px}
-.grow .gbar{max-width:none}.grow{max-width:560px}
+.glichcard .gvrow{grid-template-columns:60px 1fr 44px}
+.gvrow .gbar{max-width:none}.gvrow{max-width:560px}
 table.gdang td:nth-child(2),table.gdang td:nth-child(4),table.gdang td:nth-child(5){white-space:nowrap}
 table.gvbang td:nth-child(2),table.gvbang td:nth-child(3),table.gvbang td:nth-child(4){white-space:nowrap}
 @media(min-width:900px){.alertlist{grid-template-columns:repeat(2,minmax(0,1fr))}}
