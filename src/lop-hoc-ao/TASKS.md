@@ -3,7 +3,7 @@
 Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm trong một phiên riêng, xong thì ghi CHANGELOG.
 
 ## Ưu tiên cao
-- ◐ T-35 Trang vở lớp 1 theo chủ đề — Chủ đề 1 (Bài 1–6) xong trên nhánh `feature/trang-vo-chu-de-1`, chờ thầy duyệt ảnh mẫu (13/11/2026). Tiếp: Chủ đề 3 (Bài 10–13), rồi các chủ đề còn lại.
+- ◐ T-35 Trang vở lớp 1 theo chủ đề — Chủ đề 1 (Bài 1–6, thầy duyệt) và Chủ đề 3 (Bài 10–13) xong (13/11/2026). Tiếp: Chủ đề 2, 4 (hình), 5 (ôn HK1), rồi học kì 2.
 - ☑ T-34 Trang vở kiểu Vở bài tập — lớp 1 Bài 5 (điền ô có Mẫu, nối, kéo thả) trong Tự luyện (13/11/2026). Tiếp: các bài khác lớp 1, chọn dấu >, <, =, đưa vào Bài cô giao.
 - ☑ T-33 Giáo viên không thêm học sinh; tự đặt tên đăng nhập khi trùng (13/11/2026).
 - ☑ T-31 Tách dữ liệu trường đợt 1 (13/11/2026): học sinh chỉ đọc tờ lớp + thẻ xếp lớp. Còn: thầy dán quy tắc rồi bấm Dựng lại tờ lớp.
