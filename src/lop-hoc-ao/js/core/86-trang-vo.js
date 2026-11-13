@@ -20,14 +20,14 @@ const VS={
 };
 const VO_LAYS=['vodien','vonoi','vokeo'];
 function vspr(n,s){const m=VS[n],h=m.length,w=7;let r='';m.forEach((row,y)=>[...row].forEach((c,x)=>{if(c!=='.')r+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${VC[c]}"/>`}));return`<svg width="${w*s}" height="${h*s}" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`}
-function vgrp(n,k,s){return`<div class="vogrp" style="width:${Math.ceil(21*s+12)}px">${Array(k).fill(vspr(n,s)).join('')}</div>`}
+function vgrp(n,k,s,c){c=c||3;return`<div class="vogrp" style="width:${Math.ceil(c*7*s+(c-1)*3+6)}px">${Array(k).fill(vspr(n,s)).join('')}</div>`}
 function vpic(n,a,b,s){return`<div class="vopic" role="img" aria-label="${a} ${T('và','and')} ${b}">${vgrp(n,a,s)}${vgrp(n,b,s)}</div>`}
 /* sơ đồ tách – gộp: ô tổng bên trái, hai ô thành phần bên phải. c = hàm vẽ một ô (giá trị hoặc null) */
 function vsd(v,c,sm){const W=sm===2?96:sm?100:112,bw=sm===2?28:sm?30:34,H=sm?60:66,bh=sm?28:30,P=[[0,(H-bh)/2],[W-bw,0],[W-bw,H-bh]];
  return`<div class="vosd" style="width:${W}px;height:${H}px"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><path d="M${bw} ${H/2} L${W-bw} ${bh/2} M${bw} ${H/2} L${W-bw} ${H-bh/2}" stroke="#1F2A5A" stroke-width="2.5" fill="none"/></svg>${v.map((x,i)=>`<div class="vobx" style="left:${P[i][0]}px;top:${P[i][1]}px;width:${bw}px;height:${bh}px">${c(x)}</div>`).join('')}</div>`}
 const head=()=>{const g=scr,x=isl1(g.id),L=PRIM[curG()].isl,q=q1();return`<div class="vorib"><span>${esc(shortTitle(x.lesson||x.title||''))}</span><small>${T('TRANG','PAGE')} ${L.indexOf(x)+1}</small></div><div class="volenh"><span class="vono">${g.j+1}</span><div class="volt">${q.q}</div><button class="vospk" type="button" onclick="sayJ(sayFull(q1().say,q1().q))" aria-label="${T('Nghe lại đề','Listen again')}">🔊</button></div>`};
 const mk=(lo,hi,used)=>{for(let t=0;t<30;t++){const n=RR(lo,hi),a=RR(1,n-1);if(!used||!used.has(n)){used&&used.add(n);return[n,a,n-a]}}const n=RR(lo,hi),a=RR(1,n-1);return[n,a,n-a]};
-const base=o=>Object.assign({type:'cells',pic:'@@TLFIG@@',key:'',src:null,nokey:o.lay!=='vodien'},o,{rows:[o.a.map(()=>null)],label:o.kind});
+const base=o=>Object.assign({type:'cells',pic:'@@TLFIG@@',key:'',src:null,nokey:!['vodien','vof'].includes(o.lay)},o,{rows:[o.a.map(()=>null)],label:o.kind});
 
 /* ---------- 1. Điền ô (có Mẫu) ---------- */
 function voDien(){const sp=shuf(Object.keys(VS)),U=new Set(),M=mk(4,6),A=mk(3,7,U),B=mk(4,9,U),C=mk(4,9,U);
@@ -90,7 +90,7 @@ function figKeo(q){const g=scr,cv=g.cv||[];let b=0;
  return`<div class="vopg">${head()}<div class="voin">${r1}${r2}${r3}
   <div class="vohint">${T('Kéo thẻ vào ô (hoặc chạm thẻ). Chạm ô đã điền để bỏ.','Drag a card into a box (or tap it). Tap a filled box to clear it.')}</div>
   <div class="votray">${q.cards.map((c,k)=>`<button type="button" class="vocard ${us[k]?'used':''}" data-vc="${k}" ${us[k]?'disabled':''} aria-label="${T('Thẻ số','Card')} ${c}">${c}</button>`).join('')}</div></div></div>`}
-function voPut(k,i){const g=scr,q=q1();if(g.sheet||!q||q.lay!=='vokeo')return;g.cv=g.cv||q.a.map(()=>'');if(voUsed(q,g.cv)[k])return;
+function voPut(k,i){const g=scr,q=q1();if(g.sheet||!q||!q.cards)return;g.cv=g.cv||q.a.map(()=>'');if(voUsed(q,g.cv)[k])return;
  if(i===undefined||i<0)i=g.cv[g.cc]===''?g.cc:g.cv.indexOf('');if(i<0)return;g.cv[i]=String(q.cards[k]);
  const nx=g.cv.findIndex((v,j)=>j>i&&v===''),n0=g.cv.indexOf('');g.cc=nx>=0?nx:n0>=0?n0:i;g.cbad=null;sfx('tap');render()}
 window.voPut=voPut;
@@ -106,6 +106,8 @@ window.voBox=function(i){const g=scr,q=q1();if(g.sheet||!q)return;g.cv=g.cv||q.a
 
 /* ---------- nối vào Tự luyện ---------- */
 window.VO_FIG={vodien:figDien,vonoi:figNoi,vokeo:figKeo};
+/* dùng chung cho các trang vở khác (87-…) */
+window.VO={T,RR,VS,VO_LAYS,vspr,vgrp,vpic,vsd,head,base,mk,voUsed,voNoi};
 /* trang vở theo bài (lớp, số bài KNTT) — chạy trong tlQs nên dùng chung seed của trang */
 window.voPage=function(x){const g=curG();if(g===1&&x.b===5)return[voDien(),voNoi(),voKeo()];return[]};
 /* đổi chỗ hai thành phần vẫn đúng: đưa về thứ tự đáp án trước khi chấm */
