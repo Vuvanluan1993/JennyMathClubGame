@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Trang vở vừa một màn hình, không phải kéo
+- Thầy yêu cầu: làm bài không phải kéo màn hình. `86-trang-vo.js`: lệnh đề (số bài + loa) chuyển vào trong trang vở, bỏ khung lời Jenny ở các bài kiểu vở; bàn phím gọn 2 hàng (1–5 ⌫ / 6–0 Xong); trang vở tự thu nhỏ (`voFit`, tối thiểu 50%) cho vừa chỗ trống, chạy lại khi đổi khổ màn hình.
+- Đo ở 630×612, 320×568, 375×667, 414×896, 768×1024, 1280×720: không còn phần nào phải cuộn, không tràn ngang; làm đúng 3 bài vẫn chấm đúng. tu-luyen lớp 1, 2 ĐẠT; tieng-anh lớp 1 còn 0 chuỗi.
 ## 13/11/2026 — Trang vở kiểu Vở bài tập (Tự luyện lớp 1, Bài 5 "Mấy và mấy")
 - Thầy duyệt ảnh mẫu 13/11. File mới `js/core/86-trang-vo.js` (móc vào `72-tu-luyen.js` qua `VO_FIG`, `voPage`, cờ `nokey`, lời nhắc `need`).
 - Trang Tự luyện của Bài 5 lớp 1 = 3 bài kiểu vở + 2 câu của đảo + ★. Khung trang vở: nền ô li, lề đỏ, dải tên bài + số trang.
