@@ -4,7 +4,8 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 
 ## Ưu tiên cao
 - ☑ T-35 Trang vở Tự luyện lớp 1 — đủ 41 bài (13/11/2026). Tiếp (chờ thầy): lớp 2; đưa trang vở vào Bài cô giao.
-- ☑ T-36 Trang vở Tự luyện lớp 2 — đủ 75 bài (13/11/2026). Bài cô giao giữ như cũ (thầy chốt). Tiếp (chờ thầy): lớp 3.
+- ☑ T-36 Trang vở Tự luyện lớp 2 — đủ 75 bài (13/11/2026). Bài cô giao giữ như cũ (thầy chốt). 
+- ☑ T-37 Tự luyện lớp 3 — mở và làm trang vở đủ 81 bài (13/11/2026). Tiếp (chờ thầy): lớp 4, 5 (cần VBT Toán 4, 5).
 - ☑ T-34 Trang vở kiểu Vở bài tập — lớp 1 Bài 5 (điền ô có Mẫu, nối, kéo thả) trong Tự luyện (13/11/2026). Tiếp: các bài khác lớp 1, chọn dấu >, <, =, đưa vào Bài cô giao.
 - ☑ T-33 Giáo viên không thêm học sinh; tự đặt tên đăng nhập khi trùng (13/11/2026).
 - ☑ T-31 Tách dữ liệu trường đợt 1 (13/11/2026): học sinh chỉ đọc tờ lớp + thẻ xếp lớp. Còn: thầy dán quy tắc rồi bấm Dựng lại tờ lớp.

@@ -130,7 +130,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Trang vở kiểu Vở bài tập (thầy duyệt ảnh mẫu 13/11/2026):** Tự luyện (sau đó Bài cô giao) dùng trang vở: nền ô li, lề đỏ, dải tên bài + số trang; mỗi màn 1 bài, trong bài nhiều ý a, b, c; bài có khung **MẪU** làm sẵn; em làm ngay trên hình. 4 kiểu thao tác làm trước: điền ô, chọn dấu, nối, kéo thả. Tự luyện: nút **Xong bài**; Bài cô giao: **Nộp bài**. Bỏ dạng không chấm tự động được (tập viết, vẽ tự do, tô tranh to, xếp hình thật, đo gang tay/bước chân, lịch hôm nay). Làm thử: lớp 1 Bài 5 Mấy và mấy (`86-trang-vo.js`).
 - **Trang vở vừa một màn hình (13/11/2026):** làm bài không phải kéo màn hình. Lệnh đề nằm trong trang vở (không có khung lời Jenny), bàn phím gọn 2 hàng, trang tự thu nhỏ cho vừa.
 - **Trang vở theo chủ đề (thầy duyệt Chủ đề 1, 13/11/2026):** làm theo "mẫu bài theo dạng", mỗi bài KNTT 3 bài kiểu vở + 2 câu đảo + ★. Kiểu **chọn**: chạm ô rồi chạm nút ở dưới (>, <, = hoặc chữ "nhiều hơn / ít hơn / bằng nhau"). Làm lần lượt theo chủ đề, lớp 1 trước.
-- **Bài cô giao giữ như hiện tại (13/11/2026):** không đưa trang vở vào Bài cô giao; trang vở chỉ dùng cho Tự luyện. Tự luyện lớp 1 đủ 41 bài, lớp 2 đủ 75 bài (nguồn dạng bài: VBT Toán 2 Chân trời sáng tạo, viết lại).
+- **Bài cô giao giữ như hiện tại (13/11/2026):** không đưa trang vở vào Bài cô giao; trang vở chỉ dùng cho Tự luyện. Tự luyện lớp 1 đủ 41 bài, lớp 2 đủ 75 bài, lớp 3 đủ 81 bài (mở 13/11/2026) (nguồn dạng bài: VBT Toán 2 Chân trời sáng tạo, viết lại).
 
 ## 6i. Đăng nhập và sửa thông tin học sinh (24/10/2026)
 - Học sinh đăng nhập chỉ bằng tên đăng nhập + mật khẩu, không tự nhập tên.
