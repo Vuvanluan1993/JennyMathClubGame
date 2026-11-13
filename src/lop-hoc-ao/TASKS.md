@@ -3,6 +3,7 @@
 Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm trong một phiên riêng, xong thì ghi CHANGELOG.
 
 ## Ưu tiên cao
+- ☑ T-34 Trang vở kiểu Vở bài tập — lớp 1 Bài 5 (điền ô có Mẫu, nối, kéo thả) trong Tự luyện (13/11/2026). Tiếp: các bài khác lớp 1, chọn dấu >, <, =, đưa vào Bài cô giao.
 - ☑ T-33 Giáo viên không thêm học sinh; tự đặt tên đăng nhập khi trùng (13/11/2026).
 - ☑ T-31 Tách dữ liệu trường đợt 1 (13/11/2026): học sinh chỉ đọc tờ lớp + thẻ xếp lớp. Còn: thầy dán quy tắc rồi bấm Dựng lại tờ lớp.
 - ☐ T-32 Tách dữ liệu trường đợt 2: họ tên, hồ sơ, phụ huynh sang tờ lớp; giáo viên chỉ đọc lớp mình — làm khi cột Sổ đầy quá 60%.

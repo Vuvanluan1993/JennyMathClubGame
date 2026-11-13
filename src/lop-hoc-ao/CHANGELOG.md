@@ -1,5 +1,12 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Trang vở kiểu Vở bài tập (Tự luyện lớp 1, Bài 5 "Mấy và mấy")
+- Thầy duyệt ảnh mẫu 13/11. File mới `js/core/86-trang-vo.js` (móc vào `72-tu-luyen.js` qua `VO_FIG`, `voPage`, cờ `nokey`, lời nhắc `need`).
+- Trang Tự luyện của Bài 5 lớp 1 = 3 bài kiểu vở + 2 câu của đảo + ★. Khung trang vở: nền ô li, lề đỏ, dải tên bài + số trang.
+- 3 kiểu thao tác mới (q.type `cells`, chấm như các dạng ô): **Điền ô** (có khung MẪU; a) 1 ô, b) cả sơ đồ, c) "Gộp □ và □ được □"; hai thành phần đổi chỗ vẫn đúng) · **Nối** (3 sơ đồ ↔ 3 tranh, nét đứt là mẫu, chạm chấm trái rồi phải) · **Kéo thả** (kéo hoặc chạm thẻ số vào ô, chạm ô để bỏ, thẻ đã dùng mờ đi).
+- Hình pixel tự vẽ (táo, sao, bánh, cá, bóng bay, hoa), lời viết lại, số mới mỗi lần; có bản EN.
+- `tools/test/tu-luyen.js` kiểm thêm đáp án 3 dạng vở. Đã chạy: tu-luyen (lớp 1, 2 ĐẠT), kiem-tra 1 ĐẠT, khung-hinh lớp 1 không lỗi, tieng-anh lớp 1 còn 0 chuỗi; chụp thử 320/375/414px không tràn ngang.
+- Chưa làm: Bài cô giao chưa lấy bài kiểu vở (phiếu đang lấy câu từ đảo); kiểu chọn dấu >, <, = làm cùng tiết So sánh số.
 ## 13/11/2026 — Sửa chữ xuống dòng "vô duyên" ở mọi khổ màn hình
 - Lỗi gốc: CSS `.grow` của Hồ sơ học sinh (trang giáo viên) không có phạm vi riêng, lan sang toàn app (cột 140px, rộng tối đa 560px) → nhãn "Vịnh Tí Hon · Lớp 1" ở thẻ chào và nhiều ô khác bị bóp hẹp, xuống dòng dù màn hình rộng. Đã đổi thành lớp riêng `.gvrow`.
 - `85-xuong-dong-dep.js`: sau mỗi lần vẽ, dính chữ bằng dấu cách không ngắt ở: số hàng nghìn (10 000), từ khoá + số (Lớp 1, Bài 2, Chủ đề 3…), số + đơn vị (150 xu, 45 giây, 12 cm…), không để "·", "→", "–" đứng đầu dòng, không ngắt giữa từ có gạch nối/khoảng số/dấu "/" (Xăng-ti-mét, 6–10, 13/11); chữ có "·" chỉ xuống dòng sau dấu "·"; chữ cuối đoạn ≤ 3 chữ cái không đứng một mình.
