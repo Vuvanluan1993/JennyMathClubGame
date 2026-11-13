@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Sửa treo ~10 giây khi mở trang vở lớp 4 Bài 12 (số đến lớp triệu)
+- `87`: `distinct(k,lo,hi)` dựng cả mảng từ `lo` đến `hi` rồi xáo; Bài 12 lớp 4 gọi với khoảng 1 000 000–99 999 999 (99 triệu phần tử) nên mỗi lần sinh trang mất ~10 giây, bài test `tu-luyen` lớp 4 quá 20 phút trên GitHub (rc=124). Nay khoảng > 1000 số thì bốc từng số ngẫu nhiên khác nhau. Đo lại: sinh 175 đảo × 6 trang lớp 4 từ 709 giây còn 29 giây.
+
 ## 13/11/2026 — Tự luyện lớp 4: mở và làm trang vở cho đủ 73 bài
 - Thầy gửi Vở bài tập Toán 4 tập 1, 2. `72`: mở Tự luyện cho lớp 4. File mới `js/core/92-trang-vo-lop4.js`, cùng kiểu đã duyệt:
   số đến lớp triệu (nối số với cách đọc, hàng – lớp với chữ số tô đỏ, giá trị chữ số, so sánh, xếp thứ tự, làm tròn, dãy số tự nhiên) · số chẵn – lẻ · biểu thức chứa chữ, công thức chu vi · bài toán ba bước, tổng – hiệu, trung bình cộng, rút về đơn vị · tính nhanh (giao hoán, kết hợp, nhân với một tổng) · nhân, chia với số có một/hai chữ số, với 10, 100, 1 000 · đo góc bằng thước đo góc, góc nhọn – vuông – tù – bẹt · vuông góc, song song, hình bình hành, hình thoi · yến – tạ – tấn, dm² – m² – mm², giây – thế kỉ · dãy số liệu, biểu đồ cột, số lần xuất hiện · **phân số**: khái niệm (tô màu), phân số và phép chia, phân số bằng nhau, rút gọn, quy đồng, so sánh, cộng – trừ – nhân – chia (đáp số tối giản), phân số của một số. Ôn tập lấy trang các bài trước.
