@@ -6,6 +6,8 @@ rules_version = '2';
 // hs/{tk}        : dữ liệu học của em (em tự ghi) · hsgv/{tk}: nhận xét, thẻ, ghi chú của cô — đều có trường "truong"
 // asg/{id}       : bài về nhà (có "truong") · login/{tk}: tên đăng nhập → email (đặt lại mật khẩu)
 // tom/{tk}       : tóm tắt học tập của em (có "truong"), em tự ghi, admin Clb/quản lý/giáo viên đọc
+// lop/{mã}__{lớp}: tờ lớp (13/11/2026) — tên lớp, khối, Toán Jenny, buổi mở, ds tên đăng nhập; KHÔNG có họ tên, phụ huynh
+// xep/{tk}       : thẻ xếp lớp của em (trường, lớp, nghỉ học) — học sinh chỉ đọc 2 tờ này, không đọc sổ trường
 // org/main       : dữ liệu cũ trước khi có nhiều trường — chỉ admin Clb đọc để chuyển sang truong/jenny
 service cloud.firestore {
   match /databases/{db}/documents {
@@ -17,6 +19,9 @@ service cloud.firestore {
     function isGV() { return hasMe() && me().role == 'gv'; }
     function myT() { return me().truong; }
     function tdoc() { return get(/databases/$(db)/documents/truong/$(me().truong)).data; }
+    function isHS() { return hasMe() && me().role == 'hs'; }
+    function notKhoa() { return tdoc().get('khoa', false) != true; }
+    function gvCo(lid) { return isGV() && (me().gvId in tdoc().pc) && (lid in tdoc().pc[me().gvId]); }
     function isSelf(tk) { return hasMe() && me().role == 'hs' && me().tk == tk; }
     function isPH(tk) { return hasMe() && me().role == 'ph' && tk in me().con; }
     function gvLop(tk) {
@@ -35,11 +40,15 @@ service cloud.firestore {
       allow read, write: if isQT();
     }
     match /truong/{ma} {
-      allow read: if isQT() || (hasMe() && myT() == ma);
+      // học sinh không đọc sổ trường (có tên cả trường, thông tin phụ huynh) — em đọc lop/ và xep/
+      allow read: if isQT() || (hasMe() && myT() == ma && me().role in ['ql', 'gv']);
       allow create, delete: if isQT();
       allow update: if isQT()
         || (isQL() && myT() == ma && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['ma', 'ten', 'khoa']))
-        || (isGV() && myT() == ma && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['j', 't', 'gd']));
+        // giáo viên: chỉ thêm em mới vào gd, không đổi lớp, không bỏ em đã có
+        || (isGV() && myT() == ma && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['j', 't', 'gd'])
+            && request.resource.data.gd.diff(resource.data.gd).changedKeys().size() == 0
+            && request.resource.data.gd.diff(resource.data.gd).removedKeys().size() == 0);
     }
     match /users/{uid} {
       allow read: if signed() && (request.auth.uid == uid || isQT() || ((isQL() || isGV()) && resource.data.truong == myT()));
@@ -75,6 +84,21 @@ service cloud.firestore {
       allow read: if isQT() || ((isQL() || isGV()) && cuT());
       allow create, update: if isQT() || (isSelf(tk) && vaoT()) || (isQL() && cuT() && vaoT());
       allow delete: if isQT() || (isQL() && cuT());
+    }
+    match /lop/{id} {
+      allow read: if isQT() || ((isQL() || isGV()) && cuT())
+        || (isHS() && resource.data.truong == myT() && me().tk in resource.data.ds && notKhoa());
+      allow create, update: if isQT() || (isQL() && cuT() && vaoT())
+        || (isGV() && resource != null && cuT() && vaoT() && gvCo(resource.data.id) && request.resource.data.id == resource.data.id);
+      allow delete: if isQT() || (isQL() && cuT());
+    }
+    match /xep/{tk} {
+      // trường bị khoá thì em không đọc được thẻ → không vào được
+      allow read: if isQT() || ((isQL() || isGV()) && cuT())
+        || (isSelf(tk) && (resource == null || (resource.data.truong == myT() && notKhoa())));
+      allow create, update: if isQT() || (isQL() && cuT() && vaoT())
+        || (isGV() && cuT() && vaoT() && gvCo(request.resource.data.lop) && (resource == null || gvCo(resource.data.lop)));
+      allow delete: if isQT() || (isQL() && cuT()) || (isGV() && cuT() && gvCo(resource.data.lop));
     }
     match /asg/{id} {
       allow read: if isQT() || (hasMe() && resource.data.truong == myT());

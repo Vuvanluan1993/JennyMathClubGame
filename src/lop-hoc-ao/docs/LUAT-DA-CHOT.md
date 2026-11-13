@@ -184,6 +184,13 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Admin Clb thêm, sửa họ tên, đặt mật khẩu mới, xoá tài khoản quản lý trường, giáo viên, học sinh của mọi trường ngay ở trang chi tiết trường; đổi lớp học sinh; xoá tài khoản dở dang.
 - **Tạm chưa dùng tài khoản phụ huynh**: không tạo, không hiện (bật lại bằng `PH_ON=true`).
 
+## 6n. Tách dữ liệu trường — đợt 1 (thầy duyệt 13/11/2026)
+- Học sinh **không đọc sổ trường** `truong/{mã}` (có họ tên cả trường, thông tin phụ huynh). Em chỉ đọc **thẻ xếp lớp** `xep/{tk}` (trường, lớp, khối, nghỉ học, lớp năm trước) và **tờ lớp** `lop/{mã}__{lớp}` (tên lớp, khối, Toán Jenny, buổi mở, danh sách tên đăng nhập — không họ tên, không phụ huynh).
+- Ai lưu sổ trường (quản lý, giáo viên, admin Clb) thì app tự ghi lại những tờ thay đổi (`fbGhiTo`); giáo viên chỉ ghi tờ lớp mình. Admin Clb có nút **⟳ Dựng lại tờ lớp** (mọi trường).
+- Quy tắc: giáo viên chỉ **thêm** em mới vào `gd`, không đổi/bỏ em đã có. Trường khoá → học sinh không đọc được thẻ → không vào được.
+- Trang admin có cột **Sổ đầy** (% của 1 MB). Trường quá 60% → làm **đợt 2**: chuyển họ tên, hồ sơ, phụ huynh sang tờ lớp (giáo viên khi đó chỉ đọc lớp mình).
+- Thứ tự triển khai: đưa bản mới lên → admin bấm Dựng lại tờ lớp → dán quy tắc mới.
+
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
 - `node tools/test/kien-thuc-tro-choi.js` — trò không vượt kiến thức.
@@ -194,6 +201,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - `node tools/test/dong-bo.js` — đồng bộ máy chủ ĐẠT (giả lập).
 - `node tools/test/nhieu-truong.js` — nhiều trường ĐẠT (giả lập).
 - `node tools/test/tom-tat.js` — bản tóm tắt học tập gửi lên máy chủ (giả lập).
+- `node tools/test/tach-lop.js` — tách dữ liệu trường: tờ lớp, thẻ xếp lớp, học sinh không đọc sổ trường (giả lập).
 
 ## 8. Video giới thiệu
 - Công cụ ở `tools/video/` (quay bằng Playwright + CDP screencast 2×, thu tiếng app qua Web Audio, bàn tay pixel chạm, ghép bằng ffmpeg). Xem `tools/video/README.md`.
