@@ -30,6 +30,7 @@ const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME||'/opt
      if(q.lay==='grid'){const [A,,B,,C]=R[0],D=R[2][0],E=R[2][4],[F,,G,,H]=R[4];if(A+B!==C||A+D!==F||C-E!==H||F-G!==H)bad.push(where+' lưới phép tính sai')}
      if(q.lay==='color'){const ev=t=>{const m=t.match(/(\d+) ([+−]) (\d+)/);return m[2]==='+'?+m[1]+ +m[3]:m[1]-m[3]};q.cells.forEach((t,i)=>{if(ev(t)!==q.vals[q.a[i]])bad.push(where+' tô màu sai '+t)});if(new Set(q.vals).size!==3)bad.push(where+' trùng số màu')}
      if(q.lay==='ds'){q.st.forEach((t,i)=>{const u=t.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/−/g,'-');let v;if(/=/.test(u)){const [l,r]=u.split('=');v=eval(l)===+r}else v=eval(u);if(!!v!==!!q.a[i])bad.push(where+' Đ/S sai: '+t)})}
+     if(typeof q.vchk==='function'&&!q.vchk())bad.push(where+' vở tự kiểm sai: '+q.kind);
      /* trang vở (86-trang-vo.js) */
      const sum3=t=>t[0]===t[1]+t[2]&&t[1]>=1&&t[2]>=1&&t[0]<=10;
      if(q.lay==='vodien'){if(![q.M,q.A,q.B,q.C].every(sum3))bad.push(where+' vở điền: sơ đồ sai');if(q.a.join()!==[q.A[2],q.B[0],q.B[1],q.B[2],q.C[1],q.C[2],q.C[0]].join())bad.push(where+' vở điền: đáp án lệch')}
