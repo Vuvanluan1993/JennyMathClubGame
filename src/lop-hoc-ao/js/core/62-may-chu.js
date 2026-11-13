@@ -66,13 +66,47 @@ async function fbThietLap(ten,tk,pw){const{auth}=await fbInit();const raw=FB.raw
 function fbDayNgay(){clearTimeout(fbHen);return fbDay()}
 function fbOrgSach(){const o=Object.assign({},S.org);['hsOn'].forEach(k=>delete o[k]);return o}
 function fbPc(o){const pc={};(o.lop||[]).forEach(l=>(l.gv||[]).forEach(g=>{(pc[g]=pc[g]||[]).push(l.id)}));return pc}
+/* 13/11/2026 — tách dữ liệu trường: học sinh không đọc sổ trường (truong/{mã}) nữa, chỉ đọc 2 tờ nhỏ:
+     lop/{mã}__{lớp}  {truong,id,ten,khoi,tj,mo(JSON),ds:[tk],nl:[tk],gv:[gvId]} — không có họ tên, không có thông tin phụ huynh
+     xep/{tk}         {truong,lop,khoi,nghi,cuNam,cuLop} — em ở lớp nào
+   Ai lưu sổ trường (quản lý, giáo viên, admin Clb) thì app ghi lại những tờ thay đổi. */
+const fbLopId=(ma,id)=>'lop/'+ma+'__'+id;
+function fbTo(ma,o){const r={};if(!o)return r;const gd=o.gd||{},nl=o.nl||{},ng=o.nghi||{},cu=(o.namCu||[]).slice(-1)[0]||null,LS=o.lop||[];
+  LS.forEach(l=>{const ds=Object.keys(gd).filter(tk=>gd[tk]===l.id).sort();
+    r[fbLopId(ma,l.id)]={truong:ma,id:l.id,ten:l.ten||l.id,khoi:l.khoi||1,tj:!!(l.tj&&l.tj.on),mo:JSON.stringify((o.mo||{})[l.id]||{}),ds,nl:ds.filter(tk=>nl[tk]),gv:(l.gv||[]).slice()}});
+  new Set(Object.keys(gd).concat(Object.keys(ng))).forEach(tk=>{const L=LS.find(l=>l.id===gd[tk]),x={truong:ma,lop:L?L.id:'',khoi:L?(L.khoi||1):0,nghi:ng[tk]?(ng[tk].ly||'nghi'):''};
+    if(cu){const cl=(cu.lop||[]).find(z=>z.id===(cu.gd||{})[tk]);if(cl){x.cuNam=cu.nam||'';x.cuLop=cl.ten||cl.id}}
+    r['xep/'+tk]=x});
+  return r}
+/* ghi các tờ khác nhau giữa sổ cũ (cu) và sổ mới (moi); chi = các lớp được ghi (giáo viên chỉ ghi lớp mình) */
+async function fbGhiTo(ma,cu,moi,chi){const db=FB.raw,A=fbTo(ma,cu),B=fbTo(ma,moi),ghi=[];
+  const lopCua=p=>p.startsWith('lop/')?p.slice(p.indexOf('__')+2):(B[p]||A[p]).lop,duoc=p=>!chi||chi.has(lopCua(p));
+  Object.keys(B).forEach(p=>{if(duoc(p)&&JSON.stringify(A[p])!==JSON.stringify(B[p]))ghi.push(db.doc(p).set(Object.assign({},B[p],{t:fbTS()})))});
+  Object.keys(A).forEach(p=>{if(!B[p]&&duoc(p))ghi.push(db.doc(p).delete())});
+  const kq=await Promise.allSettled(ghi);kq.forEach(x=>{if(x.status==='rejected')console.warn('tờ lớp',x.reason)});return ghi.length}
+/* dựng lại toàn bộ tờ của một trường (admin Clb): xoá tờ thừa, ghi đủ tờ */
+async function fbDungTo(ma,o){const db=FB.raw,B=fbTo(ma,o),co=[];
+  for(const n of['lop','xep']){const q=await db.collection(n).where('truong','==',ma).get();q.docs.forEach(d=>co.push(n+'/'+d.id))}
+  const viec=co.filter(p=>!B[p]).map(p=>['x',p]).concat(Object.keys(B).map(p=>['g',p]));
+  for(let i=0;i<viec.length;i+=400){const bt=db.batch();viec.slice(i,i+400).forEach(([k,p])=>k==='x'?bt.delete(db.doc(p)):bt.set(db.doc(p),Object.assign({},B[p],{t:fbTS()})));await bt.commit()}
+  return{lop:Object.keys(B).filter(p=>p.startsWith('lop/')).length,hs:Object.keys(B).filter(p=>p.startsWith('xep/')).length,xoa:co.filter(p=>!B[p]).length}}
+/* học sinh: dựng "sổ thu gọn" từ xep + lop; chưa có tờ thì đọc sổ trường như cũ (khi quy tắc mới chưa dán) */
+function fbHsOrg(){if(fbHsOrg.p)return fbHsOrg.p;return fbHsOrg.p=(async()=>{const tk=CLOUD.me.tk,db=FB.raw||FB.db;let x=null,cam=false;
+  try{const d=await db.doc('xep/'+tk).get();if(d.exists)x=d.data()}catch(e){cam=true}
+  if(x){const org={gd:{},lop:[],mo:{},nl:{},nghi:{},tach:1};if(x.nghi)org.nghi[tk]={ly:x.nghi};
+    if(x.lop){let L=null;try{const d=await db.doc(fbLopId(x.truong||fbT(),x.lop)).get();if(d.exists)L=d.data()}catch(e){}
+      if(L){org.gd[tk]=L.id;org.lop.push({id:L.id,ten:L.ten,khoi:L.khoi,tj:{on:!!L.tj},gv:L.gv||[]});org.mo[L.id]=fbJ(L.mo)||{};if((L.nl||[]).includes(tk))org.nl[tk]=1}}
+    if(x.cuLop)org.namCu=[{nam:x.cuNam||'',lop:[{id:'cu',ten:x.cuLop}],gd:{[tk]:'cu'}}];
+    return org}
+  try{const o=await FB.db.doc('org/main').get();return o.exists?fbJ(o.data().j)||{}:{}}catch(e){if(cam)throw{code:'truong-khoa'};return{}}})()}
 async function fbDay(){if(!CLOUD||!FB)return;const db=FB.db,me=CLOUD.me,ghi=[];
   try{
   if(me.role==='hs'){const tk=me.tk,st=S.st[tk];if(!st)return;const j=JSON.stringify(fbTach(st).hs),ev=JSON.stringify((S.events||[]).filter(e=>e.actor.account.name===tk).slice(-200));
     if(fbLast['hs/'+tk]!==j||fbLast['ev/'+tk]!==ev){fbLast['hs/'+tk]=j;fbLast['ev/'+tk]=ev;ghi.push(db.doc('hs/'+tk).set({j,ev,lop:(S.lopHS||''),t:fbTS()}))}}
   else if(me.role==='ql'||me.role==='gv'){
-    if(S.org){const o=fbOrgSach(),j=JSON.stringify(o);if(fbLast['org/main']!==j){fbLast['org/main']=j;
-      ghi.push(me.role==='ql'?db.doc('org/main').set({j,gd:o.gd||{},pc:fbPc(o),t:fbTS()},{merge:true}):db.doc('org/main').update({j,gd:o.gd||{},t:fbTS()}))}}
+    if(S.org){const o=fbOrgSach(),j=JSON.stringify(o);if(fbLast['org/main']!==j){const cu=fbJ(fbLast['org/main']||'null');fbLast['org/main']=j;
+      ghi.push(me.role==='ql'?db.doc('org/main').set({j,gd:o.gd||{},pc:fbPc(o),t:fbTS()},{merge:true}):db.doc('org/main').update({j,gd:o.gd||{},t:fbTS()}));
+      const gvi=me.gvId||me.tk;ghi.push(fbGhiTo(fbT(),cu,o,me.role==='gv'?new Set((o.lop||[]).filter(l=>(l.gv||[]).includes(gvi)).map(l=>l.id)):null))}}
     Object.keys(S.st).forEach(tk=>{if(!fbLast.hasOwnProperty('hsgv/'+tk))return;const j=JSON.stringify(fbTach(S.st[tk]).gv);if(fbLast['hsgv/'+tk]!==j){fbLast['hsgv/'+tk]=j;ghi.push(db.doc('hsgv/'+tk).set({j,t:fbTS()}))}});
     const co=new Set();(S.asg||[]).forEach(a=>{co.add(a.id);const j=JSON.stringify(a);if(fbLast['asg/'+a.id]!==j){fbLast['asg/'+a.id]=j;ghi.push(db.doc('asg/'+a.id).set({j,lop:a.lop||'',t:fbTS()}))}});
     Object.keys(fbLast).filter(k=>k.startsWith('asg/')&&!co.has(k.slice(4))).forEach(k=>{delete fbLast[k];ghi.push(db.doc(k).delete())});
@@ -83,8 +117,8 @@ function fbTrangThai(t,loi){const el=document.getElementById('fbSt');if(el){el.t
 
 /* ---------- học sinh ---------- */
 async function fbHsBoot(){const me=CLOUD.me,tk=me.tk,db=FB.db;
-  const [h,o]=await Promise.all([db.doc('hs/'+tk).get(),db.doc('org/main').get()]);
-  const org=o.exists?fbJ(o.data().j)||{}:{},lop=(org.gd||{})[tk]||'',L=(org.lop||[]).find(l=>l.id===lop),khoi=(L&&L.khoi)||me.khoi||1;
+  const [h,org]=await Promise.all([db.doc('hs/'+tk).get(),fbHsOrg()]);
+  const lop=(org.gd||{})[tk]||'',L=(org.lop||[]).find(l=>l.id===lop),khoi=(L&&L.khoi)||me.khoi||1;
   if(!L)throw{code:'chua-lop'};
   let st=h.exists?fbJ(h.data().j):null;const ev=h.exists?fbJ(h.data().ev||'[]')||[]:[];
   if(st&&st.grade!==khoi&&!ev.length){const gt=st.gender;st=newStudent(me.ten||tk,khoi);if(gt)st.gender=gt}
@@ -96,7 +130,8 @@ async function fbHsBoot(){const me=CLOUD.me,tk=me.tk,db=FB.db;
   const mine=a=>a.hs?a.hs.includes(tk):(a.lop?a.lop===lop:a.g===st.grade&&!a.mau);
   fbSub.push(db.collection('asg').onSnapshot(q=>{S.asg=q.docs.map(d=>fbJ(d.data().j)).filter(a=>a&&mine(a));fbVe()},e=>console.error(e)));
   fbSub.push(db.doc('hsgv/'+tk).onSnapshot(d=>{const g=d.exists?fbJ(d.data().j)||{}:{};GV_F.forEach(k=>{if(g[k]!==undefined)S.st[tk][k]=g[k]});fbVe()},e=>{}));
-  fbSub.push(db.doc('org/main').onSnapshot(d=>{const og=d.exists?fbJ(d.data().j)||{}:{};S.open=Object.assign({},(og.mo||{})[lop]||{});const L2=(og.lop||[]).find(l=>l.id===lop);S.st[tk].active=!!((L2&&L2.tj&&L2.tj.on)||(og.nl||{})[tk]);fbVe()},e=>{}));
+  if(org.tach){if(lop)fbSub.push((FB.raw||FB.db).doc(fbLopId(fbT(),lop)).onSnapshot(d=>{if(!d.exists)return;const L2=d.data();S.open=Object.assign({},fbJ(L2.mo)||{});S.st[tk].active=!!(L2.tj||(L2.nl||[]).includes(tk));fbVe()},e=>{}))}
+  else fbSub.push(db.doc('org/main').onSnapshot(d=>{const og=d.exists?fbJ(d.data().j)||{}:{};S.open=Object.assign({},(og.mo||{})[lop]||{});const L2=(og.lop||[]).find(l=>l.id===lop);S.st[tk].active=!!((L2&&L2.tj&&L2.tj.on)||(og.nl||{})[tk]);fbVe()},e=>{}));
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
 }
 let fbVeHen=null;function fbVe(){clearTimeout(fbVeHen);fbVeHen=setTimeout(()=>{try{const g=scr;if(g&&(g.k==='game'||g.k==='mini'||g.k==='xg')&&!g.end)return;render()}catch(e){}},120)}
