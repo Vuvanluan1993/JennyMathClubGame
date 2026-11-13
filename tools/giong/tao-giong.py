@@ -29,9 +29,10 @@ def ma(text):
     return hashlib.sha1((NGUON + GIONG + LOI_DAN + "|" + text).encode("utf-8")).hexdigest()[:16]
 
 
-def goi(url, body):
+def goi(url, body, khoa):
+    # Khoá API đi trong header x-goog-api-key, không nằm trên URL (URL hay bị ghi vào log) — P-19
     req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"),
-                                 headers={"Content-Type": "application/json"})
+                                 headers={"Content-Type": "application/json", "x-goog-api-key": khoa})
     for lan in range(6):
         try:
             with urllib.request.urlopen(req, timeout=120) as r:
@@ -66,9 +67,9 @@ def doc_gemini(text, f):
     for m in ([MO_HINH_DUNG] if MO_HINH_DUNG else []) + [x for x in MO_HINH if x != MO_HINH_DUNG]:
         if m in HET or m in KHONG_CO:
             continue
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={KHOA_GEMINI}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent"
         try:
-            kq = goi(url, body)
+            kq = goi(url, body, KHOA_GEMINI)
         except RuntimeError as e:
             if "404" in str(e) or "not found" in str(e).lower():
                 KHONG_CO.add(m)
@@ -95,7 +96,7 @@ def doc_gemini(text, f):
 def doc_cloud(text, f):
     body = {"input": {"text": text}, "voice": {"languageCode": GIONG[:5], "name": GIONG},
             "audioConfig": {"audioEncoding": "MP3"}}
-    kq = goi("https://texttospeech.googleapis.com/v1/text:synthesize?key=" + KHOA_CLOUD, body)
+    kq = goi("https://texttospeech.googleapis.com/v1/text:synthesize", body, KHOA_CLOUD)
     open(f, "wb").write(base64.b64decode(kq["audioContent"]))
 
 

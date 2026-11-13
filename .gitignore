@@ -1,5 +1,9 @@
-# Bản build tạm (bản đầy đủ có giáo viên/phụ huynh/demo), tạo lại bằng python3 tools/build.py
+# File sinh ra khi build (python3 tools/build_all.py) — không nằm trong git, GitHub Actions dựng lại khi deploy Pages
 src/lop-hoc-ao/dist/
+games/lop-hoc-ao/**/index.html
+!games/lop-hoc-ao/giong-mau/index.html
+games/hanh-trinh-jenny/tham-tu/index.html
+tools/__pycache__/
 
 # Python / Node
 __pycache__/
@@ -8,3 +12,6 @@ node_modules/
 
 # macOS
 .DS_Store
+
+# Kết quả bộ kiểm tra (npm test)
+.ci/
