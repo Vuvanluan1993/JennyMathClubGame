@@ -22,12 +22,7 @@ const sau=(fn,ids,sua)=>{const _f=window[fn];if(typeof _f!=='function')return;wi
 sau('qlMoHS',['mTk']);sau('qlMoGV',['mGvTk']);sau('qlMoPH',['mPhTk2']);sau('qlSua',['qsTk'],true);
 {const _s=window.qlLuu;if(_s)window.qlLuu=function(ev,a){const i=document.getElementById('qsTk');if(i&&i.dataset.tt)i.value=tkTr(i.value);return _s.apply(this,arguments)}}
 
-/* ---------- giáo viên tạo tài khoản học sinh cho lớp mình ---------- */
-window.gvMoHS=function(){if(!gvLop){toast('Chọn lớp trước');return}
-  if(!document.getElementById('nhTen')){const d=document.createElement('div');d.id='gvAn';d.hidden=true;d.innerHTML=['nhTen','nhLop','nhGt','nhTk','nhPw'].map(i=>`<input id="${i}">`).join('');document.body.appendChild(d)}
-  window.qlMoHS();const h=document.querySelector('#qlm .gdhd b');if(h)h.textContent='Thêm học sinh vào lớp '+((lopById(gvLop)||{}).ten||gvLop)};
-{const _l=window.qlLuuHS;if(_l)window.qlLuuHS=async function(){const gv=role==='gv'&&gvLop;window.HS_LOP_MOI=gv?gvLop:'';try{return await _l.apply(this,arguments)}finally{window.HS_LOP_MOI='';if(gv){try{if(CLOUD)fbDanhSach()}catch(x){}render()}}}}
-{const _h=gvHead;gvHead=function(){let r=_h.apply(this,arguments);try{if(role==='gv'&&gvLop)r=r.replace('← Lớp của tôi</button>','← Lớp của tôi</button> <button class="btn sm pri" onclick="gvMoHS()">+ Thêm học sinh</button>')}catch(x){}return r}}
+/* 13/11/2026 — giáo viên KHÔNG thêm học sinh (thầy chốt): chỉ quản lý trường và admin Clb tạo tài khoản học sinh. */
 
 /* ---------- thanh trên: trường đang dùng; admin Clb có nút "Các trường" ---------- */
 {const _h=header;header=function(){const r=_h.apply(this,arguments);try{if(typeof CLOUD==='undefined'||!CLOUD||CLOUD.me.role==='hs')return r;const b=document.getElementById('fbMe');if(!b)return r;

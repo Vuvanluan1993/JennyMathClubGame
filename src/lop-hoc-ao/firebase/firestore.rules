@@ -45,16 +45,14 @@ service cloud.firestore {
       allow create, delete: if isQT();
       allow update: if isQT()
         || (isQL() && myT() == ma && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['ma', 'ten', 'khoa']))
-        // giáo viên: chỉ thêm em mới vào gd, không đổi lớp, không bỏ em đã có
-        || (isGV() && myT() == ma && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['j', 't', 'gd'])
-            && request.resource.data.gd.diff(resource.data.gd).changedKeys().size() == 0
-            && request.resource.data.gd.diff(resource.data.gd).removedKeys().size() == 0);
+        // giáo viên: không thêm, không đổi lớp học sinh (gd giữ nguyên)
+        || (isGV() && myT() == ma && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['j', 't']));
     }
     match /users/{uid} {
       allow read: if signed() && (request.auth.uid == uid || isQT() || ((isQL() || isGV()) && resource.data.truong == myT()));
       allow create: if isQT()
         || (isQL() && vaoT() && request.resource.data.role in ['gv', 'hs', 'ph'])
-        || (isGV() && vaoT() && request.resource.data.role in ['hs', 'ph'])
+        || (isGV() && vaoT() && request.resource.data.role == 'ph')
         || (signed() && request.auth.uid == uid && request.resource.data.role == 'qt'
             && request.auth.uid in get(/databases/$(db)/documents/he/main).data.admins);
       allow update: if isQT()
@@ -65,7 +63,7 @@ service cloud.firestore {
     }
     match /hs/{tk} {
       allow read: if isSelf(tk) || isQT() || (isQL() && cuT()) || gvLop(tk) || isPH(tk) || (isGV() && resource == null);
-      allow create: if isQT() || (isSelf(tk) && vaoT()) || ((isQL() || isGV()) && vaoT());
+      allow create: if isQT() || (isSelf(tk) && vaoT()) || (isQL() && vaoT());
       allow update: if isQT() || (isSelf(tk) && vaoT()) || (isQL() && cuT() && vaoT());
       allow delete: if isQT() || (isQL() && cuT());
     }
@@ -96,9 +94,8 @@ service cloud.firestore {
       // trường bị khoá thì em không đọc được thẻ → không vào được
       allow read: if isQT() || ((isQL() || isGV()) && cuT())
         || (isSelf(tk) && (resource == null || (resource.data.truong == myT() && notKhoa())));
-      allow create, update: if isQT() || (isQL() && cuT() && vaoT())
-        || (isGV() && cuT() && vaoT() && gvCo(request.resource.data.lop) && (resource == null || gvCo(resource.data.lop)));
-      allow delete: if isQT() || (isQL() && cuT()) || (isGV() && cuT() && gvCo(resource.data.lop));
+      allow create, update: if isQT() || (isQL() && cuT() && vaoT());
+      allow delete: if isQT() || (isQL() && cuT());
     }
     match /asg/{id} {
       allow read: if isQT() || (hasMe() && resource.data.truong == myT());

@@ -3,6 +3,7 @@
 Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm trong một phiên riêng, xong thì ghi CHANGELOG.
 
 ## Ưu tiên cao
+- ☑ T-33 Giáo viên không thêm học sinh; tự đặt tên đăng nhập khi trùng (13/11/2026).
 - ☑ T-31 Tách dữ liệu trường đợt 1 (13/11/2026): học sinh chỉ đọc tờ lớp + thẻ xếp lớp. Còn: thầy dán quy tắc rồi bấm Dựng lại tờ lớp.
 - ☐ T-32 Tách dữ liệu trường đợt 2: họ tên, hồ sơ, phụ huynh sang tờ lớp; giáo viên chỉ đọc lớp mình — làm khi cột Sổ đầy quá 60%.
 - ☑ T-30 Nhiều trường: tên đăng nhập `mã.tên`, admin Clb quản lý mọi trường, GV thêm học sinh (09/11/2026). Còn: thầy dán quy tắc mới, tạo admin Clb, chuyển dữ liệu cũ.

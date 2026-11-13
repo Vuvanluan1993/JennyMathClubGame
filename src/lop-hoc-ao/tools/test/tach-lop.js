@@ -38,6 +38,10 @@ const {chromium}=require('playwright');const path=require('path');const G='file:
   out.chuaThe=await fbHsOrg();
   fbHsOrg.p=null;const chan2=Object.assign({},raw,{doc:p=>(p.startsWith('truong/')||p.startsWith('xep/'))?{get:async()=>{throw{code:'permission-denied'}}}:mk(p)});FB={db:fbBoc(chan2),raw:chan2,auth:{}};
   try{await fbHsOrg();out.khoa='không báo'}catch(x){out.khoa=x.code}
+  // 6b. tên đăng nhập bị giữ (tài khoản đã xoá) -> tự thử tên kế tiếp; tự gõ thì báo lỗi
+  const giu=new Set(['th.an','th.an2']);window.fbTaoTK=async t=>{if(giu.has(t))throw{code:'auth/email-already-in-use'};return 'uid_'+t};
+  out.tuDat=(await fbTaoTKTu('th.an','x',true,t=>t==='th.an3')).tk;
+  try{await fbTaoTKTu('th.an','x',false);out.tuGo='không báo'}catch(x){out.tuGo=x.code}
   // 7. cột sổ đầy
   out.soDay=document.documentElement.innerHTML.includes('<th>Sổ đầy</th>')&&typeof qaDungTo==='function';return out});
  console.log(JSON.stringify(r,null,1),er);
@@ -49,6 +53,7 @@ const {chromium}=require('playwright');const path=require('path');const G='file:
  kv(r.qlGhi.join('|')==='set lop/th__1A|set lop/th__2B|set xep/th.chi|xoa xep/th.binh','quản lý chuyển lớp ghi sai');
  kv(r.hsSo.tach&&r.hsSo.gd['th.chi']==='1A'&&r.hsSo.lop.length===1&&r.hsSo.mo['1A'].d1b2===1&&r.hsSo.nl['th.chi']===1&&!r.hsLoTen,'sổ thu gọn của học sinh sai');
  kv(!r.chuaThe.tach&&!Object.keys(r.chuaThe).length,'chưa có thẻ phải ra sổ rỗng');kv(r.khoa==='truong-khoa','thẻ bị chặn phải báo trường khoá');
+ kv(r.tuDat==='th.an4','tự đặt tên khi trùng sai');kv(r.tuGo==='auth/email-already-in-use','tự gõ tên trùng phải báo');
  kv(r.soDay===true,'thiếu cột sổ đầy');kv(!er.length,'lỗi trang');
  // 8. học sinh đăng nhập thật (trang học sinh): sổ trường bị chặn, chỉ có tờ
  {const p2=await c.newPage();p2.on('pageerror',x=>er.push(x.message));await p2.goto(G+'index.html',{waitUntil:'domcontentloaded'});await p2.waitForTimeout(400);
