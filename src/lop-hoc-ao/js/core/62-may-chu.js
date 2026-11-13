@@ -28,7 +28,7 @@ function fbBoc(raw){const gan=/^(users|hs|hsgv|asg|login|tom)\//;
     if(k==='doc')return p=>{p=String(p);if(p==='org/main')return t.doc('truong/'+fbT());return ref(t.doc(p),p)};
     if(k==='collection')return n=>(n==='users'||n==='asg'||n==='tom')?t.collection(n).where('truong','==',fbT()):t.collection(n);
     const x=t[k];return typeof x==='function'?x.bind(t):x}})}
-function fbLoi(e){const c=(e&&e.code)||'';return({'chua-lop':'Tài khoản của em chưa được xếp lớp. Em nhờ cô giáo nhé!','auth/invalid-credential':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/invalid-login-credentials':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/wrong-password':'Mật khẩu chưa đúng.','auth/user-not-found':'Không có tài khoản này.','auth/too-many-requests':'Thử sai nhiều lần. Đợi vài phút rồi thử lại.','auth/network-request-failed':'Không kết nối được mạng.','auth/email-already-in-use':'Tên đăng nhập này đã có người dùng.','auth/weak-password':'Mật khẩu cần ít nhất 6 kí tự.','auth/invalid-email':'Tên đăng nhập không hợp lệ.','permission-denied':'Tài khoản không có quyền làm việc này.','no-profile':'Tài khoản chưa được gán vai trò. Hỏi quản lý trung tâm.','network':e.message})[c]||('Có lỗi: '+((e&&e.message)||e))}
+function fbLoi(e){const c=(e&&e.code)||'';return({'chua-lop':'Tài khoản của em chưa được xếp lớp. Em nhờ cô giáo nhé!','auth/invalid-credential':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/invalid-login-credentials':'Tên đăng nhập hoặc mật khẩu chưa đúng.','auth/wrong-password':'Mật khẩu chưa đúng.','auth/user-not-found':'Không có tài khoản này.','auth/too-many-requests':'Thử sai nhiều lần. Đợi vài phút rồi thử lại.','auth/network-request-failed':'Không kết nối được mạng.','auth/email-already-in-use':'Tên đăng nhập này đã có người dùng (kể cả tài khoản đã xoá). Đặt tên khác, hoặc bỏ trống để app tự đặt.','auth/weak-password':'Mật khẩu cần ít nhất 6 kí tự.','auth/invalid-email':'Tên đăng nhập không hợp lệ.','permission-denied':'Tài khoản không có quyền làm việc này.','no-profile':'Tài khoản chưa được gán vai trò. Hỏi quản lý trung tâm.','network':e.message})[c]||('Có lỗi: '+((e&&e.message)||e))}
 const fbJ=s=>{try{return JSON.parse(s)}catch(e){return null}};
 const fbTach=st=>{const a={},b={};Object.keys(st||{}).forEach(k=>(GV_F.includes(k)?b:a)[k]=st[k]);GV_F.forEach(k=>{if(b[k]===undefined)b[k]=k==='gvSkip'?{}:[]});return{hs:a,gv:b}};
 const fbTS=()=>firebase.firestore.FieldValue.serverTimestamp();
@@ -49,6 +49,11 @@ async function fbDoiMK(){const p=prompt('Mật khẩu mới (ít nhất 6 kí t�
 /* tạo tài khoản cho người khác bằng một phiên phụ (không làm đăng xuất quản lý) */
 async function fbTaoTK(tk,pw){await fbInit();const app2=firebase.apps.find(a=>a.name==='tao')||firebase.initializeApp(FB_CFG,'tao');
   const c=await app2.auth().createUserWithEmailAndPassword(fbEmail(tk),pw);const uid=c.user.uid;await app2.auth().signOut();return uid}
+/* 13/11/2026 — tự đặt tên đăng nhập: tên đã bị giữ trên máy chủ (kể cả tài khoản đã xoá) thì thử tên kế tiếp an → an2 → an3…
+   bi(t) = tên đã có trong danh sách của trường (bỏ qua luôn, khỏi hỏi máy chủ) */
+async function fbTaoTKTu(tk,pw,tuDong,bi){const m=String(tk).match(/^(.*?)(\d*)$/),goc=m[1];let t=tk,i=(+m[2]||1)+1,lan=0;
+  for(;;){if(tuDong&&bi&&bi(t)){t=goc+(i++);continue}
+    try{return{uid:await fbTaoTK(t,pw),tk:t}}catch(e){if(!tuDong||!e||e.code!=='auth/email-already-in-use'||++lan>30)throw e;t=goc+(i++)}}}
 /* thiết lập lần đầu: tài khoản quản lý đầu tiên + dữ liệu trung tâm trống */
 async function fbThietLap(ten,tk,pw){const{auth}=await fbInit();const raw=FB.raw;tk=String(tk).trim().toLowerCase();if(!tk.startsWith('jenny.'))tk='jenny.'+tk;
   /* 09/11/2026: tạo admin Clb (quản trị hệ thống) — chỉ một lần — và trường "jenny" (Clb Học Toán cùng Jenny) */
@@ -164,11 +169,11 @@ const fbKhongDau=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d')
 async function fbQLTaoHS(e){e.preventDefault();const o=S.org,n=document.getElementById('nhTen').value.trim().replace(/\s+/g,' '),lid=document.getElementById('nhLop').value||window.HS_LOP_MOI||'',l=lopById(lid);
   let tk=(document.getElementById('nhTk').value||'').trim().toLowerCase();const pw=document.getElementById('nhPw').value;
   if(n.split(' ').length<2){toast('Nhập đủ họ và tên');return}
-  if(!tk){const g=fbKhongDau(n).split(' ');tk=(g.pop()+g.map(x=>x[0]).join('')).replace(/[^a-z0-9]/g,'');tk=tkTr(tk);let t=tk,i=2;while((o.hs||[]).some(r=>r[0]===t))t=tk+(i++);tk=t}else tk=tkTr(tk);
+  const tuDong=!tk;  if(!tk){const g=fbKhongDau(n).split(' ');tk=(g.pop()+g.map(x=>x[0]).join('')).replace(/[^a-z0-9]/g,'');tk=tkTr(tk);let t=tk,i=2;while((o.hs||[]).some(r=>r[0]===t))t=tk+(i++);tk=t}else tk=tkTr(tk);
   if(!fbTkOk(tk)){toast('Tên đăng nhập: chữ thường không dấu, số, dấu chấm (sau mã trường ít nhất 3 kí tự)');return}if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}
   if((o.hs||[]).some(r=>r[0]===tk)){toast('Tên đăng nhập đã có');return}
   toast('Đang tạo tài khoản…');
-  try{const uid=await fbTaoTK(tk,pw),db=FB.db,st=newStudent(n,l?l.khoi:1);
+  try{const r=await fbTaoTKTu(tk,pw,tuDong,t=>(o.hs||[]).some(x=>x[0]===t));tk=r.tk;const uid=r.uid,db=FB.db,st=newStudent(n,l?l.khoi:1);
     await db.doc('users/'+uid).set({role:'hs',tk,ten:n,khoi:l?l.khoi:0});
     await db.doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:l?lid:'',t:fbTS()});
     (o.hs=o.hs||[]).push([tk,n,l?l.khoi:0]);if(l)o.gd[tk]=lid;(o.nk=o.nk||[]).push({d:S.day,ai:'Quản lý trung tâm',t:`Tạo tài khoản ${n} (${tk})`+(l?` · lớp ${lid}`:' · chưa xếp lớp')});

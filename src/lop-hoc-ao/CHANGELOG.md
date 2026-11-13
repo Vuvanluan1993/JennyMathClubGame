@@ -1,10 +1,15 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Giáo viên không thêm học sinh; sửa lỗi không tạo được em trùng họ tên
+- Bỏ nút **+ Thêm học sinh** ở trang Giáo viên; quy tắc bảo mật chặn giáo viên tạo tài khoản học sinh và đổi `gd`. **Cần dán lại quy tắc.**
+- Tạo học sinh (trang Quản lý, admin Clb, nhập Excel của admin): tên đăng nhập tự đặt mà đã bị giữ trên máy chủ (tài khoản đã xoá vẫn giữ tên) thì tự thử `an2`, `an3`… thay vì báo lỗi.
+- Lời báo khi tự gõ tên đăng nhập đã bị giữ rõ hơn.
+
 ## 13/11/2026 — Tách dữ liệu trường (đợt 1): học sinh không tải sổ cả trường nữa
 - Thêm tờ lớp `lop/{mã}__{lớp}` và thẻ xếp lớp `xep/{tk}` (không có họ tên, không có thông tin phụ huynh). Học sinh đăng nhập chỉ đọc 2 tờ này; chưa có tờ thì đọc sổ trường như cũ (để chuyển dần).
 - Quản lý, giáo viên, admin lưu sổ trường thì tự ghi tờ thay đổi; giáo viên chỉ ghi tờ lớp mình.
 - Admin Clb: nút **⟳ Dựng lại tờ lớp**, cột **Sổ đầy** (% của 1 MB).
-- Quy tắc bảo mật: học sinh không đọc `truong/{mã}`; giáo viên chỉ thêm em mới vào `gd`; quy tắc cho `lop/`, `xep/`. **Cần dán lại quy tắc** sau khi bấm Dựng lại tờ lớp.
+- Quy tắc bảo mật: học sinh không đọc `truong/{mã}`; giáo viên không đổi `gd`; quy tắc cho `lop/`, `xep/`. **Dán quy tắc trước**, rồi bấm Dựng lại tờ lớp.
 - Kiểm tra mới `tools/test/tach-lop.js`.
 
 ## 13/11/2026 — Sửa: admin Clb đọc lại dữ liệu trường trước khi ghi

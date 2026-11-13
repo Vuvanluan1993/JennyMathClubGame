@@ -1,4 +1,4 @@
-// Kiểm tra nhiều trường (09/11/2026): tiền tố mã trường khi tạo tài khoản, giáo viên thêm học sinh vào lớp, máy chủ giả (truong/{mã}), bảng Các trường của admin Clb.
+// Kiểm tra nhiều trường (09/11/2026): tiền tố mã trường khi tạo tài khoản, giáo viên không thêm học sinh, máy chủ giả (truong/{mã}), bảng Các trường của admin Clb.
 //   node tools/test/nhieu-truong.js  (chạy tools/build.py trước)
 const {chromium}=require('playwright');const path=require('path');const G='file://'+path.resolve(__dirname,'..','..','..','..','games','lop-hoc-ao')+'/';
 (async()=>{const b=await chromium.launch();const bad=[];
@@ -8,12 +8,10 @@ async function trang(dir,w=1000){const c=await b.newContext({viewport:{width:w,h
 {const {p,er}=await trang('quan-ly');await p.click('summary:has-text("Xem bản demo")');await p.fill('#gvP','giaovien123');await p.click('text=Vào bản demo');await p.waitForTimeout(800);
  const r=await p.evaluate(async()=>{qlMoHS();const tt=document.querySelector('#qlm .tt');document.getElementById('mHo').value='Trần Văn';document.getElementById('mTen').value='Bình';document.getElementById('mGt').value='nam';const truoc=new Set(Object.keys(S.st));await qlLuuHS();const moi=Object.keys(S.st).filter(k=>!truoc.has(k));return{tt:tt&&tt.textContent,moi,ph:Object.entries(S.org.ph||{}).filter(([c])=>moi.includes(c))}});
  console.log('QL demo',JSON.stringify(r),er);if(!r.moi[0]||!r.moi[0].startsWith('jenny.'))bad.push('demo HS chưa có tiền tố');}
-// 2. Giáo viên demo: + Thêm học sinh vào lớp
+// 2. Giáo viên demo: KHÔNG có nút + Thêm học sinh (thầy chốt 13/11/2026)
 {const {p,er}=await trang('giao-vien',390);await p.click('summary:has-text("Xem bản demo")');await p.fill('#gvP','giaovien123');await p.click('text=Vào bản demo');await p.waitForTimeout(800);
- const lid=await p.evaluate(()=>{const l=S.org.lop.find(x=>x.gv.includes(gvMe));vaoLop(l.id);return l.id});await p.waitForTimeout(300);
- const nut=await p.$('text=+ Thêm học sinh');if(!nut)bad.push('GV không có nút Thêm học sinh');else{await nut.click();await p.waitForTimeout(200);
- const r=await p.evaluate(async lid=>{document.getElementById('mHo').value='Lê Thu';document.getElementById('mTen').value='Hà';document.getElementById('mGt').value='nu';const truoc=new Set(Object.keys(S.st));await qlLuuHS();const moi=Object.keys(S.st).filter(k=>!truoc.has(k));return{moi,lop:moi.map(m=>S.org.gd[m]),lid}},lid);
- console.log('GV demo',JSON.stringify(r),er);if(!r.moi[0]||r.lop[0]!==lid)bad.push('GV tạo HS chưa vào đúng lớp');}}
+ await p.evaluate(()=>{const l=S.org.lop.find(x=>x.gv.includes(gvMe));vaoLop(l.id)});await p.waitForTimeout(300);
+ const nut=await p.$('text=+ Thêm học sinh');console.log('GV demo: nút thêm học sinh =',!!nut,er);if(nut)bad.push('GV vẫn có nút Thêm học sinh');}
 // 3. fbBoc + bảng các trường (máy chủ giả)
 {const {p,er}=await trang('quan-ly',1000);
  const r=await p.evaluate(async()=>{const D={},log=[];
