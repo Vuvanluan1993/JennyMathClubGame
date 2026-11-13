@@ -121,7 +121,7 @@ window.qtThu=async function(ma){const t=QT.ds.find(x=>x.ma===ma);if(!t)return;
       await raw().doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:l.id,truong:ma,t:fbTS()});
       o.hs.push([tk,n,l.khoi]);o.gd[tk]=l.id;o.hoso[tk]={gt};kq.push(['Học sinh',n,tk,'Lớp '+l.ten])}
     o.nk.push({d:fbNgay(),ai:'Admin Clb',t:`Tạo dữ liệu thử: lớp ${LOP.map(l=>l.ten).join(', ')}, 2 giáo viên, 10 học sinh`});
-    await ref.set({j:JSON.stringify(o),gd:o.gd,pc:fbPc(o),t:fbTS()},{merge:true});
+    await ref.set({j:JSON.stringify(o),gd:o.gd,pc:fbPc(o),t:fbTS()},{merge:true});try{await fbGhiTo(ma,fbJ((d.data()||{}).j||'null'),o)}catch(x){console.error(x)}
     QT.thu={ma,kq};await qtNap();qtThuKq()}
   catch(x){console.error(x);toast('Chưa tạo xong: '+fbLoi(x)+(kq.length?` (đã tạo ${kq.length} tài khoản)`:''))}};
 function qtThuKq(){const r=QT.thu;if(!r)return;const b=document.querySelector('#qtm .qtbody')||document.getElementById('qaBao');if(!b)return;
