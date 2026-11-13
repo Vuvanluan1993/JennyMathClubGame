@@ -161,6 +161,7 @@ const PAGES={
  60:()=>[psTinh('+'),psTinh('+'),soSanhPS()],61:()=>[psTinh('-'),psTinh('-'),psTinh('+')],62:()=>[P(60,0),P(61,0),P(58,0)],
  63:()=>[psTinh('x'),psTinh('x'),psCuaSo()],64:()=>[psTinh(':'),psTinh(':'),psTinh('x')],65:()=>[psCuaSo(),psCuaSo(),psTinh('x')],66:()=>[P(63,0),P(64,0),P(65,0)],
  67:()=>[P(14,0),P(12,1),P(3,0)],68:()=>[P(43,0),P(44,0),P(42,0)],69:()=>[P(56,0),P(58,0),P(55,0)],70:()=>[P(60,0),P(61,0),P(64,0)],71:()=>[P(31,0),P(8,0),P(18,0)],72:()=>[P(50,0),P(51,0),P(49,0)],73:()=>[P(68,0),P(70,0),P(71,0)]};
+Object.assign(V,{psTinh,psBang,rutGon,soSanhPS,psCuaSo,fr,red,gcd,tbc,rutDV,tongHieu,daySL,soLan,bieuDoCot,baBuoc,fmt,quyDong,ktPS,nhan10,lamTron4});
 {const _p=window.voPage;window.voPage=function(x){if(curG()===4&&PAGES[x.b])return PAGES[x.b]().filter(Boolean);return _p(x)}}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .vofb{display:inline-flex;flex-direction:column;align-items:center;gap:2px;vertical-align:middle}.vofb>i{display:block;width:30px;height:2px;background:#1F2A5A}.vofb .votc.vb1{height:26px}

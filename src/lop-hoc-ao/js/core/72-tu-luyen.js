@@ -11,7 +11,7 @@
    - Lưu: st.tl[islId]={n,best:{ok,n,tt,t},last:{…},cur:{seed,j,res,tt}} · st.tlDay={d,ok}.
    - Hiện có cho lớp 1, 2 (thầy chốt làm lớp 1 trước rồi lớp 2); lớp 3–5 hiện "Sắp có". */
 (function(){
-const TL_XU=5,TL_TT=15,TL_G=g=>g>=1&&g<=4;/* lớp 3, 4 mở 13/11/2026 */
+const TL_XU=5,TL_TT=15,TL_G=g=>g>=1&&g<=5;/* lớp 3, 4, 5 mở 13/11/2026 */
 const tlR=st=>st.tl||(st.tl={});
 const tlIdx=x=>PRIM[curG()].isl.indexOf(x)+1;
 const tlOpen=(st,x)=>{if(UNL)return true;const s=st.p1&&st.p1[x.id];return!!(s&&s.m&&s.m[0])};
