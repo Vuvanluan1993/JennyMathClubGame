@@ -169,7 +169,7 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - **Mã trường** do **admin Clb** đặt khi tạo trường: 3–10 kí tự, chữ thường không dấu và số, bắt đầu bằng chữ; không trùng, không đổi về sau.
 - **Tên đăng nhập luôn có tiền tố mã trường, dạng `mã.tên`** (ví dụ `nguyendu.an`, `nguyendu.cohoa`, `nguyendu.ph.an`). Khi tạo tài khoản (học sinh, giáo viên, phụ huynh, nhập Excel, phụ huynh tự động), app **tự thêm tiền tố**; người tạo chỉ gõ phần sau.
 - Đăng nhập: **luôn gõ đủ tên** có mã trường (không dùng link/QR điền sẵn).
-- **Giáo viên tạo được tài khoản học sinh** cho lớp mình (đổi luật cũ "giáo viên không thêm em vào lớp"); quản lý trường vẫn xem/sửa được. Giáo viên vẫn không tạo lớp.
+- **Giáo viên không tạo tài khoản học sinh** (thầy chốt lại 13/11/2026, bỏ luật 09/11 "giáo viên tạo được học sinh"): chỉ quản lý trường và admin Clb tạo, xếp lớp học sinh. Giáo viên không tạo lớp; quy tắc bảo mật chặn giáo viên đổi `gd`.
 - Vai trò: **Quản trị hệ thống = admin Clb** (`qt`, thầy): tạo trường, sửa tên, khoá/mở trường, tạo tài khoản quản lý trường; **xem và quản lý mọi trường, mọi giáo viên, học sinh** (vào từng trường như quản lý trường; tìm tài khoản ở mọi trường). **Quản lý trường** (`ql`) = tài khoản quản lý hiện nay, chỉ trong trường mình. Giáo viên, học sinh, phụ huynh thuộc 1 trường.
 - Trường bị khoá: mọi tài khoản của trường không đăng nhập được (trừ admin Clb).
 - Giáo viên dạy 2 trường / phụ huynh có con ở 2 trường: dùng 2 tài khoản.
@@ -187,9 +187,13 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 ## 6n. Tách dữ liệu trường — đợt 1 (thầy duyệt 13/11/2026)
 - Học sinh **không đọc sổ trường** `truong/{mã}` (có họ tên cả trường, thông tin phụ huynh). Em chỉ đọc **thẻ xếp lớp** `xep/{tk}` (trường, lớp, khối, nghỉ học, lớp năm trước) và **tờ lớp** `lop/{mã}__{lớp}` (tên lớp, khối, Toán Jenny, buổi mở, danh sách tên đăng nhập — không họ tên, không phụ huynh).
 - Ai lưu sổ trường (quản lý, giáo viên, admin Clb) thì app tự ghi lại những tờ thay đổi (`fbGhiTo`); giáo viên chỉ ghi tờ lớp mình. Admin Clb có nút **⟳ Dựng lại tờ lớp** (mọi trường).
-- Quy tắc: giáo viên chỉ **thêm** em mới vào `gd`, không đổi/bỏ em đã có. Trường khoá → học sinh không đọc được thẻ → không vào được.
+- Quy tắc: giáo viên không thêm, không đổi lớp học sinh (`gd` giữ nguyên). Trường khoá → học sinh không đọc được thẻ → không vào được.
 - Trang admin có cột **Sổ đầy** (% của 1 MB). Trường quá 60% → làm **đợt 2**: chuyển họ tên, hồ sơ, phụ huynh sang tờ lớp (giáo viên khi đó chỉ đọc lớp mình).
-- Thứ tự triển khai: đưa bản mới lên → admin bấm Dựng lại tờ lớp → dán quy tắc mới.
+- Thứ tự triển khai: đưa bản mới lên → dán quy tắc mới (quy tắc cũ chặn ghi lop/, xep/) → admin bấm Dựng lại tờ lớp ngay sau đó.
+
+## 6o. Tên đăng nhập trùng (13/11/2026)
+- Học sinh trùng họ tên vẫn tạo được: app tự đặt tên kế tiếp (`an` → `an2` → `an3`…). Tên đã bị giữ trên máy chủ (kể cả tài khoản đã xoá — xoá tài khoản không giải phóng tên đăng nhập) thì app tự thử tên sau (`fbTaoTKTu`).
+- Người tạo tự gõ tên đăng nhập mà tên đó đã bị giữ → báo rõ, đề nghị đặt tên khác hoặc bỏ trống.
 
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.

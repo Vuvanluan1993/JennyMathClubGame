@@ -172,7 +172,7 @@ window.qaChayNhap=async function(){const ma=NH.ma,ds=NH.ds.filter(x=>!x.loi.leng
   for(const x of ds){bd.innerHTML=`<p>Đang nhập ${kq.moi.length+kq.cap.length+kq.loi.length+1}/${ds.length}: ${e(x.hoten)}…</p>`;
     try{let tk=x.cu;const l=x.lop?(o.lop||[]).find(z=>z.id===x.lop.id):null;
       if(!tk){tk=x.tk||tkTu(ma,x.hoten.split(' ').pop());if(tkCo(tk)||o.hs.some(r=>r[0]===tk)){let i=2,b=tk;while(tkCo(b+i)||o.hs.some(r=>r[0]===b+i))i++;tk=b+i}
-        const khoi=l?l.khoi:1,uid=await fbTaoTK(tk,MK0);await raw().doc('users/'+uid).set({role:'hs',tk,ten:x.hoten,khoi,truong:ma});
+        const r0=await fbTaoTKTu(tk,MK0,!x.tk,t=>tkCo(t)||o.hs.some(r=>r[0]===t));tk=r0.tk;const khoi=l?l.khoi:1,uid=r0.uid;await raw().doc('users/'+uid).set({role:'hs',tk,ten:x.hoten,khoi,truong:ma});
         const st=newStudent(x.hoten,khoi);st.gender=x.gt;await raw().doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:l?l.id:'',truong:ma,t:fbTS()});
         o.hs.push([tk,x.hoten,khoi]);(QT().us||[]).push({uid,role:'hs',tk,ten:x.hoten,truong:ma});kq.moi.push(tk)}else kq.cap.push(tk);
       const H=o.hoso[tk]=o.hoso[tk]||{};H.gt=x.gt;if(x.d){if(x.d.ng){H.ng=x.d.ng;H.th=x.d.th}if(x.d.nam)H.nam=x.d.nam}if(x.dt)H.dt=x.dt;if(x.mail)H.mail=x.mail;
@@ -275,9 +275,9 @@ window.qaTaoHS=async function(ma){const ho=v('qaHo').replace(/\s+/g,' '),tn=v('q
   if(!H.gt){bao('Chọn giới tính (để chọn nhân vật cho em)');return}if(H.nam&&!(+H.nam>=2010&&+H.nam<=2025)){bao('Năm sinh chưa đúng');return}
   if(H.ng&&H.th&&H.nam&&new Date(+H.nam,+H.th-1,+H.ng).getDate()!==+H.ng){bao('Ngày sinh chưa đúng');return}if(!okDt(H.dt)){bao('Số điện thoại chưa đúng');return}if(!okMail(H.mail)){bao('Gmail chưa đúng');return}
   if(pw.length<6){bao('Mật khẩu cần ít nhất 6 kí tự');return}
-  let tk=v('qaTk').toLowerCase();tk=tk?ma+'.'+tk.replace(/^.*\./,''):tkTu(ma,tn);if(!fbTkOk(tk)){bao('Tên đăng nhập: chữ thường không dấu, số');return}if(tkCo(tk)){bao('Tên đăng nhập đã có');return}
+  let tk=v('qaTk').toLowerCase();const tuDong=!tk;tk=tk?ma+'.'+tk.replace(/^.*\./,''):tkTu(ma,tn);if(!fbTkOk(tk)){bao('Tên đăng nhập: chữ thường không dấu, số');return}if(tkCo(tk)){bao('Tên đăng nhập đã có');return}
   const o=(await oMoi(ma)),khoi=1;
-  khoa(true);try{const uid=await fbTaoTK(tk,pw);await raw().doc('users/'+uid).set({role:'hs',tk,ten:n,khoi,truong:ma});const st=newStudent(n,khoi);st.gender=H.gt;
+  khoa(true);try{const r0=await fbTaoTKTu(tk,pw,tuDong,tkCo);tk=r0.tk;const uid=r0.uid;await raw().doc('users/'+uid).set({role:'hs',tk,ten:n,khoi,truong:ma});const st=newStudent(n,khoi);st.gender=H.gt;
     await raw().doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:'',truong:ma,t:fbTS()});
     (o.hs=o.hs||[]).push([tk,n,khoi]);(o.hoso=o.hoso||{})[tk]=Object.fromEntries(Object.entries(H).filter(([k,x])=>x));await luuO(ma,o,`Tạo học sinh ${n} (${tk})`);(QT().us||[]).push({uid,role:'hs',tk,ten:n,truong:ma});dong();
     baoMoi(`Đã tạo học sinh <code>${e(tk)}</code> / <code>${e(pw)}</code> · em đang <b>chưa xếp lớp</b>, chọn lớp ở cột Lớp để em đăng nhập được`)}catch(x){console.error(x);bao(fbLoi(x));khoa(false)}};
