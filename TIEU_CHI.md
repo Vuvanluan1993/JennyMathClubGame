@@ -55,6 +55,6 @@ Dùng để kiểm tra mỗi game trước khi đưa lên trang. Tổng hợp t�
 
 ## Cách kiểm tra trước khi đưa lên
 1. `python tools/check_fit.py <tên game>`: vừa 1 màn hình trên 8 cỡ máy.
-2. Chạy bộ kiểm tra đề tự động (với game tự tạo đề).
+2. Chạy bộ kiểm tra đề tự động (với game tự tạo đề): `node tools/test/de-bebras.mjs` (Bebras, 1000 seed mỗi mức), `node tools/test/de-mam-non.mjs` (Mầm non, 2000 câu); giao diện: `node tools/test/giao-dien.spec.mjs` (axe-core, ô chạm ≥ 44/48 px, tràn ngang, giảm chuyển động; cần build trước). Cả ba chạy trong `npm test` và workflow `giao-dien.yml`.
 3. Cho máy tự giải hết mọi dạng bài: phải chấm đúng và chuyển câu đúng.
 4. Cho 2–3 em đúng lứa tuổi chơi thử, ghi lại chỗ các em lúng túng.

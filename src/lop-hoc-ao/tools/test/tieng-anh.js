@@ -4,8 +4,9 @@
 // Bật EN rồi sinh câu hỏi, lời giải, lời Jenny đọc, phương án, hình, khung hướng dẫn khi sai, bài giảng,
 // tên đảo/chủ đề/trùm và chữ hiện trên màn hình. Báo mọi chuỗi còn chữ tiếng Việt (trừ tên riêng và "đồng")
 // hoặc còn sót kí hiệu khuôn ({o}, {w}, {be}…). Thoát mã 1 nếu còn lỗi.
+if(process.env.PW_DIR&&!process.env.PLAYWRIGHT_BROWSERS_PATH)process.env.PLAYWRIGHT_BROWSERS_PATH=process.env.PW_DIR; // thư mục trình duyệt Playwright (mặc định: của Playwright)
 const path=require('path'),fs=require('fs');const {chromium}=require('playwright');
-const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME; // không đặt → Chromium của Playwright
 const G=Number(process.argv[2]||1),REP=Number(process.argv[3]||12);
 (async()=>{const b=await chromium.launch({executablePath:fs.existsSync(EXE)?EXE:undefined});
  const tmp=path.join(ROOT,'dist','_test_en.html');fs.writeFileSync(tmp,'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'+fs.readFileSync(path.join(ROOT,'dist','lop-hoc-ao-jenny.html'),'utf8')+'</body></html>');
