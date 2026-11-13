@@ -151,7 +151,7 @@ window.qlChayNhap=async function(){const ds=qlNhap.ds.filter(x=>!x.loi.length);i
    if(x.lop&&(o.gd||{})[id]!==x.lop.id)window.qlChuyen(id,x.lop.id);x.id=id}
   catch(err){kq.loi.push([x,err.message||String(err)])}}
  /* phụ huynh */
- const G=nhomPH(ds.filter(x=>x.id));
+ const G=(typeof PH_ON!=='undefined'&&!PH_ON)?{}:nhomPH(ds.filter(x=>x.id));
  for(const k in G){const g=G[k],con=g.xs.map(x=>x.id),x0={phten:(g.xs.find(x=>x.phten)||{}).phten||'',dt:(g.xs.find(x=>x.dt)||{}).dt||'',mail:(g.xs.find(x=>x.mail)||{}).mail||''};step('Đang gom phụ huynh…');
   try{let tk=g.cu;
    if(!tk){tk=tkPH0(g.xs[0].id);if(cloud()){const uid=await fbTaoTK(tk,MK0);await FB.db.doc('users/'+uid).set({role:'ph',tk,ten:x0.phten||('Phụ huynh '+g.xs.map(x=>x.hoten.split(' ').pop()).join(', ')),con})}
@@ -164,9 +164,9 @@ window.qlChayNhap=async function(){const ds=qlNhap.ds.filter(x=>!x.loi.length);i
  save();if(cloud()){try{await fbDayNgay()}catch(x){}}
  }finally{im=false;window.toast=_toast;window.render=_render}
  window.qlNhapKQ=kq;render();
- bd.innerHTML=`<p class="qlnok">✓ Xong: <b>${kq.moi.length}</b> em mới · <b>${kq.cap.length}</b> em cập nhật · <b>${kq.ph.length}</b> tài khoản phụ huynh.</p>
+ bd.innerHTML=`<p class="qlnok">✓ Xong: <b>${kq.moi.length}</b> em mới · <b>${kq.cap.length}</b> em cập nhật${PH_ON?` · <b>${kq.ph.length}</b> tài khoản phụ huynh`:''}.</p>
  ${kq.loi.length?`<div class="qlnerr">Chưa nhập được ${kq.loi.length}:<ul>${kq.loi.map(([x,m])=>`<li>Dòng ${x.dong} · ${e(x.hoten)}: ${e(m)}</li>`).join('')}</ul></div>`:''}
- <div class="qlin"><button type="button" class="btn pri" onclick="qlInPhieu([...qlNhapKQ.moi,...qlNhapKQ.cap],'hs')">🖨 In phiếu học sinh</button><button type="button" class="btn" ${kq.ph.length?'':'disabled'} onclick="qlInPhieu(qlNhapKQ.ph,'ph')">🖨 In phiếu phụ huynh</button><button type="button" class="btn ghost" onclick="document.getElementById('qlnhap').remove()">Đóng</button></div>
+ <div class="qlin"><button type="button" class="btn pri" onclick="qlInPhieu([...qlNhapKQ.moi,...qlNhapKQ.cap],'hs')">🖨 In phiếu học sinh</button>${PH_ON?`<button type="button" class="btn" ${kq.ph.length?'':'disabled'} onclick="qlInPhieu(qlNhapKQ.ph,'ph')">🖨 In phiếu phụ huynh</button>`:''}<button type="button" class="btn ghost" onclick="document.getElementById('qlnhap').remove()">Đóng</button></div>
  <p class="muted" style="font-size:12.5px">Mật khẩu ban đầu jenny123. Phiếu in đen trắng, 8 phiếu một trang A4, xếp theo lớp.</p>`};
 
 /* ---------- in phiếu đăng nhập ---------- */

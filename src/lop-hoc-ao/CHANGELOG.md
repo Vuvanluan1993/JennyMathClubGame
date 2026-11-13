@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Admin Clb quản lý tài khoản mọi trường; tạm bỏ tài khoản phụ huynh
+- Trang chi tiết trường (admin Clb): thẻ **Tài khoản** liệt kê mọi tài khoản (quản lý, giáo viên, học sinh), lọc vai trò, tìm; mỗi dòng 🔑 đặt mật khẩu mới · ✎ sửa họ tên · 🗑 xoá hẳn (gõ XOA). Nút + Quản lý, + Giáo viên (phân công lớp), + Học sinh (chọn lớp). Đánh dấu và xoá được **tài khoản dở dang** (tạo dở, không thuộc danh sách trường).
+- Thẻ Giáo viên, Học sinh cũng có các nút trên; thẻ Học sinh đổi lớp ngay ở cột Lớp.
+- **Tạm bỏ tài khoản phụ huynh** (`PH_ON=false` ở 62-may-chu.js): không tự tạo phụ huynh khi thêm học sinh/nhập Excel, bỏ ô Phụ huynh ở trang Quản lý, bỏ liên kết trang Phụ huynh, bỏ số phụ huynh ở trang Admin.
+
 ## 12/11/2026 — Trang Admin Clb: danh sách trường + chi tiết từng trường (thầy đã duyệt)
 - Học sinh tự gửi **bản tóm tắt** nhỏ lên `tom/{tk}` (lần học cuối, số câu/câu đúng từng ngày 30 ngày gần nhất, sao, Sức mạnh Toán từng mạch, bài cô giao quá hạn, số dạng Sổ lỗi sai); tối đa 5 phút/lần + khi rời trang/đăng xuất.
 - Admin Clb vào trang Quản lý → **Tất cả các trường**: tổng hệ thống (trường, lớp, GV, HS, học 7 ngày, học hôm nay) + bảng các trường (lớp, GV, HS, học 7 ngày, ≥ 3 ngày chưa học, tỉ lệ đúng 30 ngày, mức Sức mạnh Toán, học gần nhất, trạng thái) + tìm tài khoản mọi trường.
