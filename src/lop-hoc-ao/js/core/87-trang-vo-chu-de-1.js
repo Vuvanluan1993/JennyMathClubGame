@@ -36,7 +36,7 @@ function cellFor(q){const g=scr,cv=g.cv||[];let b=0;
 function figForm(q){const cell=cellFor(q);
  const mau=q.mau?`<div class="vomau"><span class="votag">${T('MẪU','EXAMPLE')}</span>${row({t:q.mau},()=>'',q)}</div>`:'';
  let extra='';if(q.lay==='vok'){const us=voUsed(q,scr.cv||[]);extra=`<div class="vohint">${T('Kéo thẻ vào ô (hoặc chạm thẻ). Chạm ô đã điền để bỏ.','Drag a card into a box (or tap it). Tap a filled box to clear it.')}</div><div class="votray">${q.cards.map((c,k)=>`<button type="button" class="vocard ${us[k]?'used':''}" data-vc="${k}" ${us[k]?'disabled':''} aria-label="${T('Thẻ số','Card')} ${c}">${c}</button>`).join('')}</div>`}
- return`<div class="vopg">${head()}<div class="voin">${mau}<div class="vorows ${q.c2?'c2':''}">${q.rows2.map(r=>row(r,cell,q)).join('')}</div>${extra}</div></div>`}
+ return`<div class="vopg">${head()}<div class="voin">${mau}<div class="vorows ${q.c2?'c2':''} ${q.tbl?'tbl':''}">${q.rows2.map(r=>row(r,cell,q)).join('')}</div>${extra}</div></div>`}
 /* nối: lưới 5 cột [trái][chấm][khoảng][chấm][phải]; dây vẽ sau khi vẽ màn */
 function figNoi2(q){const g=scr,cv=g.cv||[],sel=g.vsel,none=()=>'';
  let h='';for(let i=0;i<3;i++){const p=q.right[i];
@@ -135,6 +135,7 @@ Object.assign(I18N,{'Vở: đếm rồi viết số':'Book: count and write','V�
 
 document.head.insertAdjacentHTML('beforeend',`<style>
 .vorows{display:flex;flex-direction:column;gap:8px;align-self:stretch}
+.vorows.tbl{display:grid;grid-template-columns:auto repeat(4,1fr);gap:0;align-self:stretch;margin-right:4px}.vorows.tbl .vorow{display:contents}.vorows.tbl .votx,.vorows.tbl .votc{margin:0 0 -2px -2px;height:34px;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 2px #1F2A5A;background:#fff}.vorows.tbl .votx{justify-content:flex-start;padding:0 6px;font-size:13px;background:#E3E7F0}.vorows.tbl .votc.vb1{width:auto;height:34px}
 .vorows.c2{display:grid;grid-template-columns:1fr 1fr;gap:8px 6px}
 .vorow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .votx{font-size:14.5px;font-weight:600;background:#fff;padding:0 2px;line-height:1.3}
