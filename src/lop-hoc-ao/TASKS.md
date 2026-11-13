@@ -53,3 +53,4 @@ Trạng thái: ☐ chưa làm · ◐ đang làm · ☑ xong. Mỗi task làm tro
 - ☑ **T-22 Tủ đồ** — phối đồ cho Jenny trong Nhà em (23/10).
 - ☑ **T-21 Leo núi tìm kho báu** — trò cho tiết toán có lời văn: mỗi bài đúng leo 1 chặng, 6 chặng lên đỉnh mở rương; sai 2 lần xem lời giải (19/10).
 - ☑ **Logo về trang chủ** — bấm logo Clb ở thanh trên là về Bản đồ (24/10).
+- ☑ **Chữ xuống dòng đẹp** — rà 8 khổ màn hình, sửa lỗi CSS `.grow` lan, thêm `85-xuong-dong-dep.js` + `tools/test/xuong-dong.js` (13/11).
