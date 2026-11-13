@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Sửa: admin Clb đọc lại dữ liệu trường trước khi ghi
+- Mọi thao tác sửa của admin (thêm/sửa/xoá tài khoản, lớp, phân công, Toán Jenny, nhập Excel) đọc lại dữ liệu mới nhất của trường ngay trước khi ghi, để không ghi đè thay đổi quản lý trường vừa làm.
+
 ## 13/11/2026 — Admin Clb: Nhập từ Excel và Tải danh sách học sinh cho từng trường
 - Thẻ Học sinh của trang trường có **⬆ Nhập từ Excel** (tải file mẫu, chọn file .xlsx/.csv, xem trước Tạo mới / Cập nhật / lỗi, nhập — giống trang Quản lý trường) và **⬇ Tải danh sách** (.xlsx đúng mẫu, sửa xong nhập lại được).
 - Nhập xong hiện bảng tên đăng nhập + mật khẩu (jenny123) của các em mới.

@@ -168,7 +168,7 @@ function xemTruocNH(){const ds=NH.ds,ok=ds.filter(x=>!x.loi.length),loi=ds.lengt
    <div class="qlin" style="margin-top:12px"><button type="button" class="btn pri" ${ok.length?'':'disabled'} onclick="qaChayNhap()">Nhập ${ok.length} em</button><label class="btn qlfile">Chọn file khác<input type="file" accept=".xlsx,.csv" onchange="qaDocFile(this.files[0])"></label></div>
    <p class="muted" style="font-size:12.5px">Mật khẩu ban đầu: <b>${MK0}</b>. Tạo tài khoản trên máy chủ mất vài giây mỗi em.</p>`}
 window.qaChayNhap=async function(){const ma=NH.ma,ds=NH.ds.filter(x=>!x.loi.length),bd=document.getElementById('qanbd');if(!ds.length)return;
-  const o=oCua(ma);o.hs=o.hs||[];o.hoso=o.hoso||{};o.gd=o.gd||{};const kq={moi:[],cap:[],loi:[]};
+  const o=(await oMoi(ma));o.hs=o.hs||[];o.hoso=o.hoso||{};o.gd=o.gd||{};const kq={moi:[],cap:[],loi:[]};
   for(const x of ds){bd.innerHTML=`<p>Đang nhập ${kq.moi.length+kq.cap.length+kq.loi.length+1}/${ds.length}: ${e(x.hoten)}…</p>`;
     try{let tk=x.cu;const l=x.lop?(o.lop||[]).find(z=>z.id===x.lop.id):null;
       if(!tk){tk=x.tk||tkTu(ma,x.hoten.split(' ').pop());if(tkCo(tk)||o.hs.some(r=>r[0]===tk)){let i=2,b=tk;while(tkCo(b+i)||o.hs.some(r=>r[0]===b+i))i++;tk=b+i}
@@ -210,23 +210,25 @@ function trangLopCT(d){const ma=QA.ma,l=d.lop.find(x=>x.id===QA.lopId),o=d.o;
    <section class="card"><h2>Danh sách lớp (${ds.length})</h2>${ds.length?`<div class="qlli">${rows}</div>`:'<p class="muted">Lớp chưa có em nào.</p>'}</section>`}
 window.qaFormLop=function(ma){const d=duLieuTruong(ma);hopQA('Thêm lớp',`<div class="qs2"><label>Khối<select id="qaKhoi">${[1,2,3,4,5].map(k=>`<option value="${k}">Khối ${k}</option>`).join('')}</select></label><label>Tên lớp<input id="qaLopTen" maxlength="8" placeholder="1D" required></label></div>
   <label>Giáo viên<select id="qaLopGV"><option value="">Chưa phân công</option>${d.gv.map(g=>`<option value="${e(g.id)}">${e(g.ten)}</option>`).join('')}</select></label>`,`qaTaoLop('${ma}')`,'Thêm lớp')};
-window.qaTaoLop=async function(ma){const k=+v('qaKhoi'),t=v('qaLopTen').toUpperCase(),g=v('qaLopGV'),o=oCua(ma);o.lop=o.lop||[];o.mo=o.mo||{};
+window.qaTaoLop=async function(ma){const k=+v('qaKhoi'),t=v('qaLopTen').toUpperCase(),g=v('qaLopGV'),o=(await oMoi(ma));o.lop=o.lop||[];o.mo=o.mo||{};
   if(!/^[0-9A-Z.\- ]{1,8}$/.test(t)){bao('Tên lớp ngắn, ví dụ 1D');return}if(o.lop.some(l=>l.id===t)){bao('Đã có lớp '+t);return}
   khoa(true);try{o.lop.push({id:t,khoi:k,ten:t,gv:g?[g]:[],tj:{on:false}});o.mo[t]={};await luuO(ma,o,`Tạo lớp ${t} (khối ${k})`);dong();toast('Đã tạo lớp '+t);render()}catch(x){bao(fbLoi(x));khoa(false)}};
-window.qaPhan=async function(ma,lid){const g=v('qaPc'),o=oCua(ma),l=(o.lop||[]).find(x=>x.id===lid);if(!g||!l)return;l.gv=l.gv||[];if(l.gv.includes(g))return;l.gv.push(g);
+window.qaPhan=async function(ma,lid){const g=v('qaPc'),o=(await oMoi(ma)),l=(o.lop||[]).find(x=>x.id===lid);if(!g||!l)return;l.gv=l.gv||[];if(l.gv.includes(g))return;l.gv.push(g);
   try{await luuO(ma,o,`Phân công ${g} dạy lớp ${lid}`);toast('Đã phân công');render()}catch(x){toast(fbLoi(x))}};
-window.qaBo=async function(ma,lid,g){const o=oCua(ma),l=(o.lop||[]).find(x=>x.id===lid);if(!l)return;const tn=((o.gv||[]).find(x=>x.id===g)||{ten:g}).ten;if(!confirm(`Bỏ phân công ${tn} khỏi lớp ${l.ten}?`))return;l.gv=(l.gv||[]).filter(x=>x!==g);
+window.qaBo=async function(ma,lid,g){const o=(await oMoi(ma)),l=(o.lop||[]).find(x=>x.id===lid);if(!l)return;const tn=((o.gv||[]).find(x=>x.id===g)||{ten:g}).ten;if(!confirm(`Bỏ phân công ${tn} khỏi lớp ${l.ten}?`))return;l.gv=(l.gv||[]).filter(x=>x!==g);
   try{await luuO(ma,o,`Bỏ phân công ${g} khỏi lớp ${lid}`);toast(`${tn} không còn dạy lớp ${l.ten}`);render()}catch(x){toast(fbLoi(x))}};
-window.qaTJ=async function(ma,lid,on){const o=oCua(ma),l=(o.lop||[]).find(x=>x.id===lid);if(!l)return;
+window.qaTJ=async function(ma,lid,on){const o=(await oMoi(ma)),l=(o.lop||[]).find(x=>x.id===lid);if(!l)return;
   if(on){const c=v('qaTjMa');if(String(c).toUpperCase()!==String(typeof DEMO_CODE!=='undefined'?DEMO_CODE:'').toUpperCase()){toast('Mã gói chưa đúng'+(typeof DEMO_CODE!=='undefined'?' (mã thử: '+DEMO_CODE+')':''));return}l.tj={on:true,han:'31/05/2027'}}else l.tj={on:false};
   try{await luuO(ma,o,on?`Gắn gói Toán Jenny cho lớp ${lid}`:`Tắt gói Toán Jenny của lớp ${lid}`);toast(on?`Lớp ${l.ten} đã có Toán Jenny`:`Đã tắt Toán Jenny của lớp ${l.ten}`);render()}catch(x){toast(fbLoi(x))}};
-window.qaThemVao=async function(ma,lid){const o=oCua(ma),l=(o.lop||[]).find(x=>x.id===lid),ds=Object.keys(QA.themChon||{}).filter(k=>QA.themChon[k]);if(!l||!ds.length)return;o.gd=o.gd||{};
+window.qaThemVao=async function(ma,lid){const o=(await oMoi(ma)),l=(o.lop||[]).find(x=>x.id===lid),ds=Object.keys(QA.themChon||{}).filter(k=>QA.themChon[k]);if(!l||!ds.length)return;o.gd=o.gd||{};
   ds.forEach(tk=>{o.gd[tk]=lid;const r=(o.hs||[]).find(x=>x[0]===tk);if(r)r[2]=l.khoi});
   try{await luuO(ma,o,`Đưa ${ds.length} em vào lớp ${lid}`);await Promise.all(ds.map(tk=>raw().doc('hs/'+tk).set({lop:lid},{merge:true}).catch(()=>{})));QA.themChon={};QA.themTim='';toast(`Đã đưa ${ds.length} em vào lớp ${l.ten}`);render()}catch(x){toast(fbLoi(x))}};
 /* ---------- admin quản lý tài khoản của mọi trường (thầy yêu cầu 13/11/2026) ---------- */
 const nutTK=tk=>`<button type="button" class="btn sm" onclick="qaSua('${e(QA.ma)}','${e(tk)}')">✎ Sửa</button><button type="button" class="btn sm qlxbtn qlx1" title="Xoá tài khoản" onclick="qaXoa('${e(QA.ma)}','${e(tk)}')">🗑 Xoá</button>`;
 const MK0='jenny123',bo=s=>String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D');
 const oCua=ma=>JSON.parse(JSON.stringify((QA.truong[ma]||{}).o||{}));
+/* đọc lại dữ liệu trường ngay trước khi sửa (12/11: tránh ghi đè thay đổi quản lý trường vừa làm) */
+async function oMoi(ma){try{const d=await raw().doc('truong/'+ma).get();if(d.exists){const x=d.data()||{};QA.truong[ma]=Object.assign(QA.truong[ma]||{ma},x,{o:fbJ(x.j)||{}})}}catch(e){console.error(e)}return oCua(ma)}
 async function luuO(ma,o,nk){(o.nk=o.nk||[]).push({d:fbNgay(),ai:'Admin Clb',t:nk});const j=JSON.stringify(o);await raw().doc('truong/'+ma).set({j,gd:o.gd||{},pc:fbPc(o),t:fbTS()},{merge:true});QA.truong[ma].o=o;QA.truong[ma].j=j;
   if(ma===CLOUD.truong&&S.org){try{fbLast['org/main']='';}catch(x){}}}
 const usCua=(ma,tk)=>(QT().us||[]).filter(u=>u.tk===tk&&(u.truong||'jenny')===ma);
@@ -252,7 +254,7 @@ window.qaFormGV=function(ma){hopQA('Thêm giáo viên',`<label>Họ và tên<inp
 window.qaTaoGV=async function(ma){const ten=v('qaTen').replace(/\s+/g,' '),pw=v('qaPw'),gt=v('qaGt'),dt=v('qaDt').replace(/[^\d+]/g,''),mail=v('qaMail').toLowerCase();
   if(ten.length<3){bao('Nhập tên giáo viên');return}if(!okDt(dt)){bao('Số điện thoại chưa đúng');return}if(!okMail(mail)){bao('Gmail chưa đúng');return}
   const t0=v('qaTk').toLowerCase().replace(/^.*\./,''),tk=ma+'.'+t0;if(!t0||!fbTkOk(tk)){bao('Tên đăng nhập: chữ thường không dấu, số');return}if(tkCo(tk)){bao('Tên đăng nhập đã có');return}if(pw.length<6){bao('Mật khẩu cần ít nhất 6 kí tự');return}
-  khoa(true);try{const uid=await fbTaoTK(tk,pw);await raw().doc('users/'+uid).set({role:'gv',tk,ten,gvId:tk,truong:ma});const o=oCua(ma);
+  khoa(true);try{const uid=await fbTaoTK(tk,pw);await raw().doc('users/'+uid).set({role:'gv',tk,ten,gvId:tk,truong:ma});const o=(await oMoi(ma));
     (o.gv=o.gv||[]).push(Object.fromEntries(Object.entries({id:tk,ten,tk,gt,dt,mail}).filter(([k,x])=>x)));
     await luuO(ma,o,`Tạo giáo viên ${ten} (${tk})`);(QT().us||[]).push({uid,role:'gv',tk,ten,truong:ma});dong();baoMoi(`Đã tạo giáo viên <code>${e(tk)}</code> / <code>${e(pw)}</code> · phân công lớp: bấm ✎ Sửa`)}catch(x){console.error(x);bao(fbLoi(x));khoa(false)}};
 window.qaFormHS=function(ma){hopQA('Thêm học sinh',`<div class="qs2"><label>Họ và đệm<input id="qaHo" maxlength="30" placeholder="Nguyễn Minh" required></label><label>Tên<input id="qaTen" maxlength="12" placeholder="An" required></label></div>
@@ -266,12 +268,12 @@ window.qaTaoHS=async function(ma){const ho=v('qaHo').replace(/\s+/g,' '),tn=v('q
   if(H.ng&&H.th&&H.nam&&new Date(+H.nam,+H.th-1,+H.ng).getDate()!==+H.ng){bao('Ngày sinh chưa đúng');return}if(!okDt(H.dt)){bao('Số điện thoại chưa đúng');return}if(!okMail(H.mail)){bao('Gmail chưa đúng');return}
   if(pw.length<6){bao('Mật khẩu cần ít nhất 6 kí tự');return}
   let tk=v('qaTk').toLowerCase();tk=tk?ma+'.'+tk.replace(/^.*\./,''):tkTu(ma,tn);if(!fbTkOk(tk)){bao('Tên đăng nhập: chữ thường không dấu, số');return}if(tkCo(tk)){bao('Tên đăng nhập đã có');return}
-  const o=oCua(ma),khoi=1;
+  const o=(await oMoi(ma)),khoi=1;
   khoa(true);try{const uid=await fbTaoTK(tk,pw);await raw().doc('users/'+uid).set({role:'hs',tk,ten:n,khoi,truong:ma});const st=newStudent(n,khoi);st.gender=H.gt;
     await raw().doc('hs/'+tk).set({j:JSON.stringify(fbTach(st).hs),ev:'[]',lop:'',truong:ma,t:fbTS()});
     (o.hs=o.hs||[]).push([tk,n,khoi]);(o.hoso=o.hoso||{})[tk]=Object.fromEntries(Object.entries(H).filter(([k,x])=>x));await luuO(ma,o,`Tạo học sinh ${n} (${tk})`);(QT().us||[]).push({uid,role:'hs',tk,ten:n,truong:ma});dong();
     baoMoi(`Đã tạo học sinh <code>${e(tk)}</code> / <code>${e(pw)}</code> · em đang <b>chưa xếp lớp</b>, chọn lớp ở cột Lớp để em đăng nhập được`)}catch(x){console.error(x);bao(fbLoi(x));khoa(false)}};
-window.qaDoiLop=async function(ma,tk,lid){const o=oCua(ma),l=(o.lop||[]).find(x=>x.id===lid);o.gd=o.gd||{};if(lid)o.gd[tk]=lid;else delete o.gd[tk];const r=(o.hs||[]).find(x=>x[0]===tk);if(r&&l)r[2]=l.khoi;
+window.qaDoiLop=async function(ma,tk,lid){const o=(await oMoi(ma)),l=(o.lop||[]).find(x=>x.id===lid);o.gd=o.gd||{};if(lid)o.gd[tk]=lid;else delete o.gd[tk];const r=(o.hs||[]).find(x=>x[0]===tk);if(r&&l)r[2]=l.khoi;
   try{await luuO(ma,o,`Đổi lớp ${tk} → ${l?l.ten:'chưa xếp lớp'}`);try{await raw().doc('hs/'+tk).set({lop:lid||''},{merge:true})}catch(x){}toast(l?'Đã chuyển sang lớp '+l.ten:'Đã bỏ khỏi lớp');render()}catch(x){toast(fbLoi(x))}};
 window.qaMK=async function(ma,tk){const pw=prompt(`Mật khẩu mới cho "${tk}" (ít nhất 6 kí tự):`,fbMKGoiY());if(pw===null)return;if(pw.length<6){toast('Mật khẩu cần ít nhất 6 kí tự');return}toast('Đang đặt mật khẩu mới…');
   try{await datMK(ma,tk,pw);baoMoi(`Đã đặt mật khẩu mới cho <code>${e(tk)}</code>: <code>${e(pw)}</code>`)}catch(x){console.error(x);toast('Chưa đặt được: '+fbLoi(x))}};
@@ -298,7 +300,7 @@ window.qaLuuSua=async function(ma,tk){const n=v('qaTen').replace(/\s+/g,' '),gt=
   const dt=v('qaDt').replace(/[^\d+]/g,''),mail=v('qaMail').toLowerCase(),nam=v('qaNam'),ng=v('qaNg'),th=v('qaTh');
   if(n.length<3){bao('Họ tên quá ngắn');return}if(pw&&pw.length<6){bao('Mật khẩu cần ít nhất 6 kí tự');return}if(!okDt(dt)){bao('Số điện thoại chưa đúng');return}if(!okMail(mail)){bao('Gmail chưa đúng');return}
   if(nam&&!(+nam>=2010&&+nam<=2025)){bao('Năm sinh chưa đúng');return}if(ng&&th&&nam&&new Date(+nam,+th-1,+ng).getDate()!==+ng){bao('Ngày sinh chưa đúng');return}khoa(true);
-  try{const o=oCua(ma),thay=[];const q=await raw().collection('users').where('tk','==',tk).get();const cu=q.docs[0]&&q.docs[0].data()||{};
+  try{const o=(await oMoi(ma)),thay=[];const q=await raw().collection('users').where('tk','==',tk).get();const cu=q.docs[0]&&q.docs[0].data()||{};
     if(cu.ten!==n){await Promise.all(q.docs.map(x=>raw().doc('users/'+x.id).set({ten:n},{merge:true})));(QT().us||[]).forEach(x=>{if(x.tk===tk)x.ten=n});thay.push('họ tên')}
     const r=(o.hs||[]).find(x=>x[0]===tk);if(r){if(r[1]!==n)r[1]=n;o.hoso=o.hoso||{};const H=o.hoso[tk]=o.hoso[tk]||{};if((H.gt||'')!==gt){H.gt=gt;thay.push('giới tính')}
       const hs1={nam,ng,th,dt,mail};if(Object.keys(hs1).some(k=>(H[k]||'')!==hs1[k])){Object.keys(hs1).forEach(k=>{if(hs1[k])H[k]=hs1[k];else delete H[k]});thay.push('hồ sơ')}
@@ -311,12 +313,12 @@ window.qaLuuSua=async function(ma,tk){const n=v('qaTen').replace(/\s+/g,' '),gt=
   catch(x){console.error(x);bao(fbLoi(x));khoa(false)}};
 window.qaSuaTen=async function(ma,tk){const u=usCua(ma,tk)[0],cu=(u&&u.ten)||'';const ten=prompt(`Họ tên mới cho ${tk}:`,cu);if(ten===null)return;const n=ten.trim().replace(/\s+/g,' ');if(n.length<3){toast('Họ tên quá ngắn');return}
   try{const q=await raw().collection('users').where('tk','==',tk).get();await Promise.all(q.docs.map(d=>raw().doc('users/'+d.id).set({ten:n},{merge:true})));
-    const o=oCua(ma);let doi=false;(o.hs||[]).forEach(r=>{if(r[0]===tk){r[1]=n;doi=true}});(o.gv||[]).forEach(g=>{if((g.tk||g.id)===tk){g.ten=n;doi=true}});if(doi)await luuO(ma,o,`Đổi họ tên ${tk}: ${cu} → ${n}`);
+    const o=(await oMoi(ma));let doi=false;(o.hs||[]).forEach(r=>{if(r[0]===tk){r[1]=n;doi=true}});(o.gv||[]).forEach(g=>{if((g.tk||g.id)===tk){g.ten=n;doi=true}});if(doi)await luuO(ma,o,`Đổi họ tên ${tk}: ${cu} → ${n}`);
     (QT().us||[]).forEach(x=>{if(x.tk===tk)x.ten=n});toast('Đã đổi họ tên');render()}catch(x){toast(fbLoi(x))}};
 window.qaXoa=async function(ma,tk){const u=usCua(ma,tk)[0]||{};if(u.role==='qt')return;const g=prompt(`Xoá hẳn tài khoản ${tk}${u.ten?' ('+u.ten+')':''}? Dữ liệu học, lớp, phân công đều mất, không khôi phục được.\nGõ XOA để xác nhận:`);if(g===null)return;if(g.trim().toUpperCase()!=='XOA'){toast('Chưa xoá (chưa gõ XOA)');return}
   toast('Đang xoá…');try{const q=await raw().collection('users').where('tk','==',tk).get();await Promise.all(q.docs.map(d=>raw().doc('users/'+d.id).delete()));
     for(const c of ['login','hs','hsgv','tom']){try{await raw().doc(c+'/'+tk).delete()}catch(x){}}
-    const o=oCua(ma);let doi=false;if((o.hs||[]).some(r=>r[0]===tk)){o.hs=o.hs.filter(r=>r[0]!==tk);if(o.gd)delete o.gd[tk];if(o.hoso)delete o.hoso[tk];if(o.ph)delete o.ph[tk];doi=true}
+    const o=(await oMoi(ma));let doi=false;if((o.hs||[]).some(r=>r[0]===tk)){o.hs=o.hs.filter(r=>r[0]!==tk);if(o.gd)delete o.gd[tk];if(o.hoso)delete o.hoso[tk];if(o.ph)delete o.ph[tk];doi=true}
     if((o.gv||[]).some(x=>(x.tk||x.id)===tk)){o.gv=o.gv.filter(x=>(x.tk||x.id)!==tk);(o.lop||[]).forEach(l=>{l.gv=(l.gv||[]).filter(x=>x!==tk)});doi=true}
     if(doi)await luuO(ma,o,`Xoá tài khoản ${tk}${u.ten?' ('+u.ten+')':''}`);const U=QT().us||[];for(let i=U.length-1;i>=0;i--)if(U[i].tk===tk)U.splice(i,1);QA.tom=QA.tom.filter(t=>t.tk!==tk);toast('Đã xoá '+tk);render()}catch(x){console.error(x);toast('Chưa xoá được: '+fbLoi(x))}};
 /* ---------- gắn vào trang Quản lý ---------- */
