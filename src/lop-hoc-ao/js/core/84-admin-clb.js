@@ -77,16 +77,16 @@ function trangDS(){const Q=QT(),ds=Object.values(QA.truong).sort((a,b)=>a.ma==='
   const vai={qt:'Admin Clb',ql:'Quản lý trường',gv:'Giáo viên',hs:'Học sinh',ph:'Phụ huynh'};
   return`<div class="grid qa">
    <div class="qahead"><div><h1>Tất cả các trường</h1><div class="muted">Admin Clb · ${QA.luc?'số liệu lúc '+new Date(QA.luc).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}):'đang tải…'}</div></div>
-    <span class="qanut"><button type="button" class="btn sm" onclick="qaTaiLai()">↻ Tải lại</button> <button type="button" class="btn sm pri" onclick="qtFormTruong()">+ Thêm trường</button></span></div>
+    <span class="qanut"><button type="button" class="btn sm" onclick="qaTaiLai()">↻ Tải lại</button> <button type="button" class="btn sm" onclick="qaDungTo()" title="Tạo lại tờ lớp và thẻ xếp lớp cho học sinh ở mọi trường">⟳ Dựng lại tờ lớp</button> <button type="button" class="btn sm pri" onclick="qtFormTruong()">+ Thêm trường</button></span></div>
    <div id="qaBao"></div>
    ${Q.cu?`<div class="task qavang"><b>Có dữ liệu cũ (trước khi chia trường).</b> Bấm để chuyển thành trường <b>jenny</b>. <button type="button" class="btn sm pri" onclick="qtChuyenCu()">Chuyển dữ liệu cũ</button></div>`:''}
    <div class="qakpis">${kpi('Trường',ds.length,`${ds.filter(t=>!t.khoa).length} đang dùng${ds.some(t=>t.khoa)?' · '+ds.filter(t=>t.khoa).length+' khoá':''}`)}${kpi('Lớp',R.reduce((a,r)=>a+r.d.lop.length,0))}${kpi('Giáo viên',R.reduce((a,r)=>a+r.d.gv.length,0))}${kpi('Học sinh',hsAll)}${kpi('Học trong 7 ngày',tuan,hsAll?pt(tuan,hsAll)+'% học sinh':'')}${kpi('Học hôm nay',hn)}</div>
    <section class="card"><h2>Các trường</h2><p class="muted qanho">Bấm vào một trường để xem chi tiết.</p>
-    <div class="tablewrap"><table class="qatb qads"><tr><th>Trường</th><th>Lớp</th><th>GV</th><th>HS</th><th>Học 7 ngày</th><th>≥ 3 ngày chưa học</th><th>Đúng (30 ngày)</th><th>Sức mạnh Toán</th><th>Học gần nhất</th><th>Trạng thái</th></tr>
+    <div class="tablewrap"><table class="qatb qads"><tr><th>Trường</th><th>Lớp</th><th>GV</th><th>HS</th><th>Học 7 ngày</th><th>≥ 3 ngày chưa học</th><th>Đúng (30 ngày)</th><th>Sức mạnh Toán</th><th>Học gần nhất</th><th>Sổ đầy</th><th>Trạng thái</th></tr>
     ${R.map(({T,d})=>`<tr class="qarow" tabindex="0" onclick="qaXem('${T.ma}')" onkeydown="if(event.key==='Enter')qaXem('${T.ma}')"><td><b>${e(T.ten||T.ma)}</b><br><code class="muted">${e(T.ma)}</code></td><td data-n="Lớp">${d.lop.length}</td><td data-n="GV">${d.gv.length}</td><td data-n="HS">${d.hs.length}</td>
       <td data-n="Học 7 ngày">${d.hs.length?ph100(d.tong.tuan,d.hs.length):'—'}</td><td data-n="≥3 ngày chưa học" class="${d.tong.nghi&&d.tong.nghi/d.hs.length>.3?'qado':''}">${d.hs.length?d.tong.nghi:'—'}</td>
-      <td data-n="Đúng">${d.tong.dung==null?'—':d.tong.dung+'%'}</td><td data-n="Sức mạnh">${d.tong.mucTB==null?'<span class="muted">—</span>':nhanMuc(d.tong.mucTB)}</td><td data-n="Học gần nhất">${ngayCuoi(d.tong.cuoi)}</td>
-      <td>${T.khoa?'<span class="pill qlwarn">🔒 Khoá</span>':'<span class="pill">Đang dùng</span>'}</td></tr>`).join('')||'<tr><td colspan="10" class="muted">Chưa có trường nào.</td></tr>'}</table></div></section>
+      <td data-n="Đúng">${d.tong.dung==null?'—':d.tong.dung+'%'}</td><td data-n="Sức mạnh">${d.tong.mucTB==null?'<span class="muted">—</span>':nhanMuc(d.tong.mucTB)}</td><td data-n="Học gần nhất">${ngayCuoi(d.tong.cuoi)}</td><td data-n="Sổ đầy" class="${soDay(T)>=60?'qado':''}" title="Sổ dữ liệu của trường tối đa 1 MB. Quá 60% thì cần tách tiếp (đợt 2).">${soDay(T)}%</td>
+      <td>${T.khoa?'<span class="pill qlwarn">🔒 Khoá</span>':'<span class="pill">Đang dùng</span>'}</td></tr>`).join('')||'<tr><td colspan="11" class="muted">Chưa có trường nào.</td></tr>'}</table></div></section>
    <section class="card"><h2>Tìm tài khoản ở mọi trường</h2><input id="qaTim" type="search" value="${e(QA.tim)}" placeholder="Tên đăng nhập hoặc họ tên, vd. nguyendu.an" oninput="qaTim(this.value)" class="qainp">
     ${q?`<div class="tablewrap"><table class="qatb"><tr><th>Tên đăng nhập</th><th>Họ tên</th><th>Vai trò</th><th>Trường</th><th></th></tr>${tim.map(u=>`<tr><td><code>${e(u.tk)}</code></td><td>${e(u.ten)}</td><td>${vai[u.role]||u.role}</td><td>${e((QA.truong[u.truong||'jenny']||{}).ten||u.truong||'jenny')}</td><td><button type="button" class="btn sm" onclick="qaXem('${e(u.truong||'jenny')}')">Xem trường</button></td></tr>`).join('')||'<tr><td colspan="5" class="muted">Không thấy tài khoản nào.</td></tr>'}</table></div>`:''}</section>
    <p class="muted qanho">Số liệu học tập lấy từ bản tóm tắt mỗi em gửi khi học (tối đa 5 phút một lần). Em chưa đăng nhập từ khi có tính năng này thì chưa có số liệu — mở trường và bấm "Tính lại số liệu".</p></div>`}
@@ -229,7 +229,15 @@ const MK0='jenny123',bo=s=>String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').rep
 const oCua=ma=>JSON.parse(JSON.stringify((QA.truong[ma]||{}).o||{}));
 /* đọc lại dữ liệu trường ngay trước khi sửa (12/11: tránh ghi đè thay đổi quản lý trường vừa làm) */
 async function oMoi(ma){try{const d=await raw().doc('truong/'+ma).get();if(d.exists){const x=d.data()||{};QA.truong[ma]=Object.assign(QA.truong[ma]||{ma},x,{o:fbJ(x.j)||{}})}}catch(e){console.error(e)}return oCua(ma)}
-async function luuO(ma,o,nk){(o.nk=o.nk||[]).push({d:fbNgay(),ai:'Admin Clb',t:nk});const j=JSON.stringify(o);await raw().doc('truong/'+ma).set({j,gd:o.gd||{},pc:fbPc(o),t:fbTS()},{merge:true});QA.truong[ma].o=o;QA.truong[ma].j=j;
+/* sổ trường (truong/{mã}) tối đa 1 MB — đầy bao nhiêu % */
+function soDay(T){try{const n=new TextEncoder().encode(String(T.j||'')+JSON.stringify(T.gd||{})+JSON.stringify(T.pc||{})).length;return Math.min(100,Math.ceil(n*100/1048576))}catch(x){return 0}}
+/* 13/11/2026 — dựng lại tờ lớp (lop/…) và thẻ xếp lớp (xep/…) cho mọi trường, để học sinh không phải đọc sổ trường */
+window.qaDungTo=async function(){const ds=Object.keys(QA.truong);if(!ds.length)return;
+  if(!confirm(`Dựng lại tờ lớp và thẻ xếp lớp cho ${ds.length} trường?\nViệc này không đổi dữ liệu học của học sinh.`))return;
+  toast('Đang dựng lại tờ lớp…');const kq=[];
+  for(const ma of ds){try{const r=await fbDungTo(ma,await oMoi(ma));kq.push(`${ma}: ${r.lop} lớp, ${r.hs} học sinh`)}catch(x){console.error(x);kq.push(`${ma}: lỗi — ${fbLoi(x)}`)}}
+  const el=document.getElementById('qaBao');if(el)el.innerHTML=`<div class="task">Đã dựng lại tờ lớp · ${kq.map(e).join(' · ')}</div>`;toast('Xong')};
+async function luuO(ma,o,nk){(o.nk=o.nk||[]).push({d:fbNgay(),ai:'Admin Clb',t:nk});const j=JSON.stringify(o);await raw().doc('truong/'+ma).set({j,gd:o.gd||{},pc:fbPc(o),t:fbTS()},{merge:true});try{await fbGhiTo(ma,(QA.truong[ma]||{}).o,o)}catch(x){console.error(x)}QA.truong[ma].o=o;QA.truong[ma].j=j;
   if(ma===CLOUD.truong&&S.org){try{fbLast['org/main']='';}catch(x){}}}
 const usCua=(ma,tk)=>(QT().us||[]).filter(u=>u.tk===tk&&(u.truong||'jenny')===ma);
 const tkCo=tk=>(QT().us||[]).some(u=>u.tk===tk);
