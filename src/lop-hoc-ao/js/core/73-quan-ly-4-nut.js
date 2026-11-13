@@ -39,7 +39,7 @@ function home(){const o=O(),n=so();
  return`<div class="grid"><div><h1 style="font-size:28px">Quản lý trung tâm</h1><div class="muted">${e(o.ten)} · năm học ${e(o.nam)}</div></div>
  <div class="qltiles">
   ${tile('hs','🎒','Học sinh',n.hs+' em',n.chuaXep?n.chuaXep+' em chưa xếp lớp':'')}
-  ${tile('ph','👪','Phụ huynh',n.ph+' tài khoản',n.chuaPH?n.chuaPH+' em chưa có phụ huynh':'')}
+  ${typeof PH_ON!=='undefined'&&!PH_ON?'':tile('ph','👪','Phụ huynh',n.ph+' tài khoản',n.chuaPH?n.chuaPH+' em chưa có phụ huynh':'')}
   ${tile('gv','👩‍🏫','Giáo viên',n.gv+' người',n.gvTrong?n.gvTrong+' người chưa có lớp':'')}
   ${tile('lop','🏫','Lớp',n.lop+' lớp',n.lopTrong?n.lopTrong+' lớp chưa có giáo viên':'')}
  </div>

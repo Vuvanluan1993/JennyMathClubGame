@@ -1,3 +1,5 @@
+/* 13/11/2026: thầy tạm bỏ tài khoản phụ huynh — đổi thành true để bật lại (77 tự tạo PH, ô Phụ huynh ở Quản lý, PH khi nhập Excel) */
+var PH_ON=false;
 /* ===================== Máy chủ Firebase (24/10/2026) =====================
    Dùng chung dữ liệu thật giữa app học sinh, trang giáo viên, phụ huynh, quản lý.
    Firestore (xem firebase/firestore.rules):
