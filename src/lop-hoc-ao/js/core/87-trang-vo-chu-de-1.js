@@ -32,7 +32,7 @@ function cellFor(q){const g=scr,cv=g.cv||[];let b=0;
  return()=>{const i=b++,v=cv[i],bad=g.cbad&&g.cbad.includes(i)?'bad':'';
   if(q.lay==='vok')return`<button type="button" class="votc e vb1 ${i===g.cc?'cur':''} ${v?'f':''} ${bad}" data-vb="${i}" onclick="voBox(${i})" aria-label="${T('Ô trống','Blank')} ${i+1}">${esc(v||'')}</button>`;
   const shown=q.lay==='voc'?(v!==''&&v!=null?q.opts[+v]:''):(v||'');
-  return`<button type="button" class="votc e vb1 ${q.lay==='voc'&&q.wide?'w':''} ${i===g.cc?'cur':''} ${bad}" onclick="tlCell(${i})" aria-label="${T('Ô trống','Blank')} ${i+1}">${esc(shown)}</button>`}}
+  return`<button type="button" class="votc e vb1 ${q.lay==='voc'&&q.wide?'w':''} ${i===g.cc?'cur':''} ${bad}" onclick="tlCell(${i})" aria-label="${T('Ô trống','Blank')} ${i+1}">${q.raw?shown:esc(shown)}</button>`}}
 function figForm(q){const cell=cellFor(q);
  const mau=q.mau?`<div class="vomau"><span class="votag">${T('MẪU','EXAMPLE')}</span>${row({t:q.mau},()=>'',q)}</div>`:'';
  let extra='';if(q.lay==='vok'){const us=voUsed(q,scr.cv||[]);extra=`<div class="vohint">${T('Kéo thẻ vào ô (hoặc chạm thẻ). Chạm ô đã điền để bỏ.','Drag a card into a box (or tap it). Tap a filled box to clear it.')}</div><div class="votray">${q.cards.map((c,k)=>`<button type="button" class="vocard ${us[k]?'used':''}" data-vc="${k}" ${us[k]?'disabled':''} aria-label="${T('Thẻ số','Card')} ${c}">${c}</button>`).join('')}</div>`}

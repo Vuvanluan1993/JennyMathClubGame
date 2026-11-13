@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Hoàn thiện Tự luyện lớp 1: trang vở cho mọi bài (Bài 1–41)
+- File mới `js/core/89-trang-vo-lop1-con-lai.js` cho các bài còn lại: Chủ đề 2 hình phẳng (7–9: tên hình, đếm hình, nối hình – tên, quy luật hình) · Chủ đề 4 (14–16: tên khối, đếm khối, quy luật khối, bên trái/bên phải, phía trên/phía dưới, thứ tự từ trái sang phải) · Ôn HK1 (17–20: lấy trang các bài trước) · Các số đến 100 (21–24: chục và đơn vị, nối số với cách đọc, viết số, dãy số, so sánh, xếp thứ tự) · Độ dài (25–28: dài hơn/ngắn hơn, đếm ô, cao hơn/thấp hơn, đọc thước cm, đo không từ 0, tính với cm, so sánh độ dài) · Cộng, trừ không nhớ phạm vi 100 (29–33: tính, đặt tính rồi tính từng chữ số, nối kết quả, số còn thiếu, điền dấu) · Giờ và lịch (34–37: xem giờ đúng, nối đồng hồ, mấy giờ sau, ngày trong tuần, thứ tự ngày, ngày và tuần, tờ lịch) · Ôn cuối năm (38–41).
+- Hình mới vẽ bằng SVG pixel: hình phẳng, khối, đồng hồ, tờ lịch, thanh chục, băng giấy, cột, thước cm, đặt tính dọc; đọc số bằng chữ (mốt, tư, lăm).
+- `86`: trang vở canh lại sau khi tải phông và sau 0,3 giây; làm tròn xuống khi thu nhỏ. `87`: lựa chọn có thể là hình (q.raw).
+- Đo cả 41 bài ở 320×568 và 375×667: không cuộn, không tràn; máy làm đúng 123 bài kiểu vở đều chấm đúng. tu-luyen lớp 1, 2 ĐẠT; kiem-tra 1, 2 ĐẠT; khung-hinh lớp 1 không lỗi; tieng-anh lớp 1 còn 0 chuỗi.
 ## 13/11/2026 — Trang vở lớp 1, Chủ đề 3 (Bài 10–13)
 - Thầy duyệt Chủ đề 1 (đã gộp #54) và giao làm tiếp. File mới `js/core/88-trang-vo-chu-de-3.js`:
   Bài 10 Phép cộng: Viết phép cộng theo tranh (có Mẫu; đổi chỗ hai số hạng vẫn đúng) · Tính · Nối phép tính với kết quả. Bài 11 Phép trừ: Viết phép trừ theo tranh (hình bị gạch là bớt đi) · Tính · Kéo thẻ số còn thiếu. Bài 12 Bảng cộng, bảng trừ: Điền dấu giữa phép tính và số (có Mẫu) · Gia đình phép tính từ sơ đồ · Nối hai phép tính bằng nhau. Bài 13 Luyện tập chung: Tính · Điền dấu · Phép tính theo tranh (cộng hoặc trừ).
