@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Trang vở lớp 1, Chủ đề 1 (Bài 1, 2, 3, 4, 6) — chờ thầy duyệt ảnh mẫu
+- File mới `js/core/87-trang-vo-chu-de-1.js`: "mẫu bài theo dạng", mỗi bài 3 bài kiểu vở + 2 câu của đảo + ★.
+  Bài 1, 2: Đếm rồi viết số (có Mẫu) · Nối tranh với số · Viết số còn thiếu vào dãy. Bài 3: Nhiều hơn/ít hơn/bằng nhau (có Mẫu) · Nối nhóm bằng nhau · Đếm rồi kéo thẻ số. Bài 4: Điền dấu >, <, = (có Mẫu) · So sánh qua hình · Kéo thẻ xếp thứ tự. Bài 6: Điền dấu · Nối sơ đồ tách – gộp · Viết số còn thiếu.
+- 4 kiểu trang chung: `vof` (bàn phím số), `voc` (**chọn**: chạm ô rồi chạm nút >, <, = hoặc chữ ở dưới), `von` (nối hai cột, dây vẽ theo vị trí chấm), `vok` (kéo/chạm thẻ). Mỗi câu có `vchk()` tự kiểm đáp án; `tools/test/tu-luyen.js` gọi.
+- `86-trang-vo.js`: mở `window.VO` (hàm vẽ dùng chung), `vgrp` nhận số cột, kéo thẻ dùng cho mọi câu có `cards`.
+- Đo 320×568, 375×667, 630×612: không cuộn, không tràn; máy làm đúng 15 bài đều chấm đúng. tu-luyen lớp 1, 2 ĐẠT; kiem-tra 1 ĐẠT; khung-hinh lớp 1 không lỗi; tieng-anh lớp 1 còn 0 chuỗi.
 ## 13/11/2026 — Sửa lỗi tự phát tiếng và tên đảo tràn khung
 - **Tự phát tiếng:** vào Tự luyện, đề bị đọc 2 lần (`tlGo`/`tlDayGo` đặt lại `t0` sau khi `go()` đã vẽ). Với giọng thu sẵn, lần đọc thứ hai bị xếp hàng nên phát lại một lúc sau, khi em không bấm gì. Sửa: không đặt lại `t0` (72); `83-giong-thu-san.js`: app tự gọi lại đúng câu đang đọc thì bỏ, câu đang chờ chỉ đọc khi em vẫn ở đúng màn lúc xếp hàng. Đo bằng cách để yên 2 phút ở bản đồ, trang đảo, Tự luyện, màn đảo: mỗi đề chỉ đọc 1 lần, không có tiếng nào khác.
 - **Tên đảo tràn khung:** `85-xuong-dong-dep.js` dính cả tên đảo thành một khối không ngắt ("1. Ôn số · T1"). Sửa: chữ ngắn cuối không dính qua dấu "·"; tên đảo không giữ trọn khối giữa các "·"; lưới an toàn bắt cả ô co theo chữ (flex) rộng hơn khung cha; tên bị cắt "…" thì thu chữ (tối đa còn 70%). Đo lớp 1–5 ở 320/375/630px: 0 tên tràn (trước: 692).
