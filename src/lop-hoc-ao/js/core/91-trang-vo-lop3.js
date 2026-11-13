@@ -150,6 +150,7 @@ const PAGES={
  70:()=>[tinh(uniq(()=>nhanSo(10000,33333,99999),4)),datTinh(uniq(()=>nhanSo(10000,24999,99999),2)),noiKQ(uniq(()=>nhanSo(10000,24999,99999),3))],71:()=>[chiaDu(10000,99999),tinh(uniq(()=>{const b=RR(2,9),q=RR(10001,11111);return{a:b*q,b,op:':',r:q}},4)),chiaDu(10000,99999)],72:()=>[P(70,1),P(71,0),P(42,0)],
  73:()=>[bangSoLieu(),bieuDo(),bangSoLieu()],74:()=>[khaNang(),khaNang(),bangSoLieu()],75:()=>[bangSoLieu(),khaNang(),bieuDo()],
  76:()=>[P(59,0),P(60,0),P(61,0)],77:()=>[P(63,0),P(64,1),P(65,2)],78:()=>[P(70,0),P(71,0),P(57,0)],79:()=>[P(52,0),P(50,0),P(43,2)],80:()=>[P(73,0),P(74,0),P(75,0)],81:()=>[P(77,0),P(78,2),P(79,0)]};
+Object.assign(V,{nhanSo,congSo,chiaDu,bieuThuc,haiBuoc,doiDV,donVi3,chuVi,dienTich,dienTichO,vietTong5,dauLon,gioPhut5,bangSoLieu,timTP,frac,ROMA});
 {const _p=window.voPage;window.voPage=function(x){if(curG()===3&&PAGES[x.b])return PAGES[x.b]().filter(Boolean);return _p(x)}}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .vofr{display:inline-flex;flex-direction:column;align-items:center;line-height:1;font-family:var(--f-display);font-size:18px}.vofr i{font-style:normal;padding:0 3px}.vofr i:first-child{border-bottom:2px solid currentColor}

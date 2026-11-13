@@ -1,5 +1,10 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Tự luyện lớp 4: mở và làm trang vở cho đủ 73 bài
+- Thầy gửi Vở bài tập Toán 4 tập 1, 2. `72`: mở Tự luyện cho lớp 4. File mới `js/core/92-trang-vo-lop4.js`, cùng kiểu đã duyệt:
+  số đến lớp triệu (nối số với cách đọc, hàng – lớp với chữ số tô đỏ, giá trị chữ số, so sánh, xếp thứ tự, làm tròn, dãy số tự nhiên) · số chẵn – lẻ · biểu thức chứa chữ, công thức chu vi · bài toán ba bước, tổng – hiệu, trung bình cộng, rút về đơn vị · tính nhanh (giao hoán, kết hợp, nhân với một tổng) · nhân, chia với số có một/hai chữ số, với 10, 100, 1 000 · đo góc bằng thước đo góc, góc nhọn – vuông – tù – bẹt · vuông góc, song song, hình bình hành, hình thoi · yến – tạ – tấn, dm² – m² – mm², giây – thế kỉ · dãy số liệu, biểu đồ cột, số lần xuất hiện · **phân số**: khái niệm (tô màu), phân số và phép chia, phân số bằng nhau, rút gọn, quy đồng, so sánh, cộng – trừ – nhân – chia (đáp số tối giản), phân số của một số. Ôn tập lấy trang các bài trước.
+- Ô phân số mới: hai ô chồng nhau (tử trên, mẫu dưới). `91`: mở hàm dùng chung cho lớp 4.
+- Đo cả 73 bài ở 320×568 và 375×667: không cuộn, không tràn; máy làm đúng 219 bài kiểu vở đều chấm đúng. tu-luyen lớp 1–4 ĐẠT; kiem-tra 4 ĐẠT; khung-hinh lớp 4 không lỗi.
 ## 13/11/2026 — Tự luyện lớp 3: mở và làm trang vở cho đủ 81 bài
 - Thầy gửi Vở bài tập Toán 3 tập 1, 2. `72`: mở Tự luyện cho lớp 3 (trước "Sắp có"). File mới `js/core/91-trang-vo-lop3.js`, cùng kiểu đã duyệt:
   bảng nhân/chia 2–9 · tìm thành phần · gấp lên/giảm đi một số lần (bảng) · số lớn gấp mấy lần số bé · một phần mấy (chọn phân số) · nhân, chia số có 2–5 chữ số với số có một chữ số (đặt tính nhân dọc; chia ghi thương và số dư) · biểu thức số · bài toán hai bước · mm, g, ml, °C (nhiệt kế) · trung điểm, bán kính – đường kính, góc vuông · chu vi, diện tích (đếm ô cm², công thức) · số đến 10 000 và 100 000 (đọc, viết thành tổng, so sánh, xếp thứ tự, làm tròn) · chữ số La Mã · đồng hồ (phút), tháng – năm, tiền · bảng số liệu, khả năng xảy ra. Luyện tập chung, ôn tập lấy trang các bài trước.
