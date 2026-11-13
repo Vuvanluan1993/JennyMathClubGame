@@ -14,7 +14,7 @@ const M='−';
 function gx(n,k,s,c){c=c||5;return`<div class="vopic one"><div class="vogrp" style="width:${Math.ceil(c*7*s+(c-1)*3+6)}px">${Array.from({length:n},(_,i)=>`<span class="voxs ${i>=n-k?'x':''}">${vspr(arguments[4],s)}</span>`).join('')}</div></div>`}
 V.tokX=function(t,cell,q){if(!t||typeof t!=='object')return null;
  if(t.x!==undefined)return`<span class="voex">${t.x}</span>`;
- if(t.e!==undefined)return`<span class="votc vb1 w ve">${t.e}</span>`;
+ if(t.e!==undefined)return`<span class="votc vb1 w ve ${String(t.e).length>14?'L':''}">${t.e}</span>`;
  if(t.gx)return gx(t.gx[1],t.gx[2],t.s||2,t.c||5,t.gx[0]);
  if(t.br)return'<span class="vobr"></span>';
  return null};

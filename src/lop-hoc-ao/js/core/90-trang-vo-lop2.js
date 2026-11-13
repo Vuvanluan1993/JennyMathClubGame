@@ -263,6 +263,7 @@ function noi30(){const H=distinct(3,1,12),Mi=H.map(()=>pick([0,30]));return noiQ
 function xep100t(){const A=distinct(4,1,9).map(v=>v*100),B=distinct(4,10,99).map(v=>v*10);const up=A.slice().sort((x,y)=>x-y),dn=B.slice().sort((x,y)=>y-x);
  return mkQ({lay:'vok',kind:'Vở: xếp thứ tự số tròn trăm, tròn chục',rows2:[{lb:'a)',t:[T(`Xếp ${A.join(', ')} từ bé đến lớn:`,`Order ${A.join(', ')} from smallest:`)]},{t:[{b:1},{b:1},{b:1},{b:1}]},{lb:'b)',t:[T(`Xếp ${B.join(', ')} từ lớn đến bé:`,`Order ${B.join(', ')} from largest:`)]},{t:[{b:1},{b:1},{b:1},{b:1}]}],a:up.concat(dn),cards:shuf(A.concat(B)),
   q:T('<b>Kéo</b> thẻ số để xếp theo thứ tự.','<b>Drag</b> the cards to put the numbers in order.'),say:T('Em kéo thẻ số để xếp các số theo thứ tự.','Drag the cards to put the numbers in order.'),need:needK,sol:'',vchk(){const u=this.a.slice(0,4),d=this.a.slice(4);return u.every((v,i)=>!i||v>u[i-1])&&d.every((v,i)=>!i||v<d[i-1])}})}
+Object.assign(V,{gen,lab,OPS,SH,uniq,tinh,datTinh,noiKQ,thieu,dau,signSet,form,chon,xep,day,loiVan,bangTP,gioPhut,soNgayThang,tienQ,khaNang,bieuDo,doanThang,duongGK,demTuGiac,tenKhoi4,demKhoi4,read3,need,needC,needK,HINTN,NV,NG,clock2,tien,vc2});
 {_p=window.voPage;window.voPage=function(x){if(curG()===2&&PAGES[x.b])return PAGES[x.b]().filter(Boolean);return _p(x)}}
 document.head.insertAdjacentHTML('beforeend',`<style>
 .vogrs{display:inline-flex;gap:4px;flex-wrap:wrap}.vogrs .vopic{padding:2px}
