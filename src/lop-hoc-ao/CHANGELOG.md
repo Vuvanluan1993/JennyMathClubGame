@@ -1,5 +1,11 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Trang vở lớp 1, Chủ đề 3 (Bài 10–13)
+- Thầy duyệt Chủ đề 1 (đã gộp #54) và giao làm tiếp. File mới `js/core/88-trang-vo-chu-de-3.js`:
+  Bài 10 Phép cộng: Viết phép cộng theo tranh (có Mẫu; đổi chỗ hai số hạng vẫn đúng) · Tính · Nối phép tính với kết quả. Bài 11 Phép trừ: Viết phép trừ theo tranh (hình bị gạch là bớt đi) · Tính · Kéo thẻ số còn thiếu. Bài 12 Bảng cộng, bảng trừ: Điền dấu giữa phép tính và số (có Mẫu) · Gia đình phép tính từ sơ đồ · Nối hai phép tính bằng nhau. Bài 13 Luyện tập chung: Tính · Điền dấu · Phép tính theo tranh (cộng hoặc trừ).
+- Mảnh mới cho trang vở: chữ phép tính, ô phép tính, nhóm hình có hình bị gạch. `87`: mở thêm hàm dùng chung (`VO.tok`, `VO.mkQ`, móc `VO.tokX`).
+- `86`: trang vở tự thu nhỏ chọn cỡ **lớn nhất** còn vừa (chia đôi) — trước đây thu nhỏ quá tay khi chữ hết xuống dòng.
+- Đo 320×568, 375×667, 630×612: không cuộn, không tràn; máy làm đúng 12 bài mới (và 18 bài Chủ đề 1–Bài 5) đều chấm đúng. tu-luyen lớp 1, 2 ĐẠT; kiem-tra 1 ĐẠT; khung-hinh lớp 1 không lỗi; tieng-anh lớp 1 còn 0 chuỗi.
 ## 13/11/2026 — Trang vở lớp 1, Chủ đề 1 (Bài 1, 2, 3, 4, 6) — chờ thầy duyệt ảnh mẫu
 - File mới `js/core/87-trang-vo-chu-de-1.js`: "mẫu bài theo dạng", mỗi bài 3 bài kiểu vở + 2 câu của đảo + ★.
   Bài 1, 2: Đếm rồi viết số (có Mẫu) · Nối tranh với số · Viết số còn thiếu vào dãy. Bài 3: Nhiều hơn/ít hơn/bằng nhau (có Mẫu) · Nối nhóm bằng nhau · Đếm rồi kéo thẻ số. Bài 4: Điền dấu >, <, = (có Mẫu) · So sánh qua hình · Kéo thẻ xếp thứ tự. Bài 6: Điền dấu · Nối sơ đồ tách – gộp · Viết số còn thiếu.
