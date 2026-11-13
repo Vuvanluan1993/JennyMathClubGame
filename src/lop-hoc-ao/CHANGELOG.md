@@ -1,5 +1,8 @@
 # Lịch sử thay đổi
 
+## 13/11/2026 — Sửa treo ~10 giây khi mở trang vở lớp 4 Bài 12 (số đến lớp triệu)
+- `87`: `distinct(k,lo,hi)` dựng cả mảng từ `lo` đến `hi` rồi xáo; Bài 12 lớp 4 gọi với khoảng 1 000 000–99 999 999 (99 triệu phần tử) nên mỗi lần sinh trang mất ~10 giây, bài test `tu-luyen` lớp 4 quá 20 phút trên GitHub (rc=124). Nay khoảng > 1000 số thì bốc từng số ngẫu nhiên khác nhau. Đo lại: sinh 175 đảo × 6 trang lớp 4 từ 709 giây còn 29 giây.
+
 ## 13/11/2026 — Tự luyện lớp 5: mở và làm trang vở cho đủ 75 bài
 - Thầy không có PDF VBT Toán 5 nên giao tìm trên mạng. Không tải bản PDF lậu; dạng bài lấy theo mục lục và lời giải công khai của VBT Toán 5 Chân trời sáng tạo (vietjack, loigiaihay), ghép với nội dung từng bài KNTT; viết lại lời, số mới mỗi lần.
 - `72`: mở Tự luyện cho lớp 5. File mới `js/core/93-trang-vo-lop5.js`: số tự nhiên, phân số, phân số thập phân, hỗn số · **số thập phân** (viết, so sánh, xếp thứ tự, làm tròn, số đo dạng số thập phân, cộng – trừ – nhân – chia, nhân chia với 10/100/0,1) · km², ha, bảng đơn vị diện tích · diện tích tam giác, hình thang, chu vi – diện tích hình tròn (π = 3,14) · tỉ số, tỉ số phần trăm, tỉ lệ bản đồ, tổng – tỉ, hiệu – tỉ, giá trị phần trăm · thể tích, cm³ – dm³ – m³, hình khai triển, diện tích xung quanh/toàn phần, thể tích hình hộp chữ nhật, hình lập phương · đổi, cộng, trừ, nhân, chia số đo thời gian · vận tốc, quãng đường, thời gian · biểu đồ hình quạt tròn, tỉ số số lần lặp lại. Ôn tập lấy trang các bài trước.

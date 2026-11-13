@@ -17,6 +17,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # để gọi deploy.yml sau khi đẩy (commit do github.token đẩy không tự kích hoạt workflow khác)
 
 concurrency:
   group: giong-doc
@@ -57,3 +58,10 @@ jobs:
           git diff --cached --quiet && echo "Không có file mới" && exit 0
           git commit -m "Thu giọng đọc ($(date -u +%F))"
           git pull --rebase && git push
+          echo "DA_DAY=1" >> "$GITHUB_ENV"
+      # Pages dựng bằng deploy.yml; commit do bot đẩy không tự chạy nó nên gọi tay.
+      - name: Dựng lại Pages
+        if: env.DA_DAY == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref main

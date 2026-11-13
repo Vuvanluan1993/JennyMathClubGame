@@ -5,8 +5,9 @@
 // Kiểm tra: số đảo khớp số tiết trong vở, trùm ở đảo cuối chủ đề, đáp án đúng, không trùng phương án,
 // không NaN/undefined, chữ không tràn màn hình 360px, mọi bài có Bài giảng Jenny, trò chơi nhỏ có luật hợp lí,
 // phép tính trong slide (liệt kê dòng nghi ngờ để người xem lại).
+if(process.env.PW_DIR&&!process.env.PLAYWRIGHT_BROWSERS_PATH)process.env.PLAYWRIGHT_BROWSERS_PATH=process.env.PW_DIR; // thư mục trình duyệt Playwright (mặc định: của Playwright)
 const path=require('path'),fs=require('fs');const {chromium}=require('playwright');
-const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const ROOT=path.resolve(__dirname,'..','..');const EXE=process.env.CHROME; // không đặt → Chromium của Playwright
 const grades=process.argv[2]?[Number(process.argv[2])]:[1,2,3,4,5];const only=process.argv[3]?process.argv[3].split(',').map(n=>Number(n)-1):null;
 const plan=JSON.parse(fs.readFileSync(path.join(ROOT,'data','plan.json'))).grades;
 (async()=>{const b=await chromium.launch({executablePath:fs.existsSync(EXE)?EXE:undefined});
@@ -26,7 +27,7 @@ const plan=JSON.parse(fs.readFileSync(path.join(ROOT,'data','plan.json'))).grade
      if(q.type==='opt'){const hs=q.opts.map(o=>o.h);if(new Set(hs).size!==hs.length&&!/khác loại/.test(q.kind||''))bad.push(x.id+' trùng phương án '+q.kind)}
      if(q.type==='pick'&&!q.a.length)bad.push(x.id+' chạm chọn không có đáp án');
      if(/NaN|undefined/.test(JSON.stringify(q)))bad.push(x.id+' NaN/undefined '+q.kind);
-     if(k<3){startG1(x.id,0);scr.qs[0]=q;scr.j=0;scr.picks=[];scr.seq=[];render();fitOpts();document.querySelectorAll('.g1opts button').forEach(bt=>{if(bt.scrollWidth>bt.clientWidth+2)lay.push('tràn nút '+x.id+' '+q.kind)});if(document.documentElement.scrollWidth>360)lay.push('tràn trang '+x.id+' '+q.kind)}}}))}
+     if(k<3){startG1(x.id,0);scr.qs[0]=q;scr.j=0;scr.picks=[];scr.seq=[];render();fitOpts();try{xdFit()}catch(e){}document.querySelectorAll('.g1opts button').forEach(bt=>{if(bt.scrollWidth>bt.clientWidth+2)lay.push('tràn nút '+x.id+' '+q.kind)});if(document.documentElement.scrollWidth>360)lay.push('tràn trang '+x.id+' '+q.kind)}}}))}
     for(const bb of T.bai){const S=(LES[g]||{})[bb.bai];if(!S){bad.push('thiếu bài giảng bài '+bb.bai);continue}const x=L.find(i=>i.b===bb.bai);startLes(x.id,1);S.forEach((sl,i)=>{ns++;scr.i=i;render();if(document.documentElement.scrollWidth>360)lay.push(`slide tràn bài ${bb.bai} trang ${i+1}`);
      const d=document.createElement('div');d.innerHTML=sl.h.replace(/<br>/g,' ').replace(/<\/(p|li|td|div)>/g,' ; ');const t=d.textContent.replace(/ /g,' ');const num='(\\d{1,3}(?: \\d{3})*(?:,\\d+)?)';const re=new RegExp(num+' ?([+−×:]) ?'+num+' ?= ?'+num+'(?![\\d,])','g');let m;const v=s=>Number(s.replace(/ /g,'').replace(',','.'));while((m=re.exec(t))){if(/[+−×:(\/]\s*$/.test(t.slice(Math.max(0,m.index-3),m.index)))continue;const A=v(m[1]),o=m[2],B=v(m[3]),C=v(m[4]);const res=o==='+'?A+B:o==='−'?A-B:o==='×'?A*B:A/B;if(Math.abs(res-C)>1e-9)mathc.push(`bài ${bb.bai}: ${t.slice(m.index,m.index+m[0].length+20)}`)}})}}
    return{nq,ns,bad:[...new Set(bad)],lay:[...new Set(lay)],mathc}},[g,SID,T]);
