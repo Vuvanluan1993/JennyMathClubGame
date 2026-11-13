@@ -180,6 +180,10 @@ Khi thầy chốt điều mới → ghi thêm vào đây (kèm ngày) trong cùn
 - Bấm trường → chi tiết 5 thẻ: Tổng quan · Lớp · Giáo viên · Học sinh · Tài khoản; nút Vào trường để quản lý, Đổi tên, Khoá, Dữ liệu thử. Trong trường có nút "← Các trường".
 - Số liệu lấy từ bản tóm tắt mỗi em gửi (`tom/{tk}`, tối đa 5 phút/lần); em chưa có thì "Tính lại số liệu".
 
+## 6m. Admin Clb quản lý tài khoản; tạm bỏ phụ huynh (13/11/2026)
+- Admin Clb thêm, sửa họ tên, đặt mật khẩu mới, xoá tài khoản quản lý trường, giáo viên, học sinh của mọi trường ngay ở trang chi tiết trường; đổi lớp học sinh; xoá tài khoản dở dang.
+- **Tạm chưa dùng tài khoản phụ huynh**: không tạo, không hiện (bật lại bằng `PH_ON=true`).
+
 ## 7. Kiểm tra bắt buộc (NODE_PATH trỏ tới node_modules có playwright)
 - `node tools/test/kiem-tra.js <lớp>` — lớp 1–5 phải ĐẠT.
 - `node tools/test/kien-thuc-tro-choi.js` — trò không vượt kiến thức.
