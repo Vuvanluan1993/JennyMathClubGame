@@ -12,7 +12,7 @@
 const V=window.VO;if(!V)return;
 const {T,RR,VS,vgrp,vpic,vsd,head,base,voUsed}=V;
 const SP=()=>shuf(Object.keys(VS));
-const distinct=(k,lo,hi)=>shuf(Array.from({length:hi-lo+1},(_,i)=>lo+i)).slice(0,k);
+const distinct=(k,lo,hi)=>{const n=hi-lo+1;if(n<=1000)return shuf(Array.from({length:n},(_,i)=>lo+i)).slice(0,k);/* khoảng lớn (vd. 1 000 000–99 999 999 ở lớp 4): bốc từng số, không dựng cả mảng — trước đây treo ~10 giây mỗi trang */const s=new Set();while(s.size<Math.min(k,n))s.add(RR(lo,hi));return[...s]};
 const SIGN=['>','<','='],sgn=(x,y)=>x>y?0:x<y?1:2;
 ['vof','voc','von','vok'].forEach(l=>{if(!V.VO_LAYS.includes(l))V.VO_LAYS.push(l)});
 
