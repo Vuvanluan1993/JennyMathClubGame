@@ -9,12 +9,22 @@ INC=re.compile(r'/\*@include ([^*]+?)\*/')
 def expand(text,depth=0):
     assert depth<5,'include lồng quá sâu'
     return INC.sub(lambda m:expand(open(os.path.join(ROOT,m.group(1).strip()),encoding='utf-8').read().removesuffix('\n'),depth+1),text)
+def so_ban():
+    """Số bản hiện ở góc thẻ chào: '<ngày commit> · <sha ngắn>' — dựng lại cùng commit cho cùng kết quả (CI và máy thầy giống nhau).
+    Lấy sha từ GITHUB_SHA (GitHub Actions) hoặc git rev-parse; không có git thì dùng giờ máy."""
+    import subprocess,datetime
+    sha=os.environ.get('GITHUB_SHA','')[:7]
+    try:
+        env=dict(os.environ,TZ='Asia/Ho_Chi_Minh') # ngày theo giờ Việt Nam, CI (UTC) và máy thầy ra cùng chuỗi
+        g=lambda *a:subprocess.run(['git','-C',ROOT,*a],capture_output=True,text=True,check=True,env=env).stdout.strip()
+        sha=sha or g('rev-parse','--short=7','HEAD')
+        return g('log','-1','--format=%cd','--date=format:%d/%m')+' · '+sha
+    except Exception:
+        return sha or datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7))).strftime('%d/%m · %H:%M')
 def main():
     src=open(os.path.join(ROOT,'app.template.html'),encoding='utf-8').read()
     out=expand(src)
-    import datetime
-    ver=(datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7)))).strftime('%d/%m · %H:%M')
-    out=out.replace('__APP_VER__',ver)
+    out=out.replace('__APP_VER__',so_ban())
     os.makedirs(os.path.join(ROOT,'dist'),exist_ok=True)
     open(os.path.join(ROOT,'dist','lop-hoc-ao-jenny.html'),'w',encoding='utf-8').write(out)
     print('dist/lop-hoc-ao-jenny.html',len(out.encode()),'bytes')
