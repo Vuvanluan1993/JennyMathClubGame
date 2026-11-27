@@ -1,0 +1,120 @@
+/* SINH TỰ ĐỘNG từ design/tokens.json bằng tools/tokens.py — KHÔNG SỬA TAY. */
+/* Token thiết kế chung Clb Học Toán cùng Jenny (P-03). Nguồn duy nhất; tools/tokens.py sinh design/tokens.css. app.css, kit.css, index.html giữ tên biến cũ nhưng trỏ sang --jc-*. Giá trị '{nhom.ten}' = tham chiếu token khác. Bảng PXC trong src/lop-hoc-ao/js/core/22-do-hoa-pixel-mau-logo-clb.js vẽ canvas, không đọc CSS: nhóm 'logo' dưới đây CHÉP LẠI PXC (đổi màu logo thì sửa cả hai nơi). Nhóm 'lms' chép lại biến --lm-* mà 80-phong-cach-lms.js chèn bằng JS (chưa đọc tokens). Luật đã chốt (LUAT-DA-CHOT.md §2, §6j): học sinh pixel, trang GV/PH/QL kiểu Classroom, luôn nền sáng — token chỉ gom, không đổi. */
+:root{
+  /* logo: 25 màu logo Clb (= PXC, chữ khoá PXC ghi ở 'pxc') */
+  --jc-navy:#1F2A5A;
+  --jc-white:#FFFFFF;
+  --jc-skin:#FFD9B8;
+  --jc-coral:#F26249;
+  --jc-green:#2AB563;
+  --jc-green-deep:#1E8A4A;
+  --jc-lime:#CFDB6E;
+  --jc-orange:#F37A1F;
+  --jc-orange-deep:#C95A0E;
+  --jc-sun:#FCD655;
+  --jc-amber:#FCB40C;
+  --jc-sky:#12B5E8;
+  --jc-blue:#0079C1;
+  --jc-purple:#8656A8;
+  --jc-purple-deep:#5E3A7A;
+  --jc-red:#F04A1B;
+  --jc-red-deep:#B8320F;
+  --jc-brown:#9A6234;
+  --jc-brown-deep:#6B3F1D;
+  --jc-mist:#E3E7F0;
+  --jc-mist-deep:#9AA4C0;
+  --jc-sand:#F6D98B;
+  --jc-sand-deep:#E2B85E;
+  --jc-wood:#C8783A;
+  --jc-silver:#C3CBDD;
+  --jc-sky-soft:#7FD3F0;
+  /* app: Lớp học ảo, bộ nền (:root của app.css) — chữ, nền, viền dùng chung mọi vai */
+  --jc-app-bg:#eef4f8;
+  --jc-app-surface:#ffffff;
+  --jc-app-surface-2:#f6f9fb;
+  --jc-app-ink:#13263a;
+  --jc-app-muted:#566779;
+  --jc-app-line:#dbe4ec;
+  --jc-app-sea:#0a7ea4;
+  --jc-app-sea-ink:#ffffff;
+  --jc-app-sea-soft:#e0f1f7;
+  --jc-app-sea-deep:#06587a;
+  --jc-app-sun:#e8960c;
+  --jc-app-sun-soft:#fff2d9;
+  --jc-app-sun-ink:#7d4b00;
+  --jc-app-leaf:#22884f;
+  --jc-app-leaf-soft:#e2f4e9;
+  --jc-app-coral:#d4492f;
+  --jc-app-coral-soft:#fde8e3;
+  --jc-app-lock:#e9eef2;
+  --jc-app-shadow:0 1px 2px rgba(19,38,58,.06),0 4px 14px rgba(19,38,58,.06);
+  /* px: Phong cách pixel của học sinh (body.px trong app.css): khung navy, màu logo */
+  --jc-px-frame:var(--jc-navy);
+  --jc-px-bg:#EEF2F8;
+  --jc-px-sea:var(--jc-blue);
+  --jc-px-sea-deep:var(--jc-navy);
+  --jc-px-sea-soft:#DDF3FB;
+  --jc-px-leaf:#1E9A52;
+  --jc-px-leaf-soft:#E3F7EA;
+  --jc-px-sun:var(--jc-amber);
+  --jc-px-sun-soft:#FFF4D6;
+  --jc-px-sun-ink:#7A4E00;
+  --jc-px-coral:#E0441A;
+  --jc-px-coral-soft:#FDE6DE;
+  --jc-px-line:#C9D1E6;
+  --jc-px-water:#BDEBFA;
+  --jc-px-water-dot:var(--jc-white);
+  /* home: Trang chủ (index.html) và khung game Bebras (kit.css): bảng trời xanh, viền ink, nút vàng */
+  --jc-home-sky:#CFEAFB;
+  --jc-home-ink:#1D2B53;
+  --jc-home-ink-soft:#4A5878;
+  --jc-home-paper:#FFFFFF;
+  --jc-home-sun:#FFC93C;
+  --jc-home-sun-soft:#FFF0C2;
+  --jc-home-coral:#FF6B57;
+  --jc-home-mint:#2DBE8C;
+  --jc-home-mint-soft:#D5F6E8;
+  --jc-home-sel:#2F7DE1;
+  --jc-home-sel-soft:#DCEBFF;
+  --jc-home-hatch:#B8C6DD;
+  --jc-home-purple:#8E6BD8;
+  /* lms: Kiểu Google Classroom cho Quản lý / Giáo viên / Phụ huynh (chép từ --lm-* trong 80-phong-cach-lms.js) */
+  --jc-lms-line:#DADCE0;
+  --jc-lms-line-2:#E8EAED;
+  --jc-lms-ink:var(--jc-navy);
+  --jc-lms-mute:#5F6B85;
+  --jc-lms-pri:var(--jc-blue);
+  --jc-lms-pri-hover:#00649F;
+  --jc-lms-pri-soft:#E8F2FB;
+  --jc-lms-ok:#137333;
+  --jc-lms-ok-soft:#E6F4EA;
+  --jc-lms-warn:#B06000;
+  --jc-lms-warn-soft:#FEF7E0;
+  --jc-lms-bad:#C5221F;
+  --jc-lms-bad-soft:#FCE8E6;
+  /* font: Họ chữ (cả chuỗi dự phòng, đúng như đang dùng) */
+  --jc-font-pixel:"VT323","Be Vietnam Pro",ui-monospace,monospace;
+  --jc-font-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --jc-font-display:"Baloo 2","Be Vietnam Pro",system-ui,sans-serif;
+  --jc-font-lms:"Lexend","Be Vietnam Pro",system-ui,sans-serif;
+  --jc-font-home:'Baloo 2','Trebuchet MS',system-ui,sans-serif;
+  --jc-font-home-body:'Nunito','Segoe UI',system-ui,sans-serif;
+  /* space: Khoảng cách 4/8/12/16/24 */
+  --jc-space-1:4px;
+  --jc-space-2:8px;
+  --jc-space-3:12px;
+  --jc-space-4:16px;
+  --jc-space-5:24px;
+  /* size: Cỡ chạm tối thiểu */
+  --jc-size-tap:48px;
+  /* radius: Bo góc: pixel 0, Classroom 8px */
+  --jc-radius-pixel:0;
+  --jc-radius-lms:8px;
+  /* frame: Khung pixel khuyết góc (= --f2/--f3 của body.px; app.css vẫn tự khai báo vì --pxk đổi theo chế độ tối) */
+  --jc-frame-2:0 -2px 0 0 var(--jc-px-frame),0 2px 0 0 var(--jc-px-frame),-2px 0 0 0 var(--jc-px-frame),2px 0 0 0 var(--jc-px-frame);
+  --jc-frame-3:0 -3px 0 0 var(--jc-px-frame),0 3px 0 0 var(--jc-px-frame),-3px 0 0 0 var(--jc-px-frame),3px 0 0 0 var(--jc-px-frame);
+}
+/* Họ pixel (học sinh): chỉ đổi họ chữ tiêu đề và bo góc */
+[data-theme-family=pixel]{--jc-font-display:var(--jc-font-pixel);--jc-radius:var(--jc-radius-pixel)}
+/* Họ Classroom (GV/PH/QL): chỉ đổi họ chữ và bo góc */
+[data-theme-family=lms]{--jc-font-display:var(--jc-font-lms);--jc-font-body:var(--jc-font-lms);--jc-radius:var(--jc-radius-lms)}
