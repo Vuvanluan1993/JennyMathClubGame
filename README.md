@@ -98,7 +98,8 @@ python tools/build_bank.py <_pool_lop6.json> games/hanh-trinh-jenny/lop-6/bank.e
 
 ## Lớp Học Ảo Jenny – tài khoản học sinh
 
-Trang: `games/lop-hoc-ao/`. Mã nguồn, cách build, kiểm tra và danh sách việc: `src/lop-hoc-ao/README.md`. Mật khẩu mọi tài khoản: `jenny123`. Tên đăng nhập không phân biệt hoa thường.
+Trang: `games/lop-hoc-ao/`. Mã nguồn, cách build, kiểm tra và danh sách việc: `src/lop-hoc-ao/README.md`.
+File `games/lop-hoc-ao/**/index.html` **không nằm trong git**: GitHub Actions dựng từ `src/lop-hoc-ao/` rồi đưa lên Pages mỗi lần đẩy vào `main` (`.github/workflows/deploy.yml` → `python3 tools/build_all.py`). Xem trên máy: chạy lệnh đó rồi mở file. Mật khẩu mọi tài khoản: `jenny123`. Tên đăng nhập không phân biệt hoa thường.
 
 | Lớp | Tài khoản chính | Tài khoản dự phòng |
 |---|---|---|
