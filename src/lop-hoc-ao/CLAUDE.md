@@ -12,9 +12,12 @@ Thầy chốt điều mới → ghi ngay vào `docs/LUAT-DA-CHOT.md`.
 1. Sửa trong `src/lop-hoc-ao/` (không sửa tay `dist/` hay `games/lop-hoc-ao/index.html`).
 2. `python3 tools/build.py`
 3. `node tools/test/kiem-tra.js [lớp] [chủ đề]` — phải ĐẠT. Xem lại các dòng "xem lại phép tính". Các bài kiểm tra khác: xem mục 7 của `docs/LUAT-DA-CHOT.md`.
-4. Kiểm tra trực quan khổ 320/375/414px và **chế độ tối** (Playwright, Chromium ở `/opt/pw-browsers/...`) khi đổi giao diện.
+4. Kiểm tra trực quan khổ 320/375/414px và **chế độ tối** (Playwright, Chromium cài bằng `npx playwright install chromium` sau `npm ci` ở gốc kho) khi đổi giao diện.
 5. Cập nhật `CHANGELOG.md` và đánh dấu `TASKS.md`.
-6. Commit (kèm dòng ghi công theo hướng dẫn phiên), `git pull --rebase`, `git push`.
+6. Commit (kèm dòng ghi công theo hướng dẫn phiên). `dist/` và `games/lop-hoc-ao/**/index.html` **không nằm trong git**
+   (`.gitignore`), không commit. Phiên Code: đẩy nhánh, mở PR (CI chạy `npm test`); Cowork: `git pull --rebase`, `git push`
+   thẳng `main` (thầy chốt Q3 = B; CI chạy trên mỗi push `main`). Gộp vào `main` xong, GitHub Actions tự dựng
+   (`tools/build_all.py`) và đưa lên Pages; không cần build hay commit "Dựng lại bản".
 7. Nếu phiên có công cụ Artifact: đăng lại `dist/lop-hoc-ao-jenny.html` lên artifact
    https://claude.ai/artifact/6HBRFgdwbmKHCXWEp7DwBB (bản đầy đủ có giáo viên/phụ huynh/demo).
    Bản đồ đảo (kế hoạch): https://claude.ai/artifact/VX1QMuDQJscrbkmkdBqV5D
